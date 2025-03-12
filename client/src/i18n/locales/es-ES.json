@@ -1,0 +1,340 @@
+{
+  "app": {
+    "name": "Maria Faz",
+    "tagline": "Gestión de Propiedades Simplificada"
+  },
+  "navigation": {
+    "dashboard": "Panel",
+    "properties": "Propiedades",
+    "reservations": "Reservas",
+    "owners": "Propietarios",
+    "reports": "Informes",
+    "settings": "Ajustes",
+    "aiAssistant": "Asistente IA"
+  },
+  "common": {
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "add": "Añadir",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "back": "Volver",
+    "loading": "Cargando...",
+    "noResults": "Sin resultados",
+    "success": "Éxito",
+    "error": "Error",
+    "warning": "Advertencia",
+    "info": "Información",
+    "all": "Todos",
+    "none": "Ninguno",
+    "details": "Detalles",
+    "actions": "Acciones",
+    "status": "Estado",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "phone": "Teléfono",
+    "address": "Dirección",
+    "city": "Ciudad",
+    "country": "País",
+    "date": "Fecha",
+    "amount": "Importe",
+    "total": "Total"
+  },
+  "dashboard": {
+    "title": "Panel",
+    "welcome": "Bienvenido a Maria Faz",
+    "summary": "Resumen",
+    "totalRevenue": "Ingresos Totales",
+    "netProfit": "Beneficio Neto",
+    "activeProperties": "Propiedades Activas",
+    "occupancyRate": "Tasa de Ocupación",
+    "recentReservations": "Reservas Recientes",
+    "recentActivity": "Actividad Reciente",
+    "propertyInsights": "Análisis de Propiedades",
+    "viewAll": "Ver Todo",
+    "filters": {
+      "title": "Filtros",
+      "today": "Hoy",
+      "thisWeek": "Esta Semana",
+      "thisMonth": "Este Mes",
+      "thisYear": "Este Año",
+      "custom": "Personalizado"
+    }
+  },
+  "properties": {
+    "title": "Propiedades",
+    "add": "Añadir Propiedad",
+    "edit": "Editar Propiedad",
+    "details": "Detalles de la Propiedad",
+    "delete": "Eliminar Propiedad",
+    "deleteConfirm": "¿Está seguro de que desea eliminar esta propiedad?",
+    "fields": {
+      "name": "Nombre",
+      "address": "Dirección",
+      "city": "Ciudad",
+      "country": "País",
+      "type": "Tipo",
+      "capacity": "Capacidad",
+      "bedrooms": "Dormitorios",
+      "bathrooms": "Baños",
+      "size": "Tamaño (m²)",
+      "cleaningCost": "Coste de Limpieza",
+      "checkInFee": "Tarifa de Check-in",
+      "owner": "Propietario",
+      "commission": "Comisión (%)",
+      "description": "Descripción"
+    },
+    "types": {
+      "apartment": "Apartamento",
+      "house": "Casa",
+      "villa": "Villa",
+      "cottage": "Cabaña",
+      "hotel": "Hotel",
+      "hostel": "Hostal"
+    },
+    "statistics": {
+      "title": "Estadísticas",
+      "occupancyRate": "Tasa de Ocupación",
+      "totalRevenue": "Ingresos Totales",
+      "totalProfit": "Beneficio Total",
+      "totalReservations": "Total de Reservas"
+    }
+  },
+  "reservations": {
+    "title": "Reservas",
+    "add": "Añadir Reserva",
+    "edit": "Editar Reserva",
+    "details": "Detalles de la Reserva",
+    "delete": "Eliminar Reserva",
+    "deleteConfirm": "¿Está seguro de que desea eliminar esta reserva?",
+    "processReservation": "Procesar Reserva",
+    "uploadPDF": "Subir PDF",
+    "fields": {
+      "property": "Propiedad",
+      "guestName": "Nombre del Huésped",
+      "guestEmail": "Correo del Huésped",
+      "guestPhone": "Teléfono del Huésped",
+      "checkIn": "Entrada",
+      "checkOut": "Salida",
+      "numGuests": "Número de Huéspedes",
+      "totalAmount": "Importe Total",
+      "platformFee": "Tarifa de Plataforma",
+      "cleaningFee": "Tarifa de Limpieza",
+      "checkInFee": "Tarifa de Entrada",
+      "commissionFee": "Comisión",
+      "teamPayment": "Pago al Equipo",
+      "netAmount": "Importe Neto",
+      "status": "Estado",
+      "platform": "Plataforma",
+      "notes": "Notas"
+    },
+    "status": {
+      "pending": "Pendiente",
+      "confirmed": "Confirmada",
+      "cancelled": "Cancelada",
+      "completed": "Completada",
+      "noShow": "No Presentado"
+    },
+    "platforms": {
+      "airbnb": "Airbnb",
+      "booking": "Booking.com",
+      "expedia": "Expedia",
+      "direct": "Directo",
+      "other": "Otro"
+    }
+  },
+  "owners": {
+    "title": "Propietarios",
+    "add": "Añadir Propietario",
+    "edit": "Editar Propietario",
+    "details": "Detalles del Propietario",
+    "delete": "Eliminar Propietario",
+    "deleteConfirm": "¿Está seguro de que desea eliminar este propietario?",
+    "fields": {
+      "name": "Nombre",
+      "company": "Empresa",
+      "email": "Correo electrónico",
+      "phone": "Teléfono",
+      "address": "Dirección",
+      "bankInfo": "Información Bancaria",
+      "taxNumber": "NIF",
+      "notes": "Notas"
+    },
+    "properties": "Propiedades",
+    "earnings": "Ganancias",
+    "payments": "Pagos"
+  },
+  "reports": {
+    "title": "Informes",
+    "generate": "Generar Informe",
+    "export": "Exportar",
+    "print": "Imprimir",
+    "types": {
+      "financial": "Financiero",
+      "occupancy": "Ocupación",
+      "performance": "Rendimiento",
+      "owners": "Propietarios"
+    },
+    "filters": {
+      "property": "Propiedad",
+      "owner": "Propietario",
+      "dateRange": "Periodo",
+      "platform": "Plataforma"
+    },
+    "charts": {
+      "revenueByMonth": "Ingresos por Mes",
+      "occupancyByMonth": "Ocupación por Mes",
+      "revenueByProperty": "Ingresos por Propiedad",
+      "revenueByPlatform": "Ingresos por Plataforma"
+    }
+  },
+  "activities": {
+    "reservation_created": "Reserva creada",
+    "reservation_updated": "Reserva actualizada",
+    "reservation_cancelled": "Reserva cancelada",
+    "reservation_completed": "Reserva completada",
+    "property_added": "Propiedad añadida",
+    "property_updated": "Propiedad actualizada",
+    "property_removed": "Propiedad eliminada",
+    "owner_added": "Propietario añadido",
+    "owner_updated": "Propietario actualizado",
+    "owner_removed": "Propietario eliminado",
+    "payment_received": "Pago recibido",
+    "payment_sent": "Pago enviado"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "tabs": {
+      "general": "General",
+      "account": "Cuenta",
+      "notifications": "Notificaciones",
+      "language": "Idioma",
+      "integrations": "Integraciones",
+      "security": "Seguridad",
+      "backup": "Copia de Seguridad"
+    },
+    "general": {
+      "title": "Ajustes Generales",
+      "companyName": "Nombre de la Empresa",
+      "companyLogo": "Logo de la Empresa",
+      "defaultCurrency": "Moneda Predeterminada",
+      "timezone": "Zona Horaria",
+      "dateFormat": "Formato de Fecha"
+    },
+    "account": {
+      "title": "Ajustes de Cuenta",
+      "name": "Nombre",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "changePassword": "Cambiar Contraseña",
+      "currentPassword": "Contraseña Actual",
+      "newPassword": "Nueva Contraseña",
+      "confirmPassword": "Confirmar Contraseña"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "email": "Notificaciones por Correo",
+      "push": "Notificaciones Push",
+      "sms": "Notificaciones SMS",
+      "newReservation": "Nueva Reserva",
+      "cancelledReservation": "Reserva Cancelada",
+      "checkInReminder": "Recordatorio de Entrada",
+      "checkOutReminder": "Recordatorio de Salida",
+      "paymentReceived": "Pago Recibido",
+      "paymentDue": "Pago Pendiente"
+    },
+    "language": {
+      "title": "Idioma",
+      "selectLanguage": "Seleccionar Idioma",
+      "languages": {
+        "pt_PT": "Portugués (Portugal)",
+        "en_US": "Inglés (EE.UU.)",
+        "fr_FR": "Francés (Francia)",
+        "es_ES": "Español (España)"
+      }
+    },
+    "integrations": {
+      "title": "Integraciones",
+      "mistralAI": {
+        "title": "Mistral AI",
+        "apiKey": "Clave API",
+        "status": "Estado",
+        "connected": "Conectado",
+        "disconnected": "Desconectado",
+        "connect": "Conectar",
+        "disconnect": "Desconectar",
+        "testConnection": "Probar Conexión"
+      },
+      "calendar": {
+        "title": "Calendario",
+        "google": "Google Calendar",
+        "outlook": "Outlook",
+        "ical": "iCal"
+      },
+      "payments": {
+        "title": "Pagos",
+        "stripe": "Stripe",
+        "paypal": "PayPal"
+      }
+    },
+    "security": {
+      "title": "Seguridad",
+      "twoFactor": "Autenticación de Dos Factores",
+      "loginHistory": "Historial de Inicio de Sesión",
+      "sessionTimeout": "Tiempo de Espera de Sesión"
+    },
+    "backup": {
+      "title": "Copia de Seguridad",
+      "createBackup": "Crear Copia de Seguridad",
+      "restoreBackup": "Restaurar Copia de Seguridad",
+      "autoBackup": "Copia de Seguridad Automática",
+      "lastBackup": "Última Copia de Seguridad"
+    }
+  },
+  "aiAssistant": {
+    "title": "Asistente IA",
+    "placeholder": "Escriba su pregunta aquí...",
+    "sendMessage": "Enviar",
+    "loading": "Pensando...",
+    "suggestions": {
+      "title": "Sugerencias",
+      "occupancy": "¿Cómo está la ocupación este mes?",
+      "revenue": "¿Cuál fue el ingreso total del último trimestre?",
+      "bestProperty": "¿Cuál es mi propiedad más rentable?",
+      "upcomingCheckIns": "¿Cuáles son las próximas entradas?",
+      "pendingTasks": "¿Hay tareas pendientes?"
+    },
+    "features": {
+      "title": "Características",
+      "analytics": "Análisis de Datos",
+      "recommendations": "Recomendaciones",
+      "forecasting": "Previsiones",
+      "automation": "Automatización"
+    }
+  },
+  "errors": {
+    "required": "Este campo es obligatorio",
+    "invalidEmail": "Correo electrónico inválido",
+    "invalidPhone": "Número de teléfono inválido",
+    "invalidDate": "Fecha inválida",
+    "invalidNumber": "Número inválido",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "serverError": "Error del servidor. Inténtelo de nuevo más tarde.",
+    "notFound": "Página no encontrada",
+    "unauthorized": "No autorizado",
+    "forbidden": "Acceso denegado",
+    "networkError": "Error de red. Compruebe su conexión a internet."
+  },
+  "ocr": {
+    "upload": "Subir PDF",
+    "processing": "Procesando documento...",
+    "success": "Documento procesado con éxito",
+    "error": "Error al procesar el documento",
+    "extracted": "Datos Extraídos",
+    "createReservation": "Crear Reserva",
+    "reviewData": "Revisar Datos"
+  }
+}
