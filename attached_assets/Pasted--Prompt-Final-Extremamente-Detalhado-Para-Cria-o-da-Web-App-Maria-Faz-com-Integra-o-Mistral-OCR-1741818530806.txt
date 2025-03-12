@@ -1,0 +1,196 @@
+**Prompt Final Extremamente Detalhado Para Criação da Web App “Maria Faz” com Integração Mistral OCR e RAG**
+
+Você é uma inteligência artificial especializada em desenvolvimento de aplicações web de ponta, arquitetura de software escalável, UX/UI mobile-first e integrações avançadas com OCR e RAG (Retrieval-Augmented Generation). Sua missão é criar uma aplicação web completa para a “Maria Faz”, garantindo alto desempenho, segurança, usabilidade e alinhamento absoluto aos dados e requisitos de negócio fornecidos.
+
+---
+
+## 1. Contexto e Regras Essenciais do Negócio (NÃO ALTERAR)
+- "Maria Faz" gerencia imóveis que são alugados via plataformas externas (Booking, Airbnb, etc.).
+- As reservas **não** são recebidas diretamente de hóspedes, mas sim enviadas pelos **proprietários** ou pelas plataformas.
+- A aplicação deve:
+  1. Processar automaticamente PDFs de reservas por meio de **Mistral OCR**.
+  2. Validar e enriquecer as informações extraídas usando **RAG**, consultando os dados cadastrados.
+  3. Disponibilizar uma forma de inserir ou editar manualmente dados de reservas, caso seja necessário.
+
+---
+
+## 2. Dados Oficiais de Propriedades (NÃO INVENTAR)
+Cada propriedade listada a seguir possui campos fixos:
+
+| Local                | Custo Limpeza (€) | Taxa Check-in (€) | Comissão (%) | Pagamento Equipa (€) | Equipa Limpeza | Proprietário  | Custo Fixo Mensal |
+|----------------------|-------------------|-------------------|--------------|-----------------------|----------------|---------------|-------------------|
+| **Ajuda**           | 45                | 0                 | 0%           | 45                   | Maria faz      | Gabriela      | (vazio ou 0)      |
+| **Almada rei**      | 55                | 0                 | 0%           | 45                   | cristina       | innkeeper     | (vazio ou 0)      |
+| **Aroeira 3**       | 50                | 0                 | 0%           | 50                   | Maria faz      | Lydia         | (vazio ou 0)      |
+| **Aroeira 4**       | 45                | 0                 | 0%           | 45                   | Maria faz      | Cláudia       | (vazio ou 0)      |
+| **Barcos (Check-in)** | 55              | 15                | 0%           | 70                   | Maria faz      | innkeeper     | (vazio ou 0)      |
+| **Bernardo**        | 65                | 15                | 0%           | 55                   | cristina       | innkeeper     | (vazio ou 0)      |
+| **Costa cabanas**   | 55                | 0                 | 0%           | 45                   | Primavera      | Mariana       | (vazio ou 0)      |
+| **Cristo Rei**      | 45                | 0                 | 0%           | 40                   | cristina       | Gabriela      | (vazio ou 0)      |
+| **Ericeira nova**   | 45                | 15                | 0%           | 60                   | Maria faz      | José          | (vazio ou 0)      |
+| **Gomeira**         | 55                | 0                 | 0%           | 45                   | Primavera      | Mariana       | (vazio ou 0)      |
+| **João Batista**    | 65                | 0                 | 0%           | 55                   | cristina       | innkeeper     | (vazio ou 0)      |
+| **Magoito anexo**   | 90                | 0                 | 0%           | 90                   | maria faz      | Hélia         | (vazio ou 0)      |
+| **Magoito vivenda** | 90                | 0                 | 0%           | 90                   | Maria faz      | Hélia         | (vazio ou 0)      |
+| **Montemor**        | 65                | 0                 | 20%          | 55                   | Maria joão     | José Gustavo  | (vazio ou 0)      |
+| **Nazaré T2**       | 55                | 0                 | 0%           | 50                   | Home deluxe    | innkeeper     | (vazio ou 0)      |
+| **Palmela**         | 45                | 0                 | 0%           | 35                   | Cristina       | Gabriela      | (vazio ou 0)      |
+| **Reboleira**       | 55                | 0                 | 0%           | 55                   | Maria faz      | maria ines    | (vazio ou 0)      |
+| **Silves**          | 65                | 0                 | 0%           | 55                   | Primavera      | Filipe        | (vazio ou 0)      |
+| **Sé**              | 65                | 0                 | 0%           | 65                   | Maria faz      | maria lorena  | (vazio ou 0)      |
+| **Trafaria 1ª**     | 65                | 0                 | 0%           | 45                   | cristina       | Filipe        | (vazio ou 0)      |
+| **Trafaria RC**     | 65                | 0                 | 0%           | 45                   | cristina       | Filipe        | (vazio ou 0)      |
+| **Tróia**           | 55                | 0                 | 20%          | 45                   | Setubal        | Francisco     | (vazio ou 0)      |
+| **Óbidos**          | 90                | 0                 | 0%           | 85                   | Home deluxe    | innkeeper     | (vazio ou 0)      |
+| **Setubal**         | 55                | 0                 | 0%           | 45                   | cristina       | Gabriela      | (vazio ou 0)      |
+| **Costa blue**      | 55                | 0                 | 0%           | 50                   | cristina       | Ana costa     | (vazio ou 0)      |
+| **Tropical**        | 65                | 0                 | 0%           | 60                   | Home deluxe    | sandra        | (vazio ou 0)      |
+| **Praia chic**      | 55                | 0                 | 0%           | 55                   | Home deluxe    | sandra        | (vazio ou 0)      |
+| **Maresia**         | 55                | 0                 | 0%           | 55                   | Home deluxe    | sandra        | (vazio ou 0)      |
+| **Escandinavo**     | 65                | 0                 | 0%           | 60                   | Home deluxe    | sandra        | (vazio ou 0)      |
+| **Aroeira 1**       | 0                 | 0                 | 0            | 0                    | Maria faz      | Ana Tomaz     | 75                |
+| **Aroeira2**        | 0                 | 0                 | 0            | 0                    | Maria faz      | Ana Tomaz     | 75                |
+| **Graça**           | 0                 | 0                 | 0            | 0                    | Maria faz      | Ana Tomaz     | 75                |
+| **Sete Rios**       | 0                 | 0                 | 0            | 0                    | Maria faz      | Ana Tomaz     | 75                |
+| **Filipe da mata**  | 0                 | 0                 | 0            | 0                    | Maria faz      | Ana Tomaz     | 75                |
+| **05-Oct**          | 0                 | 0                 | 0            | 0                    | Maria faz      | Ana Tomaz     | 75                |
+
+*(Onde não há valor, considere 0 ou vazio, exceto pelos casos que explicitamente requerem custo fixo mensal de 75€.)*
+
+---
+
+## 3. Lista de Proprietários
+
+| Nome               | Empresa                                    | Morada                                                       | Contribuinte  | Email                         | Telemóvel   |
+|--------------------|--------------------------------------------|--------------------------------------------------------------|---------------|-------------------------------|------------|
+| **José Gustavo**   | José Gustavo                               | rua curvo semendo, 37 - Montemor o novo                     | (vazio ou 0) | (vazio ou não fornecido)      | (vazio)    |
+| **Hélia**          | BRIGHT JOBS UNIPESSOAL LDA                 | AVENIDA PROF DR AUGUSTO ABREU LOPES EDIF 1 BLOCO B 5 C, ODIVELAS | 514487097    | (vazio ou não fornecido)      | (vazio)    |
+| **Filipe villas boas** | Vanguardpriority Unipessoal Lda        | Lisboa                                                       | 514537027     | vanguardpriority@gmail.com     | (vazio)    |
+| **Maria Lorena**   | pessoal                                   | (vazio ou não fornecido)                                    | (vazio ou 0) | (vazio ou não fornecido)      | (vazio)    |
+| **innkeeper**      | Criterion Legacy Unipessoal LDA            | Lisboa                                                       | 514887869     | miguel@innkeeper.pt           | (vazio)    |
+| **Maria Ines**     | IMAGINARY AVENUE - LDA                     | RUA DA REPUBLICA DA GUINE BISSAU N 1 3 E, AMADORA            | 517107341     | (vazio ou não fornecido)      | (vazio)    |
+| **Ana Robalo**     | Ana Teresa Robalo Arquitetura unipessoal Lda | Av. Guerra Junqueiro n9, 4ºdt, lisboa                       | 514279141     | anatrobalo@gmail.com          | (vazio)    |
+| **Cláudia**        | pessoal                                   | (vazio ou não fornecido)                                    | (vazio or 0) | (vazio ou não fornecido)      | (vazio)    |
+| **José**           | pessoal                                   | (vazio ou não fornecido)                                    | (vazio or 0) | (vazio ou não fornecido)      | (vazio)    |
+| **Gabriela**       | Tribunadomus, Lda                          | (vazio ou não fornecido)                                    | 507764277     | tribunadomus@gmail.com        | (vazio)    |
+| **lydia**          | pessoal                                   | (vazio ou não fornecido)                                    | (vazio or 0) | (vazio ou não fornecido)      | (vazio)    |
+| **Ana Tomaz**      | contrato                                  | (vazio ou não fornecido)                                    | (vazio or 0) | (vazio ou não fornecido)      | (vazio)    |
+| **Francisco**      | FCO Living, lda                            | (vazio ou não fornecido)                                    | 516298968     | couto_francisco@hotmail.com   | (vazio)    |
+| **Sandra**         | TRIUMPH CHIMERA LDA                        | RUA FRANCISCO FRANCO N 30B BAIRRO DAS MORENAS               | 515942022     | sandrar@triumphinc.ca         | (vazio)    |
+| **Mariana**        | Mariana Arga Lima lda                      | Rua Álvaro Pedro Gomes, 12 4D, Sacavem                      | 514759232     | hshgestao@gmail.com           | (vazio)    |
+| **Filipe**         | pessoal                                   | (vazio ou não fornecido)                                    | (vazio or 0) | (vazio ou não fornecido)      | (vazio)    |
+| **maria ines**     | pessoal                                   | (vazio ou não fornecido)                                    | (vazio or 0) | (vazio ou não fornecido)      | (vazio)    |
+| **Ana costa**      | pessoal                                   | (vazio ou não fornecido)                                    | (vazio or 0) | (vazio ou não fornecido)      | (vazio)    |
+| **sandra**         | pessoal                                   | (vazio ou não fornecido)                                    | (vazio or 0) | (vazio ou não fornecido)      | (vazio)    |
+
+> Observação: Campos em branco podem ser tratados como null ou zero, conforme a necessidade.
+
+---
+
+## 4. Funcionalidades Essenciais
+
+### 4.1 Módulo de Gestão de Propriedades
+- CRUD completo de todas as propriedades (listadas acima), incluindo campos de custo de limpeza, taxa de check-in, comissão, pagamento de equipa, equipa de limpeza, proprietário e custo fixo mensal.
+
+### 4.2 Módulo de Reservas
+- Recebimento de PDFs (upload) enviados pelos proprietários ou plataformas.
+- Extração de dados utilizando **Mistral OCR** (ver [Documentação Mistral](https://docs.mistral.ai/) para configuração e endpoints).
+- Validação e enriquecimento automático via **RAG**: compare as informações extraídas com as existentes no banco de dados para garantir consistência (datas, número de hóspedes, nome da propriedade, etc.).
+- Criação de reservas automaticamente, populando os campos financeiros (custos, comissões, etc.).
+- Possibilidade de inserir e/ou editar manualmente reservas caso o OCR falhe ou haja dados faltantes.
+
+### 4.3 Módulo Financeiro e Relatórios
+- Cálculos automáticos:
+  - **Receita Total**: baseado no valor total das reservas.
+  - **Custos Operacionais**: limpeza, check-in, comissão, pagamento de equipa, eventuais custos fixos.
+  - **Ganho Líquido**: receita menos custos operacionais.
+  - **Taxa de Ocupação**: (dias reservados / dias disponíveis) × 100.
+- Relatórios customizáveis:
+  - Mensal, Semestral, Anual, ou intervalos de datas personalizados.
+  - Exportação em PDF ou Excel (ex.: planilha para o proprietário).
+
+### 4.4 Gestão de Pagamentos às Equipas
+- Lista de pagamentos pendentes e efetuados, com datas e valores.
+- Marcação manual de pagamentos como efetuados.
+- Geração de alertas/notificações para pagamentos futuros.
+- Exportação desses relatórios (PDF, Excel) para fins contábeis.
+
+---
+
+## 5. UX/UI e Design System (Mobile-First)
+- Basear-se no [Mockup Maria Faz](https://propostamariafaz.netlify.app/) para layout e estilo.
+- **Cores**: #E5A4A4 (rosa), #F8E6E6 (rosa claro), #98D8D8 (turquesa), #2C2C2C (preto), #757575 (cinza), #FFFFFF (branco).
+- **Tipografia**:
+  - Títulos: "Playfair Display"
+  - Corpo: "Open Sans"
+- Foco em **responsividade** (mobile-first) com Next.js + TailwindCSS.
+- Componentes reutilizáveis, layout minimalista e intuitivo, espacialização adequada.
+
+---
+
+## 6. Especificações Técnicas
+
+- **Frontend**: Next.js (React) + TailwindCSS.
+- **Backend**: Node.js (Express) ou Django (Python), com APIs REST bem definidas.
+- **Banco de Dados**: PostgreSQL para dados estruturados. Pode-se avaliar MongoDB para armazenamento de documentos OCR brutos.
+- **Integração Mistral OCR**: Deve utilizar o endpoint de OCR conforme a [Documentação Mistral](https://docs.mistral.ai/ocr). Suporte a:
+  - Extração de tabelas e campos unstructured.
+  - Configuração de APIs.
+  - Geração de tokens de autenticação (se necessário).
+- **Pipeline RAG**:
+  - Implementar pipeline que pesquisa dados existentes (propriedades, proprietários) e cruza com a extração do Mistral.
+  - Automatiza a verificação de campos obrigatórios (datas, nomes, valores), sinalizando inconsistências.
+- **Segurança**:
+  - Proteção contra XSS, CSRF, SQL Injection.
+  - Autenticação via JWT ou OAuth.
+- **CI/CD**:
+  - Deploy do frontend na Vercel ou similar.
+  - Backend em AWS (EC2, ECS, Elastic Beanstalk) ou DigitalOcean.
+- **Testes**:
+  - Unitários, de integração (ex.: Jest, Mocha, PyTest).
+  - Testes de usabilidade e performance (Cypress, Locust).
+- **Monitoramento**: New Relic, Datadog ou equivalente para métricas de performance.
+
+---
+
+## 7. Dashboards e Relatórios
+- **Dashboard Operacional**:
+  - Visão diária/semanal de check-ins e check-outs.
+  - Limpezas agendadas e status (pendente, concluída, etc.).
+- **Dashboard Financeiro**:
+  - Visão rápida das receitas, custos e ganhos líquidos.
+  - Relatórios por período e exportações.
+
+---
+
+## 8. Fluxo Ideal de Operação
+1. PDF é recebido (upload) do proprietário.
+2. **Mistral OCR** extrai dados (datas, nomes, valores).
+3. **RAG** consulta e valida as informações conforme registros no banco.
+4. Reserva é criada/atualizada, com cálculos automáticos de limpeza, check-in, comissão, pagamento de equipa.
+5. Dashboards são atualizados em tempo real.
+6. Pagamentos às equipas (relacionados às limpezas e taxas) são geridos.
+7. Relatórios financeiros são gerados para cada proprietário, com possibilidade de exportar.
+
+---
+
+## 9. Segurança, Performance e Testes
+- Implementar testes unitários e de integração em cada funcionalidade.
+- Configurar autenticação e controle de acesso.
+- Monitorar performance (tempo de resposta do OCR, volume de PDFs processados).
+
+---
+
+### Prompt Final
+Crie uma **aplicação web mobile-first** para a "Maria Faz" seguindo todos os requisitos acima, integrando **Mistral OCR** (ver [docs.mistral.ai](https://docs.mistral.ai/)) para processamento de PDFs e **RAG** para validação/enriquecimento de dados. Implemente:
+1. **CRUD** de Propriedades e Proprietários (usando a lista oficial).
+2. **Sistema de Reservas** (automático via OCR + RAG, e manual).
+3. **Módulo Financeiro** (receitas, custos, ganhos, taxa de ocupação).
+4. **Gestão de Pagamentos** às equipas.
+5. **Relatórios Detalhados** (Mensal, Semestral, Anual, Personalizado) com exportação PDF/Excel.
+6. **Dashboards** operacionais e financeiros.
+7. **Design System** e layout mobile-first conforme mockup.
+8. **Segurança, testes, CI/CD e monitoramento**.
+
+Este prompt contém **todos os dados oficiais** (propriedades, proprietários, custos, regras de negócio) e as orientações técnicas. Qualquer IA ou desenvolvedor seguindo estritamente este prompt poderá construir a aplicação sem lacunas ou inconsistências, atendendo aos requisitos da "Maria Faz" com uso avançado de **Mistral OCR** e **RAG**.
+
