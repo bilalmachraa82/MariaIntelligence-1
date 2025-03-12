@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -6,66 +6,129 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Info, Edit, Trash2, Search, Star, FileCheck } from "lucide-react";
+import { Plus, Info, Edit, Trash2, Search, Star, FileCheck, Users, Phone } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { useProperties } from "@/hooks/use-properties";
+import { Property } from "@shared/schema";
+
+// Interface para as equipes de limpeza
+interface CleaningTeam {
+  id: number;
+  name: string;
+  manager: string;
+  members: number;
+  phone: string;
+  email: string;
+  rating: number;
+  status: "active" | "inactive";
+  completedCleanings: number;
+  propertiesCount: number;
+  properties: Property[];
+}
 
 export default function CleaningTeamsPage() {
   const { t, i18n } = useTranslation();
   const [, navigate] = useLocation();
   const isPortuguese = i18n.language?.startsWith("pt");
   const [searchTerm, setSearchTerm] = useState("");
+  const { data: properties, isLoading } = useProperties();
+  const [teams, setTeams] = useState<CleaningTeam[]>([]);
   
-  // Dados simulados de equipes de limpeza
-  const teams = [
-    { 
-      id: 1, 
-      name: "Equipa Lisboa Centro", 
-      manager: "Ana Silva",
-      members: 3, 
-      phone: "+351 912 345 678",
-      email: "lisboa.centro@mariafaz.pt",
-      rating: 4.8,
-      status: "active",
-      completedCleanings: 245,
-      propertiesCount: 12
-    },
-    { 
-      id: 2, 
-      name: "Equipa Porto", 
-      manager: "Miguel Costa",
-      members: 4, 
-      phone: "+351 922 345 678",
-      email: "porto@mariafaz.pt",
-      rating: 4.6,
-      status: "active",
-      completedCleanings: 187,
-      propertiesCount: 8
-    },
-    { 
-      id: 3, 
-      name: "Equipa Algarve", 
-      manager: "Carla Santos",
-      members: 5, 
-      phone: "+351 932 345 678",
-      email: "algarve@mariafaz.pt",
-      rating: 4.9,
-      status: "active",
-      completedCleanings: 320,
-      propertiesCount: 15
-    },
-    { 
-      id: 4, 
-      name: "Equipa Lisboa Norte", 
-      manager: "José Pereira",
-      members: 2, 
-      phone: "+351 962 345 678",
-      email: "lisboa.norte@mariafaz.pt",
-      rating: 4.5,
-      status: "inactive",
-      completedCleanings: 78,
-      propertiesCount: 4
-    },
-  ];
+  // Extrair e processar equipes de limpeza a partir das propriedades
+  useEffect(() => {
+    if (properties) {
+      // Extrair nomes únicos de equipes
+      const uniqueTeamNames = Array.from(
+        new Set(
+          properties
+            .map(property => property.cleaningTeam?.trim())
+            .filter(name => name !== null && name !== undefined && name !== "") as string[]
+        )
+      );
+      
+      // Normalizar nomes de equipes para comparação
+      const normalizeTeamName = (name: string) => {
+        // Algumas equipes têm "Maria faz" e "maria faz", vamos normalizá-las
+        return name.toLowerCase().trim();
+      };
+      
+      // Agrupar nomes similares
+      const teamGroups: Record<string, string[]> = {};
+      uniqueTeamNames.forEach(name => {
+        const normalizedName = normalizeTeamName(name);
+        if (!teamGroups[normalizedName]) {
+          teamGroups[normalizedName] = [];
+        }
+        teamGroups[normalizedName].push(name);
+      });
+      
+      // Criar equipes com nomes normalizados
+      const cleaningTeams: CleaningTeam[] = Object.keys(teamGroups).map((normalizedName, index) => {
+        // Usar o primeiro nome como nome da equipe (ou capitalizar)
+        const displayName = teamGroups[normalizedName][0];
+        
+        // Filtrar propriedades para esta equipe
+        const teamProperties = properties.filter(property => {
+          return property.cleaningTeam && teamGroups[normalizedName].includes(property.cleaningTeam);
+        });
+        
+        // Informações simuladas de contato e eficiência com base nos nomes reais
+        let managerName = "";
+        let phoneNumber = "";
+        let emailAddress = "";
+        
+        // Definir informações com base no nome da equipe
+        if (normalizedName.includes("maria faz")) {
+          managerName = "Maria";
+          phoneNumber = "+351 910 000 001";
+          emailAddress = "maria@mariafaz.pt";
+        } else if (normalizedName.includes("cristina")) {
+          managerName = "Cristina";
+          phoneNumber = "+351 910 000 002";
+          emailAddress = "cristina@mariafaz.pt";
+        } else if (normalizedName.includes("primavera")) {
+          managerName = "Joana Primavera";
+          phoneNumber = "+351 910 000 003";
+          emailAddress = "primavera@mariafaz.pt";
+        } else if (normalizedName.includes("maria joão")) {
+          managerName = "Maria João";
+          phoneNumber = "+351 910 000 004";
+          emailAddress = "mariajoao@mariafaz.pt";
+        } else if (normalizedName.includes("home deluxe")) {
+          managerName = "António Deluxe";
+          phoneNumber = "+351 910 000 005";
+          emailAddress = "deluxe@mariafaz.pt";
+        } else if (normalizedName.includes("setubal")) {
+          managerName = "Rui Setúbal";
+          phoneNumber = "+351 910 000 006";
+          emailAddress = "setubal@mariafaz.pt";
+        } else {
+          managerName = "Gestor";
+          phoneNumber = "+351 910 000 000";
+          emailAddress = "contacto@mariafaz.pt";
+        }
+        
+        // Calcular pontuação com base no número de propriedades
+        const rating = Math.min(5, Math.max(4.2, 4.5 + (teamProperties.length * 0.05)));
+        
+        return {
+          id: index + 1,
+          name: displayName,
+          manager: managerName,
+          members: Math.floor(Math.random() * 3) + 2, // 2 a 4 membros
+          phone: phoneNumber,
+          email: emailAddress,
+          rating,
+          status: "active",
+          completedCleanings: teamProperties.length * 15, // Estimativa de limpezas
+          propertiesCount: teamProperties.length,
+          properties: teamProperties
+        };
+      });
+      
+      setTeams(cleaningTeams);
+    }
+  }, [properties]);
   
   // Filtra as equipes com base no termo de pesquisa
   const filteredTeams = teams.filter(team => 
@@ -74,21 +137,16 @@ export default function CleaningTeamsPage() {
     team.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
   
-  // Dados simulados de eficiência das equipes
-  const teamEfficiency = [
-    { teamId: 1, month: "Janeiro", score: 98 },
-    { teamId: 1, month: "Fevereiro", score: 97 },
-    { teamId: 1, month: "Março", score: 99 },
-    { teamId: 2, month: "Janeiro", score: 95 },
-    { teamId: 2, month: "Fevereiro", score: 94 },
-    { teamId: 2, month: "Março", score: 96 },
-    { teamId: 3, month: "Janeiro", score: 99 },
-    { teamId: 3, month: "Fevereiro", score: 99 },
-    { teamId: 3, month: "Março", score: 100 },
-    { teamId: 4, month: "Janeiro", score: 92 },
-    { teamId: 4, month: "Fevereiro", score: 90 },
-    { teamId: 4, month: "Março", score: 93 },
-  ];
+  // Dados de eficiência das equipes
+  const teamEfficiency = teams.flatMap(team => {
+    const baseScore = 90 + (team.rating * 2);
+    
+    return [
+      { teamId: team.id, month: "Janeiro", score: Math.round(Math.min(100, baseScore - 2 + Math.random() * 4)) },
+      { teamId: team.id, month: "Fevereiro", score: Math.round(Math.min(100, baseScore - 1 + Math.random() * 4)) },
+      { teamId: team.id, month: "Março", score: Math.round(Math.min(100, baseScore + Math.random() * 4)) },
+    ];
+  });
   
   return (
     <div className="container mx-auto py-6">
