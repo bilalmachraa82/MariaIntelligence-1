@@ -14,6 +14,7 @@ import ReservationsPage from "@/pages/reservations";
 import ReservationDetailPage from "@/pages/reservations/[id]";
 import ReservationNewPage from "@/pages/reservations/new";
 import ReportsPage from "@/pages/reports";
+import SettingsPage from "@/pages/settings";
 import { Layout } from "@/components/layout/layout";
 
 function Router() {
@@ -30,6 +31,8 @@ function Router() {
       <Route path="/reservations/:id" component={ReservationDetailPage} />
       <Route path="/reservations/new" component={ReservationNewPage} />
       <Route path="/reports" component={ReportsPage} />
+      <Route path="/settings" component={SettingsPage} />
+      <Route path="/configuracoes" component={SettingsPage} />
       <Route component={NotFound} />
     </Switch>
   );
