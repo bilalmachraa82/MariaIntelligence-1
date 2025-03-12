@@ -74,156 +74,27 @@ export default function OwnerReportPage() {
     label: t("reports.last30Days", "Últimos 30 dias"),
   });
   
-  // Dados simulados para o relatório
-  const generateOwnerReport = (ownerId: number, startDate: string, endDate: string): OwnerReport => {
-    // Simulação de dados - em um caso real, isto seria uma chamada à API
-    const properties = [
-      { id: 1, name: "Ajuda", ownerId: 1, cleaningCost: "45", checkInFee: "20", commission: "10", teamPayment: "25" },
-      { id: 2, name: "Príncipe Real", ownerId: 1, cleaningCost: "50", checkInFee: "25", commission: "12", teamPayment: "30" },
-      { id: 3, name: "Boavista", ownerId: 2, cleaningCost: "40", checkInFee: "20", commission: "8", teamPayment: "25" },
-      { id: 4, name: "Ribeira", ownerId: 2, cleaningCost: "55", checkInFee: "30", commission: "15", teamPayment: "35" },
-    ];
-    
-    const ownerProperties = properties.filter(p => p.ownerId === ownerId);
-    
-    const reservations = [
-      {
-        id: 1, propertyId: 3, checkInDate: "2025-03-01", checkOutDate: "2025-03-05",
-        guestName: "Maria Santos", totalAmount: "750", platform: "airbnb", status: "completed"
-      },
-      {
-        id: 2, propertyId: 1, checkInDate: "2025-03-06", checkOutDate: "2025-03-10",
-        guestName: "João Silva", totalAmount: "620", platform: "booking", status: "completed"
-      },
-      {
-        id: 3, propertyId: 2, checkInDate: "2025-03-07", checkOutDate: "2025-03-12",
-        guestName: "Ana Oliveira", totalAmount: "890", platform: "airbnb", status: "completed"
-      },
-      {
-        id: 4, propertyId: 4, checkInDate: "2025-03-15", checkOutDate: "2025-03-20",
-        guestName: "Pedro Fernandes", totalAmount: "1100", platform: "expedia", status: "confirmed"
-      },
-    ];
-    
-    const propertyReports: PropertyReportItem[] = ownerProperties.map(property => {
-      const propertyReservations = reservations.filter(
-        r => r.propertyId === property.id && 
-        r.checkInDate >= startDate && 
-        r.checkOutDate <= endDate
-      );
-      
-      // Calcular dias disponíveis no período
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      const availableDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
-      
-      // Calcular dias ocupados (soma dos dias de todas as reservas)
-      let occupiedDays = 0;
-      propertyReservations.forEach(res => {
-        const resStart = new Date(res.checkInDate);
-        const resEnd = new Date(res.checkOutDate);
-        occupiedDays += Math.ceil((resEnd.getTime() - resStart.getTime()) / (1000 * 60 * 60 * 24));
-      });
-      
-      // Calcular taxa de ocupação
-      const occupancyRate = availableDays > 0 ? (occupiedDays / availableDays * 100) : 0;
-      
-      // Totais financeiros
-      const revenue = propertyReservations.reduce((sum, res) => sum + parseFloat(res.totalAmount), 0);
-      const cleaningCosts = propertyReservations.length * parseFloat(property.cleaningCost || "0");
-      const checkInFees = propertyReservations.length * parseFloat(property.checkInFee || "0");
-      const commission = revenue * parseFloat(property.commission || "0") / 100;  // Assumindo que comissão é uma porcentagem
-      const teamPayments = propertyReservations.length * parseFloat(property.teamPayment || "0");
-      
-      // Lucro líquido
-      const netProfit = revenue - cleaningCosts - checkInFees - commission - teamPayments;
-      
-      // Mapear cada reserva para incluir os custos
-      const reservationSummaries: ReservationSummary[] = propertyReservations.map(res => ({
-        id: res.id,
-        checkInDate: res.checkInDate,
-        checkOutDate: res.checkOutDate,
-        guestName: res.guestName,
-        totalAmount: parseFloat(res.totalAmount),
-        cleaningFee: parseFloat(property.cleaningCost || "0"),
-        checkInFee: parseFloat(property.checkInFee || "0"),
-        commission: parseFloat(res.totalAmount) * parseFloat(property.commission || "0") / 100,
-        teamPayment: parseFloat(property.teamPayment || "0"),
-        netAmount: calculateNetAmount(
-          parseFloat(res.totalAmount),
-          parseFloat(property.cleaningCost || "0"),
-          parseFloat(property.checkInFee || "0"),
-          parseFloat(property.commission || "0"),
-          parseFloat(property.teamPayment || "0")
-        ),
-        platform: res.platform,
-      }));
-      
-      return {
-        propertyId: property.id,
-        propertyName: property.name,
-        reservations: reservationSummaries,
-        revenue,
-        cleaningCosts,
-        checkInFees,
-        commission,
-        teamPayments,
-        netProfit,
-        occupancyRate,
-        availableDays,
-        occupiedDays,
-      };
-    });
-    
-    // Calcular totais para o relatório geral
-    const totals: ReportTotals = {
-      totalRevenue: propertyReports.reduce((sum, p) => sum + p.revenue, 0),
-      totalCleaningCosts: propertyReports.reduce((sum, p) => sum + p.cleaningCosts, 0),
-      totalCheckInFees: propertyReports.reduce((sum, p) => sum + p.checkInFees, 0),
-      totalCommission: propertyReports.reduce((sum, p) => sum + p.commission, 0),
-      totalTeamPayments: propertyReports.reduce((sum, p) => sum + p.teamPayments, 0),
-      totalNetProfit: propertyReports.reduce((sum, p) => sum + p.netProfit, 0),
-      averageOccupancy: propertyReports.length > 0 
-        ? propertyReports.reduce((sum, p) => sum + p.occupancyRate, 0) / propertyReports.length 
-        : 0,
-    };
-    
-    return {
-      ownerId,
-      startDate,
-      endDate,
-      propertyReports,
-      totals,
-    };
+  // Usar o hook personalizado para obter o relatório com dados reais
+  const { 
+    report: ownerReport, 
+    propertyOccupancyData: occupancyData, 
+    costDistributionData: costDistribution,
+    isLoading: isReportLoading 
+  } = useOwnerReport(
+    selectedOwner ? parseInt(selectedOwner) : null, 
+    dateRange
+  );
+  
+  // Função para lidar com a mudança no range de datas
+  const handleDateRangeChange = (newRange: DateRange) => {
+    setDateRange(newRange);
   };
-  
-  const ownerReport = selectedOwner 
-    ? generateOwnerReport(parseInt(selectedOwner), dateRange.startDate, dateRange.endDate) 
-    : null;
-  
-  // Dados para o gráfico de ocupação
-  const occupancyData = ownerReport?.propertyReports.map(p => ({
-    name: p.propertyName,
-    occupancy: Math.round(p.occupancyRate),
-    revenue: p.revenue,
-  })) || [];
-  
-  // Dados para o gráfico de distribuição de custos
-  const costDistribution = ownerReport ? [
-    { name: t("ownerReport.cleaningCosts", "Custos de Limpeza"), value: ownerReport.totals.totalCleaningCosts },
-    { name: t("ownerReport.checkInFees", "Taxas de Check-in"), value: ownerReport.totals.totalCheckInFees },
-    { name: t("ownerReport.commission", "Comissão"), value: ownerReport.totals.totalCommission },
-    { name: t("ownerReport.teamPayments", "Pagamentos às Equipas"), value: ownerReport.totals.totalTeamPayments },
-    { name: t("ownerReport.netProfit", "Lucro Líquido"), value: ownerReport.totals.totalNetProfit },
-  ] : [];
   
   // Cores para os gráficos
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
   
-  // Encontrar o nome do proprietário selecionado
-  const selectedOwnerName = selectedOwner && owners 
-    ? owners.find(o => o.id === parseInt(selectedOwner))?.name 
-    : "";
+  // Verificar se está carregando os dados
+  const isLoading = isOwnersLoading || isReportLoading;
   
   return (
     <div className="container mx-auto py-6">
@@ -273,12 +144,10 @@ export default function OwnerReportPage() {
             <label className="text-sm font-medium mb-1 block">
               {t("ownerReport.period", "Período")}
             </label>
-            <div className="flex items-center border rounded-md p-2">
-              <Calendar className="mr-2 h-4 w-4 opacity-50" />
-              <span className="text-sm">
-                {format(parseISO(dateRange.startDate), "dd/MM/yyyy")} - {format(parseISO(dateRange.endDate), "dd/MM/yyyy")}
-              </span>
-            </div>
+            <DateRangePicker 
+              value={dateRange} 
+              onChange={handleDateRangeChange} 
+            />
           </div>
         </CardContent>
       </Card>
@@ -295,7 +164,7 @@ export default function OwnerReportPage() {
         <>
           <div className="mb-6">
             <h2 className="text-xl font-semibold mb-2">
-              {t("ownerReport.reportForOwner", "Relatório para {{owner}}", { owner: selectedOwnerName })}
+              {t("ownerReport.reportForOwner", "Relatório para {{owner}}", { owner: ownerReport.ownerName })}
             </h2>
             <p className="text-muted-foreground">
               {t("ownerReport.periodDetails", "Período: {{startDate}} a {{endDate}}", {
