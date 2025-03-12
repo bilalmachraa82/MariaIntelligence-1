@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,25 +8,36 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 export default function SettingsPage() {
   const [_, navigate] = useLocation();
+  const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [smsNotifications, setSmsNotifications] = useState(false);
   const [mistralApiKey, setMistralApiKey] = useState("");
+  const [currentLanguage, setCurrentLanguage] = useState(i18n.language || "pt-PT");
+
+  useEffect(() => {
+    // Tenta inicialmente recuperar a chave API do local storage
+    const storedKey = localStorage.getItem("MISTRAL_API_KEY");
+    if (storedKey) {
+      setMistralApiKey(storedKey);
+    }
+  }, []);
 
   const handleSaveGeneral = () => {
     toast({
-      title: "Configurações salvas",
-      description: "Suas preferências gerais foram atualizadas.",
+      title: t("settings.general.saveSuccess"),
+      description: t("settings.general.saveSuccessDesc"),
     });
   };
 
   const handleSaveNotifications = () => {
     toast({
-      title: "Notificações atualizadas",
-      description: "Suas preferências de notificação foram atualizadas.",
+      title: t("settings.notifications.saveSuccess"),
+      description: t("settings.notifications.saveSuccessDesc"),
     });
   };
 
@@ -34,16 +45,29 @@ export default function SettingsPage() {
     if (mistralApiKey.trim()) {
       localStorage.setItem("MISTRAL_API_KEY", mistralApiKey);
       toast({
-        title: "Chave API salva",
-        description: "Sua chave da API Mistral foi salva com sucesso.",
+        title: t("settings.integrations.mistralAI.saveSuccess"),
+        description: t("settings.integrations.mistralAI.saveSuccessDesc"),
       });
     } else {
       toast({
-        title: "Erro ao salvar chave",
-        description: "Por favor insira uma chave API válida.",
+        title: t("settings.integrations.mistralAI.saveError"),
+        description: t("settings.integrations.mistralAI.saveErrorDesc"),
         variant: "destructive",
       });
     }
+  };
+
+  const changeLanguage = (lang: string) => {
+    i18n.changeLanguage(lang);
+    setCurrentLanguage(lang);
+    
+    // Salva a preferência de idioma no localStorage
+    localStorage.setItem("i18nextLng", lang);
+    
+    toast({
+      title: t("settings.language.changeSuccess"),
+      description: t("settings.language.changeSuccessDesc"),
+    });
   };
 
   return (
@@ -53,16 +77,16 @@ export default function SettingsPage() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/")}
           >
             <ArrowLeft className="h-4 w-4 mr-1" />
-            Voltar
+            {t("common.back")}
           </Button>
-          <h2 className="text-2xl font-bold">Configurações</h2>
+          <h2 className="text-2xl font-bold">{t("settings.title")}</h2>
         </div>
         <Button variant="outline" size="sm" onClick={() => window.open("https://mariatoolbox.com/docs", "_blank")}>
           <HelpCircle className="h-4 w-4 mr-1" />
-          Ajuda
+          {t("common.help")}
         </Button>
       </div>
 
@@ -70,45 +94,37 @@ export default function SettingsPage() {
         <TabsList>
           <TabsTrigger value="general">
             <Settings className="h-4 w-4 mr-1" />
-            Geral
+            {t("settings.tabs.general")}
           </TabsTrigger>
           <TabsTrigger value="notifications">
             <BellRing className="h-4 w-4 mr-1" />
-            Notificações
+            {t("settings.tabs.notifications")}
           </TabsTrigger>
           <TabsTrigger value="account">
             <User className="h-4 w-4 mr-1" />
-            Conta
+            {t("settings.tabs.account")}
+          </TabsTrigger>
+          <TabsTrigger value="language">
+            <Globe className="h-4 w-4 mr-1" />
+            {t("settings.tabs.language")}
           </TabsTrigger>
           <TabsTrigger value="api">
             <Key className="h-4 w-4 mr-1" />
-            API
+            {t("settings.tabs.integrations")}
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Preferências Gerais</CardTitle>
+              <CardTitle>{t("settings.general.title")}</CardTitle>
               <CardDescription>
-                Gerencie suas preferências gerais do sistema
+                {t("settings.general.description")}
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4">              
               <div className="space-y-2">
-                <Label htmlFor="language">Idioma</Label>
-                <select
-                  id="language"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  <option value="pt-BR">Português (Brasil)</option>
-                  <option value="en-US">English (US)</option>
-                  <option value="es">Español</option>
-                </select>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="timezone">Fuso Horário</Label>
+                <Label htmlFor="timezone">{t("settings.general.timezone")}</Label>
                 <select
                   id="timezone"
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -122,10 +138,10 @@ export default function SettingsPage() {
               
               <div className="flex items-center space-x-2">
                 <Switch id="dark-mode" />
-                <Label htmlFor="dark-mode">Modo Escuro</Label>
+                <Label htmlFor="dark-mode">{t("settings.general.darkMode")}</Label>
               </div>
               
-              <Button onClick={handleSaveGeneral}>Salvar Preferências</Button>
+              <Button onClick={handleSaveGeneral}>{t("common.save")}</Button>
             </CardContent>
           </Card>
         </TabsContent>
@@ -133,18 +149,18 @@ export default function SettingsPage() {
         <TabsContent value="notifications" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Notificações</CardTitle>
+              <CardTitle>{t("settings.notifications.title")}</CardTitle>
               <CardDescription>
-                Configure como você deseja receber notificações do sistema
+                {t("settings.notifications.description")}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium">Notificações por E-mail</p>
+                    <p className="font-medium">{t("settings.notifications.email")}</p>
                     <p className="text-sm text-muted-foreground">
-                      Receba notificações sobre reservas e eventos via e-mail
+                      {t("settings.notifications.emailDescription")}
                     </p>
                   </div>
                   <Switch 
@@ -158,24 +174,24 @@ export default function SettingsPage() {
                   <div className="ml-6 space-y-2">
                     <div className="flex items-center space-x-2">
                       <input type="checkbox" id="email-reservations" defaultChecked className="rounded" />
-                      <Label htmlFor="email-reservations">Novas Reservas</Label>
+                      <Label htmlFor="email-reservations">{t("settings.notifications.newReservation")}</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <input type="checkbox" id="email-cancellations" defaultChecked className="rounded" />
-                      <Label htmlFor="email-cancellations">Cancelamentos</Label>
+                      <Label htmlFor="email-cancellations">{t("settings.notifications.cancelledReservation")}</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <input type="checkbox" id="email-reports" defaultChecked className="rounded" />
-                      <Label htmlFor="email-reports">Relatórios Semanais</Label>
+                      <Label htmlFor="email-reports">{t("settings.notifications.weeklyReports")}</Label>
                     </div>
                   </div>
                 )}
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium">Notificações por SMS</p>
+                    <p className="font-medium">{t("settings.notifications.sms")}</p>
                     <p className="text-sm text-muted-foreground">
-                      Receba notificações importantes por SMS
+                      {t("settings.notifications.smsDescription")}
                     </p>
                   </div>
                   <Switch 
@@ -189,17 +205,17 @@ export default function SettingsPage() {
                   <div className="ml-6 space-y-2">
                     <div className="flex items-center space-x-2">
                       <input type="checkbox" id="sms-reservations" defaultChecked className="rounded" />
-                      <Label htmlFor="sms-reservations">Novas Reservas</Label>
+                      <Label htmlFor="sms-reservations">{t("settings.notifications.newReservation")}</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <input type="checkbox" id="sms-cancellations" defaultChecked className="rounded" />
-                      <Label htmlFor="sms-cancellations">Cancelamentos</Label>
+                      <Label htmlFor="sms-cancellations">{t("settings.notifications.cancelledReservation")}</Label>
                     </div>
                   </div>
                 )}
               </div>
               
-              <Button onClick={handleSaveNotifications}>Salvar Preferências</Button>
+              <Button onClick={handleSaveNotifications}>{t("common.save")}</Button>
             </CardContent>
           </Card>
         </TabsContent>
@@ -207,36 +223,110 @@ export default function SettingsPage() {
         <TabsContent value="account" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Informações da Conta</CardTitle>
+              <CardTitle>{t("settings.account.title")}</CardTitle>
               <CardDescription>
-                Atualize suas informações pessoais e de contato
+                {t("settings.account.description")}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="full-name">Nome Completo</Label>
+                  <Label htmlFor="full-name">{t("settings.account.name")}</Label>
                   <Input id="full-name" defaultValue="Maria Silva" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">E-mail</Label>
+                  <Label htmlFor="email">{t("common.email")}</Label>
                   <Input id="email" type="email" defaultValue="maria@mariatoolbox.com" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Telefone</Label>
+                  <Label htmlFor="phone">{t("common.phone")}</Label>
                   <Input id="phone" type="tel" defaultValue="+55 11 9xxxx-xxxx" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="company">Empresa</Label>
+                  <Label htmlFor="company">{t("common.company")}</Label>
                   <Input id="company" defaultValue="Maria Faz Gerenciamento" />
                 </div>
               </div>
               
               <div className="pt-4">
-                <Button variant="outline" className="w-full">Alterar Senha</Button>
+                <Button variant="outline" className="w-full">{t("settings.account.changePassword")}</Button>
               </div>
               
-              <Button className="w-full">Salvar Alterações</Button>
+              <Button className="w-full">{t("common.save")}</Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="language" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("settings.language.title")}</CardTitle>
+              <CardDescription>
+                {t("settings.language.selectLanguage")}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card 
+                  className={`cursor-pointer hover:border-primary ${currentLanguage === 'pt-PT' ? 'border-primary bg-primary-50' : ''}`}
+                  onClick={() => changeLanguage('pt-PT')}
+                >
+                  <CardContent className="pt-6 flex items-center">
+                    <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 mr-4 bg-gray-100 flex items-center justify-center">
+                      🇵🇹
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Português (Portugal)</h3>
+                      <p className="text-sm text-muted-foreground">Português (PT)</p>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card 
+                  className={`cursor-pointer hover:border-primary ${currentLanguage === 'en-US' ? 'border-primary bg-primary-50' : ''}`}
+                  onClick={() => changeLanguage('en-US')}
+                >
+                  <CardContent className="pt-6 flex items-center">
+                    <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 mr-4 bg-gray-100 flex items-center justify-center">
+                      🇺🇸
+                    </div>
+                    <div>
+                      <h3 className="font-medium">English (US)</h3>
+                      <p className="text-sm text-muted-foreground">English (US)</p>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card 
+                  className={`cursor-pointer hover:border-primary ${currentLanguage === 'fr-FR' ? 'border-primary bg-primary-50' : ''}`}
+                  onClick={() => changeLanguage('fr-FR')}
+                >
+                  <CardContent className="pt-6 flex items-center">
+                    <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 mr-4 bg-gray-100 flex items-center justify-center">
+                      🇫🇷
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Français (France)</h3>
+                      <p className="text-sm text-muted-foreground">Français (FR)</p>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card 
+                  className={`cursor-pointer hover:border-primary ${currentLanguage === 'es-ES' ? 'border-primary bg-primary-50' : ''}`}
+                  onClick={() => changeLanguage('es-ES')}
+                >
+                  <CardContent className="pt-6 flex items-center">
+                    <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 mr-4 bg-gray-100 flex items-center justify-center">
+                      🇪🇸
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Español (España)</h3>
+                      <p className="text-sm text-muted-foreground">Español (ES)</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -244,27 +334,27 @@ export default function SettingsPage() {
         <TabsContent value="api" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Configurações de API</CardTitle>
+              <CardTitle>{t("settings.integrations.title")}</CardTitle>
               <CardDescription>
-                Configure suas integrações com APIs externas
+                {t("settings.integrations.description")}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="mistral-api">Chave da API Mistral</Label>
+                <Label htmlFor="mistral-api">{t("settings.integrations.mistralAI.apiKey")}</Label>
                 <Input 
                   id="mistral-api" 
                   type="password" 
-                  placeholder="Insira sua chave da API Mistral"
+                  placeholder={t("settings.integrations.mistralAI.apiKeyPlaceholder")}
                   value={mistralApiKey}
                   onChange={(e) => setMistralApiKey(e.target.value)}
                 />
                 <p className="text-xs text-muted-foreground mt-1">
-                  Usada para processamento de OCR em documentos. <a href="https://mistral.ai/api/" className="text-primary underline" target="_blank" rel="noopener noreferrer">Obtenha uma chave aqui</a>.
+                  {t("settings.integrations.mistralAI.description")} <a href="https://mistral.ai/api/" className="text-primary underline" target="_blank" rel="noopener noreferrer">{t("settings.integrations.mistralAI.getApiKey")}</a>.
                 </p>
               </div>
               
-              <Button onClick={handleSaveAPI}>Salvar Chave API</Button>
+              <Button onClick={handleSaveAPI}>{t("settings.integrations.mistralAI.save")}</Button>
             </CardContent>
           </Card>
         </TabsContent>

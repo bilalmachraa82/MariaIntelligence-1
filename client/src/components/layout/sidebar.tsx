@@ -7,9 +7,11 @@ import {
   CalendarDays, 
   Users, 
   BarChart3, 
-  Settings 
+  Settings,
+  Bot 
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useTranslation } from "react-i18next";
 
 interface SidebarProps {
   className?: string;
@@ -17,39 +19,55 @@ interface SidebarProps {
 
 export function Sidebar({ className }: SidebarProps) {
   const [location] = useLocation();
+  const { t, i18n } = useTranslation();
+  const isPortuguese = i18n.language?.startsWith("pt");
 
+  // Links dinâmicos baseados no idioma
   const links = [
     {
-      title: "Dashboard",
-      href: "/",
+      title: t("navigation.dashboard"),
+      href: isPortuguese ? "/painel" : "/dashboard",
+      altHref: "/", // Ambos redirecionam para a mesma página
       icon: Home,
     },
     {
-      title: "Propriedades",
-      href: "/properties",
+      title: t("navigation.properties"),
+      href: isPortuguese ? "/propriedades" : "/properties",
       icon: Building2,
     },
     {
-      title: "Reservas",
-      href: "/reservations",
+      title: t("navigation.reservations"),
+      href: isPortuguese ? "/reservas" : "/reservations",
       icon: CalendarDays,
     },
     {
-      title: "Proprietários",
-      href: "/owners",
+      title: t("navigation.owners"),
+      href: isPortuguese ? "/proprietarios" : "/owners",
       icon: Users,
     },
     {
-      title: "Relatórios",
-      href: "/reports",
+      title: t("navigation.reports"),
+      href: isPortuguese ? "/relatorios" : "/reports",
       icon: BarChart3,
     },
     {
-      title: "Configurações",
-      href: "/settings",
+      title: t("navigation.aiAssistant"),
+      href: isPortuguese ? "/assistente" : "/assistant",
+      icon: Bot,
+    },
+    {
+      title: t("navigation.settings"),
+      href: isPortuguese ? "/configuracoes" : "/settings",
       icon: Settings,
     },
   ];
+
+  // Determina se um link está ativo (considerando também rotas alternativas)
+  const isLinkActive = (linkHref: string, altHref?: string) => {
+    if (location === linkHref) return true;
+    if (altHref && location === altHref) return true;
+    return false;
+  };
 
   return (
     <aside
@@ -69,7 +87,7 @@ export function Sidebar({ className }: SidebarProps) {
               <a
                 className={cn(
                   "flex items-center px-4 py-2 text-sm font-medium rounded-md group",
-                  location === link.href
+                  isLinkActive(link.href, link.altHref)
                     ? "bg-primary-50 text-primary-700"
                     : "text-secondary-700 hover:bg-secondary-100"
                 )}
