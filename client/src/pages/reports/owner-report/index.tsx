@@ -8,11 +8,12 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   PieChart, Pie, Cell
 } from "recharts";
-import { DateRange } from "@/components/ui/date-range-picker";
+import { DateRangePicker, DateRange } from "@/components/ui/date-range-picker";
 import { format, addDays, parseISO } from "date-fns";
-import { Download, Calendar, Euro, Home, Users } from "lucide-react";
+import { Download, Calendar, Euro, Home, Users, Percent, CreditCard, FileText } from "lucide-react";
 import { useOwners } from "@/hooks/use-owners";
-import { calculateNetAmount, formatCurrency } from "@/lib/utils";
+import { useOwnerReport } from "@/hooks/use-owner-report";
+import { formatCurrency, formatDate } from "@/lib/utils";
 
 interface OwnerReport {
   ownerId: number;
