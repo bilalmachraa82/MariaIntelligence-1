@@ -1,27 +1,61 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Bot, MessageSquare, Clock, ArrowDown } from "lucide-react";
+import { Send, Bot, MessageSquare, Clock, ArrowDown, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
-// Componente de página do assistente IA (placeholder para integração futura com Mistral AI)
+// Interface para as mensagens
+interface Message {
+  role: "user" | "assistant";
+  content: string;
+  timestamp: Date;
+}
+
+const MISTRAL_API_ENDPOINT = "https://api.mistral.ai/v1/chat/completions";
+
+// Componente de página do assistente IA com integração Mistral
 export default function AssistantPage() {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [messages, setMessages] = useState<{ role: "user" | "assistant"; content: string; timestamp: Date }[]>([
+  const [messages, setMessages] = useState<Message[]>([
     { 
       role: "assistant", 
       content: t("aiAssistant.welcomeMessage", "Olá! Sou o assistente da Maria Faz. Em que posso ajudar hoje?"), 
       timestamp: new Date() 
     }
   ]);
+  const [hasMistralKey, setHasMistralKey] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
-  // Função simulada para enviar mensagem ao assistente
+  // Verificar se a chave da API está disponível
+  useEffect(() => {
+    const checkApiKey = async () => {
+      try {
+        const response = await apiRequest<{ available: boolean }>("/api/check-mistral-key");
+        setHasMistralKey(response.available);
+      } catch (error) {
+        console.error("Erro ao verificar a chave da API Mistral:", error);
+        setHasMistralKey(false);
+      }
+    };
+    
+    checkApiKey();
+  }, []);
+
+  // Rolar para a última mensagem quando novas mensagens são adicionadas
+  useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
+  // Função para enviar mensagem ao assistente com Mistral AI
   const sendMessage = async () => {
     if (!message.trim()) return;
     
@@ -31,16 +65,57 @@ export default function AssistantPage() {
     setIsLoading(true);
     setMessage("");
     
-    // Simula resposta do assistente (no futuro, será integrado com Mistral AI)
-    setTimeout(() => {
+    try {
+      // Se não tiver a chave da API, use uma mensagem padrão
+      if (!hasMistralKey) {
+        setTimeout(() => {
+          const assistantMessage = { 
+            role: "assistant" as const, 
+            content: t("aiAssistant.noApiKeyMessage", "Para usar todas as funcionalidades do assistente, por favor configure a chave da API Mistral nas configurações."), 
+            timestamp: new Date() 
+          };
+          setMessages(prev => [...prev, assistantMessage]);
+          setIsLoading(false);
+        }, 1000);
+        return;
+      }
+      
+      // Se tiver a chave, envie a solicitação para a API
+      const response = await apiRequest<{ reply: string }>("/api/assistant", {
+        method: "POST",
+        body: JSON.stringify({
+          message: message,
+          history: messages.map(msg => ({
+            role: msg.role,
+            content: msg.content
+          }))
+        })
+      });
+      
       const assistantMessage = { 
         role: "assistant" as const, 
-        content: t("aiAssistant.comingSoonMessage", "Estou em desenvolvimento! Em breve poderei responder suas perguntas usando a API Mistral."), 
+        content: response.reply || t("aiAssistant.errorMessage", "Desculpe, não consegui processar sua solicitação."), 
         timestamp: new Date() 
       };
+      
       setMessages(prev => [...prev, assistantMessage]);
+    } catch (error) {
+      console.error("Erro ao processar a mensagem com Mistral AI:", error);
+      toast({
+        title: t("aiAssistant.error", "Erro"),
+        description: t("aiAssistant.errorDescription", "Não foi possível conectar ao assistente. Tente novamente."),
+        variant: "destructive"
+      });
+      
+      const errorMessage = { 
+        role: "assistant" as const, 
+        content: t("aiAssistant.errorMessage", "Desculpe, encontrei um problema. Tente novamente mais tarde."), 
+        timestamp: new Date() 
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   // Exemplo de sugestões rápidas para o usuário
