@@ -46,6 +46,11 @@ export function Sidebar({ className }: SidebarProps) {
       icon: Users,
     },
     {
+      title: t("navigation.cleaningTeams"),
+      href: isPortuguese ? "/equipas-limpeza" : "/cleaning-teams",
+      icon: Users,
+    },
+    {
       title: t("navigation.reports"),
       href: isPortuguese ? "/relatorios" : "/reports",
       icon: BarChart3,

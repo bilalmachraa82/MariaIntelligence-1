@@ -1,0 +1,69 @@
+1. Relatório Financeiro por Proprietário
+Prompt:
+
+"Gerar Relatório Financeiro para o proprietário [Nome do Proprietário] no período de [Data de Início] a [Data de Fim].
+Incluir:
+
+Receita Total das reservas,
+Custos de Limpeza,
+Taxa de Check-in,
+Comissão (quando aplicável),
+Pagamento às Equipas,
+Ganho Líquido resultante (Receita - Custos).
+Taxa de Ocupação (dias reservados / dias disponíveis).
+Finalizar com uma visualização resumida e a opção de exportar para PDF ou Excel."
+Objetivo:
+
+Gera um relatório focado somente em um proprietário específico, mostrando todos os detalhes financeiros, custos e ganho líquido do período solicitado.
+Ideal para enviar para o dono do imóvel, para que ele veja quanto recebeu, quais foram os custos descontados, e a taxa de ocupação.
+2. Relatório Financeiro Geral (para você, “Maria Faz”)
+Prompt:
+
+"Gerar Relatório Financeiro Geral de [Data de Início] a [Data de Fim], consolidando todas as propriedades.
+Incluir:
+
+Receita Total (somatória de todas as reservas),
+Custos (limpeza, taxas de check-in, comissões, pagamento às equipas, custos fixos se houver),
+Lucro ou Ganho Líquido global da Maria Faz,
+Tabela comparativa de desempenho por propriedade (receita vs. custos),
+Métricas de ocupação média.
+Permitir exportação do relatório em PDF ou Excel."
+Objetivo:
+
+Oferece uma visão consolidada de todos os imóveis sob gestão, permitindo avaliar a performance global do período, identificar quais propriedades geram mais lucro e medir a ocupação média.
+3. Relatório Operacional
+Prompt:
+
+"Gerar Relatório Operacional para o período de [Data de Início] a [Data de Fim], focado em:
+
+Lista de check-ins e check-outs agendados, com datas e horários,
+Limpezas programadas, status (pendente, concluída, em andamento),
+Alerta de eventuais atrasos ou conflitos de agenda.
+Finalizar com métricas operacionais, como número total de check-ins concluídos e limpezas realizadas no período."
+Objetivo:
+
+Permite ao time operacional (ou você, como gestor) ter uma visão clara das atividades práticas do dia a dia — quais check-ins precisam ser realizados, quem está cuidando das limpezas, e se há algum atraso ou conflito a gerenciar.
+4. Relatório de Pagamentos às Equipas de Limpeza
+Prompt:
+
+"Gerar Relatório de Pagamentos das Equipas de Limpeza no período de [Data de Início] a [Data de Fim].
+Incluir:
+
+Listagem das limpezas realizadas (com data, propriedade e valor devido),
+Valor total a pagar a cada equipa,
+Status de pagamento (pendente ou efetuado),
+Datas de vencimento ou prazo para pagamento.
+Adicionar gráficos ou tabelas que mostrem rapidamente quais equipas já receberam e quais ainda têm pagamentos pendentes, e permitir exportar em PDF/Excel."
+Objetivo:
+
+Centraliza e documenta todo o fluxo de pagamentos às equipas de limpeza. Facilita a conferência de quanto cada equipa deve receber, o que já foi pago e o que está pendente, bem como datas de vencimento.
+Como Usar Estes Prompts
+Em um Chatbot/Assistente Interno: O usuário (administrador ou responsável) pode simplesmente digitar o prompt no chatbot do sistema. A IA então gera o relatório com base nas informações do banco de dados.
+Em uma Tela de Relatórios: Cada prompt pode ser “disfarçado” como um botão ou formulário (ex.: “Gerar Relatório Financeiro do Proprietário”) onde o usuário seleciona o nome do proprietário e período desejado. O sistema, então, monta o prompt internamente e produz o relatório.
+Personalização de Parâmetros: Substituir [Data de Início], [Data de Fim], [Nome do Proprietário] etc. pelos valores reais que o utilizador fornecer na aplicação.
+Desta forma, você cobre todas as necessidades de geração de relatórios:
+
+Financeiros por proprietário,
+Financeiro geral para a “Maria Faz”,
+Operacional de check-ins/limpezas,
+Pagamentos às equipas de limpeza.

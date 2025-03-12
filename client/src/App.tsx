@@ -33,6 +33,10 @@ function Router() {
       <Route path="/reservations" component={ReservationsPage} />
       <Route path="/reservations/:id" component={ReservationDetailPage} />
       <Route path="/reservations/new" component={ReservationNewPage} />
+      <Route path="/cleaning-teams" component={() => <div>Cleaning Teams (Coming Soon)</div>} />
+      <Route path="/cleaning-teams/:id" component={() => <div>Cleaning Team Details (Coming Soon)</div>} />
+      <Route path="/cleaning-teams/new" component={() => <div>New Cleaning Team (Coming Soon)</div>} />
+      <Route path="/cleaning-reports" component={() => <div>Cleaning Reports (Coming Soon)</div>} />
       <Route path="/reports" component={ReportsPage} />
       <Route path="/settings" component={SettingsPage} />
       <Route path="/assistant" component={() => <div>AI Assistant (Coming Soon)</div>} />
@@ -48,6 +52,10 @@ function Router() {
       <Route path="/reservas" component={ReservationsPage} />
       <Route path="/reservas/:id" component={ReservationDetailPage} />
       <Route path="/reservas/nova" component={ReservationNewPage} />
+      <Route path="/equipas-limpeza" component={() => <div>Equipas de Limpeza (Em breve)</div>} />
+      <Route path="/equipas-limpeza/:id" component={() => <div>Detalhes da Equipa de Limpeza (Em breve)</div>} />
+      <Route path="/equipas-limpeza/nova" component={() => <div>Nova Equipa de Limpeza (Em breve)</div>} />
+      <Route path="/relatorios-limpeza" component={() => <div>Relatórios de Limpeza (Em breve)</div>} />
       <Route path="/relatorios" component={ReportsPage} />
       <Route path="/configuracoes" component={SettingsPage} />
       <Route path="/assistente" component={() => <div>Assistente IA (Em breve)</div>} />
