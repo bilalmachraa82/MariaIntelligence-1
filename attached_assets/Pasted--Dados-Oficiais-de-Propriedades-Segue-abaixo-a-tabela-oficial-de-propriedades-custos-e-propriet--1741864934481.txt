@@ -1,0 +1,824 @@
+. Dados Oficiais de Propriedades
+
+(Segue abaixo a tabela oficial de propriedades, custos e proprietários. Não inventar nem alterar.)
+
+Local
+
+Custo Limpeza (€)
+
+Taxa Check-in (€)
+
+Comissão (%)
+
+Pagamento Equipa (€)
+
+Equipa Limpeza
+
+Proprietário
+
+Custo Fixo Mensal
+
+Ajuda
+
+45
+
+0
+
+0%
+
+45
+
+Maria faz
+
+Gabriela
+
+(vazio ou 0)
+
+Almada rei
+
+55
+
+0
+
+0%
+
+45
+
+cristina
+
+innkeeper
+
+(vazio ou 0)
+
+Aroeira 3
+
+50
+
+0
+
+0%
+
+50
+
+Maria faz
+
+Lydia
+
+(vazio ou 0)
+
+Aroeira 4
+
+45
+
+0
+
+0%
+
+45
+
+Maria faz
+
+Cláudia
+
+(vazio ou 0)
+
+Barcos (Check-in)
+
+55
+
+15
+
+0%
+
+70
+
+Maria faz
+
+innkeeper
+
+(vazio ou 0)
+
+Bernardo
+
+65
+
+15
+
+0%
+
+55
+
+cristina
+
+innkeeper
+
+(vazio ou 0)
+
+Costa cabanas
+
+55
+
+0
+
+0%
+
+45
+
+Primavera
+
+Mariana
+
+(vazio ou 0)
+
+Cristo Rei
+
+45
+
+0
+
+0%
+
+40
+
+cristina
+
+Gabriela
+
+(vazio ou 0)
+
+Ericeira nova
+
+45
+
+15
+
+0%
+
+60
+
+Maria faz
+
+José
+
+(vazio ou 0)
+
+Gomeira
+
+55
+
+0
+
+0%
+
+45
+
+Primavera
+
+Mariana
+
+(vazio ou 0)
+
+João Batista
+
+65
+
+0
+
+0%
+
+55
+
+cristina
+
+innkeeper
+
+(vazio ou 0)
+
+Magoito anexo
+
+90
+
+0
+
+0%
+
+90
+
+maria faz
+
+Hélia
+
+(vazio ou 0)
+
+Magoito vivenda
+
+90
+
+0
+
+0%
+
+90
+
+Maria faz
+
+Hélia
+
+(vazio ou 0)
+
+Montemor
+
+65
+
+0
+
+20%
+
+55
+
+Maria joão
+
+José Gustavo
+
+(vazio ou 0)
+
+Nazaré T2
+
+55
+
+0
+
+0%
+
+50
+
+Home deluxe
+
+innkeeper
+
+(vazio ou 0)
+
+Palmela
+
+45
+
+0
+
+0%
+
+35
+
+Cristina
+
+Gabriela
+
+(vazio ou 0)
+
+Reboleira
+
+55
+
+0
+
+0%
+
+55
+
+Maria faz
+
+maria ines
+
+(vazio ou 0)
+
+Silves
+
+65
+
+0
+
+0%
+
+55
+
+Primavera
+
+Filipe
+
+(vazio ou 0)
+
+Sé
+
+65
+
+0
+
+0%
+
+65
+
+Maria faz
+
+maria lorena
+
+(vazio ou 0)
+
+Trafaria 1ª
+
+65
+
+0
+
+0%
+
+45
+
+cristina
+
+Filipe
+
+(vazio ou 0)
+
+Trafaria RC
+
+65
+
+0
+
+0%
+
+45
+
+cristina
+
+Filipe
+
+(vazio ou 0)
+
+Tróia
+
+55
+
+0
+
+20%
+
+45
+
+Setubal
+
+Francisco
+
+(vazio ou 0)
+
+Óbidos
+
+90
+
+0
+
+0%
+
+85
+
+Home deluxe
+
+innkeeper
+
+(vazio ou 0)
+
+Setubal
+
+55
+
+0
+
+0%
+
+45
+
+cristina
+
+Gabriela
+
+(vazio ou 0)
+
+Costa blue
+
+55
+
+0
+
+0%
+
+50
+
+cristina
+
+Ana costa
+
+(vazio ou 0)
+
+Tropical
+
+65
+
+0
+
+0%
+
+60
+
+Home deluxe
+
+sandra
+
+(vazio ou 0)
+
+Praia chic
+
+55
+
+0
+
+0%
+
+55
+
+Home deluxe
+
+sandra
+
+(vazio ou 0)
+
+Maresia
+
+55
+
+0
+
+0%
+
+55
+
+Home deluxe
+
+sandra
+
+(vazio ou 0)
+
+Escandinavo
+
+65
+
+0
+
+0%
+
+60
+
+Home deluxe
+
+sandra
+
+(vazio ou 0)
+
+Aroeira 1
+
+0
+
+0
+
+0
+
+0
+
+Maria faz
+
+Ana Tomaz
+
+75
+
+Aroeira2
+
+0
+
+0
+
+0
+
+0
+
+Maria faz
+
+Ana Tomaz
+
+75
+
+Graça
+
+0
+
+0
+
+0
+
+0
+
+Maria faz
+
+Ana Tomaz
+
+75
+
+Sete Rios
+
+0
+
+0
+
+0
+
+0
+
+Maria faz
+
+Ana Tomaz
+
+75
+
+Filipe da mata
+
+0
+
+0
+
+0
+
+0
+
+Maria faz
+
+Ana Tomaz
+
+75
+
+05-Oct
+
+0
+
+0
+
+0
+
+0
+
+Maria faz
+
+Ana Tomaz
+
+75
+
+3. Lista de Proprietários
+
+(Manter inalterada, usar como base para o cadastro de proprietários.)
+
+Nome
+
+Empresa
+
+Morada
+
+Contribuinte
+
+Email
+
+Telemóvel
+
+José Gustavo
+
+José Gustavo
+
+rua curvo semendo, 37 - Montemor o novo
+
+(vazio ou 0)
+
+(vazio ou não fornecido)
+
+(vazio)
+
+Hélia
+
+BRIGHT JOBS UNIPESSOAL LDA
+
+AVENIDA PROF DR AUGUSTO ABREU LOPES EDIF 1 BLOCO B 5 C, ODIVELAS
+
+514487097
+
+(vazio ou não fornecido)
+
+(vazio)
+
+Filipe villas boas
+
+Vanguardpriority Unipessoal Lda
+
+Lisboa
+
+514537027
+
+vanguardpriority@gmail.com
+
+(vazio)
+
+Maria Lorena
+
+pessoal
+
+(vazio ou não fornecido)
+
+(vazio ou 0)
+
+(vazio ou não fornecido)
+
+(vazio)
+
+innkeeper
+
+Criterion Legacy Unipessoal LDA
+
+Lisboa
+
+514887869
+
+miguel@innkeeper.pt
+
+(vazio)
+
+Maria Ines
+
+IMAGINARY AVENUE - LDA
+
+RUA DA REPUBLICA DA GUINE BISSAU N 1 3 E, AMADORA
+
+517107341
+
+(vazio ou não fornecido)
+
+(vazio)
+
+Ana Robalo
+
+Ana Teresa Robalo Arquitetura unipessoal Lda
+
+Av. Guerra Junqueiro n9, 4ºdt, lisboa
+
+514279141
+
+anatrobalo@gmail.com
+
+(vazio)
+
+Cláudia
+
+pessoal
+
+(vazio ou não fornecido)
+
+(vazio or 0)
+
+(vazio ou não fornecido)
+
+(vazio)
+
+José
+
+pessoal
+
+(vazio ou não fornecido)
+
+(vazio or 0)
+
+(vazio ou não fornecido)
+
+(vazio)
+
+Gabriela
+
+Tribunadomus, Lda
+
+(vazio ou não fornecido)
+
+507764277
+
+tribunadomus@gmail.com
+
+(vazio)
+
+lydia
+
+pessoal
+
+(vazio ou não fornecido)
+
+(vazio or 0)
+
+(vazio ou não fornecido)
+
+(vazio)
+
+Ana Tomaz
+
+contrato
+
+(vazio ou não fornecido)
+
+(vazio or 0)
+
+(vazio ou não fornecido)
+
+(vazio)
+
+Francisco
+
+FCO Living, lda
+
+(vazio ou não fornecido)
+
+516298968
+
+couto_francisco@hotmail.com
+
+(vazio)
+
+Sandra
+
+TRIUMPH CHIMERA LDA
+
+RUA FRANCISCO FRANCO N 30B BAIRRO DAS MORENAS
+
+515942022
+
+sandrar@triumphinc.ca
+
+(vazio)
+
+Mariana
+
+Mariana Arga Lima lda
+
+Rua Álvaro Pedro Gomes, 12 4D, Sacavem
+
+514759232
+
+hshgestao@gmail.com
+
+(vazio)
+
+Filipe
+
+pessoal
+
+(vazio ou não fornecido)
+
+(vazio or 0)
+
+(vazio ou não fornecido)
+
+(vazio)
+
+maria ines
+
+pessoal
+
+(vazio ou não fornecido)
+
+(vazio or 0)
+
+(vazio ou não fornecido)
+
+(vazio)
+
+Ana costa
+
+pessoal
+
+(vazio ou não fornecido)
+
+(vazio or 0)
+
+(vazio ou não fornecido)
+
+(vazio)
+
+sandra
+
+pessoal
+
+(vazio ou não fornecido)
+
+(vazio or 0)
+
+(vazio ou não fornecido)
+
+(vazio)
+
