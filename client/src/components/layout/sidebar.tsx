@@ -128,11 +128,11 @@ export function Sidebar({ className }: SidebarProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="fixed top-4 left-4 z-50 bg-white rounded-full shadow-md"
+          className="fixed top-4 left-4 z-50 bg-white dark:bg-gray-800 rounded-full shadow-md"
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle menu"
         >
-          <Menu className="h-5 w-5 text-maria-primary" />
+          <Menu className="h-5 w-5 text-maria-primary dark:text-maria-primary-light" />
         </Button>
       )}
 
@@ -142,22 +142,29 @@ export function Sidebar({ className }: SidebarProps) {
           "transition-all duration-300 ease-in-out",
           isMobile 
             ? cn(
-                "fixed inset-y-0 left-0 z-40 w-72 transform bg-white shadow-lg",
+                "fixed inset-y-0 left-0 z-40 w-72 transform bg-white dark:bg-gray-900 shadow-lg",
                 isOpen ? "translate-x-0" : "-translate-x-full"
               )
-            : "hidden md:flex md:w-64 flex-shrink-0 flex-col bg-white border-r border-secondary-200",
+            : "hidden md:flex md:w-64 flex-shrink-0 flex-col bg-white dark:bg-gray-900 border-r border-secondary-200 dark:border-gray-800",
           className
         )}
       >
-        <div className="flex items-center justify-center h-16 border-b border-secondary-200">
-          <h1 className="text-xl font-semibold text-primary-700">Maria Faz</h1>
+        <div className="flex items-center justify-center h-16 border-b border-secondary-200 dark:border-gray-800">
+          <h1 className="text-xl font-semibold text-primary-700 dark:text-maria-primary">Maria Faz</h1>
+        </div>
+        
+        {/* Frase inspiracional */}
+        <div className="px-4 py-2 text-center">
+          <p className="text-xs italic text-maria-gray dark:text-gray-400">
+            "Limpeza é o primeiro passo para a felicidade." - Marie Kondo
+          </p>
         </div>
 
         <ScrollArea className="flex-grow">
           <nav className="px-3 py-6 space-y-8">
             {/* Seção Principal */}
             <div>
-              <h3 className="px-3 text-xs font-semibold text-maria-gray uppercase tracking-wider">
+              <h3 className="px-3 text-xs font-semibold text-maria-gray dark:text-gray-400 uppercase tracking-wider">
                 {t("navigation.categories.main")}
               </h3>
               <div className="mt-2 space-y-1">
@@ -170,7 +177,7 @@ export function Sidebar({ className }: SidebarProps) {
                             "flex items-center px-3 py-2 text-sm font-medium rounded-md group cursor-pointer transition-all",
                             isLinkActive(link.href, link.altHref)
                               ? "bg-gradient-to-r from-maria-primary-light to-maria-primary text-white"
-                              : "text-maria-dark hover:bg-maria-primary-light hover:bg-opacity-30"
+                              : "text-maria-dark dark:text-white hover:bg-maria-primary-light hover:bg-opacity-30 dark:hover:bg-maria-primary dark:hover:bg-opacity-20"
                           )}
                           onClick={() => handleLinkClick(link.href)}
                         >
@@ -189,7 +196,7 @@ export function Sidebar({ className }: SidebarProps) {
             
             {/* Seção Ferramentas */}
             <div>
-              <h3 className="px-3 text-xs font-semibold text-maria-gray uppercase tracking-wider">
+              <h3 className="px-3 text-xs font-semibold text-maria-gray dark:text-gray-400 uppercase tracking-wider">
                 {t("navigation.categories.tools")}
               </h3>
               <div className="mt-2 space-y-1">
@@ -202,7 +209,7 @@ export function Sidebar({ className }: SidebarProps) {
                             "flex items-center px-3 py-2 text-sm font-medium rounded-md group cursor-pointer transition-all",
                             isLinkActive(link.href, link.altHref)
                               ? "bg-gradient-to-r from-maria-accent-light to-maria-accent text-white"
-                              : "text-maria-dark hover:bg-maria-accent-light hover:bg-opacity-30"
+                              : "text-maria-dark dark:text-white hover:bg-maria-accent-light hover:bg-opacity-30 dark:hover:bg-maria-accent dark:hover:bg-opacity-20"
                           )}
                           onClick={() => handleLinkClick(link.href)}
                         >
@@ -221,7 +228,7 @@ export function Sidebar({ className }: SidebarProps) {
             
             {/* Seção Gestão */}
             <div>
-              <h3 className="px-3 text-xs font-semibold text-maria-gray uppercase tracking-wider">
+              <h3 className="px-3 text-xs font-semibold text-maria-gray dark:text-gray-400 uppercase tracking-wider">
                 {t("navigation.categories.management")}
               </h3>
               <div className="mt-2 space-y-1">
@@ -234,7 +241,7 @@ export function Sidebar({ className }: SidebarProps) {
                             "flex items-center px-3 py-2 text-sm font-medium rounded-md group cursor-pointer transition-all",
                             isLinkActive(link.href, link.altHref)
                               ? "bg-gradient-to-r from-maria-dark-light to-maria-dark text-white"
-                              : "text-maria-dark hover:bg-gray-100"
+                              : "text-maria-dark dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
                           )}
                           onClick={() => handleLinkClick(link.href)}
                         >
@@ -253,7 +260,7 @@ export function Sidebar({ className }: SidebarProps) {
           </nav>
         </ScrollArea>
 
-        <div className="p-4 border-t border-maria-primary-light border-opacity-30">
+        <div className="p-4 border-t border-maria-primary-light border-opacity-30 dark:border-gray-800">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <div className="flex-shrink-0">
@@ -262,8 +269,8 @@ export function Sidebar({ className }: SidebarProps) {
                 </div>
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-maria-dark">Admin</p>
-                <p className="text-xs font-medium text-maria-gray">admin@mariafaz.pt</p>
+                <p className="text-sm font-medium text-maria-dark dark:text-white">Admin</p>
+                <p className="text-xs font-medium text-maria-gray dark:text-gray-400">admin@mariafaz.pt</p>
               </div>
             </div>
             <TooltipProvider>
@@ -272,9 +279,9 @@ export function Sidebar({ className }: SidebarProps) {
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="rounded-full hover:bg-maria-primary hover:bg-opacity-10"
+                    className="rounded-full hover:bg-maria-primary hover:bg-opacity-10 dark:hover:bg-maria-primary dark:hover:bg-opacity-20"
                   >
-                    <LogOut className="h-4 w-4 text-maria-gray" />
+                    <LogOut className="h-4 w-4 text-maria-gray dark:text-gray-400" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="top">
