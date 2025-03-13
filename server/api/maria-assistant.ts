@@ -198,22 +198,53 @@ export async function mariaAssistant(req: Request, res: Response) {
       });
     }
     
-    // Construir contexto RAG com dados atuais do sistema
-    const systemContext = await buildRagContext(message);
+    // Guardar mensagem do utilizador no histórico (ao início para garantir que é guardada)
+    try {
+      await ragService.saveConversationMessage(message, "user");
+    } catch (ragError) {
+      console.warn("Aviso: Não foi possível guardar a mensagem do utilizador no histórico:", ragError);
+      // Continuamos mesmo se falhar
+    }
     
-    // Obter contexto de conversas anteriores usando o serviço RAG
-    const conversationContext = await ragService.buildConversationContext(message);
+    // Variáveis para armazenar os contextos (inicializar com valores padrão)
+    let systemContext = "Sistema em modo de contingência. Dados não disponíveis.";
+    let conversationContext = "Não foi possível recuperar o histórico de conversas.";
     
-    // Configurar cliente Mistral
+    // Construir contexto RAG com dados atuais do sistema (com try/catch para resiliência)
+    try {
+      systemContext = await buildRagContext(message);
+    } catch (contextError) {
+      console.warn("Aviso: Erro ao construir contexto do sistema:", contextError);
+      // Continuar com valor padrão
+    }
+    
+    // Obter contexto de conversas anteriores usando o serviço RAG (com try/catch para resiliência)
+    try {
+      conversationContext = await ragService.buildConversationContext(message);
+    } catch (ragError) {
+      console.warn("Aviso: Erro ao obter contexto de conversas:", ragError);
+      // Continuar com valor padrão
+    }
+    
+    // Configurar cliente Mistral com verificação de chave
     const mistral = new Mistral({
       apiKey: MISTRAL_API_KEY
     });
     
-    // Preparar histórico de chat para contexto
-    const formattedHistory = chatHistory.map((msg: any) => ({
-      role: msg.role,
-      content: msg.content
-    }));
+    // Preparar histórico de chat para contexto com validação de dados
+    const formattedHistory = Array.isArray(chatHistory) 
+      ? chatHistory
+          .filter((msg: any) => msg && typeof msg === 'object' && msg.role && msg.content)
+          .map((msg: any) => ({
+            role: msg.role,
+            content: msg.content
+          }))
+      : [];
+    
+    // Determinar se precisamos usar modelo completo ou otimizado
+    // Para mensagens simples, podemos usar um modelo mais leve e rápido
+    const isSimpleQuery = message.length < 50 && !message.includes('?') && formattedHistory.length < 3;
+    const modelToUse = isSimpleQuery ? "mistral-small-latest" : "mistral-large-latest";
     
     // Construir mensagens para a API incluindo o sistema, contexto RAG e histórico
     const messages = [
@@ -224,27 +255,67 @@ export async function mariaAssistant(req: Request, res: Response) {
       { role: "user", content: message }
     ];
     
-    // Fazer a chamada à API
-    const response = await mistral.chat.complete({
-      model: "mistral-large-latest", // Modelo mais avançado para respostas de qualidade
-      messages: messages,
-      temperature: 0.7, // Equilibrio entre criatividade e consistência
-      maxTokens: 1024 // Resposta detalhada
-    });
+    // Registrar tentativa como atividade (antes da chamada API para garantir o registro)
+    try {
+      await storage.createActivity({
+        type: 'assistant_chat',
+        description: `Chat com assistente virtual: "${message.substring(0, 50)}${message.length > 50 ? '...' : ''}"`,
+        entityType: null,
+        entityId: null
+      });
+    } catch (storageError) {
+      console.warn("Aviso: Não foi possível registrar atividade:", storageError);
+      // Continuamos mesmo se falhar
+    }
     
-    // Extrair e retornar a resposta
-    const reply = response.choices[0]?.message.content || "Não foi possível gerar uma resposta.";
+    // Fazer a chamada à API com tratamento de erro específico
+    let reply = "";
+    try {
+      const response = await mistral.chat.complete({
+        model: modelToUse,
+        messages: messages,
+        temperature: 0.7, // Equilibrio entre criatividade e consistência
+        maxTokens: 1024, // Resposta detalhada 
+        safePrompt: false // Permitir personalidade definida no prompt
+      });
+      
+      // Extrair a resposta
+      reply = response.choices[0]?.message.content || "Não foi possível gerar uma resposta.";
+    } catch (mistralError: any) {
+      console.error("Erro na API Mistral:", mistralError);
+      
+      // Tentar com modelo alternativo se o erro for relacionado ao modelo
+      if (mistralError.message?.includes("model") && modelToUse !== "mistral-small-latest") {
+        try {
+          console.log("Tentando modelo alternativo após falha...");
+          const fallbackResponse = await mistral.chat.complete({
+            model: "mistral-small-latest", // Modelo de fallback
+            messages: [
+              { role: "system", content: MARIA_SYSTEM_PROMPT },
+              { role: "user", content: message }
+            ],
+            temperature: 0.5,
+            maxTokens: 512
+          });
+          
+          reply = fallbackResponse.choices[0]?.message.content || 
+                  "Desculpe, estou com dificuldades técnicas. Por favor, tente novamente em breve.";
+        } catch (fallbackError) {
+          console.error("Erro também no modelo de fallback:", fallbackError);
+          throw mistralError; // Re-lançar o erro original
+        }
+      } else {
+        throw mistralError; // Re-lançar o erro se não for relacionado ao modelo
+      }
+    }
     
     // Salvar a resposta do assistente no histórico de conversas
-    await ragService.saveConversationMessage(reply, "assistant");
-    
-    // Registrar a interação como atividade
-    await storage.createActivity({
-      type: 'assistant_chat',
-      description: `Chat com assistente virtual: "${message.substring(0, 50)}${message.length > 50 ? '...' : ''}"`,
-      entityType: null,
-      entityId: null
-    });
+    try {
+      await ragService.saveConversationMessage(reply, "assistant");
+    } catch (saveError) {
+      console.warn("Aviso: Não foi possível salvar resposta no histórico:", saveError);
+      // Continuamos mesmo se falhar
+    }
     
     return res.json({
       success: true,
@@ -255,10 +326,27 @@ export async function mariaAssistant(req: Request, res: Response) {
     
   } catch (error: any) {
     console.error("Erro ao comunicar com o assistente:", error);
-    return res.status(500).json({
+    
+    // Resposta mais detalhada e amigável
+    let errorMessage = "Ocorreu um erro ao processar seu pedido.";
+    let errorCode = 500;
+    
+    // Personalizar a mensagem baseado no tipo de erro
+    if (error.message?.includes("API key")) {
+      errorMessage = "Chave API inválida ou expirada. Por favor, verifique as configurações.";
+      errorCode = 401;
+    } else if (error.message?.includes("timeout") || error.message?.includes("ECONNREFUSED")) {
+      errorMessage = "Não foi possível conectar ao serviço Mistral. Verifique sua conexão.";
+      errorCode = 503;
+    } else if (error.message?.includes("rate limit")) {
+      errorMessage = "Limite de requisições excedido. Por favor, aguarde alguns segundos e tente novamente.";
+      errorCode = 429;
+    }
+    
+    return res.status(errorCode).json({
       success: false,
-      message: "Ocorreu um erro ao processar o seu pedido. Por favor, tente novamente mais tarde.",
-      error: error.message || "Erro desconhecido"
+      message: errorMessage,
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Erro interno'
     });
   }
 }

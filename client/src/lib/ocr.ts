@@ -61,8 +61,7 @@ export async function uploadAndProcessPDF(file: File): Promise<UploadResponse> {
   });
 
   if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Failed to process PDF: ${errorText}`);
+    throw new Error(`Erro ${response.status}: ${await response.text()}`);
   }
 
   return await response.json();
@@ -73,31 +72,18 @@ export async function uploadAndProcessPDF(file: File): Promise<UploadResponse> {
  * @param data Dados extraídos do PDF
  */
 export async function createReservationFromExtractedData(data: ExtractedData) {
-  const reservationData = {
-    propertyId: data.propertyId,
-    guestName: data.guestName,
-    guestEmail: data.guestEmail,
-    guestPhone: data.guestPhone,
-    checkInDate: data.checkInDate,
-    checkOutDate: data.checkOutDate,
-    numGuests: data.numGuests,
-    totalAmount: data.totalAmount.toString(),
-    status: "confirmed",
-    platform: data.platform,
-    platformFee: data.platformFee.toString(),
-    cleaningFee: data.cleaningFee.toString(),
-    checkInFee: data.checkInFee.toString(),
-    commissionFee: data.commissionFee.toString(),
-    teamPayment: data.teamPayment.toString(),
-    notes: "Created via PDF OCR extraction",
-  };
-
-  const response = await apiRequest({
-    url: "/api/reservations",
-    method: "POST",
-    data: reservationData
-  });
-  return response;
+  try {
+    const response = await apiRequest({
+      url: "/api/reservations",
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+    
+    return response;
+  } catch (error) {
+    console.error("Erro ao criar reserva a partir dos dados extraídos:", error);
+    throw error;
+  }
 }
 
 /**
@@ -109,10 +95,13 @@ export async function fileToBase64(file: File): Promise<string> {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      const result = reader.result as string;
-      // Remover prefixo data:application/pdf;base64,
-      const base64 = result.split(",")[1];
-      resolve(base64);
+      if (typeof reader.result === 'string') {
+        // Extrair apenas a parte base64 da string data URL
+        const base64String = reader.result.split(',')[1];
+        resolve(base64String);
+      } else {
+        reject(new Error("Falha ao converter para base64"));
+      }
     };
     reader.onerror = error => reject(error);
   });
@@ -124,21 +113,24 @@ export async function fileToBase64(file: File): Promise<string> {
  */
 export async function processPDFWithMistralOCR(file: File): Promise<any> {
   try {
-    console.log(`Iniciando processamento do PDF "${file.name}" com Mistral AI`);
+    // Validar tipo de arquivo
+    if (!file.type.includes('pdf')) {
+      throw new Error("O arquivo deve ser um PDF");
+    }
     
-    // 1. Converter arquivo para base64
+    // Converter PDF para base64
     const fileBase64 = await fileToBase64(file);
     
-    // 2. Usar a API de Chat para extrair texto usando multimodal capabilities
+    // Obter cliente Mistral
     const mistral = getMistralClient();
     
-    // 2.1 Extrair texto do PDF com visão multimodal
+    // Extrair texto do PDF usando capacidades de visão do Mistral
     const extractionResponse = await mistral.chat.complete({
       model: "mistral-large-latest",
       messages: [
         { 
           role: "system", 
-          content: "Você é um assistente especializado em processamento de documentos e OCR, com foco em extração de texto precisa e estruturada de arquivos PDF relacionados a reservas de alojamento local em Portugal."
+          content: "Você é um assistente especializado em extrair texto de documentos." 
         },
         { 
           role: "user", 
@@ -153,7 +145,7 @@ export async function processPDFWithMistralOCR(file: File): Promise<any> {
             },
             {
               type: "image_url",
-              image_url: {
+              imageUrl: {
                 url: `data:application/pdf;base64,${fileBase64}`
               }
             }
@@ -161,41 +153,38 @@ export async function processPDFWithMistralOCR(file: File): Promise<any> {
         }
       ],
       temperature: 0.1,
-      max_tokens: 4000
+      maxTokens: 4000
     });
     
-    const extractedText = extractionResponse.choices[0].message.content;
-    console.log(`Texto extraído com sucesso. Tamanho: ${extractedText.length} caracteres`);
+    // Extrair o texto da resposta
+    const extractedText = extractionResponse.choices?.[0]?.message.content || null;
     
-    // 3. Analisar visualmente para identificar a plataforma
+    if (!extractedText) {
+      throw new Error("Falha ao extrair texto do PDF");
+    }
+    
+    // Realizar análise visual para detectar elementos chave (como logo da plataforma)
     const visualAnalysisResponse = await mistral.chat.complete({
       model: "mistral-large-latest",
       messages: [
         { 
           role: "system", 
-          content: "Você é um especialista em análise visual de documentos, focado em identificar elementos visuais e layouts de diferentes plataformas de reserva (Airbnb, Booking.com, Expedia, etc.)."
+          content: "Você é um especialista em análise visual de documentos de reserva. Identifique a plataforma de reserva baseado no visual do documento." 
         },
         { 
           role: "user", 
           content: [
             {
               type: "text",
-              text: `Analise visualmente este documento de reserva e identifique a plataforma com base no layout, cores, logotipos e elementos visuais.
-              Concentre-se principalmente em:
-              1. Logotipos de plataformas como Airbnb, Booking.com, Expedia
-              2. Esquemas de cores característicos (vermelho para Airbnb, azul para Booking)
-              3. Layout e formatação típicos de cada plataforma
-              
-              Responda APENAS com um JSON no formato:
-              {
-                "platform": "nome da plataforma (airbnb, booking, expedia, direct ou other)",
-                "confidence": percentual de confiança numérico (0-100),
-                "visualElements": ["elementos visuais identificados"]
-              }`
+              text: `Analise visualmente este documento de reserva e identifique:
+              1. Qual plataforma emitiu este documento? (Airbnb, Booking.com, Expedia, outro?)
+              2. Existe algum logo ou marca d'água identificável?
+              3. Qual é o formato/layout geral do documento?
+              Responda apenas com os fatos observados visualmente.`
             },
             {
               type: "image_url",
-              image_url: {
+              imageUrl: {
                 url: `data:application/pdf;base64,${fileBase64}`
               }
             }
@@ -203,99 +192,28 @@ export async function processPDFWithMistralOCR(file: File): Promise<any> {
         }
       ],
       temperature: 0.1,
-      max_tokens: 1000
+      maxTokens: 500
     });
     
-    // Analisar resposta JSON
-    let visualAnalysis = null;
-    try {
-      const visualContent = visualAnalysisResponse.choices[0].message.content;
-      // Extrair objeto JSON da resposta
-      const jsonMatch = visualContent.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        visualAnalysis = JSON.parse(jsonMatch[0]);
-        console.log("Análise visual concluída:", visualAnalysis);
-      }
-    } catch (error) {
-      console.warn("Não foi possível analisar resultado visual:", error);
+    // Extrair a análise visual
+    const visualContent = visualAnalysisResponse.choices?.[0]?.message.content;
+    
+    // Detectar plataforma a partir da análise visual
+    let detectedPlatform = "unknown";
+    if (visualContent && typeof visualContent === "string") {
+      const airbnbMatch = visualContent.match(/airbnb/i);
+      const bookingMatch = visualContent.match(/booking/i);
+      const expediaMatch = visualContent.match(/expedia/i);
+      
+      if (airbnbMatch) detectedPlatform = "airbnb";
+      else if (bookingMatch) detectedPlatform = "booking";
+      else if (expediaMatch) detectedPlatform = "expedia";
     }
     
-    // 4. Extrair dados estruturados com function calling
-    const functionDef = {
-      name: "extract_reservation_data",
-      description: "Extrai informações estruturadas de um documento de reserva de alojamento local",
-      parameters: {
-        type: "object",
-        properties: {
-          propertyName: {
-            type: "string",
-            description: "Nome da propriedade/alojamento conforme aparece no documento"
-          },
-          guestName: {
-            type: "string",
-            description: "Nome completo do hóspede principal que fez a reserva"
-          },
-          guestEmail: {
-            type: "string", 
-            description: "Email do hóspede para contato",
-            format: "email"
-          },
-          guestPhone: {
-            type: "string",
-            description: "Número de telefone do hóspede"
-          },
-          checkInDate: {
-            type: "string",
-            description: "Data de entrada/check-in no formato YYYY-MM-DD",
-            format: "date"
-          },
-          checkOutDate: {
-            type: "string",
-            description: "Data de saída/check-out no formato YYYY-MM-DD",
-            format: "date"
-          },
-          numGuests: {
-            type: "integer",
-            description: "Número total de hóspedes na reserva"
-          },
-          totalAmount: {
-            type: "number",
-            description: "Valor total da reserva (somente número, sem símbolo de moeda)"
-          },
-          platform: {
-            type: "string",
-            description: "Plataforma onde a reserva foi feita",
-            enum: ["airbnb", "booking", "expedia", "direct", "other"]
-          },
-          platformFee: {
-            type: "number",
-            description: "Taxa cobrada pela plataforma (somente número)"
-          },
-          cleaningFee: {
-            type: "number",
-            description: "Taxa de limpeza (somente número)"
-          },
-          checkInFee: {
-            type: "number",
-            description: "Taxa de check-in (somente número)"
-          },
-          commissionFee: {
-            type: "number",
-            description: "Taxa de comissão (somente número)"
-          },
-          teamPayment: {
-            type: "number",
-            description: "Pagamento à equipe de limpeza (somente número)"
-          }
-        },
-        required: [
-          "propertyName", 
-          "guestName", 
-          "checkInDate", 
-          "checkOutDate", 
-          "totalAmount"
-        ]
-      }
+    // Compilar resultados da análise visual
+    const visualAnalysis = {
+      platform: detectedPlatform,
+      visualDetails: visualContent
     };
     
     // Melhorar o prompt baseado na plataforma detectada visualmente
@@ -312,6 +230,78 @@ export async function processPDFWithMistralOCR(file: File): Promise<any> {
         systemPrompt += ' Este documento é da Expedia. As reservas Expedia geralmente incluem número de itinerário e taxas discriminadas.';
       }
     }
+    
+    // Definir o esquema da função de extração
+    const functionDef = {
+      name: "extract_reservation_data",
+      description: "Extrair dados estruturados de uma reserva",
+      parameters: {
+        type: "object",
+        properties: {
+          propertyId: {
+            type: "integer",
+            description: "ID da propriedade (se não for encontrado, use 1)"
+          },
+          propertyName: {
+            type: "string",
+            description: "Nome da propriedade/alojamento reservado"
+          },
+          guestName: {
+            type: "string",
+            description: "Nome completo do hóspede"
+          },
+          guestEmail: {
+            type: "string",
+            description: "Email do hóspede"
+          },
+          guestPhone: {
+            type: "string",
+            description: "Telefone do hóspede"
+          },
+          checkInDate: {
+            type: "string",
+            description: "Data de check-in no formato YYYY-MM-DD"
+          },
+          checkOutDate: {
+            type: "string",
+            description: "Data de check-out no formato YYYY-MM-DD"
+          },
+          numGuests: {
+            type: "integer",
+            description: "Número de hóspedes"
+          },
+          totalAmount: {
+            type: "number",
+            description: "Valor total da reserva (valor numérico apenas)"
+          },
+          platform: {
+            type: "string",
+            description: "Plataforma de reserva (airbnb, booking, expedia, direct, other)"
+          },
+          platformFee: {
+            type: "number",
+            description: "Taxa da plataforma (valor numérico apenas)"
+          },
+          cleaningFee: {
+            type: "number",
+            description: "Taxa de limpeza (valor numérico apenas)"
+          },
+          checkInFee: {
+            type: "number",
+            description: "Taxa de check-in (valor numérico apenas)"
+          },
+          commissionFee: {
+            type: "number",
+            description: "Taxa de comissão (valor numérico apenas)"
+          },
+          teamPayment: {
+            type: "number",
+            description: "Pagamento à equipe (valor numérico apenas)"
+          }
+        },
+        required: ["propertyId", "propertyName", "guestName", "checkInDate", "checkOutDate", "numGuests", "totalAmount", "platform"]
+      }
+    };
     
     // 5. Extrair dados estruturados usando function calling
     const extractionResult = await mistral.chat.complete({
@@ -343,110 +333,45 @@ export async function processPDFWithMistralOCR(file: File): Promise<any> {
           function: functionDef
         }
       ],
-      tool_choice: {
+      toolChoice: {
         type: "function",
         function: { name: "extract_reservation_data" }
       }
     });
     
-    // 6. Processar resultados da extração
-    let parsedData: any = {};
-    try {
-      // Extrair os argumentos da função
-      const toolCalls = extractionResult.choices[0].message.tool_calls;
+    // 6. Extrair resultados da função
+    let extractedData = null;
+    
+    if (extractionResult.choices?.[0]?.message.toolCalls && 
+        extractionResult.choices[0].message.toolCalls.length > 0) {
       
-      if (!toolCalls || toolCalls.length === 0) {
-        throw new Error("A API não retornou dados estruturados");
-      }
-      
-      parsedData = JSON.parse(toolCalls[0].function.arguments);
-      console.log("Dados extraídos via Function Calling:", parsedData);
-      
-      // Garantir que valores numéricos sejam números
-      if (parsedData.totalAmount && typeof parsedData.totalAmount === 'string') {
-        parsedData.totalAmount = parseFloat(parsedData.totalAmount.replace(/[^\d.,]/g, '').replace(',', '.')) || 0;
-      }
-      
-      if (parsedData.numGuests && typeof parsedData.numGuests === 'string') {
-        parsedData.numGuests = parseInt(parsedData.numGuests, 10) || 1;
-      }
-      
-      // Normalizar as taxas para garantir que sejam números
-      ['platformFee', 'cleaningFee', 'checkInFee', 'commissionFee', 'teamPayment'].forEach(fee => {
-        if (parsedData[fee] && typeof parsedData[fee] === 'string') {
-          parsedData[fee] = parseFloat(parsedData[fee].replace(/[^\d.,]/g, '').replace(',', '.')) || 0;
-        } else if (parsedData[fee] === undefined) {
-          parsedData[fee] = 0; // Garantir que todas as taxas tenham um valor padrão
+      try {
+        const functionCall = extractionResult.choices[0].message.toolCalls[0];
+        if (functionCall.type === 'function' && 
+            functionCall.function.name === 'extract_reservation_data') {
+          extractedData = JSON.parse(functionCall.function.arguments);
         }
-      });
-      
-      // Usar a plataforma detectada visualmente para melhorar a classificação
-      if (visualAnalysis && visualAnalysis.platform && visualAnalysis.confidence > 70) {
-        const normalizedVisualPlatform = visualAnalysis.platform.toLowerCase();
-        
-        // Normalizar plataforma detectada visualmente
-        if (normalizedVisualPlatform.includes('airbnb')) {
-          parsedData.platform = 'airbnb';
-        } else if (normalizedVisualPlatform.includes('booking')) {
-          parsedData.platform = 'booking';
-        } else if (normalizedVisualPlatform.includes('expedia')) {
-          parsedData.platform = 'expedia';
-        } else if (normalizedVisualPlatform.includes('direct')) {
-          parsedData.platform = 'direct';
-        }
-        // Não sobrescrever com 'other' se já temos uma classificação melhor
+      } catch (err) {
+        console.error("Erro ao processar resultado da função:", err);
       }
-      
-      console.log(`Dados estruturados extraídos com sucesso:`, parsedData);
-      
-      // 7. Encontrar o ID da propriedade pelo nome
-      const propertiesResponse = await fetch('/api/properties');
-      if (!propertiesResponse.ok) {
-        throw new Error('Falha ao obter a lista de propriedades');
-      }
-      
-      const properties = await propertiesResponse.json();
-      
-      // Tentar encontrar uma correspondência exata
-      const exactMatch = properties.find((p: any) => 
-        p.name.toLowerCase() === parsedData.propertyName.toLowerCase()
-      );
-      
-      if (exactMatch) {
-        parsedData.propertyId = exactMatch.id;
-      } else {
-        // Correspondência parcial (contém)
-        const partialMatch = properties.find((p: any) => 
-          parsedData.propertyName.toLowerCase().includes(p.name.toLowerCase()) || 
-          p.name.toLowerCase().includes(parsedData.propertyName.toLowerCase())
-        );
-        
-        if (partialMatch) {
-          parsedData.propertyId = partialMatch.id;
-        } else {
-          // Usar a primeira propriedade como fallback se necessário
-          if (properties.length > 0) {
-            parsedData.propertyId = properties[0].id;
-          } else {
-            throw new Error('Nenhuma propriedade encontrada no sistema');
-          }
-        }
-      }
-      
-      return {
-        extractedData: parsedData,
-        file: {
-          filename: file.name,
-          path: `/uploads/${file.name}`
-        }
-      };
-    } catch (error) {
-      console.error("Erro ao processar dados da reserva:", error);
-      throw new Error(`Falha ao processar dados da reserva: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
     }
+    
+    // 7. Retornar os resultados
+    return {
+      success: !!extractedData,
+      extractedText,
+      extractedData,
+      visualAnalysis,
+      file: {
+        name: file.name,
+        type: file.type,
+        size: file.size
+      }
+    };
+    
   } catch (error) {
-    console.error("Erro geral no processamento:", error);
-    throw new Error(`Erro ao processar PDF: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
+    console.error("Erro ao processar PDF com Mistral AI:", error);
+    throw error;
   }
 }
 
@@ -456,138 +381,132 @@ export async function processPDFWithMistralOCR(file: File): Promise<any> {
  */
 export async function processImageWithMistralOCR(file: File): Promise<any> {
   try {
-    console.log(`Iniciando processamento da imagem "${file.name}" com Mistral AI`);
+    // Validar tipo de arquivo
+    if (!file.type.includes('image')) {
+      throw new Error("O arquivo deve ser uma imagem (JPEG, PNG, etc)");
+    }
     
-    // 1. Converter arquivo para base64
+    // Converter imagem para base64
     const fileBase64 = await fileToBase64(file);
     
-    // 2. Usar a API de Chat para extrair texto usando multimodal capabilities
+    // Obter cliente Mistral
     const mistral = getMistralClient();
     
-    // 2.1 Extrair texto da imagem com visão multimodal
+    // Extrair texto da imagem usando capacidades de visão do Mistral
     const extractionResponse = await mistral.chat.complete({
       model: "mistral-large-latest",
       messages: [
         { 
           role: "system", 
-          content: "Você é um assistente especializado em processamento de imagens e OCR, com foco em extração de texto precisa e estruturada de imagens relacionadas a reservas de alojamento local em Portugal."
+          content: "Você é um especialista em OCR (Reconhecimento Óptico de Caracteres) para documentos de reservas de alojamento."
         },
         { 
           role: "user", 
           content: [
             {
               type: "text",
-              text: `Extraia todo o texto visível nesta imagem de reserva, incluindo cabeçalhos, tabelas e informações relevantes. 
-              Preserve a estrutura original do documento (seções, tabelas, etc.).
-              Identifique e destaque informações importantes como datas, valores, nomes, etc.
-              Processe tabelas mantendo o alinhamento de colunas quando possível.
-              Retorne o texto extraído com a estrutura preservada.`
+              text: "Extraia todo o texto visível nesta imagem, incluindo números, datas, nomes e valores monetários. Preste atenção especial a detalhes como informações de check-in/check-out, valor total e nome do hóspede."
             },
             {
               type: "image_url",
-              image_url: {
-                url: `data:image/${file.type};base64,${fileBase64}`
+              imageUrl: {
+                url: `data:${file.type};base64,${fileBase64}`,
+                detail: "high"
               }
             }
           ]
         }
       ],
       temperature: 0.1,
-      max_tokens: 4000
+      maxTokens: 2000
     });
     
+    // Extrair o texto da resposta
     const extractedText = extractionResponse.choices?.[0]?.message.content || "";
-    console.log(`Texto extraído com sucesso. Tamanho: ${extractedText.length} caracteres`);
     
-    // 3. Extrair dados estruturados com function calling
+    // Definir o esquema da função de extração (mesmo do método processPDFWithMistralOCR)
     const functionDef = {
       name: "extract_reservation_data",
-      description: "Extrai informações estruturadas de uma imagem de reserva de alojamento local",
+      description: "Extrair dados estruturados de uma reserva",
       parameters: {
         type: "object",
         properties: {
+          propertyId: {
+            type: "integer",
+            description: "ID da propriedade (se não for encontrado, use 1)"
+          },
           propertyName: {
             type: "string",
-            description: "Nome da propriedade/alojamento conforme aparece na imagem"
+            description: "Nome da propriedade/alojamento reservado"
           },
           guestName: {
             type: "string",
-            description: "Nome completo do hóspede principal que fez a reserva"
+            description: "Nome completo do hóspede"
           },
           guestEmail: {
-            type: "string", 
-            description: "Email do hóspede para contato",
-            format: "email"
+            type: "string",
+            description: "Email do hóspede"
           },
           guestPhone: {
             type: "string",
-            description: "Número de telefone do hóspede"
+            description: "Telefone do hóspede"
           },
           checkInDate: {
             type: "string",
-            description: "Data de entrada/check-in no formato YYYY-MM-DD",
-            format: "date"
+            description: "Data de check-in no formato YYYY-MM-DD"
           },
           checkOutDate: {
             type: "string",
-            description: "Data de saída/check-out no formato YYYY-MM-DD",
-            format: "date"
+            description: "Data de check-out no formato YYYY-MM-DD"
           },
           numGuests: {
             type: "integer",
-            description: "Número total de hóspedes na reserva"
+            description: "Número de hóspedes"
           },
           totalAmount: {
             type: "number",
-            description: "Valor total da reserva (somente número, sem símbolo de moeda)"
+            description: "Valor total da reserva (valor numérico apenas)"
           },
           platform: {
             type: "string",
-            description: "Plataforma onde a reserva foi feita",
-            enum: ["airbnb", "booking", "expedia", "direct", "other"]
+            description: "Plataforma de reserva (airbnb, booking, expedia, direct, other)"
           },
           platformFee: {
             type: "number",
-            description: "Taxa cobrada pela plataforma (somente número)"
+            description: "Taxa da plataforma (valor numérico apenas)"
           },
           cleaningFee: {
             type: "number",
-            description: "Taxa de limpeza (somente número)"
+            description: "Taxa de limpeza (valor numérico apenas)"
           },
           checkInFee: {
             type: "number",
-            description: "Taxa de check-in (somente número)"
+            description: "Taxa de check-in (valor numérico apenas)"
           },
           commissionFee: {
             type: "number",
-            description: "Taxa de comissão (somente número)"
+            description: "Taxa de comissão (valor numérico apenas)"
           },
           teamPayment: {
             type: "number",
-            description: "Pagamento à equipe de limpeza (somente número)"
+            description: "Pagamento à equipe (valor numérico apenas)"
           }
         },
-        required: [
-          "propertyName", 
-          "guestName", 
-          "checkInDate", 
-          "checkOutDate", 
-          "totalAmount"
-        ]
+        required: ["propertyId", "propertyName", "guestName", "checkInDate", "checkOutDate", "numGuests", "totalAmount", "platform"]
       }
     };
     
-    // 4. Extrair dados estruturados
+    // Extrair dados estruturados usando function calling
     const extractionResult = await mistral.chat.complete({
       model: "mistral-large-latest",
       messages: [
         { 
           role: "system", 
-          content: "Você é um assistente especializado em extrair dados estruturados de imagens de reservas de alojamentos em Portugal."
+          content: "Você é um assistente especializado em extrair dados estruturados de documentos de reservas de alojamentos em Portugal."
         },
         { 
           role: "user", 
-          content: `Analise esta imagem de reserva e extraia todas as informações relevantes usando a função fornecida.
+          content: `Analise este texto extraído de uma imagem de documento de reserva e extraia todas as informações relevantes usando a função fornecida.
           
           Texto extraído da imagem:
           ${extractedText}
@@ -597,7 +516,8 @@ export async function processImageWithMistralOCR(file: File): Promise<any> {
           2. Para datas, converta para o formato YYYY-MM-DD
           3. Para campos não encontrados, use null
           4. A plataforma deve ser categorizada como: 'airbnb', 'booking', 'expedia', 'direct' ou 'other'
-          5. Seja preciso na extração de todos os valores, especialmente datas e valores financeiros`
+          5. Seja preciso na extração de todos os valores, especialmente datas e valores financeiros
+          6. Se não houver informações suficientes, faça a melhor estimativa possível`
         }
       ],
       temperature: 0.1,
@@ -613,87 +533,40 @@ export async function processImageWithMistralOCR(file: File): Promise<any> {
       }
     });
     
-    // 5. Processar resultados da extração
-    let parsedData: any = {};
-    try {
-      // Extrair os argumentos da função
-      const toolCalls = extractionResult.choices?.[0]?.message.toolCalls;
+    // Extrair resultados da função
+    let extractedData = null;
+    
+    if (extractionResult.choices && 
+        extractionResult.choices[0] && 
+        extractionResult.choices[0].message.toolCalls && 
+        extractionResult.choices[0].message.toolCalls.length > 0) {
       
-      if (!toolCalls || toolCalls.length === 0) {
-        throw new Error("A API não retornou dados estruturados");
-      }
-      
-      parsedData = JSON.parse(toolCalls[0].function.arguments);
-      console.log("Dados extraídos via Function Calling:", parsedData);
-      
-      // Garantir que valores numéricos sejam números
-      if (parsedData.totalAmount && typeof parsedData.totalAmount === 'string') {
-        parsedData.totalAmount = parseFloat(parsedData.totalAmount.replace(/[^\d.,]/g, '').replace(',', '.')) || 0;
-      }
-      
-      if (parsedData.numGuests && typeof parsedData.numGuests === 'string') {
-        parsedData.numGuests = parseInt(parsedData.numGuests, 10) || 1;
-      }
-      
-      // Normalizar as taxas para garantir que sejam números
-      ['platformFee', 'cleaningFee', 'checkInFee', 'commissionFee', 'teamPayment'].forEach(fee => {
-        if (parsedData[fee] && typeof parsedData[fee] === 'string') {
-          parsedData[fee] = parseFloat(parsedData[fee].replace(/[^\d.,]/g, '').replace(',', '.')) || 0;
-        } else if (parsedData[fee] === undefined) {
-          parsedData[fee] = 0; // Garantir que todas as taxas tenham um valor padrão
+      try {
+        const functionCall = extractionResult.choices[0].message.toolCalls[0];
+        if (functionCall.type === 'function' && 
+            functionCall.function.name === 'extract_reservation_data') {
+          extractedData = JSON.parse(functionCall.function.arguments);
         }
-      });
-      
-      console.log(`Dados estruturados extraídos com sucesso:`, parsedData);
-      
-      // 6. Encontrar o ID da propriedade pelo nome
-      const propertiesResponse = await fetch('/api/properties');
-      if (!propertiesResponse.ok) {
-        throw new Error('Falha ao obter a lista de propriedades');
+      } catch (err) {
+        console.error("Erro ao processar resultado da função:", err);
       }
-      
-      const properties = await propertiesResponse.json();
-      
-      // Tentar encontrar uma correspondência exata
-      const exactMatch = properties.find((p: any) => 
-        p.name.toLowerCase() === parsedData.propertyName.toLowerCase()
-      );
-      
-      if (exactMatch) {
-        parsedData.propertyId = exactMatch.id;
-      } else {
-        // Correspondência parcial (contém)
-        const partialMatch = properties.find((p: any) => 
-          parsedData.propertyName.toLowerCase().includes(p.name.toLowerCase()) || 
-          p.name.toLowerCase().includes(parsedData.propertyName.toLowerCase())
-        );
-        
-        if (partialMatch) {
-          parsedData.propertyId = partialMatch.id;
-        } else {
-          // Usar a primeira propriedade como fallback se necessário
-          if (properties.length > 0) {
-            parsedData.propertyId = properties[0].id;
-          } else {
-            throw new Error('Nenhuma propriedade encontrada no sistema');
-          }
-        }
-      }
-      
-      return {
-        extractedData: parsedData,
-        file: {
-          filename: file.name,
-          path: `/uploads/${file.name}`
-        }
-      };
-    } catch (error) {
-      console.error("Erro ao processar dados da imagem de reserva:", error);
-      throw new Error(`Falha ao processar dados da imagem: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
     }
+    
+    // Retornar os resultados
+    return {
+      success: !!extractedData,
+      extractedText,
+      extractedData,
+      file: {
+        name: file.name,
+        type: file.type,
+        size: file.size
+      }
+    };
+    
   } catch (error) {
-    console.error("Erro geral no processamento de imagem:", error);
-    throw new Error(`Erro ao processar imagem: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
+    console.error("Erro ao processar imagem com Mistral AI:", error);
+    throw error;
   }
 }
 
@@ -702,24 +575,40 @@ export async function processImageWithMistralOCR(file: File): Promise<any> {
  * @param file Arquivo (imagem ou PDF) a ser processado
  */
 export async function processReservationFile(file: File): Promise<UploadResponse> {
-  const isPDF = file.type === 'application/pdf';
-  
-  // Processar conforme o tipo de arquivo
-  if (isPDF) {
-    return uploadAndProcessPDF(file);
-  } else {
-    // Assumimos que é uma imagem (jpg, png, etc)
-    return processImageWithMistralOCR(file);
+  try {
+    // Determinar tipo de processamento com base no tipo de arquivo
+    let result;
+    
+    if (file.type.includes('pdf')) {
+      result = await processPDFWithMistralOCR(file);
+    } else if (file.type.includes('image')) {
+      result = await processImageWithMistralOCR(file);
+    } else {
+      throw new Error("Tipo de arquivo não suportado. Por favor, envie um PDF ou uma imagem.");
+    }
+    
+    // Verificar se temos dados extraídos
+    if (!result.extractedData) {
+      throw new Error("Não foi possível extrair dados suficientes do arquivo. Por favor, tente novamente ou envie um arquivo diferente.");
+    }
+    
+    // Formatar a resposta
+    const response: UploadResponse = {
+      extractedData: result.extractedData,
+      file: {
+        filename: file.name,
+        path: URL.createObjectURL(file) // Cria uma URL temporária para o arquivo
+      }
+    };
+    
+    return response;
+    
+  } catch (error) {
+    console.error("Erro ao processar arquivo de reserva:", error);
+    throw error;
   }
 }
 
-/**
- * Processar múltiplos PDFs usando Document API, RAG e análise multimodal
- * Implementa processamento de alta performance com recursos avançados
- * 
- * @param files Array de arquivos PDF a serem processados
- * @returns Array de resultados processados
- */
 /**
  * Processa múltiplos PDFs usando Document API, RAG e análise multimodal
  * Implementa processamento de alta performance com recursos avançados
@@ -729,89 +618,239 @@ export async function processReservationFile(file: File): Promise<UploadResponse
  */
 export async function processMultiplePDFs(files: File[]): Promise<any[]> {
   try {
-    console.log(`Iniciando processamento de ${files.length} PDFs com Mistral AI`);
-    const results = [];
-    let successCount = 0;
-    let failureCount = 0;
-    
-    // Configurações de retry com backoff exponencial
-    const maxRetries = 2; // Número máximo de tentativas por arquivo
-    const baseDelay = 1500; // Delay base em milissegundos
-    
-    // Processar arquivos sequencialmente para evitar sobrecarga da API
-    for (const file of files) {
-      let retryCount = 0;
-      let success = false;
-      
-      // Implementação de retry com backoff exponencial
-      while (retryCount <= maxRetries && !success) {
-        try {
-          // Se é uma tentativa de retry, adicionar delay com backoff exponencial
-          if (retryCount > 0) {
-            const delay = baseDelay * Math.pow(2, retryCount - 1);
-            console.log(`Tentativa ${retryCount + 1} para ${file.name} após ${delay}ms...`);
-            await new Promise(resolve => setTimeout(resolve, delay));
-          }
-          
-          // Tentar processar com Mistral AI
-          const result = await processPDFWithMistralOCR(file);
-          results.push(result);
-          successCount++;
-          success = true;
-          console.log(`Processado com sucesso: ${file.name}`);
-        } catch (error) {
-          // Identificar o tipo de erro para decidir se vale a pena fazer retry
-          const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
-          const isTransientError = 
-            errorMessage.includes('timeout') || 
-            errorMessage.includes('rate limit') || 
-            errorMessage.includes('network') ||
-            errorMessage.includes('connection');
-          
-          // Incrementar contagem apenas se é um erro transitório ou se já tentamos de tudo
-          if (isTransientError && retryCount < maxRetries) {
-            retryCount++;
-            console.log(`Erro transitório processando ${file.name}, tentativa ${retryCount}/${maxRetries}`);
-          } else {
-            // Erro permanente ou esgotamos as tentativas
-            failureCount++;
-            results.push({
-              error: true,
-              message: errorMessage,
-              retries: retryCount,
-              file: {
-                filename: file.name,
-                path: ''
-              }
-            });
-            console.error(`Falha ao processar ${file.name} após ${retryCount} tentativas:`, error);
-            break; // Sair do loop de retry
-          }
-        }
-      }
-      
-      // Registrar progresso após cada arquivo (sucesso ou falha)
-      const eventDetail = {
-        processed: results.length,
-        total: files.length,
-        success: successCount,
-        failure: failureCount,
-        currentFile: file.name
-      };
-      
-      // Emitir evento personalizado para possível uso pela UI
-      const progressEvent = new CustomEvent('pdf-processing-progress', { 
-        detail: eventDetail 
-      });
-      window.dispatchEvent(progressEvent);
-      
-      console.log(`Progresso: ${results.length}/${files.length} PDFs processados (${successCount} sucesso, ${failureCount} falhas)`);
+    // Validar número de arquivos
+    if (!files.length) {
+      throw new Error("Nenhum arquivo fornecido para processamento");
     }
     
-    console.log(`Processamento concluído: ${results.length} PDFs processados (${successCount} sucesso, ${failureCount} falhas)`);
+    // Limitar o número de arquivos processados de uma vez
+    if (files.length > 10) {
+      throw new Error("Máximo de 10 arquivos podem ser processados de uma vez");
+    }
+    
+    // Verificar se temos uma chave API válida
+    if (!MISTRAL_API_KEY) {
+      throw new Error("Chave da API Mistral não configurada. Por favor, configure nas configurações.");
+    }
+    
+    // Converter todos os arquivos para base64 em paralelo
+    const filePromises = files.map(async (file) => {
+      return {
+        name: file.name,
+        base64: await fileToBase64(file),
+        type: file.type
+      };
+    });
+    
+    const fileData = await Promise.all(filePromises);
+    
+    // Obter cliente Mistral
+    const mistral = getMistralClient();
+    
+    // Analisar cada arquivo em série (para evitar throttling da API)
+    const results = [];
+    
+    for (const file of fileData) {
+      try {
+        console.log(`Processando arquivo: ${file.name}`);
+        
+        // Verificar tipo de arquivo
+        const isPDF = file.type.includes('pdf');
+        const isImage = file.type.includes('image');
+        
+        if (!isPDF && !isImage) {
+          results.push({
+            filename: file.name,
+            success: false,
+            error: "Tipo de arquivo não suportado. Apenas PDFs e imagens são suportados.",
+            extractedData: null
+          });
+          continue;
+        }
+        
+        // Definir o schema da função
+        const functionDef = {
+          name: "extract_reservation_data",
+          description: "Extrair dados estruturados de uma reserva",
+          parameters: {
+            type: "object",
+            properties: {
+              propertyId: {
+                type: "integer",
+                description: "ID da propriedade (se não for encontrado, use 1)"
+              },
+              propertyName: {
+                type: "string",
+                description: "Nome da propriedade/alojamento reservado"
+              },
+              guestName: {
+                type: "string",
+                description: "Nome completo do hóspede"
+              },
+              guestEmail: {
+                type: "string",
+                description: "Email do hóspede"
+              },
+              guestPhone: {
+                type: "string",
+                description: "Telefone do hóspede"
+              },
+              checkInDate: {
+                type: "string",
+                description: "Data de check-in no formato YYYY-MM-DD"
+              },
+              checkOutDate: {
+                type: "string",
+                description: "Data de check-out no formato YYYY-MM-DD"
+              },
+              numGuests: {
+                type: "integer",
+                description: "Número de hóspedes"
+              },
+              totalAmount: {
+                type: "number",
+                description: "Valor total da reserva (valor numérico apenas)"
+              },
+              platform: {
+                type: "string",
+                description: "Plataforma de reserva (airbnb, booking, expedia, direct, other)"
+              },
+              platformFee: {
+                type: "number",
+                description: "Taxa da plataforma (valor numérico apenas)"
+              },
+              cleaningFee: {
+                type: "number",
+                description: "Taxa de limpeza (valor numérico apenas)"
+              },
+              checkInFee: {
+                type: "number",
+                description: "Taxa de check-in (valor numérico apenas)"
+              },
+              commissionFee: {
+                type: "number",
+                description: "Taxa de comissão (valor numérico apenas)"
+              },
+              teamPayment: {
+                type: "number",
+                description: "Pagamento à equipe (valor numérico apenas)"
+              }
+            },
+            required: ["propertyId", "propertyName", "guestName", "checkInDate", "checkOutDate", "numGuests", "totalAmount", "platform"]
+          }
+        };
+        
+        // Passo 1: Obter texto completo e analisar visuais em um único passo
+        const extractionResponse = await mistral.chat.complete({
+          model: "mistral-large-latest",
+          messages: [
+            { 
+              role: "system", 
+              content: "Você é um especialista em análise de documentos. Extraia texto e analise visualmente este documento de reserva."
+            },
+            { 
+              role: "user", 
+              content: [
+                { 
+                  type: "text", 
+                  text: "Extraia todo o texto visível neste documento e identifique visualmente a plataforma de reserva (Airbnb, Booking, etc)."
+                },
+                { 
+                  type: "image_url", 
+                  imageUrl: {
+                    url: `data:${file.type};base64,${file.base64}`,
+                    detail: "high"
+                  }
+                }
+              ]
+            }
+          ],
+          temperature: 0.1,
+          maxTokens: 4000
+        });
+        
+        // Extrair texto e análise visual
+        const contentText = extractionResponse.choices?.[0]?.message.content || "";
+        
+        // Passo 2: Extrair dados estruturados com base no texto
+        const extractionResult = await mistral.chat.complete({
+          model: "mistral-large-latest",
+          messages: [
+            { 
+              role: "system", 
+              content: "Você é um assistente especializado em extrair dados estruturados de documentos de reservas de alojamentos em Portugal."
+            },
+            { 
+              role: "user", 
+              content: `Analise este documento de reserva e extraia todas as informações relevantes usando a função fornecida.
+              
+              Texto extraído do documento:
+              ${contentText}
+              
+              Instruções específicas:
+              1. Para valores monetários, extraia apenas os números (sem símbolos de moeda)
+              2. Para datas, converta para o formato YYYY-MM-DD
+              3. Para campos não encontrados, use null
+              4. A plataforma deve ser categorizada como: 'airbnb', 'booking', 'expedia', 'direct' ou 'other'
+              5. Seja preciso na extração de todos os valores, especialmente datas e valores financeiros`
+            }
+          ],
+          temperature: 0.1,
+          tools: [
+            {
+              type: "function",
+              function: functionDef
+            }
+          ],
+          toolChoice: {
+            type: "function",
+            function: { name: "extract_reservation_data" }
+          }
+        });
+        
+        // Extrair dados estruturados
+        let extractedData = null;
+        let extractionError = null;
+        
+        if (extractionResult.choices?.[0]?.message.toolCalls && 
+            extractionResult.choices[0].message.toolCalls.length > 0) {
+          
+          try {
+            const functionCall = extractionResult.choices[0].message.toolCalls[0];
+            if (functionCall.type === 'function' && 
+                functionCall.function.name === 'extract_reservation_data') {
+              extractedData = JSON.parse(functionCall.function.arguments);
+            }
+          } catch (err) {
+            console.error(`Erro ao processar resultado da função para ${file.name}:`, err);
+            extractionError = err instanceof Error ? err.message : String(err);
+          }
+        }
+        
+        // Adicionar ao array de resultados
+        results.push({
+          filename: file.name,
+          success: !!extractedData,
+          text: contentText.substring(0, 500) + "...", // Truncar para evitar respostas muito grandes
+          extractedData,
+          error: extractionError
+        });
+        
+      } catch (error) {
+        console.error(`Erro ao processar arquivo ${file.name}:`, error);
+        results.push({
+          filename: file.name,
+          success: false,
+          error: error instanceof Error ? error.message : String(error),
+          extractedData: null
+        });
+      }
+    }
+    
     return results;
+    
   } catch (error) {
-    console.error("Erro geral no processamento em lote:", error);
-    throw new Error(`Erro no processamento em lote: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
+    console.error("Erro ao processar múltiplos PDFs:", error);
+    throw error;
   }
 }
