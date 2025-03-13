@@ -38,6 +38,13 @@ export function UploadPDF() {
   const [isMultiUploadMode, setIsMultiUploadMode] = useState(false);
   const [isMultiResultsDialogOpen, setIsMultiResultsDialogOpen] = useState(false);
   const [mistralAvailable, setMistralAvailable] = useState<boolean | null>(null);
+  const [processingProgress, setProcessingProgress] = useState<{
+    processed: number;
+    total: number;
+    success: number;
+    failure: number;
+    currentFile: string;
+  } | null>(null);
   const { toast } = useToast();
   const [_, setLocation] = useLocation();
   

@@ -720,6 +720,13 @@ export async function processReservationFile(file: File): Promise<UploadResponse
  * @param files Array de arquivos PDF a serem processados
  * @returns Array de resultados processados
  */
+/**
+ * Processa múltiplos PDFs usando Document API, RAG e análise multimodal
+ * Implementa processamento de alta performance com recursos avançados
+ * 
+ * @param files Array de arquivos PDF a serem processados
+ * @returns Array de resultados processados
+ */
 export async function processMultiplePDFs(files: File[]): Promise<any[]> {
   try {
     console.log(`Iniciando processamento de ${files.length} PDFs com Mistral AI`);
@@ -727,30 +734,81 @@ export async function processMultiplePDFs(files: File[]): Promise<any[]> {
     let successCount = 0;
     let failureCount = 0;
     
+    // Configurações de retry com backoff exponencial
+    const maxRetries = 2; // Número máximo de tentativas por arquivo
+    const baseDelay = 1500; // Delay base em milissegundos
+    
     // Processar arquivos sequencialmente para evitar sobrecarga da API
     for (const file of files) {
-      try {
-        const result = await processPDFWithMistralOCR(file);
-        results.push(result);
-        successCount++;
-        console.log(`Processado com sucesso: ${file.name}`);
-      } catch (error) {
-        failureCount++;
-        results.push({
-          error: true,
-          message: error instanceof Error ? error.message : 'Erro desconhecido',
-          file: {
-            filename: file.name,
-            path: ''
+      let retryCount = 0;
+      let success = false;
+      
+      // Implementação de retry com backoff exponencial
+      while (retryCount <= maxRetries && !success) {
+        try {
+          // Se é uma tentativa de retry, adicionar delay com backoff exponencial
+          if (retryCount > 0) {
+            const delay = baseDelay * Math.pow(2, retryCount - 1);
+            console.log(`Tentativa ${retryCount + 1} para ${file.name} após ${delay}ms...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
           }
-        });
-        console.error(`Falha ao processar ${file.name}:`, error);
+          
+          // Tentar processar com Mistral AI
+          const result = await processPDFWithMistralOCR(file);
+          results.push(result);
+          successCount++;
+          success = true;
+          console.log(`Processado com sucesso: ${file.name}`);
+        } catch (error) {
+          // Identificar o tipo de erro para decidir se vale a pena fazer retry
+          const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+          const isTransientError = 
+            errorMessage.includes('timeout') || 
+            errorMessage.includes('rate limit') || 
+            errorMessage.includes('network') ||
+            errorMessage.includes('connection');
+          
+          // Incrementar contagem apenas se é um erro transitório ou se já tentamos de tudo
+          if (isTransientError && retryCount < maxRetries) {
+            retryCount++;
+            console.log(`Erro transitório processando ${file.name}, tentativa ${retryCount}/${maxRetries}`);
+          } else {
+            // Erro permanente ou esgotamos as tentativas
+            failureCount++;
+            results.push({
+              error: true,
+              message: errorMessage,
+              retries: retryCount,
+              file: {
+                filename: file.name,
+                path: ''
+              }
+            });
+            console.error(`Falha ao processar ${file.name} após ${retryCount} tentativas:`, error);
+            break; // Sair do loop de retry
+          }
+        }
       }
+      
+      // Registrar progresso após cada arquivo (sucesso ou falha)
+      const eventDetail = {
+        processed: results.length,
+        total: files.length,
+        success: successCount,
+        failure: failureCount,
+        currentFile: file.name
+      };
+      
+      // Emitir evento personalizado para possível uso pela UI
+      const progressEvent = new CustomEvent('pdf-processing-progress', { 
+        detail: eventDetail 
+      });
+      window.dispatchEvent(progressEvent);
       
       console.log(`Progresso: ${results.length}/${files.length} PDFs processados (${successCount} sucesso, ${failureCount} falhas)`);
     }
     
-    console.log(`Processamento concluído: ${results.length} PDFs processados`);
+    console.log(`Processamento concluído: ${results.length} PDFs processados (${successCount} sucesso, ${failureCount} falhas)`);
     return results;
   } catch (error) {
     console.error("Erro geral no processamento em lote:", error);
