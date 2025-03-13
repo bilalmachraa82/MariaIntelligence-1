@@ -10,7 +10,18 @@ import {
   extendedReservationSchema,
   insertActivitySchema,
   reservationStatusEnum,
-  reservationPlatformEnum
+  reservationPlatformEnum,
+  
+  // Schemas para documentos financeiros
+  extendedFinancialDocumentSchema,
+  extendedPaymentRecordSchema,
+  insertFinancialDocumentSchema,
+  insertFinancialDocumentItemSchema,
+  insertPaymentRecordSchema,
+  financialDocumentTypeEnum,
+  financialDocumentStatusEnum,
+  entityTypeEnum,
+  paymentMethodEnum
 } from "@shared/schema";
 import fs from "fs";
 import path from "path";
@@ -824,6 +835,418 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return mariaAssistant(req, res);
     } catch (error) {
       handleError(error, res);
+    }
+  });
+
+  // ===== ENDPOINTS PARA DOCUMENTOS FINANCEIROS =====
+  
+  // Listar documentos financeiros com opção de filtros
+  app.get("/api/financial-documents", async (req: Request, res: Response) => {
+    try {
+      const options: any = {};
+      
+      if (req.query.type) options.type = req.query.type as string;
+      if (req.query.status) options.status = req.query.status as string;
+      if (req.query.entityId) options.entityId = Number(req.query.entityId);
+      if (req.query.entityType) options.entityType = req.query.entityType as string;
+      if (req.query.startDate) options.startDate = new Date(req.query.startDate as string);
+      if (req.query.endDate) options.endDate = new Date(req.query.endDate as string);
+      
+      const documents = await storage.getFinancialDocuments(options);
+      res.json(documents);
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
+  // Obter um documento financeiro específico pelo ID
+  app.get("/api/financial-documents/:id", async (req: Request, res: Response) => {
+    try {
+      const document = await storage.getFinancialDocument(Number(req.params.id));
+      
+      if (!document) {
+        return res.status(404).json({ message: "Documento financeiro não encontrado" });
+      }
+      
+      // Obter itens relacionados ao documento
+      const items = await storage.getFinancialDocumentItems(document.id);
+      
+      // Obter pagamentos relacionados ao documento
+      const payments = await storage.getPaymentRecords(document.id);
+      
+      // Combinar tudo em uma resposta completa
+      res.json({
+        document,
+        items,
+        payments
+      });
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
+  // Criar um novo documento financeiro
+  app.post("/api/financial-documents", async (req: Request, res: Response) => {
+    try {
+      const validatedData = extendedFinancialDocumentSchema.parse(req.body);
+      const document = await storage.createFinancialDocument(validatedData);
+      
+      // Se houver itens no corpo da requisição, criar também os itens
+      if (req.body.items && Array.isArray(req.body.items) && req.body.items.length > 0) {
+        for (const item of req.body.items) {
+          item.documentId = document.id;
+          await storage.createFinancialDocumentItem(insertFinancialDocumentItemSchema.parse(item));
+        }
+      }
+      
+      res.status(201).json(document);
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
+  // Atualizar um documento financeiro existente
+  app.patch("/api/financial-documents/:id", async (req: Request, res: Response) => {
+    try {
+      const id = Number(req.params.id);
+      const existingDocument = await storage.getFinancialDocument(id);
+      
+      if (!existingDocument) {
+        return res.status(404).json({ message: "Documento financeiro não encontrado" });
+      }
+      
+      const validatedData = extendedFinancialDocumentSchema.partial().parse(req.body);
+      const updatedDocument = await storage.updateFinancialDocument(id, validatedData);
+      
+      res.json(updatedDocument);
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
+  // Excluir um documento financeiro
+  app.delete("/api/financial-documents/:id", async (req: Request, res: Response) => {
+    try {
+      const id = Number(req.params.id);
+      
+      // Primeiro verificar se o documento existe
+      const document = await storage.getFinancialDocument(id);
+      if (!document) {
+        return res.status(404).json({ message: "Documento financeiro não encontrado" });
+      }
+      
+      // Excluir os itens relacionados primeiro (para evitar problemas de chave estrangeira)
+      const items = await storage.getFinancialDocumentItems(id);
+      for (const item of items) {
+        await storage.deleteFinancialDocumentItem(item.id);
+      }
+      
+      // Excluir os pagamentos relacionados
+      const payments = await storage.getPaymentRecords(id);
+      for (const payment of payments) {
+        await storage.deletePaymentRecord(payment.id);
+      }
+      
+      // Finalmente, excluir o documento
+      const result = await storage.deleteFinancialDocument(id);
+      
+      res.status(204).end();
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
+  // ===== ENDPOINTS PARA ITENS DE DOCUMENTOS FINANCEIROS =====
+  
+  // Listar itens de um documento financeiro
+  app.get("/api/financial-document-items/:documentId", async (req: Request, res: Response) => {
+    try {
+      const documentId = Number(req.params.documentId);
+      
+      // Verificar se o documento existe
+      const document = await storage.getFinancialDocument(documentId);
+      if (!document) {
+        return res.status(404).json({ message: "Documento financeiro não encontrado" });
+      }
+      
+      const items = await storage.getFinancialDocumentItems(documentId);
+      res.json(items);
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
+  // Criar um novo item em um documento financeiro
+  app.post("/api/financial-document-items", async (req: Request, res: Response) => {
+    try {
+      const validatedData = insertFinancialDocumentItemSchema.parse(req.body);
+      
+      // Verificar se o documento existe
+      const document = await storage.getFinancialDocument(validatedData.documentId);
+      if (!document) {
+        return res.status(404).json({ message: "Documento financeiro não encontrado" });
+      }
+      
+      const item = await storage.createFinancialDocumentItem(validatedData);
+      
+      // Atualizar o valor total do documento somando todos os itens
+      const allItems = await storage.getFinancialDocumentItems(document.id);
+      const totalAmount = allItems.reduce((sum, item) => sum + parseFloat(item.amount), 0).toString();
+      await storage.updateFinancialDocument(document.id, { totalAmount });
+      
+      res.status(201).json(item);
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
+  // Atualizar um item de documento financeiro
+  app.patch("/api/financial-document-items/:id", async (req: Request, res: Response) => {
+    try {
+      const id = Number(req.params.id);
+      const existingItem = await storage.getFinancialDocumentItem(id);
+      
+      if (!existingItem) {
+        return res.status(404).json({ message: "Item de documento não encontrado" });
+      }
+      
+      const validatedData = insertFinancialDocumentItemSchema.partial().parse(req.body);
+      const updatedItem = await storage.updateFinancialDocumentItem(id, validatedData);
+      
+      // Se o valor foi alterado, atualizar o total do documento
+      if (validatedData.amount) {
+        const document = await storage.getFinancialDocument(existingItem.documentId);
+        if (document) {
+          const allItems = await storage.getFinancialDocumentItems(document.id);
+          const totalAmount = allItems.reduce((sum, item) => sum + parseFloat(item.amount), 0).toString();
+          await storage.updateFinancialDocument(document.id, { totalAmount });
+        }
+      }
+      
+      res.json(updatedItem);
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
+  // Excluir um item de documento financeiro
+  app.delete("/api/financial-document-items/:id", async (req: Request, res: Response) => {
+    try {
+      const id = Number(req.params.id);
+      const item = await storage.getFinancialDocumentItem(id);
+      
+      if (!item) {
+        return res.status(404).json({ message: "Item de documento não encontrado" });
+      }
+      
+      const documentId = item.documentId;
+      const result = await storage.deleteFinancialDocumentItem(id);
+      
+      // Atualizar o valor total do documento
+      const document = await storage.getFinancialDocument(documentId);
+      if (document) {
+        const allItems = await storage.getFinancialDocumentItems(documentId);
+        const totalAmount = allItems.reduce((sum, item) => sum + parseFloat(item.amount), 0).toString();
+        await storage.updateFinancialDocument(documentId, { totalAmount });
+      }
+      
+      res.status(204).end();
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
+  // ===== ENDPOINTS PARA REGISTROS DE PAGAMENTO =====
+  
+  // Listar pagamentos (opcionalmente filtrados por documento)
+  app.get("/api/payment-records", async (req: Request, res: Response) => {
+    try {
+      let documentId: number | undefined = undefined;
+      
+      if (req.query.documentId) {
+        documentId = Number(req.query.documentId);
+      }
+      
+      const payments = await storage.getPaymentRecords(documentId);
+      res.json(payments);
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
+  // Obter um pagamento específico pelo ID
+  app.get("/api/payment-records/:id", async (req: Request, res: Response) => {
+    try {
+      const payment = await storage.getPaymentRecord(Number(req.params.id));
+      
+      if (!payment) {
+        return res.status(404).json({ message: "Registro de pagamento não encontrado" });
+      }
+      
+      res.json(payment);
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
+  // Criar um novo registro de pagamento
+  app.post("/api/payment-records", async (req: Request, res: Response) => {
+    try {
+      const validatedData = extendedPaymentRecordSchema.parse(req.body);
+      
+      // Verificar se o documento existe
+      const document = await storage.getFinancialDocument(validatedData.documentId);
+      if (!document) {
+        return res.status(404).json({ message: "Documento financeiro não encontrado" });
+      }
+      
+      const payment = await storage.createPaymentRecord(validatedData);
+      
+      // Atualizar o status e valor pago do documento
+      const allPayments = await storage.getPaymentRecords(document.id);
+      const paidAmount = allPayments.reduce((sum, payment) => sum + parseFloat(payment.amount), 0).toString();
+      
+      // Verificar se o valor pago cobre o valor total do documento
+      let status = document.status;
+      if (parseFloat(paidAmount) >= parseFloat(document.totalAmount)) {
+        status = "paid"; // Documento totalmente pago
+      } else if (parseFloat(paidAmount) > 0) {
+        status = "invoiced"; // Parcialmente pago
+      }
+      
+      await storage.updateFinancialDocument(document.id, { 
+        status, 
+        paidAmount 
+      });
+      
+      res.status(201).json(payment);
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
+  // Atualizar um registro de pagamento
+  app.patch("/api/payment-records/:id", async (req: Request, res: Response) => {
+    try {
+      const id = Number(req.params.id);
+      const existingPayment = await storage.getPaymentRecord(id);
+      
+      if (!existingPayment) {
+        return res.status(404).json({ message: "Registro de pagamento não encontrado" });
+      }
+      
+      const validatedData = extendedPaymentRecordSchema.partial().parse(req.body);
+      const updatedPayment = await storage.updatePaymentRecord(id, validatedData);
+      
+      // Se o valor foi alterado, atualizar o status do documento
+      if (validatedData.amount) {
+        const document = await storage.getFinancialDocument(existingPayment.documentId);
+        if (document) {
+          const allPayments = await storage.getPaymentRecords(document.id);
+          const paidAmount = allPayments.reduce((sum, payment) => sum + parseFloat(payment.amount), 0).toString();
+          
+          // Atualizar status baseado no valor pago
+          let status = document.status;
+          if (parseFloat(paidAmount) >= parseFloat(document.totalAmount)) {
+            status = "paid"; // Documento totalmente pago
+          } else if (parseFloat(paidAmount) > 0) {
+            status = "invoiced"; // Parcialmente pago
+          } else {
+            status = "pending"; // Pendente de pagamento
+          }
+          
+          await storage.updateFinancialDocument(document.id, { 
+            status, 
+            paidAmount 
+          });
+        }
+      }
+      
+      res.json(updatedPayment);
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
+  // Excluir um registro de pagamento
+  app.delete("/api/payment-records/:id", async (req: Request, res: Response) => {
+    try {
+      const id = Number(req.params.id);
+      const payment = await storage.getPaymentRecord(id);
+      
+      if (!payment) {
+        return res.status(404).json({ message: "Registro de pagamento não encontrado" });
+      }
+      
+      const documentId = payment.documentId;
+      const result = await storage.deletePaymentRecord(id);
+      
+      // Atualizar o status e valor pago do documento
+      const document = await storage.getFinancialDocument(documentId);
+      if (document) {
+        const allPayments = await storage.getPaymentRecords(documentId);
+        const paidAmount = allPayments.reduce((sum, payment) => sum + parseFloat(payment.amount), 0).toString();
+        
+        // Atualizar status baseado no valor pago
+        let status = document.status;
+        if (parseFloat(paidAmount) >= parseFloat(document.totalAmount)) {
+          status = "paid"; // Documento totalmente pago
+        } else if (parseFloat(paidAmount) > 0) {
+          status = "invoiced"; // Parcialmente pago
+        } else {
+          status = "pending"; // Pendente de pagamento
+        }
+        
+        await storage.updateFinancialDocument(document.id, { 
+          status, 
+          paidAmount 
+        });
+      }
+      
+      res.status(204).end();
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
+  // ===== ENDPOINTS PARA RELATÓRIOS FINANCEIROS =====
+  
+  // Obter relatório financeiro de proprietário
+  app.get("/api/reports/owner/:ownerId", async (req: Request, res: Response) => {
+    try {
+      const ownerId = Number(req.params.ownerId);
+      const month = req.query.month as string;
+      const year = req.query.year as string;
+      
+      if (!month || !year) {
+        return res.status(400).json({ message: "É necessário informar mês e ano para o relatório" });
+      }
+      
+      const report = await storage.generateOwnerFinancialReport(ownerId, month, year);
+      res.json(report);
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
+  // Obter relatório financeiro geral
+  app.get("/api/reports/financial-summary", async (req: Request, res: Response) => {
+    try {
+      let startDate: Date | undefined = undefined;
+      let endDate: Date | undefined = undefined;
+      
+      if (req.query.startDate) {
+        startDate = new Date(req.query.startDate as string);
+      }
+      
+      if (req.query.endDate) {
+        endDate = new Date(req.query.endDate as string);
+      }
+      
+      const summary = await storage.generateFinancialSummary(startDate, endDate);
+      res.json(summary);
+    } catch (err) {
+      handleError(err, res);
     }
   });
 
