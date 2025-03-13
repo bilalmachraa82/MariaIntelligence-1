@@ -132,9 +132,9 @@ export default function PropertiesPage() {
                       <TableRow key={property.id}>
                         <TableCell className="font-medium">
                           <Link href={`/properties/${property.id}`}>
-                            <a className="text-primary-600 hover:underline">
+                            <span className="text-primary-600 hover:underline cursor-pointer">
                               {property.name}
-                            </a>
+                            </span>
                           </Link>
                         </TableCell>
                         <TableCell>{getOwnerName(property.ownerId)}</TableCell>
@@ -151,30 +151,29 @@ export default function PropertiesPage() {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <Link href={`/properties/${property.id}`}>
-                                <DropdownMenuItem>
-                                  <Button variant="ghost" className="p-0 h-auto w-full justify-start">
+                              <DropdownMenuItem asChild>
+                                <Link href={`/properties/${property.id}`}>
+                                  <span className="flex items-center w-full">
                                     Ver detalhes
-                                  </Button>
-                                </DropdownMenuItem>
-                              </Link>
-                              <Link href={`/properties/edit/${property.id}`}>
-                                <DropdownMenuItem>
-                                  <Button variant="ghost" className="p-0 h-auto w-full justify-start">
+                                  </span>
+                                </Link>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem asChild>
+                                <Link href={`/properties/edit/${property.id}`}>
+                                  <span className="flex items-center w-full">
                                     <Edit className="mr-2 h-4 w-4" />
                                     Editar
-                                  </Button>
-                                </DropdownMenuItem>
-                              </Link>
-                              <DropdownMenuItem>
-                                <Button 
-                                  variant="ghost" 
-                                  className="p-0 h-auto w-full justify-start text-red-600"
+                                  </span>
+                                </Link>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem asChild>
+                                <div 
+                                  className="cursor-pointer flex items-center px-2 py-1.5 text-sm text-red-600"
                                   onClick={() => setPropertyToDelete(property.id)}
                                 >
                                   <Trash2 className="mr-2 h-4 w-4" />
                                   Excluir
-                                </Button>
+                                </div>
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
