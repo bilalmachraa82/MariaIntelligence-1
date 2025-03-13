@@ -220,11 +220,35 @@ export default function PaymentsOutgoing() {
                       </div>
                     </div>
                     <div className="flex">
-                      <Button variant="outline" size="sm" className="mr-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="mr-2"
+                        onClick={() => toast({
+                          title: "Ação em desenvolvimento",
+                          description: "A visualização detalhada será disponibilizada em breve.",
+                        })}
+                      >
                         Ver Detalhes
                       </Button>
                       {payment.status === "pending" && (
-                        <Button size="sm" className="bg-green-500 hover:bg-green-600 text-white">
+                        <Button 
+                          size="sm" 
+                          className="bg-green-500 hover:bg-green-600 text-white"
+                          onClick={() => {
+                            toast({
+                              title: "Pagamento confirmado",
+                              description: `O pagamento de ${formatCurrency(payment.amount)} foi marcado como pago.`,
+                              variant: "success",
+                            });
+                            
+                            // Em produção atualizaria o estado
+                            const updatedPayments = payments.map(p => 
+                              p.id === payment.id ? {...p, status: "paid", paidAt: new Date().toISOString()} : p
+                            );
+                            setPayments(updatedPayments);
+                          }}
+                        >
                           <ArrowDownCircle className="mr-2 h-3 w-3" />
                           Marcar como Pago
                         </Button>

@@ -93,7 +93,7 @@ export function MobileBottomNav({ onOpenMenu }: MobileBottomNavProps) {
         </span>
       </div>
       
-      <div className="mobile-nav-item" onClick={() => handleNavigate("/pagamentos/efetuar")}>
+      <div className="mobile-nav-item" onClick={() => handleNavigate("/pagamentos/saida")}>
         <BadgeDollarSign className={cn(
           "h-5 w-5 mb-1", 
           location.startsWith("/pagamentos") 

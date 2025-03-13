@@ -301,11 +301,43 @@ export default function PaymentsIncoming() {
                               </TableCell>
                               <TableCell className="text-right">
                                 {payment.status === "pending" ? (
-                                  <Button size="sm" className="bg-green-500 hover:bg-green-600 text-white">
+                                  <Button 
+                                    size="sm" 
+                                    className="bg-green-500 hover:bg-green-600 text-white"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      // Em produção, atualizaria via API
+                                      const updatedPayments = owner.payments.map(p => 
+                                        p.id === payment.id ? {...p, status: "received", receivedAt: new Date().toISOString()} : p
+                                      );
+                                      
+                                      const updatedOwners = mockData.map(o => 
+                                        o.id === owner.id ? {...o, payments: updatedPayments} : o
+                                      );
+                                      
+                                      setMockData(updatedOwners);
+                                      
+                                      toast({
+                                        title: "Pagamento recebido",
+                                        description: `Pagamento de ${formatCurrency(payment.amount)} marcado como recebido.`,
+                                        variant: "success",
+                                      });
+                                    }}
+                                  >
                                     Marcar como Recebido
                                   </Button>
                                 ) : (
-                                  <Button size="sm" variant="outline">
+                                  <Button 
+                                    size="sm" 
+                                    variant="outline"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      toast({
+                                        title: "Detalhes do pagamento",
+                                        description: "Detalhes do pagamento serão exibidos em breve.",
+                                      });
+                                    }}
+                                  >
                                     Ver Detalhes
                                   </Button>
                                 )}
