@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Mistral } from "@mistralai/mistralai";
 import { storage } from '../storage';
+import { ragService } from '../services/rag-service';
 
 // Configurações do assistente da Maria Faz com personalidade definida
 const MARIA_SYSTEM_PROMPT = `
@@ -198,7 +199,10 @@ export async function mariaAssistant(req: Request, res: Response) {
     }
     
     // Construir contexto RAG com dados atuais do sistema
-    const ragContext = await buildRagContext(message);
+    const systemContext = await buildRagContext(message);
+    
+    // Obter contexto de conversas anteriores usando o serviço RAG
+    const conversationContext = await ragService.buildConversationContext(message);
     
     // Configurar cliente Mistral
     const mistral = new Mistral({
@@ -214,7 +218,8 @@ export async function mariaAssistant(req: Request, res: Response) {
     // Construir mensagens para a API incluindo o sistema, contexto RAG e histórico
     const messages = [
       { role: "system", content: MARIA_SYSTEM_PROMPT },
-      { role: "system", content: `DADOS ATUAIS DO SISTEMA:\n${ragContext}` },
+      { role: "system", content: `DADOS ATUAIS DO SISTEMA:\n${systemContext}` },
+      { role: "system", content: `HISTÓRICO DE CONVERSAS:\n${conversationContext}` },
       ...formattedHistory,
       { role: "user", content: message }
     ];
@@ -228,7 +233,10 @@ export async function mariaAssistant(req: Request, res: Response) {
     });
     
     // Extrair e retornar a resposta
-    const reply = response.choices[0].message.content;
+    const reply = response.choices[0]?.message.content || "Não foi possível gerar uma resposta.";
+    
+    // Salvar a resposta do assistente no histórico de conversas
+    await ragService.saveConversationMessage(reply, "assistant");
     
     // Registrar a interação como atividade
     await storage.createActivity({

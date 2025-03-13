@@ -8,9 +8,14 @@ import {
   date,
   timestamp,
   foreignKey,
+  jsonb,
+  varchar
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+
+// Nota: A importação da extensão pgvector está comentada até habilitar no banco de dados
+// import { vector } from "pgvector/drizzle-orm";
 
 // Cleaning Team schema
 export const cleaningTeams = pgTable("cleaning_teams", {
@@ -213,3 +218,71 @@ export const extendedOwnerSchema = insertOwnerSchema.extend({
   email: z.string().email().optional().or(z.literal("")),
   taxId: z.string().optional().or(z.literal("")),
 });
+
+// RAG e Sistema de Memória - tabelas para armazenar histórico de conversas e embeddings
+
+// Tabela para armazenar histórico de conversas com o assistente
+export const conversationHistory = pgTable("conversation_history", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").default(1), // ID do usuário (para futura autenticação)
+  message: text("message").notNull(), // Mensagem do usuário ou do assistente
+  role: text("role").notNull().default("user"), // "user" ou "assistant"
+  timestamp: timestamp("timestamp").defaultNow(),
+  metadata: jsonb("metadata").default({}), // Metadados adicionais (contexto, tópico, etc.)
+});
+
+// Tabela para armazenar embeddings de conhecimento (documentos, FAQs, etc.)
+export const knowledgeEmbeddings = pgTable("knowledge_embeddings", {
+  id: serial("id").primaryKey(),
+  content: text("content").notNull(), // Conteúdo original
+  contentType: text("content_type").notNull().default("faq"), // Tipo: faq, política, procedimento, etc.
+  // embedding: vector("embedding", { dimensions: 1024 }), // Adicionaremos depois de habilitar pgvector
+  embeddingJson: jsonb("embedding_json").default({}), // Armazenar temporariamente como JSON
+  metadata: jsonb("metadata").default({}), // Metadados como fonte, data de criação, etc.
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Tabela para armazenar embeddings de consultas frequentes
+export const queryEmbeddings = pgTable("query_embeddings", {
+  id: serial("id").primaryKey(),
+  query: text("query").notNull(), // Pergunta/consulta original
+  response: text("response").notNull(), // Resposta do sistema
+  // embedding: vector("embedding", { dimensions: 1024 }), // Adicionaremos depois de habilitar pgvector
+  embeddingJson: jsonb("embedding_json").default({}), // Armazenar temporariamente como JSON
+  frequency: integer("frequency").default(1), // Frequência de uso
+  lastUsed: timestamp("last_used").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Insert schemas para as novas tabelas
+export const insertConversationHistorySchema = createInsertSchema(conversationHistory).pick({
+  userId: true,
+  message: true,
+  role: true,
+  metadata: true,
+});
+
+export const insertKnowledgeEmbeddingSchema = createInsertSchema(knowledgeEmbeddings).pick({
+  content: true,
+  contentType: true,
+  embeddingJson: true,
+  metadata: true,
+});
+
+export const insertQueryEmbeddingSchema = createInsertSchema(queryEmbeddings).pick({
+  query: true,
+  response: true,
+  embeddingJson: true,
+  frequency: true,
+});
+
+// Tipos para as novas tabelas
+export type ConversationHistory = typeof conversationHistory.$inferSelect;
+export type InsertConversationHistory = z.infer<typeof insertConversationHistorySchema>;
+
+export type KnowledgeEmbedding = typeof knowledgeEmbeddings.$inferSelect;
+export type InsertKnowledgeEmbedding = z.infer<typeof insertKnowledgeEmbeddingSchema>;
+
+export type QueryEmbedding = typeof queryEmbeddings.$inferSelect;
+export type InsertQueryEmbedding = z.infer<typeof insertQueryEmbeddingSchema>;
