@@ -132,7 +132,7 @@ export class MemStorage implements IStorage {
     this.currentFinancialDocumentItemId = 1;
     this.currentPaymentRecordId = 1;
     
-    // Seed data for properties and owners
+    // Seed data for properties, owners, financial documents, etc.
     this.seedData();
   }
 
@@ -473,8 +473,743 @@ export class MemStorage implements IStorage {
     };
   }
 
+  // Métodos para documentos financeiros
+  async getFinancialDocuments(options?: {
+    type?: 'incoming' | 'outgoing';
+    status?: 'pending' | 'invoiced' | 'paid' | 'cancelled';
+    entityId?: number;
+    entityType?: 'owner' | 'supplier';
+    startDate?: Date;
+    endDate?: Date;
+  }): Promise<FinancialDocument[]> {
+    let documents = Array.from(this.financialDocumentsMap.values());
+
+    // Aplicar filtros se houver opções
+    if (options) {
+      if (options.type) {
+        documents = documents.filter(doc => doc.type === options.type);
+      }
+      if (options.status) {
+        documents = documents.filter(doc => doc.status === options.status);
+      }
+      if (options.entityId) {
+        documents = documents.filter(doc => doc.entityId === options.entityId);
+      }
+      if (options.entityType) {
+        documents = documents.filter(doc => doc.entityType === options.entityType);
+      }
+      if (options.startDate) {
+        documents = documents.filter(doc => new Date(doc.date) >= options.startDate!);
+      }
+      if (options.endDate) {
+        documents = documents.filter(doc => new Date(doc.date) <= options.endDate!);
+      }
+    }
+
+    // Ordenar por data decrescente (mais recente primeiro)
+    documents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    return documents;
+  }
+
+  async getFinancialDocument(id: number): Promise<FinancialDocument | undefined> {
+    return this.financialDocumentsMap.get(id);
+  }
+
+  async createFinancialDocument(document: InsertFinancialDocument): Promise<FinancialDocument> {
+    const id = this.currentFinancialDocumentId++;
+    const now = new Date();
+    
+    // Criar o documento financeiro com valores padrão para campos opcionais
+    const newDocument: FinancialDocument = {
+      ...document,
+      id,
+      createdAt: now,
+      updatedAt: now
+    };
+    
+    this.financialDocumentsMap.set(id, newDocument);
+    
+    // Registrar atividade
+    this.createActivity({
+      type: "financial_document_created",
+      description: `Documento financeiro ${newDocument.reference} foi criado`,
+      entityId: id,
+      entityType: "financial_document"
+    });
+    
+    return newDocument;
+  }
+
+  async updateFinancialDocument(id: number, document: Partial<InsertFinancialDocument>): Promise<FinancialDocument | undefined> {
+    const existingDocument = this.financialDocumentsMap.get(id);
+    if (!existingDocument) return undefined;
+    
+    // Atualizar o documento
+    const updatedDocument = {
+      ...existingDocument,
+      ...document,
+      updatedAt: new Date()
+    };
+    
+    this.financialDocumentsMap.set(id, updatedDocument);
+    
+    // Registrar atividade
+    this.createActivity({
+      type: "financial_document_updated",
+      description: `Documento financeiro ${updatedDocument.reference} foi atualizado`,
+      entityId: id,
+      entityType: "financial_document"
+    });
+    
+    return updatedDocument;
+  }
+
+  async deleteFinancialDocument(id: number): Promise<boolean> {
+    const document = this.financialDocumentsMap.get(id);
+    if (!document) return false;
+    
+    // Verificar se existem itens relacionados
+    const hasItems = Array.from(this.financialDocumentItemsMap.values())
+      .some(item => item.documentId === id);
+    
+    if (hasItems) {
+      // Também excluir itens relacionados
+      Array.from(this.financialDocumentItemsMap.values())
+        .filter(item => item.documentId === id)
+        .forEach(item => this.financialDocumentItemsMap.delete(item.id));
+    }
+    
+    // Verificar se existem pagamentos relacionados
+    const hasPayments = Array.from(this.paymentRecordsMap.values())
+      .some(payment => payment.documentId === id);
+    
+    if (hasPayments) {
+      // Também excluir pagamentos relacionados
+      Array.from(this.paymentRecordsMap.values())
+        .filter(payment => payment.documentId === id)
+        .forEach(payment => this.paymentRecordsMap.delete(payment.id));
+    }
+    
+    // Excluir o documento
+    const result = this.financialDocumentsMap.delete(id);
+    
+    // Registrar atividade
+    if (result) {
+      this.createActivity({
+        type: "financial_document_deleted",
+        description: `Documento financeiro ${document.reference} foi excluído`,
+        entityId: id,
+        entityType: "financial_document"
+      });
+    }
+    
+    return result;
+  }
+
+  // Métodos para itens de documentos financeiros
+  async getFinancialDocumentItems(documentId: number): Promise<FinancialDocumentItem[]> {
+    return Array.from(this.financialDocumentItemsMap.values())
+      .filter(item => item.documentId === documentId);
+  }
+
+  async getFinancialDocumentItem(id: number): Promise<FinancialDocumentItem | undefined> {
+    return this.financialDocumentItemsMap.get(id);
+  }
+
+  async createFinancialDocumentItem(item: InsertFinancialDocumentItem): Promise<FinancialDocumentItem> {
+    const id = this.currentFinancialDocumentItemId++;
+    
+    const newItem: FinancialDocumentItem = {
+      ...item,
+      id
+    };
+    
+    this.financialDocumentItemsMap.set(id, newItem);
+    
+    // Atualizar o valor total do documento
+    const document = await this.getFinancialDocument(item.documentId);
+    if (document) {
+      const items = await this.getFinancialDocumentItems(item.documentId);
+      const totalAmount = items.reduce((sum, item) => sum + Number(item.amount), 0);
+      
+      await this.updateFinancialDocument(item.documentId, {
+        totalAmount: totalAmount.toString()
+      });
+    }
+    
+    return newItem;
+  }
+
+  async updateFinancialDocumentItem(id: number, item: Partial<InsertFinancialDocumentItem>): Promise<FinancialDocumentItem | undefined> {
+    const existingItem = this.financialDocumentItemsMap.get(id);
+    if (!existingItem) return undefined;
+    
+    const updatedItem = { ...existingItem, ...item };
+    this.financialDocumentItemsMap.set(id, updatedItem);
+    
+    // Atualizar o valor total do documento
+    const document = await this.getFinancialDocument(existingItem.documentId);
+    if (document) {
+      const items = await this.getFinancialDocumentItems(existingItem.documentId);
+      const totalAmount = items.reduce((sum, item) => sum + Number(item.amount), 0);
+      
+      await this.updateFinancialDocument(existingItem.documentId, {
+        totalAmount: totalAmount.toString()
+      });
+    }
+    
+    return updatedItem;
+  }
+
+  async deleteFinancialDocumentItem(id: number): Promise<boolean> {
+    const item = this.financialDocumentItemsMap.get(id);
+    if (!item) return false;
+    
+    const documentId = item.documentId;
+    const result = this.financialDocumentItemsMap.delete(id);
+    
+    // Atualizar o valor total do documento
+    if (result) {
+      const document = await this.getFinancialDocument(documentId);
+      if (document) {
+        const items = await this.getFinancialDocumentItems(documentId);
+        const totalAmount = items.reduce((sum, item) => sum + Number(item.amount), 0);
+        
+        await this.updateFinancialDocument(documentId, {
+          totalAmount: totalAmount.toString()
+        });
+      }
+    }
+    
+    return result;
+  }
+
+  // Métodos para registros de pagamento
+  async getPaymentRecords(documentId?: number): Promise<PaymentRecord[]> {
+    if (documentId) {
+      return Array.from(this.paymentRecordsMap.values())
+        .filter(payment => payment.documentId === documentId);
+    }
+    return Array.from(this.paymentRecordsMap.values());
+  }
+
+  async getPaymentRecord(id: number): Promise<PaymentRecord | undefined> {
+    return this.paymentRecordsMap.get(id);
+  }
+
+  async createPaymentRecord(payment: InsertPaymentRecord): Promise<PaymentRecord> {
+    const id = this.currentPaymentRecordId++;
+    const now = new Date();
+    
+    const newPayment: PaymentRecord = {
+      ...payment,
+      id,
+      createdAt: now
+    };
+    
+    this.paymentRecordsMap.set(id, newPayment);
+    
+    // Atualizar o status do documento financeiro
+    const document = await this.getFinancialDocument(payment.documentId);
+    if (document) {
+      const payments = await this.getPaymentRecords(payment.documentId);
+      const totalPaid = payments.reduce((sum, payment) => sum + Number(payment.amount), 0);
+      
+      // Verificar se o valor total foi pago
+      if (totalPaid >= Number(document.totalAmount)) {
+        await this.updateFinancialDocument(payment.documentId, {
+          status: 'paid',
+          paidAmount: totalPaid.toString()
+        });
+      } else if (totalPaid > 0) {
+        await this.updateFinancialDocument(payment.documentId, {
+          status: 'partial',
+          paidAmount: totalPaid.toString()
+        });
+      }
+    }
+    
+    // Registrar atividade
+    this.createActivity({
+      type: "payment_recorded",
+      description: `Pagamento de ${payment.amount} foi registrado`,
+      entityId: id,
+      entityType: "payment_record"
+    });
+    
+    return newPayment;
+  }
+
+  async updatePaymentRecord(id: number, payment: Partial<InsertPaymentRecord>): Promise<PaymentRecord | undefined> {
+    const existingPayment = this.paymentRecordsMap.get(id);
+    if (!existingPayment) return undefined;
+    
+    const updatedPayment = { ...existingPayment, ...payment };
+    this.paymentRecordsMap.set(id, updatedPayment);
+    
+    // Atualizar o status do documento financeiro
+    const document = await this.getFinancialDocument(existingPayment.documentId);
+    if (document) {
+      const payments = await this.getPaymentRecords(existingPayment.documentId);
+      const totalPaid = payments.reduce((sum, payment) => sum + Number(payment.amount), 0);
+      
+      // Verificar se o valor total foi pago
+      if (totalPaid >= Number(document.totalAmount)) {
+        await this.updateFinancialDocument(existingPayment.documentId, {
+          status: 'paid',
+          paidAmount: totalPaid.toString()
+        });
+      } else if (totalPaid > 0) {
+        await this.updateFinancialDocument(existingPayment.documentId, {
+          status: 'partial',
+          paidAmount: totalPaid.toString()
+        });
+      } else {
+        await this.updateFinancialDocument(existingPayment.documentId, {
+          status: 'pending',
+          paidAmount: '0'
+        });
+      }
+    }
+    
+    return updatedPayment;
+  }
+
+  async deletePaymentRecord(id: number): Promise<boolean> {
+    const payment = this.paymentRecordsMap.get(id);
+    if (!payment) return false;
+    
+    const documentId = payment.documentId;
+    const result = this.paymentRecordsMap.delete(id);
+    
+    // Atualizar o status do documento financeiro
+    if (result) {
+      const document = await this.getFinancialDocument(documentId);
+      if (document) {
+        const payments = await this.getPaymentRecords(documentId);
+        const totalPaid = payments.reduce((sum, payment) => sum + Number(payment.amount), 0);
+        
+        // Verificar se o valor total foi pago
+        if (totalPaid >= Number(document.totalAmount)) {
+          await this.updateFinancialDocument(documentId, {
+            status: 'paid',
+            paidAmount: totalPaid.toString()
+          });
+        } else if (totalPaid > 0) {
+          await this.updateFinancialDocument(documentId, {
+            status: 'partial',
+            paidAmount: totalPaid.toString()
+          });
+        } else {
+          await this.updateFinancialDocument(documentId, {
+            status: 'pending',
+            paidAmount: '0'
+          });
+        }
+      }
+      
+      // Registrar atividade
+      this.createActivity({
+        type: "payment_deleted",
+        description: `Pagamento de ${payment.amount} foi excluído`,
+        entityId: id,
+        entityType: "payment_record"
+      });
+    }
+    
+    return result;
+  }
+  
+  // Métodos para relatórios financeiros
+  async generateOwnerFinancialReport(ownerId: number, month: string, year: string): Promise<any> {
+    const owner = await this.getOwner(ownerId);
+    if (!owner) return null;
+    
+    // Obter o período
+    const startDate = new Date(`${year}-${month}-01`);
+    const endDate = new Date(new Date(startDate).setMonth(startDate.getMonth() + 1));
+    endDate.setDate(endDate.getDate() - 1); // Último dia do mês
+    
+    // Obter propriedades do proprietário
+    const properties = (await this.getProperties()).filter(p => p.ownerId === ownerId);
+    
+    // Para cada propriedade, calcular os ganhos e despesas
+    const propertyReports = await Promise.all(properties.map(async (property) => {
+      // Obter reservas no período
+      const reservations = (await this.getReservationsByProperty(property.id))
+        .filter(r => {
+          const checkIn = new Date(r.checkInDate);
+          const checkOut = new Date(r.checkOutDate);
+          return (checkIn <= endDate && checkOut >= startDate);
+        });
+      
+      // Calcular receita total, custos e lucro
+      const revenue = reservations.reduce((sum, r) => sum + Number(r.totalAmount), 0);
+      const cleaningCosts = reservations.reduce((sum, r) => sum + Number(r.cleaningFee || 0), 0);
+      const checkInFees = reservations.reduce((sum, r) => sum + Number(r.checkInFee || 0), 0);
+      const commission = reservations.reduce((sum, r) => sum + Number(r.commissionFee || 0), 0);
+      const teamPayments = reservations.reduce((sum, r) => sum + Number(r.teamPayment || 0), 0);
+      const netProfit = revenue - cleaningCosts - checkInFees - commission - teamPayments;
+      
+      // Calcular taxa de ocupação
+      const occupancyRate = await this.getOccupancyRate(property.id, startDate, endDate);
+      
+      // Calcular dias disponíveis e ocupados
+      const totalDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+      const occupiedDays = Math.ceil(totalDays * (occupancyRate / 100));
+      
+      // Resumo de reservas
+      const reservationSummaries = reservations.map(r => ({
+        id: r.id,
+        checkInDate: r.checkInDate,
+        checkOutDate: r.checkOutDate,
+        guestName: r.guestName,
+        totalAmount: Number(r.totalAmount),
+        cleaningFee: Number(r.cleaningFee || 0),
+        checkInFee: Number(r.checkInFee || 0),
+        commission: Number(r.commissionFee || 0),
+        teamPayment: Number(r.teamPayment || 0),
+        netAmount: Number(r.netAmount || 0),
+        platform: r.platform || 'direct'
+      }));
+      
+      return {
+        propertyId: property.id,
+        propertyName: property.name,
+        reservations: reservationSummaries,
+        revenue,
+        cleaningCosts,
+        checkInFees,
+        commission,
+        teamPayments,
+        netProfit,
+        occupancyRate,
+        availableDays: totalDays,
+        occupiedDays
+      };
+    }));
+    
+    // Calcular totais
+    const totalRevenue = propertyReports.reduce((sum, p) => sum + p.revenue, 0);
+    const totalCleaningCosts = propertyReports.reduce((sum, p) => sum + p.cleaningCosts, 0);
+    const totalCheckInFees = propertyReports.reduce((sum, p) => sum + p.checkInFees, 0);
+    const totalCommission = propertyReports.reduce((sum, p) => sum + p.commission, 0);
+    const totalTeamPayments = propertyReports.reduce((sum, p) => sum + p.teamPayments, 0);
+    const totalNetProfit = propertyReports.reduce((sum, p) => sum + p.netProfit, 0);
+    
+    // Calcular média de ocupação
+    const totalOccupancy = propertyReports.reduce((sum, p) => sum + p.occupancyRate, 0);
+    const averageOccupancy = propertyReports.length > 0 ? totalOccupancy / propertyReports.length : 0;
+    
+    return {
+      ownerId,
+      ownerName: owner.name,
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+      propertyReports,
+      totals: {
+        totalRevenue,
+        totalCleaningCosts,
+        totalCheckInFees,
+        totalCommission,
+        totalTeamPayments,
+        totalNetProfit,
+        averageOccupancy,
+        totalProperties: propertyReports.length,
+        totalReservations: propertyReports.reduce((sum, p) => sum + p.reservations.length, 0)
+      }
+    };
+  }
+
+  async generateFinancialSummary(startDate?: Date, endDate?: Date): Promise<any> {
+    // Definir período padrão para o mês atual se não especificado
+    const now = new Date();
+    const start = startDate || new Date(now.getFullYear(), now.getMonth(), 1);
+    const end = endDate || new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    
+    // Obter todos os documentos financeiros no período
+    const documents = (await this.getFinancialDocuments())
+      .filter(doc => {
+        const docDate = new Date(doc.date);
+        return docDate >= start && docDate <= end;
+      });
+    
+    // Separar por tipo (receita/despesa)
+    const incomingDocs = documents.filter(doc => doc.type === 'incoming');
+    const outgoingDocs = documents.filter(doc => doc.type === 'outgoing');
+    
+    // Calcular totais
+    const totalIncoming = incomingDocs.reduce((sum, doc) => sum + Number(doc.totalAmount), 0);
+    const totalOutgoing = outgoingDocs.reduce((sum, doc) => sum + Number(doc.totalAmount), 0);
+    const netIncome = totalIncoming - totalOutgoing;
+    
+    // Calcular por status
+    const pendingIncoming = incomingDocs
+      .filter(doc => doc.status === 'pending')
+      .reduce((sum, doc) => sum + Number(doc.totalAmount), 0);
+    
+    const paidIncoming = incomingDocs
+      .filter(doc => doc.status === 'paid')
+      .reduce((sum, doc) => sum + Number(doc.totalAmount), 0);
+    
+    const pendingOutgoing = outgoingDocs
+      .filter(doc => doc.status === 'pending')
+      .reduce((sum, doc) => sum + Number(doc.totalAmount), 0);
+    
+    const paidOutgoing = outgoingDocs
+      .filter(doc => doc.status === 'paid')
+      .reduce((sum, doc) => sum + Number(doc.totalAmount), 0);
+    
+    // Calcular por entidade (proprietário/fornecedor)
+    const byOwner = {};
+    const bySupplier = {};
+    
+    // Processar documentos por proprietário
+    for (const doc of documents.filter(d => d.entityType === 'owner')) {
+      const entityId = doc.entityId;
+      if (!byOwner[entityId]) {
+        const owner = await this.getOwner(entityId);
+        byOwner[entityId] = {
+          id: entityId,
+          name: owner ? owner.name : `Proprietário #${entityId}`,
+          incoming: 0,
+          outgoing: 0,
+          balance: 0
+        };
+      }
+      
+      if (doc.type === 'incoming') {
+        byOwner[entityId].incoming += Number(doc.totalAmount);
+      } else {
+        byOwner[entityId].outgoing += Number(doc.totalAmount);
+      }
+      byOwner[entityId].balance = byOwner[entityId].incoming - byOwner[entityId].outgoing;
+    }
+    
+    // Processar documentos por fornecedor
+    for (const doc of documents.filter(d => d.entityType === 'supplier')) {
+      const entityId = doc.entityId;
+      const entityName = doc.entityName || `Fornecedor #${entityId}`;
+      
+      if (!bySupplier[entityId]) {
+        bySupplier[entityId] = {
+          id: entityId,
+          name: entityName,
+          incoming: 0,
+          outgoing: 0,
+          balance: 0
+        };
+      }
+      
+      if (doc.type === 'incoming') {
+        bySupplier[entityId].incoming += Number(doc.totalAmount);
+      } else {
+        bySupplier[entityId].outgoing += Number(doc.totalAmount);
+      }
+      bySupplier[entityId].balance = bySupplier[entityId].incoming - bySupplier[entityId].outgoing;
+    }
+    
+    return {
+      startDate: start.toISOString(),
+      endDate: end.toISOString(),
+      summary: {
+        totalIncoming,
+        totalOutgoing,
+        netIncome,
+        pendingIncoming,
+        paidIncoming,
+        pendingOutgoing,
+        paidOutgoing,
+        totalDocuments: documents.length,
+        incomingDocuments: incomingDocs.length,
+        outgoingDocuments: outgoingDocs.length
+      },
+      byOwner: Object.values(byOwner),
+      bySupplier: Object.values(bySupplier),
+      recentDocuments: documents
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        .slice(0, 10) // Últimos 10 documentos
+    };
+  }
+
   // Seed method to initialize sample data
   private seedData() {
+    // Seed initial financial data
+    const seedFinancialDocuments = () => {
+      // Criar alguns documentos financeiros de exemplo
+      const financialDocumentsData = [
+        {
+          id: 1,
+          reference: "FT2025/001",
+          type: "incoming", 
+          status: "pending",
+          date: "2025-03-01",
+          dueDate: "2025-03-15",
+          description: "Serviços de gestão - Mar 2025",
+          entityId: 10, // Owner ID
+          entityType: "owner",
+          entityName: "Gabriela",
+          totalAmount: "125.50",
+          paidAmount: "0",
+          notes: "Pagamento pendente para os serviços do mês de março",
+          invoiceNumber: "",
+          createdAt: new Date("2025-03-01T10:30:00"),
+          updatedAt: new Date("2025-03-01T10:30:00")
+        },
+        {
+          id: 2,
+          reference: "FT2025/002",
+          type: "outgoing",
+          status: "paid",
+          date: "2025-02-25",
+          dueDate: "2025-03-10",
+          description: "Serviços de limpeza - Fev 2025",
+          entityId: 1, // Supplier ID
+          entityType: "supplier",
+          entityName: "Maria Faz Limpezas",
+          totalAmount: "350.00",
+          paidAmount: "350.00",
+          notes: "Pagamento efetuado por transferência bancária",
+          invoiceNumber: "A/123",
+          createdAt: new Date("2025-02-25T14:00:00"),
+          updatedAt: new Date("2025-03-02T09:15:00")
+        },
+        {
+          id: 3,
+          reference: "FT2025/003",
+          type: "incoming",
+          status: "invoiced",
+          date: "2025-03-05",
+          dueDate: "2025-03-20",
+          description: "Comissão Booking.com - Fev 2025",
+          entityId: 5, // Owner ID
+          entityType: "owner",
+          entityName: "Innkeeper",
+          totalAmount: "230.75",
+          paidAmount: "0",
+          notes: "Fatura emitida, aguardando pagamento",
+          invoiceNumber: "B/2025/42",
+          createdAt: new Date("2025-03-05T11:45:00"),
+          updatedAt: new Date("2025-03-05T16:20:00")
+        }
+      ];
+
+      // Adicionar os documentos financeiros ao mapa
+      financialDocumentsData.forEach(doc => {
+        this.financialDocumentsMap.set(doc.id, doc);
+        if (doc.id >= this.currentFinancialDocumentId) {
+          this.currentFinancialDocumentId = doc.id + 1;
+        }
+      });
+
+      // Criar alguns itens de documentos financeiros
+      const financialDocumentItemsData = [
+        {
+          id: 1,
+          documentId: 1,
+          description: "Gestão da propriedade Ajuda - Mar 2025",
+          quantity: "1",
+          unitPrice: "75.00",
+          amount: "75.00"
+        },
+        {
+          id: 2,
+          documentId: 1,
+          description: "Taxa de check-in - Reserva #123",
+          quantity: "1",
+          unitPrice: "15.00",
+          amount: "15.00"
+        },
+        {
+          id: 3,
+          documentId: 1,
+          description: "Comissão de 10% - Reserva #123",
+          quantity: "1",
+          unitPrice: "35.50",
+          amount: "35.50"
+        },
+        {
+          id: 4,
+          documentId: 2,
+          description: "Limpeza regular - Propriedade Ajuda",
+          quantity: "2",
+          unitPrice: "45.00",
+          amount: "90.00"
+        },
+        {
+          id: 5,
+          documentId: 2,
+          description: "Limpeza profunda - Propriedade Bernardo",
+          quantity: "1",
+          unitPrice: "65.00",
+          amount: "65.00"
+        },
+        {
+          id: 6,
+          documentId: 2,
+          description: "Limpeza regular - Propriedade Aroeira 3",
+          quantity: "1",
+          unitPrice: "50.00",
+          amount: "50.00"
+        },
+        {
+          id: 7,
+          documentId: 2,
+          description: "Mudança de toalhas e lençóis",
+          quantity: "3",
+          unitPrice: "25.00",
+          amount: "75.00"
+        },
+        {
+          id: 8,
+          documentId: 2,
+          description: "Produtos de limpeza",
+          quantity: "1",
+          unitPrice: "70.00",
+          amount: "70.00"
+        },
+        {
+          id: 9,
+          documentId: 3,
+          description: "Comissão de gestão - Fev 2025",
+          quantity: "1",
+          unitPrice: "230.75",
+          amount: "230.75"
+        }
+      ];
+
+      // Adicionar os itens ao mapa
+      financialDocumentItemsData.forEach(item => {
+        this.financialDocumentItemsMap.set(item.id, item);
+        if (item.id >= this.currentFinancialDocumentItemId) {
+          this.currentFinancialDocumentItemId = item.id + 1;
+        }
+      });
+
+      // Criar alguns registros de pagamento
+      const paymentRecordsData = [
+        {
+          id: 1,
+          documentId: 2,
+          date: "2025-03-02",
+          method: "bank_transfer",
+          amount: "350.00",
+          reference: "TRANSF-83294",
+          notes: "Transferência bancária para Maria Faz",
+          createdAt: new Date("2025-03-02T09:15:00")
+        }
+      ];
+
+      // Adicionar os pagamentos ao mapa
+      paymentRecordsData.forEach(payment => {
+        this.paymentRecordsMap.set(payment.id, payment);
+        if (payment.id >= this.currentPaymentRecordId) {
+          this.currentPaymentRecordId = payment.id + 1;
+        }
+      });
+    };
+
     // Seed initial owners
     const ownerData = [
       { id: 1, name: "José Gustavo", company: "José Gustavo", address: "rua curvo semendo, 37 - Montemor o novo", taxId: "", email: "", phone: "" },
@@ -695,6 +1430,9 @@ export class MemStorage implements IStorage {
         this.currentActivityId = activity.id + 1;
       }
     });
+    
+    // Seed financial documents data
+    seedFinancialDocuments.call(this);
   }
 }
 
