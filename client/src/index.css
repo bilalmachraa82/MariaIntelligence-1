@@ -70,19 +70,38 @@
   }
 
   h1 {
-    @apply text-3xl font-bold md:text-4xl lg:text-5xl;
+    @apply text-2xl font-bold md:text-3xl lg:text-4xl xl:text-5xl tracking-tight;
   }
 
   h2 {
-    @apply text-2xl font-bold md:text-3xl lg:text-4xl;
+    @apply text-xl font-bold md:text-2xl lg:text-3xl xl:text-4xl tracking-tight;
   }
 
   h3 {
-    @apply text-xl font-bold md:text-2xl lg:text-3xl;
+    @apply text-lg font-bold md:text-xl lg:text-2xl xl:text-3xl tracking-tight;
+  }
+  
+  p {
+    @apply text-sm md:text-base leading-relaxed;
+  }
+  
+  /* Container com menor padding em mobile */
+  .container {
+    @apply px-4 md:px-6 mx-auto;
+  }
+  
+  /* Espaçamento vertical mobile-first */
+  .content-section {
+    @apply py-4 md:py-6 lg:py-8;
+  }
+  
+  .section-header {
+    @apply mb-4 md:mb-6;
   }
 }
 
 @layer components {
+  /* Gradientes e efeitos visuais */
   .card-gradient {
     @apply bg-gradient-to-br from-primary-light to-white dark:from-primary/20 dark:to-background;
   }
@@ -103,6 +122,84 @@
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
   }
   
+  /* Cartões com bordas arredondadas e sombras */
+  .card {
+    @apply rounded-lg border shadow-sm p-4 bg-white dark:bg-slate-900 transition-all duration-200;
+  }
+  
+  .card-hover {
+    @apply hover:shadow-md hover:scale-[1.01] transition-all duration-200;
+  }
+  
+  /* Mobile-friendly buttons */
+  .btn-mobile {
+    @apply flex items-center justify-center w-full py-3 rounded-lg md:w-auto;
+  }
+  
+  /* Navbars responsivos */
+  .mobile-nav {
+    @apply fixed bottom-0 left-0 right-0 flex items-center justify-between bg-white dark:bg-slate-900 border-t p-2 md:hidden z-10;
+  }
+  
+  .mobile-nav-item {
+    @apply flex flex-col items-center justify-center p-2 text-xs;
+  }
+  
+  /* Lista adaptável para mobile e desktop */
+  .responsive-list {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
+  }
+  
+  /* Layout em coluna (mobile) ou em linha (desktop) */
+  .flex-col-md-row {
+    @apply flex flex-col md:flex-row gap-4;
+  }
+  
+  /* Forms responsivos */
+  .form-container {
+    @apply space-y-4 md:space-y-6;
+  }
+  
+  .form-row {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+  }
+  
+  /* Botões flutuantes para mobile (FAB) */
+  .floating-action-button {
+    @apply fixed bottom-20 right-4 rounded-full p-4 shadow-lg bg-primary text-white z-20 md:hidden;
+  }
+  
+  /* Status badges */
+  .status-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .status-badge-pending {
+    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
+  }
+  
+  .status-badge-success {
+    @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
+  }
+  
+  .status-badge-error {
+    @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200;
+  }
+  
+  /* Estilizações específicas para aplicativo Maria Faz */
+  .maria-faz-section {
+    @apply rounded-lg border bg-white dark:bg-slate-900 p-4 shadow-sm;
+  }
+  
+  /* Seção específica para Manutenção e Pagamentos */
+  .maintenance-card {
+    @apply border-l-4 border-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-r-lg;
+  }
+  
+  .payment-card {
+    @apply border-l-4 border-green-400 bg-green-50 dark:bg-green-900/20 p-4 rounded-r-lg;
+  }
+  
   /* Estilizações para tema escuro adicionais */
   .dark .shadow-card {
     @apply shadow-lg shadow-slate-900/10;
@@ -110,5 +207,16 @@
   
   .dark .hover-card {
     @apply hover:bg-slate-800/50;
+  }
+  
+  /* Adaptações para toque em dispositivos móveis */
+  @media (max-width: 768px) {
+    .touch-target {
+      @apply min-h-[44px] min-w-[44px]; /* Área de toque mínima recomendada */
+    }
+    
+    .touch-list-item {
+      @apply py-3; /* Maior espaçamento vertical para itens de lista em mobile */
+    }
   }
 }
