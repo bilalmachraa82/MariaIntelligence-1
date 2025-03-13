@@ -338,12 +338,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Statistics routes
   app.get("/api/statistics", async (req: Request, res: Response) => {
     try {
-      const startDate = req.query.startDate ? new Date(req.query.startDate as string) : undefined;
-      const endDate = req.query.endDate ? new Date(req.query.endDate as string) : undefined;
+      // Tratamento especial para as datas para evitar erros de formato
+      let startDate: Date | undefined = undefined;
+      let endDate: Date | undefined = undefined;
+      
+      const startDateStr = req.query.startDate as string;
+      const endDateStr = req.query.endDate as string;
+      
+      if (startDateStr && startDateStr !== 'undefined' && startDateStr !== 'null') {
+        startDate = new Date(startDateStr);
+      }
+      
+      if (endDateStr && endDateStr !== 'undefined' && endDateStr !== 'null') {
+        endDate = new Date(endDateStr);
+      }
+      
+      // Log para diagnóstico
+      console.log("API /statistics - Datas:", { 
+        startDateStr, 
+        endDateStr, 
+        startDate: startDate?.toISOString(), 
+        endDate: endDate?.toISOString() 
+      });
       
       const totalRevenue = await storage.getTotalRevenue(startDate, endDate);
       const netProfit = await storage.getNetProfit(startDate, endDate);
-      const occupancyRate = await storage.getOccupancyRate(undefined, startDate, endDate);
+      
+      // Vamos tratar a função getOccupancyRate com cuidado adicional
+      let occupancyRate = 0;
+      try {
+        occupancyRate = await storage.getOccupancyRate(undefined, startDate, endDate);
+      } catch (error) {
+        console.error("Erro ao calcular taxa de ocupação:", error);
+        // Continuamos sem quebrar a API
+      }
       
       // Get properties for active property count
       const properties = await storage.getProperties();

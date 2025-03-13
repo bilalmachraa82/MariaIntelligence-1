@@ -668,6 +668,60 @@ export class DatabaseStorage implements IStorage {
     // Não temos tabela de users atualmente, mas mantemos a interface
     return { id: 1, ...user };
   }
+  
+  // Implementação do método estatísticas de propriedade
+  async getPropertyStatistics(propertyId: number): Promise<any> {
+    if (!db) return {
+      totalRevenue: 0,
+      totalReservations: 0,
+      averageStay: 0,
+      occupancyRate: 0
+    };
+    
+    try {
+      // Obter receita total
+      const revenueResults = await db.execute(sql`
+        SELECT SUM(CAST(total_amount as DECIMAL)) as total
+        FROM reservations
+        WHERE property_id = ${propertyId}
+      `);
+      
+      // Obter número total de reservas
+      const reservationsResults = await db.execute(sql`
+        SELECT COUNT(*) as count
+        FROM reservations
+        WHERE property_id = ${propertyId}
+      `);
+      
+      // Obter duração média da estadia
+      const stayDurationResults = await db.execute(sql`
+        SELECT AVG(
+          EXTRACT(DAY FROM CAST(check_out_date as DATE) - CAST(check_in_date as DATE))
+        ) as average
+        FROM reservations
+        WHERE property_id = ${propertyId}
+      `);
+      
+      // Obter taxa de ocupação para o ano atual
+      const startDate = new Date(new Date().getFullYear(), 0, 1);
+      const occupancyRate = await this.getOccupancyRate(propertyId, startDate);
+      
+      return {
+        totalRevenue: Number(revenueResults[0]?.total) || 0,
+        totalReservations: Number(reservationsResults[0]?.count) || 0,
+        averageStay: Number(stayDurationResults[0]?.average) || 0,
+        occupancyRate
+      };
+    } catch (error) {
+      console.error("Erro ao obter estatísticas da propriedade:", error);
+      return {
+        totalRevenue: 0,
+        totalReservations: 0,
+        averageStay: 0,
+        occupancyRate: 0
+      };
+    }
+  }
 
   // Property methods
   async getProperties(): Promise<Property[]> {
@@ -861,120 +915,92 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getOccupancyRate(propertyId?: number, startDate?: Date, endDate?: Date): Promise<number> {
+    // Se não há conexão com banco de dados, retorna zero
     if (!db) return 0;
     
-    // Definir datas padrão se não forem fornecidas
-    const start = startDate || new Date(new Date().getFullYear(), 0, 1);
-    const end = endDate || new Date();
-    
-    // Calcular o número total de dias entre as datas
-    const totalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
-    
-    // Converter datas para strings ISO para usar nas consultas SQL
-    const startDateStr = start.toISOString().split('T')[0];
-    const endDateStr = end.toISOString().split('T')[0];
-    
-    let query = db.select({
-      propertyId: reservations.propertyId,
-      days: sql`SUM(
-        CAST(
-          EXTRACT(DAY FROM 
-            LEAST(
-              ${reservations.checkOutDate}, 
-              CAST('${endDateStr}' as DATE)
-            ) - 
-            GREATEST(
-              ${reservations.checkInDate}, 
-              CAST('${startDateStr}' as DATE)
+    try {
+      // Definir datas padrão se não forem fornecidas
+      const start = startDate || new Date(new Date().getFullYear(), 0, 1);
+      const end = endDate || new Date();
+      
+      // Calcular o número total de dias entre as datas
+      const totalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+      if (totalDays <= 0) return 0; // Evita divisão por zero
+      
+      // Converter datas para strings ISO
+      const startDateStr = start.toISOString().split('T')[0];
+      const endDateStr = end.toISOString().split('T')[0];
+      
+      console.log("DEBUG getOccupancyRate - Datas:", {
+        startDateStr, endDateStr, totalDays
+      });
+      
+      // Obter dias ocupados para as propriedades
+      let occupiedDaysQuery;
+      
+      // Query específica para uma propriedade
+      if (propertyId) {
+        occupiedDaysQuery = await db.execute(sql`
+          SELECT SUM(
+            EXTRACT(DAY FROM 
+              LEAST(
+                "check_out_date"::DATE, 
+                ${endDateStr}::DATE
+              ) - 
+              GREATEST(
+                "check_in_date"::DATE, 
+                ${startDateStr}::DATE
+              )
             )
-          ) as INTEGER
-        )
-      )`
-    }).from(reservations);
-    
-    // Filtrar por propriedade se especificada
-    if (propertyId) {
-      query = query.where(eq(reservations.propertyId, propertyId));
+          ) as days
+          FROM reservations
+          WHERE property_id = ${propertyId}
+          AND "check_in_date"::DATE <= ${endDateStr}::DATE
+          AND "check_out_date"::DATE >= ${startDateStr}::DATE
+        `);
+        
+        const occupiedDays = Number(occupiedDaysQuery[0]?.days) || 0;
+        return (occupiedDays / totalDays) * 100;
+      } 
+      // Query para todas as propriedades
+      else {
+        // Obter contagem de propriedades
+        const propertiesResult = await db.execute(sql`
+          SELECT COUNT(*) as count FROM properties WHERE active = true
+        `);
+        const numProperties = Number(propertiesResult[0]?.count) || 1;
+        
+        // Obter dias ocupados para todas as propriedades
+        const occupiedDaysResult = await db.execute(sql`
+          SELECT SUM(
+            EXTRACT(DAY FROM 
+              LEAST(
+                "check_out_date"::DATE, 
+                ${endDateStr}::DATE
+              ) - 
+              GREATEST(
+                "check_in_date"::DATE, 
+                ${startDateStr}::DATE
+              )
+            )
+          ) as days
+          FROM reservations
+          WHERE "check_in_date"::DATE <= ${endDateStr}::DATE
+          AND "check_out_date"::DATE >= ${startDateStr}::DATE
+        `);
+        
+        const totalOccupiedDays = Number(occupiedDaysResult[0]?.days) || 0;
+        const totalPossibleDays = totalDays * numProperties;
+        
+        return (totalOccupiedDays / totalPossibleDays) * 100;
+      }
+    } catch (error) {
+      console.error("Erro no cálculo da taxa de ocupação:", error);
+      return 0;
     }
-    
-    // Filtrar apenas reservas que se sobrepõem ao período desejado
-    query = query.where(
-      and(
-        lte(reservations.checkInDate, endDateStr),
-        gte(reservations.checkOutDate, startDateStr)
-      )
-    );
-    
-    if (propertyId) {
-      query = query.groupBy(reservations.propertyId);
-    }
-    
-    const results = await query;
-    
-    if (results.length === 0) return 0;
-    
-    // Se for uma propriedade específica
-    if (propertyId) {
-      const occupiedDays = Number(results[0]?.days) || 0;
-      return (occupiedDays / totalDays) * 100;
-    }
-    
-    // Se for para todas as propriedades
-    // Primeiro, obter o número de propriedades
-    const [propertiesCount] = await db.select({
-      count: count()
-    }).from(properties);
-    
-    const numProperties = Number(propertiesCount?.count) || 1;
-    
-    // Calcular a média de ocupação para todas as propriedades
-    const totalOccupiedDays = results.reduce((sum, row) => sum + Number(row.days || 0), 0);
-    const totalPossibleDays = totalDays * numProperties;
-    
-    return (totalOccupiedDays / totalPossibleDays) * 100;
   }
 
-  async getPropertyStatistics(propertyId: number): Promise<any> {
-    if (!db) return {
-      totalRevenue: 0,
-      totalReservations: 0,
-      averageStay: 0,
-      occupancyRate: 0
-    };
-    
-    // Obter receita total
-    const [revenueResult] = await db.select({
-      total: sql`SUM(CAST(${reservations.totalAmount} as DECIMAL))`
-    }).from(reservations)
-      .where(eq(reservations.propertyId, propertyId));
-    
-    // Obter número total de reservas
-    const [reservationsCount] = await db.select({
-      count: count()
-    }).from(reservations)
-      .where(eq(reservations.propertyId, propertyId));
-    
-    // Obter duração média da estadia
-    const [stayDuration] = await db.select({
-      average: sql`
-        AVG(
-          EXTRACT(DAY FROM CAST(${reservations.checkOutDate} as DATE) - CAST(${reservations.checkInDate} as DATE))
-        )
-      `
-    }).from(reservations)
-      .where(eq(reservations.propertyId, propertyId));
-    
-    // Obter taxa de ocupação para o ano atual
-    const startDate = new Date(new Date().getFullYear(), 0, 1);
-    const occupancyRate = await this.getOccupancyRate(propertyId, startDate);
-    
-    return {
-      totalRevenue: Number(revenueResult?.total) || 0,
-      totalReservations: Number(reservationsCount?.count) || 0,
-      averageStay: Number(stayDuration?.average) || 0,
-      occupancyRate
-    };
-  }
+  // Este método foi movido para cima para evitar duplicação
 }
 
 // Decide which storage to use based on environment
