@@ -18,7 +18,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ className }: SidebarProps) {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const { t, i18n } = useTranslation();
   const isPortuguese = i18n.language?.startsWith("pt");
 
@@ -91,7 +91,6 @@ export function Sidebar({ className }: SidebarProps) {
             <div 
               key={link.href}
               className="block" 
-              onClick={() => window.location.href = link.href}
             >
               <div
                 className={cn(
@@ -100,6 +99,7 @@ export function Sidebar({ className }: SidebarProps) {
                     ? "bg-primary-50 text-primary-700"
                     : "text-secondary-700 hover:bg-secondary-100"
                 )}
+                onClick={() => setLocation(link.href)}
               >
                 <link.icon className="mr-3 h-5 w-5" />
                 {link.title}

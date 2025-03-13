@@ -245,26 +245,31 @@ export default function ReservationsPage() {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => window.location.href = `/reservations/${reservation.id}`}>
-                                <Button variant="ghost" className="p-0 h-auto w-full justify-start">
+                              <DropdownMenuItem asChild>
+                                <div 
+                                  className="cursor-pointer flex items-center px-2 py-1.5 text-sm"
+                                  onClick={() => navigate(`/reservations/${reservation.id}`)}
+                                >
                                   Ver detalhes
-                                </Button>
+                                </div>
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => window.location.href = `/reservations/edit/${reservation.id}`}>
-                                <Button variant="ghost" className="p-0 h-auto w-full justify-start">
+                              <DropdownMenuItem asChild>
+                                <div 
+                                  className="cursor-pointer flex items-center px-2 py-1.5 text-sm"
+                                  onClick={() => navigate(`/reservations/edit/${reservation.id}`)}
+                                >
                                   <Edit className="mr-2 h-4 w-4" />
                                   Editar
-                                </Button>
+                                </div>
                               </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <Button 
-                                  variant="ghost" 
-                                  className="p-0 h-auto w-full justify-start text-red-600"
+                              <DropdownMenuItem asChild>
+                                <div 
+                                  className="cursor-pointer flex items-center px-2 py-1.5 text-sm text-red-600"
                                   onClick={() => setReservationToDelete(reservation.id)}
                                 >
                                   <Trash2 className="mr-2 h-4 w-4" />
                                   Excluir
-                                </Button>
+                                </div>
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
