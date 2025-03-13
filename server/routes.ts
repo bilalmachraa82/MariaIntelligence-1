@@ -614,109 +614,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Rota para processar mensagens com o Mistral AI
   app.post("/api/assistant", async (req: Request, res: Response) => {
     try {
-      const { message, history } = req.body;
-      
-      if (!message) {
-        return res.status(400).json({ error: 'Mensagem é obrigatória' });
-      }
-      
-      const mistralApiKey = process.env.MISTRAL_API_KEY;
-      
-      if (!mistralApiKey) {
-        return res.status(400).json({ 
-          error: 'Chave da API Mistral não configurada',
-          reply: 'Para usar o assistente, configure a chave da API Mistral nas configurações.'
-        });
-      }
-      
-      // Preparar o contexto das propriedades
-      const properties = await storage.getProperties();
-      const reservations = await storage.getReservations();
-      const owners = await storage.getOwners();
-      
-      // Criar um contexto para o modelo
-      const propertyContext = properties.map(p => 
-        `Propriedade ID: ${p.id}, Nome: ${p.name}, Proprietário ID: ${p.ownerId}`
-      ).join('\n');
-      
-      const ownerContext = owners.map(o => 
-        `Proprietário ID: ${o.id}, Nome: ${o.name}, Empresa: ${o.company || 'N/A'}`
-      ).join('\n');
-      
-      const reservationContext = reservations.map(r => 
-        `Reserva ID: ${r.id}, Propriedade ID: ${r.propertyId}, Hóspede: ${r.guestName}, Check-in: ${r.checkInDate}, Check-out: ${r.checkOutDate}, Valor: ${r.totalAmount}`
-      ).join('\n');
-      
-      const systemMessage = `Você é o assistente virtual da Maria Faz, uma plataforma de gestão de propriedades para aluguel temporário.
-      
-      Use essas informações sobre as propriedades, proprietários e reservas para responder às perguntas:
-      
-      PROPRIEDADES:
-      ${propertyContext}
-      
-      PROPRIETÁRIOS:
-      ${ownerContext}
-      
-      RESERVAS:
-      ${reservationContext}
-      
-      Responda sempre em português, de forma útil, concisa e amigável.`;
-      
-      // Montar o histórico de mensagens para a API
-      const messages = [
-        { role: "system", content: systemMessage },
-        ...history.slice(-10) // Limitar a 10 mensagens do histórico para não exceder limites
-      ];
-      
-      // Adicionar a mensagem atual do usuário
-      messages.push({ role: "user", content: message });
-      
-      try {
-        // Chamar a API Mistral
-        const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${mistralApiKey}`
-          },
-          body: JSON.stringify({
-            model: 'mistral-large-latest',
-            messages: messages,
-            temperature: 0.7,
-            max_tokens: 1024
-          })
-        });
-        
-        const data = await response.json();
-        
-        if (data.error) {
-          console.error('Erro na API Mistral:', data.error);
-          return res.status(500).json({ 
-            error: 'Erro ao processar a solicitação com Mistral AI',
-            reply: 'Desculpe, houve um erro ao processar sua mensagem. Por favor, tente novamente mais tarde.'
-          });
-        }
-        
-        // Registrar a atividade
-        await storage.createActivity({
-          type: 'assistant_chat',
-          description: `Chat com assistente virtual: "${message.substring(0, 50)}${message.length > 50 ? '...' : ''}"`,
-          entityType: null,
-          entityId: null
-        });
-        
-        return res.json({ 
-          reply: data.choices[0].message.content
-        });
-      } catch (error) {
-        console.error('Erro ao chamar a API Mistral:', error);
-        return res.status(500).json({ 
-          error: 'Erro ao comunicar com a API Mistral',
-          reply: 'Desculpe, houve um problema de comunicação com o serviço de IA. Por favor, tente novamente mais tarde.'
-        });
-      }
-    } catch (err) {
-      handleError(err, res);
+      // Importação dinâmica para resolver problema de ciclo de dependência
+      const { mariaAssistant } = await import('./api/maria-assistant');
+      return mariaAssistant(req, res);
+    } catch (error) {
+      handleError(error, res);
     }
   });
 
