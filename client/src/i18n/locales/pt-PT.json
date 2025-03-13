@@ -10,7 +10,14 @@
     "owners": "Proprietários",
     "reports": "Relatórios",
     "settings": "Configurações",
-    "aiAssistant": "Assistente IA"
+    "aiAssistant": "Assistente IA",
+    "pdfUpload": "Importar Reservas",
+    "cleaningTeams": "Equipas de Limpeza",
+    "categories": {
+      "main": "Principal",
+      "tools": "Ferramentas",
+      "management": "Gestão"
+    }
   },
   "common": {
     "search": "Pesquisar",

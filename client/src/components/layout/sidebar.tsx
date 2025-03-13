@@ -158,7 +158,7 @@ export function Sidebar({ className }: SidebarProps) {
             {/* Seção Principal */}
             <div>
               <h3 className="px-3 text-xs font-semibold text-maria-gray uppercase tracking-wider">
-                Principal
+                {t("navigation.categories.main")}
               </h3>
               <div className="mt-2 space-y-1">
                 {mainLinks.map((link) => (
@@ -190,7 +190,7 @@ export function Sidebar({ className }: SidebarProps) {
             {/* Seção Ferramentas */}
             <div>
               <h3 className="px-3 text-xs font-semibold text-maria-gray uppercase tracking-wider">
-                Ferramentas
+                {t("navigation.categories.tools")}
               </h3>
               <div className="mt-2 space-y-1">
                 {toolsLinks.map((link) => (
@@ -222,7 +222,7 @@ export function Sidebar({ className }: SidebarProps) {
             {/* Seção Gestão */}
             <div>
               <h3 className="px-3 text-xs font-semibold text-maria-gray uppercase tracking-wider">
-                Gestão
+                {t("navigation.categories.management")}
               </h3>
               <div className="mt-2 space-y-1">
                 {managementLinks.map((link) => (
