@@ -15,6 +15,14 @@ import { useOwners } from "@/hooks/use-owners";
 import { useOwnerReport } from "@/hooks/use-owner-report";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { downloadOwnerReportCSV } from "@/lib/export-utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface OwnerReport {
   ownerId: number;
