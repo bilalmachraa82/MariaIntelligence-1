@@ -48,17 +48,26 @@ const upload = multer({
 
 // Error handling middleware
 const handleError = (err: any, res: Response) => {
-  console.error(err);
+  console.error("Error details:", err);
   
   if (err instanceof ZodError) {
+    console.error("Validation error:", JSON.stringify(err.errors, null, 2));
     return res.status(400).json({
       message: "Validation error",
       errors: err.errors
     });
   }
   
+  // Detalhando mais o log para facilitar o debug
+  if (err.stack) {
+    console.error("Error stack:", err.stack);
+  }
+  
+  // Garantir que sempre retornamos JSON
   return res.status(err.status || 500).json({
-    message: err.message || "Internal server error"
+    message: err.message || "Internal server error",
+    errorType: err.name || "UnknownError",
+    timestamp: new Date().toISOString()
   });
 };
 
@@ -151,10 +160,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/owners", async (req: Request, res: Response) => {
     try {
-      const validatedData = extendedOwnerSchema.parse(req.body);
-      const owner = await storage.createOwner(validatedData);
-      res.status(201).json(owner);
+      console.log("POST /api/owners - Recebido body:", JSON.stringify(req.body, null, 2));
+      
+      // Verificar se o corpo da requisição não está vazio
+      if (!req.body || Object.keys(req.body).length === 0) {
+        console.error("POST /api/owners - Body vazio ou inválido");
+        return res.status(400).json({ 
+          message: "Corpo da requisição vazio ou inválido",
+          timestamp: new Date().toISOString()
+        });
+      }
+      
+      // Validar os dados com o schema
+      try {
+        const validatedData = extendedOwnerSchema.parse(req.body);
+        console.log("POST /api/owners - Dados validados:", JSON.stringify(validatedData, null, 2));
+        
+        // Criar o proprietário
+        const owner = await storage.createOwner(validatedData);
+        console.log("POST /api/owners - Proprietário criado com sucesso:", JSON.stringify(owner, null, 2));
+        
+        return res.status(201).json(owner);
+      } catch (validationError) {
+        console.error("POST /api/owners - Erro de validação:", validationError);
+        if (validationError instanceof ZodError) {
+          return res.status(400).json({
+            message: "Erro de validação",
+            errors: validationError.errors,
+            timestamp: new Date().toISOString()
+          });
+        }
+        throw validationError; // Propagar para o próximo catch
+      }
     } catch (err) {
+      console.error("POST /api/owners - Erro interno:", err);
       handleError(err, res);
     }
   });
