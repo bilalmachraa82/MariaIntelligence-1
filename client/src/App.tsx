@@ -84,18 +84,18 @@ function Router() {
       <Route path="/" component={Dashboard} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/properties" component={PropertiesPage} />
-      <Route path="/properties/:id" component={PropertyDetailPage} />
       <Route path="/properties/edit/:id?" component={PropertyEditPage} />
+      <Route path="/properties/:id" component={PropertyDetailPage} />
       <Route path="/owners" component={OwnersPage} />
-      <Route path="/owners/:id" component={OwnerDetailPage} />
       <Route path="/owners/edit/:id?" component={OwnerEditPage} />
+      <Route path="/owners/:id" component={OwnerDetailPage} />
       <Route path="/reservations" component={ReservationsPage} />
-      <Route path="/reservations/:id" component={ReservationDetailPage} />
       <Route path="/reservations/new" component={ReservationNewPage} />
+      <Route path="/reservations/:id" component={ReservationDetailPage} />
       <Route path="/upload-pdf" component={PDFUploadPage} />
       <Route path="/cleaning-teams" component={CleaningTeamsPage} />
-      <Route path="/cleaning-teams/:id" component={() => <div>Cleaning Team Details (Coming Soon)</div>} />
       <Route path="/cleaning-teams/new" component={() => <div>New Cleaning Team (Coming Soon)</div>} />
+      <Route path="/cleaning-teams/:id" component={() => <div>Cleaning Team Details (Coming Soon)</div>} />
       <Route path="/cleaning-reports" component={CleaningReportsPage} />
       <Route path="/reports" component={ReportsPage} />
       <Route path="/reports/owner-report" component={OwnerReportPage} />
@@ -109,19 +109,19 @@ function Router() {
       {/* Rotas em português */}
       <Route path="/painel" component={Dashboard} />
       <Route path="/propriedades" component={PropertiesPage} />
-      <Route path="/propriedades/:id" component={PropertyDetailPage} />
       <Route path="/propriedades/editar/:id?" component={PropertyEditPage} />
+      <Route path="/propriedades/:id" component={PropertyDetailPage} />
       <Route path="/proprietarios" component={OwnersPage} />
-      <Route path="/proprietarios/:id" component={OwnerDetailPage} />
       <Route path="/proprietarios/editar/:id?" component={OwnerEditPage} />
+      <Route path="/proprietarios/:id" component={OwnerDetailPage} />
       <Route path="/reservas" component={ReservationsPage} />
-      <Route path="/reservas/:id" component={ReservationDetailPage} />
       <Route path="/reservas/nova" component={ReservationNewPage} />
+      <Route path="/reservas/:id" component={ReservationDetailPage} />
       <Route path="/upload-pdf" component={PDFUploadPage} />
       <Route path="/enviar-pdf" component={PDFUploadPage} />
       <Route path="/equipas-limpeza" component={CleaningTeamsPage} />
-      <Route path="/equipas-limpeza/:id" component={() => <div>Detalhes da Equipa de Limpeza (Em breve)</div>} />
       <Route path="/equipas-limpeza/nova" component={() => <div>Nova Equipa de Limpeza (Em breve)</div>} />
+      <Route path="/equipas-limpeza/:id" component={() => <div>Detalhes da Equipa de Limpeza (Em breve)</div>} />
       <Route path="/relatorios-limpeza" component={CleaningReportsPage} />
       <Route path="/relatorios" component={ReportsPage} />
       <Route path="/relatorios/proprietario" component={OwnerReportPage} />
