@@ -37,7 +37,10 @@ export default function AssistantPage() {
   useEffect(() => {
     const checkApiKey = async () => {
       try {
-        const response = await apiRequest<{ available: boolean }>("/api/check-mistral-key");
+        // Use o método GET explicitamente para a verificação da chave
+        const response = await apiRequest<{ available: boolean }>("/api/check-mistral-key", {
+          method: "GET"
+        });
         setHasMistralKey(response.available);
       } catch (error) {
         console.error("Erro ao verificar a chave da API Mistral:", error);

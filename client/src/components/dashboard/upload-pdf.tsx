@@ -58,7 +58,9 @@ export function UploadPDF() {
   useEffect(() => {
     async function checkMistralApiKey() {
       try {
-        const response = await fetch('/api/check-mistral-key');
+        const response = await fetch('/api/check-mistral-key', {
+          method: 'GET'
+        });
         if (response.ok) {
           const data = await response.json();
           setMistralAvailable(data.available);
