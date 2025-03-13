@@ -268,15 +268,21 @@ export default function CleaningTeamsPage() {
         </TabsContent>
         
         <TabsContent value="performance" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {teams.filter(team => team.status === "active").map((team) => (
-              <Card key={team.id}>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-md">{team.name}</CardTitle>
-                  <CardDescription>{team.manager}</CardDescription>
+              <Card key={team.id} className="overflow-hidden">
+                <CardHeader className="pb-2 bg-muted/10">
+                  <CardTitle className="text-md flex items-center">
+                    <Users className="h-4 w-4 mr-2" />
+                    {team.name}
+                  </CardTitle>
+                  <CardDescription className="flex items-center">
+                    <User className="h-3 w-3 mr-1 opacity-70" />
+                    {team.manager}
+                  </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
+                <CardContent className="p-4">
+                  <div className="space-y-3">
                     <div className="flex justify-between items-center">
                       <span className="text-sm">{t("cleaningTeams.completedCleanings", "Limpezas Concluídas")}:</span>
                       <Badge variant="outline" className="font-mono">
@@ -287,6 +293,7 @@ export default function CleaningTeamsPage() {
                     <div className="flex justify-between items-center">
                       <span className="text-sm">{t("cleaningTeams.properties", "Propriedades")}:</span>
                       <Badge variant="outline" className="font-mono">
+                        <Home className="h-3 w-3 mr-1" />
                         {team.propertiesCount}
                       </Badge>
                     </div>
@@ -299,21 +306,37 @@ export default function CleaningTeamsPage() {
                             ? "bg-yellow-50 text-yellow-700 border-yellow-200"
                             : "bg-red-50 text-red-700 border-red-200"
                       }>
+                        <Percent className="h-3 w-3 mr-1" />
                         {teamEfficiency.find(e => e.teamId === team.id && e.month === "Março")?.score}%
                       </Badge>
                     </div>
                   </div>
                   
-                  <Button 
-                    variant="outline" 
-                    className="w-full mt-4"
-                    onClick={() => navigate(isPortuguese 
-                      ? `/relatorios-limpeza?equipa=${team.id}` 
-                      : `/cleaning-reports?team=${team.id}`
-                    )}
-                  >
-                    {t("cleaningTeams.viewReport", "Ver Relatórios")}
-                  </Button>
+                  <div className="grid grid-cols-2 gap-2 mt-4">
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={() => navigate(isPortuguese 
+                        ? `/equipas-limpeza/${team.id}` 
+                        : `/cleaning-teams/${team.id}`
+                      )}
+                    >
+                      <Info className="h-3.5 w-3.5 mr-1" />
+                      {t("cleaningTeams.details", "Detalhes")}
+                    </Button>
+                    
+                    <Button 
+                      variant="secondary" 
+                      className="w-full"
+                      onClick={() => navigate(isPortuguese 
+                        ? `/relatorios-limpeza?equipa=${team.id}` 
+                        : `/cleaning-reports?team=${team.id}`
+                      )}
+                    >
+                      <FileText className="h-3.5 w-3.5 mr-1" />
+                      {t("cleaningTeams.reports", "Relatórios")}
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}

@@ -131,39 +131,42 @@ export default function OwnerReportPage() {
             {t("ownerReport.selectOwnerAndPeriod", "Selecione o proprietário e o período para gerar o relatório")}
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-wrap gap-4">
-          <div className="w-full sm:w-auto flex-1">
-            <label className="text-sm font-medium mb-1 block">
-              {t("ownerReport.owner", "Proprietário")}
-            </label>
-            <Select value={selectedOwner} onValueChange={setSelectedOwner}>
-              <SelectTrigger>
-                <SelectValue placeholder={t("ownerReport.selectOwner", "Selecione um proprietário")} />
-              </SelectTrigger>
-              <SelectContent>
-                {isOwnersLoading ? (
-                  <SelectItem value="loading" disabled>
-                    {t("common.loading", "Carregando...")}
-                  </SelectItem>
-                ) : (
-                  owners?.map((owner) => (
-                    <SelectItem key={owner.id} value={owner.id.toString()}>
-                      {owner.name}
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="w-full">
+              <label className="text-sm font-medium mb-1 block">
+                {t("ownerReport.owner", "Proprietário")}
+              </label>
+              <Select value={selectedOwner} onValueChange={setSelectedOwner}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={t("ownerReport.selectOwner", "Selecione um proprietário")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {isOwnersLoading ? (
+                    <SelectItem value="loading" disabled>
+                      {t("common.loading", "Carregando...")}
                     </SelectItem>
-                  ))
-                )}
-              </SelectContent>
-            </Select>
-          </div>
-          
-          <div className="w-full sm:w-auto flex-1">
-            <label className="text-sm font-medium mb-1 block">
-              {t("ownerReport.period", "Período")}
-            </label>
-            <DateRangePicker 
-              value={dateRange} 
-              onChange={handleDateRangeChange} 
-            />
+                  ) : (
+                    owners?.map((owner) => (
+                      <SelectItem key={owner.id} value={owner.id.toString()}>
+                        {owner.name}
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="w-full">
+              <label className="text-sm font-medium mb-1 block">
+                {t("ownerReport.period", "Período")}
+              </label>
+              <DateRangePicker 
+                value={dateRange} 
+                onChange={handleDateRangeChange} 
+                className="w-full"
+              />
+            </div>
           </div>
         </CardContent>
       </Card>

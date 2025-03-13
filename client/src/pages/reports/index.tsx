@@ -132,64 +132,66 @@ export default function ReportsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-2xl font-bold text-secondary-900">{t("reports.title", "Relatórios")}</h2>
-        <div className="mt-4 sm:mt-0 flex flex-wrap gap-3">
-          <Select 
-            value={selectedDateRange.label} 
-            onValueChange={handleDateRangeChange}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder={t("reports.period", "Período")} />
-            </SelectTrigger>
-            <SelectContent>
-              {dateRanges.map((range) => (
-                <SelectItem key={range.label} value={range.label}>
-                  {range.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          
-          <Select 
-            value={selectedPropertyId} 
-            onValueChange={handlePropertyChange}
-          >
-            <SelectTrigger className="w-[220px]">
-              <SelectValue placeholder={t("reports.property", "Propriedade")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t("reports.allProperties", "Todas as propriedades")}</SelectItem>
-              {properties?.map((property) => (
-                <SelectItem key={property.id} value={property.id.toString()}>
-                  {property.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          
-          <Button variant="outline">
-            <Download className="mr-2 h-4 w-4" />
-            {t("reports.exportReport", "Exportar Relatório")}
-          </Button>
+        <div className="mt-4 sm:mt-0 flex flex-col sm:flex-row flex-wrap gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:flex gap-3 w-full">
+            <Select 
+              value={selectedDateRange.label} 
+              onValueChange={handleDateRangeChange}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder={t("reports.period", "Período")} />
+              </SelectTrigger>
+              <SelectContent>
+                {dateRanges.map((range) => (
+                  <SelectItem key={range.label} value={range.label}>
+                    {range.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            
+            <Select 
+              value={selectedPropertyId} 
+              onValueChange={handlePropertyChange}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder={t("reports.property", "Propriedade")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t("reports.allProperties", "Todas as propriedades")}</SelectItem>
+                {properties?.map((property) => (
+                  <SelectItem key={property.id} value={property.id.toString()}>
+                    {property.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            
+            <Button variant="outline" className="w-full sm:w-auto">
+              <Download className="mr-2 h-4 w-4" />
+              {t("reports.exportReport", "Exportar Relatório")}
+            </Button>
+          </div>
         </div>
       </div>
       
       <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
-        <TabsList className="grid grid-cols-4 mb-6">
+        <TabsList className="grid grid-cols-2 md:grid-cols-4 mb-6">
           <TabsTrigger value="general" className="flex items-center">
             <Briefcase className="w-4 h-4 mr-2" />
-            <span>{t("reports.general", "Geral")}</span>
+            <span className="whitespace-nowrap">{t("reports.general", "Geral")}</span>
           </TabsTrigger>
           <TabsTrigger value="owner" className="flex items-center">
             <Users className="w-4 h-4 mr-2" />
-            <span>{t("reports.owner", "Proprietário")}</span>
+            <span className="whitespace-nowrap">{t("reports.owner", "Proprietário")}</span>
           </TabsTrigger>
           <TabsTrigger value="operational" className="flex items-center">
             <ClipboardCheck className="w-4 h-4 mr-2" />
-            <span>{t("reports.operational", "Operacional")}</span>
+            <span className="whitespace-nowrap">{t("reports.operational", "Operacional")}</span>
           </TabsTrigger>
           <TabsTrigger value="cleaningTeams" className="flex items-center">
             <Home className="w-4 h-4 mr-2" />
-            <span>{t("reports.cleaningTeams", "Equipas de Limpeza")}</span>
+            <span className="whitespace-nowrap">{t("reports.cleaningTeams", "Equipas de Limpeza")}</span>
           </TabsTrigger>
         </TabsList>
         
