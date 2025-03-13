@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { uploadAndProcessPDF, createReservationFromExtractedData } from "@/lib/ocr";
+import { uploadAndProcessPDF, createReservationFromExtractedData, processPDFWithMistralOCR } from "@/lib/ocr";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -12,12 +12,12 @@ export function usePdfUpload() {
 
   const handleFileUpload = async (file: File) => {
     if (!file) {
-      setError("No file selected");
+      setError("Nenhum arquivo selecionado");
       return;
     }
 
     if (file.type !== "application/pdf") {
-      setError("Only PDF files are allowed");
+      setError("Apenas arquivos PDF são permitidos");
       return;
     }
 
@@ -25,17 +25,31 @@ export function usePdfUpload() {
       setIsUploading(true);
       setError(null);
       
-      const result = await uploadAndProcessPDF(file);
-      setExtractedData(result.extractedData);
-      
-      toast({
-        title: "PDF Processado com Sucesso",
-        description: "Os dados foram extraídos e estão prontos para revisão.",
-      });
-      
+      // Primeiro tentamos processar com o Mistral diretamente
+      try {
+        // Usar a função que processa o PDF diretamente com o Mistral AI
+        const result = await processPDFWithMistralOCR(file);
+        setExtractedData(result.extractedData);
+        
+        toast({
+          title: "PDF Processado com Sucesso (Mistral AI)",
+          description: "Os dados foram extraídos com IA e estão prontos para revisão.",
+        });
+      } catch (mistralError) {
+        console.warn("Falha ao processar com Mistral diretamente, tentando via backend:", mistralError);
+        
+        // Se falhar, caímos de volta para o método tradicional via backend
+        const result = await uploadAndProcessPDF(file);
+        setExtractedData(result.extractedData);
+        
+        toast({
+          title: "PDF Processado com Sucesso",
+          description: "Os dados foram extraídos e estão prontos para revisão.",
+        });
+      }
     } catch (err) {
-      console.error("Error uploading PDF:", err);
-      setError(err instanceof Error ? err.message : "Failed to process PDF");
+      console.error("Erro ao fazer upload do PDF:", err);
+      setError(err instanceof Error ? err.message : "Falha ao processar PDF");
       
       toast({
         title: "Erro ao Processar PDF",

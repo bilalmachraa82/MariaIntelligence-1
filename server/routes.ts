@@ -414,63 +414,173 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/upload-pdf", upload.single('pdf'), async (req: Request, res: Response) => {
     try {
       if (!req.file) {
-        return res.status(400).json({ message: "No file uploaded" });
+        return res.status(400).json({ message: "Nenhum arquivo enviado" });
       }
       
-      // In a real implementation, this would call Mistral OCR API
-      // For now, we'll simulate successful extraction with sample data
+      // Verifica se a chave da API Mistral está disponível
+      if (!process.env.MISTRAL_API_KEY) {
+        return res.status(500).json({ message: "Chave da API Mistral não configurada" });
+      }
       
-      // Simulate OCR processing delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Dummy extracted data - in a real implementation this would come from Mistral OCR
-      const extractedData = {
-        propertyName: "Aroeira 3",
-        guestName: "Maria Silva",
-        guestEmail: "maria.silva@example.com",
-        guestPhone: "+351912345678",
-        checkInDate: format(new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), "yyyy-MM-dd"),
-        checkOutDate: format(new Date(Date.now() + 10 * 24 * 60 * 60 * 1000), "yyyy-MM-dd"),
-        numGuests: 2,
-        totalAmount: 480,
-        platform: "airbnb"
-      };
-      
-      // Find property by name
-      const properties = await storage.getProperties();
-      const matchedProperty = properties.find(p => 
-        p.name.toLowerCase() === extractedData.propertyName.toLowerCase()
-      );
-      
-      if (!matchedProperty) {
-        return res.status(400).json({ 
-          message: "Could not match property name from extracted data",
-          extractedData
+      try {
+        // Lê o conteúdo do arquivo PDF enviado
+        const filePath = req.file.path;
+        const fileBuffer = await fs.promises.readFile(filePath);
+        const fileBase64 = fileBuffer.toString('base64');
+        
+        // Chamada para a API Mistral para extrair texto do PDF
+        const extractedText = await extractTextFromPDFWithMistral(fileBase64);
+        
+        // Chamada para a API Mistral para analisar os dados da reserva do texto extraído
+        const parsedData = await parseReservationDataWithMistral(extractedText);
+        
+        // Encontrar a propriedade correspondente pelo nome
+        const properties = await storage.getProperties();
+        const matchedProperty = properties.find(p => 
+          p.name.toLowerCase() === parsedData.propertyName.toLowerCase()
+        );
+        
+        if (!matchedProperty) {
+          return res.status(400).json({ 
+            message: `Não foi possível encontrar uma propriedade com o nome "${parsedData.propertyName}"`,
+            extractedData: parsedData
+          });
+        }
+        
+        // Calcular taxas e valores baseados na propriedade encontrada
+        const totalAmount = parsedData.totalAmount || 0;
+        const platformFee = parsedData.platformFee || (
+          (parsedData.platform === "airbnb" || parsedData.platform === "booking") 
+            ? Math.round(totalAmount * 0.1) 
+            : 0
+        );
+        
+        // Retorna os dados extraídos com as informações da propriedade
+        res.json({
+          extractedData: {
+            ...parsedData,
+            propertyId: matchedProperty.id,
+            platformFee: platformFee,
+            cleaningFee: parsedData.cleaningFee || Number(matchedProperty.cleaningCost || 0),
+            checkInFee: parsedData.checkInFee || Number(matchedProperty.checkInFee || 0),
+            commissionFee: parsedData.commissionFee || (totalAmount * Number(matchedProperty.commission || 0) / 100),
+            teamPayment: parsedData.teamPayment || Number(matchedProperty.teamPayment || 0)
+          },
+          file: {
+            filename: req.file.filename,
+            path: req.file.path
+          }
+        });
+      } catch (mistralError) {
+        console.error('Erro na API Mistral:', mistralError);
+        // Caso falhe a chamada à API Mistral, respondemos com um erro adequado
+        return res.status(500).json({ 
+          message: "Falha ao processar PDF com Mistral AI", 
+          error: mistralError.message 
         });
       }
-      
-      // Return the extracted data with property information
-      res.json({
-        extractedData: {
-          ...extractedData,
-          propertyId: matchedProperty.id,
-          platformFee: extractedData.platform === "airbnb" || extractedData.platform === "booking" 
-            ? Math.round(extractedData.totalAmount * 0.1) 
-            : 0,
-          cleaningFee: Number(matchedProperty.cleaningCost),
-          checkInFee: Number(matchedProperty.checkInFee),
-          commissionFee: (extractedData.totalAmount * Number(matchedProperty.commission) / 100),
-          teamPayment: Number(matchedProperty.teamPayment)
-        },
-        file: {
-          filename: req.file.filename,
-          path: req.file.path
-        }
-      });
     } catch (err) {
+      console.error('Erro ao processar upload de PDF:', err);
       handleError(err, res);
     }
   });
+  
+  // Função auxiliar para extrair texto de um PDF usando a API Mistral
+  async function extractTextFromPDFWithMistral(pdfBase64: string): Promise<string> {
+    const MISTRAL_API_URL = "https://api.mistral.ai/v1/chat/completions";
+    
+    const prompt = `
+      Você é um especialista em OCR (Reconhecimento Óptico de Caracteres). 
+      O conteúdo fornecido é um PDF de uma reserva de alojamento local em base64.
+      Por favor, extraia todo o texto visível neste documento sem interpretações adicionais.
+      Retorne apenas o texto extraído, sem comentários ou formatação adicional.
+    `;
+
+    const response = await fetch(MISTRAL_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.MISTRAL_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'mistral-large-latest',
+        messages: [
+          { role: 'system', content: 'Você é um assistente especializado em OCR (Optical Character Recognition).' },
+          { role: 'user', content: `${prompt}\n\nPDF Base64: ${pdfBase64}` }
+        ],
+        temperature: 0.1,
+        max_tokens: 4000
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Mistral API error: ${errorText}`);
+    }
+
+    const data = await response.json();
+    return data.choices[0].message.content.trim();
+  }
+
+  // Função auxiliar para analisar texto extraído e extrair informações estruturadas sobre a reserva
+  async function parseReservationDataWithMistral(extractedText: string): Promise<any> {
+    const MISTRAL_API_URL = "https://api.mistral.ai/v1/chat/completions";
+    
+    const prompt = `
+      Você é um especialista em extrair dados estruturados de textos de reservas para alojamento local.
+      Analise o texto extraído de um documento de reserva a seguir e extraia as seguintes informações em formato JSON:
+      
+      - Nome da propriedade (propertyName)
+      - Nome do hóspede (guestName)
+      - Email do hóspede (guestEmail)
+      - Telefone do hóspede (guestPhone)
+      - Data de check-in (formato YYYY-MM-DD)
+      - Data de check-out (formato YYYY-MM-DD)
+      - Número de hóspedes (numGuests)
+      - Valor total da reserva (totalAmount) - apenas o número
+      - Plataforma de reserva (platform): "airbnb", "booking", "direct", ou "other"
+      - Taxa da plataforma (platformFee) - apenas o número
+      - Taxa de limpeza (cleaningFee) - apenas o número
+      - Taxa de check-in (checkInFee) - apenas o número
+      - Taxa de comissão (commissionFee) - apenas o número
+      - Pagamento à equipe (teamPayment) - apenas o número
+      
+      Se alguma informação não estiver disponível, use valores nulos ou vazios.
+      Responda APENAS com o objeto JSON, sem explicações ou texto adicional.
+    `;
+
+    const response = await fetch(MISTRAL_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.MISTRAL_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'mistral-large-latest',
+        messages: [
+          { role: 'system', content: 'Você é um assistente especializado em extrair dados estruturados.' },
+          { role: 'user', content: `${prompt}\n\nTexto extraído:\n${extractedText}` }
+        ],
+        temperature: 0.1,
+        response_format: { type: "json_object" }
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Mistral API error: ${errorText}`);
+    }
+
+    const data = await response.json();
+    const jsonContent = data.choices[0].message.content;
+    
+    try {
+      return JSON.parse(jsonContent);
+    } catch (e) {
+      console.error("Error parsing JSON from Mistral API:", e);
+      return jsonContent; // Retorna o texto bruto se não conseguir analisar como JSON
+    }
+  }
 
   // Other utility endpoints
   app.get("/api/enums", (_req: Request, res: Response) => {
