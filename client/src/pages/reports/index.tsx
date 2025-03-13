@@ -884,8 +884,8 @@ export default function ReportsPage() {
                     <tbody>
                       <tr className="border-b">
                         <td className="py-3 pl-2">
-                          <div className="font-medium">Limpezas Express</div>
-                          <div className="text-xs text-muted-foreground">7 membros</div>
+                          <div className="font-medium">Maria Faz</div>
+                          <div className="text-xs text-muted-foreground">6 membros</div>
                         </td>
                         <td className="text-center py-3">32</td>
                         <td className="text-center py-3">
@@ -904,8 +904,8 @@ export default function ReportsPage() {
                       </tr>
                       <tr className="border-b">
                         <td className="py-3 pl-2">
-                          <div className="font-medium">CleanHome</div>
-                          <div className="text-xs text-muted-foreground">5 membros</div>
+                          <div className="font-medium">Cristina</div>
+                          <div className="text-xs text-muted-foreground">4 membros</div>
                         </td>
                         <td className="text-center py-3">28</td>
                         <td className="text-center py-3">
@@ -924,8 +924,8 @@ export default function ReportsPage() {
                       </tr>
                       <tr className="border-b">
                         <td className="py-3 pl-2">
-                          <div className="font-medium">LusoCleaning</div>
-                          <div className="text-xs text-muted-foreground">6 membros</div>
+                          <div className="font-medium">Primavera</div>
+                          <div className="text-xs text-muted-foreground">5 membros</div>
                         </td>
                         <td className="text-center py-3">19</td>
                         <td className="text-center py-3">
@@ -944,7 +944,7 @@ export default function ReportsPage() {
                       </tr>
                       <tr className="border-b">
                         <td className="py-3 pl-2">
-                          <div className="font-medium">Super Clean</div>
+                          <div className="font-medium">Home Deluxe</div>
                           <div className="text-xs text-muted-foreground">3 membros</div>
                         </td>
                         <td className="text-center py-3">8</td>
@@ -983,10 +983,12 @@ export default function ReportsPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Todas as equipas</SelectItem>
-                    <SelectItem value="1">Limpezas Express</SelectItem>
-                    <SelectItem value="2">CleanHome</SelectItem>
-                    <SelectItem value="3">LusoCleaning</SelectItem>
-                    <SelectItem value="4">Super Clean</SelectItem>
+                    <SelectItem value="1">Maria Faz</SelectItem>
+                    <SelectItem value="2">Cristina</SelectItem>
+                    <SelectItem value="3">Primavera</SelectItem>
+                    <SelectItem value="4">Maria João</SelectItem>
+                    <SelectItem value="5">Home Deluxe</SelectItem>
+                    <SelectItem value="6">Setubal</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
