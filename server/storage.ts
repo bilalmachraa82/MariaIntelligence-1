@@ -642,10 +642,341 @@ export class MemStorage implements IStorage {
   }
 }
 
-import { PgStorage } from './db/pg-storage';
+// DatabaseStorage implementation
+import { db } from "./db";
+import { 
+  properties, owners, reservations, activities,
+  type Property, type Owner, type Reservation, type Activity,
+  type InsertProperty, type InsertOwner, type InsertReservation, type InsertActivity 
+} from "@shared/schema";
+import { eq, desc, sql, and, gte, lte, count, sum, avg } from "drizzle-orm";
+
+// Implementação da classe DatabaseStorage
+export class DatabaseStorage implements IStorage {
+  // User methods (original da template)
+  async getUser(id: number): Promise<any | undefined> {
+    // Não temos tabela de users atualmente, mas mantemos a interface
+    return undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<any | undefined> {
+    // Não temos tabela de users atualmente, mas mantemos a interface
+    return undefined;
+  }
+
+  async createUser(user: any): Promise<any> {
+    // Não temos tabela de users atualmente, mas mantemos a interface
+    return { id: 1, ...user };
+  }
+
+  // Property methods
+  async getProperties(): Promise<Property[]> {
+    if (!db) return [];
+    const results = await db.select().from(properties);
+    return results;
+  }
+
+  async getProperty(id: number): Promise<Property | undefined> {
+    if (!db) return undefined;
+    const [result] = await db.select().from(properties).where(eq(properties.id, id));
+    return result;
+  }
+
+  async createProperty(property: InsertProperty): Promise<Property> {
+    if (!db) {
+      throw new Error("Database not available");
+    }
+    const [result] = await db.insert(properties).values(property).returning();
+    return result;
+  }
+
+  async updateProperty(id: number, property: Partial<InsertProperty>): Promise<Property | undefined> {
+    if (!db) return undefined;
+    const [result] = await db
+      .update(properties)
+      .set(property)
+      .where(eq(properties.id, id))
+      .returning();
+    return result;
+  }
+
+  async deleteProperty(id: number): Promise<boolean> {
+    if (!db) return false;
+    const result = await db.delete(properties).where(eq(properties.id, id));
+    return true; // Postgres não retorna o número de linhas afetadas facilmente
+  }
+
+  // Owner methods
+  async getOwners(): Promise<Owner[]> {
+    if (!db) return [];
+    const results = await db.select().from(owners);
+    return results;
+  }
+
+  async getOwner(id: number): Promise<Owner | undefined> {
+    if (!db) return undefined;
+    const [result] = await db.select().from(owners).where(eq(owners.id, id));
+    return result;
+  }
+
+  async createOwner(owner: InsertOwner): Promise<Owner> {
+    if (!db) {
+      throw new Error("Database not available");
+    }
+    const [result] = await db.insert(owners).values(owner).returning();
+    return result;
+  }
+
+  async updateOwner(id: number, owner: Partial<InsertOwner>): Promise<Owner | undefined> {
+    if (!db) return undefined;
+    const [result] = await db
+      .update(owners)
+      .set(owner)
+      .where(eq(owners.id, id))
+      .returning();
+    return result;
+  }
+
+  async deleteOwner(id: number): Promise<boolean> {
+    if (!db) return false;
+    const result = await db.delete(owners).where(eq(owners.id, id));
+    return true;
+  }
+
+  // Reservation methods
+  async getReservations(): Promise<Reservation[]> {
+    if (!db) return [];
+    const results = await db.select().from(reservations).orderBy(desc(reservations.createdAt));
+    return results;
+  }
+
+  async getReservation(id: number): Promise<Reservation | undefined> {
+    if (!db) return undefined;
+    const [result] = await db.select().from(reservations).where(eq(reservations.id, id));
+    return result;
+  }
+
+  async getReservationsByProperty(propertyId: number): Promise<Reservation[]> {
+    if (!db) return [];
+    const results = await db
+      .select()
+      .from(reservations)
+      .where(eq(reservations.propertyId, propertyId))
+      .orderBy(desc(reservations.checkInDate));
+    return results;
+  }
+
+  async createReservation(reservation: InsertReservation): Promise<Reservation> {
+    if (!db) {
+      throw new Error("Database not available");
+    }
+    const [result] = await db.insert(reservations).values(reservation).returning();
+    return result;
+  }
+
+  async updateReservation(id: number, reservation: Partial<InsertReservation>): Promise<Reservation | undefined> {
+    if (!db) return undefined;
+    const [result] = await db
+      .update(reservations)
+      .set(reservation)
+      .where(eq(reservations.id, id))
+      .returning();
+    return result;
+  }
+
+  async deleteReservation(id: number): Promise<boolean> {
+    if (!db) return false;
+    const result = await db.delete(reservations).where(eq(reservations.id, id));
+    return true;
+  }
+
+  // Activity methods
+  async getActivities(limit?: number): Promise<Activity[]> {
+    if (!db) return [];
+    let query = db.select().from(activities).orderBy(desc(activities.createdAt));
+    
+    if (limit) {
+      query = query.limit(limit);
+    }
+    
+    const results = await query;
+    return results;
+  }
+
+  async createActivity(activity: InsertActivity): Promise<Activity> {
+    if (!db) {
+      throw new Error("Database not available");
+    }
+    const [result] = await db.insert(activities).values(activity).returning();
+    return result;
+  }
+
+  // Statistics methods
+  async getTotalRevenue(startDate?: Date, endDate?: Date): Promise<number> {
+    if (!db) return 0;
+    
+    let query = db.select({
+      totalRevenue: sql`SUM(CAST(${reservations.totalAmount} as DECIMAL))`
+    }).from(reservations);
+    
+    if (startDate) {
+      query = query.where(gte(reservations.checkInDate, startDate.toISOString().split('T')[0]));
+    }
+    
+    if (endDate) {
+      query = query.where(lte(reservations.checkOutDate, endDate.toISOString().split('T')[0]));
+    }
+    
+    const [result] = await query;
+    return Number(result?.totalRevenue) || 0;
+  }
+
+  async getNetProfit(startDate?: Date, endDate?: Date): Promise<number> {
+    if (!db) return 0;
+    
+    let query = db.select({
+      totalRevenue: sql`SUM(CAST(${reservations.totalAmount} as DECIMAL))`,
+      totalCosts: sql`
+        SUM(
+          COALESCE(CAST(${reservations.cleaningFee} as DECIMAL), 0) + 
+          COALESCE(CAST(${reservations.checkInFee} as DECIMAL), 0) + 
+          COALESCE(CAST(${reservations.commission} as DECIMAL), 0) + 
+          COALESCE(CAST(${reservations.teamPayment} as DECIMAL), 0)
+        )
+      `
+    }).from(reservations);
+    
+    if (startDate) {
+      query = query.where(gte(reservations.checkInDate, startDate.toISOString().split('T')[0]));
+    }
+    
+    if (endDate) {
+      query = query.where(lte(reservations.checkOutDate, endDate.toISOString().split('T')[0]));
+    }
+    
+    const [result] = await query;
+    const revenue = Number(result?.totalRevenue) || 0;
+    const costs = Number(result?.totalCosts) || 0;
+    return revenue - costs;
+  }
+
+  async getOccupancyRate(propertyId?: number, startDate?: Date, endDate?: Date): Promise<number> {
+    if (!db) return 0;
+    
+    // Definir datas padrão se não forem fornecidas
+    const start = startDate || new Date(new Date().getFullYear(), 0, 1);
+    const end = endDate || new Date();
+    
+    // Calcular o número total de dias entre as datas
+    const totalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    
+    let query = db.select({
+      propertyId: reservations.propertyId,
+      days: sql`SUM(
+        CAST(
+          EXTRACT(DAY FROM 
+            LEAST(
+              CAST(${reservations.checkOutDate} as DATE), 
+              CAST('${end.toISOString().split('T')[0]}' as DATE)
+            ) - 
+            GREATEST(
+              CAST(${reservations.checkInDate} as DATE), 
+              CAST('${start.toISOString().split('T')[0]}' as DATE)
+            )
+          ) as INTEGER
+        )
+      )`
+    }).from(reservations);
+    
+    // Filtrar por propriedade se especificada
+    if (propertyId) {
+      query = query.where(eq(reservations.propertyId, propertyId));
+    }
+    
+    // Filtrar apenas reservas que se sobrepõem ao período desejado
+    const conditions = [
+      and(
+        lte(reservations.checkInDate, end.toISOString().split('T')[0]),
+        gte(reservations.checkOutDate, start.toISOString().split('T')[0])
+      )
+    ];
+    
+    query = query.where(and(...conditions));
+    
+    if (propertyId) {
+      query = query.groupBy(reservations.propertyId);
+    }
+    
+    const results = await query;
+    
+    if (results.length === 0) return 0;
+    
+    // Se for uma propriedade específica
+    if (propertyId) {
+      const occupiedDays = Number(results[0]?.days) || 0;
+      return (occupiedDays / totalDays) * 100;
+    }
+    
+    // Se for para todas as propriedades
+    // Primeiro, obter o número de propriedades
+    const [propertiesCount] = await db.select({
+      count: count()
+    }).from(properties);
+    
+    const numProperties = Number(propertiesCount?.count) || 1;
+    
+    // Calcular a média de ocupação para todas as propriedades
+    const totalOccupiedDays = results.reduce((sum, row) => sum + Number(row.days || 0), 0);
+    const totalPossibleDays = totalDays * numProperties;
+    
+    return (totalOccupiedDays / totalPossibleDays) * 100;
+  }
+
+  async getPropertyStatistics(propertyId: number): Promise<any> {
+    if (!db) return {
+      totalRevenue: 0,
+      totalReservations: 0,
+      averageStay: 0,
+      occupancyRate: 0
+    };
+    
+    // Obter receita total
+    const [revenueResult] = await db.select({
+      total: sql`SUM(CAST(${reservations.totalAmount} as DECIMAL))`
+    }).from(reservations)
+      .where(eq(reservations.propertyId, propertyId));
+    
+    // Obter número total de reservas
+    const [reservationsCount] = await db.select({
+      count: count()
+    }).from(reservations)
+      .where(eq(reservations.propertyId, propertyId));
+    
+    // Obter duração média da estadia
+    const [stayDuration] = await db.select({
+      average: sql`
+        AVG(
+          EXTRACT(DAY FROM CAST(${reservations.checkOutDate} as DATE) - CAST(${reservations.checkInDate} as DATE))
+        )
+      `
+    }).from(reservations)
+      .where(eq(reservations.propertyId, propertyId));
+    
+    // Obter taxa de ocupação para o ano atual
+    const startDate = new Date(new Date().getFullYear(), 0, 1);
+    const occupancyRate = await this.getOccupancyRate(propertyId, startDate);
+    
+    return {
+      totalRevenue: Number(revenueResult?.total) || 0,
+      totalReservations: Number(reservationsCount?.count) || 0,
+      averageStay: Number(stayDuration?.average) || 0,
+      occupancyRate
+    };
+  }
+}
 
 // Decide which storage to use based on environment
-let usePostgres = process.env.DATABASE_URL ? true : false;
+let usePostgres = db ? true : false;
 
 // Create the appropriate storage instance
-export const storage = usePostgres ? new PgStorage() : new MemStorage();
+export const storage = usePostgres ? new DatabaseStorage() : new MemStorage();
