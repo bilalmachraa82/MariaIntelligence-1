@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "@/hooks/use-toast";
 import { useCreateFinancialDocument } from "@/hooks/use-financial-documents";
-import { useNavigate } from "wouter";
+import { useLocation } from "wouter";
 import { ArrowLeft } from "lucide-react";
 
 import { Layout } from "@/components/layout/layout";
@@ -12,7 +12,7 @@ import { Link } from "wouter";
 
 export default function NewDocumentPage() {
   const { t } = useTranslation();
-  const [, navigate] = useNavigate();
+  const [, navigate] = useLocation();
   
   // Mutation para criar um novo documento
   const createMutation = useCreateFinancialDocument();

@@ -108,6 +108,18 @@ export function useFinancialDocumentItems(documentId: number | undefined) {
   });
 }
 
+// Obter um item de documento financeiro específico pelo ID
+export function useFinancialDocumentItem(id: number | undefined) {
+  return useQuery({
+    queryKey: ["/api/financial-document-items/item", id],
+    enabled: !!id,
+    queryFn: async () => {
+      const res = await apiRequest("GET", `/api/financial-document-items/item/${id}`);
+      return await res.json();
+    }
+  });
+}
+
 // Criar um novo item de documento financeiro
 export function useCreateFinancialDocumentItem() {
   const queryClient = useQueryClient();

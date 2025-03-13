@@ -33,6 +33,16 @@ import PaymentsOutgoing from "@/pages/payments/outgoing";
 import PaymentsIncoming from "@/pages/payments/incoming";
 import PaymentNewPage from "@/pages/payments/new";
 
+// Imports das páginas financeiras
+import FinancialDocumentsPage from "@/pages/financial/documents";
+import DocumentDetailPage from "@/pages/financial/documents/[id]";
+import NewDocumentPage from "@/pages/financial/documents/new";
+import EditDocumentPage from "@/pages/financial/documents/edit/[id]";
+import NewDocumentItemPage from "@/pages/financial/documents/items/new";
+import EditDocumentItemPage from "@/pages/financial/documents/items/edit/[id]";
+import NewPaymentPage from "@/pages/financial/documents/payments/new";
+import EditPaymentPage from "@/pages/financial/documents/payments/edit/[id]";
+
 // Inicializa o tema escuro conforme a preferência salva
 const initializeDarkMode = () => {
   // Verifica se o modo escuro está ativado no localStorage
@@ -108,6 +118,16 @@ function Router() {
       <Route path="/payments/incoming" component={PaymentsIncoming} />
       <Route path="/payments/new" component={PaymentNewPage} />
       
+      {/* Rotas financeiras */}
+      <Route path="/financial/documents" component={FinancialDocumentsPage} />
+      <Route path="/financial/documents/new" component={NewDocumentPage} />
+      <Route path="/financial/documents/edit/:id" component={EditDocumentPage} />
+      <Route path="/financial/documents/items/new" component={NewDocumentItemPage} />
+      <Route path="/financial/documents/items/edit/:id" component={EditDocumentItemPage} />
+      <Route path="/financial/documents/payments/new" component={NewPaymentPage} />
+      <Route path="/financial/documents/payments/edit/:id" component={EditPaymentPage} />
+      <Route path="/financial/documents/:id" component={DocumentDetailPage} />
+      
       {/* Rotas em português */}
       <Route path="/painel" component={Dashboard} />
       <Route path="/propriedades" component={PropertiesPage} />
@@ -134,6 +154,16 @@ function Router() {
       <Route path="/pagamentos/saida" component={PaymentsOutgoing} />
       <Route path="/pagamentos/entrada" component={PaymentsIncoming} />
       <Route path="/pagamentos/novo" component={PaymentNewPage} />
+      
+      {/* Rotas financeiras em português */}
+      <Route path="/financeiro/documentos" component={FinancialDocumentsPage} />
+      <Route path="/financeiro/documentos/novo" component={NewDocumentPage} />
+      <Route path="/financeiro/documentos/editar/:id" component={EditDocumentPage} />
+      <Route path="/financeiro/documentos/itens/novo" component={NewDocumentItemPage} />
+      <Route path="/financeiro/documentos/itens/editar/:id" component={EditDocumentItemPage} />
+      <Route path="/financeiro/documentos/pagamentos/novo" component={NewPaymentPage} />
+      <Route path="/financeiro/documentos/pagamentos/editar/:id" component={EditPaymentPage} />
+      <Route path="/financeiro/documentos/:id" component={DocumentDetailPage} />
       
       {/* Página não encontrada */}
       <Route component={NotFound} />

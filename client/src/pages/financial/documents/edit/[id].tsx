@@ -1,12 +1,11 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useRoute } from "wouter";
+import { useRoute, useLocation } from "wouter";
 import { toast } from "@/hooks/use-toast";
 import { 
   useFinancialDocument, 
   useUpdateFinancialDocument 
 } from "@/hooks/use-financial-documents";
-import { useNavigate } from "wouter";
 import { ArrowLeft, Loader2 } from "lucide-react";
 
 import { Layout } from "@/components/layout/layout";
@@ -17,7 +16,7 @@ import { Link } from "wouter";
 export default function EditDocumentPage() {
   const { t } = useTranslation();
   const [, params] = useRoute<{ id: string }>("/financial/documents/edit/:id");
-  const [, navigate] = useNavigate();
+  const [, navigate] = useLocation();
   
   const documentId = params ? parseInt(params.id) : undefined;
   

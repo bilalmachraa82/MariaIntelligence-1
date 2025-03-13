@@ -17,7 +17,10 @@ import {
   Wrench,
   BadgeDollarSign,
   ClipboardList,
-  Receipt
+  Receipt,
+  FileText,
+  CreditCard,
+  Banknote
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTranslation } from "react-i18next";

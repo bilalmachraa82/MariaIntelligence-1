@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "wouter";
+import { useRoute, useLocation } from "wouter";
 import { toast } from "@/hooks/use-toast";
 import { 
-  useFinancialDocument, 
-  useCreateFinancialDocumentItem 
+  useFinancialDocumentItem,
+  useUpdateFinancialDocumentItem
 } from "@/hooks/use-financial-documents";
 import { useProperties } from "@/hooks/use-properties";
 import { useReservations } from "@/hooks/use-reservations";
@@ -45,20 +45,22 @@ const itemFormSchema = z.object({
 // Tipo para os valores do formulário
 type ItemFormValues = z.infer<typeof itemFormSchema>;
 
-export default function NewDocumentItemPage() {
+export default function EditDocumentItemPage() {
   const { t } = useTranslation();
-  const [location, navigate] = useLocation();
+  const [, params] = useRoute<{ id: string }>("/financial/documents/items/edit/:id");
+  const [, navigate] = useLocation();
   
-  // Extrair documentId da query string
-  const searchParams = new URLSearchParams(location.split('?')[1]);
-  const documentId = parseInt(searchParams.get('documentId') || '0');
+  const itemId = params ? parseInt(params.id) : undefined;
   
-  // Carregar documento financeiro relacionado
+  // Carregar item existente
   const { 
-    data: documentData, 
-    isLoading: isLoadingDocument,
-    isError: isDocumentError
-  } = useFinancialDocument(documentId || undefined);
+    data: item, 
+    isLoading: isLoadingItem,
+    isError: isItemError
+  } = useFinancialDocumentItem(itemId);
+  
+  // Estados para controlar seleções
+  const [selectedPropertyId, setSelectedPropertyId] = useState<string>('');
   
   // Carregar propriedades para o selector
   const { 
@@ -66,17 +68,14 @@ export default function NewDocumentItemPage() {
     isLoading: isLoadingProperties 
   } = useProperties();
   
-  // Estados para controlar seleções
-  const [selectedPropertyId, setSelectedPropertyId] = useState<string>('');
-  
   // Carregar reservas da propriedade selecionada
   const { 
     data: reservationsData, 
     isLoading: isLoadingReservations 
   } = useReservations(selectedPropertyId ? parseInt(selectedPropertyId) : undefined);
   
-  // Mutation para criar item
-  const createItemMutation = useCreateFinancialDocumentItem();
+  // Mutation para atualizar item
+  const updateItemMutation = useUpdateFinancialDocumentItem();
   
   // Configurar formulário
   const form = useForm<ItemFormValues>({
@@ -92,6 +91,26 @@ export default function NewDocumentItemPage() {
       notes: "",
     },
   });
+  
+  // Preencher formulário quando os dados do item forem carregados
+  useEffect(() => {
+    if (item) {
+      form.reset({
+        description: item.description,
+        amount: item.amount,
+        quantity: item.quantity ? item.quantity.toString() : "",
+        unitValue: item.unitValue || "",
+        propertyId: item.propertyId ? item.propertyId.toString() : "",
+        reservationId: item.reservationId ? item.reservationId.toString() : "",
+        taxRate: item.taxRate || "",
+        notes: item.notes || "",
+      });
+      
+      if (item.propertyId) {
+        setSelectedPropertyId(item.propertyId.toString());
+      }
+    }
+  }, [item, form]);
   
   // Observar mudanças em quantidade e valor unitário
   useEffect(() => {
@@ -117,10 +136,10 @@ export default function NewDocumentItemPage() {
   
   // Manipular envio do formulário
   const onSubmit = async (values: ItemFormValues) => {
-    if (!documentId) {
+    if (!itemId) {
       toast({
         title: t("Erro"),
-        description: t("ID do documento não fornecido"),
+        description: t("ID do item não fornecido"),
         variant: "destructive",
       });
       return;
@@ -129,7 +148,6 @@ export default function NewDocumentItemPage() {
     try {
       // Converter valores para o formato esperado pela API
       const itemData = {
-        documentId,
         description: values.description,
         amount: values.amount,
         quantity: values.quantity ? parseFloat(values.quantity) : null,
@@ -141,89 +159,74 @@ export default function NewDocumentItemPage() {
       };
       
       // Enviar para a API
-      await createItemMutation.mutateAsync(itemData);
+      await updateItemMutation.mutateAsync({
+        id: itemId,
+        data: itemData
+      });
       
       // Mostrar mensagem de sucesso
       toast({
-        title: t("Item adicionado"),
-        description: t("O item foi adicionado ao documento com sucesso.")
+        title: t("Item atualizado"),
+        description: t("O item foi atualizado com sucesso.")
       });
       
       // Redirecionar para a página de detalhes do documento
-      navigate(`/financial/documents/${documentId}`);
+      if (item?.documentId) {
+        navigate(`/financial/documents/${item.documentId}`);
+      } else {
+        navigate("/financial/documents");
+      }
     } catch (error) {
-      console.error("Erro ao criar item:", error);
+      console.error("Erro ao atualizar item:", error);
       
       // Mostrar mensagem de erro
       toast({
-        title: t("Erro ao adicionar item"),
-        description: t("Ocorreu um erro ao adicionar o item. Verifique os dados e tente novamente."),
+        title: t("Erro ao atualizar item"),
+        description: t("Ocorreu um erro ao atualizar o item. Verifique os dados e tente novamente."),
         variant: "destructive"
       });
     }
   };
   
-  // Verificar se o ID do documento é válido
-  if (!documentId) {
-    return (
-      <Layout>
-        <div className="container mx-auto py-6 space-y-6">
-          <div className="p-8 text-center">
-            <h2 className="text-2xl font-bold mb-2">{t("Documento não especificado")}</h2>
-            <p className="text-muted-foreground mb-6">
-              {t("É necessário especificar um documento financeiro para adicionar um item.")}
-            </p>
-            <Button asChild>
-              <Link href="/financial/documents">{t("Ir para documentos")}</Link>
-            </Button>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
-  
-  // Mostrar loading enquanto carrega o documento
-  if (isLoadingDocument) {
+  // Mostrar loading enquanto carrega
+  if (isLoadingItem) {
     return (
       <Layout>
         <div className="container mx-auto py-6 space-y-6">
           <div className="flex justify-center items-center p-12">
             <Loader2 className="h-8 w-8 animate-spin mr-3" />
-            <span className="text-xl">{t("Carregando documento...")}</span>
+            <span className="text-xl">{t("Carregando item...")}</span>
           </div>
         </div>
       </Layout>
     );
   }
   
-  // Verificar erro ao carregar documento
-  if (isDocumentError || !documentData?.document) {
+  // Mostrar erro se não conseguir carregar
+  if (isItemError || !item) {
     return (
       <Layout>
         <div className="container mx-auto py-6 space-y-6">
           <div className="p-8 text-center">
-            <h2 className="text-2xl font-bold mb-2">{t("Erro ao carregar documento")}</h2>
+            <h2 className="text-2xl font-bold mb-2">{t("Erro ao carregar item")}</h2>
             <p className="text-muted-foreground mb-6">
-              {t("Não foi possível carregar os detalhes do documento financeiro.")}
+              {t("Não foi possível carregar os detalhes do item.")}
             </p>
             <Button asChild>
-              <Link href="/financial/documents">{t("Voltar para lista")}</Link>
+              <Link href="/financial/documents">{t("Voltar para documentos")}</Link>
             </Button>
           </div>
         </div>
       </Layout>
     );
   }
-  
-  // Extrair documento
-  const document = documentData.document;
 
   return (
     <Layout>
       <div className="container mx-auto py-6 space-y-6">
         <div className="flex items-center mb-6">
           <Button asChild variant="ghost" className="mr-4">
-            <Link href={`/financial/documents/${documentId}`}>
+            <Link href={`/financial/documents/${item.documentId}`}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               {t("Voltar para documento")}
             </Link>
@@ -231,12 +234,10 @@ export default function NewDocumentItemPage() {
           
           <div>
             <h1 className="text-3xl font-bold tracking-tight">
-              {t("Adicionar Item ao Documento #{{id}}", { id: documentId })}
+              {t("Editar Item #{{id}}", { id: itemId })}
             </h1>
             <p className="text-muted-foreground">
-              {document?.type === 'incoming' ? 
-                t("Adicione um item de receita a este documento.") : 
-                t("Adicione um item de despesa a este documento.")}
+              {t("Atualize os detalhes deste item do documento.")}
             </p>
           </div>
         </div>
@@ -414,20 +415,20 @@ export default function NewDocumentItemPage() {
                 <Button 
                   variant="outline" 
                   type="button"
-                  onClick={() => navigate(`/financial/documents/${documentId}`)}
+                  onClick={() => navigate(`/financial/documents/${item.documentId}`)}
                 >
                   {t("Cancelar")}
                 </Button>
                 <Button 
                   type="submit" 
-                  disabled={createItemMutation.isPending}
+                  disabled={updateItemMutation.isPending}
                 >
-                  {createItemMutation.isPending ? (
+                  {updateItemMutation.isPending ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       {t("Salvando...")}
                     </>
-                  ) : t("Adicionar Item")}
+                  ) : t("Atualizar Item")}
                 </Button>
               </div>
             </form>

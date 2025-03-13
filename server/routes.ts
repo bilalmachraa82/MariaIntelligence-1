@@ -975,6 +975,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       handleError(err, res);
     }
   });
+  
+  // Obter um item específico pelo ID
+  app.get("/api/financial-document-items/item/:id", async (req: Request, res: Response) => {
+    try {
+      const id = Number(req.params.id);
+      const item = await storage.getFinancialDocumentItem(id);
+      
+      if (!item) {
+        return res.status(404).json({ message: "Item não encontrado" });
+      }
+      
+      res.json(item);
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
 
   // Criar um novo item em um documento financeiro
   app.post("/api/financial-document-items", async (req: Request, res: Response) => {
