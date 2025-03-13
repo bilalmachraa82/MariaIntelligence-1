@@ -40,12 +40,6 @@ export default function SettingsPage() {
   });
 
   useEffect(() => {
-    // Tenta inicialmente recuperar a chave API do local storage
-    const storedKey = localStorage.getItem("MISTRAL_API_KEY");
-    if (storedKey) {
-      setMistralApiKey(storedKey);
-    }
-    
     // Verifica se o modo escuro está ativado
     const darkModePreference = localStorage.getItem("darkMode");
     const isDark = darkModePreference === "true";
@@ -95,21 +89,7 @@ export default function SettingsPage() {
     });
   };
 
-  const handleSaveAPI = () => {
-    if (mistralApiKey.trim()) {
-      localStorage.setItem("MISTRAL_API_KEY", mistralApiKey);
-      toast({
-        title: t("settings.integrations.mistralAI.saveSuccess"),
-        description: t("settings.integrations.mistralAI.saveSuccessDesc"),
-      });
-    } else {
-      toast({
-        title: t("settings.integrations.mistralAI.saveError"),
-        description: t("settings.integrations.mistralAI.saveErrorDesc"),
-        variant: "destructive",
-      });
-    }
-  };
+  // Função de configuração de API removida - agora a chave é gerenciada internamente
 
   const changeLanguage = (lang: string) => {
     i18n.changeLanguage(lang);
@@ -501,9 +481,13 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <p className="text-sm">
-                  A API Mistral está configurada internamente no sistema e não pode ser modificada através da interface.
-                </p>
+                <Alert className="mb-4">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>API Mistral configurada internamente</AlertTitle>
+                  <AlertDescription>
+                    A chave da API Mistral está configurada internamente no sistema por razões de segurança e não pode ser modificada através da interface. Esta abordagem garante maior segurança no acesso à API e consistência na integração. Se você precisar atualizar a chave ou tiver problemas com a integração, entre em contato com o suporte técnico.
+                  </AlertDescription>
+                </Alert>
               </div>
               
               <div className="flex gap-2">
