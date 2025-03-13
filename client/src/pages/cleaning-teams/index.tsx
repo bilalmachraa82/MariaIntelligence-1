@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Info, Edit, Trash2, Search, Star, FileCheck, Users, Phone } from "lucide-react";
+import { Plus, Info, Edit, Trash2, Search, Star, FileCheck, FileText, Users, Phone, User, Percent, Home } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useProperties } from "@/hooks/use-properties";
 import { Property } from "@shared/schema";

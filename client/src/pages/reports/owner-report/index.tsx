@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,6 +14,7 @@ import { Download, Calendar, Euro, Home, Users, Percent, CreditCard, FileText } 
 import { useOwners } from "@/hooks/use-owners";
 import { useOwnerReport } from "@/hooks/use-owner-report";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { downloadOwnerReportCSV } from "@/lib/export-utils";
 
 interface OwnerReport {
   ownerId: number;
@@ -102,24 +103,41 @@ export default function OwnerReportPage() {
         <h1 className="text-2xl font-bold">{t("ownerReport.title", "Relatório Financeiro por Proprietário")}</h1>
         {ownerReport && (
           <div className="flex flex-wrap gap-2">
-            <Select defaultValue="pdf">
-              <SelectTrigger className="w-[120px]">
-                <SelectValue placeholder={t("ownerReport.format", "Formato")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="pdf">PDF</SelectItem>
-                <SelectItem value="excel">Excel</SelectItem>
-                <SelectItem value="csv">CSV</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button>
-              <Download className="mr-2 h-4 w-4" />
-              {t("reports.export", "Exportar")}
-            </Button>
-            <Button variant="outline">
-              <FileText className="mr-2 h-4 w-4" />
-              {t("reports.print", "Imprimir")}
-            </Button>
+            <div className="flex gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">
+                    <Download className="mr-2 h-4 w-4" />
+                    {t("reports.export", "Exportar")}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>{t("reports.exportOptions", "Opções de exportação")}</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => downloadOwnerReportCSV(ownerReport, 'full', i18n.language)}>
+                    {t("reports.exportFull", "Relatório Completo")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => downloadOwnerReportCSV(ownerReport, 'summary', i18n.language)}>
+                    {t("reports.exportSummary", "Apenas Resumo")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => downloadOwnerReportCSV(ownerReport, 'properties', i18n.language)}>
+                    {t("reports.exportProperties", "Apenas Propriedades")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => downloadOwnerReportCSV(ownerReport, 'reservations', i18n.language)}>
+                    {t("reports.exportReservations", "Apenas Reservas")}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  window.print();
+                }}
+              >
+                <FileText className="mr-2 h-4 w-4" />
+                {t("reports.print", "Imprimir")}
+              </Button>
+            </div>
           </div>
         )}
       </div>
