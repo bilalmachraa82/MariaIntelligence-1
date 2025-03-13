@@ -150,10 +150,19 @@ export function UploadPDF() {
     }
   };
 
-  // When extraction is successful, open validation dialog
-  if (extractedData && !isValidationDialogOpen) {
-    setIsValidationDialogOpen(true);
-  }
+  // Efeito para abrir o diálogo de validação quando um único arquivo é processado
+  useEffect(() => {
+    if (extractedData && !isValidationDialogOpen && !isMultiUploadMode) {
+      setIsValidationDialogOpen(true);
+    }
+  }, [extractedData, isValidationDialogOpen, isMultiUploadMode]);
+  
+  // Efeito para abrir o diálogo de resultados múltiplos quando vários arquivos são processados
+  useEffect(() => {
+    if (multipleResults && multipleResults.length > 0 && !isMultiResultsDialogOpen && isMultiUploadMode) {
+      setIsMultiResultsDialogOpen(true);
+    }
+  }, [multipleResults, isMultiResultsDialogOpen, isMultiUploadMode]);
 
   // Função que lida com seleção de múltiplos arquivos
   const handleMultipleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -429,8 +438,8 @@ export function UploadPDF() {
         </Dialog>
       )}
 
-      {/* Validation Dialog */}
-      {isValidationDialogOpen && extractedData && (
+      {/* Diálogo de validação para uma única reserva */}
+      {isValidationDialogOpen && extractedData && !isMultiUploadMode && (
         <Dialog open={isValidationDialogOpen} onOpenChange={setIsValidationDialogOpen}>
           <DialogContent className="max-w-md">
             <DialogHeader>
@@ -536,6 +545,133 @@ export function UploadPDF() {
               >
                 <CheckCircle2 className="h-4 w-4" />
                 Confirmar Reserva
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+      
+      {/* Diálogo de resultados múltiplos */}
+      {isMultiResultsDialogOpen && multipleResults && multipleResults.length > 0 && (
+        <Dialog open={isMultiResultsDialogOpen} onOpenChange={setIsMultiResultsDialogOpen}>
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center">
+                <BrainCircuit className="h-5 w-5 text-primary-500 mr-2" />
+                Processamento Múltiplo Concluído
+              </DialogTitle>
+              <p className="text-sm text-secondary-500 mt-1">
+                A tecnologia Mistral AI processou {multipleResults.length} arquivos PDF e extraiu os seguintes dados:
+              </p>
+            </DialogHeader>
+            
+            <div className="mt-4 space-y-4">
+              <div className="rounded-md bg-green-50 p-4 border border-green-200">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <CheckCircle2 className="h-5 w-5 text-green-500" />
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-green-800">
+                      Processamento Concluído
+                    </h3>
+                    <div className="mt-1 text-sm text-green-700">
+                      <p>
+                        {multipleResults.length} reservas foram processadas com sucesso.
+                        Revise os dados antes de confirmar.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="border rounded-md">
+                <div className="grid grid-cols-5 gap-2 bg-secondary-100 p-3 font-medium text-sm text-secondary-700 border-b">
+                  <div>Propriedade</div>
+                  <div>Hóspede</div>
+                  <div>Check-in</div>
+                  <div>Check-out</div>
+                  <div>Valor</div>
+                </div>
+                
+                <div className="max-h-80 overflow-y-auto">
+                  {multipleResults.map((result, index) => (
+                    <div 
+                      key={index} 
+                      className={`grid grid-cols-5 gap-2 p-3 text-sm ${index % 2 === 0 ? 'bg-white' : 'bg-secondary-50'} border-b last:border-b-0`}
+                    >
+                      <div className="font-medium text-secondary-900">
+                        {result.extractedData.propertyName}
+                      </div>
+                      <div className="text-secondary-700">
+                        {result.extractedData.guestName}
+                      </div>
+                      <div className="text-secondary-700">
+                        {formatDate(result.extractedData.checkInDate)}
+                      </div>
+                      <div className="text-secondary-700">
+                        {formatDate(result.extractedData.checkOutDate)}
+                      </div>
+                      <div className="text-secondary-700">
+                        {formatCurrency(result.extractedData.totalAmount)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            
+            <div className="rounded-md bg-blue-50 p-4 mt-4 border border-blue-200">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <Info className="h-5 w-5 text-blue-500" />
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-blue-800">
+                    Resumo do Processamento
+                  </h3>
+                  <div className="mt-2 text-sm text-blue-700 grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2">
+                    <div>
+                      <span className="font-medium">Total de Arquivos:</span> {multipleResults.length}
+                    </div>
+                    <div>
+                      <span className="font-medium">Sucesso:</span> {multipleResults.filter(r => !r.error).length}
+                    </div>
+                    <div>
+                      <span className="font-medium">Falhas:</span> {multipleResults.filter(r => r.error).length}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <DialogFooter className="mt-4">
+              <Button 
+                variant="outline"
+                onClick={() => {
+                  setIsMultiResultsDialogOpen(false);
+                  clearExtractedData();
+                  setSelectedFiles([]);
+                }}
+              >
+                Cancelar
+              </Button>
+              <Button 
+                className="gap-2"
+                onClick={() => {
+                  confirmMultipleReservations();
+                  setIsMultiResultsDialogOpen(false);
+                  clearExtractedData();
+                  setSelectedFiles([]);
+                  toast({
+                    title: "Reservas Criadas",
+                    description: `${multipleResults.filter(r => !r.error).length} reservas foram criadas com sucesso.`,
+                    variant: "default",
+                  });
+                }}
+              >
+                <CheckCircle2 className="h-4 w-4" />
+                Confirmar Todas as Reservas
               </Button>
             </DialogFooter>
           </DialogContent>
