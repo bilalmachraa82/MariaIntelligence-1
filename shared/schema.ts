@@ -9,7 +9,8 @@ import {
   timestamp,
   foreignKey,
   jsonb,
-  varchar
+  varchar,
+  primaryKey
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -286,3 +287,167 @@ export type InsertKnowledgeEmbedding = z.infer<typeof insertKnowledgeEmbeddingSc
 
 export type QueryEmbedding = typeof queryEmbeddings.$inferSelect;
 export type InsertQueryEmbedding = z.infer<typeof insertQueryEmbeddingSchema>;
+
+// Sistema Financeiro: Esquema para documentos financeiros e pagamentos
+
+// Enum para tipo de documento financeiro
+export const financialDocumentTypeEnum = z.enum([
+  "incoming", // Recebimento (proprietário paga Maria Faz)
+  "outgoing", // Pagamento (Maria Faz paga fornecedor)
+]);
+
+// Enum para status de documento financeiro
+export const financialDocumentStatusEnum = z.enum([
+  "pending",   // A Cobrar (documento gerado, fatura não emitida)
+  "invoiced",  // Faturado (fatura emitida no sistema fiscal, aguardando pagamento)
+  "paid",      // Pago (recebimento confirmado)
+  "cancelled", // Cancelado
+]);
+
+// Enum para tipo de entidade
+export const entityTypeEnum = z.enum([
+  "owner",    // Proprietário
+  "supplier", // Fornecedor (empresa de limpeza, manutenção, etc.)
+]);
+
+// Enum para método de pagamento
+export const paymentMethodEnum = z.enum([
+  "transfer",   // Transferência bancária
+  "card",       // Cartão
+  "cash",       // Dinheiro
+  "mbway",      // MB WAY
+  "online",     // Pagamento online
+  "check",      // Cheque
+  "other",      // Outro
+]);
+
+// Documentos Financeiros (substituem o conceito de "faturas" para controle interno)
+export const financialDocuments = pgTable("financial_documents", {
+  id: serial("id").primaryKey(),
+  type: text("type").notNull(), // "incoming" ou "outgoing"
+  entityId: integer("entity_id").notNull(), // ID do proprietário ou fornecedor
+  entityType: text("entity_type").notNull(), // "owner" ou "supplier"
+  
+  referenceMonth: text("reference_month").notNull(), // "MM/YYYY"
+  issueDate: date("issue_date").notNull(),
+  dueDate: date("due_date").notNull(),
+  
+  totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).notNull().default("0"),
+  paidAmount: decimal("paid_amount", { precision: 10, scale: 2 }).default("0"),
+  
+  status: text("status").notNull().default("pending"), // "pending", "invoiced", "paid", "cancelled"
+  description: text("description").default(""),
+  externalReference: text("external_reference").default(""), // Número da fatura no sistema fiscal
+  
+  // Timestamps
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Itens de Documentos Financeiros (detalhes de cada documento)
+export const financialDocumentItems = pgTable("financial_document_items", {
+  id: serial("id").primaryKey(),
+  documentId: integer("document_id").notNull()
+    .references(() => financialDocuments.id, { onDelete: "cascade" }),
+  
+  description: text("description").notNull(),
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull().default("0"),
+  quantity: integer("quantity").default(1),
+  unitValue: decimal("unit_value", { precision: 10, scale: 2 }).default("0"),
+  
+  // Referências opcionais a outras entidades
+  reservationId: integer("reservation_id").references(() => reservations.id),
+  propertyId: integer("property_id").references(() => properties.id),
+  
+  // Taxas e informações adicionais
+  taxRate: decimal("tax_rate", { precision: 5, scale: 2 }).default("0"),
+  notes: text("notes").default(""),
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Registro de Pagamentos
+export const paymentRecords = pgTable("payment_records", {
+  id: serial("id").primaryKey(),
+  documentId: integer("document_id").notNull()
+    .references(() => financialDocuments.id, { onDelete: "cascade" }),
+  
+  paymentDate: date("payment_date").notNull(),
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull().default("0"),
+  method: text("method").notNull().default("transfer"), // "transfer", "card", "cash", etc.
+  
+  notes: text("notes").default(""),
+  externalReference: text("external_reference").default(""), // Referência externa do pagamento
+  attachment: text("attachment").default(""), // Caminho para comprovante
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Schemas de inserção para as novas entidades financeiras
+export const insertFinancialDocumentSchema = createInsertSchema(financialDocuments).pick({
+  type: true,
+  entityId: true,
+  entityType: true,
+  referenceMonth: true,
+  issueDate: true,
+  dueDate: true,
+  totalAmount: true,
+  paidAmount: true,
+  status: true,
+  description: true,
+  externalReference: true,
+});
+
+export const insertFinancialDocumentItemSchema = createInsertSchema(financialDocumentItems).pick({
+  documentId: true,
+  description: true,
+  amount: true,
+  quantity: true,
+  unitValue: true,
+  reservationId: true,
+  propertyId: true,
+  taxRate: true,
+  notes: true,
+});
+
+export const insertPaymentRecordSchema = createInsertSchema(paymentRecords).pick({
+  documentId: true,
+  paymentDate: true,
+  amount: true,
+  method: true,
+  notes: true,
+  externalReference: true,
+  attachment: true,
+});
+
+// Tipos para as entidades financeiras
+export type FinancialDocument = typeof financialDocuments.$inferSelect;
+export type InsertFinancialDocument = z.infer<typeof insertFinancialDocumentSchema>;
+
+export type FinancialDocumentItem = typeof financialDocumentItems.$inferSelect;
+export type InsertFinancialDocumentItem = z.infer<typeof insertFinancialDocumentItemSchema>;
+
+export type PaymentRecord = typeof paymentRecords.$inferSelect;
+export type InsertPaymentRecord = z.infer<typeof insertPaymentRecordSchema>;
+
+// Schemas estendidos com validação para as entidades financeiras
+export const extendedFinancialDocumentSchema = insertFinancialDocumentSchema.extend({
+  type: financialDocumentTypeEnum,
+  entityType: entityTypeEnum,
+  status: financialDocumentStatusEnum,
+  issueDate: z.coerce.date(),
+  dueDate: z.coerce.date(),
+}).refine(
+  (data) => new Date(data.dueDate) >= new Date(data.issueDate),
+  {
+    message: "A data de vencimento deve ser igual ou posterior à data de emissão",
+    path: ["dueDate"],
+  }
+);
+
+export const extendedPaymentRecordSchema = insertPaymentRecordSchema.extend({
+  paymentDate: z.coerce.date(),
+  method: paymentMethodEnum,
+  amount: z.coerce.number().min(0.01),
+});

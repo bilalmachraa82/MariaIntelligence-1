@@ -3,6 +3,9 @@ import {
   owners,
   reservations,
   activities,
+  financialDocuments,
+  financialDocumentItems,
+  paymentRecords,
   type Property,
   type InsertProperty,
   type Owner,
@@ -11,6 +14,12 @@ import {
   type InsertReservation,
   type Activity,
   type InsertActivity,
+  type FinancialDocument,
+  type InsertFinancialDocument,
+  type FinancialDocumentItem,
+  type InsertFinancialDocumentItem,
+  type PaymentRecord,
+  type InsertPaymentRecord
 } from "@shared/schema";
 import { db } from './db';
 
@@ -51,6 +60,38 @@ export interface IStorage {
   getNetProfit(startDate?: Date, endDate?: Date): Promise<number>;
   getOccupancyRate(propertyId?: number, startDate?: Date, endDate?: Date): Promise<number>;
   getPropertyStatistics(propertyId: number): Promise<any>;
+
+  // Documentos financeiros
+  getFinancialDocuments(options?: {
+    type?: 'incoming' | 'outgoing';
+    status?: 'pending' | 'invoiced' | 'paid' | 'cancelled';
+    entityId?: number;
+    entityType?: 'owner' | 'supplier';
+    startDate?: Date;
+    endDate?: Date;
+  }): Promise<FinancialDocument[]>;
+  getFinancialDocument(id: number): Promise<FinancialDocument | undefined>;
+  createFinancialDocument(document: InsertFinancialDocument): Promise<FinancialDocument>;
+  updateFinancialDocument(id: number, document: Partial<InsertFinancialDocument>): Promise<FinancialDocument | undefined>;
+  deleteFinancialDocument(id: number): Promise<boolean>;
+  
+  // Itens de documentos financeiros
+  getFinancialDocumentItems(documentId: number): Promise<FinancialDocumentItem[]>;
+  getFinancialDocumentItem(id: number): Promise<FinancialDocumentItem | undefined>;
+  createFinancialDocumentItem(item: InsertFinancialDocumentItem): Promise<FinancialDocumentItem>;
+  updateFinancialDocumentItem(id: number, item: Partial<InsertFinancialDocumentItem>): Promise<FinancialDocumentItem | undefined>;
+  deleteFinancialDocumentItem(id: number): Promise<boolean>;
+  
+  // Pagamentos
+  getPaymentRecords(documentId?: number): Promise<PaymentRecord[]>;
+  getPaymentRecord(id: number): Promise<PaymentRecord | undefined>;
+  createPaymentRecord(payment: InsertPaymentRecord): Promise<PaymentRecord>;
+  updatePaymentRecord(id: number, payment: Partial<InsertPaymentRecord>): Promise<PaymentRecord | undefined>;
+  deletePaymentRecord(id: number): Promise<boolean>;
+  
+  // Relatórios financeiros
+  generateOwnerFinancialReport(ownerId: number, month: string, year: string): Promise<any>;
+  generateFinancialSummary(startDate?: Date, endDate?: Date): Promise<any>;
 }
 
 export class MemStorage implements IStorage {
@@ -59,11 +100,18 @@ export class MemStorage implements IStorage {
   private ownersMap: Map<number, Owner>;
   private reservationsMap: Map<number, Reservation>;
   private activitiesMap: Map<number, Activity>;
+  private financialDocumentsMap: Map<number, FinancialDocument>;
+  private financialDocumentItemsMap: Map<number, FinancialDocumentItem>;
+  private paymentRecordsMap: Map<number, PaymentRecord>;
+  
   currentUserId: number;
   currentPropertyId: number;
   currentOwnerId: number;
   currentReservationId: number;
   currentActivityId: number;
+  currentFinancialDocumentId: number;
+  currentFinancialDocumentItemId: number;
+  currentPaymentRecordId: number;
 
   constructor() {
     this.users = new Map();
@@ -71,11 +119,18 @@ export class MemStorage implements IStorage {
     this.ownersMap = new Map();
     this.reservationsMap = new Map();
     this.activitiesMap = new Map();
+    this.financialDocumentsMap = new Map();
+    this.financialDocumentItemsMap = new Map();
+    this.paymentRecordsMap = new Map();
+    
     this.currentUserId = 1;
     this.currentPropertyId = 1;
     this.currentOwnerId = 1;
     this.currentReservationId = 1;
     this.currentActivityId = 1;
+    this.currentFinancialDocumentId = 1;
+    this.currentFinancialDocumentItemId = 1;
+    this.currentPaymentRecordId = 1;
     
     // Seed data for properties and owners
     this.seedData();
