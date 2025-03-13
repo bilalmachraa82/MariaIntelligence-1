@@ -88,6 +88,19 @@ export function UploadPDF() {
     
     checkMistralApiKey();
   }, [toast]);
+  
+  // Ouvir eventos de progresso do processamento
+  useEffect(() => {
+    const progressHandler = (event: CustomEvent) => {
+      setProcessingProgress(event.detail);
+    };
+    
+    window.addEventListener('pdf-processing-progress', progressHandler as EventListener);
+    
+    return () => {
+      window.removeEventListener('pdf-processing-progress', progressHandler as EventListener);
+    };
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -326,13 +339,41 @@ export function UploadPDF() {
             {/* Indicador de carregamento */}
             {isUploading && (
               <div className="mt-4">
-                <div className="flex items-center justify-center">
-                  <FileText className="animate-pulse h-5 w-5 text-primary-500 mr-2" />
-                  <p className="text-sm text-primary-600">
-                    {isMultiUploadMode 
-                      ? `Processando ${selectedFiles.length} arquivo(s)...` 
-                      : "Processando arquivo..."}
-                  </p>
+                <div className="flex flex-col items-center justify-center space-y-2">
+                  <div className="flex items-center">
+                    <FileText className="animate-pulse h-5 w-5 text-primary-500 mr-2" />
+                    <p className="text-sm text-primary-600">
+                      {isMultiUploadMode 
+                        ? `Processando ${selectedFiles.length} arquivo(s)...` 
+                        : "Processando arquivo..."}
+                    </p>
+                  </div>
+                  
+                  {/* Indicador de progresso para múltiplos arquivos */}
+                  {isMultiUploadMode && processingProgress && (
+                    <div className="w-full max-w-md space-y-2">
+                      <div className="w-full bg-gray-200 rounded-full h-2.5">
+                        <div 
+                          className="bg-primary-600 h-2.5 rounded-full transition-all duration-300 ease-in-out" 
+                          style={{ width: `${(processingProgress.processed / processingProgress.total) * 100}%` }}
+                        ></div>
+                      </div>
+                      <div className="flex justify-between items-center text-xs text-secondary-600">
+                        <span>
+                          Processado: {processingProgress.processed}/{processingProgress.total}
+                        </span>
+                        <span className="flex space-x-2">
+                          <span className="text-green-600">{processingProgress.success} sucesso</span>
+                          {processingProgress.failure > 0 && (
+                            <span className="text-red-600">{processingProgress.failure} falha(s)</span>
+                          )}
+                        </span>
+                      </div>
+                      <p className="text-xs text-secondary-500 text-center">
+                        Arquivo atual: {processingProgress.currentFile}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
