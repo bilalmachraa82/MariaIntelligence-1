@@ -133,13 +133,13 @@ export function Sidebar({ className }: SidebarProps) {
   const paymentLinks: NavLink[] = [
     {
       title: t("navigation.outgoingPayments"),
-      href: "/payments/outgoing",
+      href: isPortuguese ? "/pagamentos/saida" : "/payments/outgoing",
       icon: Receipt,
       description: "Pagamentos pendentes a equipas e fornecedores",
     },
     {
       title: t("navigation.incomingPayments"),
-      href: "/payments/incoming",
+      href: isPortuguese ? "/pagamentos/entrada" : "/payments/incoming",
       icon: BadgeDollarSign,
       description: "Receitas a receber de proprietários e plataformas",
     },
@@ -154,7 +154,9 @@ export function Sidebar({ className }: SidebarProps) {
 
   // Função para fechar a sidebar em dispositivos móveis após clicar em um link
   const handleLinkClick = (href: string) => {
-    setLocation(href);
+    // Remover barras duplicadas, se houverem
+    const cleanHref = href.replace(/([^:]\/)\/+/g, "$1");
+    setLocation(cleanHref);
     if (isMobile) {
       setIsOpen(false);
     }

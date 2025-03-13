@@ -137,25 +137,30 @@ export default function SettingsPage() {
     });
     
     try {
-      const response = await apiRequest<{
+      // Definir o tipo de resposta explicitamente
+      interface TestResult {
+        name: string;
+        success: boolean;
+        details?: any;
+        error?: string;
+      }
+      
+      interface TestResponse {
         success: boolean;
         timestamp: string;
-        tests: Array<{
-          name: string;
-          success: boolean;
-          details?: any;
-          error?: string;
-        }>;
-      }>("GET", "/api/test-integrations");
+        tests: TestResult[];
+      }
       
-      console.log("Resposta completa:", response);
+      const data = await apiRequest<TestResponse>("GET", "/api/test-integrations");
       
-      if (response && response.tests && Array.isArray(response.tests)) {
+      console.log("Resposta completa:", data);
+      
+      if (data && data.tests && Array.isArray(data.tests)) {
         // Extrai os resultados de cada teste pelo nome
-        const mistralTest = response.tests.find(test => test.name === "Mistral AI");
-        const dbTest = response.tests.find(test => test.name === "Base de Dados");
-        const ocrTest = response.tests.find(test => test.name === "OCR (Processamento de PDFs)");
-        const ragTest = response.tests.find(test => test.name === "RAG (Retrieval Augmented Generation)");
+        const mistralTest = data.tests.find(test => test.name === "Mistral AI");
+        const dbTest = data.tests.find(test => test.name === "Base de Dados");
+        const ocrTest = data.tests.find(test => test.name === "OCR (Processamento de PDFs)");
+        const ragTest = data.tests.find(test => test.name === "RAG (Retrieval Augmented Generation)");
         
         console.log("Tests individuais:", {
           mistralTest,
@@ -165,7 +170,7 @@ export default function SettingsPage() {
         });
         
         // Processa qualquer mensagem de erro
-        const errorMessages = response.tests
+        const errorMessages = data.tests
           .filter(test => !test.success && test.error)
           .map(test => `${test.name}: ${test.error}`)
           .join("\n");
@@ -197,7 +202,7 @@ export default function SettingsPage() {
         }
       } else {
         // Se a resposta não tiver o formato esperado
-        console.error("Formato de resposta inválido:", response);
+        console.error("Formato de resposta inválido:", data);
         throw new Error("Formato de resposta inválido");
       }
     } catch (error) {
