@@ -55,7 +55,10 @@
   "dashboard": {
     "title": "Painel",
     "welcome": "Bem-vindo ao Maria Faz",
+    "description": "Visão geral do seu negócio de aluguel de imóveis",
     "summary": "Resumo",
+    "period": "Período",
+    "export": "Exportar",
     "totalRevenue": "Receita Total",
     "netProfit": "Lucro Líquido",
     "activeProperties": "Propriedades Ativas",
@@ -401,6 +404,7 @@
     "description": "Converta PDFs de reservas em dados estruturados automaticamente",
     "uploadSection": "Upload de PDFs",
     "uploadDescription": "Faça upload de PDFs de reservas para processamento com IA",
+    "uploadButton": "Importar PDF",
     "instructionsTitle": "Como Funciona",
     "step1Title": "Selecionar PDFs",
     "step1Description": "Faça upload de um ou múltiplos arquivos PDF das plataformas de reserva",

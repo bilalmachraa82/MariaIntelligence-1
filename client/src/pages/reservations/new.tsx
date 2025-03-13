@@ -841,6 +841,50 @@ export default function ReservationNewPage() {
             </CardFooter>
           </form>
         </Form>
+        </TabsContent>
+
+        <TabsContent value="pdf">
+          <CardContent className="space-y-6">
+            <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-secondary-200 rounded-lg">
+              <FileText className="h-12 w-12 text-secondary-400 mb-4" />
+              <h3 className="text-xl font-medium text-secondary-900 mb-2">Upload de PDF</h3>
+              <p className="text-secondary-500 text-center mb-4">
+                Arraste e solte um arquivo PDF ou clique para selecionar
+              </p>
+              <Input 
+                type="file" 
+                accept=".pdf" 
+                className="max-w-sm" 
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleFileUpload(file);
+                }}
+              />
+            </div>
+          </CardContent>
+        </TabsContent>
+
+        <TabsContent value="image">
+          <CardContent className="space-y-6">
+            <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-secondary-200 rounded-lg">
+              <ImageIcon className="h-12 w-12 text-secondary-400 mb-4" />
+              <h3 className="text-xl font-medium text-secondary-900 mb-2">Upload de Imagem</h3>
+              <p className="text-secondary-500 text-center mb-4">
+                Arraste e solte uma imagem ou clique para selecionar
+              </p>
+              <Input 
+                type="file" 
+                accept="image/*" 
+                className="max-w-sm" 
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleFileUpload(file);
+                }}
+              />
+            </div>
+          </CardContent>
+        </TabsContent>
+      </Tabs>
       </Card>
     </div>
   );
