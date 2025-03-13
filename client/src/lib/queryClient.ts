@@ -2,8 +2,38 @@ import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
-    const text = (await res.text()) || res.statusText;
-    throw new Error(`${res.status}: ${text}`);
+    let errorMessage = res.statusText;
+    let errorDetails = {};
+    
+    try {
+      // Tenta analisar a resposta como JSON
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await res.json();
+        errorMessage = errorData.message || errorMessage;
+        errorDetails = errorData;
+        
+        // Criar um erro melhorado com os detalhes
+        const enhanced = new Error(`${res.status}: ${errorMessage}`);
+        enhanced.response = { status: res.status, data: errorDetails };
+        throw enhanced;
+      } else {
+        // Se não for JSON, lê como texto
+        const text = await res.text();
+        errorMessage = text || errorMessage;
+      }
+    } catch (parseError) {
+      if (parseError.response) {
+        throw parseError; // Já é um erro aprimorado
+      }
+      // Se não conseguir analisar, usa o texto da resposta ou status
+      console.error("Erro ao analisar resposta:", parseError);
+    }
+    
+    // Criar um erro padrão com informações básicas
+    const error = new Error(`${res.status}: ${errorMessage}`);
+    error.response = { status: res.status, data: errorDetails };
+    throw error;
   }
 }
 
@@ -12,15 +42,23 @@ export async function apiRequest<T = any>(
   url: string, 
   data?: unknown
 ): Promise<Response> {
-  const res = await fetch(url, {
-    method,
-    headers: data ? { "Content-Type": "application/json" } : {},
-    body: data ? JSON.stringify(data) : undefined,
-    credentials: "include",
-  });
+  try {
+    console.log(`API Request: ${method} ${url}`, data ? `data: ${JSON.stringify(data)}` : "");
+    
+    const res = await fetch(url, {
+      method,
+      headers: data ? { "Content-Type": "application/json" } : {},
+      body: data ? JSON.stringify(data) : undefined,
+      credentials: "include",
+    });
 
-  await throwIfResNotOk(res);
-  return res;
+    await throwIfResNotOk(res);
+    console.log(`API Response: ${method} ${url} - Status: ${res.status}`);
+    return res;
+  } catch (error) {
+    console.error(`API Error: ${method} ${url}`, error);
+    throw error;
+  }
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";

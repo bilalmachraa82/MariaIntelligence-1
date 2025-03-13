@@ -1042,7 +1042,35 @@ export class DatabaseStorage implements IStorage {
 }
 
 // Decide which storage to use based on environment
-let usePostgres = db ? true : false;
+// Verificamos se o db está disponível e se o DATABASE_URL existe
+let usePostgres = db && process.env.DATABASE_URL ? true : false;
 
-// Create the appropriate storage instance
-export const storage = usePostgres ? new DatabaseStorage() : new MemStorage();
+// Log para diagnóstico
+console.log(`Usando armazenamento ${usePostgres ? 'PostgreSQL' : 'em memória'}`);
+
+// Criar a instância apropriada de armazenamento
+let storageInstance: IStorage;
+
+try {
+  storageInstance = usePostgres ? new DatabaseStorage() : new MemStorage();
+  
+  // Tentar uma operação simples para verificar se a conexão está funcionando
+  if (usePostgres) {
+    (async () => {
+      try {
+        await storageInstance.getProperties();
+        console.log('Conexão com o banco de dados PostgreSQL está funcionando corretamente');
+      } catch (error) {
+        console.error('Erro ao usar PostgreSQL, voltando para armazenamento em memória:', error);
+        // Fallback para armazenamento em memória se o PostgreSQL falhar
+        storageInstance = new MemStorage();
+      }
+    })();
+  }
+} catch (error) {
+  console.error('Erro ao inicializar armazenamento, usando MemStorage como fallback:', error);
+  storageInstance = new MemStorage();
+}
+
+// Exportar a instância de armazenamento
+export const storage = storageInstance;
