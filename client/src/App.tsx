@@ -26,6 +26,12 @@ import CleaningTeamsPage from "@/pages/cleaning-teams";
 import CleaningReportsPage from "@/pages/cleaning-reports";
 import OwnerReportPage from "@/pages/reports/owner-report";
 
+// Imports das novas páginas de manutenção e pagamentos
+import MaintenancePending from "@/pages/maintenance/pending";
+import MaintenanceRequest from "@/pages/maintenance/request";
+import PaymentsOutgoing from "@/pages/payments/outgoing";
+import PaymentsIncoming from "@/pages/payments/incoming";
+
 // Inicializa o tema escuro conforme a preferência salva
 const initializeDarkMode = () => {
   // Verifica se o modo escuro está ativado no localStorage
@@ -95,6 +101,10 @@ function Router() {
       <Route path="/reports/owner-report" component={OwnerReportPage} />
       <Route path="/settings" component={SettingsPage} />
       <Route path="/assistant" component={AssistantPage} />
+      <Route path="/maintenance/pending" component={MaintenancePending} />
+      <Route path="/maintenance/request" component={MaintenanceRequest} />
+      <Route path="/payments/outgoing" component={PaymentsOutgoing} />
+      <Route path="/payments/incoming" component={PaymentsIncoming} />
       
       {/* Rotas em português */}
       <Route path="/painel" component={Dashboard} />
@@ -117,6 +127,10 @@ function Router() {
       <Route path="/relatorios/proprietario" component={OwnerReportPage} />
       <Route path="/configuracoes" component={SettingsPage} />
       <Route path="/assistente" component={AssistantPage} />
+      <Route path="/manutencao/pendentes" component={MaintenancePending} />
+      <Route path="/manutencao/solicitacao" component={MaintenanceRequest} />
+      <Route path="/pagamentos/saida" component={PaymentsOutgoing} />
+      <Route path="/pagamentos/entrada" component={PaymentsIncoming} />
       
       {/* Página não encontrada */}
       <Route component={NotFound} />

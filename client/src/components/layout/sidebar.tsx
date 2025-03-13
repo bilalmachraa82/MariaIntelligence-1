@@ -120,7 +120,7 @@ export function Sidebar({ className }: SidebarProps) {
     },
     {
       title: isPortuguese ? "Solicitar Manutenção" : "Request Maintenance",
-      href: isPortuguese ? "/manutencao/solicitar" : "/maintenance/request",
+      href: isPortuguese ? "/manutencao/solicitacao" : "/maintenance/request",
       icon: Wrench,
       description: "Registrar nova solicitação de manutenção",
     },
@@ -130,13 +130,13 @@ export function Sidebar({ className }: SidebarProps) {
   const paymentLinks: NavLink[] = [
     {
       title: isPortuguese ? "Pagamentos a Efetuar" : "Due Payments",
-      href: isPortuguese ? "/pagamentos/efetuar" : "/payments/outgoing",
+      href: isPortuguese ? "/pagamentos/saida" : "/payments/outgoing",
       icon: Receipt,
       description: "Pagamentos pendentes a equipas e fornecedores",
     },
     {
       title: isPortuguese ? "Pagamentos a Receber" : "Incoming Payments",
-      href: isPortuguese ? "/pagamentos/receber" : "/payments/incoming",
+      href: isPortuguese ? "/pagamentos/entrada" : "/payments/incoming",
       icon: BadgeDollarSign,
       description: "Valores a receber de proprietários",
     },
