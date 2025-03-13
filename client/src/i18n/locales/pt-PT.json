@@ -48,7 +48,9 @@
     "country": "País",
     "date": "Data",
     "amount": "Valor",
-    "total": "Total"
+    "total": "Total",
+    "help": "Ajuda",
+    "company": "Empresa"
   },
   "dashboard": {
     "title": "Painel",
@@ -225,14 +227,19 @@
     },
     "general": {
       "title": "Configurações Gerais",
+      "description": "Gerencie as configurações gerais da sua aplicação",
+      "darkMode": "Modo Escuro",
       "companyName": "Nome da Empresa",
       "companyLogo": "Logotipo da Empresa",
       "defaultCurrency": "Moeda Padrão",
       "timezone": "Fuso Horário",
-      "dateFormat": "Formato de Data"
+      "dateFormat": "Formato de Data",
+      "saveSuccess": "Configurações salvas",
+      "saveSuccessDesc": "As configurações gerais foram salvas com sucesso."
     },
     "account": {
       "title": "Definições de Conta",
+      "description": "Gerencie suas informações de conta pessoal",
       "name": "Nome",
       "email": "Email",
       "password": "Palavra-passe",
@@ -243,19 +250,27 @@
     },
     "notifications": {
       "title": "Notificações",
+      "description": "Gerencie as notificações da sua aplicação",
       "email": "Notificações por Email",
+      "emailDescription": "Receba atualizações importantes por email",
       "push": "Notificações Push",
       "sms": "Notificações por SMS",
+      "smsDescription": "Receba alertas importantes por SMS",
       "newReservation": "Nova Reserva",
       "cancelledReservation": "Reserva Cancelada",
       "checkInReminder": "Lembrete de Check-in",
       "checkOutReminder": "Lembrete de Check-out",
       "paymentReceived": "Pagamento Recebido",
-      "paymentDue": "Pagamento a Vencer"
+      "paymentDue": "Pagamento a Vencer",
+      "weeklyReports": "Relatórios Semanais",
+      "saveSuccess": "Notificações salvas",
+      "saveSuccessDesc": "As configurações de notificações foram salvas com sucesso."
     },
     "language": {
       "title": "Idioma",
       "selectLanguage": "Selecionar Idioma",
+      "changeSuccess": "Idioma alterado",
+      "changeSuccessDesc": "O idioma da interface foi alterado com sucesso.",
       "languages": {
         "pt_PT": "Português (Portugal)",
         "en_US": "Inglês (EUA)",
@@ -265,9 +280,18 @@
     },
     "integrations": {
       "title": "Integrações",
+      "description": "Gerencie as integrações com serviços externos",
       "mistralAI": {
         "title": "Mistral AI",
         "apiKey": "Chave API",
+        "apiKeyPlaceholder": "Insira a sua chave de API Mistral AI aqui",
+        "description": "Configure a Integração Mistral AI para processamento de documentos e assistente virtual",
+        "getApiKey": "Obter chave API",
+        "save": "Salvar Chave API",
+        "saveSuccess": "Chave API salva",
+        "saveSuccessDesc": "A chave API da Mistral AI foi salva com sucesso.",
+        "saveError": "Erro ao salvar chave API",
+        "saveErrorDesc": "A chave API não pode estar vazia.",
         "status": "Estado",
         "connected": "Conectado",
         "disconnected": "Desconectado",
