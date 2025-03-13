@@ -1463,6 +1463,19 @@ export class DatabaseStorage implements IStorage {
     return { id: 1, ...user };
   }
   
+  // Financial Document Item methods
+  async getFinancialDocumentItem(id: number): Promise<FinancialDocumentItem | undefined> {
+    if (!db) return undefined;
+    
+    try {
+      const [item] = await db.select().from(financialDocumentItems).where(eq(financialDocumentItems.id, id));
+      return item;
+    } catch (error) {
+      console.error("Erro ao buscar item do documento financeiro:", error);
+      return undefined;
+    }
+  }
+  
   // Implementação do método estatísticas de propriedade
   async getPropertyStatistics(propertyId: number): Promise<any> {
     if (!db) return {
