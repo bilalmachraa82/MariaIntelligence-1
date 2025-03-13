@@ -79,35 +79,59 @@ export async function createReservationFromExtractedData(data: ExtractedData) {
 }
 
 /**
- * Upload de documento PDF para a Mistral Document API
- * Usa a API de documentos especializada para processar arquivos
+ * Processar documento PDF diretamente com a API Chat Completions do Mistral
+ * 
+ * A Mistral não possui uma API específica de Document, então usamos a API Chat com base64
+ * e Function Calling para análise estruturada
  * 
  * @param fileBase64 PDF em formato Base64
- * @returns ID do documento na API Mistral
+ * @returns Texto extraído do documento para análise posterior
  */
-export async function uploadDocumentToMistral(fileBase64: string): Promise<string> {
+export async function processDocumentWithMistral(fileBase64: string): Promise<string> {
   try {
-    console.log("Iniciando upload para Mistral Document API");
+    console.log("Iniciando processamento de PDF com Mistral AI");
     
     // Verificar se o base64 é válido
     if (!fileBase64 || fileBase64.trim() === '') {
       throw new Error("Base64 inválido ou vazio");
     }
     
-    // Criar um documento a partir do PDF - formato correto segundo a documentação do Mistral
-    const response = await fetch(MISTRAL_API_DOCUMENT, {
+    // Usamos a API Chat Completions para analisar o conteúdo do PDF
+    const response = await fetch(MISTRAL_API_CHAT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${MISTRAL_API_KEY}`
       },
       body: JSON.stringify({
-        files: [
-          {
-            data: fileBase64,
-            mime_type: 'application/pdf'
+        model: 'mistral-large-latest',
+        messages: [
+          { 
+            role: 'system', 
+            content: 'Você é um assistente especializado em processamento de documentos e OCR, com foco em extração de texto precisa e estruturada de arquivos PDF relacionados a reservas de alojamento local em Portugal.' 
+          },
+          { 
+            role: 'user', 
+            content: [
+              {
+                type: 'text',
+                text: `Extraia todo o texto visível neste documento PDF de reserva, incluindo cabeçalhos, tabelas e informações relevantes. 
+                Preserve a estrutura original do documento (seções, tabelas, etc.).
+                Identifique e destaque informações importantes como datas, valores, nomes, etc.
+                Processe tabelas mantendo o alinhamento de colunas quando possível.
+                Retorne o texto extraído com a estrutura preservada.`
+              },
+              {
+                type: 'image_url',
+                image_url: {
+                  url: `data:application/pdf;base64,${fileBase64}`
+                }
+              }
+            ]
           }
-        ]
+        ],
+        temperature: 0.1,
+        max_tokens: 4000
       })
     });
 
@@ -121,18 +145,16 @@ export async function uploadDocumentToMistral(fileBase64: string): Promise<strin
         errorText = await response.text();
       }
       
-      throw new Error(`Erro na API Mistral Document (${response.status}): ${errorText}`);
+      throw new Error(`Erro na API Mistral (${response.status}): ${errorText}`);
     }
 
     const data = await response.json();
-    console.log("Documento carregado com sucesso. ID:", data.document_id);
-    return data.document_id;
+    const extractedText = data.choices[0].message.content.trim();
+    console.log("Texto extraído com sucesso. Tamanho:", extractedText.length);
+    return extractedText;
   } catch (error) {
-    console.error("Falha ao fazer upload do documento para Mistral:", error);
-    
-    // Tentar usar API do backend como fallback
-    console.warn("Falha ao processar com Mistral diretamente, tentando via backend:", error);
-    throw new Error(`Falha no upload para Mistral API: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
+    console.error("Falha ao processar documento com Mistral:", error);
+    throw new Error(`Falha no processamento com Mistral API: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
   }
 }
 
