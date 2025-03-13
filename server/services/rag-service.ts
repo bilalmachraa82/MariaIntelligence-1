@@ -15,6 +15,7 @@ import {
   InsertQueryEmbedding 
 } from "@shared/schema";
 import { eq, desc, and, or, like, sql } from "drizzle-orm";
+import { migrateRagTables } from "../db/migrate-rag";
 
 // Configurações
 const MAX_CONVERSATION_HISTORY = 50; // Número máximo de mensagens por contexto de conversa
@@ -25,6 +26,7 @@ const DEFAULT_USER_ID = 1; // ID de usuário padrão (até implementar autentica
  */
 export class RagService {
   private mistral: Mistral;
+  private tablesInitialized: boolean = false;
   
   constructor() {
     const apiKey = process.env.MISTRAL_API_KEY;
@@ -36,6 +38,31 @@ export class RagService {
     this.mistral = new Mistral({
       apiKey: apiKey || ""
     });
+    
+    // Inicializar as tabelas necessárias de forma assíncrona
+    this.initTables().then(success => {
+      this.tablesInitialized = success;
+      if (success) {
+        console.log("Tabelas RAG inicializadas com sucesso.");
+      } else {
+        console.warn("Não foi possível inicializar todas as tabelas RAG. Algumas funcionalidades podem estar limitadas.");
+      }
+    }).catch(err => {
+      console.error("Erro ao inicializar tabelas RAG:", err);
+      this.tablesInitialized = false;
+    });
+  }
+  
+  /**
+   * Inicializa as tabelas necessárias para o funcionamento do RAG
+   */
+  private async initTables(): Promise<boolean> {
+    try {
+      return await migrateRagTables();
+    } catch (error) {
+      console.error("Erro ao inicializar tabelas:", error);
+      return false;
+    }
   }
   
   /**
