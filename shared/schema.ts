@@ -12,6 +12,17 @@ import {
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+// Cleaning Team schema
+export const cleaningTeams = pgTable("cleaning_teams", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull().unique(),
+  manager: text("manager").default(""),
+  phone: text("phone").default(""),
+  email: text("email").default(""),
+  rating: integer("rating").default(5),
+  status: text("status").default("active"),
+});
+
 // Property schema
 export const properties = pgTable("properties", {
   id: serial("id").primaryKey(),
@@ -21,6 +32,7 @@ export const properties = pgTable("properties", {
   commission: decimal("commission", { precision: 10, scale: 2 }).default("0"),
   teamPayment: decimal("team_payment", { precision: 10, scale: 2 }).default("0"),
   cleaningTeam: text("cleaning_team").default(""),
+  cleaningTeamId: integer("cleaning_team_id").references(() => cleaningTeams.id),
   ownerId: integer("owner_id").notNull(),
   monthlyFixedCost: decimal("monthly_fixed_cost", { precision: 10, scale: 2 }).default("0"),
   active: boolean("active").default(true),
@@ -119,6 +131,15 @@ export const insertActivitySchema = createInsertSchema(activities).pick({
   entityType: true,
 });
 
+export const insertCleaningTeamSchema = createInsertSchema(cleaningTeams).pick({
+  name: true,
+  manager: true,
+  phone: true,
+  email: true,
+  rating: true,
+  status: true,
+});
+
 // Types
 export type Property = typeof properties.$inferSelect;
 export type InsertProperty = z.infer<typeof insertPropertySchema>;
@@ -131,6 +152,9 @@ export type InsertReservation = z.infer<typeof insertReservationSchema>;
 
 export type Activity = typeof activities.$inferSelect;
 export type InsertActivity = z.infer<typeof insertActivitySchema>;
+
+export type CleaningTeam = typeof cleaningTeams.$inferSelect;
+export type InsertCleaningTeam = z.infer<typeof insertCleaningTeamSchema>;
 
 // Enums
 export const reservationStatusEnum = z.enum([
