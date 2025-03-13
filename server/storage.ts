@@ -696,7 +696,7 @@ export class DatabaseStorage implements IStorage {
       // Obter duração média da estadia
       const stayDurationResults = await db.execute(sql`
         SELECT AVG(
-          EXTRACT(DAY FROM CAST(check_out_date as DATE) - CAST(check_in_date as DATE))
+          (CAST(check_out_date as DATE) - CAST(check_in_date as DATE))
         ) as average
         FROM reservations
         WHERE property_id = ${propertyId}
@@ -869,49 +869,90 @@ export class DatabaseStorage implements IStorage {
   async getTotalRevenue(startDate?: Date, endDate?: Date): Promise<number> {
     if (!db) return 0;
     
-    let query = db.select({
-      totalRevenue: sql`SUM(CAST(${reservations.totalAmount} as DECIMAL))`
-    }).from(reservations);
-    
-    if (startDate) {
-      query = query.where(gte(reservations.checkInDate, startDate.toISOString().split('T')[0]));
+    try {
+      // Converter datas para strings ISO
+      const startDateStr = startDate ? startDate.toISOString().split('T')[0] : null;
+      const endDateStr = endDate ? endDate.toISOString().split('T')[0] : null;
+      
+      // Construir a consulta base
+      let queryStr = `
+        SELECT SUM(CAST(total_amount AS DECIMAL)) as total_revenue
+        FROM reservations
+        WHERE 1=1
+      `;
+      
+      const params: any[] = [];
+      let paramIndex = 1;
+      
+      // Adicionar filtros de data se fornecidos
+      if (startDateStr) {
+        queryStr += ` AND check_in_date::DATE >= $${paramIndex}::DATE`;
+        params.push(startDateStr);
+        paramIndex++;
+      }
+      
+      if (endDateStr) {
+        queryStr += ` AND check_out_date::DATE <= $${paramIndex}::DATE`;
+        params.push(endDateStr);
+        paramIndex++;
+      }
+      
+      // Executar a consulta
+      const result = await db.execute(sql.raw(queryStr, ...params));
+      return Number(result[0]?.total_revenue) || 0;
+    } catch (error) {
+      console.error("Erro ao calcular receita total:", error);
+      return 0;
     }
-    
-    if (endDate) {
-      query = query.where(lte(reservations.checkOutDate, endDate.toISOString().split('T')[0]));
-    }
-    
-    const [result] = await query;
-    return Number(result?.totalRevenue) || 0;
   }
 
   async getNetProfit(startDate?: Date, endDate?: Date): Promise<number> {
     if (!db) return 0;
     
-    const query = db.select({
-      totalRevenue: sql`SUM(CAST(${reservations.totalAmount} as DECIMAL))`,
-      totalCosts: sql`
-        SUM(
-          COALESCE(CAST(${reservations.cleaningFee} as DECIMAL), 0) + 
-          COALESCE(CAST(${reservations.checkInFee} as DECIMAL), 0) + 
-          COALESCE(CAST(${reservations.commissionFee} as DECIMAL), 0) + 
-          COALESCE(CAST(${reservations.teamPayment} as DECIMAL), 0)
-        )
-      `
-    }).from(reservations);
-    
-    if (startDate) {
-      query = query.where(gte(reservations.checkInDate, startDate.toISOString().split('T')[0]));
+    try {
+      // Converter datas para strings ISO
+      const startDateStr = startDate ? startDate.toISOString().split('T')[0] : null;
+      const endDateStr = endDate ? endDate.toISOString().split('T')[0] : null;
+      
+      // Construir a consulta
+      let queryStr = `
+        SELECT 
+          SUM(CAST(total_amount AS DECIMAL)) as total_revenue,
+          SUM(
+            COALESCE(CAST(cleaning_fee AS DECIMAL), 0) + 
+            COALESCE(CAST(check_in_fee AS DECIMAL), 0) + 
+            COALESCE(CAST(commission_fee AS DECIMAL), 0) + 
+            COALESCE(CAST(team_payment AS DECIMAL), 0)
+          ) as total_costs
+        FROM reservations
+        WHERE 1=1
+      `;
+      
+      const params: any[] = [];
+      let paramIndex = 1;
+      
+      // Adicionar filtros de data se fornecidos
+      if (startDateStr) {
+        queryStr += ` AND check_in_date::DATE >= $${paramIndex}::DATE`;
+        params.push(startDateStr);
+        paramIndex++;
+      }
+      
+      if (endDateStr) {
+        queryStr += ` AND check_out_date::DATE <= $${paramIndex}::DATE`;
+        params.push(endDateStr);
+        paramIndex++;
+      }
+      
+      // Executar a consulta
+      const result = await db.execute(sql.raw(queryStr, ...params));
+      const revenue = Number(result[0]?.total_revenue) || 0;
+      const costs = Number(result[0]?.total_costs) || 0;
+      return revenue - costs;
+    } catch (error) {
+      console.error("Erro ao calcular lucro líquido:", error);
+      return 0;
     }
-    
-    if (endDate) {
-      query = query.where(lte(reservations.checkOutDate, endDate.toISOString().split('T')[0]));
-    }
-    
-    const [result] = await query;
-    const revenue = Number(result?.totalRevenue) || 0;
-    const costs = Number(result?.totalCosts) || 0;
-    return revenue - costs;
   }
 
   async getOccupancyRate(propertyId?: number, startDate?: Date, endDate?: Date): Promise<number> {
@@ -942,16 +983,14 @@ export class DatabaseStorage implements IStorage {
       if (propertyId) {
         occupiedDaysQuery = await db.execute(sql`
           SELECT SUM(
-            EXTRACT(DAY FROM 
-              LEAST(
-                "check_out_date"::DATE, 
-                ${endDateStr}::DATE
-              ) - 
-              GREATEST(
-                "check_in_date"::DATE, 
-                ${startDateStr}::DATE
-              )
-            )
+            (LEAST(
+              "check_out_date"::DATE, 
+              ${endDateStr}::DATE
+            ) - 
+            GREATEST(
+              "check_in_date"::DATE, 
+              ${startDateStr}::DATE
+            ))
           ) as days
           FROM reservations
           WHERE property_id = ${propertyId}
@@ -973,16 +1012,14 @@ export class DatabaseStorage implements IStorage {
         // Obter dias ocupados para todas as propriedades
         const occupiedDaysResult = await db.execute(sql`
           SELECT SUM(
-            EXTRACT(DAY FROM 
-              LEAST(
-                "check_out_date"::DATE, 
-                ${endDateStr}::DATE
-              ) - 
-              GREATEST(
-                "check_in_date"::DATE, 
-                ${startDateStr}::DATE
-              )
-            )
+            (LEAST(
+              "check_out_date"::DATE, 
+              ${endDateStr}::DATE
+            ) - 
+            GREATEST(
+              "check_in_date"::DATE, 
+              ${startDateStr}::DATE
+            ))
           ) as days
           FROM reservations
           WHERE "check_in_date"::DATE <= ${endDateStr}::DATE
