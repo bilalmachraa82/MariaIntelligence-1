@@ -88,10 +88,14 @@ export function Sidebar({ className }: SidebarProps) {
       <ScrollArea className="flex-grow">
         <nav className="px-2 py-4 space-y-1">
           {links.map((link) => (
-            <Link key={link.href} href={link.href}>
-              <a
+            <div 
+              key={link.href}
+              className="block" 
+              onClick={() => window.location.href = link.href}
+            >
+              <div
                 className={cn(
-                  "flex items-center px-4 py-2 text-sm font-medium rounded-md group",
+                  "flex items-center px-4 py-2 text-sm font-medium rounded-md group cursor-pointer",
                   isLinkActive(link.href, link.altHref)
                     ? "bg-primary-50 text-primary-700"
                     : "text-secondary-700 hover:bg-secondary-100"
@@ -99,8 +103,8 @@ export function Sidebar({ className }: SidebarProps) {
               >
                 <link.icon className="mr-3 h-5 w-5" />
                 {link.title}
-              </a>
-            </Link>
+              </div>
+            </div>
           ))}
         </nav>
       </ScrollArea>

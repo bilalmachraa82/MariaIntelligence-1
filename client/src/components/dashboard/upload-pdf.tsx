@@ -160,13 +160,18 @@ export function UploadPDF() {
         </CardHeader>
         <CardContent className="px-4 py-5 sm:px-6 space-y-6">
           <div 
-            className="border-2 border-dashed border-secondary-300 rounded-lg p-6 text-center"
+            className="border-2 border-dashed border-secondary-300 rounded-lg p-6 text-center cursor-pointer"
             onDragOver={handleDragOver}
             onDrop={handleDrop}
+            onClick={() => {
+              if (!isUploading) {
+                document.getElementById('file-upload')?.click();
+              }
+            }}
           >
             <CloudUpload className="mx-auto h-12 w-12 text-secondary-400" />
             <div className="mt-4 flex text-sm text-secondary-600 justify-center">
-              <label htmlFor="file-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none">
+              <label className="relative cursor-pointer bg-white rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none">
                 <span>Faça upload de um arquivo</span>
                 <input 
                   id="file-upload" 
@@ -287,11 +292,13 @@ export function UploadPDF() {
           </div>
 
           <div>
-            <Link href="/reservations/new">
-              <Button className="w-full" variant="outline">
-                Continuar Manualmente
-              </Button>
-            </Link>
+            <Button 
+              className="w-full" 
+              variant="outline"
+              onClick={() => window.location.href = "/reservations/new"}
+            >
+              Continuar Manualmente
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -405,11 +412,12 @@ export function UploadPDF() {
               </div>
             </div>
             <DialogFooter className="mt-4">
-              <Link href="/reservations/new">
-                <Button variant="outline">
-                  Editar Dados
-                </Button>
-              </Link>
+              <Button 
+                variant="outline"
+                onClick={() => window.location.href = "/reservations/new"}
+              >
+                Editar Dados
+              </Button>
               <Button 
                 onClick={handleConfirmReservation} 
                 disabled={isUploading}
