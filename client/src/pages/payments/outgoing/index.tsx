@@ -24,13 +24,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { formatCurrency } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 export default function PaymentsOutgoing() {
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   
   // Dados mockup para a interface - em produção viriam da API
-  const outgoingPayments = [
+  const [payments, setPayments] = useState([
     {
       id: 1,
       recipient: "Equipa de Limpeza Lisboa Centro",
@@ -65,7 +67,7 @@ export default function PaymentsOutgoing() {
       invoiceNumber: "INV-2025-0119",
       createdAt: "2025-02-28"
     }
-  ];
+  ]);
   
   // Função para obter a cor do tipo de pagamento
   const getTypeColor = (type: string) => {
@@ -96,7 +98,7 @@ export default function PaymentsOutgoing() {
   };
   
   // Função para filtrar os pagamentos
-  const filteredPayments = outgoingPayments.filter(payment => {
+  const filteredPayments = payments.filter(payment => {
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
       return (
@@ -165,9 +167,9 @@ export default function PaymentsOutgoing() {
       
       <Tabs defaultValue="all" className="mt-4" onValueChange={setActiveTab} value={activeTab}>
         <TabsList className="mb-4">
-          <TabsTrigger value="all">Todos ({outgoingPayments.length})</TabsTrigger>
-          <TabsTrigger value="pending">Pendentes ({outgoingPayments.filter(p => p.status === "pending").length})</TabsTrigger>
-          <TabsTrigger value="paid">Pagos ({outgoingPayments.filter(p => p.status === "paid").length})</TabsTrigger>
+          <TabsTrigger value="all">Todos ({payments.length})</TabsTrigger>
+          <TabsTrigger value="pending">Pendentes ({payments.filter(p => p.status === "pending").length})</TabsTrigger>
+          <TabsTrigger value="paid">Pagos ({payments.filter(p => p.status === "paid").length})</TabsTrigger>
         </TabsList>
         
         <TabsContent value={activeTab} className="space-y-4">
@@ -212,7 +214,7 @@ export default function PaymentsOutgoing() {
                       <div className="flex items-center text-xs text-maria-gray">
                         <Calendar className="mr-1 h-3 w-3" />
                         <span>
-                          {payment.status === "paid" 
+                          {payment.status === "paid" && payment.paidAt
                             ? `Pago em ${new Date(payment.paidAt).toLocaleDateString('pt-PT')}` 
                             : `Vencimento: ${new Date(payment.dueDate).toLocaleDateString('pt-PT')}`
                           }
@@ -238,8 +240,7 @@ export default function PaymentsOutgoing() {
                           onClick={() => {
                             toast({
                               title: "Pagamento confirmado",
-                              description: `O pagamento de ${formatCurrency(payment.amount)} foi marcado como pago.`,
-                              variant: "success",
+                              description: `O pagamento de ${formatCurrency(payment.amount)} foi marcado como pago.`
                             });
                             
                             // Em produção atualizaria o estado
