@@ -27,7 +27,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 
 export function UploadPDF() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -35,6 +35,7 @@ export function UploadPDF() {
   const [isValidationDialogOpen, setIsValidationDialogOpen] = useState(false);
   const [mistralAvailable, setMistralAvailable] = useState<boolean | null>(null);
   const { toast } = useToast();
+  const [_, setLocation] = useLocation();
   
   const { 
     isUploading, 
@@ -295,7 +296,7 @@ export function UploadPDF() {
             <Button 
               className="w-full" 
               variant="outline"
-              onClick={() => window.location.href = "/reservations/new"}
+              onClick={() => setLocation("/reservations/new")}
             >
               Continuar Manualmente
             </Button>
@@ -414,7 +415,7 @@ export function UploadPDF() {
             <DialogFooter className="mt-4">
               <Button 
                 variant="outline"
-                onClick={() => window.location.href = "/reservations/new"}
+                onClick={() => setLocation("/reservations/new")}
               >
                 Editar Dados
               </Button>
