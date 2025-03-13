@@ -1048,29 +1048,88 @@ let usePostgres = db && process.env.DATABASE_URL ? true : false;
 // Log para diagnóstico
 console.log(`Usando armazenamento ${usePostgres ? 'PostgreSQL' : 'em memória'}`);
 
-// Criar a instância apropriada de armazenamento
-let storageInstance: IStorage;
+// Importar a flag de estado do banco de dados
+import { isDatabaseAvailable, checkDatabaseConnection } from './db';
 
-try {
-  storageInstance = usePostgres ? new DatabaseStorage() : new MemStorage();
-  
-  // Tentar uma operação simples para verificar se a conexão está funcionando
-  if (usePostgres) {
-    (async () => {
-      try {
-        await storageInstance.getProperties();
-        console.log('Conexão com o banco de dados PostgreSQL está funcionando corretamente');
-      } catch (error) {
-        console.error('Erro ao usar PostgreSQL, voltando para armazenamento em memória:', error);
-        // Fallback para armazenamento em memória se o PostgreSQL falhar
-        storageInstance = new MemStorage();
-      }
-    })();
+// Variável para armazenar a instância de armazenamento atual
+let storageInstance: IStorage;
+// Variável para armazenar a instância de memória para fallback
+let memStorage: MemStorage;
+// Variável para armazenar a instância de banco de dados
+let dbStorage: DatabaseStorage | null = null;
+
+// Função auxiliar para criar a instância de armazenamento apropriada
+async function createStorage(): Promise<IStorage> {
+  // Sempre inicializar o armazenamento em memória como fallback
+  if (!memStorage) {
+    memStorage = new MemStorage();
   }
-} catch (error) {
-  console.error('Erro ao inicializar armazenamento, usando MemStorage como fallback:', error);
-  storageInstance = new MemStorage();
+  
+  // Se não estamos usando PostgreSQL, retornar a instância de memória
+  if (!usePostgres) {
+    console.log('Usando armazenamento em memória por configuração');
+    return memStorage;
+  }
+  
+  // Verificar se o banco de dados está disponível
+  const dbAvailable = await checkDatabaseConnection();
+  
+  // Se o banco de dados está disponível e a instância do banco não existe, criar uma
+  if (dbAvailable && !dbStorage) {
+    try {
+      dbStorage = new DatabaseStorage();
+      console.log('Conexão com o banco de dados PostgreSQL está funcionando corretamente');
+      return dbStorage;
+    } catch (error) {
+      console.error('Erro ao criar DatabaseStorage, usando MemStorage como fallback:', error);
+      return memStorage;
+    }
+  }
+  
+  // Se o banco de dados está disponível e a instância existe, usá-la
+  if (dbAvailable && dbStorage) {
+    return dbStorage;
+  }
+  
+  // Se chegamos aqui, o banco de dados não está disponível, usar memória
+  console.log('Banco de dados não disponível, usando armazenamento em memória');
+  return memStorage;
 }
 
-// Exportar a instância de armazenamento
-export const storage = storageInstance;
+// Inicializar o armazenamento
+(async () => {
+  try {
+    storageInstance = await createStorage();
+  } catch (error) {
+    console.error('Erro ao inicializar armazenamento, usando MemStorage como fallback:', error);
+    storageInstance = memStorage || new MemStorage();
+  }
+})();
+
+// Função de proxy para garantir que sempre usamos a instância correta
+// e tentamos reconectar ao banco quando necessário
+export const storage = new Proxy({} as IStorage, {
+  get: function(target, prop) {
+    // Se a propriedade não for uma função, apenas retornar o valor
+    if (typeof storageInstance[prop as keyof IStorage] !== 'function') {
+      return storageInstance[prop as keyof IStorage];
+    }
+    
+    // Se for uma função, retornar uma função que verifica o estado do armazenamento antes de executar
+    return async function(...args: any[]) {
+      try {
+        // Tentar usar a instância atual
+        return await (storageInstance[prop as keyof IStorage] as Function).apply(storageInstance, args);
+      } catch (error) {
+        // Se falhar, verificar se podemos reconectar ao banco
+        console.error(`Erro ao executar ${String(prop)}:`, error);
+        
+        // Tentar reconectar e criar uma nova instância
+        storageInstance = await createStorage();
+        
+        // Tentar novamente com a nova instância
+        return await (storageInstance[prop as keyof IStorage] as Function).apply(storageInstance, args);
+      }
+    };
+  }
+});
