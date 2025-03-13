@@ -77,10 +77,12 @@ export default function MaintenancePending() {
           <h1 className="text-2xl font-bold tracking-tight">Tarefas de Manutenção</h1>
           <p className="text-maria-gray">Gerenciamento de todas as tarefas de manutenção pendentes</p>
         </div>
-        <Button className="mt-4 md:mt-0 primary-gradient text-white">
-          <ClipboardList className="mr-2 h-4 w-4" />
-          Nova Solicitação
-        </Button>
+        <Link href="/manutencao/solicitacao">
+          <Button className="mt-4 md:mt-0 bg-maria-primary hover:bg-maria-primary/90 text-white">
+            <ClipboardList className="mr-2 h-4 w-4" />
+            Nova Solicitação
+          </Button>
+        </Link>
       </div>
       
       <Tabs defaultValue="all" className="mt-4" onValueChange={setActiveTab}>

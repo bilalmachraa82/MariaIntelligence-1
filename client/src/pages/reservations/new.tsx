@@ -427,57 +427,58 @@ export default function ReservationNewPage() {
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
                 <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
-                  control={form.control}
-                  name="propertyId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Propriedade</FormLabel>
-                      <Select
-                        onValueChange={(value) => {
-                          field.onChange(Number(value));
-                          updatePropertyCosts(Number(value));
-                        }}
-                        defaultValue={field.value.toString()}
-                        value={field.value.toString()}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione uma propriedade" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {properties?.map(property => (
-                            <SelectItem 
-                              key={property.id} 
-                              value={property.id.toString()}
-                            >
-                              {property.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="propertyId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Propriedade</FormLabel>
+                          <Select
+                            onValueChange={(value) => {
+                              field.onChange(Number(value));
+                              updatePropertyCosts(Number(value));
+                            }}
+                            defaultValue={field.value.toString()}
+                            value={field.value.toString()}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="w-full">
+                                <Building className="mr-2 h-4 w-4 text-muted-foreground" />
+                                <SelectValue placeholder="Selecione uma propriedade" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {properties?.map(property => (
+                                <SelectItem 
+                                  key={property.id} 
+                                  value={property.id.toString()}
+                                >
+                                  {property.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                <FormField
-                  control={form.control}
-                  name="platform"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Plataforma</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione a plataforma" />
-                          </SelectTrigger>
+                    <FormField
+                      control={form.control}
+                      name="platform"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Plataforma</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione a plataforma" />
+                              </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                           {enums?.reservationPlatform?.map(platform => (
@@ -825,7 +826,7 @@ export default function ReservationNewPage() {
               >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={isPending}>
+              <Button type="submit" disabled={isPending} className="bg-maria-primary hover:bg-maria-primary/90">
                 {isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
