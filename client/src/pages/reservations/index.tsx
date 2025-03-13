@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useReservations, useDeleteReservation, useReservationEnums } from "@/hooks/use-reservations";
 import { useProperties } from "@/hooks/use-properties";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { PlusCircle, MoreHorizontal, Edit, Trash2, FileUp, Calendar } from "lucide-react";
 import { 
   Card, 
@@ -53,6 +53,7 @@ export default function ReservationsPage() {
   const [propertyFilter, setPropertyFilter] = useState("all");
   const [reservationToDelete, setReservationToDelete] = useState<number | null>(null);
   
+  const [, setLocation] = useLocation();
   const { data: reservations, isLoading: isLoadingReservations } = useReservations();
   const { data: properties, isLoading: isLoadingProperties } = useProperties();
   const { data: enums } = useReservationEnums();
@@ -203,7 +204,7 @@ export default function ReservationsPage() {
                         <TableCell className="font-medium">
                           <div 
                             className="text-primary-600 hover:underline cursor-pointer"
-                            onClick={() => window.location.href = `/reservations/${reservation.id}`}
+                            onClick={() => setLocation(`/reservations/${reservation.id}`)}
                           >
                             {reservation.guestName}
                           </div>
@@ -211,7 +212,7 @@ export default function ReservationsPage() {
                         <TableCell>
                           <div 
                             className="text-primary-600 hover:underline cursor-pointer"
-                            onClick={() => window.location.href = `/properties/${reservation.propertyId}`}
+                            onClick={() => setLocation(`/properties/${reservation.propertyId}`)}
                           >
                             {getPropertyName(reservation.propertyId)}
                           </div>
@@ -248,7 +249,7 @@ export default function ReservationsPage() {
                               <DropdownMenuItem asChild>
                                 <div 
                                   className="cursor-pointer flex items-center px-2 py-1.5 text-sm"
-                                  onClick={() => navigate(`/reservations/${reservation.id}`)}
+                                  onClick={() => setLocation(`/reservations/${reservation.id}`)}
                                 >
                                   Ver detalhes
                                 </div>
@@ -256,7 +257,7 @@ export default function ReservationsPage() {
                               <DropdownMenuItem asChild>
                                 <div 
                                   className="cursor-pointer flex items-center px-2 py-1.5 text-sm"
-                                  onClick={() => navigate(`/reservations/edit/${reservation.id}`)}
+                                  onClick={() => setLocation(`/reservations/edit/${reservation.id}`)}
                                 >
                                   <Edit className="mr-2 h-4 w-4" />
                                   Editar
