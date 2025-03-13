@@ -148,51 +148,61 @@ export default function SettingsPage() {
         }>;
       }>("GET", "/api/test-integrations");
       
-      // Para debug: exibir os dados recebidos
       console.log("Resposta completa:", response);
       
-      // Extrai os resultados de cada teste pelo nome
-      const mistralTest = response.tests.find(test => test.name === "Mistral AI");
-      const dbTest = response.tests.find(test => test.name === "Base de Dados");
-      const ocrTest = response.tests.find(test => test.name === "OCR (Processamento de PDFs)");
-      const ragTest = response.tests.find(test => test.name === "RAG (Retrieval Augmented Generation)");
-      
-      // Para debug: exibir os resultados individuais
-      console.log("Tests individuais:", {
-        mistralTest,
-        dbTest,
-        ocrTest,
-        ragTest
-      });
-      
-      // Processa qualquer mensagem de erro
-      const errorMessages = response.tests
-        .filter(test => !test.success && test.error)
-        .map(test => `${test.name}: ${test.error}`)
-        .join("\n");
-      
-      setTestResults({
-        mistral: mistralTest?.success || false,
-        database: dbTest?.success || false,
-        ocr: ocrTest?.success || false,
-        rag: ragTest?.success || false,
-        message: errorMessages,
-      });
-      
-      if (response.success) {
-        toast({
-          title: "Teste de integrações bem-sucedido",
-          description: "Todas as integrações estão funcionando corretamente.",
-          variant: "default",
+      if (response && response.tests && Array.isArray(response.tests)) {
+        // Extrai os resultados de cada teste pelo nome
+        const mistralTest = response.tests.find(test => test.name === "Mistral AI");
+        const dbTest = response.tests.find(test => test.name === "Base de Dados");
+        const ocrTest = response.tests.find(test => test.name === "OCR (Processamento de PDFs)");
+        const ragTest = response.tests.find(test => test.name === "RAG (Retrieval Augmented Generation)");
+        
+        console.log("Tests individuais:", {
+          mistralTest,
+          dbTest,
+          ocrTest,
+          ragTest
         });
+        
+        // Processa qualquer mensagem de erro
+        const errorMessages = response.tests
+          .filter(test => !test.success && test.error)
+          .map(test => `${test.name}: ${test.error}`)
+          .join("\n");
+        
+        // Atualiza o estado com os resultados dos testes
+        setTestResults({
+          mistral: mistralTest?.success || false,
+          database: dbTest?.success || false,
+          ocr: ocrTest?.success || false,
+          rag: ragTest?.success || false,
+          message: errorMessages,
+        });
+        
+        // Se todos os testes foram bem-sucedidos
+        const allTestsSuccessful = mistralTest?.success && dbTest?.success && ocrTest?.success && ragTest?.success;
+        
+        if (allTestsSuccessful) {
+          toast({
+            title: "Testes de integração bem-sucedidos",
+            description: "Todas as integrações estão funcionando corretamente.",
+            variant: "default",
+          });
+        } else {
+          toast({
+            title: "Problemas na integração",
+            description: "Algumas integrações não estão funcionando corretamente. Verifique os detalhes abaixo.",
+            variant: "destructive",
+          });
+        }
       } else {
-        toast({
-          title: "Problemas na integração",
-          description: "Algumas integrações não estão funcionando. Verifique os detalhes abaixo.",
-          variant: "destructive",
-        });
+        // Se a resposta não tiver o formato esperado
+        console.error("Formato de resposta inválido:", response);
+        throw new Error("Formato de resposta inválido");
       }
     } catch (error) {
+      console.error("Erro ao processar resposta:", error);
+      
       setTestResults({
         mistral: false,
         database: false,

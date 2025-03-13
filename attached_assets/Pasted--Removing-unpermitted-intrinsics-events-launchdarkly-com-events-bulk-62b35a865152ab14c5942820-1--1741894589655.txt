@@ -1,0 +1,231 @@
+ Removing unpermitted intrinsics
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/diagnostic/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/diagnostic/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/diagnostic/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/diagnostic/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+hook.js:608 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//upload-pdf' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//assistente' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//payments/incoming' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//payments/incoming/new' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//configuracoes' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+5hook.js:608 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//configuracoes' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//painel' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+hook.js:608 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//propriedades' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//reservas' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//proprietarios' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+5hook.js:608 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+hook.js:608 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//configuracoes' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+stallwart.build.js:1 stallwart: failed ping 1
+ Removing unpermitted intrinsics
+ Removing unpermitted intrinsics
+ Removing unpermitted intrinsics
+lockdown-install.js:1 Removing unpermitted intrinsics
+ Removing unpermitted intrinsics
+5hook.js:608 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+ Removing unpermitted intrinsics
+ Removing unpermitted intrinsics
+ Removing unpermitted intrinsics
+ Removing unpermitted intrinsics
+lockdown-install.js:1 Removing unpermitted intrinsics
+ i18next: languageChanged pt-PT
+ i18next: initialized Object
+ i18next: languageChanged pt-PT
+ i18next: initialized Object
+ i18next: languageChanged pt-PT
+ i18next: initialized Object
+hook.js:608 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//settings' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+overrideMethod @ hook.js:608
+ i18next: languageChanged pt-PT
+ i18next: initialized Object
+Console.js:61 i18next: languageChanged pt-PT
+Console.js:61 i18next: initialized Object
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/diagnostic/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+events.launchdarkly.com/events/diagnostic/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+ API Request: GET /api/test-integrations 
+ API Response: GET /api/test-integrations - Status: 200
+ Resposta completa: Response
