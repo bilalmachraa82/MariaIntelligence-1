@@ -198,7 +198,23 @@
       "occupancyByMonth": "Ocupação por Mês",
       "revenueByProperty": "Receita por Propriedade",
       "revenueByPlatform": "Receita por Plataforma"
-    }
+    },
+    "revenue": "Receita",
+    "operationalCosts": "Custos Operacionais",
+    "occupied": "Ocupado",
+    "available": "Disponível",
+    "period": "Período",
+    "property": "Propriedade",
+    "allProperties": "Todas as propriedades",
+    "exportReport": "Exportar Relatório",
+    "general": "Geral",
+    "owner": "Proprietário",
+    "operational": "Operacional",
+    "cleaningTeams": "Equipas de Limpeza",
+    "ownerReport": "Relatório de Proprietário",
+    "viewFullReport": "Ver relatório completo",
+    "operationalReport": "Relatório Operacional",
+    "cleaningTeamsReport": "Relatório de Equipas de Limpeza"
   },
   "activities": {
     "reservation_created": "Reserva criada",
@@ -354,7 +370,9 @@
       "recommendations": "Recomendações Personalizadas",
       "forecasting": "Previsões de Ocupação e Receita",
       "automation": "Sugestões de Automatização de Tarefas"
-    }
+    },
+    "suggestionsDescription": "Perguntas sugeridas",
+    "featuresDescription": "O que o assistente pode fazer"
   },
   "errors": {
     "required": "Este campo é obrigatório",
@@ -377,5 +395,20 @@
     "extracted": "Dados extraídos",
     "createReservation": "Criar Reserva",
     "reviewData": "Rever Dados"
+  },
+  "pdfUpload": {
+    "title": "Processamento de Reservas",
+    "description": "Converta PDFs de reservas em dados estruturados automaticamente",
+    "uploadSection": "Upload de PDFs",
+    "uploadDescription": "Faça upload de PDFs de reservas para processamento com IA",
+    "instructionsTitle": "Como Funciona",
+    "step1Title": "Selecionar PDFs",
+    "step1Description": "Faça upload de um ou múltiplos arquivos PDF das plataformas de reserva",
+    "step2Title": "Processamento com IA",
+    "step2Description": "O sistema analisa automaticamente os dados com OCR e processamento Mistral AI",
+    "step3Title": "Revisão e Confirmação",
+    "step3Description": "Verifique os dados extraídos e confirme para criar uma nova reserva no sistema",
+    "step4Title": "Reserva Criada",
+    "step4Description": "A reserva é automaticamente criada e associada à propriedade, com todos os cálculos feitos"
   }
 }
