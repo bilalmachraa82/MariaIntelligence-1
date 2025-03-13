@@ -436,6 +436,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Encontrar a propriedade correspondente pelo nome
         const properties = await storage.getProperties();
+        
+        // Verificação de segurança para garantir que parsedData e propertyName existem
+        if (!parsedData || !parsedData.propertyName) {
+          return res.status(400).json({ 
+            message: "Não foi possível extrair o nome da propriedade do documento",
+            extractedData: parsedData || {}
+          });
+        }
+        
         const matchedProperty = properties.find(p => 
           p.name.toLowerCase() === parsedData.propertyName.toLowerCase()
         );

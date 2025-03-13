@@ -34,6 +34,7 @@ export function UploadPDF() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isFilePreviewOpen, setIsFilePreviewOpen] = useState(false);
   const [isValidationDialogOpen, setIsValidationDialogOpen] = useState(false);
+  // Por padrão, começamos com modo único (false) para simplificar a experiência do usuário
   const [isMultiUploadMode, setIsMultiUploadMode] = useState(false);
   const [isMultiResultsDialogOpen, setIsMultiResultsDialogOpen] = useState(false);
   const [mistralAvailable, setMistralAvailable] = useState<boolean | null>(null);

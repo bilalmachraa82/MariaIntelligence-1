@@ -86,27 +86,54 @@ export async function createReservationFromExtractedData(data: ExtractedData) {
  * @returns ID do documento na API Mistral
  */
 export async function uploadDocumentToMistral(fileBase64: string): Promise<string> {
-  // Criar um documento a partir do PDF
-  const response = await fetch(MISTRAL_API_DOCUMENT, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${MISTRAL_API_KEY}`
-    },
-    body: JSON.stringify({
-      type: 'pdf',
-      data: fileBase64,
-    })
-  });
+  try {
+    console.log("Iniciando upload para Mistral Document API");
+    
+    // Verificar se o base64 é válido
+    if (!fileBase64 || fileBase64.trim() === '') {
+      throw new Error("Base64 inválido ou vazio");
+    }
+    
+    // Criar um documento a partir do PDF - formato correto segundo a documentação do Mistral
+    const response = await fetch(MISTRAL_API_DOCUMENT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${MISTRAL_API_KEY}`
+      },
+      body: JSON.stringify({
+        files: [
+          {
+            data: fileBase64,
+            mime_type: 'application/pdf'
+          }
+        ]
+      })
+    });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Erro na Document API Mistral: ${errorText}`);
+    if (!response.ok) {
+      // Tentar obter a mensagem de erro formatada
+      let errorText;
+      try {
+        const errorJson = await response.json();
+        errorText = errorJson.error?.message || JSON.stringify(errorJson);
+      } catch (e) {
+        errorText = await response.text();
+      }
+      
+      throw new Error(`Erro na API Mistral Document (${response.status}): ${errorText}`);
+    }
+
+    const data = await response.json();
+    console.log("Documento carregado com sucesso. ID:", data.document_id);
+    return data.document_id;
+  } catch (error) {
+    console.error("Falha ao fazer upload do documento para Mistral:", error);
+    
+    // Tentar usar API do backend como fallback
+    console.warn("Falha ao processar com Mistral diretamente, tentando via backend:", error);
+    throw new Error(`Falha no upload para Mistral API: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
   }
-
-  const data = await response.json();
-  console.log("Documento carregado com sucesso. ID:", data.id);
-  return data.id;
 }
 
 /**
