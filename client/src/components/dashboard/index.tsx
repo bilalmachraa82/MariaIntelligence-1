@@ -4,8 +4,11 @@ import { StatsGrid } from "./stats-grid";
 import { RecentReservations } from "./recent-reservations";
 import { PropertyInsights } from "./property-insights";
 import { RecentActivity } from "./recent-activity";
-import { UploadPDF } from "./upload-pdf";
 import { format, subDays } from "date-fns";
+import { useTranslation } from "react-i18next";
+import { Link } from "wouter";
+import { Button } from "@/components/ui/button";
+import { FileUp } from "lucide-react";
 
 interface DateRange {
   startDate: string;
@@ -70,47 +73,54 @@ export default function Dashboard() {
     }
   };
 
+  const { t } = useTranslation();
+  
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <div className="lg:col-span-2">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between h-full">
-            <div>
-              <h2 className="text-2xl font-bold text-secondary-900 mb-2">Dashboard</h2>
-              <p className="text-secondary-500">Visão geral do seu negócio de aluguel de imóveis</p>
-            </div>
-            <div className="mt-4 md:mt-0 flex space-x-3">
-              <div>
-                <label htmlFor="period" className="sr-only">Período</label>
-                <select 
-                  id="period" 
-                  className="block w-full pl-3 pr-10 py-2 text-base border-secondary-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                  value={selectedDateRange.label}
-                  onChange={handleDateRangeChange}
-                >
-                  {dateRanges.map((range) => (
-                    <option key={range.label} value={range.label}>{range.label}</option>
-                  ))}
-                </select>
-              </div>
-              <button 
-                type="button" 
-                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                onClick={() => {
-                  // In a real app, this would trigger a download of the statistics
-                  alert('Exportação de dados implementada na versão completa');
-                }}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Exportar
-              </button>
-            </div>
-          </div>
-        </div>
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
         <div>
-          <UploadPDF />
+          <h2 className="text-2xl font-bold text-secondary-900 mb-2">
+            {t("dashboard.title", "Dashboard")}
+          </h2>
+          <p className="text-secondary-500">
+            {t("dashboard.description", "Visão geral do seu negócio de aluguel de imóveis")}
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <div>
+            <label htmlFor="period" className="sr-only">{t("dashboard.period", "Período")}</label>
+            <select 
+              id="period" 
+              className="block w-full pl-3 pr-10 py-2 text-base border-secondary-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+              value={selectedDateRange.label}
+              onChange={handleDateRangeChange}
+            >
+              {dateRanges.map((range) => (
+                <option key={range.label} value={range.label}>{range.label}</option>
+              ))}
+            </select>
+          </div>
+          
+          <Link href="/upload-pdf">
+            <Button variant="outline" className="flex items-center">
+              <FileUp className="mr-2 h-4 w-4" />
+              {t("pdfUpload.uploadButton", "Importar PDF")}
+            </Button>
+          </Link>
+          
+          <Button 
+            variant="default"
+            className="flex items-center"
+            onClick={() => {
+              // In a real app, this would trigger a download of the statistics
+              alert(t("dashboard.exportNotImplemented", 'Exportação de dados implementada na versão completa'));
+            }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            {t("dashboard.export", "Exportar")}
+          </Button>
         </div>
       </div>
 
@@ -133,7 +143,7 @@ export default function Dashboard() {
       </div>
 
       {/* Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 gap-6">
         <RecentActivity 
           activities={activities} 
           isLoading={isLoadingActivities} 

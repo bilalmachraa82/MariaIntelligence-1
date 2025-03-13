@@ -15,6 +15,8 @@ import ReservationDetailPage from "@/pages/reservations/[id]";
 import ReservationNewPage from "@/pages/reservations/new";
 import ReportsPage from "@/pages/reports";
 import SettingsPage from "@/pages/settings";
+import PDFUploadPage from "@/pages/pdf-upload";
+import AssistantPage from "@/pages/assistant";
 import { Layout } from "@/components/layout/layout";
 import { useTranslation } from "react-i18next";
 
@@ -38,7 +40,7 @@ function Router() {
       <Route path="/reservations" component={ReservationsPage} />
       <Route path="/reservations/:id" component={ReservationDetailPage} />
       <Route path="/reservations/new" component={ReservationNewPage} />
-      <Route path="/upload-pdf" component={Dashboard} />
+      <Route path="/upload-pdf" component={PDFUploadPage} />
       <Route path="/cleaning-teams" component={CleaningTeamsPage} />
       <Route path="/cleaning-teams/:id" component={() => <div>Cleaning Team Details (Coming Soon)</div>} />
       <Route path="/cleaning-teams/new" component={() => <div>New Cleaning Team (Coming Soon)</div>} />
@@ -46,7 +48,7 @@ function Router() {
       <Route path="/reports" component={ReportsPage} />
       <Route path="/reports/owner-report" component={OwnerReportPage} />
       <Route path="/settings" component={SettingsPage} />
-      <Route path="/assistant" component={() => <div>AI Assistant (Coming Soon)</div>} />
+      <Route path="/assistant" component={AssistantPage} />
       
       {/* Rotas em português */}
       <Route path="/painel" component={Dashboard} />
@@ -59,8 +61,8 @@ function Router() {
       <Route path="/reservas" component={ReservationsPage} />
       <Route path="/reservas/:id" component={ReservationDetailPage} />
       <Route path="/reservas/nova" component={ReservationNewPage} />
-      <Route path="/upload-pdf" component={Dashboard} />
-      <Route path="/enviar-pdf" component={Dashboard} />
+      <Route path="/upload-pdf" component={PDFUploadPage} />
+      <Route path="/enviar-pdf" component={PDFUploadPage} />
       <Route path="/equipas-limpeza" component={CleaningTeamsPage} />
       <Route path="/equipas-limpeza/:id" component={() => <div>Detalhes da Equipa de Limpeza (Em breve)</div>} />
       <Route path="/equipas-limpeza/nova" component={() => <div>Nova Equipa de Limpeza (Em breve)</div>} />
@@ -68,7 +70,7 @@ function Router() {
       <Route path="/relatorios" component={ReportsPage} />
       <Route path="/relatorios/proprietario" component={OwnerReportPage} />
       <Route path="/configuracoes" component={SettingsPage} />
-      <Route path="/assistente" component={() => <div>Assistente IA (Em breve)</div>} />
+      <Route path="/assistente" component={AssistantPage} />
       
       {/* Página não encontrada */}
       <Route component={NotFound} />
