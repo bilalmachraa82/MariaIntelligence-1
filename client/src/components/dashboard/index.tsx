@@ -72,35 +72,45 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-        <h2 className="text-2xl font-bold text-secondary-900">Dashboard</h2>
-        <div className="mt-4 md:mt-0 flex space-x-3">
-          <div>
-            <label htmlFor="period" className="sr-only">Período</label>
-            <select 
-              id="period" 
-              className="block w-full pl-3 pr-10 py-2 text-base border-secondary-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-              value={selectedDateRange.label}
-              onChange={handleDateRangeChange}
-            >
-              {dateRanges.map((range) => (
-                <option key={range.label} value={range.label}>{range.label}</option>
-              ))}
-            </select>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="lg:col-span-2">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between h-full">
+            <div>
+              <h2 className="text-2xl font-bold text-secondary-900 mb-2">Dashboard</h2>
+              <p className="text-secondary-500">Visão geral do seu negócio de aluguel de imóveis</p>
+            </div>
+            <div className="mt-4 md:mt-0 flex space-x-3">
+              <div>
+                <label htmlFor="period" className="sr-only">Período</label>
+                <select 
+                  id="period" 
+                  className="block w-full pl-3 pr-10 py-2 text-base border-secondary-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                  value={selectedDateRange.label}
+                  onChange={handleDateRangeChange}
+                >
+                  {dateRanges.map((range) => (
+                    <option key={range.label} value={range.label}>{range.label}</option>
+                  ))}
+                </select>
+              </div>
+              <button 
+                type="button" 
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                onClick={() => {
+                  // In a real app, this would trigger a download of the statistics
+                  alert('Exportação de dados implementada na versão completa');
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Exportar
+              </button>
+            </div>
           </div>
-          <button 
-            type="button" 
-            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-            onClick={() => {
-              // In a real app, this would trigger a download of the statistics
-              alert('Exportação de dados implementada na versão completa');
-            }}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            Exportar
-          </button>
+        </div>
+        <div>
+          <UploadPDF />
         </div>
       </div>
 
@@ -122,17 +132,12 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Recent Activity and Upload PDF */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <RecentActivity 
-            activities={activities} 
-            isLoading={isLoadingActivities} 
-          />
-        </div>
-        <div>
-          <UploadPDF />
-        </div>
+      {/* Recent Activity */}
+      <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
+        <RecentActivity 
+          activities={activities} 
+          isLoading={isLoadingActivities} 
+        />
       </div>
     </div>
   );
