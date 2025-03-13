@@ -38,10 +38,17 @@ export default function AssistantPage() {
     const checkApiKey = async () => {
       try {
         // Use o método GET explicitamente para a verificação da chave
-        const response = await apiRequest<{ available: boolean }>("/api/check-mistral-key", {
-          method: "GET"
+        const response = await fetch("/api/check-mistral-key", {
+          method: "GET",
+          credentials: "include"
         });
-        setHasMistralKey(response.available);
+        
+        if (!response.ok) {
+          throw new Error(`Erro ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        setHasMistralKey(data.available);
       } catch (error) {
         console.error("Erro ao verificar a chave da API Mistral:", error);
         setHasMistralKey(false);
@@ -84,20 +91,30 @@ export default function AssistantPage() {
       }
       
       // Se tiver a chave, envie a solicitação para a API
-      const response = await apiRequest<{ reply: string }>("/api/assistant", {
+      const response = await fetch("/api/assistant", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
           message: message,
           history: messages.map(msg => ({
             role: msg.role,
             content: msg.content
           }))
-        })
+        }),
+        credentials: "include"
       });
+      
+      if (!response.ok) {
+        throw new Error(`Erro ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
       
       const assistantMessage = { 
         role: "assistant" as const, 
-        content: response.reply || t("aiAssistant.errorMessage", "Desculpe, não consegui processar sua solicitação."), 
+        content: data.reply || t("aiAssistant.errorMessage", "Desculpe, não consegui processar sua solicitação."), 
         timestamp: new Date() 
       };
       
