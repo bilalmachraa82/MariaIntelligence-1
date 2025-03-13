@@ -43,7 +43,7 @@ IMPORTANTE: O teu objetivo é criar uma experiência de assistente virtual posit
  * Função para construir o contexto RAG (Retrieval-Augmented Generation) com dados do sistema
  * Recolhe informações atualizadas da base de dados para fornecer ao modelo
  */
-async function buildRagContext(userQuery: string) {
+export async function buildRagContext(userQuery: string) {
   try {
     // Recolher dados das entidades principais
     const properties = await storage.getProperties();
