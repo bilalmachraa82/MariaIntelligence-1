@@ -146,10 +146,7 @@ export default function SettingsPage() {
           details?: any;
           error?: string;
         }>;
-      }>({
-        url: "/api/test-integrations",
-        method: "GET",
-      });
+      }>("GET", "/api/test-integrations");
       
       // Extrai os resultados de cada teste pelo nome
       const mistralTest = response.tests.find(test => test.name === "Mistral AI");
