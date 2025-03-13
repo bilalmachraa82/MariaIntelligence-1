@@ -834,13 +834,13 @@ export class DatabaseStorage implements IStorage {
   async getNetProfit(startDate?: Date, endDate?: Date): Promise<number> {
     if (!db) return 0;
     
-    let query = db.select({
+    const query = db.select({
       totalRevenue: sql`SUM(CAST(${reservations.totalAmount} as DECIMAL))`,
       totalCosts: sql`
         SUM(
           COALESCE(CAST(${reservations.cleaningFee} as DECIMAL), 0) + 
           COALESCE(CAST(${reservations.checkInFee} as DECIMAL), 0) + 
-          COALESCE(CAST(${reservations.commission} as DECIMAL), 0) + 
+          COALESCE(CAST(${reservations.commissionFee} as DECIMAL), 0) + 
           COALESCE(CAST(${reservations.teamPayment} as DECIMAL), 0)
         )
       `
