@@ -98,13 +98,29 @@ export default function OwnerReportPage() {
   
   return (
     <div className="container mx-auto py-6">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <h1 className="text-2xl font-bold">{t("ownerReport.title", "Relatório Financeiro por Proprietário")}</h1>
         {ownerReport && (
-          <Button variant="outline">
-            <Download className="mr-2 h-4 w-4" />
-            {t("reports.exportPDF", "Exportar PDF")}
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Select defaultValue="pdf">
+              <SelectTrigger className="w-[120px]">
+                <SelectValue placeholder={t("ownerReport.format", "Formato")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pdf">PDF</SelectItem>
+                <SelectItem value="excel">Excel</SelectItem>
+                <SelectItem value="csv">CSV</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button>
+              <Download className="mr-2 h-4 w-4" />
+              {t("reports.export", "Exportar")}
+            </Button>
+            <Button variant="outline">
+              <FileText className="mr-2 h-4 w-4" />
+              {t("reports.print", "Imprimir")}
+            </Button>
+          </div>
         )}
       </div>
       
