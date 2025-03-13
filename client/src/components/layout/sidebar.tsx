@@ -13,7 +13,11 @@ import {
   Brush,
   UserCog,
   LogOut,
-  Menu
+  Menu,
+  Wrench,
+  BadgeDollarSign,
+  ClipboardList,
+  Receipt
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTranslation } from "react-i18next";
@@ -105,6 +109,38 @@ export function Sidebar({ className }: SidebarProps) {
       description: "Configurações do sistema",
     },
   ];
+  
+  // Links para Manutenção
+  const maintenanceLinks: NavLink[] = [
+    {
+      title: isPortuguese ? "Tarefas Pendentes" : "Pending Tasks",
+      href: isPortuguese ? "/manutencao/pendentes" : "/maintenance/pending",
+      icon: ClipboardList,
+      description: "Lista de tarefas de manutenção pendentes",
+    },
+    {
+      title: isPortuguese ? "Solicitar Manutenção" : "Request Maintenance",
+      href: isPortuguese ? "/manutencao/solicitar" : "/maintenance/request",
+      icon: Wrench,
+      description: "Registrar nova solicitação de manutenção",
+    },
+  ];
+
+  // Links para Pagamentos
+  const paymentLinks: NavLink[] = [
+    {
+      title: isPortuguese ? "Pagamentos a Efetuar" : "Due Payments",
+      href: isPortuguese ? "/pagamentos/efetuar" : "/payments/outgoing",
+      icon: Receipt,
+      description: "Pagamentos pendentes a equipas e fornecedores",
+    },
+    {
+      title: isPortuguese ? "Pagamentos a Receber" : "Incoming Payments",
+      href: isPortuguese ? "/pagamentos/receber" : "/payments/incoming",
+      icon: BadgeDollarSign,
+      description: "Valores a receber de proprietários",
+    },
+  ];
 
   // Determina se um link está ativo (considerando também rotas alternativas)
   const isLinkActive = (linkHref: string, altHref?: string) => {
@@ -178,6 +214,72 @@ export function Sidebar({ className }: SidebarProps) {
                             isLinkActive(link.href, link.altHref)
                               ? "bg-gradient-to-r from-maria-primary-light to-maria-primary text-white"
                               : "text-maria-dark dark:text-white hover:bg-maria-primary-light hover:bg-opacity-30 dark:hover:bg-maria-primary dark:hover:bg-opacity-20"
+                          )}
+                          onClick={() => handleLinkClick(link.href)}
+                        >
+                          <link.icon className="mr-3 h-5 w-5" />
+                          {link.title}
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="right">
+                        <p>{link.description}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ))}
+              </div>
+            </div>
+            
+            {/* Seção Manutenção */}
+            <div>
+              <h3 className="px-3 text-xs font-semibold text-maria-gray dark:text-gray-400 uppercase tracking-wider flex items-center">
+                <Wrench className="mr-1 h-3 w-3" />
+                {isPortuguese ? "Manutenção" : "Maintenance"}
+              </h3>
+              <div className="mt-2 space-y-1">
+                {maintenanceLinks.map((link) => (
+                  <TooltipProvider key={link.href}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div
+                          className={cn(
+                            "flex items-center px-3 py-2 text-sm font-medium rounded-md group cursor-pointer transition-all",
+                            isLinkActive(link.href, link.altHref)
+                              ? "bg-gradient-to-r from-yellow-500 to-yellow-600 text-white"
+                              : "text-maria-dark dark:text-white hover:bg-yellow-100 hover:bg-opacity-30 dark:hover:bg-yellow-900 dark:hover:bg-opacity-20"
+                          )}
+                          onClick={() => handleLinkClick(link.href)}
+                        >
+                          <link.icon className="mr-3 h-5 w-5" />
+                          {link.title}
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="right">
+                        <p>{link.description}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ))}
+              </div>
+            </div>
+            
+            {/* Seção Pagamentos */}
+            <div>
+              <h3 className="px-3 text-xs font-semibold text-maria-gray dark:text-gray-400 uppercase tracking-wider flex items-center">
+                <BadgeDollarSign className="mr-1 h-3 w-3" />
+                {isPortuguese ? "Pagamentos" : "Payments"}
+              </h3>
+              <div className="mt-2 space-y-1">
+                {paymentLinks.map((link) => (
+                  <TooltipProvider key={link.href}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div
+                          className={cn(
+                            "flex items-center px-3 py-2 text-sm font-medium rounded-md group cursor-pointer transition-all",
+                            isLinkActive(link.href, link.altHref)
+                              ? "bg-gradient-to-r from-green-500 to-green-600 text-white"
+                              : "text-maria-dark dark:text-white hover:bg-green-100 hover:bg-opacity-30 dark:hover:bg-green-900 dark:hover:bg-opacity-20"
                           )}
                           onClick={() => handleLinkClick(link.href)}
                         >
