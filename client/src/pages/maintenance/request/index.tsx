@@ -37,8 +37,8 @@ type MaintenanceRequestForm = z.infer<typeof maintenanceRequestSchema>;
 export default function MaintenanceRequest() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const [, navigate] = useNavigate();
-  const { data: properties, isLoading: propertiesLoading } = useProperties();
+  const [, setLocation] = useLocation();
+  const { data: properties = [], isLoading: propertiesLoading } = useProperties();
 
   // Configuração do formulário
   const form = useForm<MaintenanceRequestForm>({
@@ -74,7 +74,7 @@ export default function MaintenanceRequest() {
       });
       
       // Navega para a lista de manutenções pendentes
-      navigate("/manutencao/pendentes");
+      setLocation("/manutencao/pendentes");
     } catch (error) {
       console.error("Erro ao enviar solicitação:", error);
       toast({
@@ -103,7 +103,7 @@ export default function MaintenanceRequest() {
       <div className="mb-6">
         <Button 
           variant="outline" 
-          onClick={() => navigate("/manutencao/pendentes")}
+          onClick={() => setLocation("/manutencao/pendentes")}
           className="mb-4"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -381,7 +381,7 @@ export default function MaintenanceRequest() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => navigate("/manutencao/pendentes")}
+                onClick={() => setLocation("/manutencao/pendentes")}
               >
                 Cancelar
               </Button>
