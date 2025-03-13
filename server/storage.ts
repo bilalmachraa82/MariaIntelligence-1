@@ -642,4 +642,10 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+import { PgStorage } from './db/pg-storage';
+
+// Decide which storage to use based on environment
+let usePostgres = process.env.DATABASE_URL ? true : false;
+
+// Create the appropriate storage instance
+export const storage = usePostgres ? new PgStorage() : new MemStorage();
