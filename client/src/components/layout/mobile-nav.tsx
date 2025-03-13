@@ -1,4 +1,4 @@
-import { Link, useLocation } from "wouter";
+import { useLocation } from "wouter";
 import { 
   Home, 
   Building2, 
@@ -20,7 +20,7 @@ interface MobileNavProps {
 }
 
 export function MobileNav({ isOpen, onClose }: MobileNavProps) {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
 
   const { t, i18n } = useTranslation();
   const isPortuguese = i18n.language?.startsWith("pt");
@@ -69,6 +69,14 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
       icon: Settings,
     },
   ];
+  
+  // Função para navegar com tratamento de URLs
+  const handleLinkClick = (href: string) => {
+    // Remover barras duplicadas, se houverem
+    const cleanHref = href.replace(/([^:]\/)\/+/g, "$1");
+    setLocation(cleanHref);
+    onClose();
+  };
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -81,20 +89,19 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
         
         <nav className="p-4 space-y-1">
           {links.map((link) => (
-            <Link 
-              key={link.href} 
-              href={link.href}
+            <div 
+              key={link.href}
               className={cn(
-                "flex items-center px-4 py-2 text-sm font-medium rounded-md group",
+                "flex items-center px-4 py-2 text-sm font-medium rounded-md group cursor-pointer",
                 location === link.href
                   ? "bg-primary-50 text-primary-700"
                   : "text-secondary-700 hover:bg-secondary-100"
               )}
-              onClick={onClose}
+              onClick={() => handleLinkClick(link.href)}
             >
               <link.icon className="mr-3 h-5 w-5" />
               {link.title}
-            </Link>
+            </div>
           ))}
         </nav>
         
