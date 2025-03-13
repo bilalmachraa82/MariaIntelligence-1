@@ -13,6 +13,12 @@
     "aiAssistant": "Assistente IA",
     "pdfUpload": "Importar Reservas",
     "cleaningTeams": "Equipas de Limpeza",
+    "maintenance": "Manutenção",
+    "pendingTasks": "Tarefas Pendentes",
+    "requestMaintenance": "Solicitar Manutenção",
+    "payments": "Finanças",
+    "outgoingPayments": "Pagamentos a Efetuar",
+    "incomingPayments": "Receitas a Receber",
     "categories": {
       "main": "Principal",
       "tools": "Ferramentas",

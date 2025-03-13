@@ -113,13 +113,13 @@ export function Sidebar({ className }: SidebarProps) {
   // Links para Manutenção
   const maintenanceLinks: NavLink[] = [
     {
-      title: isPortuguese ? "Tarefas Pendentes" : "Pending Tasks",
+      title: t("navigation.pendingTasks"),
       href: isPortuguese ? "/manutencao/pendentes" : "/maintenance/pending",
       icon: ClipboardList,
       description: "Lista de tarefas de manutenção pendentes",
     },
     {
-      title: isPortuguese ? "Solicitar Manutenção" : "Request Maintenance",
+      title: t("navigation.requestMaintenance"),
       href: isPortuguese ? "/manutencao/solicitacao" : "/maintenance/request",
       icon: Wrench,
       description: "Registrar nova solicitação de manutenção",
@@ -129,16 +129,16 @@ export function Sidebar({ className }: SidebarProps) {
   // Links para Pagamentos
   const paymentLinks: NavLink[] = [
     {
-      title: "Pagamentos a Efetuar",
+      title: t("navigation.outgoingPayments"),
       href: "/payments/outgoing",
       icon: Receipt,
       description: "Pagamentos pendentes a equipas e fornecedores",
     },
     {
-      title: "Pagamentos a Receber",
+      title: t("navigation.incomingPayments"),
       href: "/payments/incoming",
       icon: BadgeDollarSign,
-      description: "Valores a receber de proprietários",
+      description: "Receitas a receber de proprietários e plataformas",
     },
   ];
 
@@ -234,7 +234,7 @@ export function Sidebar({ className }: SidebarProps) {
             <div>
               <h3 className="px-3 text-xs font-semibold text-maria-gray dark:text-gray-400 uppercase tracking-wider flex items-center">
                 <Wrench className="mr-1 h-3 w-3" />
-                {isPortuguese ? "Manutenção" : "Maintenance"}
+                {t("navigation.maintenance")}
               </h3>
               <div className="mt-2 space-y-1">
                 {maintenanceLinks.map((link) => (
@@ -263,11 +263,11 @@ export function Sidebar({ className }: SidebarProps) {
               </div>
             </div>
             
-            {/* Seção Pagamentos */}
+            {/* Seção Finanças */}
             <div>
               <h3 className="px-3 text-xs font-semibold text-maria-gray dark:text-gray-400 uppercase tracking-wider flex items-center">
                 <BadgeDollarSign className="mr-1 h-3 w-3" />
-                {isPortuguese ? "Pagamentos" : "Payments"}
+                {t("navigation.payments")}
               </h3>
               <div className="mt-2 space-y-1">
                 {paymentLinks.map((link) => (
