@@ -148,11 +148,22 @@ export default function SettingsPage() {
         }>;
       }>("GET", "/api/test-integrations");
       
+      // Para debug: exibir os dados recebidos
+      console.log("Resposta completa:", response);
+      
       // Extrai os resultados de cada teste pelo nome
       const mistralTest = response.tests.find(test => test.name === "Mistral AI");
       const dbTest = response.tests.find(test => test.name === "Base de Dados");
       const ocrTest = response.tests.find(test => test.name === "OCR (Processamento de PDFs)");
       const ragTest = response.tests.find(test => test.name === "RAG (Retrieval Augmented Generation)");
+      
+      // Para debug: exibir os resultados individuais
+      console.log("Tests individuais:", {
+        mistralTest,
+        dbTest,
+        ocrTest,
+        ragTest
+      });
       
       // Processa qualquer mensagem de erro
       const errorMessages = response.tests
