@@ -111,7 +111,7 @@ export default function ReservationsPage() {
               Nova Reserva
             </Button>
           </Link>
-          <Link href="/#upload-pdf">
+          <Link href="/pdf-upload">
             <Button variant="outline">
               <FileUp className="mr-2 h-4 w-4" />
               Upload PDF
