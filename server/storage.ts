@@ -12,6 +12,7 @@ import {
   type Activity,
   type InsertActivity,
 } from "@shared/schema";
+import { db } from './db';
 
 export interface IStorage {
   // User methods (from original template)
