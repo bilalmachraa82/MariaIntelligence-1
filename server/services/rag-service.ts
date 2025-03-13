@@ -57,15 +57,27 @@ export class RagService {
         metadata
       };
       
-      const [result] = await db
-        .insert(conversationHistory)
-        .values(newMessage)
-        .returning({ id: conversationHistory.id });
-      
-      return result.id;
+      // Tenta inserir na tabela, mas ignora erros de tabela não existente
+      try {
+        const [result] = await db
+          .insert(conversationHistory)
+          .values(newMessage)
+          .returning({ id: conversationHistory.id });
+        
+        return result.id;
+      } catch (dbError: any) {
+        // Se for um erro de tabela não existente (42P01), retorna um ID temporário
+        if (dbError.code === '42P01') {
+          console.warn("Tabela conversation_history não existe ainda. A funcionalidade RAG estará limitada até que a migração seja executada.");
+          return -1; // ID temporário para não quebrar o fluxo
+        } else {
+          // Para outros erros, repassa
+          throw dbError;
+        }
+      }
     } catch (error) {
       console.error("Erro ao salvar mensagem de conversa:", error);
-      throw error;
+      return -1; // Para não quebrar o fluxo
     }
   }
   
@@ -75,14 +87,25 @@ export class RagService {
    */
   async getRecentConversationHistory(limit: number = MAX_CONVERSATION_HISTORY): Promise<any[]> {
     try {
-      const history = await db
-        .select()
-        .from(conversationHistory)
-        .orderBy(desc(conversationHistory.timestamp))
-        .limit(limit);
-      
-      // Retorna na ordem cronológica (mais antigas primeiro)
-      return history.reverse();
+      try {
+        const history = await db
+          .select()
+          .from(conversationHistory)
+          .orderBy(desc(conversationHistory.timestamp))
+          .limit(limit);
+        
+        // Retorna na ordem cronológica (mais antigas primeiro)
+        return history.reverse();
+      } catch (dbError: any) {
+        // Se for um erro de tabela não existente (42P01), retorna um array vazio
+        if (dbError.code === '42P01') {
+          console.warn("Tabela conversation_history não existe ainda. A funcionalidade RAG estará limitada até que a migração seja executada.");
+          return [];
+        } else {
+          // Para outros erros, repassa
+          throw dbError;
+        }
+      }
     } catch (error) {
       console.error("Erro ao recuperar histórico de conversas:", error);
       return [];
@@ -112,15 +135,26 @@ export class RagService {
         metadata
       };
       
-      const [result] = await db
-        .insert(knowledgeEmbeddings)
-        .values(newKnowledge)
-        .returning({ id: knowledgeEmbeddings.id });
-      
-      return result.id;
+      try {
+        const [result] = await db
+          .insert(knowledgeEmbeddings)
+          .values(newKnowledge)
+          .returning({ id: knowledgeEmbeddings.id });
+        
+        return result.id;
+      } catch (dbError: any) {
+        // Se for um erro de tabela não existente (42P01), retorna um ID temporário
+        if (dbError.code === '42P01') {
+          console.warn("Tabela knowledge_embeddings não existe ainda. A funcionalidade RAG estará limitada até que a migração seja executada.");
+          return -1; // ID temporário para não quebrar o fluxo
+        } else {
+          // Para outros erros, repassa
+          throw dbError;
+        }
+      }
     } catch (error) {
       console.error("Erro ao salvar conhecimento:", error);
-      throw error;
+      return -1; // ID temporário para não quebrar o fluxo
     }
   }
   
@@ -138,16 +172,27 @@ export class RagService {
       const existingQuery = await this.findSimilarQuery(query);
       
       if (existingQuery) {
-        // Atualiza a consulta existente incrementando a frequência
-        await db
-          .update(queryEmbeddings)
-          .set({ 
-            frequency: sql`${queryEmbeddings.frequency} + 1`,
-            lastUsed: new Date()
-          })
-          .where(eq(queryEmbeddings.id, existingQuery.id));
-        
-        return existingQuery.id;
+        try {
+          // Atualiza a consulta existente incrementando a frequência
+          await db
+            .update(queryEmbeddings)
+            .set({ 
+              frequency: sql`${queryEmbeddings.frequency} + 1`,
+              lastUsed: new Date()
+            })
+            .where(eq(queryEmbeddings.id, existingQuery.id));
+          
+          return existingQuery.id;
+        } catch (dbError: any) {
+          // Se for um erro de tabela não existente (42P01), retorna um ID temporário
+          if (dbError.code === '42P01') {
+            console.warn("Tabela query_embeddings não existe ainda. A funcionalidade RAG estará limitada até que a migração seja executada.");
+            return -1; // ID temporário para não quebrar o fluxo
+          } else {
+            // Para outros erros, repassa
+            throw dbError;
+          }
+        }
       }
       
       // Cria uma nova consulta
@@ -158,15 +203,26 @@ export class RagService {
         frequency: 1
       };
       
-      const [result] = await db
-        .insert(queryEmbeddings)
-        .values(newQuery)
-        .returning({ id: queryEmbeddings.id });
-      
-      return result.id;
+      try {
+        const [result] = await db
+          .insert(queryEmbeddings)
+          .values(newQuery)
+          .returning({ id: queryEmbeddings.id });
+        
+        return result.id;
+      } catch (dbError: any) {
+        // Se for um erro de tabela não existente (42P01), retorna um ID temporário
+        if (dbError.code === '42P01') {
+          console.warn("Tabela query_embeddings não existe ainda. A funcionalidade RAG estará limitada até que a migração seja executada.");
+          return -1; // ID temporário para não quebrar o fluxo
+        } else {
+          // Para outros erros, repassa
+          throw dbError;
+        }
+      }
     } catch (error) {
       console.error("Erro ao salvar consulta:", error);
-      throw error;
+      return -1; // Para não quebrar o fluxo
     }
   }
   
@@ -186,13 +242,24 @@ export class RagService {
         like(queryEmbeddings.query, `%${word}%`)
       );
       
-      const [result] = await db
-        .select()
-        .from(queryEmbeddings)
-        .where(or(...conditions))
-        .limit(1);
-      
-      return result || null;
+      try {
+        const [result] = await db
+          .select()
+          .from(queryEmbeddings)
+          .where(or(...conditions))
+          .limit(1);
+        
+        return result || null;
+      } catch (dbError: any) {
+        // Se for um erro de tabela não existente (42P01), retorna null
+        if (dbError.code === '42P01') {
+          console.warn("Tabela query_embeddings não existe ainda. A funcionalidade RAG estará limitada até que a migração seja executada.");
+          return null;
+        } else {
+          // Para outros erros, repassa
+          throw dbError;
+        }
+      }
     } catch (error) {
       console.error("Erro ao buscar consulta similar:", error);
       return null;
