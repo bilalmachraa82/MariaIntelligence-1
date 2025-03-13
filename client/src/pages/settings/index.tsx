@@ -20,7 +20,6 @@ export default function SettingsPage() {
   const { toast } = useToast();
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [smsNotifications, setSmsNotifications] = useState(false);
-  const [mistralApiKey, setMistralApiKey] = useState("");
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language || "pt-PT");
   const [isDarkMode, setIsDarkMode] = useState(false);
   
@@ -502,26 +501,15 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="mistral-api">{t("settings.integrations.mistralAI.apiKey")}</Label>
-                <Input 
-                  id="mistral-api" 
-                  type="password" 
-                  placeholder={t("settings.integrations.mistralAI.apiKeyPlaceholder")}
-                  value={mistralApiKey}
-                  onChange={(e) => setMistralApiKey(e.target.value)}
-                />
-                <p className="text-xs text-muted-foreground mt-1">
-                  {t("settings.integrations.mistralAI.description")} <a href="https://mistral.ai/api/" className="text-primary underline" target="_blank" rel="noopener noreferrer">{t("settings.integrations.mistralAI.getApiKey")}</a>.
+                <p className="text-sm">
+                  A API Mistral está configurada internamente no sistema e não pode ser modificada através da interface.
                 </p>
               </div>
               
               <div className="flex gap-2">
-                <Button onClick={handleSaveAPI} className="flex-1">
-                  {t("settings.integrations.mistralAI.save")}
-                </Button>
                 <Button 
                   onClick={handleTestIntegrations} 
-                  variant="outline" 
+                  variant="default" 
                   disabled={isTestingIntegrations}
                   className="flex items-center gap-1"
                 >
