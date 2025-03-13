@@ -296,11 +296,20 @@
   },
   "aiAssistant": {
     "title": "Assistente IA",
+    "chatTitle": "Maria Faz Assistente",
+    "chatDescription": "Pergunte sobre as suas propriedades, reservas e relatórios",
+    "welcomeMessage": "Olá! Sou o assistente da Maria Faz. Em que posso ajudar hoje?",
     "placeholder": "Escreva a sua pergunta aqui...",
     "sendMessage": "Enviar",
     "loading": "A pensar...",
+    "error": "Erro",
+    "errorDescription": "Não foi possível conectar ao assistente. Tente novamente.",
+    "errorMessage": "Desculpe, encontrei um problema. Tente novamente mais tarde.",
+    "noApiKeyMessage": "Para usar todas as funcionalidades do assistente, por favor configure a chave da API Mistral nas configurações.",
+    "mistralInfo": "Este assistente utiliza a tecnologia Mistral AI para responder a todas as suas perguntas sobre gestão de propriedades, com personalidade otimista e conhecimento especializado.",
     "suggestions": {
       "title": "Sugestões",
+      "suggestionsDescription": "Perguntas sugeridas",
       "occupancy": "Como está a ocupação este mês?",
       "revenue": "Qual foi a receita total no último trimestre?",
       "bestProperty": "Qual é a minha propriedade mais rentável?",
@@ -309,10 +318,11 @@
     },
     "features": {
       "title": "Funcionalidades",
-      "analytics": "Análise de Dados",
-      "recommendations": "Recomendações",
-      "forecasting": "Previsões",
-      "automation": "Automatização"
+      "featuresDescription": "O que o assistente pode fazer",
+      "analytics": "Análise de Dados e Estatísticas",
+      "recommendations": "Recomendações Personalizadas",
+      "forecasting": "Previsões de Ocupação e Receita",
+      "automation": "Sugestões de Automatização de Tarefas"
     }
   },
   "errors": {

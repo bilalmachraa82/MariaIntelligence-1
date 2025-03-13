@@ -118,12 +118,13 @@ export default function AssistantPage() {
     }
   };
 
-  // Exemplo de sugestões rápidas para o usuário
+  // Exemplo de sugestões rápidas para o usuário em português de Portugal
   const suggestions = [
-    { id: 1, text: t("aiAssistant.suggestions.occupancy") },
-    { id: 2, text: t("aiAssistant.suggestions.revenue") },
-    { id: 3, text: t("aiAssistant.suggestions.bestProperty") },
-    { id: 4, text: t("aiAssistant.suggestions.upcomingCheckIns") },
+    { id: 1, text: "Qual é a taxa de ocupação das minhas propriedades?" },
+    { id: 2, text: "Qual foi a receita total no último mês?" },
+    { id: 3, text: "Qual é a minha propriedade com melhor desempenho?" },
+    { id: 4, text: "Quais são os próximos check-ins agendados?" },
+    { id: 5, text: "Fala-me um pouco sobre ti. Que tipo de personalidade tens?" },
   ];
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -262,7 +263,7 @@ export default function AssistantPage() {
               
               <div className="mt-6 pt-4 border-t">
                 <p className="text-sm text-muted-foreground">
-                  {t("aiAssistant.comingSoon", "Em breve, este assistente usará a tecnologia Mistral AI para responder a todas as suas perguntas sobre gerenciamento de propriedades.")}
+                  {t("aiAssistant.mistralInfo", "Este assistente utiliza a tecnologia Mistral AI para responder a todas as suas perguntas sobre gestão de propriedades, com personalidade otimista e conhecimento especializado.")}
                 </p>
               </div>
             </CardContent>
