@@ -38,6 +38,7 @@ function Router() {
       <Route path="/reservations" component={ReservationsPage} />
       <Route path="/reservations/:id" component={ReservationDetailPage} />
       <Route path="/reservations/new" component={ReservationNewPage} />
+      <Route path="/upload-pdf" component={Dashboard} />
       <Route path="/cleaning-teams" component={CleaningTeamsPage} />
       <Route path="/cleaning-teams/:id" component={() => <div>Cleaning Team Details (Coming Soon)</div>} />
       <Route path="/cleaning-teams/new" component={() => <div>New Cleaning Team (Coming Soon)</div>} />
@@ -58,6 +59,8 @@ function Router() {
       <Route path="/reservas" component={ReservationsPage} />
       <Route path="/reservas/:id" component={ReservationDetailPage} />
       <Route path="/reservas/nova" component={ReservationNewPage} />
+      <Route path="/upload-pdf" component={Dashboard} />
+      <Route path="/enviar-pdf" component={Dashboard} />
       <Route path="/equipas-limpeza" component={CleaningTeamsPage} />
       <Route path="/equipas-limpeza/:id" component={() => <div>Detalhes da Equipa de Limpeza (Em breve)</div>} />
       <Route path="/equipas-limpeza/nova" component={() => <div>Nova Equipa de Limpeza (Em breve)</div>} />

@@ -201,18 +201,20 @@ export default function ReservationsPage() {
                     filteredReservations.map((reservation) => (
                       <TableRow key={reservation.id}>
                         <TableCell className="font-medium">
-                          <Link href={`/reservations/${reservation.id}`}>
-                            <a className="text-primary-600 hover:underline">
-                              {reservation.guestName}
-                            </a>
-                          </Link>
+                          <div 
+                            className="text-primary-600 hover:underline cursor-pointer"
+                            onClick={() => window.location.href = `/reservations/${reservation.id}`}
+                          >
+                            {reservation.guestName}
+                          </div>
                         </TableCell>
                         <TableCell>
-                          <Link href={`/properties/${reservation.propertyId}`}>
-                            <a className="text-primary-600 hover:underline">
-                              {getPropertyName(reservation.propertyId)}
-                            </a>
-                          </Link>
+                          <div 
+                            className="text-primary-600 hover:underline cursor-pointer"
+                            onClick={() => window.location.href = `/properties/${reservation.propertyId}`}
+                          >
+                            {getPropertyName(reservation.propertyId)}
+                          </div>
                         </TableCell>
                         <TableCell>{formatDate(reservation.checkInDate)}</TableCell>
                         <TableCell>{formatDate(reservation.checkOutDate)}</TableCell>
@@ -243,21 +245,17 @@ export default function ReservationsPage() {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <Link href={`/reservations/${reservation.id}`}>
-                                <DropdownMenuItem>
-                                  <Button variant="ghost" className="p-0 h-auto w-full justify-start">
-                                    Ver detalhes
-                                  </Button>
-                                </DropdownMenuItem>
-                              </Link>
-                              <Link href={`/reservations/edit/${reservation.id}`}>
-                                <DropdownMenuItem>
-                                  <Button variant="ghost" className="p-0 h-auto w-full justify-start">
-                                    <Edit className="mr-2 h-4 w-4" />
-                                    Editar
-                                  </Button>
-                                </DropdownMenuItem>
-                              </Link>
+                              <DropdownMenuItem onClick={() => window.location.href = `/reservations/${reservation.id}`}>
+                                <Button variant="ghost" className="p-0 h-auto w-full justify-start">
+                                  Ver detalhes
+                                </Button>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => window.location.href = `/reservations/edit/${reservation.id}`}>
+                                <Button variant="ghost" className="p-0 h-auto w-full justify-start">
+                                  <Edit className="mr-2 h-4 w-4" />
+                                  Editar
+                                </Button>
+                              </DropdownMenuItem>
                               <DropdownMenuItem>
                                 <Button 
                                   variant="ghost" 
