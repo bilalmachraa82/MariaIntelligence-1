@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useProperties, useDeleteProperty } from "@/hooks/use-properties";
 import { useOwners } from "@/hooks/use-owners";
-import { Link } from "wouter";
+import { useLocation, Link } from "wouter";
 import { PlusCircle, MoreHorizontal, Edit, Trash2 } from "lucide-react";
 import { 
   Card, 
@@ -47,6 +47,7 @@ export default function PropertiesPage() {
   const { data: owners } = useOwners();
   const deleteProperty = useDeleteProperty();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   const filteredProperties = properties?.filter(property => 
     property.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -81,12 +82,12 @@ export default function PropertiesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-2xl font-bold text-secondary-900">Propriedades</h2>
         <div className="mt-4 sm:mt-0">
-          <Link href="/properties/edit">
+          <div onClick={() => setLocation("/properties/edit")}>
             <Button>
               <PlusCircle className="mr-2 h-4 w-4" />
               Nova Propriedade
             </Button>
-          </Link>
+          </div>
         </div>
       </div>
 
@@ -131,11 +132,11 @@ export default function PropertiesPage() {
                     filteredProperties.map((property) => (
                       <TableRow key={property.id}>
                         <TableCell className="font-medium">
-                          <Link href={`/properties/${property.id}`}>
+                          <div onClick={() => setLocation(`/properties/${property.id}`)}>
                             <span className="text-primary-600 hover:underline cursor-pointer">
                               {property.name}
                             </span>
-                          </Link>
+                          </div>
                         </TableCell>
                         <TableCell>{getOwnerName(property.ownerId)}</TableCell>
                         <TableCell>{formatCurrency(Number(property.cleaningCost))}</TableCell>
@@ -152,19 +153,25 @@ export default function PropertiesPage() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem asChild>
-                                <Link href={`/properties/${property.id}`}>
+                                <div 
+                                  className="cursor-pointer flex items-center px-2 py-1.5 text-sm"
+                                  onClick={() => setLocation(`/properties/${property.id}`)}
+                                >
                                   <span className="flex items-center w-full">
                                     Ver detalhes
                                   </span>
-                                </Link>
+                                </div>
                               </DropdownMenuItem>
                               <DropdownMenuItem asChild>
-                                <Link href={`/properties/edit/${property.id}`}>
+                                <div 
+                                  className="cursor-pointer flex items-center px-2 py-1.5 text-sm"
+                                  onClick={() => setLocation(`/properties/edit/${property.id}`)}
+                                >
                                   <span className="flex items-center w-full">
                                     <Edit className="mr-2 h-4 w-4" />
                                     Editar
                                   </span>
-                                </Link>
+                                </div>
                               </DropdownMenuItem>
                               <DropdownMenuItem asChild>
                                 <div 
