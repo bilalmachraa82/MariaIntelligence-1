@@ -129,14 +129,14 @@ export function Sidebar({ className }: SidebarProps) {
   // Links para Pagamentos
   const paymentLinks: NavLink[] = [
     {
-      title: isPortuguese ? "Pagamentos a Efetuar" : "Due Payments",
-      href: isPortuguese ? "/pagamentos/saida" : "/payments/outgoing",
+      title: "Pagamentos a Efetuar",
+      href: "/payments/outgoing",
       icon: Receipt,
       description: "Pagamentos pendentes a equipas e fornecedores",
     },
     {
-      title: isPortuguese ? "Pagamentos a Receber" : "Incoming Payments",
-      href: isPortuguese ? "/pagamentos/entrada" : "/payments/incoming",
+      title: "Pagamentos a Receber",
+      href: "/payments/incoming",
       icon: BadgeDollarSign,
       description: "Valores a receber de proprietários",
     },

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "wouter";
 import { 
   Card, 
   CardContent, 
@@ -162,10 +163,12 @@ export default function PaymentsIncoming() {
           <h1 className="text-2xl font-bold tracking-tight">Pagamentos a Receber</h1>
           <p className="text-maria-gray">Valores a receber de proprietários</p>
         </div>
-        <Button className="mt-4 md:mt-0 bg-green-500 hover:bg-green-600 text-white">
-          <ArrowUpCircle className="mr-2 h-4 w-4" />
-          Novo Recebimento
-        </Button>
+        <Link href="/payments/incoming/new">
+          <Button className="mt-4 md:mt-0 bg-green-500 hover:bg-green-600 text-white">
+            <ArrowUpCircle className="mr-2 h-4 w-4" />
+            Novo Recebimento
+          </Button>
+        </Link>
       </div>
       
       <div className="flex flex-col md:flex-row gap-4 mb-6">
