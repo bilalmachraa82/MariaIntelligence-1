@@ -28,14 +28,16 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatCurrency } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 export default function PaymentsIncoming() {
   const [activeTab, setActiveTab] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedOwner, setExpandedOwner] = useState<number | null>(null);
+  const { toast } = useToast();
   
   // Dados mockup para a interface - em produção viriam da API
-  const incomingPayments = [
+  const [incomingPayments, setMockData] = useState([
     {
       id: 1,
       ownerId: 1,
@@ -45,6 +47,7 @@ export default function PaymentsIncoming() {
       totalDue: 1250.00,
       propertyPayments: [
         {
+          id: 1,
           propertyId: 1,
           propertyName: "Apartamento Ajuda",
           amount: 750.00,
@@ -56,6 +59,7 @@ export default function PaymentsIncoming() {
           periodEnd: "2025-03-31"
         },
         {
+          id: 2,
           propertyId: 2,
           propertyName: "Vila SJ Estoril",
           amount: 500.00,
@@ -77,6 +81,7 @@ export default function PaymentsIncoming() {
       totalDue: 320.00,
       propertyPayments: [
         {
+          id: 3,
           propertyId: 3,
           propertyName: "Apartamento Cascais",
           amount: 320.00,
@@ -98,6 +103,7 @@ export default function PaymentsIncoming() {
       totalDue: 0,
       propertyPayments: [
         {
+          id: 4,
           propertyId: 4,
           propertyName: "Moradia Sintra",
           amount: 450.00,
@@ -111,7 +117,7 @@ export default function PaymentsIncoming() {
         }
       ]
     }
-  ];
+  ]);
   
   // Função para traduzir o tipo
   const getStatusText = (status: string) => {
@@ -307,12 +313,12 @@ export default function PaymentsIncoming() {
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       // Em produção, atualizaria via API
-                                      const updatedPayments = owner.payments.map(p => 
-                                        p.id === payment.id ? {...p, status: "received", receivedAt: new Date().toISOString()} : p
+                                      const updatedPayments = owner.propertyPayments.map(p => 
+                                        p.id === payment.id ? {...p, status: "paid", paidAt: new Date().toISOString()} : p
                                       );
                                       
-                                      const updatedOwners = mockData.map(o => 
-                                        o.id === owner.id ? {...o, payments: updatedPayments} : o
+                                      const updatedOwners = incomingPayments.map(o => 
+                                        o.id === owner.id ? {...o, propertyPayments: updatedPayments} : o
                                       );
                                       
                                       setMockData(updatedOwners);
@@ -320,7 +326,6 @@ export default function PaymentsIncoming() {
                                       toast({
                                         title: "Pagamento recebido",
                                         description: `Pagamento de ${formatCurrency(payment.amount)} marcado como recebido.`,
-                                        variant: "success",
                                       });
                                     }}
                                   >
@@ -348,13 +353,41 @@ export default function PaymentsIncoming() {
                       </Table>
                     </CardContent>
                     <CardFooter className="flex justify-between">
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => {
+                          toast({
+                            title: "Relatório em preparação",
+                            description: "O relatório será enviado por e-mail em breve.",
+                          });
+                        }}
+                      >
                         Gerar Relatório
                       </Button>
                       <Button 
                         size="sm" 
                         className="bg-green-500 hover:bg-green-600 text-white"
                         disabled={owner.totalDue === 0}
+                        onClick={() => {
+                          if (owner.totalDue > 0) {
+                            // Em produção, atualizaria via API
+                            const updatedPayments = owner.propertyPayments.map(p => 
+                              p.status === "pending" ? {...p, status: "paid", paidAt: new Date().toISOString()} : p
+                            );
+                            
+                            const updatedOwners = incomingPayments.map(o => 
+                              o.id === owner.id ? {...o, propertyPayments: updatedPayments, totalDue: 0} : o
+                            );
+                            
+                            setMockData(updatedOwners);
+                            
+                            toast({
+                              title: "Pagamentos recebidos",
+                              description: `Todos os pagamentos pendentes de ${owner.ownerName} foram marcados como recebidos.`,
+                            });
+                          }
+                        }}
                       >
                         {owner.totalDue > 0 ? (
                           <>
