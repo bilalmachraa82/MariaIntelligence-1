@@ -24,7 +24,7 @@ export function useCreateOwner() {
   return useMutation({
     mutationFn: async (ownerData: Omit<Owner, "id">) => {
       const res = await apiRequest("POST", "/api/owners", ownerData);
-      return res.json();
+      return await res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/owners"] });
@@ -39,7 +39,7 @@ export function useUpdateOwner() {
   return useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<Owner> }) => {
       const res = await apiRequest("PATCH", `/api/owners/${id}`, data);
-      return res.json();
+      return await res.json();
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["/api/owners"] });
