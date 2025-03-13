@@ -22,6 +22,22 @@ export default function SettingsPage() {
   const [smsNotifications, setSmsNotifications] = useState(false);
   const [mistralApiKey, setMistralApiKey] = useState("");
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language || "pt-PT");
+  
+  // Estado para testes de integração
+  const [isTestingIntegrations, setIsTestingIntegrations] = useState(false);
+  const [testResults, setTestResults] = useState<{
+    mistral: boolean | null;
+    database: boolean | null;
+    ocr: boolean | null;
+    rag: boolean | null;
+    message: string;
+  }>({
+    mistral: null,
+    database: null,
+    ocr: null,
+    rag: null,
+    message: "",
+  });
 
   useEffect(() => {
     // Tenta inicialmente recuperar a chave API do local storage
@@ -72,6 +88,84 @@ export default function SettingsPage() {
       title: t("settings.language.changeSuccess"),
       description: t("settings.language.changeSuccessDesc"),
     });
+  };
+  
+  // Função para testar as integrações
+  const handleTestIntegrations = async () => {
+    setIsTestingIntegrations(true);
+    setTestResults({
+      mistral: null,
+      database: null,
+      ocr: null,
+      rag: null,
+      message: "",
+    });
+    
+    try {
+      const response = await apiRequest<{
+        success: boolean;
+        timestamp: string;
+        tests: Array<{
+          name: string;
+          success: boolean;
+          details?: any;
+          error?: string;
+        }>;
+      }>({
+        url: "/api/test-integrations",
+        method: "GET",
+      });
+      
+      // Extrai os resultados de cada teste pelo nome
+      const mistralTest = response.tests.find(test => test.name === "Mistral AI");
+      const dbTest = response.tests.find(test => test.name === "Base de Dados");
+      const ocrTest = response.tests.find(test => test.name === "OCR (Processamento de PDFs)");
+      const ragTest = response.tests.find(test => test.name === "RAG (Retrieval Augmented Generation)");
+      
+      // Processa qualquer mensagem de erro
+      const errorMessages = response.tests
+        .filter(test => !test.success && test.error)
+        .map(test => `${test.name}: ${test.error}`)
+        .join("\n");
+      
+      setTestResults({
+        mistral: mistralTest?.success || false,
+        database: dbTest?.success || false,
+        ocr: ocrTest?.success || false,
+        rag: ragTest?.success || false,
+        message: errorMessages,
+      });
+      
+      if (response.success) {
+        toast({
+          title: "Teste de integrações bem-sucedido",
+          description: "Todas as integrações estão funcionando corretamente.",
+          variant: "default",
+        });
+      } else {
+        toast({
+          title: "Problemas na integração",
+          description: "Algumas integrações não estão funcionando. Verifique os detalhes abaixo.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      setTestResults({
+        mistral: false,
+        database: false,
+        ocr: false,
+        rag: false,
+        message: "Erro ao testar integrações. Verifique se o servidor está rodando.",
+      });
+      
+      toast({
+        title: "Erro no teste",
+        description: "Não foi possível testar as integrações. Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsTestingIntegrations(false);
+    }
   };
 
   return (
@@ -358,7 +452,121 @@ export default function SettingsPage() {
                 </p>
               </div>
               
-              <Button onClick={handleSaveAPI}>{t("settings.integrations.mistralAI.save")}</Button>
+              <div className="flex gap-2">
+                <Button onClick={handleSaveAPI} className="flex-1">
+                  {t("settings.integrations.mistralAI.save")}
+                </Button>
+                <Button 
+                  onClick={handleTestIntegrations} 
+                  variant="outline" 
+                  disabled={isTestingIntegrations}
+                  className="flex items-center gap-1"
+                >
+                  <Activity className="h-4 w-4" />
+                  {isTestingIntegrations ? "Testando..." : "Testar Integrações"}
+                </Button>
+              </div>
+              
+              {/* Resultados do teste de integrações */}
+              {(testResults.mistral !== null || testResults.message) && (
+                <div className="mt-4 space-y-4">
+                  <Separator />
+                  <div>
+                    <h3 className="font-medium text-lg mb-2">Resultados dos Testes</h3>
+                    
+                    {testResults.message && (
+                      <Alert className="mb-4">
+                        <AlertTitle>Mensagem do Sistema</AlertTitle>
+                        <AlertDescription className="whitespace-pre-line">
+                          {testResults.message}
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                    
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="p-3 rounded-md border">
+                        <div className="flex items-center gap-2 mb-1">
+                          {testResults.mistral === true ? (
+                            <CheckCircle className="h-5 w-5 text-green-500" />
+                          ) : testResults.mistral === false ? (
+                            <AlertCircle className="h-5 w-5 text-red-500" />
+                          ) : (
+                            <Activity className="h-5 w-5 text-gray-500" />
+                          )}
+                          <h4 className="font-medium">Mistral AI</h4>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {testResults.mistral === true 
+                            ? "API do Mistral conectada corretamente." 
+                            : testResults.mistral === false 
+                              ? "Falha na conexão com a API do Mistral." 
+                              : "Teste pendente."}
+                        </p>
+                      </div>
+                      
+                      <div className="p-3 rounded-md border">
+                        <div className="flex items-center gap-2 mb-1">
+                          {testResults.database === true ? (
+                            <CheckCircle className="h-5 w-5 text-green-500" />
+                          ) : testResults.database === false ? (
+                            <AlertCircle className="h-5 w-5 text-red-500" />
+                          ) : (
+                            <Activity className="h-5 w-5 text-gray-500" />
+                          )}
+                          <h4 className="font-medium">Base de Dados</h4>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {testResults.database === true 
+                            ? "Conexão com a base de dados funcionando." 
+                            : testResults.database === false 
+                              ? "Falha na conexão com a base de dados." 
+                              : "Teste pendente."}
+                        </p>
+                      </div>
+                      
+                      <div className="p-3 rounded-md border">
+                        <div className="flex items-center gap-2 mb-1">
+                          {testResults.ocr === true ? (
+                            <CheckCircle className="h-5 w-5 text-green-500" />
+                          ) : testResults.ocr === false ? (
+                            <AlertCircle className="h-5 w-5 text-red-500" />
+                          ) : (
+                            <Activity className="h-5 w-5 text-gray-500" />
+                          )}
+                          <h4 className="font-medium">OCR</h4>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {testResults.ocr === true 
+                            ? "Processamento de OCR funcionando." 
+                            : testResults.ocr === false 
+                              ? "Falha na integração de OCR." 
+                              : "Teste pendente."}
+                        </p>
+                      </div>
+                      
+                      <div className="p-3 rounded-md border">
+                        <div className="flex items-center gap-2 mb-1">
+                          {testResults.rag === true ? (
+                            <CheckCircle className="h-5 w-5 text-green-500" />
+                          ) : testResults.rag === false ? (
+                            <AlertCircle className="h-5 w-5 text-red-500" />
+                          ) : (
+                            <Activity className="h-5 w-5 text-gray-500" />
+                          )}
+                          <h4 className="font-medium">RAG</h4>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {testResults.rag === true 
+                            ? "Sistema RAG funcionando corretamente." 
+                            : testResults.rag === false 
+                              ? "Falha no sistema RAG." 
+                              : "Teste pendente."}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
