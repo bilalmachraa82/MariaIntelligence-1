@@ -31,6 +31,7 @@ import MaintenancePending from "@/pages/maintenance/pending";
 import MaintenanceRequest from "@/pages/maintenance/request";
 import PaymentsOutgoing from "@/pages/payments/outgoing";
 import PaymentsIncoming from "@/pages/payments/incoming";
+import PaymentNewPage from "@/pages/payments/new";
 
 // Inicializa o tema escuro conforme a preferência salva
 const initializeDarkMode = () => {
@@ -105,6 +106,7 @@ function Router() {
       <Route path="/maintenance/request" component={MaintenanceRequest} />
       <Route path="/payments/outgoing" component={PaymentsOutgoing} />
       <Route path="/payments/incoming" component={PaymentsIncoming} />
+      <Route path="/payments/new" component={PaymentNewPage} />
       
       {/* Rotas em português */}
       <Route path="/painel" component={Dashboard} />
