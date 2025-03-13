@@ -76,17 +76,25 @@ export default function OwnerEditPage() {
 
   const onSubmit = async (data: any) => {
     try {
+      console.log("Submitting owner data:", data);
+      
       if (isEditMode) {
-        await updateOwner.mutateAsync({
+        console.log("Updating existing owner with ID:", ownerId);
+        const result = await updateOwner.mutateAsync({
           id: ownerId,
           data: data,
         });
+        console.log("Update result:", result);
+        
         toast({
           title: "Proprietário atualizado",
           description: "O proprietário foi atualizado com sucesso.",
         });
       } else {
-        await createOwner.mutateAsync(data);
+        console.log("Creating new owner with data:", data);
+        const result = await createOwner.mutateAsync(data);
+        console.log("Creation result:", result);
+        
         toast({
           title: "Proprietário criado",
           description: "O proprietário foi criado com sucesso.",
@@ -96,6 +104,13 @@ export default function OwnerEditPage() {
       navigate("/owners");
     } catch (error) {
       console.error("Error saving owner:", error);
+      
+      // Log detailed information about the error
+      if (error.response) {
+        console.error("Server response:", error.response.data);
+        console.error("Status code:", error.response.status);
+      }
+      
       toast({
         title: "Erro ao salvar proprietário",
         description: "Ocorreu um erro ao salvar o proprietário. Por favor, tente novamente.",

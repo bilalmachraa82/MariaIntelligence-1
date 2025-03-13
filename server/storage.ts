@@ -870,18 +870,22 @@ export class DatabaseStorage implements IStorage {
     // Calcular o número total de dias entre as datas
     const totalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
     
+    // Converter datas para strings ISO para usar nas consultas SQL
+    const startDateStr = start.toISOString().split('T')[0];
+    const endDateStr = end.toISOString().split('T')[0];
+    
     let query = db.select({
       propertyId: reservations.propertyId,
       days: sql`SUM(
         CAST(
           EXTRACT(DAY FROM 
             LEAST(
-              CAST(${reservations.checkOutDate} as DATE), 
-              CAST('${end.toISOString().split('T')[0]}' as DATE)
+              ${reservations.checkOutDate}, 
+              CAST('${endDateStr}' as DATE)
             ) - 
             GREATEST(
-              CAST(${reservations.checkInDate} as DATE), 
-              CAST('${start.toISOString().split('T')[0]}' as DATE)
+              ${reservations.checkInDate}, 
+              CAST('${startDateStr}' as DATE)
             )
           ) as INTEGER
         )
@@ -894,14 +898,12 @@ export class DatabaseStorage implements IStorage {
     }
     
     // Filtrar apenas reservas que se sobrepõem ao período desejado
-    const conditions = [
+    query = query.where(
       and(
-        lte(reservations.checkInDate, end.toISOString().split('T')[0]),
-        gte(reservations.checkOutDate, start.toISOString().split('T')[0])
+        lte(reservations.checkInDate, endDateStr),
+        gte(reservations.checkOutDate, startDateStr)
       )
-    ];
-    
-    query = query.where(and(...conditions));
+    );
     
     if (propertyId) {
       query = query.groupBy(reservations.propertyId);
