@@ -133,6 +133,7 @@ function Router() {
       <Route path="/manutencao/solicitacao" component={MaintenanceRequest} />
       <Route path="/pagamentos/saida" component={PaymentsOutgoing} />
       <Route path="/pagamentos/entrada" component={PaymentsIncoming} />
+      <Route path="/pagamentos/novo" component={PaymentNewPage} />
       
       {/* Página não encontrada */}
       <Route component={NotFound} />
