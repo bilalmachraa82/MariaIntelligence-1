@@ -151,7 +151,8 @@ export default function SettingsPage() {
         tests: TestResult[];
       }
       
-      const data = await apiRequest<TestResponse>("GET", "/api/test-integrations");
+      const response = await apiRequest("GET", "/api/test-integrations");
+      const data = await response.json() as TestResponse;
       
       console.log("Resposta completa:", data);
       
