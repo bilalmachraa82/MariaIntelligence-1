@@ -116,28 +116,60 @@ export function UploadPDF() {
     e.stopPropagation();
     
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const file = e.dataTransfer.files[0];
-      
-      if (file.type !== 'application/pdf') {
-        toast({
-          title: "Formato inválido",
-          description: "Por favor, selecione apenas arquivos PDF.",
-          variant: "destructive",
-        });
-        return;
+      // Modo de upload múltiplo
+      if (isMultiUploadMode) {
+        const filesArray = Array.from(e.dataTransfer.files);
+        
+        // Verificar se todos os arquivos são PDFs
+        const nonPdfFiles = filesArray.filter(file => file.type !== 'application/pdf');
+        if (nonPdfFiles.length > 0) {
+          toast({
+            title: "Formato inválido",
+            description: `${nonPdfFiles.length} arquivo(s) não são PDFs válidos.`,
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        // Verificar tamanho dos arquivos
+        const largeFiles = filesArray.filter(file => file.size > 10 * 1024 * 1024);
+        if (largeFiles.length > 0) {
+          toast({
+            title: "Arquivos muito grandes",
+            description: `${largeFiles.length} arquivo(s) excedem o limite de 10MB.`,
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        setSelectedFiles(filesArray);
+        handleMultipleFilesUpload(filesArray);
+      } 
+      // Modo de upload único
+      else {
+        const file = e.dataTransfer.files[0];
+        
+        if (file.type !== 'application/pdf') {
+          toast({
+            title: "Formato inválido",
+            description: "Por favor, selecione apenas arquivos PDF.",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        if (file.size > 10 * 1024 * 1024) { // 10MB
+          toast({
+            title: "Arquivo muito grande",
+            description: "O tamanho máximo permitido é 10MB.",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        setSelectedFile(file);
+        handleFileUpload(file);
       }
-      
-      if (file.size > 10 * 1024 * 1024) { // 10MB
-        toast({
-          title: "Arquivo muito grande",
-          description: "O tamanho máximo permitido é 10MB.",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      setSelectedFile(file);
-      handleFileUpload(file);
     }
   };
 
