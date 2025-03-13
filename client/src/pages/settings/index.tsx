@@ -22,6 +22,7 @@ export default function SettingsPage() {
   const [smsNotifications, setSmsNotifications] = useState(false);
   const [mistralApiKey, setMistralApiKey] = useState("");
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language || "pt-PT");
+  const [isDarkMode, setIsDarkMode] = useState(false);
   
   // Estado para testes de integração
   const [isTestingIntegrations, setIsTestingIntegrations] = useState(false);
@@ -45,7 +46,41 @@ export default function SettingsPage() {
     if (storedKey) {
       setMistralApiKey(storedKey);
     }
+    
+    // Verifica se o modo escuro está ativado
+    const darkModePreference = localStorage.getItem("darkMode");
+    const isDark = darkModePreference === "true";
+    setIsDarkMode(isDark);
+    
+    // Aplica o modo escuro se estiver ativado
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
   }, []);
+
+  const handleDarkModeToggle = (checked: boolean) => {
+    setIsDarkMode(checked);
+    
+    // Atualiza o localStorage
+    localStorage.setItem("darkMode", checked.toString());
+    
+    // Atualiza a classe no elemento html
+    if (checked) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    
+    // Atualiza o arquivo theme.json (simulado via localStorage)
+    localStorage.setItem("theme", JSON.stringify({
+      appearance: checked ? "dark" : "light",
+      primary: "#E5A4A4",
+      variant: "professional",
+      radius: 0.8
+    }));
+  };
 
   const handleSaveGeneral = () => {
     toast({
