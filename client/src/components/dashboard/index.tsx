@@ -76,22 +76,33 @@ export default function Dashboard() {
   const { t } = useTranslation();
   
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
-        <div>
-          <h2 className="text-2xl font-bold text-secondary-900 mb-2">
-            {t("dashboard.title", "Dashboard")}
-          </h2>
-          <p className="text-secondary-500">
+    <div className="space-y-8 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+      {/* Header with decorative element */}
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center" aria-hidden="true">
+          <div className="w-full border-t border-maria-primary-light"></div>
+        </div>
+        <div className="relative flex justify-center">
+          <span className="bg-background px-6">
+            <h1 className="text-gradient text-3xl md:text-4xl font-bold">
+              {t("dashboard.title", "Dashboard")}
+            </h1>
+          </span>
+        </div>
+      </div>
+
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        <div className="bg-maria-primary-light p-4 rounded-lg shadow-sm w-full lg:w-auto">
+          <p className="text-maria-dark">
             {t("dashboard.description", "Visão geral do seu negócio de aluguel de imóveis")}
           </p>
         </div>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-3 mt-4 lg:mt-0">
           <div>
             <label htmlFor="period" className="sr-only">{t("dashboard.period", "Período")}</label>
             <select 
               id="period" 
-              className="block w-full pl-3 pr-10 py-2 text-base border-secondary-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+              className="block w-full pl-3 pr-10 py-2 text-base rounded-md focus:outline-none focus:ring-maria-primary focus:border-maria-primary bg-white border-maria-primary-light"
               value={selectedDateRange.label}
               onChange={handleDateRangeChange}
             >
@@ -102,7 +113,7 @@ export default function Dashboard() {
           </div>
           
           <Link href="/upload-pdf">
-            <Button variant="outline" className="flex items-center">
+            <Button variant="outline" className="flex items-center bg-white border-maria-accent hover:bg-maria-accent hover:text-white transition-colors">
               <FileUp className="mr-2 h-4 w-4" />
               {t("pdfUpload.uploadButton", "Importar PDF")}
             </Button>
@@ -110,7 +121,7 @@ export default function Dashboard() {
           
           <Button 
             variant="default"
-            className="flex items-center"
+            className="flex items-center bg-maria-primary hover:bg-opacity-90 shadow-md transition-all"
             onClick={() => {
               // In a real app, this would trigger a download of the statistics
               alert(t("dashboard.exportNotImplemented", 'Exportação de dados implementada na versão completa'));
@@ -124,30 +135,51 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Stats Grid */}
-      <StatsGrid 
-        data={statistics} 
-        isLoading={isLoadingStats} 
-      />
-
-      {/* Recent Reservations and Property Insights */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <RecentReservations 
-          reservations={recentReservations} 
-          isLoading={isLoadingReservations} 
-        />
-        <PropertyInsights 
-          topProperties={statistics?.topProperties} 
+      {/* Stats Grid with visual separator */}
+      <div className="py-4">
+        <StatsGrid 
+          data={statistics} 
           isLoading={isLoadingStats} 
         />
       </div>
 
+      {/* Visual separator with animation */}
+      <div className="flex justify-center my-8">
+        <div className="flex space-x-2">
+          <div className="w-2 h-2 rounded-full bg-maria-primary animate-pulse"></div>
+          <div className="w-2 h-2 rounded-full bg-maria-primary animate-pulse delay-150"></div>
+          <div className="w-2 h-2 rounded-full bg-maria-primary animate-pulse delay-300"></div>
+        </div>
+      </div>
+
+      {/* Recent Reservations and Property Insights */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="card-gradient rounded-xl shadow-lg p-1">
+          <div className="bg-white rounded-lg h-full">
+            <RecentReservations 
+              reservations={recentReservations} 
+              isLoading={isLoadingReservations} 
+            />
+          </div>
+        </div>
+        <div className="accent-gradient rounded-xl shadow-lg p-1">
+          <div className="bg-white rounded-lg h-full">
+            <PropertyInsights 
+              topProperties={statistics?.topProperties} 
+              isLoading={isLoadingStats} 
+            />
+          </div>
+        </div>
+      </div>
+
       {/* Recent Activity */}
-      <div className="grid grid-cols-1 gap-6">
-        <RecentActivity 
-          activities={activities} 
-          isLoading={isLoadingActivities} 
-        />
+      <div className="primary-gradient rounded-xl shadow-lg p-1 mt-8">
+        <div className="bg-white rounded-lg">
+          <RecentActivity 
+            activities={activities} 
+            isLoading={isLoadingActivities} 
+          />
+        </div>
       </div>
     </div>
   );
