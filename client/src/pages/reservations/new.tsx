@@ -17,7 +17,12 @@ import {
   BadgePercent, 
   Mail, 
   Phone,
-  FileText
+  FileText,
+  Upload,
+  Camera,
+  FileUp,
+  ImageIcon,
+  FileIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
@@ -52,12 +57,19 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { 
+  Tabs, 
+  TabsContent, 
+  TabsList, 
+  TabsTrigger 
+} from "@/components/ui/tabs";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { cn, calculateNetAmount, formatCurrency } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { usePdfUpload } from "@/hooks/use-pdf-upload";
+import { processReservationFile } from "@/lib/ocr";
 
 export default function ReservationNewPage() {
   const [_, navigate] = useLocation();
@@ -71,6 +83,11 @@ export default function ReservationNewPage() {
     platformFee: 0,
     netAmount: 0
   });
+  
+  // Estado para acompanhar os arquivos selecionados para upload
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isProcessingFile, setIsProcessingFile] = useState(false);
+  const [processingError, setProcessingError] = useState<string | null>(null);
   
   const { data: properties, isLoading: isLoadingProperties } = useProperties();
   const { data: enums, isLoading: isLoadingEnums } = useReservationEnums();
@@ -255,6 +272,84 @@ export default function ReservationNewPage() {
       netAmount
     }));
   };
+  
+  // Função para processar um arquivo (PDF ou imagem)
+  const handleFileUpload = async (file: File) => {
+    if (!file) return;
+    
+    setSelectedFile(file);
+    setIsProcessingFile(true);
+    setProcessingError(null);
+    
+    try {
+      const result = await processReservationFile(file);
+      
+      if (result?.extractedData) {
+        // Preencher o formulário com os dados extraídos
+        form.reset({
+          propertyId: result.extractedData.propertyId,
+          guestName: result.extractedData.guestName,
+          guestEmail: result.extractedData.guestEmail || "",
+          guestPhone: result.extractedData.guestPhone || "",
+          checkInDate: new Date(result.extractedData.checkInDate),
+          checkOutDate: new Date(result.extractedData.checkOutDate),
+          numGuests: result.extractedData.numGuests,
+          totalAmount: result.extractedData.totalAmount.toString(),
+          status: "confirmed",
+          platform: result.extractedData.platform,
+          platformFee: result.extractedData.platformFee.toString(),
+          cleaningFee: result.extractedData.cleaningFee.toString(),
+          checkInFee: result.extractedData.checkInFee.toString(),
+          commissionFee: result.extractedData.commissionFee.toString(),
+          teamPayment: result.extractedData.teamPayment.toString(),
+          netAmount: calculateNetAmount(
+            result.extractedData.totalAmount,
+            result.extractedData.cleaningFee,
+            result.extractedData.checkInFee,
+            result.extractedData.commissionFee,
+            result.extractedData.teamPayment,
+            result.extractedData.platformFee
+          ).toString(),
+          notes: `Criado via extração de ${file.type.includes('pdf') ? 'PDF' : 'imagem'}`,
+        });
+        
+        setSelectedPropertyId(result.extractedData.propertyId);
+        
+        toast({
+          title: "Dados extraídos com sucesso",
+          description: `Os dados foram extraídos do ${file.type.includes('pdf') ? 'PDF' : 'imagem'} com sucesso.`,
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao processar arquivo:", error);
+      setProcessingError(error instanceof Error ? error.message : "Erro desconhecido ao processar arquivo");
+      
+      toast({
+        title: "Erro ao processar arquivo",
+        description: "Não foi possível extrair os dados do arquivo. Tente novamente ou preencha manualmente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessingFile(false);
+    }
+  };
+  
+  // Função para lidar com a seleção de um arquivo
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      handleFileUpload(files[0]);
+    }
+  };
+  
+  // Função para lidar com o drop de arquivo
+  const handleFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      handleFileUpload(files[0]);
+    }
+  };
 
   const isPending = createReservation.isPending;
   const isLoading = isLoadingProperties || isLoadingEnums;
@@ -315,12 +410,23 @@ export default function ReservationNewPage() {
         <CardHeader>
           <CardTitle>Cadastrar Nova Reserva</CardTitle>
           <CardDescription>
-            Preencha os dados para cadastrar uma nova reserva
+            Preencha os dados para cadastrar uma nova reserva ou importe de um documento
           </CardDescription>
         </CardHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <CardContent className="space-y-6">
+        
+        <Tabs defaultValue="manual" className="w-full">
+          <div className="px-6">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="manual">Formulário Manual</TabsTrigger>
+              <TabsTrigger value="pdf">Processar PDF</TabsTrigger>
+              <TabsTrigger value="image">Processar Imagem</TabsTrigger>
+            </TabsList>
+          </div>
+          
+          <TabsContent value="manual">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
+                <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}

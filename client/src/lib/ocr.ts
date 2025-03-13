@@ -92,8 +92,12 @@ export async function createReservationFromExtractedData(data: ExtractedData) {
     notes: "Created via PDF OCR extraction",
   };
 
-  const response = await apiRequest("POST", "/api/reservations", reservationData);
-  return await response.json();
+  const response = await apiRequest({
+    url: "/api/reservations",
+    method: "POST",
+    data: reservationData
+  });
+  return response;
 }
 
 /**

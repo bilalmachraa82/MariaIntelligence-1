@@ -12,7 +12,7 @@ import OwnerDetailPage from "@/pages/owners/[id]";
 import OwnerEditPage from "@/pages/owners/edit";
 import ReservationsPage from "@/pages/reservations";
 import ReservationDetailPage from "@/pages/reservations/[id]";
-import ReservationNewPage from "@/pages/reservations/new";
+import ReservationNewPage from "@/pages/reservations/new-reservation";
 import ReportsPage from "@/pages/reports";
 import SettingsPage from "@/pages/settings";
 import PDFUploadPage from "@/pages/pdf-upload";
