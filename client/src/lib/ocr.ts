@@ -73,13 +73,13 @@ export async function uploadAndProcessPDF(file: File): Promise<UploadResponse> {
  */
 export async function createReservationFromExtractedData(data: ExtractedData) {
   try {
-    const response = await apiRequest({
-      url: "/api/reservations",
-      method: "POST",
-      body: JSON.stringify(data),
-    });
+    const response = await apiRequest(
+      "POST",
+      "/api/reservations",
+      data
+    );
     
-    return response;
+    return await response.json();
   } catch (error) {
     console.error("Erro ao criar reserva a partir dos dados extraídos:", error);
     throw error;
