@@ -19,11 +19,57 @@ import PDFUploadPage from "@/pages/pdf-upload";
 import AssistantPage from "@/pages/assistant";
 import { Layout } from "@/components/layout/layout";
 import { useTranslation } from "react-i18next";
+import { useEffect } from 'react';
 
 // Imports das páginas de equipes de limpeza
 import CleaningTeamsPage from "@/pages/cleaning-teams";
 import CleaningReportsPage from "@/pages/cleaning-reports";
 import OwnerReportPage from "@/pages/reports/owner-report";
+
+// Inicializa o tema escuro conforme a preferência salva
+const initializeDarkMode = () => {
+  // Verifica se o modo escuro está ativado no localStorage
+  const darkModePreference = localStorage.getItem("darkMode");
+  const isDark = darkModePreference === "true";
+  
+  // Aplica a classe 'dark' no elemento html se o modo escuro estiver ativado
+  if (isDark) {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+  
+  // Também verifica a preferência do sistema se estiver no modo 'system'
+  const storedTheme = localStorage.getItem("theme");
+  if (storedTheme) {
+    try {
+      const theme = JSON.parse(storedTheme);
+      if (theme.appearance === "system") {
+        // Verifica preferência do sistema
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        if (prefersDark) {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+        
+        // Adiciona listener para mudanças na preferência do sistema
+        window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+          if (e.matches) {
+            document.documentElement.classList.add("dark");
+          } else {
+            document.documentElement.classList.remove("dark");
+          }
+        });
+      }
+    } catch (e) {
+      console.error("Erro ao analisar tema armazenado:", e);
+    }
+  }
+};
+
+// Executa a inicialização do tema escuro
+initializeDarkMode();
 
 function Router() {
   return (

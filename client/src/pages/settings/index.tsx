@@ -270,7 +270,11 @@ export default function SettingsPage() {
               </div>
               
               <div className="flex items-center space-x-2">
-                <Switch id="dark-mode" />
+                <Switch 
+                  id="dark-mode" 
+                  checked={isDarkMode}
+                  onCheckedChange={handleDarkModeToggle}
+                />
                 <Label htmlFor="dark-mode">{t("settings.general.darkMode")}</Label>
               </div>
               
