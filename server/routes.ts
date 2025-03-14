@@ -412,13 +412,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         endDate = new Date(endDateStr);
       }
 
-      // Log para diagnóstico
-      console.log("API /statistics - Datas:", { 
-        startDateStr, 
-        endDateStr, 
-        startDate: startDate?.toISOString(), 
-        endDate: endDate?.toISOString() 
-      });
+      // Log para diagnóstico removido para reduzir ruído no console
 
       const totalRevenue = await storage.getTotalRevenue(startDate, endDate);
       const netProfit = await storage.getNetProfit(startDate, endDate);
