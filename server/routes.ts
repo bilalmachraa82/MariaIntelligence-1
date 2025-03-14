@@ -1010,6 +1010,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Listar itens de um documento financeiro
+  app.get("/api/financial-document-items/:documentId", async (req: Request, res: Response) => {
+    try {
+      const documentId = Number(req.params.documentId);
+      
+      // Verificar se o documento existe
+      const document = await storage.getFinancialDocument(documentId);
       if (!document) {
         return res.status(404).json({ message: "Documento financeiro não encontrado" });
       }
