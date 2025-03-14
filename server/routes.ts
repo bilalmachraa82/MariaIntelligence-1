@@ -1511,72 +1511,277 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ===== ENDPOINTS PARA RELATÓRIOS FINANCEIROS =====
 
   // Obter relatório financeiro de proprietário
+  /**
+   * Endpoint para geração de relatório financeiro por proprietário
+   * Suporta diferentes formatos de data e filtragem por período
+   */
   app.get("/api/reports/owner/:ownerId", async (req: Request, res: Response) => {
     try {
       const ownerId = Number(req.params.ownerId);
-      const month = req.query.month as string;
-      const year = req.query.year as string;
-
-      if (!month || !year) {
-        return res.status(400).json({ message: "É necessário informar mês e ano para o relatório" });
+      
+      // Verificar se o proprietário existe
+      const owner = await storage.getOwner(ownerId);
+      if (!owner) {
+        return res.status(404).json({ 
+          success: false, 
+          message: "Proprietário não encontrado" 
+        });
       }
-
+      
+      // Opções para geração do relatório
+      let month: string;
+      let year: string;
+      
+      // Verificar se foi passado um intervalo de datas ou mês/ano
+      if (req.query.startDate && req.query.endDate) {
+        // Se temos um intervalo específico, calcular o mês a partir da data de início
+        const startDate = new Date(req.query.startDate as string);
+        month = String(startDate.getMonth() + 1).padStart(2, '0');
+        year = String(startDate.getFullYear());
+        
+        // Registrar atividade
+        await storage.createActivity({
+          type: 'report_generation',
+          description: `Relatório financeiro para proprietário ${owner.name} (ID: ${ownerId}) para o período de ${req.query.startDate} a ${req.query.endDate}`,
+          entityType: 'owner',
+          entityId: ownerId
+        });
+      } else {
+        // Caso contrário, usar mês e ano específicos
+        month = req.query.month as string;
+        year = req.query.year as string;
+        
+        if (!month || !year) {
+          return res.status(400).json({ 
+            success: false, 
+            message: "É necessário informar mês e ano para o relatório, ou um intervalo de datas (startDate e endDate)" 
+          });
+        }
+        
+        // Garantir formato de dois dígitos para o mês
+        month = month.padStart(2, '0');
+        
+        // Registrar atividade
+        await storage.createActivity({
+          type: 'report_generation',
+          description: `Relatório financeiro para proprietário ${owner.name} (ID: ${ownerId}) para ${month}/${year}`,
+          entityType: 'owner',
+          entityId: ownerId
+        });
+      }
+      
+      // Gerar o relatório
       const report = await storage.generateOwnerFinancialReport(ownerId, month, year);
-      res.json(report);
+      
+      // Retornar o relatório em formato JSON
+      return res.status(200).json({
+        success: true,
+        report
+      });
     } catch (err) {
+      console.error("Erro ao gerar relatório financeiro de proprietário:", err);
       handleError(err, res);
     }
   });
 
-  // Obter relatório financeiro geral
+  /**
+   * Endpoint para obter resumo financeiro geral do sistema
+   * Suporta filtros por data de início e fim
+   */
   app.get("/api/reports/financial-summary", async (req: Request, res: Response) => {
     try {
       let startDate: Date | undefined = undefined;
       let endDate: Date | undefined = undefined;
-
+      
+      // Parse das datas do parâmetro de consulta
       if (req.query.startDate) {
-        startDate = new Date(req.query.startDate as string);
+        try {
+          startDate = new Date(req.query.startDate as string);
+          if (isNaN(startDate.getTime())) {
+            return res.status(400).json({ 
+              success: false, 
+              message: "Data de início inválida. Use o formato YYYY-MM-DD." 
+            });
+          }
+        } catch (error) {
+          return res.status(400).json({ 
+            success: false, 
+            message: "Data de início inválida. Use o formato YYYY-MM-DD." 
+          });
+        }
       }
 
       if (req.query.endDate) {
-        endDate = new Date(req.query.endDate as string);
+        try {
+          endDate = new Date(req.query.endDate as string);
+          if (isNaN(endDate.getTime())) {
+            return res.status(400).json({ 
+              success: false, 
+              message: "Data de fim inválida. Use o formato YYYY-MM-DD." 
+            });
+          }
+        } catch (error) {
+          return res.status(400).json({ 
+            success: false, 
+            message: "Data de fim inválida. Use o formato YYYY-MM-DD." 
+          });
+        }
       }
-
+      
+      // Se não foram fornecidas datas, usar o mês atual
+      if (!startDate && !endDate) {
+        const now = new Date();
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1); // Primeiro dia do mês atual
+        endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0); // Último dia do mês atual
+      }
+      
+      // Registrar atividade de geração de relatório
+      await storage.createActivity({
+        type: 'report_generation',
+        description: `Relatório de resumo financeiro gerado para o período de ${startDate?.toISOString().split('T')[0] || 'início'} a ${endDate?.toISOString().split('T')[0] || 'fim'}`,
+        entityType: 'system',
+        entityId: 0
+      });
+      
+      // Gerar o resumo financeiro
       const summary = await storage.generateFinancialSummary(startDate, endDate);
-      res.json(summary);
+      
+      // Retornar o resumo em formato JSON padronizado
+      return res.status(200).json({
+        success: true,
+        summary: {
+          ...summary,
+          period: {
+            startDate: startDate?.toISOString() || null,
+            endDate: endDate?.toISOString() || null
+          }
+        }
+      });
     } catch (err) {
+      console.error("Erro ao gerar resumo financeiro:", err);
       handleError(err, res);
     }
   });
 
-  // Validação contextual de reservas
+  /**
+   * Endpoint para validação contextual de reservas
+   * Utiliza RAG e regras de negócio para validar dados de reserva
+   */
   app.post("/api/validate-reservation", async (req: Request, res: Response) => {
     try {
       const reservationData = req.body;
-
-      // Buscar regras da propriedade
+      
+      // Validar dados básicos da requisição
+      if (!reservationData || !reservationData.propertyId) {
+        return res.status(400).json({
+          success: false,
+          message: "Dados de reserva incompletos. É necessário informar pelo menos propertyId."
+        });
+      }
+      
+      // Verificar se a chave da API Mistral está disponível
+      if (!process.env.MISTRAL_API_KEY) {
+        return res.status(400).json({ 
+          success: false,
+          message: "Chave da API Mistral não configurada. Configure a chave nas definições." 
+        });
+      }
+      
+      // Buscar detalhes da propriedade
       const property = await storage.getProperty(reservationData.propertyId);
       if (!property) {
-        return res.status(400).json({ message: "Propriedade não encontrada" });
+        return res.status(400).json({ 
+          success: false,
+          message: "Propriedade não encontrada" 
+        });
       }
-
-      // Buscar conhecimento similar do RAG
-      const similarContent = await ragService.findSimilarContent(
-        JSON.stringify(reservationData),
+      
+      // Verificar se existem reservas conflitantes
+      let conflictingReservations: Reservation[] = [];
+      if (reservationData.checkInDate && reservationData.checkOutDate) {
+        const allReservations = await storage.getReservationsByProperty(property.id);
+        
+        // Filtrar reservas que se sobrepõem ao período solicitado
+        conflictingReservations = allReservations.filter(r => {
+          // Ignorar a própria reserva se estiver atualizando (tem ID)
+          if (reservationData.id && r.id === reservationData.id) {
+            return false;
+          }
+          
+          const checkIn = new Date(r.checkInDate);
+          const checkOut = new Date(r.checkOutDate);
+          const newCheckIn = new Date(reservationData.checkInDate);
+          const newCheckOut = new Date(reservationData.checkOutDate);
+          
+          // Verificar sobreposição de datas
+          return (
+            (newCheckIn <= checkOut && newCheckIn >= checkIn) || // Check-in durante outra reserva
+            (newCheckOut <= checkOut && newCheckOut >= checkIn) || // Check-out durante outra reserva
+            (newCheckIn <= checkIn && newCheckOut >= checkOut) // Engloba completamente outra reserva
+          );
+        });
+      }
+      
+      // Registrar tentativa de validação (para fins de analytics)
+      await storage.createActivity({
+        type: 'reservation_validation',
+        description: `Validação de reserva para propriedade ${property.name} (ID: ${property.id})`,
+        entityType: 'property',
+        entityId: property.id
+      });
+      
+      // Buscar conhecimento similar do RAG para contextualizar a validação
+      const similarContentPromise = ragService.findSimilarContent(
+        JSON.stringify({
+          propertyName: property.name,
+          ...reservationData
+        }),
         3
       );
-
-      // Validar dados com contexto
+      
+      // Obter reservas recentes da mesma propriedade para análise de padrões
+      const recentReservationsPromise = storage.getReservationsByProperty(property.id)
+        .then(reservations => 
+          reservations
+            .sort((a, b) => new Date(b.checkInDate).getTime() - new Date(a.checkInDate).getTime())
+            .slice(0, 5) // Últimas 5 reservas
+        );
+      
+      // Executar promessas em paralelo para melhor performance
+      const [similarContent, recentReservations] = await Promise.all([
+        similarContentPromise,
+        recentReservationsPromise
+      ]);
+      
+      // Validar dados com contexto usando o Mistral
       const validationResult = await mistralService.validateReservationData(
         reservationData,
         {
           property,
-          similarReservations: similarContent
+          similarReservations: similarContent,
+          recentReservations,
+          conflictingReservations,
+          currentDate: new Date().toISOString()
         }
       );
-
-      res.json(validationResult);
+      
+      // Adicionar informações adicionais ao resultado
+      return res.status(200).json({
+        success: true,
+        validation: {
+          ...validationResult,
+          hasConflicts: conflictingReservations.length > 0,
+          conflictCount: conflictingReservations.length,
+          property: {
+            id: property.id,
+            name: property.name,
+            maxGuests: property.maxGuests,
+            minimumStay: property.minimumStay || 1
+          }
+        }
+      });
     } catch (err) {
+      console.error("Erro na validação de reserva:", err);
       handleError(err, res);
     }
   });
