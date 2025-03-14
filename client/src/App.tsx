@@ -17,6 +17,7 @@ import ReportsPage from "@/pages/reports";
 import SettingsPage from "@/pages/settings";
 import PDFUploadPage from "@/pages/pdf-upload";
 import AssistantPage from "@/pages/assistant";
+import DemoDataPage from "@/pages/demo-data";
 import { Layout } from "@/components/layout/layout";
 import { useTranslation } from "react-i18next";
 import { useEffect } from 'react';
@@ -112,6 +113,7 @@ function Router() {
       <Route path="/reports/owner-report" component={OwnerReportPage} />
       <Route path="/settings" component={SettingsPage} />
       <Route path="/assistant" component={AssistantPage} />
+      <Route path="/demo-data" component={DemoDataPage} />
       <Route path="/maintenance/pending" component={MaintenancePending} />
       <Route path="/maintenance/request" component={MaintenanceRequest} />
       <Route path="/payments/outgoing" component={PaymentsOutgoing} />
@@ -149,6 +151,7 @@ function Router() {
       <Route path="/relatorios/proprietario" component={OwnerReportPage} />
       <Route path="/configuracoes" component={SettingsPage} />
       <Route path="/assistente" component={AssistantPage} />
+      <Route path="/dados-demo" component={DemoDataPage} />
       <Route path="/manutencao/pendentes" component={MaintenancePending} />
       <Route path="/manutencao/solicitacao" component={MaintenanceRequest} />
       <Route path="/pagamentos/saida" component={PaymentsOutgoing} />
