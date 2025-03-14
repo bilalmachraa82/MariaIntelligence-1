@@ -46,8 +46,7 @@ const demoReservationSchema = z.object({
   checkInFee: z.string().optional(),
   commissionFee: z.string().optional(),
   teamPayment: z.string().optional(),
-  netAmount: z.string().optional(),
-  invoiceNumber: z.string().optional(),
+  netAmount: z.string().optional()
 });
 
 type DemoProperty = z.infer<typeof demoPropertySchema>;
@@ -329,7 +328,6 @@ export async function generateDemoReservations(propertyIds: number[], count: num
         commissionFee: commissionFee,
         teamPayment: teamPayment,
         netAmount: netAmount,
-        invoiceNumber: `INV-DEMO-${Date.now().toString().slice(-6)}`,
       };
       
       const response = await apiRequest('/api/reservations', {
