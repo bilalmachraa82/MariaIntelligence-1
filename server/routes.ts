@@ -4,6 +4,8 @@ import { storage } from "./storage";
 import multer from "multer";
 import { ZodError } from "zod";
 import { Mistral } from "@mistralai/mistralai";
+import { MistralService } from "./services/mistral.service";
+import { RAGService } from "./services/rag.service";
 import { 
   extendedPropertySchema, 
   extendedOwnerSchema,
@@ -488,9 +490,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       handleError(err, res);
     }
   });
-
-  import { MistralService } from "./services/mistral.service";
-  import { RAGService } from "./services/rag.service";
 
   const mistralService = new MistralService();
   const ragService = new RAGService();
