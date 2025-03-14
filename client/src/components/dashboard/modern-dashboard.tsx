@@ -51,6 +51,9 @@ import { Badge } from "@/components/ui/badge";
 import { RecentReservations } from "./recent-reservations";
 import { RecentActivity } from "./recent-activity";
 
+// Componentes personalizados
+import { DemoDataManager } from "../demo-data-manager";
+
 // Utils
 import { formatCurrency, calculateOccupancyColor } from "@/lib/utils";
 
