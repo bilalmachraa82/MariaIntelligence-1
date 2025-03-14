@@ -202,12 +202,12 @@ export function Sidebar({ className }: SidebarProps) {
         )}
       >
         <div className="flex items-center justify-center h-16 border-b border-secondary-200 dark:border-gray-800">
-          <h1 className="text-xl font-semibold text-primary-700 dark:text-maria-primary">Maria Faz</h1>
+          <h1 className="text-xl font-semibold text-primary-700 dark:text-primary">Maria Faz</h1>
         </div>
         
         {/* Frase inspiracional */}
         <div className="px-4 py-2 text-center">
-          <p className="text-xs italic text-maria-gray dark:text-gray-400">
+          <p className="text-xs italic text-gray-500 dark:text-gray-400">
             "Limpeza é o primeiro passo para a felicidade." - Marie Kondo
           </p>
         </div>
@@ -216,7 +216,7 @@ export function Sidebar({ className }: SidebarProps) {
           <nav className="px-3 py-6 space-y-8">
             {/* Seção Principal */}
             <div>
-              <h3 className="px-3 text-xs font-semibold text-maria-gray dark:text-gray-400 uppercase tracking-wider">
+              <h3 className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 {t("navigation.categories.main")}
               </h3>
               <div className="mt-2 space-y-1">
@@ -248,7 +248,7 @@ export function Sidebar({ className }: SidebarProps) {
             
             {/* Seção Manutenção */}
             <div>
-              <h3 className="px-3 text-xs font-semibold text-maria-gray dark:text-gray-400 uppercase tracking-wider flex items-center">
+              <h3 className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center">
                 <Wrench className="mr-1 h-3 w-3" />
                 {t("navigation.maintenance")}
               </h3>
@@ -281,7 +281,7 @@ export function Sidebar({ className }: SidebarProps) {
             
             {/* Seção Finanças */}
             <div>
-              <h3 className="px-3 text-xs font-semibold text-maria-gray dark:text-gray-400 uppercase tracking-wider flex items-center">
+              <h3 className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center">
                 <BadgeDollarSign className="mr-1 h-3 w-3" />
                 {t("navigation.payments")}
               </h3>
@@ -314,7 +314,7 @@ export function Sidebar({ className }: SidebarProps) {
             
             {/* Seção Ferramentas */}
             <div>
-              <h3 className="px-3 text-xs font-semibold text-maria-gray dark:text-gray-400 uppercase tracking-wider">
+              <h3 className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 {t("navigation.categories.tools")}
               </h3>
               <div className="mt-2 space-y-1">
@@ -346,7 +346,7 @@ export function Sidebar({ className }: SidebarProps) {
             
             {/* Seção Gestão */}
             <div>
-              <h3 className="px-3 text-xs font-semibold text-maria-gray dark:text-gray-400 uppercase tracking-wider">
+              <h3 className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 {t("navigation.categories.management")}
               </h3>
               <div className="mt-2 space-y-1">
@@ -378,7 +378,7 @@ export function Sidebar({ className }: SidebarProps) {
             
             {/* Seção Desenvolvimento/Utilidades */}
             <div>
-              <h3 className="px-3 text-xs font-semibold text-maria-gray dark:text-gray-400 uppercase tracking-wider flex items-center">
+              <h3 className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center">
                 <Database className="mr-1 h-3 w-3" />
                 {t("navigation.categories.utilities", "Utilidades")}
               </h3>
@@ -420,8 +420,8 @@ export function Sidebar({ className }: SidebarProps) {
                 </div>
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-maria-dark dark:text-white">Admin</p>
-                <p className="text-xs font-medium text-maria-gray dark:text-gray-400">admin@mariafaz.pt</p>
+                <p className="text-sm font-medium text-gray-800 dark:text-white">Admin</p>
+                <p className="text-xs font-medium text-gray-500 dark:text-gray-400">admin@mariafaz.pt</p>
               </div>
             </div>
             <TooltipProvider>
@@ -432,7 +432,7 @@ export function Sidebar({ className }: SidebarProps) {
                     size="icon" 
                     className="rounded-full hover:bg-maria-primary hover:bg-opacity-10 dark:hover:bg-maria-primary dark:hover:bg-opacity-20"
                   >
-                    <LogOut className="h-4 w-4 text-maria-gray dark:text-gray-400" />
+                    <LogOut className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="top">
