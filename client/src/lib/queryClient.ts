@@ -1,5 +1,12 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
+interface ExtendedError extends Error {
+  response?: {
+    status: number;
+    data: Record<string, any>;
+  };
+}
+
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
     let errorMessage = res.statusText;
@@ -14,7 +21,7 @@ async function throwIfResNotOk(res: Response) {
         errorDetails = errorData;
         
         // Criar um erro melhorado com os detalhes
-        const enhanced = new Error(`${res.status}: ${errorMessage}`);
+        const enhanced = new Error(`${res.status}: ${errorMessage}`) as ExtendedError;
         enhanced.response = { status: res.status, data: errorDetails };
         throw enhanced;
       } else {
@@ -23,7 +30,8 @@ async function throwIfResNotOk(res: Response) {
         errorMessage = text || errorMessage;
       }
     } catch (parseError) {
-      if (parseError.response) {
+      const err = parseError as ExtendedError;
+      if (err.response) {
         throw parseError; // Já é um erro aprimorado
       }
       // Se não conseguir analisar, usa o texto da resposta ou status
@@ -31,32 +39,36 @@ async function throwIfResNotOk(res: Response) {
     }
     
     // Criar um erro padrão com informações básicas
-    const error = new Error(`${res.status}: ${errorMessage}`);
+    const error = new Error(`${res.status}: ${errorMessage}`) as ExtendedError;
     error.response = { status: res.status, data: errorDetails };
     throw error;
   }
 }
 
 export async function apiRequest<T = any>(
-  method: string = "GET", 
-  url: string, 
-  data?: unknown
-): Promise<Response> {
+  url: string,
+  options?: {
+    method?: string;
+    headers?: Record<string, string>;
+    body?: string;
+  }
+): Promise<T> {
   try {
-    console.log(`API Request: ${method} ${url}`, data ? `data: ${JSON.stringify(data)}` : "");
+    const method = options?.method || "GET";
+    console.log(`API Request: ${url} ${options ? JSON.stringify(options) : ""}`);
     
     const res = await fetch(url, {
-      method,
-      headers: data ? { "Content-Type": "application/json" } : {},
-      body: data ? JSON.stringify(data) : undefined,
+      method: method,
+      headers: options?.headers || {},
+      body: options?.body,
       credentials: "include",
     });
 
     await throwIfResNotOk(res);
-    console.log(`API Response: ${method} ${url} - Status: ${res.status}`);
-    return res;
+    const data = await res.json();
+    return data as T;
   } catch (error) {
-    console.error(`API Error: ${method} ${url}`, error);
+    console.error(`API Error: ${url} ${options ? JSON.stringify(options) : ""}`, error);
     throw error;
   }
 }

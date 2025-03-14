@@ -4,7 +4,7 @@ import { format, addDays, subDays } from "date-fns";
 import { 
   reservationStatusEnum, 
   reservationPlatformEnum,
-} from "../../shared/schema";
+} from "@shared/schema";
 
 // Tipos para validação de dados
 const demoPropertySchema = z.object({
@@ -120,7 +120,7 @@ export async function generateDemoOwners(count: number = 3): Promise<number[]> {
         taxId: `${randomInt(100000000, 999999999)}`,
       };
       
-      const response = await apiRequest('/api/owners', {
+      const response = await apiRequest<any>('/api/owners', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(owner),
@@ -130,7 +130,7 @@ export async function generateDemoOwners(count: number = 3): Promise<number[]> {
         createdIds.push(response.id);
         
         // Criar atividade
-        await apiRequest('/api/activities', {
+        await apiRequest<any>('/api/activities', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -181,7 +181,7 @@ export async function generateDemoProperties(ownerIds: number[], count: number =
         cleaningTeamId: null,
       };
       
-      const response = await apiRequest('/api/properties', {
+      const response = await apiRequest<any>('/api/properties', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(property),
@@ -191,7 +191,7 @@ export async function generateDemoProperties(ownerIds: number[], count: number =
         createdIds.push(response.id);
         
         // Criar atividade
-        await apiRequest('/api/activities', {
+        await apiRequest<any>('/api/activities', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -330,7 +330,7 @@ export async function generateDemoReservations(propertyIds: number[], count: num
         netAmount: netAmount,
       };
       
-      const response = await apiRequest('/api/reservations', {
+      const response = await apiRequest<any>('/api/reservations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(reservation),
@@ -340,7 +340,7 @@ export async function generateDemoReservations(propertyIds: number[], count: num
         createdIds.push(response.id);
         
         // Criar atividade
-        await apiRequest('/api/activities', {
+        await apiRequest<any>('/api/activities', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -377,7 +377,7 @@ export async function generateDemoActivities(count: number = 10): Promise<number
       const descriptionList = descriptions[type as keyof typeof descriptions];
       const description = `${randomChoice(descriptionList)} [DEMO]`;
       
-      const response = await apiRequest('/api/activities', {
+      const response = await apiRequest<any>('/api/activities', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
