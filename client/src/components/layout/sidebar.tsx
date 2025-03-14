@@ -184,7 +184,7 @@ export function Sidebar({ className }: SidebarProps) {
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle menu"
         >
-          <Menu className="h-5 w-5 text-maria-primary dark:text-maria-primary-light" />
+          <Menu className="h-5 w-5 text-primary dark:text-primary-light" />
         </Button>
       )}
 

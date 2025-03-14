@@ -29,14 +29,14 @@ export function MobileBottomNav({ onOpenMenu }: MobileBottomNavProps) {
         <Home className={cn(
           "h-5 w-5 mb-1", 
           isActive("/painel") || isActive("/") 
-            ? "text-maria-primary" 
-            : "text-maria-gray"
+            ? "text-primary" 
+            : "text-gray-500"
         )} />
         <span className={cn(
           "text-xs",
           isActive("/painel") || isActive("/") 
-            ? "text-maria-primary font-medium" 
-            : "text-maria-gray"
+            ? "text-primary font-medium" 
+            : "text-gray-500"
         )}>
           Painel
         </span>
@@ -46,14 +46,14 @@ export function MobileBottomNav({ onOpenMenu }: MobileBottomNavProps) {
         <Building2 className={cn(
           "h-5 w-5 mb-1", 
           isActive("/propriedades") 
-            ? "text-maria-primary" 
-            : "text-maria-gray"
+            ? "text-primary" 
+            : "text-gray-500"
         )} />
         <span className={cn(
           "text-xs",
           isActive("/propriedades") 
-            ? "text-maria-primary font-medium" 
-            : "text-maria-gray"
+            ? "text-primary font-medium" 
+            : "text-gray-500"
         )}>
           Imóveis
         </span>
@@ -63,14 +63,14 @@ export function MobileBottomNav({ onOpenMenu }: MobileBottomNavProps) {
         <CalendarDays className={cn(
           "h-5 w-5 mb-1", 
           isActive("/reservas") 
-            ? "text-maria-primary" 
-            : "text-maria-gray"
+            ? "text-primary" 
+            : "text-gray-500"
         )} />
         <span className={cn(
           "text-xs",
           isActive("/reservas") 
-            ? "text-maria-primary font-medium" 
-            : "text-maria-gray"
+            ? "text-primary font-medium" 
+            : "text-gray-500"
         )}>
           Reservas
         </span>
@@ -81,13 +81,13 @@ export function MobileBottomNav({ onOpenMenu }: MobileBottomNavProps) {
           "h-5 w-5 mb-1", 
           location.startsWith("/manutencao") 
             ? "text-yellow-500" 
-            : "text-maria-gray"
+            : "text-gray-500"
         )} />
         <span className={cn(
           "text-xs",
           location.startsWith("/manutencao") 
             ? "text-yellow-500 font-medium" 
-            : "text-maria-gray"
+            : "text-gray-500"
         )}>
           Manutenção
         </span>
@@ -98,21 +98,21 @@ export function MobileBottomNav({ onOpenMenu }: MobileBottomNavProps) {
           "h-5 w-5 mb-1", 
           location.startsWith("/pagamentos") 
             ? "text-green-500" 
-            : "text-maria-gray"
+            : "text-gray-500"
         )} />
         <span className={cn(
           "text-xs",
           location.startsWith("/pagamentos") 
             ? "text-green-500 font-medium" 
-            : "text-maria-gray"
+            : "text-gray-500"
         )}>
           Pagamentos
         </span>
       </div>
       
       <div className="mobile-nav-item" onClick={onOpenMenu}>
-        <Menu className="h-5 w-5 mb-1 text-maria-gray" />
-        <span className="text-xs text-maria-gray">
+        <Menu className="h-5 w-5 mb-1 text-gray-500" />
+        <span className="text-xs text-gray-500">
           Menu
         </span>
       </div>
