@@ -412,29 +412,34 @@ export default function ModernDashboard() {
                   initial="hidden" 
                   animate="visible"
                 >
-                  <Card className="hover:shadow-md transition-all">
-                    <Title>{t("dashboard.revenueVsProfit", "Receita vs Lucro")}</Title>
-                    <div className="h-[300px] mt-4">
-                      {isLoadingStats ? (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Skeleton className="h-full w-full" />
-                        </div>
-                      ) : revenueData.length > 0 ? (
-                        <AreaChart
-                          className="h-full"
-                          data={revenueData}
-                          index="month"
-                          categories={["Receita", "Lucro"]}
-                          colors={["blue", "emerald"]}
-                          valueFormatter={(number) => `${formatCurrency(number)}`}
-                          showLegend
-                          showAnimation
-                        />
-                      ) : (
-                        <div className="h-full flex items-center justify-center">
-                          <p className="text-muted-foreground">{t("dashboard.noDataAvailable", "Não há dados disponíveis.")}</p>
-                        </div>
-                      )}
+                  <Card className="hover:shadow-md transition-all bg-gradient-to-br from-background to-background/80 border border-blue-500/20 overflow-hidden relative">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-emerald-400"></div>
+                    <div className="absolute -right-20 -top-20 w-40 h-40 rounded-full bg-blue-500/5 filter blur-xl"></div>
+                    <div className="absolute -left-20 -bottom-20 w-40 h-40 rounded-full bg-emerald-500/5 filter blur-xl"></div>
+                    <div className="relative z-10">
+                      <Title className="text-foreground/90">{t("dashboard.revenueVsProfit", "Receita vs Lucro")}</Title>
+                      <div className="h-[300px] mt-4">
+                        {isLoadingStats ? (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Skeleton className="h-full w-full" />
+                          </div>
+                        ) : revenueData.length > 0 ? (
+                          <AreaChart
+                            className="h-full"
+                            data={revenueData}
+                            index="month"
+                            categories={["Receita", "Lucro"]}
+                            colors={["blue", "emerald"]}
+                            valueFormatter={(number) => `${formatCurrency(number)}`}
+                            showLegend
+                            showAnimation
+                          />
+                        ) : (
+                          <div className="h-full flex items-center justify-center">
+                            <p className="text-muted-foreground">{t("dashboard.noDataAvailable", "Não há dados disponíveis.")}</p>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </Card>
                 </motion.div>
@@ -445,29 +450,34 @@ export default function ModernDashboard() {
                   initial="hidden" 
                   animate="visible"
                 >
-                  <Card className="hover:shadow-md transition-all">
-                    <Title>{t("dashboard.financialBreakdown", "Distribuição Financeira")}</Title>
-                    <div className="h-[300px] mt-4">
-                      {isLoadingStats ? (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Skeleton className="h-full w-full" />
-                        </div>
-                      ) : statistics?.totalRevenue ? (
-                        <DonutChart
-                          className="h-full"
-                          data={financialData}
-                          category="value"
-                          index="name"
-                          valueFormatter={(number) => `${formatCurrency(number)}`}
-                          colors={["blue", "rose"]}
-                          showAnimation
-                          showLabel
-                        />
-                      ) : (
-                        <div className="h-full flex items-center justify-center">
-                          <p className="text-muted-foreground">{t("dashboard.noDataAvailable", "Não há dados disponíveis.")}</p>
-                        </div>
-                      )}
+                  <Card className="hover:shadow-md transition-all bg-gradient-to-br from-background to-background/80 border border-rose-500/20 overflow-hidden relative">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-rose-400"></div>
+                    <div className="absolute -right-20 -top-20 w-40 h-40 rounded-full bg-blue-500/5 filter blur-xl"></div>
+                    <div className="absolute -left-20 -bottom-20 w-40 h-40 rounded-full bg-rose-500/5 filter blur-xl"></div>
+                    <div className="relative z-10">
+                      <Title className="text-foreground/90">{t("dashboard.financialBreakdown", "Distribuição Financeira")}</Title>
+                      <div className="h-[300px] mt-4">
+                        {isLoadingStats ? (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Skeleton className="h-full w-full" />
+                          </div>
+                        ) : statistics?.totalRevenue ? (
+                          <DonutChart
+                            className="h-full"
+                            data={financialData}
+                            category="value"
+                            index="name"
+                            valueFormatter={(number) => `${formatCurrency(number)}`}
+                            colors={["blue", "rose"]}
+                            showAnimation
+                            showLabel
+                          />
+                        ) : (
+                          <div className="h-full flex items-center justify-center">
+                            <p className="text-muted-foreground">{t("dashboard.noDataAvailable", "Não há dados disponíveis.")}</p>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </Card>
                 </motion.div>
@@ -481,30 +491,35 @@ export default function ModernDashboard() {
                 animate="visible"
                 className="mt-6"
               >
-                <Card className="hover:shadow-md transition-all">
-                  <Title>{t("dashboard.propertyOccupancy", "Taxa de Ocupação por Propriedade")}</Title>
-                  <div className="h-[300px] mt-4">
-                    {isLoadingStats ? (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Skeleton className="h-full w-full" />
-                      </div>
-                    ) : propertyOccupancyData.length > 0 ? (
-                      <BarChart
-                        className="h-full"
-                        data={propertyOccupancyData}
-                        index="name"
-                        categories={["Ocupação"]}
-                        colors={["blue"]}
-                        valueFormatter={(number) => `${number.toFixed(1)}%`}
-                        layout="vertical"
-                        showLegend
-                        showAnimation
-                      />
-                    ) : (
-                      <div className="h-full flex items-center justify-center">
-                        <p className="text-muted-foreground">{t("dashboard.noDataAvailable", "Não há dados disponíveis.")}</p>
-                      </div>
-                    )}
+                <Card className="hover:shadow-md transition-all bg-gradient-to-br from-background to-background/80 border border-amber-500/20 overflow-hidden relative">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-amber-400"></div>
+                  <div className="absolute -right-20 -top-20 w-40 h-40 rounded-full bg-blue-500/5 filter blur-xl"></div>
+                  <div className="absolute -left-20 -bottom-20 w-40 h-40 rounded-full bg-amber-500/5 filter blur-xl"></div>
+                  <div className="relative z-10">
+                    <Title className="text-foreground/90">{t("dashboard.propertyOccupancy", "Taxa de Ocupação por Propriedade")}</Title>
+                    <div className="h-[300px] mt-4">
+                      {isLoadingStats ? (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Skeleton className="h-full w-full" />
+                        </div>
+                      ) : propertyOccupancyData.length > 0 ? (
+                        <BarChart
+                          className="h-full"
+                          data={propertyOccupancyData}
+                          index="name"
+                          categories={["Ocupação"]}
+                          colors={["blue"]}
+                          valueFormatter={(number) => `${number.toFixed(1)}%`}
+                          layout="vertical"
+                          showLegend
+                          showAnimation
+                        />
+                      ) : (
+                        <div className="h-full flex items-center justify-center">
+                          <p className="text-muted-foreground">{t("dashboard.noDataAvailable", "Não há dados disponíveis.")}</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </Card>
               </motion.div>
@@ -517,48 +532,52 @@ export default function ModernDashboard() {
                   initial="hidden" 
                   animate="visible"
                 >
-                  <Card className="hover:shadow-md transition-all">
-                    <Flex alignItems="center" justifyContent="between" className="mb-4">
-                      <Title>{t("dashboard.recentActivity", "Atividade Recente")}</Title>
-                      <Button variant="link" size="sm" onClick={() => alert(t("dashboard.notImplemented", "Funcionalidade não implementada"))}>
-                        {t("dashboard.viewAll", "Ver Tudo")}
-                        <ArrowRight className="h-4 w-4 ml-1" />
-                      </Button>
-                    </Flex>
-                    <div className="space-y-5">
-                      {isLoadingActivities ? (
-                        Array.from({ length: 4 }).map((_, i) => (
-                          <div key={i} className="flex items-start space-x-3">
-                            <Skeleton className="h-10 w-10 rounded-full" />
-                            <div className="space-y-2 flex-1">
-                              <Skeleton className="h-4 w-full" />
-                              <Skeleton className="h-4 w-2/3" />
+                  <Card className="hover:shadow-md transition-all bg-gradient-to-br from-background to-background/80 border border-blue-500/20 overflow-hidden relative">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-400"></div>
+                    <div className="absolute -right-20 -top-20 w-40 h-40 rounded-full bg-blue-500/5 filter blur-xl"></div>
+                    <div className="relative z-10">
+                      <Flex alignItems="center" justifyContent="between" className="mb-4">
+                        <Title className="text-foreground/90">{t("dashboard.recentActivity", "Atividade Recente")}</Title>
+                        <Button variant="link" size="sm" onClick={() => alert(t("dashboard.notImplemented", "Funcionalidade não implementada"))}>
+                          {t("dashboard.viewAll", "Ver Tudo")}
+                          <ArrowRight className="h-4 w-4 ml-1" />
+                        </Button>
+                      </Flex>
+                      <div className="space-y-5">
+                        {isLoadingActivities ? (
+                          Array.from({ length: 4 }).map((_, i) => (
+                            <div key={i} className="flex items-start space-x-3">
+                              <Skeleton className="h-10 w-10 rounded-full" />
+                              <div className="space-y-2 flex-1">
+                                <Skeleton className="h-4 w-full" />
+                                <Skeleton className="h-4 w-2/3" />
+                              </div>
                             </div>
-                          </div>
-                        ))
-                      ) : activities && activities.length > 0 ? (
-                        activities.map((activity: any, index: number) => (
-                          <div key={activity.id} className="flex items-start space-x-3">
-                            <div className="bg-blue-100 p-2 rounded-full">
-                              {activity.type === 'reservation_created' && <Calendar className="h-5 w-5 text-blue-500" />}
-                              {activity.type === 'property_added' && <Home className="h-5 w-5 text-blue-500" />}
-                              {activity.type === 'owner_added' && <Users className="h-5 w-5 text-blue-500" />}
-                              {activity.type === 'assistant_chat' && <AlertCircle className="h-5 w-5 text-blue-500" />}
-                              {!['reservation_created', 'property_added', 'owner_added', 'assistant_chat'].includes(activity.type) && 
-                                <AlertCircle className="h-5 w-5 text-blue-500" />
-                              }
+                          ))
+                        ) : activities && activities.length > 0 ? (
+                          activities.map((activity: any, index: number) => (
+                            <div key={activity.id} className="flex items-start space-x-3">
+                              <div className="bg-blue-500 bg-opacity-20 backdrop-blur-sm p-2 rounded-full shadow-sm">
+                                {activity.type === 'reservation_created' && <Calendar className="h-5 w-5 text-blue-500" />}
+                                {activity.type === 'property_added' && <Home className="h-5 w-5 text-blue-500" />}
+                                {activity.type === 'owner_added' && <Users className="h-5 w-5 text-blue-500" />}
+                                {activity.type === 'assistant_chat' && <AlertCircle className="h-5 w-5 text-blue-500" />}
+                                {!['reservation_created', 'property_added', 'owner_added', 'assistant_chat'].includes(activity.type) && 
+                                  <AlertCircle className="h-5 w-5 text-blue-500" />
+                                }
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium">{activity.description}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  {new Date(activity.createdAt).toLocaleString()}
+                                </p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-sm font-medium">{activity.description}</p>
-                              <p className="text-xs text-muted-foreground">
-                                {new Date(activity.createdAt).toLocaleString()}
-                              </p>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-center text-muted-foreground">{t("dashboard.noActivities", "Não há atividades recentes.")}</p>
-                      )}
+                          ))
+                        ) : (
+                          <p className="text-center text-muted-foreground">{t("dashboard.noActivities", "Não há atividades recentes.")}</p>
+                        )}
+                      </div>
                     </div>
                   </Card>
                 </motion.div>
@@ -569,52 +588,57 @@ export default function ModernDashboard() {
                   initial="hidden" 
                   animate="visible"
                 >
-                  <Card className="hover:shadow-md transition-all">
-                    <Flex alignItems="center" justifyContent="between" className="mb-4">
-                      <Title>{t("dashboard.recentReservations", "Reservas Recentes")}</Title>
-                      <Button variant="link" size="sm" onClick={() => setLocation("/reservations")}>
-                        {t("dashboard.viewAll", "Ver Tudo")}
-                        <ArrowRight className="h-4 w-4 ml-1" />
-                      </Button>
-                    </Flex>
-                    <div className="space-y-5">
-                      {isLoadingReservations ? (
-                        Array.from({ length: 4 }).map((_, i) => (
-                          <div key={i} className="flex items-start space-x-3">
-                            <Skeleton className="h-10 w-10 rounded-full" />
-                            <div className="space-y-2 flex-1">
-                              <Skeleton className="h-4 w-full" />
-                              <Skeleton className="h-4 w-2/3" />
+                  <Card className="hover:shadow-md transition-all bg-gradient-to-br from-background to-background/80 border border-indigo-500/20 overflow-hidden relative">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-violet-400"></div>
+                    <div className="absolute -right-20 -top-20 w-40 h-40 rounded-full bg-indigo-500/5 filter blur-xl"></div>
+                    <div className="absolute -left-20 -bottom-20 w-40 h-40 rounded-full bg-violet-500/5 filter blur-xl"></div>
+                    <div className="relative z-10">
+                      <Flex alignItems="center" justifyContent="between" className="mb-4">
+                        <Title className="text-foreground/90">{t("dashboard.recentReservations", "Reservas Recentes")}</Title>
+                        <Button variant="link" size="sm" onClick={() => setLocation("/reservations")}>
+                          {t("dashboard.viewAll", "Ver Tudo")}
+                          <ArrowRight className="h-4 w-4 ml-1" />
+                        </Button>
+                      </Flex>
+                      <div className="space-y-5">
+                        {isLoadingReservations ? (
+                          Array.from({ length: 4 }).map((_, i) => (
+                            <div key={i} className="flex items-start space-x-3">
+                              <Skeleton className="h-10 w-10 rounded-full" />
+                              <div className="space-y-2 flex-1">
+                                <Skeleton className="h-4 w-full" />
+                                <Skeleton className="h-4 w-2/3" />
+                              </div>
                             </div>
-                          </div>
-                        ))
-                      ) : recentReservations && recentReservations.length > 0 ? (
-                        recentReservations.map((reservation: any) => (
-                          <div key={reservation.id} className="flex items-start space-x-3">
-                            <div className="bg-indigo-100 p-2 rounded-full">
-                              <Calendar className="h-5 w-5 text-indigo-500" />
+                          ))
+                        ) : recentReservations && recentReservations.length > 0 ? (
+                          recentReservations.map((reservation: any) => (
+                            <div key={reservation.id} className="flex items-start space-x-3">
+                              <div className="bg-indigo-500 bg-opacity-20 backdrop-blur-sm p-2 rounded-full shadow-sm">
+                                <Calendar className="h-5 w-5 text-indigo-500" />
+                              </div>
+                              <div className="flex-1">
+                                <Flex alignItems="center" justifyContent="between">
+                                  <p className="text-sm font-medium">{reservation.guestName}</p>
+                                  <Badge variant="outline" className="text-xs">
+                                    {reservation.status}
+                                  </Badge>
+                                </Flex>
+                                <Flex className="mt-1">
+                                  <Text className="text-xs text-muted-foreground">
+                                    {format(new Date(reservation.checkInDate), "dd/MM/yyyy")} - {format(new Date(reservation.checkOutDate), "dd/MM/yyyy")}
+                                  </Text>
+                                  <Text className="text-xs font-medium">
+                                    {formatCurrency(reservation.totalAmount)}
+                                  </Text>
+                                </Flex>
+                              </div>
                             </div>
-                            <div className="flex-1">
-                              <Flex alignItems="center" justifyContent="between">
-                                <p className="text-sm font-medium">{reservation.guestName}</p>
-                                <Badge variant="outline" className="text-xs">
-                                  {reservation.status}
-                                </Badge>
-                              </Flex>
-                              <Flex className="mt-1">
-                                <Text className="text-xs text-muted-foreground">
-                                  {format(new Date(reservation.checkInDate), "dd/MM/yyyy")} - {format(new Date(reservation.checkOutDate), "dd/MM/yyyy")}
-                                </Text>
-                                <Text className="text-xs font-medium">
-                                  {formatCurrency(reservation.totalAmount)}
-                                </Text>
-                              </Flex>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-center text-muted-foreground">{t("dashboard.noReservations", "Não há reservas recentes.")}</p>
-                      )}
+                          ))
+                        ) : (
+                          <p className="text-center text-muted-foreground">{t("dashboard.noReservations", "Não há reservas recentes.")}</p>
+                        )}
+                      </div>
                     </div>
                   </Card>
                 </motion.div>
