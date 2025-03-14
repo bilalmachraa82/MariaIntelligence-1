@@ -124,9 +124,24 @@ Número total de reservas: ${reservations.length}
 `;
 
     // Atividades recentes para contexto de eventos do sistema
-    const activitiesContext = activities.map(activity => 
-      `${new Date(activity.createdAt).toLocaleDateString('pt-PT')}: ${activity.description}`
-    ).join('\n');
+    const activitiesContext = activities.map(activity => {
+      // Tratamento seguro da data com verificação de nulos
+      let dateStr;
+      try {
+        if (activity.createdAt) {
+          const date = typeof activity.createdAt === 'string' 
+            ? new Date(activity.createdAt) 
+            : activity.createdAt;
+          dateStr = date.toLocaleDateString('pt-PT');
+        } else {
+          dateStr = new Date().toLocaleDateString('pt-PT');
+        }
+      } catch (err) {
+        console.warn('Erro ao formatar data de atividade:', err);
+        dateStr = new Date().toLocaleDateString('pt-PT');
+      }
+      return `${dateStr}: ${activity.description}`;
+    }).join('\n');
     
     // Compor o contexto completo
     let fullContext = `
