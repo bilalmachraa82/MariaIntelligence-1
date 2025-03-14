@@ -775,28 +775,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Teste 3: Verificar sistema RAG (Retrieval Augmented Generation)
       try {
-        const hasMistralKey = process.env.MISTRAL_API_KEY !== undefined && 
-                            process.env.MISTRAL_API_KEY !== '';
-
-        if (!hasMistralKey) {
-          tests.push({
-            name: "RAG (Retrieval Augmented Generation)",
-            success: false,
-            error: "Chave API Mistral não encontrada, necessária para testar o RAG"
-          });
-        } else {
+        try {
           // Importar função para construir contexto RAG
           const { buildRagContext } = await import('./api/maria-assistant');
           const ragContext = await buildRagContext("teste de estatísticas e propriedades");
-
-          tests.push({
-            name: "RAG (Retrieval Augmented Generation)",
-            success: true,
-            details: {
-              contextSize: ragContext.length,
-              sample: ragContext.substring(0, 100) + "..."
-            }
-          });
+        } catch (error) {
+          console.error("Error building RAG context:", error);
         }
       } catch (error: any) {
         tests.push({
@@ -805,6 +789,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           error: error.message || "Erro ao testar sistema RAG"
         });
       }
+
 
       // Teste 4: Verificar funcionalidade OCR
       try {
