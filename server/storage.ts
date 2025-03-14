@@ -411,6 +411,12 @@ export class MemStorage implements IStorage {
     // Total days in the period
     const totalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
     
+    // Converter datas para strings ISO para debugging
+    const startDateStr = start.toISOString().split('T')[0];
+    const endDateStr = end.toISOString().split('T')[0];
+    
+    // Log de depuração removido para evitar excesso de mensagens no console
+    
     let reservations = Array.from(this.reservationsMap.values())
       .filter(r => 
         new Date(r.checkOutDate) > start && 
@@ -1779,9 +1785,7 @@ export class DatabaseStorage implements IStorage {
       const startDateStr = start.toISOString().split('T')[0];
       const endDateStr = end.toISOString().split('T')[0];
       
-      console.log("DEBUG getOccupancyRate - Datas:", {
-        startDateStr, endDateStr, totalDays
-      });
+      // Log de depuração removido para evitar excesso de mensagens no console
       
       // Obter dias ocupados para as propriedades
       let occupiedDaysQuery;
