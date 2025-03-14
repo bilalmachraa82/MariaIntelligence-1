@@ -180,7 +180,12 @@ export class PgStorage implements IStorage {
     let query = this.db
       .select({ totalRevenue: sql<number>`sum(${reservations.totalAmount})` })
       .from(reservations)
-      .where(eq(reservations.status, 'completed'));
+      .where(
+        or(
+          eq(reservations.status, 'completed'),
+          eq(reservations.status, 'confirmed')
+        )
+      );
     
     if (startDate) {
       query = query.where(gte(reservations.checkInDate, startDate));
@@ -197,7 +202,12 @@ export class PgStorage implements IStorage {
     let query = this.db
       .select({ netProfit: sql<number>`sum(${reservations.netAmount})` })
       .from(reservations)
-      .where(eq(reservations.status, 'completed'));
+      .where(
+        or(
+          eq(reservations.status, 'completed'),
+          eq(reservations.status, 'confirmed')
+        )
+      );
     
     if (startDate) {
       query = query.where(gte(reservations.checkInDate, startDate));
@@ -299,7 +309,15 @@ export class PgStorage implements IStorage {
     const revenueResult = await this.db
       .select({ totalRevenue: sql<number>`sum(${reservations.totalAmount})` })
       .from(reservations)
-      .where(eq(reservations.propertyId, propertyId));
+      .where(
+        and(
+          eq(reservations.propertyId, propertyId),
+          or(
+            eq(reservations.status, 'completed'),
+            eq(reservations.status, 'confirmed')
+          )
+        )
+      );
     
     const totalRevenue = revenueResult[0]?.totalRevenue || 0;
     
@@ -307,7 +325,15 @@ export class PgStorage implements IStorage {
     const profitResult = await this.db
       .select({ netProfit: sql<number>`sum(${reservations.netAmount})` })
       .from(reservations)
-      .where(eq(reservations.propertyId, propertyId));
+      .where(
+        and(
+          eq(reservations.propertyId, propertyId),
+          or(
+            eq(reservations.status, 'completed'),
+            eq(reservations.status, 'confirmed')
+          )
+        )
+      );
     
     const netProfit = profitResult[0]?.netProfit || 0;
     

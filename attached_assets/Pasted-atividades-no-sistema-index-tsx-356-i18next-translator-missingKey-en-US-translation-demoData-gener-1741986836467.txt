@@ -1,0 +1,231 @@
+atividades no sistema
+index.tsx:356 i18next::translator: missingKey en-US translation demoData.generating Gerando dados de demonstração...
+index.tsx:443 i18next::translator: missingKey en-US translation demoData.removeTitle Remover Dados de Demonstração
+index.tsx:446 i18next::translator: missingKey en-US translation demoData.removeDescription Limpe todos os dados fictícios gerados anteriormente
+index.tsx:453 i18next::translator: missingKey en-US translation demoData.warningTitle Atenção
+index.tsx:455 i18next::translator: missingKey en-US translation demoData.warningText Esta ação removerá todos os dados marcados como [DEMO]. Esta operação não pode ser desfeita, mas seus dados reais permanecerão intactos.
+index.tsx:462 i18next::translator: missingKey en-US translation demoData.removeInfo O sistema identificará automaticamente todos os registros de demonstração pelo sufixo [DEMO] em seus nomes. A remoção é feita com segurança, preservando a integridade dos dados reais.
+index.tsx:520 i18next::translator: missingKey en-US translation demoData.reset Remover dados de demonstração
+index.tsx:217 i18next::translator: missingKey en-US translation common.backToDashboard Voltar ao Dashboard
+index.tsx:221 i18next::translator: missingKey en-US translation demoData.pageTitle Gerenciamento de Dados de Demonstração
+index.tsx:223 i18next::translator: missingKey en-US translation demoData.pageDescription Crie ou remova dados fictícios para testar as funcionalidades do sistema
+index.tsx:238 i18next::translator: missingKey en-US translation demoData.createTitle Criar Dados de Demonstração
+index.tsx:241 i18next::translator: missingKey en-US translation demoData.createDescription Gere dados fictícios para visualizar as funcionalidades do sistema
+index.tsx:248 i18next::translator: missingKey en-US translation demoData.noteTitle Importante
+index.tsx:250 i18next::translator: missingKey en-US translation demoData.noteText Os dados de demonstração são identificados com [DEMO] e podem ser facilmente removidos posteriormente. Estes dados são apenas para fins de teste e não afetam os dados reais.
+index.tsx:261 i18next::translator: missingKey en-US translation demoData.owners Proprietários
+index.tsx:274 i18next::translator: missingKey en-US translation demoData.ownersDesc Proprietários fictícios para associar às propriedades
+index.tsx:285 i18next::translator: missingKey en-US translation demoData.properties Propriedades
+index.tsx:298 i18next::translator: missingKey en-US translation demoData.propertiesDesc Imóveis para aluguel com dados completos
+index.tsx:309 i18next::translator: missingKey en-US translation demoData.reservations Reservas
+index.tsx:322 i18next::translator: missingKey en-US translation demoData.reservationsDesc Histórico e reservas futuras
+index.tsx:333 i18next::translator: missingKey en-US translation demoData.activities Atividades
+index.tsx:346 i18next::translator: missingKey en-US translation demoData.activitiesDesc Histórico de atividades no sistema
+index.tsx:356 i18next::translator: missingKey en-US translation demoData.generating Gerando dados de demonstração...
+index.tsx:443 i18next::translator: missingKey en-US translation demoData.removeTitle Remover Dados de Demonstração
+index.tsx:446 i18next::translator: missingKey en-US translation demoData.removeDescription Limpe todos os dados fictícios gerados anteriormente
+index.tsx:453 i18next::translator: missingKey en-US translation demoData.warningTitle Atenção
+index.tsx:455 i18next::translator: missingKey en-US translation demoData.warningText Esta ação removerá todos os dados marcados como [DEMO]. Esta operação não pode ser desfeita, mas seus dados reais permanecerão intactos.
+index.tsx:462 i18next::translator: missingKey en-US translation demoData.removeInfo O sistema identificará automaticamente todos os registros de demonstração pelo sufixo [DEMO] em seus nomes. A remoção é feita com segurança, preservando a integridade dos dados reais.
+index.tsx:520 i18next::translator: missingKey en-US translation demoData.reset Remover dados de demonstração
+queryClient.ts:58 API Request: /api/properties {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"name\":\"Casa do Jardim Estrela [DEMO]\",\"ownerId\":7,\"cleaningCost\":\"37.94\",\"checkInFee\":\"33.84\",\"commission\":\"16.42\",\"teamPayment\":\"26.56\",\"cleaningTeam\":\"Equipa Maria\",\"active\":true,\"monthlyFixedCost\":\"140.77\",\"cleaningTeamId\":null}"}
+index.tsx:217 i18next::translator: missingKey en-US translation common.backToDashboard Voltar ao Dashboard
+index.tsx:221 i18next::translator: missingKey en-US translation demoData.pageTitle Gerenciamento de Dados de Demonstração
+index.tsx:223 i18next::translator: missingKey en-US translation demoData.pageDescription Crie ou remova dados fictícios para testar as funcionalidades do sistema
+index.tsx:238 i18next::translator: missingKey en-US translation demoData.createTitle Criar Dados de Demonstração
+index.tsx:241 i18next::translator: missingKey en-US translation demoData.createDescription Gere dados fictícios para visualizar as funcionalidades do sistema
+index.tsx:248 i18next::translator: missingKey en-US translation demoData.noteTitle Importante
+index.tsx:250 i18next::translator: missingKey en-US translation demoData.noteText Os dados de demonstração são identificados com [DEMO] e podem ser facilmente removidos posteriormente. Estes dados são apenas para fins de teste e não afetam os dados reais.
+index.tsx:261 i18next::translator: missingKey en-US translation demoData.owners Proprietários
+index.tsx:274 i18next::translator: missingKey en-US translation demoData.ownersDesc Proprietários fictícios para associar às propriedades
+index.tsx:285 i18next::translator: missingKey en-US translation demoData.properties Propriedades
+index.tsx:298 i18next::translator: missingKey en-US translation demoData.propertiesDesc Imóveis para aluguel com dados completos
+index.tsx:309 i18next::translator: missingKey en-US translation demoData.reservations Reservas
+index.tsx:322 i18next::translator: missingKey en-US translation demoData.reservationsDesc Histórico e reservas futuras
+index.tsx:333 i18next::translator: missingKey en-US translation demoData.activities Atividades
+index.tsx:346 i18next::translator: missingKey en-US translation demoData.activitiesDesc Histórico de atividades no sistema
+index.tsx:356 i18next::translator: missingKey en-US translation demoData.generating Gerando dados de demonstração...
+index.tsx:443 i18next::translator: missingKey en-US translation demoData.removeTitle Remover Dados de Demonstração
+index.tsx:446 i18next::translator: missingKey en-US translation demoData.removeDescription Limpe todos os dados fictícios gerados anteriormente
+index.tsx:453 i18next::translator: missingKey en-US translation demoData.warningTitle Atenção
+index.tsx:455 i18next::translator: missingKey en-US translation demoData.warningText Esta ação removerá todos os dados marcados como [DEMO]. Esta operação não pode ser desfeita, mas seus dados reais permanecerão intactos.
+index.tsx:462 i18next::translator: missingKey en-US translation demoData.removeInfo O sistema identificará automaticamente todos os registros de demonstração pelo sufixo [DEMO] em seus nomes. A remoção é feita com segurança, preservando a integridade dos dados reais.
+index.tsx:520 i18next::translator: missingKey en-US translation demoData.reset Remover dados de demonstração
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"property_added\",\"description\":\"Nova propriedade demo adicionada: Casa do Jardim Estrela [DEMO]\",\"entityId\":42,\"entityType\":\"property\"}"}
+index.tsx:217 i18next::translator: missingKey en-US translation common.backToDashboard Voltar ao Dashboard
+index.tsx:221 i18next::translator: missingKey en-US translation demoData.pageTitle Gerenciamento de Dados de Demonstração
+index.tsx:223 i18next::translator: missingKey en-US translation demoData.pageDescription Crie ou remova dados fictícios para testar as funcionalidades do sistema
+index.tsx:238 i18next::translator: missingKey en-US translation demoData.createTitle Criar Dados de Demonstração
+index.tsx:241 i18next::translator: missingKey en-US translation demoData.createDescription Gere dados fictícios para visualizar as funcionalidades do sistema
+index.tsx:248 i18next::translator: missingKey en-US translation demoData.noteTitle Importante
+index.tsx:250 i18next::translator: missingKey en-US translation demoData.noteText Os dados de demonstração são identificados com [DEMO] e podem ser facilmente removidos posteriormente. Estes dados são apenas para fins de teste e não afetam os dados reais.
+index.tsx:261 i18next::translator: missingKey en-US translation demoData.owners Proprietários
+index.tsx:274 i18next::translator: missingKey en-US translation demoData.ownersDesc Proprietários fictícios para associar às propriedades
+index.tsx:285 i18next::translator: missingKey en-US translation demoData.properties Propriedades
+index.tsx:298 i18next::translator: missingKey en-US translation demoData.propertiesDesc Imóveis para aluguel com dados completos
+index.tsx:309 i18next::translator: missingKey en-US translation demoData.reservations Reservas
+index.tsx:322 i18next::translator: missingKey en-US translation demoData.reservationsDesc Histórico e reservas futuras
+index.tsx:333 i18next::translator: missingKey en-US translation demoData.activities Atividades
+index.tsx:346 i18next::translator: missingKey en-US translation demoData.activitiesDesc Histórico de atividades no sistema
+index.tsx:356 i18next::translator: missingKey en-US translation demoData.generating Gerando dados de demonstração...
+index.tsx:443 i18next::translator: missingKey en-US translation demoData.removeTitle Remover Dados de Demonstração
+index.tsx:446 i18next::translator: missingKey en-US translation demoData.removeDescription Limpe todos os dados fictícios gerados anteriormente
+index.tsx:453 i18next::translator: missingKey en-US translation demoData.warningTitle Atenção
+index.tsx:455 i18next::translator: missingKey en-US translation demoData.warningText Esta ação removerá todos os dados marcados como [DEMO]. Esta operação não pode ser desfeita, mas seus dados reais permanecerão intactos.
+index.tsx:462 i18next::translator: missingKey en-US translation demoData.removeInfo O sistema identificará automaticamente todos os registros de demonstração pelo sufixo [DEMO] em seus nomes. A remoção é feita com segurança, preservando a integridade dos dados reais.
+index.tsx:520 i18next::translator: missingKey en-US translation demoData.reset Remover dados de demonstração
+index.tsx:217 i18next::translator: missingKey en-US translation common.backToDashboard Voltar ao Dashboard
+index.tsx:221 i18next::translator: missingKey en-US translation demoData.pageTitle Gerenciamento de Dados de Demonstração
+index.tsx:223 i18next::translator: missingKey en-US translation demoData.pageDescription Crie ou remova dados fictícios para testar as funcionalidades do sistema
+index.tsx:238 i18next::translator: missingKey en-US translation demoData.createTitle Criar Dados de Demonstração
+index.tsx:241 i18next::translator: missingKey en-US translation demoData.createDescription Gere dados fictícios para visualizar as funcionalidades do sistema
+index.tsx:248 i18next::translator: missingKey en-US translation demoData.noteTitle Importante
+index.tsx:250 i18next::translator: missingKey en-US translation demoData.noteText Os dados de demonstração são identificados com [DEMO] e podem ser facilmente removidos posteriormente. Estes dados são apenas para fins de teste e não afetam os dados reais.
+index.tsx:261 i18next::translator: missingKey en-US translation demoData.owners Proprietários
+index.tsx:274 i18next::translator: missingKey en-US translation demoData.ownersDesc Proprietários fictícios para associar às propriedades
+index.tsx:285 i18next::translator: missingKey en-US translation demoData.properties Propriedades
+index.tsx:298 i18next::translator: missingKey en-US translation demoData.propertiesDesc Imóveis para aluguel com dados completos
+index.tsx:309 i18next::translator: missingKey en-US translation demoData.reservations Reservas
+index.tsx:322 i18next::translator: missingKey en-US translation demoData.reservationsDesc Histórico e reservas futuras
+index.tsx:333 i18next::translator: missingKey en-US translation demoData.activities Atividades
+index.tsx:346 i18next::translator: missingKey en-US translation demoData.activitiesDesc Histórico de atividades no sistema
+index.tsx:356 i18next::translator: missingKey en-US translation demoData.generating Gerando dados de demonstração...
+index.tsx:443 i18next::translator: missingKey en-US translation demoData.removeTitle Remover Dados de Demonstração
+index.tsx:446 i18next::translator: missingKey en-US translation demoData.removeDescription Limpe todos os dados fictícios gerados anteriormente
+index.tsx:453 i18next::translator: missingKey en-US translation demoData.warningTitle Atenção
+index.tsx:455 i18next::translator: missingKey en-US translation demoData.warningText Esta ação removerá todos os dados marcados como [DEMO]. Esta operação não pode ser desfeita, mas seus dados reais permanecerão intactos.
+index.tsx:462 i18next::translator: missingKey en-US translation demoData.removeInfo O sistema identificará automaticamente todos os registros de demonstração pelo sufixo [DEMO] em seus nomes. A remoção é feita com segurança, preservando a integridade dos dados reais.
+index.tsx:520 i18next::translator: missingKey en-US translation demoData.reset Remover dados de demonstração
+queryClient.ts:58 API Request: /api/properties {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"name\":\"Studio Campo de Ourique [DEMO]\",\"ownerId\":13,\"cleaningCost\":\"55.45\",\"checkInFee\":\"17.08\",\"commission\":\"18.20\",\"teamPayment\":\"38.81\",\"cleaningTeam\":\"Equipa Maria\",\"active\":true,\"monthlyFixedCost\":\"90.59\",\"cleaningTeamId\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"property_added\",\"description\":\"Nova propriedade demo adicionada: Studio Campo de Ourique [DEMO]\",\"entityId\":43,\"entityType\":\"property\"}"}
+queryClient.ts:58 API Request: /api/properties {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"name\":\"Loft Alfama [DEMO]\",\"ownerId\":19,\"cleaningCost\":\"56.31\",\"checkInFee\":\"18.03\",\"commission\":\"16.50\",\"teamPayment\":\"39.42\",\"cleaningTeam\":\"Equipa Maria\",\"active\":true,\"monthlyFixedCost\":\"89.55\",\"cleaningTeamId\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"property_added\",\"description\":\"Nova propriedade demo adicionada: Loft Alfama [DEMO]\",\"entityId\":44,\"entityType\":\"property\"}"}
+queryClient.ts:58 API Request: /api/properties {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"name\":\"Apartamento Príncipe Real [DEMO]\",\"ownerId\":9,\"cleaningCost\":\"36.07\",\"checkInFee\":\"15.37\",\"commission\":\"13.45\",\"teamPayment\":\"25.25\",\"cleaningTeam\":\"Equipa Maria\",\"active\":true,\"monthlyFixedCost\":\"72.68\",\"cleaningTeamId\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"property_added\",\"description\":\"Nova propriedade demo adicionada: Apartamento Príncipe Real [DEMO]\",\"entityId\":45,\"entityType\":\"property\"}"}
+queryClient.ts:58 API Request: /api/properties/41 
+queryClient.ts:58 API Request: /api/properties/42 
+queryClient.ts:58 API Request: /api/properties/43 
+queryClient.ts:58 API Request: /api/properties/44 
+queryClient.ts:58 API Request: /api/properties/45 
+queryClient.ts:58 API Request: /api/reservations {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"propertyId\":43,\"guestName\":\"David Miller [DEMO]\",\"guestEmail\":\"david.demo484@example.com\",\"guestPhone\":\"+22 166013271\",\"checkInDate\":\"2024-12-26\",\"checkOutDate\":\"2025-01-05\",\"numGuests\":3,\"totalAmount\":\"1535.45\",\"platform\":\"airbnb\",\"status\":\"cancelled\",\"notes\":\"Reserva de demonstração criada automaticamente.\",\"platformFee\":\"177.60\",\"cleaningFee\":\"55.45\",\"checkInFee\":\"17.08\",\"commissionFee\":\"269.36\",\"teamPayment\":\"38.81\",\"netAmount\":\"1032.60\"}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"reservation_created\",\"description\":\"Nova reserva demo: Studio Campo de Ourique [DEMO] - David Miller [DEMO] (26/12/2024 - 05/01/2025)\",\"entityId\":9,\"entityType\":\"reservation\"}"}
+queryClient.ts:58 API Request: /api/reservations {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"propertyId\":44,\"guestName\":\"Robert Moore [DEMO]\",\"guestEmail\":\"robert.demo468@example.com\",\"guestPhone\":\"+48 754560780\",\"checkInDate\":\"2025-03-07\",\"checkOutDate\":\"2025-03-12\",\"numGuests\":2,\"totalAmount\":\"396.31\",\"platform\":\"expedia\",\"status\":\"completed\",\"notes\":\"Reserva de demonstração criada automaticamente.\",\"platformFee\":\"57.80\",\"cleaningFee\":\"56.31\",\"checkInFee\":\"18.03\",\"commissionFee\":\"56.10\",\"teamPayment\":\"39.42\",\"netAmount\":\"224.96\"}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"reservation_created\",\"description\":\"Nova reserva demo: Loft Alfama [DEMO] - Robert Moore [DEMO] (07/03/2025 - 12/03/2025)\",\"entityId\":10,\"entityType\":\"reservation\"}"}
+queryClient.ts:58 API Request: /api/reservations {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"propertyId\":43,\"guestName\":\"Michael Brown [DEMO]\",\"guestEmail\":\"michael.demo319@example.com\",\"guestPhone\":\"+45 779155105\",\"checkInDate\":\"2025-06-14\",\"checkOutDate\":\"2025-06-24\",\"numGuests\":4,\"totalAmount\":\"835.45\",\"platform\":\"booking\",\"status\":\"confirmed\",\"notes\":\"Reserva de demonstração criada automaticamente.\",\"platformFee\":\"109.20\",\"cleaningFee\":\"55.45\",\"checkInFee\":\"17.08\",\"commissionFee\":\"141.96\",\"teamPayment\":\"38.81\",\"netAmount\":\"528.40\"}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"reservation_created\",\"description\":\"Nova reserva demo: Studio Campo de Ourique [DEMO] - Michael Brown [DEMO] (14/06/2025 - 24/06/2025)\",\"entityId\":11,\"entityType\":\"reservation\"}"}
+queryClient.ts:58 API Request: /api/reservations {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"propertyId\":44,\"guestName\":\"Emma Johnson [DEMO]\",\"guestEmail\":\"emma.demo597@example.com\",\"guestPhone\":\"+21 182900392\",\"checkInDate\":\"2024-11-17\",\"checkOutDate\":\"2024-11-19\",\"numGuests\":3,\"totalAmount\":\"222.31\",\"platform\":\"booking\",\"status\":\"completed\",\"notes\":\"Reserva de demonstração criada automaticamente.\",\"platformFee\":\"28.22\",\"cleaningFee\":\"56.31\",\"checkInFee\":\"18.03\",\"commissionFee\":\"27.39\",\"teamPayment\":\"39.42\",\"netAmount\":\"109.25\"}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"reservation_created\",\"description\":\"Nova reserva demo: Loft Alfama [DEMO] - Emma Johnson [DEMO] (17/11/2024 - 19/11/2024)\",\"entityId\":12,\"entityType\":\"reservation\"}"}
+queryClient.ts:58 API Request: /api/reservations {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"propertyId\":41,\"guestName\":\"Emma Johnson [DEMO]\",\"guestEmail\":\"emma.demo698@example.com\",\"guestPhone\":\"+9 532297610\",\"checkInDate\":\"2025-03-16\",\"checkOutDate\":\"2025-03-19\",\"numGuests\":6,\"totalAmount\":\"180.09\",\"platform\":\"direct\",\"status\":\"confirmed\",\"notes\":\"Reserva de demonstração criada automaticamente.\",\"platformFee\":\"0.00\",\"cleaningFee\":\"30.09\",\"checkInFee\":\"20.80\",\"commissionFee\":\"28.66\",\"teamPayment\":\"21.06\",\"netAmount\":\"109.57\"}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"reservation_created\",\"description\":\"Nova reserva demo: Apartamento Avenidas Novas [DEMO] - Emma Johnson [DEMO] (16/03/2025 - 19/03/2025)\",\"entityId\":13,\"entityType\":\"reservation\"}"}
+queryClient.ts:58 API Request: /api/reservations {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"propertyId\":41,\"guestName\":\"Thomas Anderson [DEMO]\",\"guestEmail\":\"thomas.demo793@example.com\",\"guestPhone\":\"+98 225550568\",\"checkInDate\":\"2025-09-04\",\"checkOutDate\":\"2025-09-08\",\"numGuests\":3,\"totalAmount\":\"602.09\",\"platform\":\"expedia\",\"status\":\"confirmed\",\"notes\":\"Reserva de demonstração criada automaticamente.\",\"platformFee\":\"74.36\",\"cleaningFee\":\"30.09\",\"checkInFee\":\"20.80\",\"commissionFee\":\"109.31\",\"teamPayment\":\"21.06\",\"netAmount\":\"376.56\"}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"reservation_created\",\"description\":\"Nova reserva demo: Apartamento Avenidas Novas [DEMO] - Thomas Anderson [DEMO] (04/09/2025 - 08/09/2025)\",\"entityId\":14,\"entityType\":\"reservation\"}"}
+queryClient.ts:58 API Request: /api/reservations {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"propertyId\":41,\"guestName\":\"Laura Taylor [DEMO]\",\"guestEmail\":\"laura.demo418@example.com\",\"guestPhone\":\"+73 220019064\",\"checkInDate\":\"2025-01-14\",\"checkOutDate\":\"2025-01-24\",\"numGuests\":3,\"totalAmount\":\"1350.09\",\"platform\":\"airbnb\",\"status\":\"cancelled\",\"notes\":\"Reserva de demonstração criada automaticamente.\",\"platformFee\":\"132.00\",\"cleaningFee\":\"30.09\",\"checkInFee\":\"20.80\",\"commissionFee\":\"252.25\",\"teamPayment\":\"21.06\",\"netAmount\":\"923.98\"}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"reservation_created\",\"description\":\"Nova reserva demo: Apartamento Avenidas Novas [DEMO] - Laura Taylor [DEMO] (14/01/2025 - 24/01/2025)\",\"entityId\":15,\"entityType\":\"reservation\"}"}
+queryClient.ts:58 API Request: /api/reservations {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"propertyId\":41,\"guestName\":\"David Miller [DEMO]\",\"guestEmail\":\"david.demo488@example.com\",\"guestPhone\":\"+74 641344160\",\"checkInDate\":\"2025-03-21\",\"checkOutDate\":\"2025-03-30\",\"numGuests\":1,\"totalAmount\":\"606.09\",\"platform\":\"expedia\",\"status\":\"cancelled\",\"notes\":\"Reserva de demonstração criada automaticamente.\",\"platformFee\":\"86.40\",\"cleaningFee\":\"30.09\",\"checkInFee\":\"20.80\",\"commissionFee\":\"110.07\",\"teamPayment\":\"21.06\",\"netAmount\":\"367.76\"}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"reservation_created\",\"description\":\"Nova reserva demo: Apartamento Avenidas Novas [DEMO] - David Miller [DEMO] (21/03/2025 - 30/03/2025)\",\"entityId\":16,\"entityType\":\"reservation\"}"}
+queryClient.ts:58 API Request: /api/reservations {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"propertyId\":43,\"guestName\":\"Sophie Davis [DEMO]\",\"guestEmail\":\"sophie.demo515@example.com\",\"guestPhone\":\"+33 895052001\",\"checkInDate\":\"2025-05-20\",\"checkOutDate\":\"2025-05-23\",\"numGuests\":5,\"totalAmount\":\"421.45\",\"platform\":\"booking\",\"status\":\"confirmed\",\"notes\":\"Reserva de demonstração criada automaticamente.\",\"platformFee\":\"58.56\",\"cleaningFee\":\"55.45\",\"checkInFee\":\"17.08\",\"commissionFee\":\"66.61\",\"teamPayment\":\"38.81\",\"netAmount\":\"240.39\"}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"reservation_created\",\"description\":\"Nova reserva demo: Studio Campo de Ourique [DEMO] - Sophie Davis [DEMO] (20/05/2025 - 23/05/2025)\",\"entityId\":17,\"entityType\":\"reservation\"}"}
+queryClient.ts:58 API Request: /api/reservations {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"propertyId\":45,\"guestName\":\"John Smith [DEMO]\",\"guestEmail\":\"john.demo194@example.com\",\"guestPhone\":\"+3 544979161\",\"checkInDate\":\"2024-09-25\",\"checkOutDate\":\"2024-10-02\",\"numGuests\":3,\"totalAmount\":\"533.07\",\"platform\":\"booking\",\"status\":\"completed\",\"notes\":\"Reserva de demonstração criada automaticamente.\",\"platformFee\":\"74.55\",\"cleaningFee\":\"36.07\",\"checkInFee\":\"15.37\",\"commissionFee\":\"66.85\",\"teamPayment\":\"25.25\",\"netAmount\":\"351.05\"}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"reservation_created\",\"description\":\"Nova reserva demo: Apartamento Príncipe Real [DEMO] - John Smith [DEMO] (25/09/2024 - 02/10/2024)\",\"entityId\":18,\"entityType\":\"reservation\"}"}
+queryClient.ts:58 API Request: /api/reservations {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"propertyId\":43,\"guestName\":\"Thomas Anderson [DEMO]\",\"guestEmail\":\"thomas.demo143@example.com\",\"guestPhone\":\"+66 788641328\",\"checkInDate\":\"2025-03-19\",\"checkOutDate\":\"2025-03-29\",\"numGuests\":5,\"totalAmount\":\"805.45\",\"platform\":\"airbnb\",\"status\":\"confirmed\",\"notes\":\"Reserva de demonstração criada automaticamente.\",\"platformFee\":\"52.50\",\"cleaningFee\":\"55.45\",\"checkInFee\":\"17.08\",\"commissionFee\":\"136.50\",\"teamPayment\":\"38.81\",\"netAmount\":\"560.56\"}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"reservation_created\",\"description\":\"Nova reserva demo: Studio Campo de Ourique [DEMO] - Thomas Anderson [DEMO] (19/03/2025 - 29/03/2025)\",\"entityId\":19,\"entityType\":\"reservation\"}"}
+queryClient.ts:58 API Request: /api/reservations {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"propertyId\":45,\"guestName\":\"Laura Taylor [DEMO]\",\"guestEmail\":\"laura.demo548@example.com\",\"guestPhone\":\"+40 201514103\",\"checkInDate\":\"2025-04-02\",\"checkOutDate\":\"2025-04-06\",\"numGuests\":6,\"totalAmount\":\"472.07\",\"platform\":\"expedia\",\"status\":\"confirmed\",\"notes\":\"Reserva de demonstração criada automaticamente.\",\"platformFee\":\"56.68\",\"cleaningFee\":\"36.07\",\"checkInFee\":\"15.37\",\"commissionFee\":\"58.64\",\"teamPayment\":\"25.25\",\"netAmount\":\"316.13\"}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"reservation_created\",\"description\":\"Nova reserva demo: Apartamento Príncipe Real [DEMO] - Laura Taylor [DEMO] (02/04/2025 - 06/04/2025)\",\"entityId\":20,\"entityType\":\"reservation\"}"}
+queryClient.ts:58 API Request: /api/reservations {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"propertyId\":45,\"guestName\":\"Julia Wilson [DEMO]\",\"guestEmail\":\"julia.demo862@example.com\",\"guestPhone\":\"+13 509741083\",\"checkInDate\":\"2024-10-30\",\"checkOutDate\":\"2024-11-03\",\"numGuests\":2,\"totalAmount\":\"468.07\",\"platform\":\"other\",\"status\":\"completed\",\"notes\":\"Reserva de demonstração criada automaticamente.\",\"platformFee\":\"21.60\",\"cleaningFee\":\"36.07\",\"checkInFee\":\"15.37\",\"commissionFee\":\"58.10\",\"teamPayment\":\"25.25\",\"netAmount\":\"347.75\"}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"reservation_created\",\"description\":\"Nova reserva demo: Apartamento Príncipe Real [DEMO] - Julia Wilson [DEMO] (30/10/2024 - 03/11/2024)\",\"entityId\":21,\"entityType\":\"reservation\"}"}
+queryClient.ts:58 API Request: /api/reservations {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"propertyId\":44,\"guestName\":\"John Smith [DEMO]\",\"guestEmail\":\"john.demo865@example.com\",\"guestPhone\":\"+24 560543914\",\"checkInDate\":\"2025-03-26\",\"checkOutDate\":\"2025-04-05\",\"numGuests\":4,\"totalAmount\":\"856.31\",\"platform\":\"booking\",\"status\":\"confirmed\",\"notes\":\"Reserva de demonstração criada automaticamente.\",\"platformFee\":\"152.00\",\"cleaningFee\":\"56.31\",\"checkInFee\":\"18.03\",\"commissionFee\":\"132.00\",\"teamPayment\":\"39.42\",\"netAmount\":\"514.86\"}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"reservation_created\",\"description\":\"Nova reserva demo: Loft Alfama [DEMO] - John Smith [DEMO] (26/03/2025 - 05/04/2025)\",\"entityId\":22,\"entityType\":\"reservation\"}"}
+queryClient.ts:58 API Request: /api/reservations {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"propertyId\":45,\"guestName\":\"Michael Brown [DEMO]\",\"guestEmail\":\"michael.demo445@example.com\",\"guestPhone\":\"+2 604069249\",\"checkInDate\":\"2025-08-31\",\"checkOutDate\":\"2025-09-05\",\"numGuests\":5,\"totalAmount\":\"401.07\",\"platform\":\"direct\",\"status\":\"confirmed\",\"notes\":\"Reserva de demonstração criada automaticamente.\",\"platformFee\":\"0.00\",\"cleaningFee\":\"36.07\",\"checkInFee\":\"15.37\",\"commissionFee\":\"49.09\",\"teamPayment\":\"25.25\",\"netAmount\":\"311.36\"}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"reservation_created\",\"description\":\"Nova reserva demo: Apartamento Príncipe Real [DEMO] - Michael Brown [DEMO] (31/08/2025 - 05/09/2025)\",\"entityId\":23,\"entityType\":\"reservation\"}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"profile_update\",\"description\":\"Perfil atualizado [DEMO]\",\"entityId\":null,\"entityType\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"message_sent\",\"description\":\"Comunicação com hóspede [DEMO]\",\"entityId\":null,\"entityType\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"message_sent\",\"description\":\"Notificação enviada [DEMO]\",\"entityId\":null,\"entityType\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"report_generation\",\"description\":\"Relatório de proprietário gerado [DEMO]\",\"entityId\":null,\"entityType\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"message_sent\",\"description\":\"Notificação enviada [DEMO]\",\"entityId\":null,\"entityType\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"message_sent\",\"description\":\"Comunicação com hóspede [DEMO]\",\"entityId\":null,\"entityType\":null}"}
+2queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"message_sent\",\"description\":\"Mensagem enviada para proprietário [DEMO]\",\"entityId\":null,\"entityType\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"report_generation\",\"description\":\"Relatório financeiro exportado [DEMO]\",\"entityId\":null,\"entityType\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"system_login\",\"description\":\"Usuário logou no sistema [DEMO]\",\"entityId\":null,\"entityType\":null}"}
+index.tsx:89 i18next::translator: missingKey en-US translation demoData.success Dados de demonstração carregados
+index.tsx:90 i18next::translator: missingKey en-US translation demoData.successDescription Foram criados: 0 proprietários, 5 propriedades, 15 reservas e 10 atividades.
+index.tsx:217 i18next::translator: missingKey en-US translation common.backToDashboard Voltar ao Dashboard
+index.tsx:221 i18next::translator: missingKey en-US translation demoData.pageTitle Gerenciamento de Dados de Demonstração
+index.tsx:223 i18next::translator: missingKey en-US translation demoData.pageDescription Crie ou remova dados fictícios para testar as funcionalidades do sistema
+index.tsx:238 i18next::translator: missingKey en-US translation demoData.createTitle Criar Dados de Demonstração
+index.tsx:241 i18next::translator: missingKey en-US translation demoData.createDescription Gere dados fictícios para visualizar as funcionalidades do sistema
+index.tsx:248 i18next::translator: missingKey en-US translation demoData.noteTitle Importante
+index.tsx:250 i18next::translator: missingKey en-US translation demoData.noteText Os dados de demonstração são identificados com [DEMO] e podem ser facilmente removidos posteriormente. Estes dados são apenas para fins de teste e não afetam os dados reais.
+index.tsx:261 i18next::translator: missingKey en-US translation demoData.owners Proprietários
+index.tsx:274 i18next::translator: missingKey en-US translation demoData.ownersDesc Proprietários fictícios para associar às propriedades
+index.tsx:285 i18next::translator: missingKey en-US translation demoData.properties Propriedades
+index.tsx:298 i18next::translator: missingKey en-US translation demoData.propertiesDesc Imóveis para aluguel com dados completos
+index.tsx:309 i18next::translator: missingKey en-US translation demoData.reservations Reservas
+index.tsx:322 i18next::translator: missingKey en-US translation demoData.reservationsDesc Histórico e reservas futuras
+index.tsx:333 i18next::translator: missingKey en-US translation demoData.activities Atividades
+index.tsx:346 i18next::translator: missingKey en-US translation demoData.activitiesDesc Histórico de atividades no sistema
+index.tsx:356 i18next::translator: missingKey en-US translation demoData.generating Gerando dados de demonstração...
+index.tsx:370 i18next::translator: missingKey en-US translation demoData.successTitle Dados gerados com sucesso
+index.tsx:374 i18next::translator: missingKey en-US translation demoData.ownersCreated Proprietários
+index.tsx:377 i18next::translator: missingKey en-US translation demoData.propertiesCreated Propriedades
+index.tsx:380 i18next::translator: missingKey en-US translation demoData.reservationsCreated Reservas
+index.tsx:383 i18next::translator: missingKey en-US translation demoData.activitiesCreated Atividades
+index.tsx:443 i18next::translator: missingKey en-US translation demoData.removeTitle Remover Dados de Demonstração
+index.tsx:446 i18next::translator: missingKey en-US translation demoData.removeDescription Limpe todos os dados fictícios gerados anteriormente
+index.tsx:453 i18next::translator: missingKey en-US translation demoData.warningTitle Atenção
+index.tsx:455 i18next::translator: missingKey en-US translation demoData.warningText Esta ação removerá todos os dados marcados como [DEMO]. Esta operação não pode ser desfeita, mas seus dados reais permanecerão intactos.
+index.tsx:462 i18next::translator: missingKey en-US translation demoData.removeInfo O sistema identificará automaticamente todos os registros de demonstração pelo sufixo [DEMO] em seus nomes. A remoção é feita com segurança, preservando a integridade dos dados reais.
+index.tsx:520 i18next::translator: missingKey en-US translation demoData.reset Remover dados de demonstração
+index.tsx:217 i18next::translator: missingKey en-US translation common.backToDashboard Voltar ao Dashboard
+index.tsx:221 i18next::translator: missingKey en-US translation demoData.pageTitle Gerenciamento de Dados de Demonstração
+index.tsx:223 i18next::translator: missingKey en-US translation demoData.pageDescription Crie ou remova dados fictícios para testar as funcionalidades do sistema
+index.tsx:238 i18next::translator: missingKey en-US translation demoData.createTitle Criar Dados de Demonstração
+index.tsx:241 i18next::translator: missingKey en-US translation demoData.createDescription Gere dados fictícios para visualizar as funcionalidades do sistema
+index.tsx:248 i18next::translator: missingKey en-US translation demoData.noteTitle Importante
+index.tsx:250 i18next::translator: missingKey en-US translation demoData.noteText Os dados de demonstração são identificados com [DEMO] e podem ser facilmente removidos posteriormente. Estes dados são apenas para fins de teste e não afetam os dados reais.
+index.tsx:261 i18next::translator: missingKey en-US translation demoData.owners Proprietários
+index.tsx:274 i18next::translator: missingKey en-US translation demoData.ownersDesc Proprietários fictícios para associar às propriedades
+index.tsx:285 i18next::translator: missingKey en-US translation demoData.properties Propriedades
+index.tsx:298 i18next::translator: missingKey en-US translation demoData.propertiesDesc Imóveis para aluguel com dados completos
+index.tsx:309 i18next::translator: missingKey en-US translation demoData.reservations Reservas
+index.tsx:322 i18next::translator: missingKey en-US translation demoData.reservationsDesc Histórico e reservas futuras
+index.tsx:333 i18next::translator: missingKey en-US translation demoData.activities Atividades
+index.tsx:346 i18next::translator: missingKey en-US translation demoData.activitiesDesc Histórico de atividades no sistema
+index.tsx:370 i18next::translator: missingKey en-US translation demoData.successTitle Dados gerados com sucesso
+index.tsx:374 i18next::translator: missingKey en-US translation demoData.ownersCreated Proprietários
+index.tsx:377 i18next::translator: missingKey en-US translation demoData.propertiesCreated Propriedades
+index.tsx:380 i18next::translator: missingKey en-US translation demoData.reservationsCreated Reservas
+index.tsx:383 i18next::translator: missingKey en-US translation demoData.activitiesCreated Atividades
+index.tsx:425 i18next::translator: missingKey en-US translation demoData.load Carregar dados de demonstração
+index.tsx:443 i18next::translator: missingKey en-US translation demoData.removeTitle Remover Dados de Demonstração
+index.tsx:446 i18next::translator: missingKey en-US translation demoData.removeDescription Limpe todos os dados fictícios gerados anteriormente
+index.tsx:453 i18next::translator: missingKey en-US translation demoData.warningTitle Atenção
+index.tsx:455 i18next::translator: missingKey en-US translation demoData.warningText Esta ação removerá todos os dados marcados como [DEMO]. Esta operação não pode ser desfeita, mas seus dados reais permanecerão intactos.
+index.tsx:462 i18next::translator: missingKey en-US translation demoData.removeInfo O sistema identificará automaticamente todos os registros de demonstração pelo sufixo [DEMO] em seus nomes. A remoção é feita com segurança, preservando a integridade dos dados reais.
+index.tsx:520 i18next::translator: missingKey en-US translation demoData.reset Remover dados de demonstração
+index.tsx:217 i18next::translator: missingKey en-US translation common.backToDashboard Voltar ao Dashboard
+index.tsx:221 i18next::translator: missingKey en-US translation demoData.pageTitle Gerenciamento de Dados de Demonstração
+index.tsx:223 i18next::translator: missingKey en-US translation demoData.pageDescription Crie ou remova dados fictícios para testar as funcionalidades do sistema
+index.tsx:238 i18next::translator: missingKey en-US translation demoData.createTitle Criar Dados de Demonstração
+index.tsx:241 i18next::translator: missingKey en-US translation demoData.createDescription Gere dados fictícios para visualizar as funcionalidades do sistema
+index.tsx:248 i18next::translator: missingKey en-US translation demoData.noteTitle Importante
+index.tsx:250 i18next::translator: missingKey en-US translation demoData.noteText Os dados de demonstração são identificados com [DEMO] e podem ser facilmente removidos posteriormente. Estes dados são apenas para fins de teste e não afetam os dados reais.
+index.tsx:261 i18next::translator: missingKey en-US translation demoData.owners Proprietários
+index.tsx:274 i18next::translator: missingKey en-US translation demoData.ownersDesc Proprietários fictícios para associar às propriedades
+index.tsx:285 i18next::translator: missingKey en-US translation demoData.properties Propriedades
+index.tsx:298 i18next::translator: missingKey en-US translation demoData.propertiesDesc Imóveis para aluguel com dados completos
+index.tsx:309 i18next::translator: missingKey en-US translation demoData.reservations Reservas
+index.tsx:322 i18next::translator: missingKey en-US translation demoData.reservationsDesc Histórico e reservas futuras
+index.tsx:333 i18next::translator: missingKey en-US translation demoData.activities Atividades
+index.tsx:346 i18next::translator: missingKey en-US translation demoData.activitiesDesc Histórico de atividades no sistema
+index.tsx:370 i18next::translator: missingKey en-US translation demoData.successTitle Dados gerados com sucesso
+index.tsx:374 i18next::translator: missingKey en-US translation demoData.ownersCreated Proprietários
+index.tsx:377 i18next::translator: missingKey en-US translation demoData.propertiesCreated Propriedades
+index.tsx:380 i18next::translator: missingKey en-US translation demoData.reservationsCreated Reservas
+index.tsx:383 i18next::translator: missingKey en-US translation demoData.activitiesCreated Atividades
+index.tsx:425 i18next::translator: missingKey en-US translation demoData.load Carregar dados de demonstração
+index.tsx:443 i18next::translator: missingKey en-US translation demoData.removeTitle Remover Dados de Demonstração
+index.tsx:446 i18next::translator: missingKey en-US translation demoData.removeDescription Limpe todos os dados fictícios gerados anteriormente
+index.tsx:453 i18next::translator: missingKey en-US translation demoData.warningTitle Atenção
+index.tsx:455 i18next::translator: missingKey en-US translation demoData.warningText Esta ação removerá todos os dados marcados como [DEMO]. Esta operação não pode ser desfeita, mas seus dados reais permanecerão intactos.
+index.tsx:462 i18next::translator: missingKey en-US translation demoData.removeInfo O sistema identificará automaticamente todos os registros de demonstração pelo sufixo [DEMO] em seus nomes. A remoção é feita com segurança, preservando a integridade dos dados reais.
+index.tsx:520 i18next::translator: missingKey en-US translation demoData.reset Remover dados de demonstração
