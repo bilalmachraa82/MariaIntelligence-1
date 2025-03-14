@@ -4,6 +4,8 @@ import { storage } from "./storage";
 import multer from "multer";
 import { ZodError } from "zod";
 import { Mistral } from "@mistralai/mistralai";
+import { MistralService } from "./services/mistral.service";
+import { RAGService } from "./services/rag.service";
 import { 
   extendedPropertySchema, 
   extendedOwnerSchema,
@@ -488,9 +490,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       handleError(err, res);
     }
   });
-
-  import { MistralService } from "./services/mistral.service";
-  import { RAGService } from "./services/rag.service";
 
   const mistralService = new MistralService();
   const ragService = new RAGService();
@@ -977,6 +976,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Verificar se o documento existe
       const document = await storage.getFinancialDocument(documentId);
+      
+      if (!document) {
+        return res.status(404).json({ message: "Documento financeiro não encontrado" });
+      }
+      
+      const items = await storage.getFinancialDocumentItems(documentId);
+      res.json(items);
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
 
   // Validação contextual de reservas
   app.post("/api/validate-reservation", async (req: Request, res: Response) => {
@@ -1005,24 +1015,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       );
       
       res.json(validationResult);
-    } catch (err) {
-      handleError(err, res);
-    }
-  });
-
-  // Listar itens de um documento financeiro
-  app.get("/api/financial-document-items/:documentId", async (req: Request, res: Response) => {
-    try {
-      const documentId = Number(req.params.documentId);
-      
-      // Verificar se o documento existe
-      const document = await storage.getFinancialDocument(documentId);
-      if (!document) {
-        return res.status(404).json({ message: "Documento financeiro não encontrado" });
-      }
-      
-      const items = await storage.getFinancialDocumentItems(documentId);
-      res.json(items);
     } catch (err) {
       handleError(err, res);
     }
@@ -1320,4 +1312,4 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   const httpServer = createServer(app);
   return httpServer;
-}
+}  // Fechando o bloco da função registerRoutes
