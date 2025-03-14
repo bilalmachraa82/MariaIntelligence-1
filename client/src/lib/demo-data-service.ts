@@ -38,7 +38,7 @@ const demoReservationSchema = z.object({
   checkOutDate: z.string(),
   numGuests: z.number().optional(),
   totalAmount: z.string(),
-  platform: z.string().optional(),
+  platform: reservationPlatformEnum,
   status: z.string().optional(),
   notes: z.string().optional(),
   platformFee: z.string().optional(),
@@ -236,7 +236,8 @@ export async function generateDemoReservations(propertyIds: number[], count: num
     }
     
     const now = new Date();
-    const platforms = ["Airbnb", "Booking.com", "VRBO", "Direct"];
+    // Usar os valores reais do enum de plataformas da schema
+    const platforms = ["airbnb", "booking", "direct", "expedia", "other"];
     const statuses = ["confirmed", "completed", "cancelled", "in_progress"];
     
     for (let i = 0; i < count; i++) {
@@ -289,7 +290,7 @@ export async function generateDemoReservations(propertyIds: number[], count: num
       const baseAmount = basePricePerNight * stayDurationDays;
       
       // Taxas da plataforma
-      const platformFeePercent = platform === 'Direct' ? 0 : randomInt(5, 20);
+      const platformFeePercent = platform === 'direct' ? 0 : randomInt(5, 20);
       const platformFee = (baseAmount * platformFeePercent / 100).toFixed(2);
       
       // Usar os valores reais da propriedade

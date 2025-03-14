@@ -1,0 +1,318 @@
+index.tsx:241 i18next::translator: missingKey en-US translation demoData.createDescription Gere dados fictícios para visualizar as funcionalidades do sistema
+index.tsx:248 i18next::translator: missingKey en-US translation demoData.noteTitle Importante
+index.tsx:250 i18next::translator: missingKey en-US translation demoData.noteText Os dados de demonstração são identificados com [DEMO] e podem ser facilmente removidos posteriormente. Estes dados são apenas para fins de teste e não afetam os dados reais.
+index.tsx:261 i18next::translator: missingKey en-US translation demoData.owners Proprietários
+index.tsx:274 i18next::translator: missingKey en-US translation demoData.ownersDesc Proprietários fictícios para associar às propriedades
+index.tsx:285 i18next::translator: missingKey en-US translation demoData.properties Propriedades
+index.tsx:298 i18next::translator: missingKey en-US translation demoData.propertiesDesc Imóveis para aluguel com dados completos
+index.tsx:309 i18next::translator: missingKey en-US translation demoData.reservations Reservas
+index.tsx:322 i18next::translator: missingKey en-US translation demoData.reservationsDesc Histórico e reservas futuras
+index.tsx:333 i18next::translator: missingKey en-US translation demoData.activities Atividades
+index.tsx:346 i18next::translator: missingKey en-US translation demoData.activitiesDesc Histórico de atividades no sistema
+index.tsx:356 i18next::translator: missingKey en-US translation demoData.generating Gerando dados de demonstração...
+index.tsx:443 i18next::translator: missingKey en-US translation demoData.removeTitle Remover Dados de Demonstração
+index.tsx:446 i18next::translator: missingKey en-US translation demoData.removeDescription Limpe todos os dados fictícios gerados anteriormente
+index.tsx:453 i18next::translator: missingKey en-US translation demoData.warningTitle Atenção
+index.tsx:455 i18next::translator: missingKey en-US translation demoData.warningText Esta ação removerá todos os dados marcados como [DEMO]. Esta operação não pode ser desfeita, mas seus dados reais permanecerão intactos.
+index.tsx:462 i18next::translator: missingKey en-US translation demoData.removeInfo O sistema identificará automaticamente todos os registros de demonstração pelo sufixo [DEMO] em seus nomes. A remoção é feita com segurança, preservando a integridade dos dados reais.
+index.tsx:520 i18next::translator: missingKey en-US translation demoData.reset Remover dados de demonstração
+index.tsx:217 i18next::translator: missingKey en-US translation common.backToDashboard Voltar ao Dashboard
+index.tsx:221 i18next::translator: missingKey en-US translation demoData.pageTitle Gerenciamento de Dados de Demonstração
+index.tsx:223 i18next::translator: missingKey en-US translation demoData.pageDescription Crie ou remova dados fictícios para testar as funcionalidades do sistema
+index.tsx:238 i18next::translator: missingKey en-US translation demoData.createTitle Criar Dados de Demonstração
+index.tsx:241 i18next::translator: missingKey en-US translation demoData.createDescription Gere dados fictícios para visualizar as funcionalidades do sistema
+index.tsx:248 i18next::translator: missingKey en-US translation demoData.noteTitle Importante
+index.tsx:250 i18next::translator: missingKey en-US translation demoData.noteText Os dados de demonstração são identificados com [DEMO] e podem ser facilmente removidos posteriormente. Estes dados são apenas para fins de teste e não afetam os dados reais.
+index.tsx:261 i18next::translator: missingKey en-US translation demoData.owners Proprietários
+index.tsx:274 i18next::translator: missingKey en-US translation demoData.ownersDesc Proprietários fictícios para associar às propriedades
+index.tsx:285 i18next::translator: missingKey en-US translation demoData.properties Propriedades
+index.tsx:298 i18next::translator: missingKey en-US translation demoData.propertiesDesc Imóveis para aluguel com dados completos
+index.tsx:309 i18next::translator: missingKey en-US translation demoData.reservations Reservas
+index.tsx:322 i18next::translator: missingKey en-US translation demoData.reservationsDesc Histórico e reservas futuras
+index.tsx:333 i18next::translator: missingKey en-US translation demoData.activities Atividades
+index.tsx:346 i18next::translator: missingKey en-US translation demoData.activitiesDesc Histórico de atividades no sistema
+index.tsx:356 i18next::translator: missingKey en-US translation demoData.generating Gerando dados de demonstração...
+index.tsx:443 i18next::translator: missingKey en-US translation demoData.removeTitle Remover Dados de Demonstração
+index.tsx:446 i18next::translator: missingKey en-US translation demoData.removeDescription Limpe todos os dados fictícios gerados anteriormente
+index.tsx:453 i18next::translator: missingKey en-US translation demoData.warningTitle Atenção
+index.tsx:455 i18next::translator: missingKey en-US translation demoData.warningText Esta ação removerá todos os dados marcados como [DEMO]. Esta operação não pode ser desfeita, mas seus dados reais permanecerão intactos.
+index.tsx:462 i18next::translator: missingKey en-US translation demoData.removeInfo O sistema identificará automaticamente todos os registros de demonstração pelo sufixo [DEMO] em seus nomes. A remoção é feita com segurança, preservando a integridade dos dados reais.
+index.tsx:520 i18next::translator: missingKey en-US translation demoData.reset Remover dados de demonstração
+index.tsx:217 i18next::translator: missingKey en-US translation common.backToDashboard Voltar ao Dashboard
+index.tsx:221 i18next::translator: missingKey en-US translation demoData.pageTitle Gerenciamento de Dados de Demonstração
+index.tsx:223 i18next::translator: missingKey en-US translation demoData.pageDescription Crie ou remova dados fictícios para testar as funcionalidades do sistema
+index.tsx:238 i18next::translator: missingKey en-US translation demoData.createTitle Criar Dados de Demonstração
+index.tsx:241 i18next::translator: missingKey en-US translation demoData.createDescription Gere dados fictícios para visualizar as funcionalidades do sistema
+index.tsx:248 i18next::translator: missingKey en-US translation demoData.noteTitle Importante
+index.tsx:250 i18next::translator: missingKey en-US translation demoData.noteText Os dados de demonstração são identificados com [DEMO] e podem ser facilmente removidos posteriormente. Estes dados são apenas para fins de teste e não afetam os dados reais.
+index.tsx:261 i18next::translator: missingKey en-US translation demoData.owners Proprietários
+index.tsx:274 i18next::translator: missingKey en-US translation demoData.ownersDesc Proprietários fictícios para associar às propriedades
+index.tsx:285 i18next::translator: missingKey en-US translation demoData.properties Propriedades
+index.tsx:298 i18next::translator: missingKey en-US translation demoData.propertiesDesc Imóveis para aluguel com dados completos
+index.tsx:309 i18next::translator: missingKey en-US translation demoData.reservations Reservas
+index.tsx:322 i18next::translator: missingKey en-US translation demoData.reservationsDesc Histórico e reservas futuras
+index.tsx:333 i18next::translator: missingKey en-US translation demoData.activities Atividades
+index.tsx:346 i18next::translator: missingKey en-US translation demoData.activitiesDesc Histórico de atividades no sistema
+index.tsx:356 i18next::translator: missingKey en-US translation demoData.generating Gerando dados de demonstração...
+index.tsx:443 i18next::translator: missingKey en-US translation demoData.removeTitle Remover Dados de Demonstração
+index.tsx:446 i18next::translator: missingKey en-US translation demoData.removeDescription Limpe todos os dados fictícios gerados anteriormente
+index.tsx:453 i18next::translator: missingKey en-US translation demoData.warningTitle Atenção
+index.tsx:455 i18next::translator: missingKey en-US translation demoData.warningText Esta ação removerá todos os dados marcados como [DEMO]. Esta operação não pode ser desfeita, mas seus dados reais permanecerão intactos.
+index.tsx:462 i18next::translator: missingKey en-US translation demoData.removeInfo O sistema identificará automaticamente todos os registros de demonstração pelo sufixo [DEMO] em seus nomes. A remoção é feita com segurança, preservando a integridade dos dados reais.
+index.tsx:520 i18next::translator: missingKey en-US translation demoData.reset Remover dados de demonstração
+index.tsx:217 i18next::translator: missingKey en-US translation common.backToDashboard Voltar ao Dashboard
+index.tsx:221 i18next::translator: missingKey en-US translation demoData.pageTitle Gerenciamento de Dados de Demonstração
+index.tsx:223 i18next::translator: missingKey en-US translation demoData.pageDescription Crie ou remova dados fictícios para testar as funcionalidades do sistema
+index.tsx:238 i18next::translator: missingKey en-US translation demoData.createTitle Criar Dados de Demonstração
+index.tsx:241 i18next::translator: missingKey en-US translation demoData.createDescription Gere dados fictícios para visualizar as funcionalidades do sistema
+index.tsx:248 i18next::translator: missingKey en-US translation demoData.noteTitle Importante
+index.tsx:250 i18next::translator: missingKey en-US translation demoData.noteText Os dados de demonstração são identificados com [DEMO] e podem ser facilmente removidos posteriormente. Estes dados são apenas para fins de teste e não afetam os dados reais.
+index.tsx:261 i18next::translator: missingKey en-US translation demoData.owners Proprietários
+index.tsx:274 i18next::translator: missingKey en-US translation demoData.ownersDesc Proprietários fictícios para associar às propriedades
+index.tsx:285 i18next::translator: missingKey en-US translation demoData.properties Propriedades
+index.tsx:298 i18next::translator: missingKey en-US translation demoData.propertiesDesc Imóveis para aluguel com dados completos
+index.tsx:309 i18next::translator: missingKey en-US translation demoData.reservations Reservas
+index.tsx:322 i18next::translator: missingKey en-US translation demoData.reservationsDesc Histórico e reservas futuras
+index.tsx:333 i18next::translator: missingKey en-US translation demoData.activities Atividades
+index.tsx:346 i18next::translator: missingKey en-US translation demoData.activitiesDesc Histórico de atividades no sistema
+index.tsx:356 i18next::translator: missingKey en-US translation demoData.generating Gerando dados de demonstração...
+index.tsx:443 i18next::translator: missingKey en-US translation demoData.removeTitle Remover Dados de Demonstração
+index.tsx:446 i18next::translator: missingKey en-US translation demoData.removeDescription Limpe todos os dados fictícios gerados anteriormente
+index.tsx:453 i18next::translator: missingKey en-US translation demoData.warningTitle Atenção
+index.tsx:455 i18next::translator: missingKey en-US translation demoData.warningText Esta ação removerá todos os dados marcados como [DEMO]. Esta operação não pode ser desfeita, mas seus dados reais permanecerão intactos.
+index.tsx:462 i18next::translator: missingKey en-US translation demoData.removeInfo O sistema identificará automaticamente todos os registros de demonstração pelo sufixo [DEMO] em seus nomes. A remoção é feita com segurança, preservando a integridade dos dados reais.
+index.tsx:520 i18next::translator: missingKey en-US translation demoData.reset Remover dados de demonstração
+index.tsx:217 i18next::translator: missingKey en-US translation common.backToDashboard Voltar ao Dashboard
+index.tsx:221 i18next::translator: missingKey en-US translation demoData.pageTitle Gerenciamento de Dados de Demonstração
+index.tsx:223 i18next::translator: missingKey en-US translation demoData.pageDescription Crie ou remova dados fictícios para testar as funcionalidades do sistema
+index.tsx:238 i18next::translator: missingKey en-US translation demoData.createTitle Criar Dados de Demonstração
+index.tsx:241 i18next::translator: missingKey en-US translation demoData.createDescription Gere dados fictícios para visualizar as funcionalidades do sistema
+index.tsx:248 i18next::translator: missingKey en-US translation demoData.noteTitle Importante
+index.tsx:250 i18next::translator: missingKey en-US translation demoData.noteText Os dados de demonstração são identificados com [DEMO] e podem ser facilmente removidos posteriormente. Estes dados são apenas para fins de teste e não afetam os dados reais.
+index.tsx:261 i18next::translator: missingKey en-US translation demoData.owners Proprietários
+index.tsx:274 i18next::translator: missingKey en-US translation demoData.ownersDesc Proprietários fictícios para associar às propriedades
+index.tsx:285 i18next::translator: missingKey en-US translation demoData.properties Propriedades
+index.tsx:298 i18next::translator: missingKey en-US translation demoData.propertiesDesc Imóveis para aluguel com dados completos
+index.tsx:309 i18next::translator: missingKey en-US translation demoData.reservations Reservas
+index.tsx:322 i18next::translator: missingKey en-US translation demoData.reservationsDesc Histórico e reservas futuras
+index.tsx:333 i18next::translator: missingKey en-US translation demoData.activities Atividades
+index.tsx:346 i18next::translator: missingKey en-US translation demoData.activitiesDesc Histórico de atividades no sistema
+index.tsx:356 i18next::translator: missingKey en-US translation demoData.generating Gerando dados de demonstração...
+index.tsx:443 i18next::translator: missingKey en-US translation demoData.removeTitle Remover Dados de Demonstração
+index.tsx:446 i18next::translator: missingKey en-US translation demoData.removeDescription Limpe todos os dados fictícios gerados anteriormente
+index.tsx:453 i18next::translator: missingKey en-US translation demoData.warningTitle Atenção
+index.tsx:455 i18next::translator: missingKey en-US translation demoData.warningText Esta ação removerá todos os dados marcados como [DEMO]. Esta operação não pode ser desfeita, mas seus dados reais permanecerão intactos.
+index.tsx:462 i18next::translator: missingKey en-US translation demoData.removeInfo O sistema identificará automaticamente todos os registros de demonstração pelo sufixo [DEMO] em seus nomes. A remoção é feita com segurança, preservando a integridade dos dados reais.
+index.tsx:520 i18next::translator: missingKey en-US translation demoData.reset Remover dados de demonstração
+index.tsx:217 i18next::translator: missingKey en-US translation common.backToDashboard Voltar ao Dashboard
+index.tsx:221 i18next::translator: missingKey en-US translation demoData.pageTitle Gerenciamento de Dados de Demonstração
+index.tsx:223 i18next::translator: missingKey en-US translation demoData.pageDescription Crie ou remova dados fictícios para testar as funcionalidades do sistema
+index.tsx:238 i18next::translator: missingKey en-US translation demoData.createTitle Criar Dados de Demonstração
+index.tsx:241 i18next::translator: missingKey en-US translation demoData.createDescription Gere dados fictícios para visualizar as funcionalidades do sistema
+index.tsx:248 i18next::translator: missingKey en-US translation demoData.noteTitle Importante
+index.tsx:250 i18next::translator: missingKey en-US translation demoData.noteText Os dados de demonstração são identificados com [DEMO] e podem ser facilmente removidos posteriormente. Estes dados são apenas para fins de teste e não afetam os dados reais.
+index.tsx:261 i18next::translator: missingKey en-US translation demoData.owners Proprietários
+index.tsx:274 i18next::translator: missingKey en-US translation demoData.ownersDesc Proprietários fictícios para associar às propriedades
+index.tsx:285 i18next::translator: missingKey en-US translation demoData.properties Propriedades
+index.tsx:298 i18next::translator: missingKey en-US translation demoData.propertiesDesc Imóveis para aluguel com dados completos
+index.tsx:309 i18next::translator: missingKey en-US translation demoData.reservations Reservas
+index.tsx:322 i18next::translator: missingKey en-US translation demoData.reservationsDesc Histórico e reservas futuras
+index.tsx:333 i18next::translator: missingKey en-US translation demoData.activities Atividades
+index.tsx:346 i18next::translator: missingKey en-US translation demoData.activitiesDesc Histórico de atividades no sistema
+index.tsx:356 i18next::translator: missingKey en-US translation demoData.generating Gerando dados de demonstração...
+index.tsx:443 i18next::translator: missingKey en-US translation demoData.removeTitle Remover Dados de Demonstração
+index.tsx:446 i18next::translator: missingKey en-US translation demoData.removeDescription Limpe todos os dados fictícios gerados anteriormente
+index.tsx:453 i18next::translator: missingKey en-US translation demoData.warningTitle Atenção
+index.tsx:455 i18next::translator: missingKey en-US translation demoData.warningText Esta ação removerá todos os dados marcados como [DEMO]. Esta operação não pode ser desfeita, mas seus dados reais permanecerão intactos.
+index.tsx:462 i18next::translator: missingKey en-US translation demoData.removeInfo O sistema identificará automaticamente todos os registros de demonstração pelo sufixo [DEMO] em seus nomes. A remoção é feita com segurança, preservando a integridade dos dados reais.
+index.tsx:520 i18next::translator: missingKey en-US translation demoData.reset Remover dados de demonstração
+queryClient.ts:58 API Request: /api/properties {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"name\":\"Apartamento Avenidas Novas [DEMO]\",\"ownerId\":7,\"cleaningCost\":\"47.50\",\"checkInFee\":\"29.25\",\"commission\":\"12.13\",\"teamPayment\":\"33.25\",\"cleaningTeam\":\"Equipa Maria\",\"active\":true,\"monthlyFixedCost\":\"97.33\",\"cleaningTeamId\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"property_added\",\"description\":\"Nova propriedade demo adicionada: Apartamento Avenidas Novas [DEMO]\",\"entityId\":36,\"entityType\":\"property\"}"}
+queryClient.ts:58 API Request: /api/properties {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"name\":\"Casa do Jardim Estrela [DEMO]\",\"ownerId\":4,\"cleaningCost\":\"41.15\",\"checkInFee\":\"32.09\",\"commission\":\"11.99\",\"teamPayment\":\"28.80\",\"cleaningTeam\":\"Equipa Maria\",\"active\":true,\"monthlyFixedCost\":\"85.38\",\"cleaningTeamId\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"property_added\",\"description\":\"Nova propriedade demo adicionada: Casa do Jardim Estrela [DEMO]\",\"entityId\":37,\"entityType\":\"property\"}"}
+queryClient.ts:58 API Request: /api/properties {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"name\":\"Studio Campo de Ourique [DEMO]\",\"ownerId\":19,\"cleaningCost\":\"52.02\",\"checkInFee\":\"27.35\",\"commission\":\"14.93\",\"teamPayment\":\"36.41\",\"cleaningTeam\":\"Equipa Maria\",\"active\":true,\"monthlyFixedCost\":\"138.90\",\"cleaningTeamId\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"property_added\",\"description\":\"Nova propriedade demo adicionada: Studio Campo de Ourique [DEMO]\",\"entityId\":38,\"entityType\":\"property\"}"}
+queryClient.ts:58 API Request: /api/properties {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"name\":\"Loft Alfama [DEMO]\",\"ownerId\":14,\"cleaningCost\":\"54.23\",\"checkInFee\":\"32.66\",\"commission\":\"13.06\",\"teamPayment\":\"37.96\",\"cleaningTeam\":\"Equipa Maria\",\"active\":true,\"monthlyFixedCost\":\"89.94\",\"cleaningTeamId\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"property_added\",\"description\":\"Nova propriedade demo adicionada: Loft Alfama [DEMO]\",\"entityId\":39,\"entityType\":\"property\"}"}
+queryClient.ts:58 API Request: /api/properties {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"name\":\"Apartamento Príncipe Real [DEMO]\",\"ownerId\":5,\"cleaningCost\":\"43.25\",\"checkInFee\":\"25.97\",\"commission\":\"18.77\",\"teamPayment\":\"30.27\",\"cleaningTeam\":\"Equipa Maria\",\"active\":true,\"monthlyFixedCost\":\"132.34\",\"cleaningTeamId\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"property_added\",\"description\":\"Nova propriedade demo adicionada: Apartamento Príncipe Real [DEMO]\",\"entityId\":40,\"entityType\":\"property\"}"}
+queryClient.ts:58 API Request: /api/properties/36 
+queryClient.ts:58 API Request: /api/properties/37 
+queryClient.ts:58 API Request: /api/properties/38 
+queryClient.ts:58 API Request: /api/properties/39 
+queryClient.ts:58 API Request: /api/properties/40 
+queryClient.ts:58 API Request: /api/reservations {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"propertyId\":39,\"guestName\":\"Thomas Anderson [DEMO]\",\"guestEmail\":\"thomas.demo212@example.com\",\"guestPhone\":\"+48 810551775\",\"checkInDate\":\"2024-11-21\",\"checkOutDate\":\"2024-11-23\",\"numGuests\":5,\"totalAmount\":\"226.23\",\"platform\":\"Booking.com\",\"status\":\"completed\",\"notes\":\"Reserva de demonstração criada automaticamente.\",\"platformFee\":\"10.32\",\"cleaningFee\":\"54.23\",\"checkInFee\":\"32.66\",\"commissionFee\":\"22.46\",\"teamPayment\":\"37.96\",\"netAmount\":\"122.83\"}"}
+queryClient.ts:60 
+            
+            
+           POST https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/api/reservations 400 (Bad Request)
+apiRequest @ queryClient.ts:60
+generateDemoReservations @ demo-data-service.ts:333
+await in generateDemoReservations
+generateAllDemoData @ demo-data-service.ts:458
+await in generateAllDemoData
+handleLoadDemoData @ index.tsx:75
+callCallback2 @ chunk-RPCDYKBN.js?v=499b906b:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=499b906b:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=499b906b:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=499b906b:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=499b906b:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=499b906b:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=499b906b:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=499b906b:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=499b906b:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=499b906b:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=499b906b:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=499b906b:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=499b906b:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=499b906b:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=499b906b:5449
+queryClient.ts:71 API Error: /api/reservations {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"propertyId\":39,\"guestName\":\"Thomas Anderson [DEMO]\",\"guestEmail\":\"thomas.demo212@example.com\",\"guestPhone\":\"+48 810551775\",\"checkInDate\":\"2024-11-21\",\"checkOutDate\":\"2024-11-23\",\"numGuests\":5,\"totalAmount\":\"226.23\",\"platform\":\"Booking.com\",\"status\":\"completed\",\"notes\":\"Reserva de demonstração criada automaticamente.\",\"platformFee\":\"10.32\",\"cleaningFee\":\"54.23\",\"checkInFee\":\"32.66\",\"commissionFee\":\"22.46\",\"teamPayment\":\"37.96\",\"netAmount\":\"122.83\"}"} Error: 400: Validation error
+    at throwIfResNotOk (queryClient.ts:24:26)
+    at async apiRequest (queryClient.ts:67:5)
+    at async generateDemoReservations (demo-data-service.ts:333:24)
+    at async generateAllDemoData (demo-data-service.ts:458:30)
+    at async handleLoadDemoData (index.tsx:75:24)
+overrideMethod @ hook.js:608
+apiRequest @ queryClient.ts:71
+await in apiRequest
+generateDemoReservations @ demo-data-service.ts:333
+await in generateDemoReservations
+generateAllDemoData @ demo-data-service.ts:458
+await in generateAllDemoData
+handleLoadDemoData @ index.tsx:75
+callCallback2 @ chunk-RPCDYKBN.js?v=499b906b:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=499b906b:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=499b906b:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=499b906b:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=499b906b:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=499b906b:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=499b906b:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=499b906b:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=499b906b:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=499b906b:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=499b906b:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=499b906b:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=499b906b:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=499b906b:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=499b906b:5449
+demo-data-service.ts:358 Erro ao gerar reservas demo: Error: 400: Validation error
+    at throwIfResNotOk (queryClient.ts:24:26)
+    at async apiRequest (queryClient.ts:67:5)
+    at async generateDemoReservations (demo-data-service.ts:333:24)
+    at async generateAllDemoData (demo-data-service.ts:458:30)
+    at async handleLoadDemoData (index.tsx:75:24)
+overrideMethod @ hook.js:608
+generateDemoReservations @ demo-data-service.ts:358
+await in generateDemoReservations
+generateAllDemoData @ demo-data-service.ts:458
+await in generateAllDemoData
+handleLoadDemoData @ index.tsx:75
+callCallback2 @ chunk-RPCDYKBN.js?v=499b906b:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=499b906b:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=499b906b:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=499b906b:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=499b906b:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=499b906b:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=499b906b:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=499b906b:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=499b906b:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=499b906b:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=499b906b:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=499b906b:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=499b906b:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=499b906b:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=499b906b:5449
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"profile_update\",\"description\":\"Informações de contato atualizadas [DEMO]\",\"entityId\":null,\"entityType\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"report_generation\",\"description\":\"Relatório mensal gerado [DEMO]\",\"entityId\":null,\"entityType\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"message_sent\",\"description\":\"Notificação enviada [DEMO]\",\"entityId\":null,\"entityType\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"message_sent\",\"description\":\"Comunicação com hóspede [DEMO]\",\"entityId\":null,\"entityType\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"message_sent\",\"description\":\"Mensagem enviada para proprietário [DEMO]\",\"entityId\":null,\"entityType\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"profile_update\",\"description\":\"Senha alterada [DEMO]\",\"entityId\":null,\"entityType\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"profile_update\",\"description\":\"Informações de contato atualizadas [DEMO]\",\"entityId\":null,\"entityType\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"message_sent\",\"description\":\"Comunicação com hóspede [DEMO]\",\"entityId\":null,\"entityType\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"system_login\",\"description\":\"Usuário logou no sistema [DEMO]\",\"entityId\":null,\"entityType\":null}"}
+queryClient.ts:58 API Request: /api/activities {"method":"POST","headers":{"Content-Type":"application/json"},"body":"{\"type\":\"system_login\",\"description\":\"Login detectado [DEMO]\",\"entityId\":null,\"entityType\":null}"}
+index.tsx:89 i18next::translator: missingKey en-US translation demoData.success Dados de demonstração carregados
+index.tsx:90 i18next::translator: missingKey en-US translation demoData.successDescription Foram criados: 0 proprietários, 5 propriedades, 0 reservas e 10 atividades.
+index.tsx:217 i18next::translator: missingKey en-US translation common.backToDashboard Voltar ao Dashboard
+index.tsx:221 i18next::translator: missingKey en-US translation demoData.pageTitle Gerenciamento de Dados de Demonstração
+index.tsx:223 i18next::translator: missingKey en-US translation demoData.pageDescription Crie ou remova dados fictícios para testar as funcionalidades do sistema
+index.tsx:238 i18next::translator: missingKey en-US translation demoData.createTitle Criar Dados de Demonstração
+index.tsx:241 i18next::translator: missingKey en-US translation demoData.createDescription Gere dados fictícios para visualizar as funcionalidades do sistema
+index.tsx:248 i18next::translator: missingKey en-US translation demoData.noteTitle Importante
+index.tsx:250 i18next::translator: missingKey en-US translation demoData.noteText Os dados de demonstração são identificados com [DEMO] e podem ser facilmente removidos posteriormente. Estes dados são apenas para fins de teste e não afetam os dados reais.
+index.tsx:261 i18next::translator: missingKey en-US translation demoData.owners Proprietários
+index.tsx:274 i18next::translator: missingKey en-US translation demoData.ownersDesc Proprietários fictícios para associar às propriedades
+index.tsx:285 i18next::translator: missingKey en-US translation demoData.properties Propriedades
+index.tsx:298 i18next::translator: missingKey en-US translation demoData.propertiesDesc Imóveis para aluguel com dados completos
+index.tsx:309 i18next::translator: missingKey en-US translation demoData.reservations Reservas
+index.tsx:322 i18next::translator: missingKey en-US translation demoData.reservationsDesc Histórico e reservas futuras
+index.tsx:333 i18next::translator: missingKey en-US translation demoData.activities Atividades
+index.tsx:346 i18next::translator: missingKey en-US translation demoData.activitiesDesc Histórico de atividades no sistema
+index.tsx:356 i18next::translator: missingKey en-US translation demoData.generating Gerando dados de demonstração...
+index.tsx:370 i18next::translator: missingKey en-US translation demoData.successTitle Dados gerados com sucesso
+index.tsx:374 i18next::translator: missingKey en-US translation demoData.ownersCreated Proprietários
+index.tsx:377 i18next::translator: missingKey en-US translation demoData.propertiesCreated Propriedades
+index.tsx:380 i18next::translator: missingKey en-US translation demoData.reservationsCreated Reservas
+index.tsx:383 i18next::translator: missingKey en-US translation demoData.activitiesCreated Atividades
+index.tsx:443 i18next::translator: missingKey en-US translation demoData.removeTitle Remover Dados de Demonstração
+index.tsx:446 i18next::translator: missingKey en-US translation demoData.removeDescription Limpe todos os dados fictícios gerados anteriormente
+index.tsx:453 i18next::translator: missingKey en-US translation demoData.warningTitle Atenção
+index.tsx:455 i18next::translator: missingKey en-US translation demoData.warningText Esta ação removerá todos os dados marcados como [DEMO]. Esta operação não pode ser desfeita, mas seus dados reais permanecerão intactos.
+index.tsx:462 i18next::translator: missingKey en-US translation demoData.removeInfo O sistema identificará automaticamente todos os registros de demonstração pelo sufixo [DEMO] em seus nomes. A remoção é feita com segurança, preservando a integridade dos dados reais.
+index.tsx:520 i18next::translator: missingKey en-US translation demoData.reset Remover dados de demonstração
+index.tsx:217 i18next::translator: missingKey en-US translation common.backToDashboard Voltar ao Dashboard
+index.tsx:221 i18next::translator: missingKey en-US translation demoData.pageTitle Gerenciamento de Dados de Demonstração
+index.tsx:223 i18next::translator: missingKey en-US translation demoData.pageDescription Crie ou remova dados fictícios para testar as funcionalidades do sistema
+index.tsx:238 i18next::translator: missingKey en-US translation demoData.createTitle Criar Dados de Demonstração
+index.tsx:241 i18next::translator: missingKey en-US translation demoData.createDescription Gere dados fictícios para visualizar as funcionalidades do sistema
+index.tsx:248 i18next::translator: missingKey en-US translation demoData.noteTitle Importante
+index.tsx:250 i18next::translator: missingKey en-US translation demoData.noteText Os dados de demonstração são identificados com [DEMO] e podem ser facilmente removidos posteriormente. Estes dados são apenas para fins de teste e não afetam os dados reais.
+index.tsx:261 i18next::translator: missingKey en-US translation demoData.owners Proprietários
+index.tsx:274 i18next::translator: missingKey en-US translation demoData.ownersDesc Proprietários fictícios para associar às propriedades
+index.tsx:285 i18next::translator: missingKey en-US translation demoData.properties Propriedades
+index.tsx:298 i18next::translator: missingKey en-US translation demoData.propertiesDesc Imóveis para aluguel com dados completos
+index.tsx:309 i18next::translator: missingKey en-US translation demoData.reservations Reservas
+index.tsx:322 i18next::translator: missingKey en-US translation demoData.reservationsDesc Histórico e reservas futuras
+index.tsx:333 i18next::translator: missingKey en-US translation demoData.activities Atividades
+index.tsx:346 i18next::translator: missingKey en-US translation demoData.activitiesDesc Histórico de atividades no sistema
+index.tsx:370 i18next::translator: missingKey en-US translation demoData.successTitle Dados gerados com sucesso
+index.tsx:374 i18next::translator: missingKey en-US translation demoData.ownersCreated Proprietários
+index.tsx:377 i18next::translator: missingKey en-US translation demoData.propertiesCreated Propriedades
+index.tsx:380 i18next::translator: missingKey en-US translation demoData.reservationsCreated Reservas
+index.tsx:383 i18next::translator: missingKey en-US translation demoData.activitiesCreated Atividades
+index.tsx:425 i18next::translator: missingKey en-US translation demoData.load Carregar dados de demonstração
+index.tsx:443 i18next::translator: missingKey en-US translation demoData.removeTitle Remover Dados de Demonstração
+index.tsx:446 i18next::translator: missingKey en-US translation demoData.removeDescription Limpe todos os dados fictícios gerados anteriormente
+index.tsx:453 i18next::translator: missingKey en-US translation demoData.warningTitle Atenção
+index.tsx:455 i18next::translator: missingKey en-US translation demoData.warningText Esta ação removerá todos os dados marcados como [DEMO]. Esta operação não pode ser desfeita, mas seus dados reais permanecerão intactos.
+index.tsx:462 i18next::translator: missingKey en-US translation demoData.removeInfo O sistema identificará automaticamente todos os registros de demonstração pelo sufixo [DEMO] em seus nomes. A remoção é feita com segurança, preservando a integridade dos dados reais.
+index.tsx:520 i18next::translator: missingKey en-US translation demoData.reset Remover dados de demonstração
+index.tsx:217 i18next::translator: missingKey en-US translation common.backToDashboard Voltar ao Dashboard
+index.tsx:221 i18next::translator: missingKey en-US translation demoData.pageTitle Gerenciamento de Dados de Demonstração
+index.tsx:223 i18next::translator: missingKey en-US translation demoData.pageDescription Crie ou remova dados fictícios para testar as funcionalidades do sistema
+index.tsx:238 i18next::translator: missingKey en-US translation demoData.createTitle Criar Dados de Demonstração
+index.tsx:241 i18next::translator: missingKey en-US translation demoData.createDescription Gere dados fictícios para visualizar as funcionalidades do sistema
+index.tsx:248 i18next::translator: missingKey en-US translation demoData.noteTitle Importante
+index.tsx:250 i18next::translator: missingKey en-US translation demoData.noteText Os dados de demonstração são identificados com [DEMO] e podem ser facilmente removidos posteriormente. Estes dados são apenas para fins de teste e não afetam os dados reais.
+index.tsx:261 i18next::translator: missingKey en-US translation demoData.owners Proprietários
+index.tsx:274 i18next::translator: missingKey en-US translation demoData.ownersDesc Proprietários fictícios para associar às propriedades
+index.tsx:285 i18next::translator: missingKey en-US translation demoData.properties Propriedades
+index.tsx:298 i18next::translator: missingKey en-US translation demoData.propertiesDesc Imóveis para aluguel com dados completos
+index.tsx:309 i18next::translator: missingKey en-US translation demoData.reservations Reservas
+index.tsx:322 i18next::translator: missingKey en-US translation demoData.reservationsDesc Histórico e reservas futuras
+index.tsx:333 i18next::translator: missingKey en-US translation demoData.activities Atividades
+index.tsx:346 i18next::translator: missingKey en-US translation demoData.activitiesDesc Histórico de atividades no sistema
+index.tsx:370 i18next::translator: missingKey en-US translation demoData.successTitle Dados gerados com sucesso
+index.tsx:374 i18next::translator: missingKey en-US translation demoData.ownersCreated Proprietários
+index.tsx:377 i18next::translator: missingKey en-US translation demoData.propertiesCreated Propriedades
+index.tsx:380 i18next::translator: missingKey en-US translation demoData.reservationsCreated Reservas
+index.tsx:383 i18next::translator: missingKey en-US translation demoData.activitiesCreated Atividades
+index.tsx:425 i18next::translator: missingKey en-US translation demoData.load Carregar dados de demonstração
+index.tsx:443 i18next::translator: missingKey en-US translation demoData.removeTitle Remover Dados de Demonstração
+index.tsx:446 i18next::translator: missingKey en-US translation demoData.removeDescription Limpe todos os dados fictícios gerados anteriormente
+index.tsx:453 i18next::translator: missingKey en-US translation demoData.warningTitle Atenção
+index.tsx:455 i18next::translator: missingKey en-US translation demoData.warningText Esta ação removerá todos os dados marcados como [DEMO]. Esta operação não pode ser desfeita, mas seus dados reais permanecerão intactos.
+index.tsx:462 i18next::translator: missingKey en-US translation demoData.removeInfo O sistema identificará automaticamente todos os registros de demonstração pelo sufixo [DEMO] em seus nomes. A remoção é feita com segurança, preservando a integridade dos dados reais.
+index.tsx:520 i18next::translator: missingKey en-US translation demoData.reset Remover dados de demonstração
