@@ -195,12 +195,22 @@ export const reservationPlatformEnum = z.enum([
 
 // Extended validation schemas
 export const extendedReservationSchema = insertReservationSchema.extend({
-  checkInDate: z.coerce.date(),
-  checkOutDate: z.coerce.date(),
+  checkInDate: z.string().or(z.coerce.date()).transform(val => 
+    typeof val === 'string' ? val : val.toISOString().split('T')[0]),
+  checkOutDate: z.string().or(z.coerce.date()).transform(val => 
+    typeof val === 'string' ? val : val.toISOString().split('T')[0]),
   status: reservationStatusEnum,
   platform: reservationPlatformEnum,
 }).refine(
-  (data) => new Date(data.checkOutDate) > new Date(data.checkInDate),
+  (data) => {
+    const checkIn = typeof data.checkInDate === 'string' 
+      ? new Date(data.checkInDate) 
+      : data.checkInDate;
+    const checkOut = typeof data.checkOutDate === 'string' 
+      ? new Date(data.checkOutDate) 
+      : data.checkOutDate;
+    return checkOut > checkIn;
+  },
   {
     message: "Check-out date must be after check-in date",
     path: ["checkOutDate"],
@@ -208,11 +218,26 @@ export const extendedReservationSchema = insertReservationSchema.extend({
 );
 
 export const extendedPropertySchema = insertPropertySchema.extend({
-  cleaningCost: z.coerce.number().min(0),
-  checkInFee: z.coerce.number().min(0),
-  commission: z.coerce.number().min(0),
-  teamPayment: z.coerce.number().min(0),
-  monthlyFixedCost: z.coerce.number().min(0),
+  cleaningCost: z.union([
+    z.coerce.string(),
+    z.coerce.number().transform(val => val.toString())
+  ]),
+  checkInFee: z.union([
+    z.coerce.string(),
+    z.coerce.number().transform(val => val.toString())
+  ]),
+  commission: z.union([
+    z.coerce.string(),
+    z.coerce.number().transform(val => val.toString())
+  ]),
+  teamPayment: z.union([
+    z.coerce.string(),
+    z.coerce.number().transform(val => val.toString())
+  ]),
+  monthlyFixedCost: z.union([
+    z.coerce.string(),
+    z.coerce.number().transform(val => val.toString())
+  ]),
 });
 
 export const extendedOwnerSchema = insertOwnerSchema.extend({
@@ -436,10 +461,20 @@ export const extendedFinancialDocumentSchema = insertFinancialDocumentSchema.ext
   type: financialDocumentTypeEnum,
   entityType: entityTypeEnum,
   status: financialDocumentStatusEnum,
-  issueDate: z.coerce.date(),
-  dueDate: z.coerce.date(),
+  issueDate: z.string().or(z.coerce.date()).transform(val => 
+    typeof val === 'string' ? val : val.toISOString().split('T')[0]),
+  dueDate: z.string().or(z.coerce.date()).transform(val => 
+    typeof val === 'string' ? val : val.toISOString().split('T')[0]),
 }).refine(
-  (data) => new Date(data.dueDate) >= new Date(data.issueDate),
+  (data) => {
+    const issueDate = typeof data.issueDate === 'string' 
+      ? new Date(data.issueDate) 
+      : data.issueDate;
+    const dueDate = typeof data.dueDate === 'string' 
+      ? new Date(data.dueDate) 
+      : data.dueDate;
+    return dueDate >= issueDate;
+  },
   {
     message: "A data de vencimento deve ser igual ou posterior à data de emissão",
     path: ["dueDate"],
@@ -447,7 +482,11 @@ export const extendedFinancialDocumentSchema = insertFinancialDocumentSchema.ext
 );
 
 export const extendedPaymentRecordSchema = insertPaymentRecordSchema.extend({
-  paymentDate: z.coerce.date(),
+  paymentDate: z.string().or(z.coerce.date()).transform(val => 
+    typeof val === 'string' ? val : val.toISOString().split('T')[0]),
   method: paymentMethodEnum,
-  amount: z.coerce.number().min(0.01),
+  amount: z.union([
+    z.coerce.string(),
+    z.coerce.number().transform(val => val.toString())
+  ]),
 });
