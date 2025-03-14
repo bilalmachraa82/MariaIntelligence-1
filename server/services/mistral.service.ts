@@ -29,6 +29,15 @@ export class MistralService {
       throw new Error('MISTRAL_API_KEY não configurada. Configure a chave API nas configurações.');
     }
   }
+  
+  /**
+   * Obtém acesso ao cliente Mistral para uso em outros serviços
+   * @returns Cliente Mistral
+   */
+  getMistralClient(): Mistral {
+    this.checkInitialization();
+    return this.client;
+  }
 
   /**
    * Extrai texto de um PDF em base64

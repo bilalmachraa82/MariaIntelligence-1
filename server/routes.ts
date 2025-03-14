@@ -1,4 +1,4 @@
-import type { Express, Request, Response } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import multer from "multer";
@@ -6,6 +6,7 @@ import { ZodError } from "zod";
 import { Mistral } from "@mistralai/mistralai";
 import { MistralService } from "./services/mistral.service";
 import { RAGService } from "./services/rag.service";
+import { RagService } from "./services/rag-service";
 import { 
   extendedPropertySchema, 
   extendedOwnerSchema,
@@ -23,7 +24,11 @@ import {
   financialDocumentTypeEnum,
   financialDocumentStatusEnum,
   entityTypeEnum,
-  paymentMethodEnum
+  paymentMethodEnum,
+  
+  // Tipos
+  Reservation,
+  Property
 } from "@shared/schema";
 import fs from "fs";
 import path from "path";
@@ -282,11 +287,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid property ID" });
       }
 
-      // Apply property-specific costs
-      validatedData.cleaningFee = property.cleaningCost.toString();
-      validatedData.checkInFee = property.checkInFee.toString();
-      validatedData.commissionFee = (Number(validatedData.totalAmount) * Number(property.commission) / 100).toString();
-      validatedData.teamPayment = property.teamPayment.toString();
+      // Apply property-specific costs with verificação de nulos
+      validatedData.cleaningFee = (property.cleaningCost || '0').toString();
+      validatedData.checkInFee = (property.checkInFee || '0').toString();
+      validatedData.commissionFee = (Number(validatedData.totalAmount) * Number(property.commission || '0') / 100).toString();
+      validatedData.teamPayment = (property.teamPayment || '0').toString();
 
       // Calculate net amount
       const totalCosts = Number(validatedData.cleaningFee) + 
@@ -325,13 +330,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return res.status(400).json({ message: "Invalid property ID" });
         }
 
-        // Update costs based on property information
-        validatedData.cleaningFee = property.cleaningCost.toString();
-        validatedData.checkInFee = property.checkInFee.toString();
+        // Update costs based on property information with verificação de nulos
+        validatedData.cleaningFee = (property.cleaningCost || '0').toString();
+        validatedData.checkInFee = (property.checkInFee || '0').toString();
 
         const totalAmount = validatedData.totalAmount || existingReservation.totalAmount;
-        validatedData.commissionFee = (Number(totalAmount) * Number(property.commission) / 100).toString();
-        validatedData.teamPayment = property.teamPayment.toString();
+        validatedData.commissionFee = (Number(totalAmount) * Number(property.commission || '0') / 100).toString();
+        validatedData.teamPayment = (property.teamPayment || '0').toString();
 
         // Recalculate net amount
         const platformFee = validatedData.platformFee || existingReservation.platformFee;
@@ -942,7 +947,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           Para campos não encontrados no documento, use null.
         `;
         
-        const response = await mistralService.client.chat.complete({
+        const response = await mistralService.getMistralClient().chat.complete({
           model: "mistral-large-latest",
           messages: [
             { role: "system", content: "Você é um assistente especializado em extração de dados de documentos financeiros." },
@@ -1080,7 +1085,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         `;
       }
       
-      const response = await mistralService.client.chat.complete({
+      const response = await mistralService.getMistralClient().chat.complete({
         model: "mistral-medium",
         messages: [
           { role: "system", content: "Você é um auditor financeiro especializado." },
@@ -1775,8 +1780,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           property: {
             id: property.id,
             name: property.name,
-            maxGuests: property.maxGuests,
-            minimumStay: property.minimumStay || 1
+            // Usando valores padrão seguros para campos que podem não existir
+            maxGuests: 10, // Valor padrão seguro
+            minimumStay: 1 // Valor padrão seguro
           }
         }
       });
