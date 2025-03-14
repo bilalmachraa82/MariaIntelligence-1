@@ -263,33 +263,36 @@ export default function ModernDashboard() {
                   variants={fadeIn} 
                   initial="hidden" 
                   animate="visible"
+                  whileHover={{ y: -5, transition: { duration: 0.2 } }}
                 >
-                  <Card className="hover:shadow-md transition-all bg-gradient-to-br from-background to-background/80 border border-blue-500/20 overflow-hidden relative">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-blue-400"></div>
-                    <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-blue-500/10 filter blur-xl"></div>
-                    <Flex alignItems="start" className="relative z-10">
-                      <div>
-                        <Text className="text-muted-foreground font-medium">{t("dashboard.totalRevenue", "Receita Total")}</Text>
+                  <Card className="group hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white/90 to-white/70 dark:from-gray-900/90 dark:to-gray-800/70 backdrop-blur-lg border border-blue-500/30 overflow-hidden relative rounded-xl">
+                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-600 animate-gradient-x"></div>
+                    <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-blue-500/20 filter blur-xl group-hover:bg-blue-500/30 transition-all duration-500"></div>
+                    <div className="absolute -left-8 -bottom-8 w-24 h-24 rounded-full bg-blue-400/10 filter blur-lg group-hover:bg-blue-400/20 transition-all duration-500"></div>
+                    
+                    <Flex alignItems="start" className="relative z-10 p-1">
+                      <div className="flex-1">
+                        <Text className="text-muted-foreground font-semibold text-sm uppercase tracking-wide">{t("dashboard.totalRevenue", "Receita Total")}</Text>
                         {isLoadingStats ? (
-                          <Skeleton className="h-9 w-32 mt-2" />
+                          <Skeleton className="h-10 w-36 mt-2" />
                         ) : (
-                          <Metric className="text-blue-600 dark:text-blue-400 font-bold">{formatCurrency(statistics?.totalRevenue || 0)}</Metric>
+                          <Metric className="text-blue-600 dark:text-blue-400 font-extrabold text-3xl mt-1 leading-tight">{formatCurrency(statistics?.totalRevenue || 0)}</Metric>
                         )}
                       </div>
-                      <div className="bg-blue-500 bg-opacity-20 backdrop-blur-sm p-3 rounded-full shadow-sm">
-                        <DollarSign className="h-6 w-6 text-blue-500" />
+                      <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-3.5 rounded-full shadow-lg group-hover:shadow-blue-500/30 transition-all duration-300 transform group-hover:scale-110">
+                        <DollarSign className="h-7 w-7 text-white" />
                       </div>
                     </Flex>
                     {!isLoadingStats && statistics?.revenueChange && (
-                      <Flex className="mt-4 space-x-2 relative z-10">
-                        <div className={`flex text-xs items-center ${statistics.revenueChange > 0 ? 'text-emerald-500' : 'text-rose-500'} rounded-full px-2 py-1 ${statistics.revenueChange > 0 ? 'bg-emerald-500/10' : 'bg-rose-500/10'}`}>
+                      <Flex className="mt-3 space-x-2 relative z-10 px-1 pb-1">
+                        <div className={`flex text-xs items-center ${statistics.revenueChange > 0 ? 'text-emerald-500' : 'text-rose-500'} rounded-full px-2.5 py-1.5 ${statistics.revenueChange > 0 ? 'bg-emerald-500/15 ring-1 ring-emerald-500/30' : 'bg-rose-500/15 ring-1 ring-rose-500/30'} font-medium shadow-sm`}>
                           {statistics.revenueChange > 0 ? 
-                            <TrendingUp className="h-4 w-4 mr-1" /> : 
-                            <TrendingUp className="h-4 w-4 mr-1 transform rotate-180" />
+                            <TrendingUp className="h-4 w-4 mr-1.5 stroke-[2.5]" /> : 
+                            <TrendingUp className="h-4 w-4 mr-1.5 transform rotate-180 stroke-[2.5]" />
                           }
-                          <span className="font-medium">{Math.abs(statistics.revenueChange)}%</span>
+                          <span className="font-bold">{Math.abs(statistics.revenueChange)}%</span>
                         </div>
-                        <Text className="text-xs text-muted-foreground">{t("dashboard.comparedToPrevious", "em relação ao período anterior")}</Text>
+                        <Text className="text-xs text-muted-foreground font-medium">{t("dashboard.comparedToPrevious", "em relação ao período anterior")}</Text>
                       </Flex>
                     )}
                   </Card>
@@ -300,33 +303,36 @@ export default function ModernDashboard() {
                   variants={fadeIn} 
                   initial="hidden" 
                   animate="visible"
+                  whileHover={{ y: -5, transition: { duration: 0.2 } }}
                 >
-                  <Card className="hover:shadow-md transition-all bg-gradient-to-br from-background to-background/80 border border-emerald-500/20 overflow-hidden relative">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-emerald-400"></div>
-                    <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-emerald-500/10 filter blur-xl"></div>
-                    <Flex alignItems="start" className="relative z-10">
-                      <div>
-                        <Text className="text-muted-foreground font-medium">{t("dashboard.netProfit", "Lucro Líquido")}</Text>
+                  <Card className="group hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white/90 to-white/70 dark:from-gray-900/90 dark:to-gray-800/70 backdrop-blur-lg border border-emerald-500/30 overflow-hidden relative rounded-xl">
+                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-emerald-600 via-emerald-400 to-emerald-600 animate-gradient-x"></div>
+                    <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-emerald-500/20 filter blur-xl group-hover:bg-emerald-500/30 transition-all duration-500"></div>
+                    <div className="absolute -left-8 -bottom-8 w-24 h-24 rounded-full bg-emerald-400/10 filter blur-lg group-hover:bg-emerald-400/20 transition-all duration-500"></div>
+                    
+                    <Flex alignItems="start" className="relative z-10 p-1">
+                      <div className="flex-1">
+                        <Text className="text-muted-foreground font-semibold text-sm uppercase tracking-wide">{t("dashboard.netProfit", "Lucro Líquido")}</Text>
                         {isLoadingStats ? (
-                          <Skeleton className="h-9 w-32 mt-2" />
+                          <Skeleton className="h-10 w-36 mt-2" />
                         ) : (
-                          <Metric className="text-emerald-600 dark:text-emerald-400 font-bold">{formatCurrency(statistics?.netProfit || 0)}</Metric>
+                          <Metric className="text-emerald-600 dark:text-emerald-400 font-extrabold text-3xl mt-1 leading-tight">{formatCurrency(statistics?.netProfit || 0)}</Metric>
                         )}
                       </div>
-                      <div className="bg-emerald-500 bg-opacity-20 backdrop-blur-sm p-3 rounded-full shadow-sm">
-                        <TrendingUp className="h-6 w-6 text-emerald-500" />
+                      <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 p-3.5 rounded-full shadow-lg group-hover:shadow-emerald-500/30 transition-all duration-300 transform group-hover:scale-110">
+                        <TrendingUp className="h-7 w-7 text-white" />
                       </div>
                     </Flex>
                     {!isLoadingStats && statistics?.profitChange && (
-                      <Flex className="mt-4 space-x-2 relative z-10">
-                        <div className={`flex text-xs items-center ${statistics.profitChange > 0 ? 'text-emerald-500' : 'text-rose-500'} rounded-full px-2 py-1 ${statistics.profitChange > 0 ? 'bg-emerald-500/10' : 'bg-rose-500/10'}`}>
+                      <Flex className="mt-3 space-x-2 relative z-10 px-1 pb-1">
+                        <div className={`flex text-xs items-center ${statistics.profitChange > 0 ? 'text-emerald-500' : 'text-rose-500'} rounded-full px-2.5 py-1.5 ${statistics.profitChange > 0 ? 'bg-emerald-500/15 ring-1 ring-emerald-500/30' : 'bg-rose-500/15 ring-1 ring-rose-500/30'} font-medium shadow-sm`}>
                           {statistics.profitChange > 0 ? 
-                            <TrendingUp className="h-4 w-4 mr-1" /> : 
-                            <TrendingUp className="h-4 w-4 mr-1 transform rotate-180" />
+                            <TrendingUp className="h-4 w-4 mr-1.5 stroke-[2.5]" /> : 
+                            <TrendingUp className="h-4 w-4 mr-1.5 transform rotate-180 stroke-[2.5]" />
                           }
-                          <span className="font-medium">{Math.abs(statistics.profitChange)}%</span>
+                          <span className="font-bold">{Math.abs(statistics.profitChange)}%</span>
                         </div>
-                        <Text className="text-xs text-muted-foreground">{t("dashboard.comparedToPrevious", "em relação ao período anterior")}</Text>
+                        <Text className="text-xs text-muted-foreground font-medium">{t("dashboard.comparedToPrevious", "em relação ao período anterior")}</Text>
                       </Flex>
                     )}
                   </Card>
@@ -337,30 +343,42 @@ export default function ModernDashboard() {
                   variants={fadeIn} 
                   initial="hidden" 
                   animate="visible"
+                  whileHover={{ y: -5, transition: { duration: 0.2 } }}
                 >
-                  <Card className="hover:shadow-md transition-all bg-gradient-to-br from-background to-background/80 border border-amber-500/20 overflow-hidden relative">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-amber-400"></div>
-                    <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-amber-500/10 filter blur-xl"></div>
-                    <Flex alignItems="start" className="relative z-10">
-                      <div>
-                        <Text className="text-muted-foreground font-medium">{t("dashboard.occupancyRate", "Taxa de Ocupação")}</Text>
+                  <Card className="group hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white/90 to-white/70 dark:from-gray-900/90 dark:to-gray-800/70 backdrop-blur-lg border border-amber-500/30 overflow-hidden relative rounded-xl">
+                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-amber-600 via-amber-400 to-amber-600 animate-gradient-x"></div>
+                    <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-amber-500/20 filter blur-xl group-hover:bg-amber-500/30 transition-all duration-500"></div>
+                    <div className="absolute -left-8 -bottom-8 w-24 h-24 rounded-full bg-amber-400/10 filter blur-lg group-hover:bg-amber-400/20 transition-all duration-500"></div>
+                    
+                    <Flex alignItems="start" className="relative z-10 p-1">
+                      <div className="flex-1">
+                        <Text className="text-muted-foreground font-semibold text-sm uppercase tracking-wide">{t("dashboard.occupancyRate", "Taxa de Ocupação")}</Text>
                         {isLoadingStats ? (
-                          <Skeleton className="h-9 w-32 mt-2" />
+                          <Skeleton className="h-10 w-36 mt-2" />
                         ) : (
-                          <Metric className="text-amber-600 dark:text-amber-400 font-bold">{Math.round(statistics?.occupancyRate || 0)}%</Metric>
+                          <Metric className="text-amber-600 dark:text-amber-400 font-extrabold text-3xl mt-1 leading-tight">{Math.round(statistics?.occupancyRate || 0)}%</Metric>
                         )}
                       </div>
-                      <div className="bg-amber-500 bg-opacity-20 backdrop-blur-sm p-3 rounded-full shadow-sm">
-                        <Percent className="h-6 w-6 text-amber-500" />
+                      <div className="bg-gradient-to-br from-amber-500 to-amber-600 p-3.5 rounded-full shadow-lg group-hover:shadow-amber-500/30 transition-all duration-300 transform group-hover:scale-110">
+                        <Percent className="h-7 w-7 text-white" />
                       </div>
                     </Flex>
                     {!isLoadingStats && (
-                      <div className="mt-4 relative z-10">
-                        <Flex className="mt-2 items-center justify-between">
-                          <Text className="text-xs text-muted-foreground">{t("dashboard.target", "Meta")}: 75%</Text>
-                          <Text className="text-xs font-medium">{Math.round(statistics?.occupancyRate || 0)}%</Text>
+                      <div className="mt-3 relative z-10 px-1 pb-1">
+                        <Flex className="items-center justify-between mb-1.5">
+                          <Text className="text-xs text-muted-foreground font-medium">{t("dashboard.target", "Meta")}: <span className="font-bold">75%</span></Text>
+                          <Text className="text-xs font-bold">{Math.round(statistics?.occupancyRate || 0)}%</Text>
                         </Flex>
-                        <ProgressBar value={statistics?.occupancyRate || 0} color="amber" className="mt-2" />
+                        <div className="relative w-full h-2.5 bg-gray-200/30 dark:bg-gray-700/30 rounded-full overflow-hidden">
+                          <div 
+                            className={`absolute top-0 left-0 h-full rounded-full transition-all duration-1000 
+                            ${statistics?.occupancyRate && statistics.occupancyRate >= 75 ? 'bg-gradient-to-r from-emerald-500 to-emerald-300' : 
+                              statistics?.occupancyRate && statistics.occupancyRate >= 50 ? 'bg-gradient-to-r from-amber-500 to-amber-300' : 
+                              'bg-gradient-to-r from-rose-500 to-rose-300'
+                            }`}
+                            style={{ width: `${Math.min(Math.max(statistics?.occupancyRate || 0, 0), 100)}%` }}
+                          />
+                        </div>
                       </div>
                     )}
                   </Card>
@@ -371,33 +389,36 @@ export default function ModernDashboard() {
                   variants={fadeIn} 
                   initial="hidden" 
                   animate="visible"
+                  whileHover={{ y: -5, transition: { duration: 0.2 } }}
                 >
-                  <Card className="hover:shadow-md transition-all bg-gradient-to-br from-background to-background/80 border border-indigo-500/20 overflow-hidden relative">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-indigo-400"></div>
-                    <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-indigo-500/10 filter blur-xl"></div>
-                    <Flex alignItems="start" className="relative z-10">
-                      <div>
-                        <Text className="text-muted-foreground font-medium">{t("dashboard.totalReservations", "Total de Reservas")}</Text>
+                  <Card className="group hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white/90 to-white/70 dark:from-gray-900/90 dark:to-gray-800/70 backdrop-blur-lg border border-indigo-500/30 overflow-hidden relative rounded-xl">
+                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-600 via-indigo-400 to-indigo-600 animate-gradient-x"></div>
+                    <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-indigo-500/20 filter blur-xl group-hover:bg-indigo-500/30 transition-all duration-500"></div>
+                    <div className="absolute -left-8 -bottom-8 w-24 h-24 rounded-full bg-indigo-400/10 filter blur-lg group-hover:bg-indigo-400/20 transition-all duration-500"></div>
+                    
+                    <Flex alignItems="start" className="relative z-10 p-1">
+                      <div className="flex-1">
+                        <Text className="text-muted-foreground font-semibold text-sm uppercase tracking-wide">{t("dashboard.totalReservations", "Total de Reservas")}</Text>
                         {isLoadingStats ? (
-                          <Skeleton className="h-9 w-32 mt-2" />
+                          <Skeleton className="h-10 w-36 mt-2" />
                         ) : (
-                          <Metric className="text-indigo-600 dark:text-indigo-400 font-bold">{statistics?.reservationsCount || 0}</Metric>
+                          <Metric className="text-indigo-600 dark:text-indigo-400 font-extrabold text-3xl mt-1 leading-tight">{statistics?.reservationsCount || 0}</Metric>
                         )}
                       </div>
-                      <div className="bg-indigo-500 bg-opacity-20 backdrop-blur-sm p-3 rounded-full shadow-sm">
-                        <Calendar className="h-6 w-6 text-indigo-500" />
+                      <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 p-3.5 rounded-full shadow-lg group-hover:shadow-indigo-500/30 transition-all duration-300 transform group-hover:scale-110">
+                        <Calendar className="h-7 w-7 text-white" />
                       </div>
                     </Flex>
                     {!isLoadingStats && statistics?.reservationsChange && (
-                      <Flex className="mt-4 space-x-2 relative z-10">
-                        <div className={`flex text-xs items-center ${statistics?.reservationsChange > 0 ? 'text-emerald-500' : 'text-rose-500'} rounded-full px-2 py-1 ${statistics?.reservationsChange > 0 ? 'bg-emerald-500/10' : 'bg-rose-500/10'}`}>
+                      <Flex className="mt-3 space-x-2 relative z-10 px-1 pb-1">
+                        <div className={`flex text-xs items-center ${statistics?.reservationsChange > 0 ? 'text-emerald-500' : 'text-rose-500'} rounded-full px-2.5 py-1.5 ${statistics?.reservationsChange > 0 ? 'bg-emerald-500/15 ring-1 ring-emerald-500/30' : 'bg-rose-500/15 ring-1 ring-rose-500/30'} font-medium shadow-sm`}>
                           {statistics?.reservationsChange > 0 ? 
-                            <TrendingUp className="h-4 w-4 mr-1" /> : 
-                            <TrendingUp className="h-4 w-4 mr-1 transform rotate-180" />
+                            <TrendingUp className="h-4 w-4 mr-1.5 stroke-[2.5]" /> : 
+                            <TrendingUp className="h-4 w-4 mr-1.5 transform rotate-180 stroke-[2.5]" />
                           }
-                          <span className="font-medium">{Math.abs(statistics?.reservationsChange)}%</span>
+                          <span className="font-bold">{Math.abs(statistics?.reservationsChange)}%</span>
                         </div>
-                        <Text className="text-xs text-muted-foreground">{t("dashboard.comparedToPrevious", "em relação ao período anterior")}</Text>
+                        <Text className="text-xs text-muted-foreground font-medium">{t("dashboard.comparedToPrevious", "em relação ao período anterior")}</Text>
                       </Flex>
                     )}
                   </Card>
@@ -411,14 +432,23 @@ export default function ModernDashboard() {
                   variants={fadeIn} 
                   initial="hidden" 
                   animate="visible"
+                  whileHover={{ y: -3, transition: { duration: 0.2 } }}
                 >
-                  <Card className="hover:shadow-md transition-all bg-gradient-to-br from-background to-background/80 border border-blue-500/20 overflow-hidden relative">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-emerald-400"></div>
-                    <div className="absolute -right-20 -top-20 w-40 h-40 rounded-full bg-blue-500/5 filter blur-xl"></div>
-                    <div className="absolute -left-20 -bottom-20 w-40 h-40 rounded-full bg-emerald-500/5 filter blur-xl"></div>
-                    <div className="relative z-10">
-                      <Title className="text-foreground/90">{t("dashboard.revenueVsProfit", "Receita vs Lucro")}</Title>
-                      <div className="h-[300px] mt-4">
+                  <Card className="group hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white/95 to-white/90 dark:from-gray-900/95 dark:to-gray-800/90 backdrop-blur-lg border border-blue-500/20 overflow-hidden relative rounded-xl">
+                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-600 via-indigo-400 to-emerald-500 animate-gradient-x"></div>
+                    <div className="absolute -right-20 -top-20 w-40 h-40 rounded-full bg-blue-500/10 filter blur-xl group-hover:bg-blue-500/15 transition-all duration-500"></div>
+                    <div className="absolute -left-20 -bottom-20 w-40 h-40 rounded-full bg-emerald-500/10 filter blur-xl group-hover:bg-emerald-500/15 transition-all duration-500"></div>
+                    <div className="relative z-10 p-2">
+                      <Flex alignItems="center" justifyContent="between" className="mb-2">
+                        <div>
+                          <Title className="text-foreground/90 font-bold">{t("dashboard.revenueVsProfit", "Receita vs Lucro")}</Title>
+                          <Text className="text-xs text-muted-foreground">Tendência financeira ao longo do tempo</Text>
+                        </div>
+                        <Badge variant="outline" className="bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800 px-2.5 py-1">
+                          Análise Mensal
+                        </Badge>
+                      </Flex>
+                      <div className="h-[300px] mt-6 mb-2">
                         {isLoadingStats ? (
                           <div className="w-full h-full flex items-center justify-center">
                             <Skeleton className="h-full w-full" />
@@ -433,10 +463,16 @@ export default function ModernDashboard() {
                             valueFormatter={(number) => `${formatCurrency(number)}`}
                             showLegend
                             showAnimation
+                            showGradient={true}
+                            showYAxis={true}
+                            showXAxis={true}
+                            animationDuration={1500}
                           />
                         ) : (
-                          <div className="h-full flex items-center justify-center">
-                            <p className="text-muted-foreground">{t("dashboard.noDataAvailable", "Não há dados disponíveis.")}</p>
+                          <div className="h-full flex flex-col items-center justify-center">
+                            <LineChart className="h-16 w-16 text-gray-300 dark:text-gray-600 mb-3" />
+                            <p className="text-muted-foreground font-medium">{t("dashboard.noDataAvailable", "Não há dados disponíveis.")}</p>
+                            <Text className="text-xs text-muted-foreground mt-1">Aguardando registros de receita e lucro</Text>
                           </div>
                         )}
                       </div>
@@ -449,14 +485,23 @@ export default function ModernDashboard() {
                   variants={fadeIn} 
                   initial="hidden" 
                   animate="visible"
+                  whileHover={{ y: -3, transition: { duration: 0.2 } }}
                 >
-                  <Card className="hover:shadow-md transition-all bg-gradient-to-br from-background to-background/80 border border-rose-500/20 overflow-hidden relative">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-rose-400"></div>
-                    <div className="absolute -right-20 -top-20 w-40 h-40 rounded-full bg-blue-500/5 filter blur-xl"></div>
-                    <div className="absolute -left-20 -bottom-20 w-40 h-40 rounded-full bg-rose-500/5 filter blur-xl"></div>
-                    <div className="relative z-10">
-                      <Title className="text-foreground/90">{t("dashboard.financialBreakdown", "Distribuição Financeira")}</Title>
-                      <div className="h-[300px] mt-4">
+                  <Card className="group hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white/95 to-white/90 dark:from-gray-900/95 dark:to-gray-800/90 backdrop-blur-lg border border-rose-500/20 overflow-hidden relative rounded-xl">
+                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-rose-600 via-purple-400 to-blue-500 animate-gradient-x"></div>
+                    <div className="absolute -right-20 -top-20 w-40 h-40 rounded-full bg-blue-500/10 filter blur-xl group-hover:bg-blue-500/15 transition-all duration-500"></div>
+                    <div className="absolute -left-20 -bottom-20 w-40 h-40 rounded-full bg-rose-500/10 filter blur-xl group-hover:bg-rose-500/15 transition-all duration-500"></div>
+                    <div className="relative z-10 p-2">
+                      <Flex alignItems="center" justifyContent="between" className="mb-2">
+                        <div>
+                          <Title className="text-foreground/90 font-bold">{t("dashboard.financialBreakdown", "Distribuição Financeira")}</Title>
+                          <Text className="text-xs text-muted-foreground">Alocação de receitas e despesas</Text>
+                        </div>
+                        <Badge variant="outline" className="bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-800 px-2.5 py-1">
+                          Relatório Atual
+                        </Badge>
+                      </Flex>
+                      <div className="h-[300px] mt-6 mb-2">
                         {isLoadingStats ? (
                           <div className="w-full h-full flex items-center justify-center">
                             <Skeleton className="h-full w-full" />
@@ -471,10 +516,13 @@ export default function ModernDashboard() {
                             colors={["blue", "rose"]}
                             showAnimation
                             showLabel
+                            animationDuration={1500}
                           />
                         ) : (
-                          <div className="h-full flex items-center justify-center">
-                            <p className="text-muted-foreground">{t("dashboard.noDataAvailable", "Não há dados disponíveis.")}</p>
+                          <div className="h-full flex flex-col items-center justify-center">
+                            <PieChart className="h-16 w-16 text-gray-300 dark:text-gray-600 mb-3" />
+                            <p className="text-muted-foreground font-medium">{t("dashboard.noDataAvailable", "Não há dados disponíveis.")}</p>
+                            <Text className="text-xs text-muted-foreground mt-1">Aguardando registros financeiros</Text>
                           </div>
                         )}
                       </div>
