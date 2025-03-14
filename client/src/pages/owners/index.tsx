@@ -125,10 +125,8 @@ export default function OwnersPage() {
                     filteredOwners.map((owner) => (
                       <TableRow key={owner.id}>
                         <TableCell className="font-medium">
-                          <Link href={`/owners/${owner.id}`}>
-                            <a className="text-primary-600 hover:underline">
-                              {owner.name}
-                            </a>
+                          <Link href={`/owners/${owner.id}`} className="text-primary-600 hover:underline">
+                            {owner.name}
                           </Link>
                         </TableCell>
                         <TableCell>{owner.company || "-"}</TableCell>
@@ -144,21 +142,21 @@ export default function OwnersPage() {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <Link href={`/owners/${owner.id}`}>
-                                <DropdownMenuItem>
-                                  <Button variant="ghost" className="p-0 h-auto w-full justify-start">
+                              <DropdownMenuItem asChild>
+                                <Link href={`/owners/${owner.id}`}>
+                                  <div className="flex w-full">
                                     Ver detalhes
-                                  </Button>
-                                </DropdownMenuItem>
-                              </Link>
-                              <Link href={`/owners/edit/${owner.id}`}>
-                                <DropdownMenuItem>
-                                  <Button variant="ghost" className="p-0 h-auto w-full justify-start">
+                                  </div>
+                                </Link>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem asChild>
+                                <Link href={`/owners/edit/${owner.id}`}>
+                                  <div className="flex w-full">
                                     <Edit className="mr-2 h-4 w-4" />
                                     Editar
-                                  </Button>
-                                </DropdownMenuItem>
-                              </Link>
+                                  </div>
+                                </Link>
+                              </DropdownMenuItem>
                               <DropdownMenuItem>
                                 <Button 
                                   variant="ghost" 
