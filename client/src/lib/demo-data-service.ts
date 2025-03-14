@@ -224,7 +224,7 @@ export async function generateDemoReservations(propertyIds: number[], count: num
     // Obter detalhes das propriedades para usar valores reais
     const properties = [];
     for (const id of propertyIds) {
-      const property = await apiRequest(`/api/properties/${id}`);
+      const property = await apiRequest<any>(`/api/properties/${id}`);
       if (property) {
         properties.push(property);
       }
@@ -498,7 +498,7 @@ async function removeEntityById(
   id: number
 ): Promise<boolean> {
   try {
-    await apiRequest(`/api/${entityType}/${id}`, {
+    await apiRequest<any>(`/api/${entityType}/${id}`, {
       method: 'DELETE',
     });
     return true;
