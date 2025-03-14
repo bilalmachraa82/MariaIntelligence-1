@@ -1,80 +1,17 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  PieChart, Pie, Cell
-} from "recharts";
 import { DateRangePicker, DateRange } from "@/components/ui/date-range-picker";
-import { format, addDays, parseISO } from "date-fns";
-import { Download, Calendar, Euro, Home, Users, Percent, CreditCard, FileText } from "lucide-react";
+import { format, addDays } from "date-fns";
 import { useOwners } from "@/hooks/use-owners";
 import { useOwnerReport } from "@/hooks/use-owner-report";
-import { formatCurrency, formatDate } from "@/lib/utils";
 import { downloadOwnerReportCSV } from "@/lib/export-utils";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
-interface OwnerReport {
-  ownerId: number;
-  startDate: string;
-  endDate: string;
-  propertyReports: PropertyReportItem[];
-  totals: ReportTotals;
-}
-
-interface PropertyReportItem {
-  propertyId: number;
-  propertyName: string;
-  reservations: ReservationSummary[];
-  revenue: number;
-  cleaningCosts: number;
-  checkInFees: number;
-  commission: number;
-  teamPayments: number;
-  netProfit: number;
-  occupancyRate: number;
-  availableDays: number;
-  occupiedDays: number;
-}
-
-interface ReservationSummary {
-  id: number;
-  checkInDate: string;
-  checkOutDate: string;
-  guestName: string;
-  totalAmount: number;
-  cleaningFee: number;
-  checkInFee: number;
-  commission: number;
-  teamPayment: number;
-  netAmount: number;
-  platform: string;
-}
-
-interface ReportTotals {
-  totalRevenue: number;
-  totalCleaningCosts: number;
-  totalCheckInFees: number;
-  totalCommission: number;
-  totalTeamPayments: number;
-  totalNetProfit: number;
-  averageOccupancy: number;
-}
+import { OwnerReportModern } from "@/components/reports/owner-report-modern";
 
 // Componente principal
 export default function OwnerReportPage() {
   const { t, i18n } = useTranslation();
-  const isPortuguese = i18n.language?.startsWith("pt");
   const { data: owners, isLoading: isOwnersLoading } = useOwners();
   const [selectedOwner, setSelectedOwner] = useState<string>("");
   const [dateRange, setDateRange] = useState<DateRange>({
@@ -99,55 +36,12 @@ export default function OwnerReportPage() {
     setDateRange(newRange);
   };
   
-  // Cores para os gráficos
-  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
-  
   // Verificar se está carregando os dados
   const isLoading = isOwnersLoading || isReportLoading;
-  
   return (
     <div className="container mx-auto py-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <h1 className="text-2xl font-bold">{t("ownerReport.title", "Relatório Financeiro por Proprietário")}</h1>
-        {ownerReport && (
-          <div className="flex flex-wrap gap-2">
-            <div className="flex gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline">
-                    <Download className="mr-2 h-4 w-4" />
-                    {t("reports.export", "Exportar")}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>{t("reports.exportOptions", "Opções de exportação")}</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => downloadOwnerReportCSV(ownerReport, 'full', i18n.language)}>
-                    {t("reports.exportFull", "Relatório Completo")}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => downloadOwnerReportCSV(ownerReport, 'summary', i18n.language)}>
-                    {t("reports.exportSummary", "Apenas Resumo")}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => downloadOwnerReportCSV(ownerReport, 'properties', i18n.language)}>
-                    {t("reports.exportProperties", "Apenas Propriedades")}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => downloadOwnerReportCSV(ownerReport, 'reservations', i18n.language)}>
-                    {t("reports.exportReservations", "Apenas Reservas")}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  window.print();
-                }}
-              >
-                <FileText className="mr-2 h-4 w-4" />
-                {t("reports.print", "Imprimir")}
-              </Button>
-            </div>
-          </div>
-        )}
       </div>
       
       <Card className="mb-6">
