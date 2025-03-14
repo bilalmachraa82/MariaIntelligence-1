@@ -17,7 +17,8 @@ import {
   Users,
   BarChart3,
   Home,
-  Calendar
+  Calendar,
+  LineChart
 } from "lucide-react";
 
 // Tremor components
@@ -538,14 +539,23 @@ export default function ModernDashboard() {
                 initial="hidden" 
                 animate="visible"
                 className="mt-6"
+                whileHover={{ y: -3, transition: { duration: 0.2 } }}
               >
-                <Card className="hover:shadow-md transition-all bg-gradient-to-br from-background to-background/80 border border-amber-500/20 overflow-hidden relative">
-                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-amber-400"></div>
-                  <div className="absolute -right-20 -top-20 w-40 h-40 rounded-full bg-blue-500/5 filter blur-xl"></div>
-                  <div className="absolute -left-20 -bottom-20 w-40 h-40 rounded-full bg-amber-500/5 filter blur-xl"></div>
-                  <div className="relative z-10">
-                    <Title className="text-foreground/90">{t("dashboard.propertyOccupancy", "Taxa de Ocupação por Propriedade")}</Title>
-                    <div className="h-[300px] mt-4">
+                <Card className="group hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white/95 to-white/90 dark:from-gray-900/95 dark:to-gray-800/90 backdrop-blur-lg border border-amber-500/20 overflow-hidden relative rounded-xl">
+                  <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-amber-400 to-blue-600 animate-gradient-x"></div>
+                  <div className="absolute -right-20 -top-20 w-40 h-40 rounded-full bg-blue-500/10 filter blur-xl group-hover:bg-blue-500/15 transition-all duration-500"></div>
+                  <div className="absolute -left-20 -bottom-20 w-40 h-40 rounded-full bg-amber-500/10 filter blur-xl group-hover:bg-amber-500/15 transition-all duration-500"></div>
+                  <div className="relative z-10 p-2">
+                    <Flex alignItems="center" justifyContent="between" className="mb-2">
+                      <div>
+                        <Title className="text-foreground/90 font-bold">{t("dashboard.propertyOccupancy", "Taxa de Ocupação por Propriedade")}</Title>
+                        <Text className="text-xs text-muted-foreground">Análise de rendimento por imóvel</Text>
+                      </div>
+                      <Badge variant="outline" className="bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800 px-2.5 py-1">
+                        Comparativo
+                      </Badge>
+                    </Flex>
+                    <div className="h-[300px] mt-6 mb-2">
                       {isLoadingStats ? (
                         <div className="w-full h-full flex items-center justify-center">
                           <Skeleton className="h-full w-full" />
@@ -561,10 +571,14 @@ export default function ModernDashboard() {
                           layout="vertical"
                           showLegend
                           showAnimation
+                          animationDuration={1500}
+                          showGridLines={false}
                         />
                       ) : (
-                        <div className="h-full flex items-center justify-center">
-                          <p className="text-muted-foreground">{t("dashboard.noDataAvailable", "Não há dados disponíveis.")}</p>
+                        <div className="h-full flex flex-col items-center justify-center">
+                          <BarChart3 className="h-16 w-16 text-gray-300 dark:text-gray-600 mb-3" />
+                          <p className="text-muted-foreground font-medium">{t("dashboard.noDataAvailable", "Não há dados disponíveis.")}</p>
+                          <Text className="text-xs text-muted-foreground mt-1">Aguardando dados de ocupação por propriedade</Text>
                         </div>
                       )}
                     </div>
@@ -579,19 +593,24 @@ export default function ModernDashboard() {
                   variants={fadeIn} 
                   initial="hidden" 
                   animate="visible"
+                  whileHover={{ y: -3, transition: { duration: 0.2 } }}
                 >
-                  <Card className="hover:shadow-md transition-all bg-gradient-to-br from-background to-background/80 border border-blue-500/20 overflow-hidden relative">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-400"></div>
-                    <div className="absolute -right-20 -top-20 w-40 h-40 rounded-full bg-blue-500/5 filter blur-xl"></div>
-                    <div className="relative z-10">
-                      <Flex alignItems="center" justifyContent="between" className="mb-4">
-                        <Title className="text-foreground/90">{t("dashboard.recentActivity", "Atividade Recente")}</Title>
-                        <Button variant="link" size="sm" onClick={() => alert(t("dashboard.notImplemented", "Funcionalidade não implementada"))}>
+                  <Card className="group hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white/95 to-white/90 dark:from-gray-900/95 dark:to-gray-800/90 backdrop-blur-lg border border-blue-500/20 overflow-hidden relative rounded-xl h-full">
+                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-600 via-indigo-400 to-blue-600 animate-gradient-x"></div>
+                    <div className="absolute -right-20 -top-20 w-40 h-40 rounded-full bg-blue-500/10 filter blur-xl group-hover:bg-blue-500/15 transition-all duration-500"></div>
+                    <div className="absolute -left-20 -bottom-20 w-40 h-40 rounded-full bg-indigo-500/10 filter blur-xl group-hover:bg-indigo-500/15 transition-all duration-500"></div>
+                    <div className="relative z-10 p-2">
+                      <Flex alignItems="center" justifyContent="between" className="mb-2">
+                        <div>
+                          <Title className="text-foreground/90 font-bold">{t("dashboard.recentActivity", "Atividade Recente")}</Title>
+                          <Text className="text-xs text-muted-foreground">Ações realizadas no sistema</Text>
+                        </div>
+                        <Button variant="ghost" size="sm" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-all duration-200" onClick={() => alert(t("dashboard.notImplemented", "Funcionalidade não implementada"))}>
                           {t("dashboard.viewAll", "Ver Tudo")}
                           <ArrowRight className="h-4 w-4 ml-1" />
                         </Button>
                       </Flex>
-                      <div className="space-y-5">
+                      <div className="space-y-4 mt-4">
                         {isLoadingActivities ? (
                           Array.from({ length: 4 }).map((_, i) => (
                             <div key={i} className="flex items-start space-x-3">
@@ -604,26 +623,35 @@ export default function ModernDashboard() {
                           ))
                         ) : activities && activities.length > 0 ? (
                           activities.map((activity: any, index: number) => (
-                            <div key={activity.id} className="flex items-start space-x-3">
-                              <div className="bg-blue-500 bg-opacity-20 backdrop-blur-sm p-2 rounded-full shadow-sm">
-                                {activity.type === 'reservation_created' && <Calendar className="h-5 w-5 text-blue-500" />}
-                                {activity.type === 'property_added' && <Home className="h-5 w-5 text-blue-500" />}
-                                {activity.type === 'owner_added' && <Users className="h-5 w-5 text-blue-500" />}
-                                {activity.type === 'assistant_chat' && <AlertCircle className="h-5 w-5 text-blue-500" />}
+                            <div key={activity.id} className="flex items-start space-x-3 p-2 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 rounded-lg transition-all duration-200 group/item">
+                              <div className="bg-gradient-to-br from-blue-500 to-indigo-600 p-2.5 rounded-full shadow-md group-hover/item:shadow-blue-500/30 transition-all duration-300">
+                                {activity.type === 'reservation_created' && <Calendar className="h-5 w-5 text-white" />}
+                                {activity.type === 'property_added' && <Home className="h-5 w-5 text-white" />}
+                                {activity.type === 'owner_added' && <Users className="h-5 w-5 text-white" />}
+                                {activity.type === 'assistant_chat' && <AlertCircle className="h-5 w-5 text-white" />}
                                 {!['reservation_created', 'property_added', 'owner_added', 'assistant_chat'].includes(activity.type) && 
-                                  <AlertCircle className="h-5 w-5 text-blue-500" />
+                                  <AlertCircle className="h-5 w-5 text-white" />
                                 }
                               </div>
-                              <div>
+                              <div className="flex-1">
                                 <p className="text-sm font-medium">{activity.description}</p>
-                                <p className="text-xs text-muted-foreground">
-                                  {new Date(activity.createdAt).toLocaleString()}
+                                <p className="text-xs text-muted-foreground mt-0.5">
+                                  {new Date(activity.createdAt).toLocaleString(undefined, { 
+                                    day: 'numeric',
+                                    month: 'short',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })}
                                 </p>
                               </div>
                             </div>
                           ))
                         ) : (
-                          <p className="text-center text-muted-foreground">{t("dashboard.noActivities", "Não há atividades recentes.")}</p>
+                          <div className="py-8 flex flex-col items-center justify-center">
+                            <AlertCircle className="h-12 w-12 text-gray-300 dark:text-gray-600 mb-3" />
+                            <p className="text-muted-foreground font-medium">{t("dashboard.noActivities", "Não há atividades recentes.")}</p>
+                            <Text className="text-xs text-muted-foreground mt-1">Todas as suas ações aparecerão aqui</Text>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -635,20 +663,24 @@ export default function ModernDashboard() {
                   variants={fadeIn} 
                   initial="hidden" 
                   animate="visible"
+                  whileHover={{ y: -3, transition: { duration: 0.2 } }}
                 >
-                  <Card className="hover:shadow-md transition-all bg-gradient-to-br from-background to-background/80 border border-indigo-500/20 overflow-hidden relative">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-violet-400"></div>
-                    <div className="absolute -right-20 -top-20 w-40 h-40 rounded-full bg-indigo-500/5 filter blur-xl"></div>
-                    <div className="absolute -left-20 -bottom-20 w-40 h-40 rounded-full bg-violet-500/5 filter blur-xl"></div>
-                    <div className="relative z-10">
-                      <Flex alignItems="center" justifyContent="between" className="mb-4">
-                        <Title className="text-foreground/90">{t("dashboard.recentReservations", "Reservas Recentes")}</Title>
-                        <Button variant="link" size="sm" onClick={() => setLocation("/reservations")}>
+                  <Card className="group hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white/95 to-white/90 dark:from-gray-900/95 dark:to-gray-800/90 backdrop-blur-lg border border-indigo-500/20 overflow-hidden relative rounded-xl h-full">
+                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-600 via-violet-400 to-indigo-600 animate-gradient-x"></div>
+                    <div className="absolute -right-20 -top-20 w-40 h-40 rounded-full bg-indigo-500/10 filter blur-xl group-hover:bg-indigo-500/15 transition-all duration-500"></div>
+                    <div className="absolute -left-20 -bottom-20 w-40 h-40 rounded-full bg-violet-500/10 filter blur-xl group-hover:bg-violet-500/15 transition-all duration-500"></div>
+                    <div className="relative z-10 p-2">
+                      <Flex alignItems="center" justifyContent="between" className="mb-2">
+                        <div>
+                          <Title className="text-foreground/90 font-bold">{t("dashboard.recentReservations", "Reservas Recentes")}</Title>
+                          <Text className="text-xs text-muted-foreground">Últimas reservas registradas</Text>
+                        </div>
+                        <Button variant="ghost" size="sm" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition-all duration-200" onClick={() => setLocation("/reservations")}>
                           {t("dashboard.viewAll", "Ver Tudo")}
                           <ArrowRight className="h-4 w-4 ml-1" />
                         </Button>
                       </Flex>
-                      <div className="space-y-5">
+                      <div className="space-y-4 mt-4">
                         {isLoadingReservations ? (
                           Array.from({ length: 4 }).map((_, i) => (
                             <div key={i} className="flex items-start space-x-3">
@@ -661,21 +693,29 @@ export default function ModernDashboard() {
                           ))
                         ) : recentReservations && recentReservations.length > 0 ? (
                           recentReservations.map((reservation: any) => (
-                            <div key={reservation.id} className="flex items-start space-x-3">
-                              <div className="bg-indigo-500 bg-opacity-20 backdrop-blur-sm p-2 rounded-full shadow-sm">
-                                <Calendar className="h-5 w-5 text-indigo-500" />
+                            <div key={reservation.id} className="flex items-start space-x-3 p-2 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/10 rounded-lg transition-all duration-200 group/item">
+                              <div className="bg-gradient-to-br from-indigo-500 to-violet-600 p-2.5 rounded-full shadow-md group-hover/item:shadow-indigo-500/30 transition-all duration-300">
+                                <CalendarIcon className="h-5 w-5 text-white" />
                               </div>
                               <div className="flex-1">
                                 <Flex alignItems="center" justifyContent="between">
                                   <p className="text-sm font-medium">{reservation.guestName}</p>
-                                  <Badge variant="outline" className="text-xs">
+                                  <Badge variant="outline" className={`text-xs font-medium ${
+                                    reservation.status === 'confirmed' ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800' : 
+                                    reservation.status === 'pending' ? 'bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800' :
+                                    reservation.status === 'cancelled' ? 'bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-800' :
+                                    ''
+                                  }`}>
                                     {reservation.status}
                                   </Badge>
                                 </Flex>
-                                <Flex className="mt-1">
-                                  <Text className="text-xs text-muted-foreground">
-                                    {format(new Date(reservation.checkInDate), "dd/MM/yyyy")} - {format(new Date(reservation.checkOutDate), "dd/MM/yyyy")}
-                                  </Text>
+                                <Flex className="mt-1.5 justify-between">
+                                  <div className="flex items-center">
+                                    <Calendar className="h-3.5 w-3.5 mr-1.5 text-indigo-400" />
+                                    <Text className="text-xs text-muted-foreground">
+                                      {format(new Date(reservation.checkInDate), "dd/MM")} - {format(new Date(reservation.checkOutDate), "dd/MM/yyyy")}
+                                    </Text>
+                                  </div>
                                   <Text className="text-xs font-medium">
                                     {formatCurrency(reservation.totalAmount)}
                                   </Text>
@@ -684,7 +724,11 @@ export default function ModernDashboard() {
                             </div>
                           ))
                         ) : (
-                          <p className="text-center text-muted-foreground">{t("dashboard.noReservations", "Não há reservas recentes.")}</p>
+                          <div className="py-8 flex flex-col items-center justify-center">
+                            <Calendar className="h-12 w-12 text-gray-300 dark:text-gray-600 mb-3" />
+                            <p className="text-muted-foreground font-medium">{t("dashboard.noReservations", "Não há reservas recentes.")}</p>
+                            <Text className="text-xs text-muted-foreground mt-1">As próximas reservas aparecerão aqui</Text>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -702,17 +746,40 @@ export default function ModernDashboard() {
                 custom={2}
                 className="mt-6 grid grid-cols-1 gap-6"
               >
-                <Card>
-                  <Title>Análise Financeira Detalhada</Title>
-                  <p className="text-muted-foreground mt-2">
-                    {t("dashboard.detailedDescription", "Análise detalhada de receitas, despesas e lucratividade por propriedade.")}
-                  </p>
+                <Card className="group hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white/95 to-white/90 dark:from-gray-900/95 dark:to-gray-800/90 backdrop-blur-lg border border-primary/20 overflow-hidden relative rounded-xl">
+                  <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-600 via-indigo-400 to-violet-500 animate-gradient-x"></div>
+                  <div className="absolute -right-40 -top-40 w-80 h-80 rounded-full bg-primary/5 filter blur-3xl group-hover:bg-primary/10 transition-all duration-500"></div>
+                  <div className="absolute -left-40 -bottom-40 w-80 h-80 rounded-full bg-indigo-500/5 filter blur-3xl group-hover:bg-indigo-500/10 transition-all duration-500"></div>
                   
-                  {/* Placeholder for more detailed data */}
-                  <div className="mt-6">
-                    <p className="text-muted-foreground text-center py-10">
-                      {t("dashboard.comingSoon", "Análise detalhada em desenvolvimento. Disponível em breve!")}
-                    </p>
+                  <div className="relative z-10 p-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <Title className="text-foreground/90 font-bold text-2xl">Análise Financeira Detalhada</Title>
+                        <Text className="text-muted-foreground mt-1">
+                          {t("dashboard.detailedDescription", "Análise detalhada de receitas, despesas e lucratividade por propriedade.")}
+                        </Text>
+                      </div>
+                      <Badge variant="outline" className="bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800 px-3 py-1.5">
+                        Premium
+                      </Badge>
+                    </div>
+                    
+                    {/* Placeholder for more detailed data */}
+                    <div className="mt-8 mb-4 text-center">
+                      <LineChart className="h-20 w-20 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+                      <h3 className="text-lg font-semibold mb-2">Análise detalhada em breve</h3>
+                      <p className="text-muted-foreground max-w-xl mx-auto">
+                        {t("dashboard.comingSoon", "Análise detalhada em desenvolvimento. Disponível em breve!")}
+                      </p>
+                      
+                      <Button 
+                        variant="outline" 
+                        className="mt-6 border-primary/30 text-primary hover:bg-primary/5"
+                        onClick={() => alert(t("dashboard.notImplemented", "Funcionalidade não implementada"))}
+                      >
+                        Solicitar acesso antecipado
+                      </Button>
+                    </div>
                   </div>
                 </Card>
               </motion.div>
