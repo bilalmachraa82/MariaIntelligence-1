@@ -63,16 +63,14 @@ export async function buildRagContext(userQuery: string) {
       return `
 Propriedade ID: ${property.id}
 Nome: ${property.name}
-Endereço: ${property.address || 'Não especificado'}
 Proprietário: ${owner ? owner.name : 'Desconhecido'} (ID: ${property.ownerId})
-Tipo: ${property.type || 'Não especificado'}
-Quartos: ${property.bedrooms || 0}
-Casas de banho: ${property.bathrooms || 0}
 Status: ${property.active ? 'Ativa' : 'Inativa'}
 Comissão: ${property.commission || 0}%
 Custo de limpeza: ${property.cleaningCost || 0}€
 Taxa de check-in: ${property.checkInFee || 0}€
 Pagamento à equipa: ${property.teamPayment || 0}€
+Equipa de limpeza: ${property.cleaningTeam || 'Não especificada'}
+Custo fixo mensal: ${property.monthlyFixedCost || 0}€
 `;
     }).join('\n---\n');
     
@@ -198,14 +196,6 @@ export async function mariaAssistant(req: Request, res: Response) {
       });
     }
     
-    // Guardar mensagem do utilizador no histórico (ao início para garantir que é guardada)
-    try {
-      await ragService.saveConversationMessage(message, "user");
-    } catch (ragError) {
-      console.warn("Aviso: Não foi possível guardar a mensagem do utilizador no histórico:", ragError);
-      // Continuamos mesmo se falhar
-    }
-    
     // Variáveis para armazenar os contextos (inicializar com valores padrão)
     let systemContext = "Sistema em modo de contingência. Dados não disponíveis.";
     let conversationContext = "Não foi possível recuperar o histórico de conversas.";
@@ -218,9 +208,11 @@ export async function mariaAssistant(req: Request, res: Response) {
       // Continuar com valor padrão
     }
     
-    // Obter contexto de conversas anteriores usando o serviço RAG (com try/catch para resiliência)
+    // Obter contexto de conversas anteriores usando o serviço RAG melhorado
+    // Agora inclui suporte a consultas similares e conhecimento relevante
     try {
-      conversationContext = await ragService.buildConversationContext(message);
+      // Passamos 15 como limite de mensagens do histórico para ter mais contexto
+      conversationContext = await ragService.buildConversationContext(message, 15);
     } catch (ragError) {
       console.warn("Aviso: Erro ao obter contexto de conversas:", ragError);
       // Continuar com valor padrão
@@ -239,6 +231,7 @@ export async function mariaAssistant(req: Request, res: Response) {
             role: msg.role,
             content: msg.content
           }))
+          .slice(-5) // Limitar a 5 mensagens recentes do front-end para evitar duplicação com o RAG
       : [];
     
     // Determinar se precisamos usar modelo completo ou otimizado
@@ -246,11 +239,38 @@ export async function mariaAssistant(req: Request, res: Response) {
     const isSimpleQuery = message.length < 50 && !message.includes('?') && formattedHistory.length < 3;
     const modelToUse = isSimpleQuery ? "mistral-small-latest" : "mistral-large-latest";
     
+    // Otimização: adicionar dicas de contexto com base em palavras-chave na mensagem
+    let contextHints = "";
+    const lowerMessage = message.toLowerCase();
+    
+    if (lowerMessage.includes('financeiro') || lowerMessage.includes('finança') || 
+        lowerMessage.includes('relatório') || lowerMessage.includes('pagamento')) {
+      contextHints += "\nContexto: O usuário está provavelmente interessado em informações financeiras ou relatórios.";
+    } else if (lowerMessage.includes('reserva') || lowerMessage.includes('hospede') || 
+               lowerMessage.includes('check-in') || lowerMessage.includes('check-out')) {
+      contextHints += "\nContexto: O usuário está provavelmente interessado em informações sobre reservas ou hóspedes.";
+    } else if (lowerMessage.includes('propriedade') || lowerMessage.includes('apartamento') || 
+               lowerMessage.includes('casa') || lowerMessage.includes('local')) {
+      contextHints += "\nContexto: O usuário está provavelmente interessado em informações sobre propriedades.";
+    } else if (lowerMessage.includes('limpeza') || lowerMessage.includes('manutenção') || 
+               lowerMessage.includes('equipe') || lowerMessage.includes('serviço')) {
+      contextHints += "\nContexto: O usuário está provavelmente interessado em informações sobre equipes de limpeza ou manutenção.";
+    }
+    
     // Construir mensagens para a API incluindo o sistema, contexto RAG e histórico
     const messages = [
-      { role: "system", content: MARIA_SYSTEM_PROMPT },
-      { role: "system", content: `DADOS ATUAIS DO SISTEMA:\n${systemContext}` },
-      { role: "system", content: `HISTÓRICO DE CONVERSAS:\n${conversationContext}` },
+      { 
+        role: "system", 
+        content: MARIA_SYSTEM_PROMPT + contextHints // Adicionar dicas de contexto
+      },
+      { 
+        role: "system", 
+        content: `DADOS ATUAIS DO SISTEMA (${new Date().toLocaleDateString('pt-PT')}):\n${systemContext}`
+      },
+      { 
+        role: "system", 
+        content: `HISTÓRICO DE CONVERSAS E CONHECIMENTO RELEVANTE:\n${conversationContext}`
+      },
       ...formattedHistory,
       { role: "user", content: message }
     ];
@@ -271,16 +291,20 @@ export async function mariaAssistant(req: Request, res: Response) {
     // Fazer a chamada à API com tratamento de erro específico
     let reply = "";
     try {
+      console.log(`Utilizando modelo ${modelToUse} para resposta ao usuário`);
+      
       const response = await mistral.chat.complete({
         model: modelToUse,
         messages: messages,
         temperature: 0.7, // Equilibrio entre criatividade e consistência
-        maxTokens: 1024, // Resposta detalhada 
+        maxTokens: 1200, // Aumentando para respostas mais detalhadas
         safePrompt: false // Permitir personalidade definida no prompt
       });
       
-      // Extrair a resposta
-      reply = response.choices[0]?.message.content || "Não foi possível gerar uma resposta.";
+      // Extrair a resposta com verificação de tipos
+      const content = response.choices && response.choices[0]?.message?.content;
+      reply = typeof content === 'string' ? content : "Não foi possível gerar uma resposta.";
+      
     } catch (mistralError: any) {
       console.error("Erro na API Mistral:", mistralError);
       
@@ -295,11 +319,12 @@ export async function mariaAssistant(req: Request, res: Response) {
               { role: "user", content: message }
             ],
             temperature: 0.5,
-            maxTokens: 512
+            maxTokens: 600
           });
           
-          reply = fallbackResponse.choices[0]?.message.content || 
-                  "Desculpe, estou com dificuldades técnicas. Por favor, tente novamente em breve.";
+          const fallbackContent = fallbackResponse.choices && fallbackResponse.choices[0]?.message?.content;
+          reply = typeof fallbackContent === 'string' ? fallbackContent : 
+                 "Desculpe, estou com dificuldades técnicas. Por favor, tente novamente em breve.";
         } catch (fallbackError) {
           console.error("Erro também no modelo de fallback:", fallbackError);
           throw mistralError; // Re-lançar o erro original
@@ -307,6 +332,27 @@ export async function mariaAssistant(req: Request, res: Response) {
       } else {
         throw mistralError; // Re-lançar o erro se não for relacionado ao modelo
       }
+    }
+    
+    // Extrair informações-chave para armazenar no conhecimento (quando apropriado)
+    // Fazemos isso para conversas informativas que possam ser úteis para outros usuários
+    try {
+      const isInformative = reply.length > 150 && 
+                           (reply.includes("Aqui está") || 
+                            reply.includes("A resposta é") || 
+                            reply.includes("Posso explicar"));
+      
+      if (isInformative) {
+        // Armazenar como conhecimento para uso futuro no RAG
+        await ragService.addKnowledge(
+          `Pergunta: ${message}\nResposta: ${reply}`, 
+          "chat_history",
+          { source: "chat", date: new Date().toISOString() }
+        );
+      }
+    } catch (knowledgeError) {
+      console.warn("Aviso: Não foi possível adicionar ao conhecimento:", knowledgeError);
+      // Continuar normalmente
     }
     
     // Salvar a resposta do assistente no histórico de conversas

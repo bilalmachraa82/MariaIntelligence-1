@@ -63,7 +63,9 @@ export class MistralService {
         maxTokens: 4000
       });
 
-      return response.choices[0].message.content || "";
+      // Lidar corretamente com o tipo de retorno
+      const content = response.choices && response.choices[0]?.message?.content;
+      return typeof content === 'string' ? content : "Não foi possível extrair o texto.";
     } catch (error: any) {
       console.error("Erro ao extrair texto do PDF:", error);
       
@@ -86,7 +88,10 @@ export class MistralService {
           maxTokens: 2000
         });
         
-        return (response.choices[0].message.content || "") + "\n[NOTA: Documento truncado devido ao tamanho]";
+        // Lidar corretamente com o tipo de retorno
+        const fallbackContent = response.choices && response.choices[0]?.message?.content;
+        const extractedText = typeof fallbackContent === 'string' ? fallbackContent : "Texto não extraído";
+        return extractedText + "\n[NOTA: Documento truncado devido ao tamanho]";
       }
       
       throw new Error(`Falha na extração de texto: ${error.message}`);
@@ -131,7 +136,21 @@ export class MistralService {
         responseFormat: { type: "json_object" }
       });
 
-      const parsedData = JSON.parse(response.choices[0].message.content || "{}");
+      // Extrair e verificar o conteúdo da resposta
+      const content = response.choices && response.choices[0]?.message?.content;
+      if (!content || typeof content !== 'string') {
+        console.warn("Aviso: Resposta vazia ou inválida do modelo Mistral");
+        return {}; // Retornar objeto vazio se não houver resposta válida
+      }
+      
+      // Analisar o JSON com tratamento de erros
+      let parsedData;
+      try {
+        parsedData = JSON.parse(content);
+      } catch (jsonError) {
+        console.error("Erro ao analisar JSON da resposta:", jsonError);
+        return {}; // Retornar objeto vazio em caso de erro no parsing
+      }
       
       // Garantir que os campos numéricos sejam processados corretamente
       const numericFields = ['totalAmount', 'platformFee', 'cleaningFee', 'checkInFee', 'commissionFee', 'teamPayment', 'numGuests'];
