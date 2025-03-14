@@ -1,5 +1,14 @@
-import Dashboard from "@/components/dashboard";
+import ModernDashboard from "@/components/dashboard/modern-dashboard";
+import { motion } from "framer-motion";
 
 export default function DashboardPage() {
-  return <Dashboard />;
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <ModernDashboard />
+    </motion.div>
+  );
 }
