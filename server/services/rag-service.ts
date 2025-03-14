@@ -338,31 +338,197 @@ export class RagService {
   /**
    * Constrói o contexto RAG para uso no assistente
    * Combina histórico de conversas e conhecimento relevante
+   * 
+   * @param userQuery Consulta do usuário
+   * @param maxConversations Número máximo de conversas a incluir
+   * @returns Contexto formatado para o assistente
    */
-  async buildConversationContext(userQuery: string): Promise<string> {
+  async buildConversationContext(userQuery: string, maxConversations: number = 10): Promise<string> {
     try {
-      // 1. Recupera o histórico de conversas recentes
-      const conversationHistory = await this.getRecentConversationHistory(10);
+      // 1. Salva a consulta atual para histórico futuro (logo no início para garantir o registro)
+      await this.saveConversationMessage(userQuery, "user");
       
-      // 2. Formata o histórico para um formato legível
+      // 2. Recupera o histórico de conversas recentes
+      const conversationHistory = await this.getRecentConversationHistory(maxConversations);
+      
+      // 3. Formata o histórico para um formato legível
       let conversationContext = "Histórico de conversa recente:\n";
       
       if (conversationHistory.length > 0) {
         conversationHistory.forEach(msg => {
           const role = msg.role === "user" ? "Usuário" : "Assistente";
-          conversationContext += `${role}: ${msg.message}\n`;
+          const date = new Date(msg.timestamp).toLocaleString('pt-PT', {
+            day: '2-digit', 
+            month: '2-digit',
+            hour: '2-digit', 
+            minute: '2-digit'
+          });
+          conversationContext += `[${date}] ${role}: ${msg.message}\n`;
         });
       } else {
         conversationContext += "Nenhuma conversa anterior.\n";
       }
       
-      // 3. Adiciona a consulta atual
-      await this.saveConversationMessage(userQuery, "user");
+      // 4. Tenta encontrar conhecimento relevante para a consulta (busca semântica)
+      try {
+        // Este é um placeholder para a busca semântica que será implementada quando pgvector estiver disponível
+        // Por enquanto, usamos uma busca por palavras-chave simples
+        
+        // Extrair palavras-chave da consulta (palavras com mais de 3 caracteres)
+        const keywords = userQuery.toLowerCase()
+          .split(/\s+/)
+          .filter(word => word.length > 3)
+          .filter(word => !['como', 'qual', 'onde', 'quando', 'quem', 'porque', 'para', 'sobre', 'pelo', 'pela', 'esse', 'esta', 'isto'].includes(word));
+        
+        // Se temos palavras-chave, vamos tentar encontrar conhecimento relevante
+        if (keywords.length > 0) {
+          try {
+            // Buscar conhecimento relevante (simulação básica, será substituída por busca vetorial)
+            const conditions = keywords.map(word => 
+              like(knowledgeEmbeddings.content, `%${word}%`)
+            );
+            
+            const relevantKnowledge = await db
+              .select()
+              .from(knowledgeEmbeddings)
+              .where(or(...conditions))
+              .limit(3);
+            
+            if (relevantKnowledge && relevantKnowledge.length > 0) {
+              conversationContext += "\nInformações relevantes encontradas:\n";
+              
+              relevantKnowledge.forEach(knowledge => {
+                conversationContext += `---\nTipo: ${knowledge.contentType}\n${knowledge.content}\n---\n`;
+              });
+            }
+          } catch (dbError: any) {
+            // Ignorar erro de tabela não existente, tratamos como se não tivéssemos dados
+            if (dbError.code !== '42P01') {
+              console.warn("Erro na busca de conhecimento:", dbError);
+            }
+          }
+        }
+      } catch (knowledgeError) {
+        console.warn("Erro ao buscar conhecimento relevante:", knowledgeError);
+        // Continuar mesmo sem o conhecimento adicional
+      }
+      
+      // 5. Adicionar consultas frequentes semelhantes (se disponíveis)
+      try {
+        const similarQuery = await this.findSimilarQuery(userQuery);
+        
+        if (similarQuery) {
+          conversationContext += "\nConsulta similar anterior:\n";
+          conversationContext += `Pergunta: ${similarQuery.query}\n`;
+          conversationContext += `Resposta: ${similarQuery.response}\n`;
+          
+          // Incrementar frequência da consulta similar
+          try {
+            await db
+              .update(queryEmbeddings)
+              .set({ 
+                frequency: sql`${queryEmbeddings.frequency} + 1`,
+                lastUsed: new Date()
+              })
+              .where(eq(queryEmbeddings.id, similarQuery.id));
+          } catch (updateError) {
+            console.warn("Erro ao atualizar frequência de consulta:", updateError);
+          }
+        }
+      } catch (queryError) {
+        console.warn("Erro ao buscar consultas similares:", queryError);
+        // Continuar mesmo sem consultas similares
+      }
       
       return conversationContext;
     } catch (error) {
       console.error("Erro ao construir contexto de conversa:", error);
-      return ""; // Em caso de erro, retorna contexto vazio
+      return "Histórico de conversas não disponível devido a um erro técnico.";
+    }
+  }
+  
+  /**
+   * Adiciona novo conhecimento ao sistema RAG
+   * 
+   * @param content Conteúdo do conhecimento
+   * @param contentType Tipo de conteúdo (faq, policy, procedure, etc.)
+   * @param metadata Metadados adicionais
+   * @returns ID do conhecimento adicionado
+   */
+  async addKnowledge(content: string, contentType: string = "faq", metadata: Record<string, any> = {}): Promise<number> {
+    try {
+      // Verificar se o conteúdo não está vazio
+      if (!content || content.trim().length === 0) {
+        throw new Error("O conteúdo não pode estar vazio");
+      }
+      
+      // Adicionar metadados automáticos
+      const enrichedMetadata = {
+        ...metadata,
+        added_at: new Date().toISOString(),
+        word_count: content.split(/\s+/).length,
+        source: metadata.source || 'manual_input'
+      };
+      
+      // Salvar o conhecimento usando o método existente
+      return await this.saveKnowledge(content, contentType, enrichedMetadata);
+    } catch (error) {
+      console.error("Erro ao adicionar conhecimento:", error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Busca conhecimento relevante para uma consulta
+   * 
+   * @param query Consulta do usuário
+   * @param limit Número máximo de resultados
+   * @returns Array de objetos de conhecimento relevantes
+   */
+  async searchKnowledge(query: string, limit: number = 5): Promise<any[]> {
+    try {
+      // Extrair palavras-chave da consulta
+      const keywords = query.toLowerCase()
+        .split(/\s+/)
+        .filter(word => word.length > 3)
+        .filter(word => !['como', 'qual', 'onde', 'quando', 'quem', 'porque', 'para', 'sobre', 'pelo', 'pela', 'esse', 'esta', 'isto'].includes(word));
+      
+      if (keywords.length === 0) {
+        return [];
+      }
+      
+      try {
+        // Criar condições OR para cada palavra-chave
+        const conditions = keywords.map(word => 
+          like(knowledgeEmbeddings.content, `%${word}%`)
+        );
+        
+        // Executar a consulta
+        const results = await db
+          .select()
+          .from(knowledgeEmbeddings)
+          .where(or(...conditions))
+          .limit(limit);
+        
+        return results.map(item => ({
+          id: item.id,
+          content: item.content,
+          contentType: item.contentType,
+          metadata: item.metadata,
+          relevance: keywords.filter(word => 
+            item.content.toLowerCase().includes(word)
+          ).length / keywords.length // Pontuação simples de relevância
+        })).sort((a, b) => b.relevance - a.relevance);
+      } catch (dbError: any) {
+        if (dbError.code === '42P01') {
+          console.warn("Tabela knowledge_embeddings não existe.");
+          return [];
+        }
+        throw dbError;
+      }
+    } catch (error) {
+      console.error("Erro ao buscar conhecimento:", error);
+      return [];
     }
   }
 }
