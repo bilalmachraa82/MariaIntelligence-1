@@ -834,6 +834,293 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  /**
+   * Endpoint para processamento de documentos financeiros
+   * Suporta faturas, recibos e outros documentos financeiros
+   */
+  app.post("/api/process-financial-document", upload.single('document'), async (req: Request, res: Response) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ 
+          success: false,
+          message: "Nenhum arquivo enviado" 
+        });
+      }
+
+      // Verifica se a chave da API Mistral está disponível
+      if (!process.env.MISTRAL_API_KEY) {
+        return res.status(400).json({ 
+          success: false,
+          message: "Chave da API Mistral não configurada. Configure a chave nas definições." 
+        });
+      }
+
+      // Validar tipo de arquivo
+      const validTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
+      if (!validTypes.includes(req.file.mimetype)) {
+        if (req.file.path) {
+          try {
+            await fs.promises.unlink(req.file.path);
+          } catch (unlinkError) {
+            console.error("Erro ao remover arquivo temporário:", unlinkError);
+          }
+        }
+        
+        return res.status(400).json({
+          success: false,
+          message: "Tipo de arquivo não suportado. Envie um PDF ou imagem (JPEG, PNG)."
+        });
+      }
+
+      // Dados adicionais do formulário
+      const docType = req.body.documentType || 'invoice'; // 'invoice', 'receipt', 'expense'
+      const entityType = req.body.entityType || null; // 'owner', 'supplier'
+      const entityId = req.body.entityId ? parseInt(req.body.entityId) : null;
+      
+      try {
+        // Registrar atividade
+        await storage.createActivity({
+          type: 'financial_document_upload',
+          description: `Upload de documento financeiro: ${req.file.originalname} (${docType})`,
+          entityType: entityType,
+          entityId: entityId
+        });
+
+        // Ler conteúdo do arquivo
+        const filePath = req.file.path;
+        const fileBuffer = await fs.promises.readFile(filePath);
+        const fileBase64 = fileBuffer.toString('base64');
+        
+        // Processar documento usando mistralService
+        console.log(`Processando documento financeiro: ${req.file.originalname} (${req.file.mimetype})`);
+        
+        // Extrair texto do documento
+        let extractedText = '';
+        if (req.file.mimetype.includes('pdf')) {
+          extractedText = await mistralService.extractTextFromPDF(fileBase64);
+        } else if (req.file.mimetype.includes('image')) {
+          extractedText = await mistralService.extractTextFromImage(fileBase64, req.file.mimetype);
+        }
+        
+        if (!extractedText || extractedText.length < 50) {
+          return res.status(400).json({
+            success: false,
+            message: "Não foi possível extrair texto suficiente do documento."
+          });
+        }
+        
+        // Adicionar o texto extraído à base de conhecimento RAG
+        await ragService.addToKnowledgeBase(extractedText, 'financial_document', {
+          filename: req.file.filename,
+          mimeType: req.file.mimetype,
+          uploadDate: new Date(),
+          documentType: docType
+        });
+        
+        // Analisar o documento para extração de dados estruturados
+        // Usamos uma função personalizada para cada tipo de documento financeiro
+        const extractionPrompt = `
+          Você é um assistente especializado em extrair dados de documentos financeiros do tipo ${docType}.
+          Analise o documento a seguir e extraia todos os detalhes relevantes em formato JSON.
+          
+          Extraia os seguintes campos:
+          - issuerName: Nome da empresa/pessoa que emitiu o documento
+          - issuerTaxId: Número de identificação fiscal do emissor (NIF, CNPJ, etc.)
+          - recipientName: Nome do destinatário
+          - recipientTaxId: Número de identificação fiscal do destinatário
+          - documentNumber: Número do documento/fatura
+          - issueDate: Data de emissão no formato YYYY-MM-DD
+          - dueDate: Data de vencimento no formato YYYY-MM-DD (se aplicável)
+          - totalAmount: Valor total (apenas o número)
+          - currency: Moeda (EUR, USD, etc.)
+          - items: Array de itens, cada um com description, quantity, unitPrice, totalPrice
+          - taxes: Informações sobre impostos (IVA, taxa, etc.)
+          - paymentMethod: Método de pagamento mencionado
+          - status: Estado do documento (emitido, pago, vencido, etc.)
+          
+          Para valores monetários, extraia apenas os números, sem símbolos de moeda.
+          Para campos não encontrados no documento, use null.
+        `;
+        
+        const response = await mistralService.client.chat.complete({
+          model: "mistral-large-latest",
+          messages: [
+            { role: "system", content: "Você é um assistente especializado em extração de dados de documentos financeiros." },
+            { role: "user", content: `${extractionPrompt}\n\nTexto do documento:\n${extractedText}` }
+          ],
+          temperature: 0.1,
+          responseFormat: { type: "json_object" }
+        });
+        
+        const content = response.choices?.[0]?.message?.content;
+        let extractedData = {};
+        
+        try {
+          if (content && typeof content === 'string') {
+            extractedData = JSON.parse(content);
+          }
+        } catch (parseError) {
+          console.error("Erro ao processar JSON da resposta:", parseError);
+        }
+        
+        // Retornar os dados extraídos
+        return res.status(200).json({
+          success: true,
+          message: "Documento financeiro processado com sucesso",
+          documentType: docType,
+          file: {
+            filename: req.file.filename,
+            path: req.file.path,
+            mimeType: req.file.mimetype
+          },
+          extractedText: extractedText.substring(0, 500) + '...', // Primeira parte do texto extraído
+          extractedData,
+          entityInfo: {
+            entityType,
+            entityId
+          }
+        });
+        
+      } catch (processingError: any) {
+        console.error("Erro no processamento do documento financeiro:", processingError);
+        
+        // Limpar arquivo em caso de erro
+        if (req.file && req.file.path) {
+          try {
+            await fs.promises.unlink(req.file.path);
+          } catch (unlinkError) {
+            console.error("Erro ao remover arquivo temporário:", unlinkError);
+          }
+        }
+        
+        return res.status(500).json({ 
+          success: false,
+          message: processingError.message || "Erro desconhecido no processamento do documento financeiro"
+        });
+      }
+    } catch (err) {
+      console.error("Erro geral no endpoint de processamento de documentos financeiros:", err);
+      handleError(err, res);
+    }
+  });
+  
+  /**
+   * Endpoint para validação de documento financeiro
+   * Verifica a consistência e corretude dos dados extraídos
+   */
+  app.post("/api/validate-financial-document", async (req: Request, res: Response) => {
+    try {
+      const { documentData, documentType, originalText } = req.body;
+      
+      if (!documentData || !documentType) {
+        return res.status(400).json({
+          success: false,
+          message: "Dados incompletos para validação. Forneça documentData e documentType."
+        });
+      }
+      
+      // Verificar se a chave da API Mistral está disponível
+      if (!process.env.MISTRAL_API_KEY) {
+        return res.status(400).json({ 
+          success: false,
+          message: "Chave da API Mistral não configurada. Configure a chave nas definições." 
+        });
+      }
+      
+      // Construir prompt de validação específico para o tipo de documento
+      let validationPrompt = "";
+      
+      if (documentType === 'invoice') {
+        validationPrompt = `
+          Você é um auditor financeiro especializado em validação de faturas.
+          Verifique os seguintes aspectos da fatura:
+          1. Consistência matemática: o total corresponde à soma dos itens + impostos?
+          2. Dados essenciais: possui emissor, destinatário, data, número e valor total?
+          3. Formatação de datas: estão no formato correto YYYY-MM-DD?
+          4. Formatação de valores: são números sem símbolos de moeda?
+          5. Existem inconsistências nos dados extraídos?
+          
+          Dados extraídos:
+          ${JSON.stringify(documentData, null, 2)}
+          
+          ${originalText ? `Texto original do documento (para referência):
+          ${originalText.substring(0, 1000)}...` : ''}
+        `;
+      } else if (documentType === 'receipt') {
+        validationPrompt = `
+          Você é um auditor financeiro especializado em validação de recibos.
+          Verifique os seguintes aspectos do recibo:
+          1. Consistência dos valores: o total está correto?
+          2. Dados essenciais: possui emissor, data, e valor total?
+          3. Formatação de datas: estão no formato correto YYYY-MM-DD?
+          4. Formatação de valores: são números sem símbolos de moeda?
+          5. Existem inconsistências nos dados extraídos?
+          
+          Dados extraídos:
+          ${JSON.stringify(documentData, null, 2)}
+          
+          ${originalText ? `Texto original do documento (para referência):
+          ${originalText.substring(0, 1000)}...` : ''}
+        `;
+      } else {
+        validationPrompt = `
+          Você é um auditor financeiro especializado em validação de documentos financeiros.
+          Verifique os seguintes aspectos deste documento do tipo ${documentType}:
+          1. Consistência dos valores: o total está correto?
+          2. Dados essenciais: possui todas as informações necessárias?
+          3. Formatação de datas: estão no formato correto YYYY-MM-DD?
+          4. Formatação de valores: são números sem símbolos de moeda?
+          5. Existem inconsistências nos dados extraídos?
+          
+          Dados extraídos:
+          ${JSON.stringify(documentData, null, 2)}
+          
+          ${originalText ? `Texto original do documento (para referência):
+          ${originalText.substring(0, 1000)}...` : ''}
+        `;
+      }
+      
+      const response = await mistralService.client.chat.complete({
+        model: "mistral-medium",
+        messages: [
+          { role: "system", content: "Você é um auditor financeiro especializado." },
+          { role: "user", content: validationPrompt }
+        ],
+        temperature: 0.1,
+        responseFormat: { type: "json_object" }
+      });
+      
+      const content = response.choices?.[0]?.message?.content;
+      let validationResult = {
+        isValid: false,
+        issues: [],
+        suggestions: [],
+        correctedData: null
+      };
+      
+      try {
+        if (content && typeof content === 'string') {
+          validationResult = JSON.parse(content);
+        }
+      } catch (parseError) {
+        console.error("Erro ao processar JSON da resposta de validação:", parseError);
+        return res.status(500).json({
+          success: false,
+          message: "Erro ao processar resposta de validação"
+        });
+      }
+      
+      return res.status(200).json({
+        success: true,
+        validation: validationResult
+      });
+      
+    } catch (err) {
+      console.error("Erro na validação de documento financeiro:", err);
+      handleError(err, res);
+    }
+  });
+
   // ===== ENDPOINTS PARA DOCUMENTOS FINANCEIROS =====
 
   // Listar documentos financeiros com opção de filtros
