@@ -238,7 +238,7 @@ export async function generateDemoReservations(propertyIds: number[], count: num
     const now = new Date();
     // Usar os valores reais do enum de plataformas da schema
     const platforms = ["airbnb", "booking", "direct", "expedia", "other"];
-    const statuses = ["confirmed", "completed", "cancelled", "in_progress"];
+    const statuses = ["pending", "confirmed", "completed", "cancelled"];
     
     for (let i = 0; i < count; i++) {
       const property = randomChoice(properties);
@@ -267,16 +267,16 @@ export async function generateDemoReservations(propertyIds: number[], count: num
       const guestPhone = `+${randomInt(1, 99)} ${randomInt(100000000, 999999999)}`;
       
       // Gerar plataforma e status
-      const platform = randomChoice(platforms);
+      const platform = randomChoice(platforms) as "direct" | "airbnb" | "booking" | "expedia" | "other";
       
       // Status baseado nas datas
-      let status;
+      let status: "pending" | "confirmed" | "cancelled" | "completed";
       if (checkOutDate < now) {
         status = 'completed';
       } else if (checkInDate > now) {
         status = 'confirmed';
       } else {
-        status = 'in_progress';
+        status = 'pending';
       }
       
       // Cancelamento aleatório (aproximadamente 10%)
