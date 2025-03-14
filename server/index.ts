@@ -2,9 +2,16 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
+console.log("Inicializando aplicação...");
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Adicionando rota de teste simples
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', time: new Date().toISOString() });
+  console.log("Rota de saúde acessada");
+});
 
 app.use((req, res, next) => {
   const start = Date.now();
