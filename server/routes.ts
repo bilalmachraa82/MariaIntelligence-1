@@ -489,6 +489,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  import { MistralService } from "./services/mistral.service";
+  import { RAGService } from "./services/rag.service";
+
+  const mistralService = new MistralService();
+  const ragService = new RAGService();
+
   // PDF Upload and Processing
   app.post("/api/upload-pdf", upload.single('pdf'), async (req: Request, res: Response) => {
     try {
@@ -507,11 +513,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const fileBuffer = await fs.promises.readFile(filePath);
         const fileBase64 = fileBuffer.toString('base64');
         
-        // Chamada para a API Mistral para extrair texto do PDF
-        const extractedText = await extractTextFromPDFWithMistral(fileBase64);
+        // Extrair texto do PDF usando Mistral AI
+        const extractedText = await mistralService.extractTextFromPDF(fileBase64);
         
-        // Chamada para a API Mistral para analisar os dados da reserva do texto extraído
-        const parsedData = await parseReservationDataWithMistral(extractedText);
+        // Adicionar o texto extraído à base de conhecimento RAG
+        await ragService.addToKnowledgeBase(extractedText, 'reservation_pdf', {
+          filename: req.file.filename,
+          uploadDate: new Date()
+        });
+        
+        // Analisar dados da reserva
+        const parsedData = await mistralService.parseReservationData(extractedText);
         
         // Encontrar a propriedade correspondente pelo nome
         const properties = await storage.getProperties();
@@ -965,6 +977,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Verificar se o documento existe
       const document = await storage.getFinancialDocument(documentId);
+
+  // Validação contextual de reservas
+  app.post("/api/validate-reservation", async (req: Request, res: Response) => {
+    try {
+      const reservationData = req.body;
+      
+      // Buscar regras da propriedade
+      const property = await storage.getProperty(reservationData.propertyId);
+      if (!property) {
+        return res.status(400).json({ message: "Propriedade não encontrada" });
+      }
+      
+      // Buscar conhecimento similar do RAG
+      const similarContent = await ragService.findSimilarContent(
+        JSON.stringify(reservationData),
+        3
+      );
+      
+      // Validar dados com contexto
+      const validationResult = await mistralService.validateReservationData(
+        reservationData,
+        {
+          property,
+          similarReservations: similarContent
+        }
+      );
+      
+      res.json(validationResult);
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
       if (!document) {
         return res.status(404).json({ message: "Documento financeiro não encontrado" });
       }
