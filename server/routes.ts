@@ -414,25 +414,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Log para diagnóstico removido para reduzir ruído no console
 
-      const totalRevenue = await storage.getTotalRevenue(startDate, endDate);
-      const netProfit = await storage.getNetProfit(startDate, endDate);
-
-      // Vamos tratar a função getOccupancyRate com cuidado adicional
-      let occupancyRate = 0;
-      try {
-        occupancyRate = await storage.getOccupancyRate(undefined, startDate, endDate);
-      } catch (error) {
-        console.error("Erro ao calcular taxa de ocupação:", error);
-        // Continuamos sem quebrar a API
-      }
-
       // Get properties for active property count
       const properties = await storage.getProperties();
       const activeProperties = properties.filter(p => p.active).length;
 
       // Get reservations for this period
       let reservations = await storage.getReservations();
-
+      
+      // Filter reservations by date if parameters are provided
       if (startDate) {
         reservations = reservations.filter(
           r => new Date(r.checkInDate) >= startDate
@@ -443,6 +432,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         reservations = reservations.filter(
           r => new Date(r.checkInDate) <= endDate
         );
+      }
+      
+      // Calculate revenue directly from reservations
+      let confirmedAndCompletedReservations = reservations.filter(
+        r => r.status === "confirmed" || r.status === "completed"
+      );
+      
+      const totalRevenue = confirmedAndCompletedReservations.reduce(
+        (sum, r) => sum + parseFloat(r.totalAmount), 
+        0
+      );
+      
+      const netProfit = confirmedAndCompletedReservations.reduce(
+        (sum, r) => sum + parseFloat(r.netAmount), 
+        0
+      );
+
+      // Vamos tratar a função getOccupancyRate com cuidado adicional
+      let occupancyRate = 0;
+      try {
+        occupancyRate = await storage.getOccupancyRate(undefined, startDate, endDate);
+      } catch (error) {
+        console.error("Erro ao calcular taxa de ocupação:", error);
+        // Continuamos sem quebrar a API
       }
 
       // Get property occupancy rates for top performing properties
