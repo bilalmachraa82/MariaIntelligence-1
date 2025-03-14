@@ -6,7 +6,7 @@ import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { 
   FileUp, 
-  Calendar, 
+  Calendar as CalendarIcon, 
   DollarSign, 
   Percent, 
   AlertCircle,
@@ -16,7 +16,8 @@ import {
   PieChart,
   Users,
   BarChart3,
-  Home
+  Home,
+  Calendar
 } from "lucide-react";
 
 // Tremor components
@@ -169,33 +170,48 @@ export default function ModernDashboard() {
 
   return (
     <div className="mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8 max-w-[1600px]">
-      {/* Header with modern style */}
+      {/* Decorative background elements */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full filter blur-3xl opacity-20"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full filter blur-3xl opacity-20"></div>
+      </div>
+
+      {/* Header with modern glass-morphism style */}
       <motion.div 
-        initial="hidden"
-        animate="visible"
-        variants={fadeIn}
-        custom={0}
-        className="relative"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative bg-background/70 backdrop-blur-sm rounded-2xl p-6 border border-border/30 shadow-lg"
       >
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-500">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-blue-500 to-indigo-500">
               {t("dashboard.title", "Dashboard")}
             </h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-muted-foreground mt-2 max-w-lg text-base">
               {t("dashboard.description", "Visão geral do seu negócio de aluguel de imóveis")}
             </p>
-          </div>
+          </motion.div>
           
-          <div className="flex flex-wrap gap-3">
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="flex flex-wrap gap-3"
+          >
             <Select 
               value={selectedDateRange.label} 
               onValueChange={handleDateRangeChange}
             >
-              <SelectTrigger className="w-[180px] bg-white">
+              <SelectTrigger className="w-[200px] bg-background/70 backdrop-blur-sm border-border/50 hover:bg-background/90 transition-all">
+                <Calendar className="mr-2 h-4 w-4 opacity-70" />
                 <SelectValue placeholder={t("dashboard.period", "Período")} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-background/80 backdrop-blur-sm border-border/30">
                 {dateRanges.map((range) => (
                   <SelectItem key={range.label} value={range.label}>{range.label}</SelectItem>
                 ))}
@@ -205,7 +221,7 @@ export default function ModernDashboard() {
             <Button 
               variant="outline" 
               onClick={() => setLocation("/upload-pdf")}
-              className="whitespace-nowrap"
+              className="whitespace-nowrap bg-background/70 backdrop-blur-sm border-border/50 hover:bg-background/90 transition-all"
             >
               <FileUp className="mr-2 h-4 w-4" />
               {t("pdfUpload.uploadButton", "Importar PDF")}
@@ -213,7 +229,7 @@ export default function ModernDashboard() {
             
             <Button 
               variant="default"
-              className="whitespace-nowrap"
+              className="whitespace-nowrap bg-gradient-to-r from-primary to-blue-500 hover:from-primary/90 hover:to-blue-500/90 transition-all"
               onClick={() => {
                 alert(t("dashboard.exportNotImplemented", 'Exportação de dados implementada na versão completa'));
               }}
@@ -221,7 +237,7 @@ export default function ModernDashboard() {
               <Download className="mr-2 h-4 w-4" />
               {t("dashboard.export", "Exportar")}
             </Button>
-          </div>
+          </motion.div>
         </div>
       </motion.div>
 
@@ -233,7 +249,7 @@ export default function ModernDashboard() {
         custom={1}
       >
         <TabGroup defaultIndex={0} onIndexChange={(index) => setSelectedTab(index === 0 ? "overview" : "details")}>
-          <TabList variant="pills" className="mt-6">
+          <TabList className="mt-6">
             <Tab icon={PieChart}>{t("dashboard.overview", "Visão Geral")}</Tab>
             <Tab icon={BarChart3}>{t("dashboard.details", "Detalhes")}</Tab>
           </TabList>
@@ -248,30 +264,32 @@ export default function ModernDashboard() {
                   initial="hidden" 
                   animate="visible"
                 >
-                  <Card decoration="top" decorationColor="blue" className="hover:shadow-md transition-all">
-                    <Flex alignItems="start">
+                  <Card className="hover:shadow-md transition-all bg-gradient-to-br from-background to-background/80 border border-blue-500/20 overflow-hidden relative">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-blue-400"></div>
+                    <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-blue-500/10 filter blur-xl"></div>
+                    <Flex alignItems="start" className="relative z-10">
                       <div>
-                        <Text>{t("dashboard.totalRevenue", "Receita Total")}</Text>
+                        <Text className="text-muted-foreground font-medium">{t("dashboard.totalRevenue", "Receita Total")}</Text>
                         {isLoadingStats ? (
                           <Skeleton className="h-9 w-32 mt-2" />
                         ) : (
-                          <Metric>{formatCurrency(statistics?.totalRevenue || 0)}</Metric>
+                          <Metric className="text-blue-600 dark:text-blue-400 font-bold">{formatCurrency(statistics?.totalRevenue || 0)}</Metric>
                         )}
                       </div>
-                      <div className="bg-blue-100 p-2 rounded-full">
+                      <div className="bg-blue-500 bg-opacity-20 backdrop-blur-sm p-3 rounded-full shadow-sm">
                         <DollarSign className="h-6 w-6 text-blue-500" />
                       </div>
                     </Flex>
                     {!isLoadingStats && statistics?.revenueChange && (
-                      <Flex className="mt-4 space-x-2">
-                        <div className={`flex text-xs items-center ${statistics.revenueChange > 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
+                      <Flex className="mt-4 space-x-2 relative z-10">
+                        <div className={`flex text-xs items-center ${statistics.revenueChange > 0 ? 'text-emerald-500' : 'text-rose-500'} rounded-full px-2 py-1 ${statistics.revenueChange > 0 ? 'bg-emerald-500/10' : 'bg-rose-500/10'}`}>
                           {statistics.revenueChange > 0 ? 
                             <TrendingUp className="h-4 w-4 mr-1" /> : 
                             <TrendingUp className="h-4 w-4 mr-1 transform rotate-180" />
                           }
                           <span className="font-medium">{Math.abs(statistics.revenueChange)}%</span>
                         </div>
-                        <Text>{t("dashboard.comparedToPrevious", "em relação ao período anterior")}</Text>
+                        <Text className="text-xs text-muted-foreground">{t("dashboard.comparedToPrevious", "em relação ao período anterior")}</Text>
                       </Flex>
                     )}
                   </Card>
@@ -283,30 +301,32 @@ export default function ModernDashboard() {
                   initial="hidden" 
                   animate="visible"
                 >
-                  <Card decoration="top" decorationColor="emerald" className="hover:shadow-md transition-all">
-                    <Flex alignItems="start">
+                  <Card className="hover:shadow-md transition-all bg-gradient-to-br from-background to-background/80 border border-emerald-500/20 overflow-hidden relative">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-emerald-400"></div>
+                    <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-emerald-500/10 filter blur-xl"></div>
+                    <Flex alignItems="start" className="relative z-10">
                       <div>
-                        <Text>{t("dashboard.netProfit", "Lucro Líquido")}</Text>
+                        <Text className="text-muted-foreground font-medium">{t("dashboard.netProfit", "Lucro Líquido")}</Text>
                         {isLoadingStats ? (
                           <Skeleton className="h-9 w-32 mt-2" />
                         ) : (
-                          <Metric>{formatCurrency(statistics?.netProfit || 0)}</Metric>
+                          <Metric className="text-emerald-600 dark:text-emerald-400 font-bold">{formatCurrency(statistics?.netProfit || 0)}</Metric>
                         )}
                       </div>
-                      <div className="bg-emerald-100 p-2 rounded-full">
+                      <div className="bg-emerald-500 bg-opacity-20 backdrop-blur-sm p-3 rounded-full shadow-sm">
                         <TrendingUp className="h-6 w-6 text-emerald-500" />
                       </div>
                     </Flex>
                     {!isLoadingStats && statistics?.profitChange && (
-                      <Flex className="mt-4 space-x-2">
-                        <div className={`flex text-xs items-center ${statistics.profitChange > 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
+                      <Flex className="mt-4 space-x-2 relative z-10">
+                        <div className={`flex text-xs items-center ${statistics.profitChange > 0 ? 'text-emerald-500' : 'text-rose-500'} rounded-full px-2 py-1 ${statistics.profitChange > 0 ? 'bg-emerald-500/10' : 'bg-rose-500/10'}`}>
                           {statistics.profitChange > 0 ? 
                             <TrendingUp className="h-4 w-4 mr-1" /> : 
                             <TrendingUp className="h-4 w-4 mr-1 transform rotate-180" />
                           }
                           <span className="font-medium">{Math.abs(statistics.profitChange)}%</span>
                         </div>
-                        <Text>{t("dashboard.comparedToPrevious", "em relação ao período anterior")}</Text>
+                        <Text className="text-xs text-muted-foreground">{t("dashboard.comparedToPrevious", "em relação ao período anterior")}</Text>
                       </Flex>
                     )}
                   </Card>
@@ -318,25 +338,27 @@ export default function ModernDashboard() {
                   initial="hidden" 
                   animate="visible"
                 >
-                  <Card decoration="top" decorationColor="amber" className="hover:shadow-md transition-all">
-                    <Flex alignItems="start">
+                  <Card className="hover:shadow-md transition-all bg-gradient-to-br from-background to-background/80 border border-amber-500/20 overflow-hidden relative">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-amber-400"></div>
+                    <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-amber-500/10 filter blur-xl"></div>
+                    <Flex alignItems="start" className="relative z-10">
                       <div>
-                        <Text>{t("dashboard.occupancyRate", "Taxa de Ocupação")}</Text>
+                        <Text className="text-muted-foreground font-medium">{t("dashboard.occupancyRate", "Taxa de Ocupação")}</Text>
                         {isLoadingStats ? (
                           <Skeleton className="h-9 w-32 mt-2" />
                         ) : (
-                          <Metric>{Math.round(statistics?.occupancyRate || 0)}%</Metric>
+                          <Metric className="text-amber-600 dark:text-amber-400 font-bold">{Math.round(statistics?.occupancyRate || 0)}%</Metric>
                         )}
                       </div>
-                      <div className="bg-amber-100 p-2 rounded-full">
+                      <div className="bg-amber-500 bg-opacity-20 backdrop-blur-sm p-3 rounded-full shadow-sm">
                         <Percent className="h-6 w-6 text-amber-500" />
                       </div>
                     </Flex>
                     {!isLoadingStats && (
-                      <div className="mt-4">
-                        <Flex className="mt-2">
-                          <Text>{t("dashboard.target", "Meta")}: 75%</Text>
-                          <Text>{Math.round(statistics?.occupancyRate || 0)}%</Text>
+                      <div className="mt-4 relative z-10">
+                        <Flex className="mt-2 items-center justify-between">
+                          <Text className="text-xs text-muted-foreground">{t("dashboard.target", "Meta")}: 75%</Text>
+                          <Text className="text-xs font-medium">{Math.round(statistics?.occupancyRate || 0)}%</Text>
                         </Flex>
                         <ProgressBar value={statistics?.occupancyRate || 0} color="amber" className="mt-2" />
                       </div>
@@ -350,30 +372,32 @@ export default function ModernDashboard() {
                   initial="hidden" 
                   animate="visible"
                 >
-                  <Card decoration="top" decorationColor="indigo" className="hover:shadow-md transition-all">
-                    <Flex alignItems="start">
+                  <Card className="hover:shadow-md transition-all bg-gradient-to-br from-background to-background/80 border border-indigo-500/20 overflow-hidden relative">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-indigo-400"></div>
+                    <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-indigo-500/10 filter blur-xl"></div>
+                    <Flex alignItems="start" className="relative z-10">
                       <div>
-                        <Text>{t("dashboard.totalReservations", "Total de Reservas")}</Text>
+                        <Text className="text-muted-foreground font-medium">{t("dashboard.totalReservations", "Total de Reservas")}</Text>
                         {isLoadingStats ? (
                           <Skeleton className="h-9 w-32 mt-2" />
                         ) : (
-                          <Metric>{statistics?.reservationsCount || 0}</Metric>
+                          <Metric className="text-indigo-600 dark:text-indigo-400 font-bold">{statistics?.reservationsCount || 0}</Metric>
                         )}
                       </div>
-                      <div className="bg-indigo-100 p-2 rounded-full">
+                      <div className="bg-indigo-500 bg-opacity-20 backdrop-blur-sm p-3 rounded-full shadow-sm">
                         <Calendar className="h-6 w-6 text-indigo-500" />
                       </div>
                     </Flex>
                     {!isLoadingStats && statistics?.reservationsChange && (
-                      <Flex className="mt-4 space-x-2">
-                        <div className={`flex text-xs items-center ${statistics?.reservationsChange > 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
+                      <Flex className="mt-4 space-x-2 relative z-10">
+                        <div className={`flex text-xs items-center ${statistics?.reservationsChange > 0 ? 'text-emerald-500' : 'text-rose-500'} rounded-full px-2 py-1 ${statistics?.reservationsChange > 0 ? 'bg-emerald-500/10' : 'bg-rose-500/10'}`}>
                           {statistics?.reservationsChange > 0 ? 
                             <TrendingUp className="h-4 w-4 mr-1" /> : 
                             <TrendingUp className="h-4 w-4 mr-1 transform rotate-180" />
                           }
                           <span className="font-medium">{Math.abs(statistics?.reservationsChange)}%</span>
                         </div>
-                        <Text>{t("dashboard.comparedToPrevious", "em relação ao período anterior")}</Text>
+                        <Text className="text-xs text-muted-foreground">{t("dashboard.comparedToPrevious", "em relação ao período anterior")}</Text>
                       </Flex>
                     )}
                   </Card>
