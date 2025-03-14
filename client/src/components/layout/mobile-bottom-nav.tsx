@@ -24,8 +24,8 @@ export function MobileBottomNav({ onOpenMenu }: MobileBottomNavProps) {
   };
   
   return (
-    <div className="mobile-nav">
-      <div className="mobile-nav-item" onClick={() => handleNavigate("/painel")}>
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around p-2 z-50">
+      <div className="flex flex-col items-center py-1 px-3" onClick={() => handleNavigate("/painel")}>
         <Home className={cn(
           "h-5 w-5 mb-1", 
           isActive("/painel") || isActive("/") 
@@ -42,7 +42,7 @@ export function MobileBottomNav({ onOpenMenu }: MobileBottomNavProps) {
         </span>
       </div>
       
-      <div className="mobile-nav-item" onClick={() => handleNavigate("/propriedades")}>
+      <div className="flex flex-col items-center py-1 px-3" onClick={() => handleNavigate("/propriedades")}>
         <Building2 className={cn(
           "h-5 w-5 mb-1", 
           isActive("/propriedades") 
@@ -59,7 +59,7 @@ export function MobileBottomNav({ onOpenMenu }: MobileBottomNavProps) {
         </span>
       </div>
       
-      <div className="mobile-nav-item" onClick={() => handleNavigate("/reservas")}>
+      <div className="flex flex-col items-center py-1 px-3" onClick={() => handleNavigate("/reservas")}>
         <CalendarDays className={cn(
           "h-5 w-5 mb-1", 
           isActive("/reservas") 
@@ -76,7 +76,7 @@ export function MobileBottomNav({ onOpenMenu }: MobileBottomNavProps) {
         </span>
       </div>
       
-      <div className="mobile-nav-item" onClick={() => handleNavigate("/manutencao/pendentes")}>
+      <div className="flex flex-col items-center py-1 px-3" onClick={() => handleNavigate("/manutencao/pendentes")}>
         <Wrench className={cn(
           "h-5 w-5 mb-1", 
           location.startsWith("/manutencao") 
@@ -93,7 +93,7 @@ export function MobileBottomNav({ onOpenMenu }: MobileBottomNavProps) {
         </span>
       </div>
       
-      <div className="mobile-nav-item" onClick={() => handleNavigate("/pagamentos/saida")}>
+      <div className="flex flex-col items-center py-1 px-3" onClick={() => handleNavigate("/pagamentos/saida")}>
         <BadgeDollarSign className={cn(
           "h-5 w-5 mb-1", 
           location.startsWith("/pagamentos") 
@@ -110,7 +110,7 @@ export function MobileBottomNav({ onOpenMenu }: MobileBottomNavProps) {
         </span>
       </div>
       
-      <div className="mobile-nav-item" onClick={onOpenMenu}>
+      <div className="flex flex-col items-center py-1 px-3" onClick={onOpenMenu}>
         <Menu className="h-5 w-5 mb-1 text-gray-500" />
         <span className="text-xs text-gray-500">
           Menu

@@ -81,8 +81,8 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent side="left" className="p-0 w-[280px]">
-        <SheetHeader className="border-b border-secondary-200 p-4">
-          <SheetTitle className="text-xl font-semibold text-primary-700">
+        <SheetHeader className="border-b border-gray-200 p-4">
+          <SheetTitle className="text-xl font-semibold text-primary">
             Maria Faz
           </SheetTitle>
         </SheetHeader>
@@ -94,8 +94,8 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
               className={cn(
                 "flex items-center px-4 py-2 text-sm font-medium rounded-md group cursor-pointer",
                 location === link.href
-                  ? "bg-primary-50 text-primary-700"
-                  : "text-secondary-700 hover:bg-secondary-100"
+                  ? "bg-primary/10 text-primary"
+                  : "text-gray-700 hover:bg-gray-100"
               )}
               onClick={() => handleLinkClick(link.href)}
             >
@@ -105,16 +105,16 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
           ))}
         </nav>
         
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-secondary-200">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="h-10 w-10 rounded-full bg-primary-200 flex items-center justify-center text-primary-700 font-semibold">
+              <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold">
                 MF
               </div>
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-secondary-700">Admin</p>
-              <p className="text-xs font-medium text-secondary-500">admin@mariafaz.pt</p>
+              <p className="text-sm font-medium text-gray-800">Admin</p>
+              <p className="text-xs font-medium text-gray-500">admin@mariafaz.pt</p>
             </div>
           </div>
         </div>
