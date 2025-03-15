@@ -926,14 +926,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Teste 3: Verificar sistema RAG (Retrieval Augmented Generation)
       try {
-        try {
-          // Importar função para construir contexto RAG
-          const { buildRagContext } = await import('./api/maria-assistant');
-          const ragContext = await buildRagContext("teste de estatísticas e propriedades");
-        } catch (error) {
-          console.error("Error building RAG context:", error);
-        }
+        // Importar função para construir contexto RAG
+        const { buildRagContext } = await import('./api/maria-assistant');
+        const ragContext = await buildRagContext("teste de estatísticas e propriedades");
+        
+        // Se chegou até aqui, o teste foi bem-sucedido
+        tests.push({
+          name: "RAG (Retrieval Augmented Generation)",
+          success: true,
+          details: {
+            contextBuilt: true,
+            contextLength: ragContext ? ragContext.length : 0
+          }
+        });
       } catch (error: any) {
+        console.error("Error building RAG context:", error);
         tests.push({
           name: "RAG (Retrieval Augmented Generation)",
           success: false,
