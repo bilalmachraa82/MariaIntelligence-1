@@ -70,6 +70,8 @@ import { Badge } from "@/components/ui/badge";
 // Custom components
 import { RecentReservations } from "./recent-reservations";
 import { RecentActivity } from "./recent-activity";
+import { RevenueVsProfitChart } from "./revenue-vs-profit-chart";
+import { FinancialDistributionChart } from "./financial-distribution-chart";
 
 // Componentes personalizados
 import { DemoDataManager } from "../demo-data-manager";
@@ -157,18 +159,11 @@ export default function ModernDashboard() {
   // Prepare data for charts
   const revenueData = statistics && Array.isArray(statistics.revenueByMonth) 
     ? statistics.revenueByMonth.map((item: any) => ({
-        month: item.month,
+        name: item.month,
         Receita: item.revenue,
         Lucro: item.profit
       }))
-    : [
-        { month: "Jan", Receita: 5000, Lucro: 2500 },
-        { month: "Fev", Receita: 4200, Lucro: 2100 },
-        { month: "Mar", Receita: 7800, Lucro: 3900 },
-        { month: "Abr", Receita: 6300, Lucro: 3150 },
-        { month: "Mai", Receita: 8900, Lucro: 4450 },
-        { month: "Jun", Receita: 7600, Lucro: 3800 },
-      ];
+    : [];
 
   // Recent reservations data (latest 4)
   const recentReservations = reservations?.slice(0, 4) || [];
@@ -179,26 +174,17 @@ export default function ModernDashboard() {
         { 
           name: 'Receita Líquida', 
           value: statistics.netProfit, 
-          color: "#10b981" // tailwind emerald-500
+          color: "#10b981", // tailwind emerald-500
+          textColor: "#059669"
         },
         { 
           name: 'Custos e Despesas', 
           value: statistics.totalRevenue - statistics.netProfit, 
-          color: "#f43f5e" // tailwind rose-500
+          color: "#f43f5e", // tailwind rose-500
+          textColor: "#e11d48"
         }
       ]
-    : [
-        { 
-          name: 'Receita Líquida', 
-          value: 7800, 
-          color: "#10b981" // tailwind emerald-500
-        },
-        { 
-          name: 'Custos e Despesas', 
-          value: 4300, 
-          color: "#f43f5e" // tailwind rose-500
-        }
-      ];
+    : [];
 
   // Prepare property occupancy data
   const propertyOccupancyData = statistics && Array.isArray(statistics.topProperties) 
@@ -206,13 +192,7 @@ export default function ModernDashboard() {
         name: property.name.length > 15 ? property.name.substring(0, 15) + "..." : property.name,
         Ocupação: property.occupancyRate
       }))
-    : [
-        { name: "Casa na Praia", Ocupação: 85 },
-        { name: "Apartamento Centro", Ocupação: 65 },
-        { name: "Chalé na Montanha", Ocupação: 72 },
-        { name: "Estúdio Urbano", Ocupação: 58 },
-        { name: "Casa de Campo", Ocupação: 78 },
-      ];
+    : [];
 
   // Color palette for charts
   const colorPalette = [
