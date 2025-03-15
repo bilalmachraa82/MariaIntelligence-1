@@ -7,7 +7,10 @@ import { format, addDays } from "date-fns";
 import { useOwners } from "@/hooks/use-owners";
 import { useOwnerReport } from "@/hooks/use-owner-report";
 import { downloadOwnerReportCSV } from "@/lib/export-utils";
+import { downloadOwnerReportPDF } from "@/lib/pdf-export-utils";
 import { OwnerReportModern } from "@/components/reports/owner-report-modern";
+import { Button } from "@/components/ui/button";
+import { FileText, Download } from "lucide-react";
 
 // Componente principal
 export default function OwnerReportPage() {
