@@ -3,7 +3,8 @@ import {
   uploadAndProcessPDF, 
   createReservationFromExtractedData, 
   processPDFWithMistralOCR,
-  processMultiplePDFs 
+  processMultiplePDFs,
+  processReservationFile 
 } from "@/lib/ocr";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
@@ -17,6 +18,14 @@ interface ProcessingResult {
     filename: string;
     path: string;
   };
+  rawText?: string;
+  fromCache?: boolean;
+}
+
+// Interface para opções de processamento
+interface ProcessingOptions {
+  useCache?: boolean;
+  skipQualityCheck?: boolean;
 }
 
 export function usePdfUpload() {
@@ -25,12 +34,18 @@ export function usePdfUpload() {
   const [multipleResults, setMultipleResults] = useState<ProcessingResult[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isMultiMode, setIsMultiMode] = useState(false);
+  const [rawText, setRawText] = useState<string | null>(null);
+  const [processingOptions, setProcessingOptions] = useState<ProcessingOptions>({
+    useCache: true,
+    skipQualityCheck: false
+  });
+  
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   /**
-   * Processa um único arquivo PDF
-   * @param file Arquivo PDF a ser processado
+   * Processa um único arquivo PDF ou imagem com o sistema avançado
+   * @param file Arquivo (PDF ou imagem) a ser processado
    */
   const handleFileUpload = async (file: File) => {
     if (!file) {
@@ -38,52 +53,116 @@ export function usePdfUpload() {
       return;
     }
 
-    if (file.type !== "application/pdf") {
-      setError("Apenas arquivos PDF são permitidos");
-      return;
-    }
-
     try {
       setIsUploading(true);
       setError(null);
       setExtractedData(null);
+      setRawText(null);
       setMultipleResults([]);
       setIsMultiMode(false);
       
-      // Primeiro tentamos processar com o Mistral diretamente
+      // Disparar evento de progresso inicial
+      dispatchProgressEvent(10, 1, file.name);
+      
+      // Usar o novo sistema avançado de processamento
       try {
-        // Usar a função que processa o PDF diretamente com o Mistral AI
-        const result = await processPDFWithMistralOCR(file);
+        // Configurar opções de processamento
+        const options = {
+          useCache: processingOptions.useCache,
+          skipQualityCheck: processingOptions.skipQualityCheck,
+          onProgress: (progress: number) => {
+            dispatchProgressEvent(progress, 1, file.name, progress === 100 ? 1 : 0);
+          }
+        };
+        
+        // Usar a nova função aprimorada que processa PDFs e imagens
+        const result = await processReservationFile(file, options);
+        
+        // Definir dados extraídos e texto bruto
         setExtractedData(result.extractedData);
+        if (result.rawText) {
+          setRawText(result.rawText);
+        }
         
-        toast({
-          title: "PDF Processado com Sucesso (Mistral AI)",
-          description: "Os dados foram extraídos com IA e estão prontos para revisão.",
-        });
-      } catch (mistralError) {
-        console.warn("Falha ao processar com Mistral diretamente, tentando via backend:", mistralError);
+        // Escolher a mensagem baseada em fonte dos dados (cache ou nova análise)
+        if (result.fromCache) {
+          toast({
+            title: "Arquivo Processado (Cache)",
+            description: "Os dados foram recuperados do cache e estão prontos para revisão.",
+          });
+        } else {
+          toast({
+            title: "Arquivo Processado com Sucesso",
+            description: "Os dados foram extraídos com IA e estão prontos para revisão.",
+          });
+        }
+      } catch (advancedError) {
+        console.warn("Falha ao processar com sistema avançado, tentando métodos alternativos:", advancedError);
         
-        // Se falhar, caímos de volta para o método tradicional via backend
-        const result = await uploadAndProcessPDF(file);
-        setExtractedData(result.extractedData);
-        
-        toast({
-          title: "PDF Processado com Sucesso",
-          description: "Os dados foram extraídos e estão prontos para revisão.",
-        });
+        // Tenta processar com Mistral diretamente como fallback
+        try {
+          dispatchProgressEvent(30, 1, file.name);
+          
+          // Método legado para PDFs
+          if (file.type.includes('pdf')) {
+            const result = await processPDFWithMistralOCR(file);
+            setExtractedData(result.extractedData);
+          } 
+          // Método alternativo como último recurso
+          else {
+            const result = await uploadAndProcessPDF(file);
+            setExtractedData(result.extractedData);
+          }
+          
+          dispatchProgressEvent(100, 1, file.name, 1);
+          
+          toast({
+            title: "Arquivo Processado (Método Alternativo)",
+            description: "Os dados foram extraídos usando um método alternativo e estão prontos para revisão.",
+          });
+        } catch (fallbackError) {
+          // Se todos os métodos falharem, relançar o erro original do sistema avançado
+          throw advancedError;
+        }
       }
     } catch (err) {
-      console.error("Erro ao fazer upload do PDF:", err);
-      setError(err instanceof Error ? err.message : "Falha ao processar PDF");
+      console.error("Erro ao processar arquivo:", err);
+      setError(err instanceof Error ? err.message : "Falha ao processar arquivo");
       
       toast({
-        title: "Erro ao Processar PDF",
+        title: "Erro ao Processar Arquivo",
         description: err instanceof Error ? err.message : "Houve um erro ao processar o arquivo.",
         variant: "destructive",
       });
+      
+      // Disparar evento de falha
+      dispatchProgressEvent(100, 1, file.name, 0, 1);
     } finally {
       setIsUploading(false);
     }
+  };
+  
+  /**
+   * Função para disparar eventos de progresso do processamento
+   */
+  const dispatchProgressEvent = (
+    percentage: number, 
+    total: number, 
+    currentFile: string, 
+    success: number = 0, 
+    failure: number = 0
+  ) => {
+    const event = new CustomEvent('pdf-processing-progress', {
+      detail: {
+        processed: success + failure,
+        total,
+        success,
+        failure,
+        currentFile,
+        percentage
+      }
+    });
+    window.dispatchEvent(event);
   };
 
   /**
@@ -96,10 +175,17 @@ export function usePdfUpload() {
       return;
     }
 
-    // Verificar se todos os arquivos são PDFs
-    const nonPdfFiles = files.filter(file => file.type !== "application/pdf");
-    if (nonPdfFiles.length > 0) {
-      setError(`${nonPdfFiles.length} arquivo(s) não são PDFs válidos`);
+    // Verificar se todos os arquivos são formatos suportados
+    const supportedFiles = files.filter(file => 
+      file.type.includes('pdf') || 
+      file.type.includes('image/jpeg') || 
+      file.type.includes('image/png') || 
+      file.type.includes('image/webp')
+    );
+    
+    if (supportedFiles.length < files.length) {
+      const unsupportedCount = files.length - supportedFiles.length;
+      setError(`${unsupportedCount} arquivo(s) não são formatos suportados. Use PDFs, JPEGs, PNGs ou WEBPs.`);
       return;
     }
 
@@ -110,18 +196,83 @@ export function usePdfUpload() {
       setMultipleResults([]);
       setIsMultiMode(true);
       
-      // Processar múltiplos PDFs com o Mistral
-      const results = await processMultiplePDFs(files);
+      // Registrar início do processamento em lote
+      dispatchProgressEvent(0, files.length, files[0].name);
+      
+      // Processar cada arquivo individualmente para maior controle
+      const results = [];
+      let successCount = 0;
+      let failureCount = 0;
+      
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        
+        try {
+          // Atualizar progresso
+          dispatchProgressEvent(
+            Math.round((i / files.length) * 100),
+            files.length,
+            file.name,
+            successCount,
+            failureCount
+          );
+          
+          // Usar a função aprimorada com cache e verificação de qualidade
+          const result = await processReservationFile(file, {
+            useCache: processingOptions.useCache,
+            skipQualityCheck: processingOptions.skipQualityCheck
+          });
+          
+          // Adicionar ao array de resultados
+          results.push({
+            success: true,
+            error: false,
+            extractedData: result.extractedData,
+            rawText: result.rawText,
+            fromCache: result.fromCache,
+            file: {
+              filename: file.name,
+              path: URL.createObjectURL(file)
+            }
+          });
+          
+          successCount++;
+        } catch (err) {
+          console.error(`Erro ao processar arquivo ${file.name}:`, err);
+          
+          // Adicionar resultado com erro
+          results.push({
+            success: false,
+            error: true,
+            message: err instanceof Error ? err.message : "Erro desconhecido no processamento",
+            file: {
+              filename: file.name,
+              path: URL.createObjectURL(file)
+            }
+          });
+          
+          failureCount++;
+        }
+      }
+      
+      // Atualizar progresso final
+      dispatchProgressEvent(
+        100,
+        files.length,
+        "Processamento concluído",
+        successCount,
+        failureCount
+      );
+      
       setMultipleResults(results);
       
-      // Verificar se houve algum erro
-      const successCount = results.filter(r => !r.error).length;
-      const errorCount = results.length - successCount;
+      // Verificar resultados finais
+      // Já temos o contador de sucessos e falhas, então não precisamos recalcular
       
-      if (errorCount > 0) {
+      if (failureCount > 0) {
         toast({
           title: "Processamento parcial",
-          description: `${successCount} de ${files.length} PDFs foram processados com sucesso.`,
+          description: `${successCount} de ${files.length} arquivos foram processados com sucesso.`,
           variant: "default",
         });
       } else {
