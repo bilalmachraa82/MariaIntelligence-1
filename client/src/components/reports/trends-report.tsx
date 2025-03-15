@@ -396,6 +396,69 @@ export function TrendsReport({
     { value: "occupancy", label: t("trendsReport.byOccupancy", "Por Ocupação") }
   ];
   
+  // Função para exportar para CSV
+  const exportToCSV = (data: any[], filename: string) => {
+    // Criar cabeçalhos 
+    const headers = Object.keys(data[0]);
+    
+    // Converter dados para linhas CSV
+    const csvRows = [
+      headers.join(','), // Cabeçalho
+      ...data.map(row => {
+        return headers.map(header => {
+          const cell = row[header];
+          // Formatar células com vírgulas ou aspas
+          if (cell == null) return '';
+          if (typeof cell === 'string' && (cell.includes(',') || cell.includes('"'))) {
+            return `"${cell.replace(/"/g, '""')}"`;
+          }
+          return cell;
+        }).join(',');
+      })
+    ];
+    
+    // Criar blob e iniciar download
+    const csvContent = csvRows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, filename);
+  };
+  
+  // Função para exportar para PDF
+  const exportToPDF = (data: any[], title: string, filename: string) => {
+    const doc = new jsPDF();
+    
+    // Adicionar título
+    doc.setFontSize(16);
+    doc.text(title, 14, 22);
+    
+    // Adicionar data do relatório
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text(
+      `${t("export.generatedOn", "Gerado em")}: ${format(new Date(), "dd/MM/yyyy HH:mm")}`,
+      14, 30
+    );
+    
+    // Preparar dados para a tabela
+    const tableColumns = Object.keys(data[0]).map(key => ({
+      header: key.charAt(0).toUpperCase() + key.slice(1),
+      dataKey: key
+    }));
+    
+    // Adicionar tabela
+    (doc as any).autoTable({
+      startY: 40,
+      columns: tableColumns,
+      body: data,
+      headStyles: { fillColor: [66, 91, 235], textColor: [255, 255, 255] },
+      alternateRowStyles: { fillColor: [240, 245, 255] },
+      margin: { top: 40 },
+    });
+    
+    // Salvar arquivo
+    doc.save(filename);
+  };
+  
   // Renderizar indicador de tendência
   const renderTrend = (value: number) => {
     if (value > 0) {
@@ -503,7 +566,7 @@ export function TrendsReport({
                 );
               }}
             >
-              <FileText className="h-4 w-4" />
+              <Download className="h-4 w-4" />
               {t("export.pdf", "Exportar PDF")}
             </Button>
           </div>
