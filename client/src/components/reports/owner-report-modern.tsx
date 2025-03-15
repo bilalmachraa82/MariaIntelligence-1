@@ -189,25 +189,51 @@ export function OwnerReportModern({
         >
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline">
+              <Button variant="outline" className="bg-primary text-white hover:bg-primary/90">
                 <Download className="mr-2 h-4 w-4" />
                 {t("reports.export", "Exportar")}
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel>{t("reports.exportOptions", "Opções de exportação")}</DropdownMenuLabel>
               <DropdownMenuSeparator />
+              
+              <DropdownMenuLabel className="text-xs font-medium text-muted-foreground pl-3">CSV</DropdownMenuLabel>
               <DropdownMenuItem onClick={() => onExport('full')}>
+                <FileText className="mr-2 h-4 w-4" />
                 {t("reports.exportFull", "Relatório Completo")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onExport('summary')}>
+                <FileText className="mr-2 h-4 w-4" />
                 {t("reports.exportSummary", "Apenas Resumo")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onExport('properties')}>
+                <FileText className="mr-2 h-4 w-4" />
                 {t("reports.exportProperties", "Apenas Propriedades")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onExport('reservations')}>
+                <FileText className="mr-2 h-4 w-4" />
                 {t("reports.exportReservations", "Apenas Reservas")}
+              </DropdownMenuItem>
+              
+              <DropdownMenuSeparator />
+              
+              <DropdownMenuLabel className="text-xs font-medium text-muted-foreground pl-3">PDF</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => downloadOwnerReportPDF(report, 'full', i18n.language)}>
+                <FileType2 className="mr-2 h-4 w-4 text-rose-600" />
+                {t("reports.exportFullPDF", "PDF Completo")}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => downloadOwnerReportPDF(report, 'summary', i18n.language)}>
+                <FileType2 className="mr-2 h-4 w-4 text-rose-600" />
+                {t("reports.exportSummaryPDF", "PDF Resumo")}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => downloadOwnerReportPDF(report, 'properties', i18n.language)}>
+                <FileType2 className="mr-2 h-4 w-4 text-rose-600" />
+                {t("reports.exportPropertiesPDF", "PDF Propriedades")}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => downloadOwnerReportPDF(report, 'reservations', i18n.language)}>
+                <FileType2 className="mr-2 h-4 w-4 text-rose-600" />
+                {t("reports.exportReservationsPDF", "PDF Reservas")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

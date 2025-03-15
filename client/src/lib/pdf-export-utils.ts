@@ -7,6 +7,16 @@ import { OwnerReport, PropertyReportItem, ReservationSummary } from "@/hooks/use
 declare module 'jspdf' {
   interface jsPDF {
     autoTable: (options: any) => jsPDF;
+    lastAutoTable: {
+      finalY: number;
+    };
+    internal: {
+      pageSize: {
+        width: number;
+        height: number;
+      };
+      getNumberOfPages: () => number;
+    };
   }
 }
 
