@@ -1,51 +1,66 @@
 import { useState, useEffect } from 'react';
 
+type Theme = 'light' | 'dark' | 'system';
+
 export function useTheme() {
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    // Verifica localStorage
-    const saved = localStorage.getItem('darkMode');
-    if (saved) {
-      return saved === 'true' ? 'dark' : 'light';
-    }
-    
-    // Verifica tema do sistema
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-    
-    return 'light';
+  const [theme, setTheme] = useState<Theme>(() => {
+    // Recuperar tema do localStorage se disponível
+    const savedTheme = localStorage.getItem('theme') as Theme;
+    return savedTheme || 'system';
   });
 
-  // Observa mudanças na preferência do sistema
+  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
+
+  // Função para atualizar o tema
+  const updateTheme = (newTheme: Theme) => {
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    
+    if (newTheme === 'system') {
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.classList.toggle('dark', systemTheme === 'dark');
+      setResolvedTheme(systemTheme);
+    } else {
+      document.documentElement.classList.toggle('dark', newTheme === 'dark');
+      setResolvedTheme(newTheme);
+    }
+  };
+
+  // Aplicar tema inicial e configurar os listeners
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     
-    const handleChange = () => {
-      const storedTheme = localStorage.getItem('darkMode');
-      if (!storedTheme) {
-        setTheme(mediaQuery.matches ? 'dark' : 'light');
+    const applyTheme = () => {
+      if (theme === 'system') {
+        const systemTheme = mediaQuery.matches ? 'dark' : 'light';
+        document.documentElement.classList.toggle('dark', systemTheme === 'dark');
+        setResolvedTheme(systemTheme);
+      } else {
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        setResolvedTheme(theme);
       }
     };
-    
+
+    applyTheme();
+
+    // Ouvir mudanças no tema do sistema
+    const handleChange = () => {
+      if (theme === 'system') {
+        applyTheme();
+      }
+    };
+
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
-  }, []);
-
-  // Atualiza o tema no DOM
-  useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
   }, [theme]);
 
-  // Função para alternar o tema
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    localStorage.setItem('darkMode', newTheme === 'dark' ? 'true' : 'false');
-    setTheme(newTheme);
+  return {
+    theme,
+    resolvedTheme,
+    setTheme: updateTheme,
+    // Helpers para verificações comuns
+    isDark: resolvedTheme === 'dark',
+    isLight: resolvedTheme === 'light',
+    isSystem: theme === 'system'
   };
-
-  return { theme, toggleTheme };
 }

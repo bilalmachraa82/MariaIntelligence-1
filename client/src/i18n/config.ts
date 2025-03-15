@@ -8,18 +8,39 @@ import enUS from './locales/en-US.json';
 import frFR from './locales/fr-FR.json';
 import esES from './locales/es-ES.json';
 
+// Importando os recursos atualizados
+import ptPTUpdated from './locales/pt-PT-updated.json';
+import enUSUpdated from './locales/en-US-updated.json';
+
+// Mesclar com os recursos atualizados
+const mergedPtPT = { ...ptPT, ...ptPTUpdated };
+const mergedEnUS = { ...enUS, ...enUSUpdated };
+
 const resources = {
   'pt-PT': {
-    translation: ptPT
+    translation: mergedPtPT
   },
   'en-US': {
-    translation: enUS
+    translation: mergedEnUS
   },
   'fr-FR': {
     translation: frFR
   },
   'es-ES': {
     translation: esES
+  },
+  // Adicionar aliases para variantes de idioma
+  'pt': {
+    translation: mergedPtPT
+  },
+  'pt-BR': {
+    translation: mergedPtPT
+  },
+  'en': {
+    translation: mergedEnUS
+  },
+  'en-GB': {
+    translation: mergedEnUS
   }
 };
 
