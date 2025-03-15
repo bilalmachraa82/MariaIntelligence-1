@@ -540,35 +540,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
    */
   app.get("/api/statistics/monthly-revenue", async (req: Request, res: Response) => {
     try {
-      console.log("Processando solicitação de receita por período...");
+      console.log("=========================================================");
+      console.log("INICIANDO PROCESSAMENTO DE RECEITA POR PERÍODO");
+      console.log("=========================================================");
       
       // Pegar parâmetros de filtro de data do request
       const startDateParam = req.query.startDate as string | undefined;
       const endDateParam = req.query.endDate as string | undefined;
       
+      // Log dos parâmetros recebidos
+      console.log(`Parâmetros recebidos: startDate=${startDateParam}, endDate=${endDateParam}`);
+      
       // Definir datas de início e fim
       const startDate = startDateParam ? new Date(startDateParam) : new Date(new Date().getFullYear(), 0, 1);
       const endDate = endDateParam ? new Date(endDateParam) : new Date(new Date().getFullYear(), 11, 31);
       
-      console.log(`Período solicitado: ${startDate.toISOString()} até ${endDate.toISOString()}`);
+      console.log(`Período calculado: ${startDate.toISOString()} até ${endDate.toISOString()}`);
       
       // Calcular a diferença em dias entre as datas
       const dateDiffTime = endDate.getTime() - startDate.getTime();
       const dateDiffDays = Math.ceil(dateDiffTime / (1000 * 3600 * 24));
       
-      console.log(`Diferença em dias: ${dateDiffDays}`);
+      console.log(`Diferença em dias calculada: ${dateDiffDays}`);
       
       // Determinar a granularidade com base na diferença de datas
       let granularity = 'month';
+      console.log(`Determinando granularidade para ${dateDiffDays} dias:`);
       if (dateDiffDays <= 35) { // Aproximadamente um mês
         granularity = 'week';
+        console.log(`- Período curto (${dateDiffDays} dias <= 35) -> granularidade: Semanal`);
       } else if (dateDiffDays <= 90) { // Entre 1 e 3 meses
         granularity = 'biweek'; // Duas semanas
+        console.log(`- Período médio (35 < ${dateDiffDays} dias <= 90) -> granularidade: Quinzenal`);
       } else { // Mais de 3 meses (trimestral, semestral, anual)
         granularity = 'month';
+        console.log(`- Período longo (${dateDiffDays} dias > 90) -> granularidade: Mensal`);
       }
       
-      console.log(`Granularidade escolhida: ${granularity}`);
+      console.log(`Granularidade final escolhida: ${granularity}`);
       
       // Buscar todas as reservas confirmadas ou concluídas
       const reservations = await storage.getReservations();
