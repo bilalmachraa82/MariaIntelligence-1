@@ -54,15 +54,13 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { cn, formatCurrency } from "@/lib/utils";
 import { Card as ShadcnCard, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { DateRange } from "@/components/ui/date-range-picker";
 
 // Definição dos tipos
 interface TrendsReportProps {
   ownerId?: number;
   propertyId?: number;
-  initialDateRange?: {
-    from: Date;
-    to: Date;
-  };
+  initialDateRange?: DateRange;
   isLoading?: boolean;
 }
 
@@ -116,7 +114,7 @@ export function TrendsReport({
   const [selectedProperty, setSelectedProperty] = useState<number | undefined>(propertyId);
   const [showYoY, setShowYoY] = useState<boolean>(true);
   const [sortOption, setSortOption] = useState<string>("revenue");
-  const [dateRange, setDateRange] = useState<any>(
+  const [dateRange, setDateRange] = useState<DateRange>(
     initialDateRange || {
       from: subMonths(new Date(), 12),
       to: new Date()
@@ -457,7 +455,7 @@ export function TrendsReport({
               </Label>
               <div className="border rounded-md p-2 flex gap-2 items-center">
                 <span className="text-sm">
-                  {format(new Date(dateRange.from), "dd/MM/yyyy")} - {format(new Date(dateRange.to), "dd/MM/yyyy")}
+                  {dateRange.from && format(new Date(dateRange.from), "dd/MM/yyyy")} - {dateRange.to && format(new Date(dateRange.to), "dd/MM/yyyy")}
                 </span>
               </div>
             </div>

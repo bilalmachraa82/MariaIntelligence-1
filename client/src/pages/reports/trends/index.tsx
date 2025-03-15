@@ -15,6 +15,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { getQueryFn } from "@/lib/queryClient";
+import { DateRange, DateRangePicker } from "@/components/ui/date-range-picker";
 
 // Função para obter parâmetros da URL
 function useURLParams() {
@@ -43,7 +44,7 @@ export default function TrendsReportPage() {
     const param = getURLParam("propertyId");
     return param ? parseInt(param) : undefined;
   });
-  const [dateRange, setDateRange] = useState({
+  const [dateRange, setDateRange] = useState<DateRange>({
     from: subMonths(new Date(), 12),
     to: new Date()
   });
@@ -95,66 +96,40 @@ export default function TrendsReportPage() {
               <Label htmlFor="date-range" className="mb-2 block">
                 {t("trendsReport.period", "Período")}
               </Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-start text-left font-normal">
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    <span>
-                      {format(dateRange.from, "dd/MM/yyyy")} - {format(dateRange.to, "dd/MM/yyyy")}
-                    </span>
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <div className="p-3">
-                    <div className="space-y-3">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="w-full justify-start"
-                        onClick={() => setDateRange({
-                          from: subMonths(new Date(), 1),
-                          to: new Date()
-                        })}
-                      >
-                        {t("trendsReport.lastMonth", "Último mês")}
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="w-full justify-start"
-                        onClick={() => setDateRange({
-                          from: subMonths(new Date(), 3),
-                          to: new Date()
-                        })}
-                      >
-                        {t("trendsReport.last3Months", "Últimos 3 meses")}
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="w-full justify-start"
-                        onClick={() => setDateRange({
-                          from: subMonths(new Date(), 6),
-                          to: new Date()
-                        })}
-                      >
-                        {t("trendsReport.last6Months", "Últimos 6 meses")}
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="w-full justify-start"
-                        onClick={() => setDateRange({
-                          from: subMonths(new Date(), 12),
-                          to: new Date()
-                        })}
-                      >
-                        {t("trendsReport.lastYear", "Último ano")}
-                      </Button>
-                    </div>
-                  </div>
-                </PopoverContent>
-              </Popover>
+              <DateRangePicker
+                value={dateRange}
+                onChange={setDateRange}
+                presets={[
+                  {
+                    label: t("trendsReport.lastMonth", "Último mês"),
+                    dateRange: {
+                      from: subMonths(new Date(), 1),
+                      to: new Date()
+                    }
+                  },
+                  {
+                    label: t("trendsReport.last3Months", "Últimos 3 meses"),
+                    dateRange: {
+                      from: subMonths(new Date(), 3),
+                      to: new Date()
+                    }
+                  },
+                  {
+                    label: t("trendsReport.last6Months", "Últimos 6 meses"),
+                    dateRange: {
+                      from: subMonths(new Date(), 6),
+                      to: new Date()
+                    }
+                  },
+                  {
+                    label: t("trendsReport.lastYear", "Último ano"),
+                    dateRange: {
+                      from: subMonths(new Date(), 12),
+                      to: new Date()
+                    }
+                  }
+                ]}
+              />
             </div>
             
             {/* Seletor de proprietário */}
