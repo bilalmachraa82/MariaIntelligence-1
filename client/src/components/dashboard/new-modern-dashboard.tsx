@@ -173,6 +173,21 @@ export default function NewModernDashboard() {
         Lucro: item.profit
       }))
     : [];
+    
+  // Determinar o texto do badge de análise conforme a granularidade
+  const getGranularityLabel = () => {
+    if (!monthlyStats || !monthlyStats.granularity) return "Análise Mensal";
+    
+    switch (monthlyStats.granularity) {
+      case 'week':
+        return "Análise Semanal";
+      case 'biweek':
+        return "Análise Quinzenal";
+      case 'month':
+      default:
+        return "Análise Mensal";
+    }
+  };
 
   // Recent reservations data (latest 4)
   const recentReservations = reservations?.slice(0, 4) || [];
@@ -496,7 +511,7 @@ export default function NewModernDashboard() {
                           <Text className="text-xs text-muted-foreground">Tendência financeira ao longo do tempo</Text>
                         </div>
                         <Badge variant="outline" className="bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800 px-2.5 py-1">
-                          Análise Mensal
+                          {getGranularityLabel()}
                         </Badge>
                       </Flex>
                       <div className="h-[300px] mt-6 mb-2">

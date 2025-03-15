@@ -534,11 +534,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   /**
-   * Endpoint para obter receita mensal
-   * Retorna dados de receita e lucro agregados por mês para visualização em gráficos
+   * Endpoint para obter receita mensal ou semanal
+   * Retorna dados de receita e lucro agregados por período para visualização em gráficos
+   * Adapta a granularidade dos dados com base no intervalo (mês, semana, dia)
    */
   app.get("/api/statistics/monthly-revenue", async (req: Request, res: Response) => {
     try {
+      console.log("Processando solicitação de receita por período...");
+      
       // Pegar parâmetros de filtro de data do request
       const startDateParam = req.query.startDate as string | undefined;
       const endDateParam = req.query.endDate as string | undefined;
@@ -546,7 +549,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Definir datas de início e fim
       const startDate = startDateParam ? new Date(startDateParam) : new Date(new Date().getFullYear(), 0, 1);
       const endDate = endDateParam ? new Date(endDateParam) : new Date(new Date().getFullYear(), 11, 31);
-      const year = startDate.getFullYear();
+      
+      console.log(`Período solicitado: ${startDate.toISOString()} até ${endDate.toISOString()}`);
+      
+      // Calcular a diferença em dias entre as datas
+      const dateDiffTime = endDate.getTime() - startDate.getTime();
+      const dateDiffDays = Math.ceil(dateDiffTime / (1000 * 3600 * 24));
+      
+      console.log(`Diferença em dias: ${dateDiffDays}`);
+      
+      // Determinar a granularidade com base na diferença de datas
+      let granularity = 'month';
+      if (dateDiffDays <= 35) { // Aproximadamente um mês
+        granularity = 'week';
+      } else if (dateDiffDays > 90) { // Mais de 3 meses
+        granularity = 'month';
+      } else {
+        granularity = 'biweek'; // Duas semanas
+      }
+      
+      console.log(`Granularidade escolhida: ${granularity}`);
       
       // Buscar todas as reservas confirmadas ou concluídas
       const reservations = await storage.getReservations();
@@ -557,38 +579,115 @@ export async function registerRoutes(app: Express): Promise<Server> {
           && checkInDate <= endDate;
       });
       
-      // Inicializar array com todos os meses
-      const months = [
-        'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 
-        'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
-      ];
+      console.log(`Encontradas ${confirmedReservations.length} reservas no período`);
       
-      // Calcular receita e lucro por mês
-      const monthlyData = months.map((month, index) => {
-        // Filtrar reservas para este mês
-        const monthReservations = confirmedReservations.filter(
-          r => new Date(r.checkInDate).getMonth() === index
-        );
+      let revenueData = [];
+      
+      // Agrupar dados baseado na granularidade
+      if (granularity === 'month') {
+        // Inicializar array com todos os meses
+        const months = [
+          'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 
+          'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
+        ];
         
-        // Calcular receita e lucro total para o mês
-        const revenue = monthReservations.reduce(
-          (sum, r) => sum + parseFloat(r.totalAmount), 0
-        );
+        // Calcular receita e lucro por mês
+        revenueData = months.map((month, index) => {
+          // Filtrar reservas para este mês e ano
+          const monthReservations = confirmedReservations.filter(r => {
+            const checkInDate = new Date(r.checkInDate);
+            return checkInDate.getMonth() === index;
+          });
+          
+          // Calcular receita e lucro total para o mês
+          const revenue = monthReservations.reduce(
+            (sum, r) => sum + parseFloat(r.totalAmount), 0
+          );
+          
+          const profit = monthReservations.reduce(
+            (sum, r) => sum + parseFloat(r.netAmount), 0
+          );
+          
+          return {
+            month,
+            revenue,
+            profit
+          };
+        });
+      } else if (granularity === 'week' || granularity === 'biweek') {
+        // Para dados semanais ou quinzenais, vamos dividir o período em partes iguais
+        const weeks = [];
+        let currentDate = new Date(startDate);
         
-        const profit = monthReservations.reduce(
-          (sum, r) => sum + parseFloat(r.netAmount), 0
-        );
+        // Determinar o intervalo em dias com base na granularidade
+        const interval = granularity === 'week' ? 7 : 14;
         
-        return {
-          month,
-          revenue,
-          profit
-        };
-      });
+        // Criar os períodos semanais ou quinzenais
+        while (currentDate <= endDate) {
+          const periodStart = new Date(currentDate);
+          
+          // Avança para o fim do período (7 ou 14 dias depois)
+          currentDate.setDate(currentDate.getDate() + interval);
+          
+          // Se ultrapassar a data final, ajusta para a data final
+          const periodEnd = currentDate > endDate ? new Date(endDate) : new Date(currentDate);
+          
+          // Formata as datas para legendas
+          const startLabel = `${periodStart.getDate()}/${periodStart.getMonth() + 1}`;
+          const endLabel = `${periodEnd.getDate()}/${periodEnd.getMonth() + 1}`;
+          
+          weeks.push({
+            label: `${startLabel}-${endLabel}`,
+            start: new Date(periodStart),
+            end: new Date(periodEnd)
+          });
+        }
+        
+        // Calcular receita e lucro para cada semana/período
+        revenueData = weeks.map((week) => {
+          // Filtrar reservas para este período
+          const periodReservations = confirmedReservations.filter(r => {
+            const checkInDate = new Date(r.checkInDate);
+            return checkInDate >= week.start && checkInDate <= week.end;
+          });
+          
+          // Calcular receita e lucro total para o período
+          const revenue = periodReservations.reduce(
+            (sum, r) => sum + parseFloat(r.totalAmount), 0
+          );
+          
+          const profit = periodReservations.reduce(
+            (sum, r) => sum + parseFloat(r.netAmount), 0
+          );
+          
+          return {
+            month: week.label, // Usamos o mesmo campo 'month' para compatibilidade
+            revenue,
+            profit
+          };
+        });
+      }
+      
+      // Remover períodos sem dados para melhorar a visualização
+      revenueData = revenueData.filter(d => d.revenue > 0 || d.profit > 0);
+      
+      // Se não houver dados após o filtro, manter pelo menos um registro com zeros
+      if (revenueData.length === 0) {
+        if (granularity === 'month') {
+          revenueData = [{ month: 'Jan', revenue: 0, profit: 0 }];
+        } else {
+          // Para períodos semanais, usar a data inicial
+          const startLabel = `${startDate.getDate()}/${startDate.getMonth() + 1}`;
+          revenueData = [{ month: startLabel, revenue: 0, profit: 0 }];
+        }
+      }
+      
+      console.log(`Retornando ${revenueData.length} períodos de dados`);
       
       res.json({
-        year,
-        revenueByMonth: monthlyData
+        year: startDate.getFullYear(),
+        granularity,
+        revenueByMonth: revenueData
       });
     } catch (err) {
       handleError(err, res);
