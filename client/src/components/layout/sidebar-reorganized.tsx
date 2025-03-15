@@ -32,6 +32,16 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
+// Interface para itens com submenu
+interface NavItem {
+  name: string;
+  href: string;
+  altHref?: string;
+  icon: React.FC<{ className?: string }>;
+  iconColor?: string;
+  submenu?: NavItem[];
+}
+
 interface SidebarItemProps {
   icon: React.FC<{ className?: string }>;
   label: string;
@@ -42,6 +52,7 @@ interface SidebarItemProps {
   iconColor?: string;
   children?: React.ReactNode;
   isSubItem?: boolean;
+  submenu?: NavItem[];
 }
 
 interface SidebarSectionProps {
@@ -84,7 +95,7 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
   };
 
   // Determina se um link está ativo
-  const isActive = (href: string, altHref?: string) => {
+  const checkIfActive = (href: string, altHref?: string) => {
     if (location === href) return true;
     if (altHref && location === altHref) return true;
     
@@ -141,25 +152,65 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
     onClick,
     iconColor = "text-gray-500 dark:text-gray-400",
     children,
-    isSubItem = false
+    isSubItem = false,
+    submenu
   }: SidebarItemProps) => {
+    const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
+    
+    // Verificar se o submenu deve estar aberto baseado na navegação atual
+    useEffect(() => {
+      if (submenu && submenu.some((item) => {
+        // Verificar se o item está ativo
+        const itemIsActive = checkIfActive(item.href, item.altHref);
+        return itemIsActive;
+      })) {
+        setIsSubmenuOpen(true);
+      }
+    }, [location, submenu]);
+    
+    const hasSubmenu = submenu && submenu.length > 0;
+    
     return (
       <>
-        <button
-          className={cn(
-            "flex items-center w-full gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors",
-            isActive
-              ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-foreground font-semibold"
-              : "text-foreground hover:bg-accent hover:text-accent-foreground",
-            isSubItem && "pl-10 text-xs"
+        <div className="relative">
+          <button
+            className={cn(
+              "flex items-center w-full gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors",
+              isActive
+                ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-foreground font-semibold"
+                : "text-foreground hover:bg-accent hover:text-accent-foreground",
+              isSubItem && "pl-10 text-xs"
+            )}
+            onClick={hasSubmenu ? () => setIsSubmenuOpen(!isSubmenuOpen) : onClick}
+          >
+            {!isSubItem && <Icon className={cn("h-5 w-5", isActive ? "text-primary dark:text-primary-foreground" : iconColor)} />}
+            {!collapsed && (
+              <>
+                <span className="flex-1 truncate">{label}</span>
+                {hasSubmenu && (
+                  <ChevronRight className={cn("h-4 w-4 transition-transform", isSubmenuOpen ? "rotate-90" : "")} />
+                )}
+              </>
+            )}
+          </button>
+          
+          {hasSubmenu && isSubmenuOpen && !collapsed && (
+            <div className="pl-4 mt-1 space-y-1">
+              {submenu.map((subItem) => (
+                <SidebarItem
+                  key={subItem.href}
+                  icon={subItem.icon}
+                  label={subItem.name}
+                  href={subItem.href}
+                  isActive={checkIfActive(subItem.href, subItem.altHref)}
+                  onClick={() => navigate(subItem.href)}
+                  iconColor={subItem.iconColor || iconColor}
+                  isSubItem
+                />
+              ))}
+            </div>
           )}
-          onClick={onClick}
-        >
-          {!isSubItem && <Icon className={cn("h-5 w-5", isActive ? "text-primary dark:text-primary-foreground" : iconColor)} />}
-          {!collapsed && (
-            <span className="flex-1 truncate">{label}</span>
-          )}
-        </button>
+        </div>
         {children}
       </>
     );
@@ -208,12 +259,31 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
 
   // Finanças
   const financeNavItems = [
+    // Relatórios financeiros
     {
       name: t("navigation.reports.financial", "Relatórios"),
-      href: isPortuguese ? "/relatorios/proprietario" : "/reports/owner-report",
+      href: isPortuguese ? "/relatorios" : "/reports",
       icon: FileSpreadsheet,
-      iconColor: "text-emerald-500"
+      iconColor: "text-emerald-500",
+      submenu: [
+        {
+          name: t("navigation.reports.owner", "Proprietários"),
+          href: isPortuguese ? "/relatorios/proprietario" : "/reports/owner-report",
+          icon: FileSpreadsheet,
+        },
+        {
+          name: t("navigation.reports.monthly", "Faturas Mensais"),
+          href: isPortuguese ? "/relatorios/faturacao-mensal" : "/reports/monthly-invoice",
+          icon: FileSpreadsheet,
+        },
+        {
+          name: t("navigation.reports.trends", "Tendências"),
+          href: isPortuguese ? "/relatorios/tendencias" : "/reports/trends",
+          icon: FileSpreadsheet,
+        }
+      ]
     },
+    // Pagamentos
     {
       name: t("navigation.payments.income", "Recebimentos"),
       href: isPortuguese ? "/pagamentos/entrada" : "/payments/incoming",
@@ -310,13 +380,13 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
               {mainNavItems.map((item) => (
                 <Button
                   key={item.href}
-                  variant={isActive(item.href, item.altHref) ? "secondary" : "ghost"}
+                  variant={checkIfActive(item.href, item.altHref) ? "secondary" : "ghost"}
                   size="icon"
                   className="w-full h-10"
                   onClick={() => navigate(item.href)}
                 >
                   <item.icon className={cn("h-5 w-5", 
-                    isActive(item.href, item.altHref) 
+                    checkIfActive(item.href, item.altHref) 
                       ? "text-primary" 
                       : item.iconColor
                   )} />
@@ -328,7 +398,7 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
               {/* Finance icon - navegação quando colapsado */}
               <div className="relative">
                 <Button
-                  variant={financeNavItems.some(item => isActive(item.href)) ? "secondary" : "ghost"}
+                  variant={financeNavItems.some(item => checkIfActive(item.href)) ? "secondary" : "ghost"}
                   size="icon"
                   className="w-full h-10"
                   onClick={() => {
@@ -345,7 +415,7 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
               {/* Operation icon - navegação quando colapsado  */}
               <div className="relative">
                 <Button
-                  variant={operationsNavItems.some(item => isActive(item.href)) ? "secondary" : "ghost"}
+                  variant={operationsNavItems.some(item => checkIfActive(item.href)) ? "secondary" : "ghost"}
                   size="icon"
                   className="w-full h-10"
                   onClick={() => {
@@ -365,13 +435,13 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
               {toolsNavItems.map((item) => (
                 <Button
                   key={item.href}
-                  variant={isActive(item.href) ? "secondary" : "ghost"}
+                  variant={checkIfActive(item.href) ? "secondary" : "ghost"}
                   size="icon"
                   className="w-full h-10"
                   onClick={() => navigate(item.href)}
                 >
                   <item.icon className={cn("h-5 w-5", 
-                    isActive(item.href) 
+                    checkIfActive(item.href) 
                       ? "text-primary" 
                       : item.iconColor
                   )} />
@@ -384,13 +454,13 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
               {otherNavItems.map((item) => (
                 <Button
                   key={item.href}
-                  variant={isActive(item.href) ? "secondary" : "ghost"}
+                  variant={checkIfActive(item.href) ? "secondary" : "ghost"}
                   size="icon"
                   className="w-full h-10"
                   onClick={() => navigate(item.href)}
                 >
                   <item.icon className={cn("h-5 w-5", 
-                    isActive(item.href) 
+                    checkIfActive(item.href) 
                       ? "text-primary" 
                       : item.iconColor
                   )} />
@@ -429,7 +499,7 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
                     label={item.name}
                     href={item.href}
                     altHref={item.altHref}
-                    isActive={isActive(item.href, item.altHref)}
+                    isActive={checkIfActive(item.href, item.altHref)}
                     onClick={() => navigate(item.href)}
                     iconColor={item.iconColor}
                   />
@@ -468,10 +538,11 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
                         icon={item.icon}
                         label={item.name}
                         href={item.href}
-                        isActive={isActive(item.href)}
+                        isActive={checkIfActive(item.href)}
                         onClick={() => navigate(item.href)}
                         iconColor={item.iconColor}
                         isSubItem
+                        submenu={item.submenu}
                       />
                     ))}
                   </div>
@@ -508,7 +579,7 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
                         icon={item.icon}
                         label={item.name}
                         href={item.href}
-                        isActive={isActive(item.href)}
+                        isActive={checkIfActive(item.href)}
                         onClick={() => navigate(item.href)}
                         iconColor={item.iconColor}
                         isSubItem
@@ -529,7 +600,7 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
                     icon={item.icon}
                     label={item.name}
                     href={item.href}
-                    isActive={isActive(item.href)}
+                    isActive={checkIfActive(item.href)}
                     onClick={() => navigate(item.href)}
                     iconColor={item.iconColor}
                   />
@@ -547,7 +618,7 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
                     icon={item.icon}
                     label={item.name}
                     href={item.href}
-                    isActive={isActive(item.href)}
+                    isActive={checkIfActive(item.href)}
                     onClick={() => navigate(item.href)}
                     iconColor={item.iconColor}
                   />
