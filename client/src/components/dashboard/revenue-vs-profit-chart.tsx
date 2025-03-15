@@ -16,6 +16,9 @@ import {
   Legend as ReLegend
 } from 'recharts';
 
+// Import correct Recharts types
+import { CategoricalChartFunc } from 'recharts/types/chart/generateCategoricalChart';
+
 // Tipo para os dados do gráfico
 interface ChartData {
   name: string;
@@ -70,13 +73,25 @@ export function RevenueVsProfitChart({ data, isLoading }: RevenueVsProfitChartPr
     // Poderíamos abrir um modal ou mostrar mais informações
   };
 
+  // Define interface para propriedades do tooltip
+  interface CustomTooltipProps {
+    active?: boolean;
+    payload?: Array<{
+      name: string;
+      value: number;
+      color: string;
+      dataKey: string;
+    }>;
+    label?: string;
+  }
+  
   // Tooltip customizado para os pontos do gráfico
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
           <p className="font-medium text-sm mb-2">{label}</p>
-          {payload.map((entry: any, index: number) => (
+          {payload.map((entry, index) => (
             <div key={`tooltip-${index}`} className="flex items-center gap-2 text-sm">
               <div 
                 className="w-3 h-3 rounded-full" 
@@ -118,10 +133,10 @@ export function RevenueVsProfitChart({ data, isLoading }: RevenueVsProfitChartPr
         <ResponsiveContainer width="100%" height="100%" minHeight={200}>
           <ReAreaChart
             data={data}
-            margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
-            onClick={(data: any) => {
-              if (data && data.activePayload && data.activePayload.length) {
-                const entry = data.activePayload[0];
+            onClick={(event: any) => {
+              // Using the Recharts specific typing 
+              if (event && event.activePayload && event.activePayload.length) {
+                const entry = event.activePayload[0];
                 if (entry.dataKey && entry.payload) {
                   handlePointClick(
                     entry.dataKey as string,
