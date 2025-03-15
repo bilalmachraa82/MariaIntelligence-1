@@ -113,19 +113,29 @@ export default function NewModernDashboard() {
   const { t } = useTranslation();
   const [selectedTab, setSelectedTab] = useState("overview");
 
-  // Fetch statistics
+  // Fetch statistics with staleTime and cache configuration
   const { data: statistics, isLoading: isLoadingStats } = useQuery({
     queryKey: ["/api/statistics", selectedDateRange.startDate, selectedDateRange.endDate],
+    staleTime: 0, // Sempre considera os dados obsoletos para forçar nova busca
+    cacheTime: 0, // Não armazena em cache
+    refetchOnWindowFocus: true, // Atualiza quando a janela recebe foco
+    refetchOnMount: true, // Atualiza quando o componente é montado
   });
 
   // Fetch recent reservations
   const { data: reservations, isLoading: isLoadingReservations } = useQuery({
     queryKey: ["/api/reservations"],
+    staleTime: 0,
+    cacheTime: 30 * 1000, // Cache de 30 segundos
+    refetchOnWindowFocus: true,
   });
 
   // Fetch recent activities
   const { data: activities, isLoading: isLoadingActivities } = useQuery({
     queryKey: ["/api/activities?limit=4"],
+    staleTime: 0,
+    cacheTime: 30 * 1000,
+    refetchOnWindowFocus: true,
   });
 
   // Handle date range change
