@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
 import { format, subDays } from "date-fns";
 import { motion } from "framer-motion";
 
@@ -143,6 +144,15 @@ export default function NewModernDashboard() {
     const selectedRange = dateRanges.find(range => range.label === value);
     if (selectedRange) {
       setSelectedDateRange(selectedRange);
+      
+      // Invalidar as consultas para forçar uma nova requisição com as novas datas
+      queryClient.invalidateQueries({
+        queryKey: ["/api/statistics"]
+      });
+      
+      queryClient.invalidateQueries({
+        queryKey: ["/api/statistics/monthly-revenue"]
+      });
     }
   };
 
