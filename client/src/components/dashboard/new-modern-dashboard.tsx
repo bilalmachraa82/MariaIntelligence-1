@@ -117,7 +117,7 @@ export default function NewModernDashboard() {
   const { data: statistics, isLoading: isLoadingStats } = useQuery({
     queryKey: ["/api/statistics", selectedDateRange.startDate, selectedDateRange.endDate],
     staleTime: 0, // Sempre considera os dados obsoletos para forçar nova busca
-    cacheTime: 0, // Não armazena em cache
+    gcTime: 0, // Não armazena em cache (gcTime substituiu cacheTime na v5)
     refetchOnWindowFocus: true, // Atualiza quando a janela recebe foco
     refetchOnMount: true, // Atualiza quando o componente é montado
   });
@@ -126,7 +126,7 @@ export default function NewModernDashboard() {
   const { data: reservations, isLoading: isLoadingReservations } = useQuery({
     queryKey: ["/api/reservations"],
     staleTime: 0,
-    cacheTime: 30 * 1000, // Cache de 30 segundos
+    gcTime: 30 * 1000, // Cache de 30 segundos
     refetchOnWindowFocus: true,
   });
 
@@ -134,7 +134,7 @@ export default function NewModernDashboard() {
   const { data: activities, isLoading: isLoadingActivities } = useQuery({
     queryKey: ["/api/activities?limit=4"],
     staleTime: 0,
-    cacheTime: 30 * 1000,
+    gcTime: 30 * 1000,
     refetchOnWindowFocus: true,
   });
 
@@ -149,6 +149,10 @@ export default function NewModernDashboard() {
   // Buscar dados de receita mensal da API
   const { data: monthlyStats, isLoading: isLoadingMonthly } = useQuery({
     queryKey: ["/api/statistics/monthly-revenue", selectedDateRange.startDate, selectedDateRange.endDate],
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
   
   // Prepare data for charts
