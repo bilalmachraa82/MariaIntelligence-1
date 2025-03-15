@@ -505,6 +505,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  /**
+   * Endpoint para obter receita mensal
+   * Retorna dados de receita e lucro agregados por mês para visualização em gráficos
+   */
+  app.get("/api/statistics/monthly-revenue", async (req: Request, res: Response) => {
+    try {
+      // Parametros opcionais de data
+      const year = req.query.year ? Number(req.query.year) : new Date().getFullYear();
+      
+      // Buscar todas as reservas confirmadas ou concluídas
+      const reservations = await storage.getReservations();
+      const confirmedReservations = reservations.filter(
+        r => (r.status === "confirmed" || r.status === "completed") 
+          && new Date(r.checkInDate).getFullYear() === year
+      );
+      
+      // Inicializar array com todos os meses
+      const months = [
+        'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 
+        'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
+      ];
+      
+      // Calcular receita e lucro por mês
+      const monthlyData = months.map((month, index) => {
+        // Filtrar reservas para este mês
+        const monthReservations = confirmedReservations.filter(
+          r => new Date(r.checkInDate).getMonth() === index
+        );
+        
+        // Calcular receita e lucro total para o mês
+        const revenue = monthReservations.reduce(
+          (sum, r) => sum + parseFloat(r.totalAmount), 0
+        );
+        
+        const profit = monthReservations.reduce(
+          (sum, r) => sum + parseFloat(r.netAmount), 0
+        );
+        
+        return {
+          month,
+          revenue,
+          profit
+        };
+      });
+      
+      res.json({
+        year,
+        revenueByMonth: monthlyData
+      });
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
   const mistralService = new MistralService();
   const ragService = new RAGService();
 

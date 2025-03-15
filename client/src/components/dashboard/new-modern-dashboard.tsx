@@ -136,17 +136,18 @@ export default function NewModernDashboard() {
     }
   };
 
+  // Buscar dados de receita mensal da API
+  const { data: monthlyStats, isLoading: isLoadingMonthly } = useQuery({
+    queryKey: ["/api/statistics/monthly-revenue"],
+  });
+  
   // Prepare data for charts
-  // Se não houver dados de receita por mês na API, criar dados a partir da receita total
-  const revenueData = statistics && statistics.totalRevenue 
-    ? [
-        { name: "Jan", Receita: statistics.totalRevenue * 0.7, Lucro: statistics.netProfit * 0.6 },
-        { name: "Fev", Receita: statistics.totalRevenue * 0.8, Lucro: statistics.netProfit * 0.7 },
-        { name: "Mar", Receita: statistics.totalRevenue * 0.9, Lucro: statistics.netProfit * 0.8 },
-        { name: "Abr", Receita: statistics.totalRevenue * 0.75, Lucro: statistics.netProfit * 0.65 },
-        { name: "Mai", Receita: statistics.totalRevenue * 0.85, Lucro: statistics.netProfit * 0.75 },
-        { name: "Jun", Receita: statistics.totalRevenue * 1.1, Lucro: statistics.netProfit * 1.0 },
-      ]
+  const revenueData = monthlyStats && monthlyStats.revenueByMonth 
+    ? monthlyStats.revenueByMonth.map((item: any) => ({
+        name: item.month,
+        Receita: item.revenue,
+        Lucro: item.profit
+      }))
     : [];
 
   // Recent reservations data (latest 4)
