@@ -692,12 +692,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       console.log(`Retornando ${revenueData.length} períodos de dados`);
+      console.log(`Granularidade final sendo retornada: ${granularity}`);
+      console.log("Resumo da resposta:", {
+        granularity,
+        totalPeriods: revenueData.length,
+        firstPeriod: revenueData[0] || null,
+        year: startDate.getFullYear()
+      });
       
-      res.json({
+      const response = {
         year: startDate.getFullYear(),
         granularity,
         revenueByMonth: revenueData
-      });
+      };
+      
+      console.log("Resposta completa:", JSON.stringify(response));
+      res.json(response);
     } catch (err) {
       handleError(err, res);
     }

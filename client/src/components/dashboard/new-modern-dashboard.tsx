@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
@@ -114,8 +114,24 @@ export default function NewModernDashboard() {
   const { t } = useTranslation();
   const [selectedTab, setSelectedTab] = useState("overview");
 
+  // Interface para tipagem das estatísticas
+  interface StatisticsData {
+    totalRevenue: number;
+    netProfit: number;
+    occupancyRate: number;
+    revenueChange?: number;
+    profitChange?: number;
+    reservationsCount: number;
+    reservationsChange?: number;
+    topProperties: Array<{
+      id: number;
+      name: string;
+      occupancyRate: number;
+    }>;
+  }
+  
   // Fetch statistics with staleTime and cache configuration
-  const { data: statistics, isLoading: isLoadingStats } = useQuery({
+  const { data: statistics, isLoading: isLoadingStats } = useQuery<StatisticsData>({
     queryKey: ["/api/statistics", selectedDateRange.startDate, selectedDateRange.endDate],
     staleTime: 0, // Sempre considera os dados obsoletos para forçar nova busca
     gcTime: 0, // Não armazena em cache (gcTime substituiu cacheTime na v5)
@@ -156,26 +172,51 @@ export default function NewModernDashboard() {
     }
   };
 
+  // Interface para tipagem dos dados de receita mensal
+  interface MonthlyStats {
+    year: number;
+    granularity: 'week' | 'biweek' | 'month';
+    revenueByMonth: Array<{
+      month: string;
+      revenue: number;
+      profit: number;
+    }>;
+  }
+  
   // Buscar dados de receita mensal da API
-  const { data: monthlyStats, isLoading: isLoadingMonthly } = useQuery({
+  const { data: monthlyStats, isLoading: isLoadingMonthly } = useQuery<MonthlyStats>({
     queryKey: ["/api/statistics/monthly-revenue", selectedDateRange.startDate, selectedDateRange.endDate],
     staleTime: 0,
     gcTime: 0,
     refetchOnWindowFocus: true,
-    refetchOnMount: true,
+    refetchOnMount: true
   });
+  
+  // Adicionar logs quando os dados são recebidos
+  React.useEffect(() => {
+    if (monthlyStats) {
+      console.log("📊 Dados de receita mensal recebidos:", monthlyStats);
+      console.log(`📅 Período selecionado: ${selectedDateRange.startDate} até ${selectedDateRange.endDate}`);
+      console.log(`🧮 Granularidade: ${monthlyStats.granularity || 'não definida'}`);
+    }
+  }, [monthlyStats, selectedDateRange]);
   
   // Prepare data for charts
   const revenueData = monthlyStats && monthlyStats.revenueByMonth 
-    ? monthlyStats.revenueByMonth.map((item: any) => ({
-        name: item.month,
-        Receita: item.revenue,
-        Lucro: item.profit
-      }))
+    ? monthlyStats.revenueByMonth.map((item: any) => {
+        console.log(`📈 Item de dados: ${item.month} - Receita: ${item.revenue} - Lucro: ${item.profit}`);
+        return {
+          name: item.month,
+          Receita: item.revenue,
+          Lucro: item.profit
+        };
+      })
     : [];
     
   // Determinar o texto do badge de análise conforme a granularidade
   const getGranularityLabel = () => {
+    console.log(`🏷️ Granularidade atual: ${monthlyStats?.granularity || 'não definida'}`);
+    
     if (!monthlyStats || !monthlyStats.granularity) return "Análise Mensal";
     
     switch (monthlyStats.granularity) {
