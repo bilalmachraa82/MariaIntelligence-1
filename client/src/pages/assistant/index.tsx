@@ -10,7 +10,8 @@ import {
   Bot, 
   MessageSquare, 
   Clock, 
-  ArrowDown, 
+  ArrowDown,
+  ArrowRight, 
   AlertTriangle, 
   Image, 
   FileText, 
@@ -28,12 +29,12 @@ import {
   Home,
   ChevronRight,
   Plus,
-  BadgeInfo,
-  BookOpen,
+  Gauge,
   Search,
   Tag,
+  BadgeInfo,
+  BookOpen,
   PieChart,
-  Gauge,
   Calendar
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -911,37 +912,99 @@ export default function AssistantPage() {
                     {t("aiAssistant.features.title", "Recursos")}
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="p-4 rounded-lg border bg-card">
+                    {/* Card de Análise de Dados - Clicável */}
+                    <motion.div 
+                      className="p-4 rounded-lg border bg-card shadow-sm hover:shadow-md cursor-pointer transition-all"
+                      whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                      onClick={() => {
+                        setMessage(t("aiAssistant.quickPrompts.analytics", "Mostra-me um resumo do desempenho das minhas propriedades este mês."));
+                        setActiveTab("chat");
+                        setTimeout(() => sendMessage(), 100);
+                      }}
+                    >
                       <div className="flex items-center mb-2">
-                        <Gauge className="h-5 w-5 mr-2 text-emerald-500" />
-                        <h4 className="font-medium">{t("aiAssistant.features.analyticsTitle", "Análise de Dados")}</h4>
+                        <div className="p-2 rounded-full bg-emerald-100 dark:bg-emerald-900/40">
+                          <Gauge className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                        </div>
+                        <h4 className="font-medium ml-2">{t("aiAssistant.features.analyticsTitle", "Análise de Dados")}</h4>
                       </div>
                       <p className="text-sm text-muted-foreground">{t("aiAssistant.features.analytics", "Análises de desempenho e estatísticas em tempo real")}</p>
-                    </div>
+                      <div className="flex items-center mt-3 text-xs text-emerald-600 dark:text-emerald-400">
+                        <ArrowRight className="h-3 w-3 mr-1" />
+                        <span>{t("aiAssistant.features.analytics.action", "Analisar desempenho")}</span>
+                      </div>
+                    </motion.div>
                     
-                    <div className="p-4 rounded-lg border bg-card">
+                    {/* Card de Recomendações - Clicável */}
+                    <motion.div 
+                      className="p-4 rounded-lg border bg-card shadow-sm hover:shadow-md cursor-pointer transition-all"
+                      whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                      onClick={() => {
+                        setMessage(t("aiAssistant.quickPrompts.recommendations", "Quais recomendações você tem para melhorar a performance dos meus aluguéis?"));
+                        setActiveTab("chat");
+                        setTimeout(() => sendMessage(), 100);
+                      }}
+                    >
                       <div className="flex items-center mb-2">
-                        <FileQuestion className="h-5 w-5 mr-2 text-blue-500" />
-                        <h4 className="font-medium">{t("aiAssistant.features.recommendationsTitle", "Recomendações")}</h4>
+                        <div className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/40">
+                          <FileQuestion className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                        </div>
+                        <h4 className="font-medium ml-2">{t("aiAssistant.features.recommendationsTitle", "Recomendações")}</h4>
                       </div>
                       <p className="text-sm text-muted-foreground">{t("aiAssistant.features.recommendations", "Recomendações personalizadas baseadas em dados")}</p>
-                    </div>
+                      <div className="flex items-center mt-3 text-xs text-blue-600 dark:text-blue-400">
+                        <ArrowRight className="h-3 w-3 mr-1" />
+                        <span>{t("aiAssistant.features.recommendations.action", "Ver recomendações")}</span>
+                      </div>
+                    </motion.div>
                     
-                    <div className="p-4 rounded-lg border bg-card">
+                    {/* Card de Base de Conhecimento - Clicável */}
+                    <motion.div 
+                      className="p-4 rounded-lg border bg-card shadow-sm hover:shadow-md cursor-pointer transition-all"
+                      whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                      onClick={() => {
+                        setMessage(t("aiAssistant.quickPrompts.knowledgebase", "Quais são as melhores práticas para gestão de propriedades no sistema?"));
+                        setActiveTab("chat");
+                        setTimeout(() => sendMessage(), 100);
+                      }}
+                    >
                       <div className="flex items-center mb-2">
-                        <Search className="h-5 w-5 mr-2 text-violet-500" />
-                        <h4 className="font-medium">{t("aiAssistant.features.knowledgebaseTitle", "Base de Conhecimento")}</h4>
+                        <div className="p-2 rounded-full bg-violet-100 dark:bg-violet-900/40">
+                          <Search className="h-5 w-5 text-violet-600 dark:text-violet-400" />
+                        </div>
+                        <h4 className="font-medium ml-2">{t("aiAssistant.features.knowledgebaseTitle", "Base de Conhecimento")}</h4>
                       </div>
                       <p className="text-sm text-muted-foreground">{t("aiAssistant.features.knowledgebase", "Acesso à base de conhecimento e FAQs")}</p>
-                    </div>
+                      <div className="flex items-center mt-3 text-xs text-violet-600 dark:text-violet-400">
+                        <ArrowRight className="h-3 w-3 mr-1" />
+                        <span>{t("aiAssistant.features.knowledgebase.action", "Consultar conhecimento")}</span>
+                      </div>
+                    </motion.div>
                     
-                    <div className="p-4 rounded-lg border bg-card">
+                    {/* Card de Processamento de Documentos - Clicável */}
+                    <motion.div 
+                      className="p-4 rounded-lg border bg-card shadow-sm hover:shadow-md cursor-pointer transition-all"
+                      whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                      onClick={() => {
+                        toast({
+                          title: t("aiAssistant.features.documents.toast", "Processamento de documentos"),
+                          description: t("aiAssistant.features.documents.toastDesc", "Selecione um documento para processar"),
+                        });
+                        triggerFileUpload();
+                      }}
+                    >
                       <div className="flex items-center mb-2">
-                        <FileText className="h-5 w-5 mr-2 text-amber-500" />
-                        <h4 className="font-medium">{t("aiAssistant.features.documentsTitle", "Processamento")}</h4>
+                        <div className="p-2 rounded-full bg-amber-100 dark:bg-amber-900/40">
+                          <FileText className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                        </div>
+                        <h4 className="font-medium ml-2">{t("aiAssistant.features.documentsTitle", "Processamento")}</h4>
                       </div>
                       <p className="text-sm text-muted-foreground">{t("aiAssistant.features.documents", "Processamento inteligente de documentos")}</p>
-                    </div>
+                      <div className="flex items-center mt-3 text-xs text-amber-600 dark:text-amber-400">
+                        <UploadCloud className="h-3 w-3 mr-1" />
+                        <span>{t("aiAssistant.features.documents.action", "Carregar documento")}</span>
+                      </div>
+                    </motion.div>
                   </div>
                 </div>
               </CardContent>
