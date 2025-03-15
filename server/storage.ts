@@ -1680,18 +1680,36 @@ export class DatabaseStorage implements IStorage {
 
   // Statistics methods
   async getTotalRevenue(startDate?: Date, endDate?: Date): Promise<number> {
-    if (!db) return 0;
+    console.log("============== INÍCIO getTotalRevenue ==============");
+    console.log("Parâmetros:", { startDate, endDate });
+    
+    if (!db) {
+      console.log("Banco de dados não disponível!");
+      return 0;
+    }
     
     try {
+      // Verificação direta da receita total usando consulta bruta
+      console.log("Tentando executar consulta direta para verificar os dados...");
+      try {
+        const directQuery = `SELECT SUM(CAST(total_amount AS DECIMAL)) as direct_total FROM reservations WHERE status = 'completed'`;
+        const directResult = await db.execute(sql.raw(directQuery));
+        console.log("Resultado da consulta direta:", directResult);
+        console.log("Valor total diretamente da tabela:", directResult[0]?.direct_total);
+      } catch (e) {
+        console.error("Erro na consulta direta:", e);
+      }
+      
       // Converter datas para strings ISO
       const startDateStr = startDate ? startDate.toISOString().split('T')[0] : null;
       const endDateStr = endDate ? endDate.toISOString().split('T')[0] : null;
+      console.log("Datas convertidas:", { startDateStr, endDateStr });
       
       // Construir a consulta base
       let queryStr = `
         SELECT SUM(CAST(total_amount AS DECIMAL)) as total_revenue
         FROM reservations
-        WHERE 1=1
+        WHERE status = 'completed'
       `;
       
       const params: any[] = [];
@@ -1705,17 +1723,29 @@ export class DatabaseStorage implements IStorage {
       }
       
       if (endDateStr) {
-        queryStr += ` AND check_out_date::DATE <= $${paramIndex}::DATE`;
+        queryStr += ` AND check_in_date::DATE <= $${paramIndex}::DATE`;
         params.push(endDateStr);
         paramIndex++;
       }
       
       // Executar a consulta
+      console.log("Query revenue:", queryStr, "Params:", params);
       const result = await db.execute(sql.raw(queryStr, ...params));
-      return Number(result[0]?.total_revenue) || 0;
+      console.log("Revenue result:", result);
+      console.log("Revenue result rows:", result.rows);
+      
+      if (result && result[0]) {
+        console.log("Revenue value:", result[0].total_revenue);
+        return Number(result[0]?.total_revenue) || 0;
+      } else {
+        console.log("Nenhum resultado encontrado ou formato inesperado");
+        return 0;
+      }
     } catch (error) {
       console.error("Erro ao calcular receita total:", error);
       return 0;
+    } finally {
+      console.log("============== FIM getTotalRevenue ==============");
     }
   }
 
@@ -1738,7 +1768,7 @@ export class DatabaseStorage implements IStorage {
             COALESCE(CAST(team_payment AS DECIMAL), 0)
           ) as total_costs
         FROM reservations
-        WHERE 1=1
+        WHERE status = 'completed'
       `;
       
       const params: any[] = [];
@@ -1752,13 +1782,15 @@ export class DatabaseStorage implements IStorage {
       }
       
       if (endDateStr) {
-        queryStr += ` AND check_out_date::DATE <= $${paramIndex}::DATE`;
+        queryStr += ` AND check_in_date::DATE <= $${paramIndex}::DATE`;
         params.push(endDateStr);
         paramIndex++;
       }
       
       // Executar a consulta
+      console.log("Query net profit:", queryStr, "Params:", params);
       const result = await db.execute(sql.raw(queryStr, ...params));
+      console.log("Net profit result:", result);
       const revenue = Number(result[0]?.total_revenue) || 0;
       const costs = Number(result[0]?.total_costs) || 0;
       return revenue - costs;
@@ -1792,7 +1824,7 @@ export class DatabaseStorage implements IStorage {
       
       // Query específica para uma propriedade
       if (propertyId) {
-        occupiedDaysQuery = await db.execute(sql`
+        const query = sql`
           SELECT SUM(
             (LEAST(
               "check_out_date"::DATE, 
@@ -1805,23 +1837,33 @@ export class DatabaseStorage implements IStorage {
           ) as days
           FROM reservations
           WHERE property_id = ${propertyId}
+          AND status = 'completed'
           AND "check_in_date"::DATE <= ${endDateStr}::DATE
           AND "check_out_date"::DATE >= ${startDateStr}::DATE
-        `);
+        `;
+        console.log("Occupancy rate query (property):", query);
+        occupiedDaysQuery = await db.execute(query);
+        console.log("Occupancy result (property):", occupiedDaysQuery);
         
         const occupiedDays = Number(occupiedDaysQuery[0]?.days) || 0;
+        console.log("Occupied days:", occupiedDays, "Total days:", totalDays);
         return (occupiedDays / totalDays) * 100;
       } 
       // Query para todas as propriedades
       else {
         // Obter contagem de propriedades
-        const propertiesResult = await db.execute(sql`
+        console.log("Consultando propriedades ativas");
+        const propertiesQuery = sql`
           SELECT COUNT(*) as count FROM properties WHERE active = true
-        `);
+        `;
+        const propertiesResult = await db.execute(propertiesQuery);
+        console.log("Resultado da contagem de propriedades:", propertiesResult);
         const numProperties = Number(propertiesResult[0]?.count) || 1;
+        console.log("Número de propriedades:", numProperties);
         
         // Obter dias ocupados para todas as propriedades
-        const occupiedDaysResult = await db.execute(sql`
+        console.log("Consultando dias ocupados para todas as propriedades");
+        const occupiedDaysQuery = sql`
           SELECT SUM(
             (LEAST(
               "check_out_date"::DATE, 
@@ -1833,12 +1875,17 @@ export class DatabaseStorage implements IStorage {
             ))
           ) as days
           FROM reservations
-          WHERE "check_in_date"::DATE <= ${endDateStr}::DATE
+          WHERE status = 'completed' 
+          AND "check_in_date"::DATE <= ${endDateStr}::DATE
           AND "check_out_date"::DATE >= ${startDateStr}::DATE
-        `);
+        `;
+        console.log("Query de dias ocupados:", occupiedDaysQuery);
+        const occupiedDaysResult = await db.execute(occupiedDaysQuery);
+        console.log("Resultado de dias ocupados:", occupiedDaysResult);
         
         const totalOccupiedDays = Number(occupiedDaysResult[0]?.days) || 0;
         const totalPossibleDays = totalDays * numProperties;
+        console.log("Dias ocupados total:", totalOccupiedDays, "Dias possíveis total:", totalPossibleDays);
         
         return (totalOccupiedDays / totalPossibleDays) * 100;
       }
@@ -1910,9 +1957,18 @@ async function createStorage(): Promise<IStorage> {
 (async () => {
   try {
     storageInstance = await createStorage();
+    // Log para ver qual tipo de storage está sendo usado
+    if (storageInstance instanceof DatabaseStorage) {
+      console.log('######### USANDO DatabaseStorage #########');
+    } else if (storageInstance instanceof MemStorage) {
+      console.log('######### USANDO MemStorage #########');
+    } else {
+      console.log('######### TIPO DE STORAGE DESCONHECIDO #########', typeof storageInstance);
+    }
   } catch (error) {
     console.error('Erro ao inicializar armazenamento, usando MemStorage como fallback:', error);
     storageInstance = memStorage || new MemStorage();
+    console.log('######### USANDO MemStorage (após erro) #########');
   }
 })();
 
@@ -1927,9 +1983,13 @@ export const storage = new Proxy({} as IStorage, {
     
     // Se for uma função, retornar uma função que verifica o estado do armazenamento antes de executar
     return async function(...args: any[]) {
+      console.log(`Chamando método: ${String(prop)} com args:`, args);
+      
       try {
         // Tentar usar a instância atual
-        return await (storageInstance[prop as keyof IStorage] as Function).apply(storageInstance, args);
+        const result = await (storageInstance[prop as keyof IStorage] as Function).apply(storageInstance, args);
+        console.log(`Método ${String(prop)} completado com sucesso, resultado:`, typeof result, Array.isArray(result) ? result.length : result);
+        return result;
       } catch (error) {
         // Se falhar, verificar se podemos reconectar ao banco
         console.error(`Erro ao executar ${String(prop)}:`, error);
