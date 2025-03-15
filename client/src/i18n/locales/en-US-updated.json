@@ -1,0 +1,55 @@
+{
+  "navigation": {
+    "dashboard": "Dashboard",
+    "properties": "Properties",
+    "bookings": "Bookings",
+    "owners": "Owners",
+    "pdfUpload": "PDF Upload",
+    "cleaningTeams": "Cleaning Teams",
+    "reports": "Reports",
+    "settings": "Settings",
+    "aiAssistant": "Maria AI",
+    "pendingTasks": "Pending Tasks",
+    "requestMaintenance": "Request Maintenance",
+    "outgoingPayments": "Outgoing Payments",
+    "incomingPayments": "Incoming Payments",
+    "demoData": "Demo Data",
+    "maintenance": "Maintenance",
+    "payments": "Payments",
+    "cleaning": "Cleaning",
+    "documents": "Documents",
+    "assistant": "Maria AI",
+    "home": "Home",
+    "operations": "Operations",
+    "reports": {
+      "financial": "Financial",
+      "invoices": "Invoices",
+      "analytics": "Analytics"
+    },
+    "payments": {
+      "income": "Income",
+      "expenses": "Expenses"
+    },
+    "categories": {
+      "main": "Main",
+      "tools": "Tools",
+      "management": "Management",
+      "finances": "Finances",
+      "operations": "Operations",
+      "settings": "Settings",
+      "utilities": "Utilities"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "search": "Search...",
+    "filter": "Filter",
+    "name": "Name",
+    "status": "Status",
+    "actions": "Actions"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "navigation": {
+    "dashboard": "Painel",
+    "properties": "Imóveis",
+    "bookings": "Reservas",
+    "owners": "Proprietários",
+    "pdfUpload": "Upload PDF",
+    "cleaningTeams": "Equipas de Limpeza",
+    "reports": "Relatórios",
+    "settings": "Configurações",
+    "aiAssistant": "Maria IA",
+    "pendingTasks": "Tarefas Pendentes",
+    "requestMaintenance": "Solicitar Manutenção",
+    "outgoingPayments": "Pagamentos Saída",
+    "incomingPayments": "Pagamentos Entrada",
+    "demoData": "Dados Demo",
+    "maintenance": "Manutenção",
+    "payments": "Pagamentos",
+    "cleaning": "Limpeza",
+    "documents": "Documentos",
+    "assistant": "Maria IA",
+    "home": "Home",
+    "operations": "Operações",
+    "reports": {
+      "financial": "Financeiro",
+      "invoices": "Faturas",
+      "analytics": "Análises"
+    },
+    "payments": {
+      "income": "Entradas",
+      "expenses": "Saídas"
+    },
+    "categories": {
+      "main": "Principal",
+      "tools": "Ferramentas",
+      "management": "Gestão",
+      "finances": "Finanças",
+      "operations": "Operações",
+      "settings": "Configurações",
+      "utilities": "Utilidades"
+    }
+  },
+  "common": {
+    "loading": "Carregando...",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "search": "Buscar...",
+    "filter": "Filtrar",
+    "name": "Nome",
+    "status": "Status",
+    "actions": "Ações"
+  }
+}

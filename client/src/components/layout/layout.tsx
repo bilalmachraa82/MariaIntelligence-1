@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Sidebar } from "./sidebar";
+import { SidebarReorganized } from "./sidebar-reorganized";
 import { Header } from "./header";
 import { MobileNav } from "./mobile-nav";
 import { MobileBottomNav } from "./mobile-bottom-nav";
+import { MobileNavReorganized } from "./mobile-nav-reorganized";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface LayoutProps {
@@ -13,9 +15,11 @@ export function Layout({ children }: LayoutProps) {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const isMobile = useIsMobile();
 
+  // Use os novos componentes de navegação reorganizados
   return (
     <div className="flex h-screen overflow-hidden">
-      <Sidebar />
+      {/* Barra lateral para desktop - usando o novo componente reorganizado */}
+      <SidebarReorganized />
       
       {/* Mobile nav overlay */}
       <MobileNav 
@@ -32,9 +36,9 @@ export function Layout({ children }: LayoutProps) {
           {children}
         </main>
         
-        {/* Mobile bottom navigation */}
+        {/* Mobile bottom navigation - usando o novo componente reorganizado */}
         {isMobile && (
-          <MobileBottomNav onOpenMenu={() => setIsMobileNavOpen(true)} />
+          <MobileNavReorganized />
         )}
       </div>
     </div>
