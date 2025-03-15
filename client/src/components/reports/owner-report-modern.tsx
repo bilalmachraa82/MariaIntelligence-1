@@ -70,7 +70,7 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { PropertyReservationsTable, PropertyReservationsDetails } from "@/components/reports/property-reservations-table";
+import { PropertyReservationsTable } from "@/components/reports/property-reservations-table";
 
 interface OwnerReportModernProps {
   report: OwnerReport | null;
@@ -861,7 +861,7 @@ export function OwnerReportModern({
                         transition={{ delay: index * 0.1 }}
                       >
                         {property.reservations.length > 0 ? (
-                          <PropertyReservationsDetails
+                          <PropertyReservationsTable
                             propertyName={property.propertyName}
                             reservations={property.reservations}
                           />

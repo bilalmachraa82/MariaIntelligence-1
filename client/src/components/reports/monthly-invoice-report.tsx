@@ -29,7 +29,8 @@ import {
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { OwnerReport, PropertyReportItem, ReservationSummary } from "@/hooks/use-owner-report";
 import { PropertyReservationsTable } from "@/components/reports/property-reservations-table";
-import { downloadOwnerReportPDF, downloadOwnerReportCSV } from "@/lib/pdf-export-utils";
+import { downloadOwnerReportPDF } from "@/lib/pdf-export-utils";
+import { downloadOwnerReportCSV } from "@/lib/export-utils";
 
 interface MonthlyInvoiceReportProps {
   report: OwnerReport;
