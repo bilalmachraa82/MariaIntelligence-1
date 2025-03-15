@@ -32,13 +32,15 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   ChevronsUpDown,
-  Wallet
+  Wallet,
+  FileType2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { DateRange } from "@/components/ui/date-range-picker";
 import { OwnerReport } from "@/hooks/use-owner-report";
 import { downloadOwnerReportCSV } from "@/lib/export-utils";
+import { downloadOwnerReportPDF } from "@/lib/pdf-export-utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
