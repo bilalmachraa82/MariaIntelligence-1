@@ -1,322 +1,452 @@
 import { useState } from "react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { formatCurrency, formatDate, platformColors } from "@/lib/utils";
-import { type ReservationSummary } from "@/hooks/use-owner-report";
 import { useTranslation } from "react-i18next";
-import { ChevronDown, ChevronUp, Download, PieChart } from "lucide-react";
+import { 
+  Card, 
+  CardContent, 
+  CardHeader, 
+  CardTitle,
+  CardDescription,
+  CardFooter
+} from "@/components/ui/card";
+import { 
+  Table, 
+  TableHeader, 
+  TableHead, 
+  TableRow, 
+  TableCell, 
+  TableBody 
+} from "@/components/ui/table";
+import { 
+  Pagination, 
+  PaginationContent, 
+  PaginationItem, 
+  PaginationNext, 
+  PaginationPrevious 
+} from "@/components/ui/pagination";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Home, 
+  Calendar, 
+  User, 
+  CheckCircle2, 
+  XCircle, 
+  Filter,
+  ArrowRight,
+  Download,
+  FileText,
+  Printer
+} from "lucide-react";
+import { formatCurrency, formatDate, calculateDuration } from "@/lib/utils";
+import { ReservationSummary } from "@/hooks/use-owner-report";
+
+// Tipos de plataformas para estilização
+const platformColors: Record<string, { bg: string; text: string }> = {
+  airbnb: { 
+    bg: "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800", 
+    text: "text-red-600 dark:text-red-400" 
+  },
+  booking: { 
+    bg: "bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800", 
+    text: "text-blue-600 dark:text-blue-400" 
+  },
+  expedia: { 
+    bg: "bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-800", 
+    text: "text-yellow-600 dark:text-yellow-400" 
+  },
+  direct: { 
+    bg: "bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800", 
+    text: "text-green-600 dark:text-green-400" 
+  },
+  other: { 
+    bg: "bg-gray-50 dark:bg-gray-900/50 border-gray-200 dark:border-gray-800", 
+    text: "text-gray-600 dark:text-gray-400" 
+  }
+};
+
+// Função segura para obter a cor baseada na plataforma
+function getPlatformColor(platform: string): { bg: string; text: string } {
+  const normalizedPlatform = platform.toLowerCase();
+  
+  // Verifica se é uma das plataformas conhecidas
+  if (normalizedPlatform in platformColors) {
+    return platformColors[normalizedPlatform as keyof typeof platformColors];
+  }
+  
+  // Fallback para "other" se a plataforma não for reconhecida
+  return platformColors.other;
+}
 
 interface PropertyReservationsTableProps {
   propertyName: string;
   reservations: ReservationSummary[];
-  currency?: string;
+  showPropertyHeader?: boolean;
+  itemsPerPage?: number;
+  showMonetary?: boolean;
+  allowExport?: boolean;
+  exportId?: string;
 }
 
-export function PropertyReservationsTable({ 
-  propertyName, 
-  reservations, 
-  currency = "€"
-}: PropertyReservationsTableProps) {
-  const [expanded, setExpanded] = useState(false);
-  const { t } = useTranslation();
-  
-  // Ordenar reservas por data de check-in, mais recentes primeiro
-  const sortedReservations = [...reservations].sort((a, b) => 
-    new Date(b.checkInDate).getTime() - new Date(a.checkInDate).getTime()
-  );
-  
-  // Mostrar apenas as 3 primeiras reservas quando não expandido
-  const displayedReservations = expanded 
-    ? sortedReservations 
-    : sortedReservations.slice(0, 3);
-  
-  // Calcular totais
-  const totalNights = reservations.reduce((sum, res) => sum + res.nights, 0);
-  const totalAmount = reservations.reduce((sum, res) => sum + res.totalAmount, 0);
-  const totalNet = reservations.reduce((sum, res) => sum + res.netAmount, 0);
-  
-  return (
-    <Card className="w-full mb-6">
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="text-lg font-semibold">{propertyName}</CardTitle>
-            <CardDescription>
-              {t('reports.totalReservations', 'Total de Reservas')}: {reservations.length} | 
-              {t('reports.totalNights', 'Total de Noites')}: {totalNights}
-            </CardDescription>
-          </div>
-          <div className="text-right">
-            <div className="text-lg font-semibold">{formatCurrency(totalAmount)}</div>
-            <div className="text-sm text-muted-foreground">
-              {t('reports.netValue', 'Valor Líquido')}: {formatCurrency(totalNet)}
-            </div>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>{t('reports.period', 'Período')}</TableHead>
-              <TableHead>{t('reports.nights', 'Noites')}</TableHead>
-              <TableHead>{t('reports.guest', 'Hóspede')}</TableHead>
-              <TableHead>{t('reports.platform', 'Plataforma')}</TableHead>
-              <TableHead className="text-right">{t('reports.amount', 'Valor')}</TableHead>
-              <TableHead className="text-right">{t('reports.netAmount', 'Valor Líquido')}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {displayedReservations.map((reservation) => (
-              <TableRow key={reservation.id}>
-                <TableCell>
-                  {formatDate(reservation.checkInDate)} - {formatDate(reservation.checkOutDate)}
-                </TableCell>
-                <TableCell>{reservation.nights}</TableCell>
-                <TableCell>{reservation.guestName}</TableCell>
-                <TableCell>
-                  <Badge 
-                    variant="outline" 
-                    className="capitalize" 
-                    style={{
-                      backgroundColor: `${platformColors[reservation.platform]?.bg || platformColors.other.bg}`,
-                      color: `${platformColors[reservation.platform]?.text || platformColors.other.text}`
-                    }}
-                  >
-                    {reservation.platform}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-right font-medium">
-                  {formatCurrency(reservation.totalAmount)}
-                </TableCell>
-                <TableCell className="text-right font-medium">
-                  {formatCurrency(reservation.netAmount)}
-                </TableCell>
-              </TableRow>
-            ))}
-            
-            {/* Linha de Totais */}
-            <TableRow className="bg-muted/50">
-              <TableCell colSpan={3} className="font-medium">
-                {t('reports.totalSummary', 'Total para')} {propertyName}
-              </TableCell>
-              <TableCell className="font-medium text-center">
-                {reservations.length} {t('reports.reservations', 'reservas')}
-              </TableCell>
-              <TableCell className="text-right font-medium">
-                {formatCurrency(totalAmount)}
-              </TableCell>
-              <TableCell className="text-right font-medium">
-                {formatCurrency(totalNet)}
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-        
-        {/* Botão de expandir/colapsar se houver mais de 3 reservas */}
-        {reservations.length > 3 && (
-          <div className="mt-4 text-center">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => setExpanded(!expanded)}
-            >
-              {expanded ? (
-                <>
-                  <ChevronUp className="mr-1 h-4 w-4" />
-                  {t('common.collapse', 'Colapsar')}
-                </>
-              ) : (
-                <>
-                  <ChevronDown className="mr-1 h-4 w-4" />
-                  {t('common.showAll', 'Mostrar Todas')} ({reservations.length})
-                </>
-              )}
-            </Button>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
-
-export function PropertyReservationsDetails({
+export function PropertyReservationsTable({
   propertyName,
   reservations,
-  currency = "€",
-  showDetails = true,
-}) {
+  showPropertyHeader = true,
+  itemsPerPage = 10,
+  showMonetary = true,
+  allowExport = false,
+  exportId
+}: PropertyReservationsTableProps) {
   const { t } = useTranslation();
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [sortBy, setSortBy] = useState<string>("checkInDate");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [platformFilter, setPlatformFilter] = useState<string>("all");
   
   // Calcular totais
-  const totalNights = reservations.reduce((sum, res) => sum + res.nights, 0);
-  const totalAmount = reservations.reduce((sum, res) => sum + res.totalAmount, 0);
-  const totalNet = reservations.reduce((sum, res) => sum + res.netAmount, 0);
-  const cleaningCosts = reservations.reduce((sum, res) => sum + res.cleaningFee, 0);
-  const checkInFees = reservations.reduce((sum, res) => sum + res.checkInFee, 0);
-  const commissions = reservations.reduce((sum, res) => sum + res.commission, 0);
-  const teamPayments = reservations.reduce((sum, res) => sum + res.teamPayment, 0);
+  const totals = {
+    totalAmount: reservations.reduce((sum, res) => sum + res.totalAmount, 0),
+    cleaningFees: reservations.reduce((sum, res) => sum + res.cleaningFee, 0),
+    checkInFees: reservations.reduce((sum, res) => sum + res.checkInFee, 0),
+    commission: reservations.reduce((sum, res) => sum + res.commission, 0),
+    teamPayments: reservations.reduce((sum, res) => sum + res.teamPayment, 0),
+    netAmount: reservations.reduce((sum, res) => sum + res.netAmount, 0),
+    reservations: reservations.length,
+    nights: reservations.reduce((sum, res) => sum + res.nights, 0)
+  };
   
-  // Dados para gráfico
-  const expenseData = [
-    { name: t('reports.costs.cleaning', 'Limpeza'), value: cleaningCosts },
-    { name: t('reports.costs.checkIn', 'Check-in'), value: checkInFees },
-    { name: t('reports.costs.commission', 'Comissão'), value: commissions },
-    { name: t('reports.costs.teamPayments', 'Pagamentos Equipa'), value: teamPayments },
-    { name: t('reports.costs.netProfit', 'Lucro Líquido'), value: totalNet },
-  ];
+  // Filtrar reservas
+  const filteredReservations = reservations.filter(reservation => {
+    if (platformFilter === "all") return true;
+    return reservation.platform.toLowerCase() === platformFilter.toLowerCase();
+  });
+  
+  // Ordenar reservas
+  const sortedReservations = [...filteredReservations].sort((a, b) => {
+    let valueA, valueB;
+    
+    // Determinar os valores de comparação baseados em sortBy
+    switch (sortBy) {
+      case "guestName":
+        valueA = a.guestName;
+        valueB = b.guestName;
+        break;
+      case "platform":
+        valueA = a.platform;
+        valueB = b.platform;
+        break;
+      case "nights":
+        valueA = a.nights;
+        valueB = b.nights;
+        break;
+      case "totalAmount":
+        valueA = a.totalAmount;
+        valueB = b.totalAmount;
+        break;
+      case "netAmount":
+        valueA = a.netAmount;
+        valueB = b.netAmount;
+        break;
+      case "checkOutDate":
+        valueA = new Date(a.checkOutDate).getTime();
+        valueB = new Date(b.checkOutDate).getTime();
+        break;
+      case "checkInDate":
+      default:
+        valueA = new Date(a.checkInDate).getTime();
+        valueB = new Date(b.checkInDate).getTime();
+        break;
+    }
+    
+    // Ordenar baseado na direção
+    const direction = sortDirection === "asc" ? 1 : -1;
+    
+    if (valueA < valueB) return -1 * direction;
+    if (valueA > valueB) return 1 * direction;
+    return 0;
+  });
+  
+  // Paginação
+  const totalPages = Math.ceil(sortedReservations.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, sortedReservations.length);
+  const currentReservations = sortedReservations.slice(startIndex, endIndex);
+  
+  // Alternar ordenação
+  const toggleSort = (field: string) => {
+    if (sortBy === field) {
+      setSortDirection(prev => prev === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(field);
+      setSortDirection("asc");
+    }
+  };
+  
+  // Conseguir todas as plataformas únicas para filtro
+  const platforms = Array.from(new Set(reservations.map(r => r.platform.toLowerCase())));
+  
+  // Exportar para CSV ou PDF
+  const handleExport = (format: 'csv' | 'pdf') => {
+    console.log(`Export to ${format} requested for property ${propertyName}`);
+    // Implementação futura
+  };
   
   return (
-    <Card className="w-full mb-8">
-      <CardHeader>
-        <CardTitle>{propertyName}</CardTitle>
-        <CardDescription>
-          {t('reports.financialDetailedBreakdown', 'Distribuição financeira detalhada')}
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h3 className="font-semibold text-lg mb-3">
-              {t('reports.summaryTitle', 'Resumo de Atividade')}
-            </h3>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center py-1 border-b">
-                <span>{t('reports.totalReservations', 'Total de Reservas')}</span>
-                <span className="font-medium">{reservations.length}</span>
-              </div>
-              <div className="flex justify-between items-center py-1 border-b">
-                <span>{t('reports.totalNights', 'Total de Noites')}</span>
-                <span className="font-medium">{totalNights}</span>
-              </div>
-              <div className="flex justify-between items-center py-1 border-b">
-                <span>{t('reports.grossRevenue', 'Receita Bruta')}</span>
-                <span className="font-medium">{formatCurrency(totalAmount)}</span>
-              </div>
-              <div className="flex justify-between items-center py-1 border-b">
-                <span>{t('reports.costs.cleaning', 'Custos de Limpeza')}</span>
-                <span className="font-medium text-red-500">-{formatCurrency(cleaningCosts)}</span>
-              </div>
-              <div className="flex justify-between items-center py-1 border-b">
-                <span>{t('reports.costs.checkIn', 'Taxas de Check-in')}</span>
-                <span className="font-medium text-red-500">-{formatCurrency(checkInFees)}</span>
-              </div>
-              <div className="flex justify-between items-center py-1 border-b">
-                <span>{t('reports.costs.commission', 'Comissão do Serviço')}</span>
-                <span className="font-medium text-red-500">-{formatCurrency(commissions)}</span>
-              </div>
-              <div className="flex justify-between items-center py-1 border-b">
-                <span>{t('reports.costs.teamPayments', 'Pagamentos às Equipas')}</span>
-                <span className="font-medium text-red-500">-{formatCurrency(teamPayments)}</span>
-              </div>
-              <div className="flex justify-between items-center py-1 border-b font-semibold pt-2">
-                <span>{t('reports.netProfit', 'Lucro Líquido')}</span>
-                <span className="text-green-600">{formatCurrency(totalNet)}</span>
-              </div>
-            </div>
+    <Card className="w-full">
+      {showPropertyHeader && (
+        <CardHeader className="pb-2">
+          <CardTitle className="flex items-center text-lg">
+            <Home className="mr-2 h-5 w-5 text-primary" />
+            {propertyName}
+          </CardTitle>
+          <CardDescription>
+            {t("reports.totalReservations", "Total de reservas")}: {filteredReservations.length}
+            {showMonetary && ` • ${t("reports.totalRevenue", "Receita total")}: ${formatCurrency(totals.totalAmount)}`}
+          </CardDescription>
+        </CardHeader>
+      )}
+      
+      <CardContent className="p-0">
+        {/* Filtros */}
+        <div className="px-4 py-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b">
+          <div className="flex items-center gap-2">
+            <Filter className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm font-medium">
+              {t("reports.filterBy", "Filtrar por")}:
+            </span>
+            <Select 
+              value={platformFilter} 
+              onValueChange={setPlatformFilter}
+            >
+              <SelectTrigger className="h-8 w-[140px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t("reports.allPlatforms", "Todas Plataformas")}</SelectItem>
+                {platforms.map(platform => (
+                  <SelectItem key={platform} value={platform} className="capitalize">
+                    {platform}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           
-          <div className="flex flex-col items-center justify-center">
-            <div className="text-center mb-4">
-              <h3 className="font-semibold text-lg">
-                {t('reports.revenueDistribution', 'Distribuição de Receita')}
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                {t('reports.revenueDistributionDesc', 'Análise visual da distribuição de receita')}
-              </p>
+          {allowExport && (
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-8 px-2 text-xs"
+                onClick={() => handleExport('csv')}
+              >
+                <Download className="h-3.5 w-3.5 mr-1" />
+                CSV
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-8 px-2 text-xs"
+                onClick={() => handleExport('pdf')}
+              >
+                <FileText className="h-3.5 w-3.5 mr-1" />
+                PDF
+              </Button>
             </div>
-            
-            <div className="h-64 w-full flex items-center justify-center">
-              {/* Placeholder para o gráfico - em uma implementação real, usaria Recharts */}
-              <div className="flex flex-col items-center text-muted-foreground">
-                <PieChart className="h-16 w-16 mb-2 opacity-40" />
-                <p>{t('reports.chartComingSoon', 'Visualização gráfica em breve')}</p>
-              </div>
-            </div>
-            
-            <Button variant="outline" size="sm" className="mt-4">
-              <Download className="h-4 w-4 mr-1" />
-              {t('reports.downloadPropertyData', 'Exportar Dados da Propriedade')}
-            </Button>
-          </div>
+          )}
         </div>
         
-        {showDetails && (
-          <div className="mt-8">
-            <h3 className="font-semibold text-lg mb-3">
-              {t('reports.reservationDetails', 'Detalhes das Reservas')}
-            </h3>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{t('reports.period', 'Período')}</TableHead>
-                  <TableHead>{t('reports.nights', 'Noites')}</TableHead>
-                  <TableHead>{t('reports.guest', 'Hóspede')}</TableHead>
-                  <TableHead>{t('reports.platform', 'Plataforma')}</TableHead>
-                  <TableHead className="text-right">{t('reports.grossAmount', 'Valor Bruto')}</TableHead>
-                  <TableHead className="text-right">{t('reports.totalCosts', 'Total Custos')}</TableHead>
-                  <TableHead className="text-right">{t('reports.netAmount', 'Valor Líquido')}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {reservations.map((reservation) => {
-                  const totalCosts = reservation.cleaningFee + reservation.checkInFee + 
-                    reservation.commission + reservation.teamPayment;
-                    
-                  return (
-                    <TableRow key={reservation.id}>
-                      <TableCell>
-                        {formatDate(reservation.checkInDate)} - {formatDate(reservation.checkOutDate)}
-                      </TableCell>
-                      <TableCell>{reservation.nights}</TableCell>
-                      <TableCell>{reservation.guestName}</TableCell>
-                      <TableCell>
-                        <Badge 
-                          variant="outline" 
-                          className="capitalize" 
-                          style={{
-                            backgroundColor: `${platformColors[reservation.platform]?.bg || platformColors.other.bg}`,
-                            color: `${platformColors[reservation.platform]?.text || platformColors.other.text}`
-                          }}
-                        >
-                          {reservation.platform}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {formatCurrency(reservation.totalAmount)}
-                      </TableCell>
-                      <TableCell className="text-right text-red-500">
-                        {formatCurrency(totalCosts)}
-                      </TableCell>
-                      <TableCell className="text-right font-medium">
-                        {formatCurrency(reservation.netAmount)}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-                
-                {/* Linha de Totais */}
-                <TableRow className="bg-muted/50">
-                  <TableCell colSpan={4} className="font-medium">
-                    {t('reports.totalSummary', 'Total')}
-                  </TableCell>
-                  <TableCell className="text-right font-medium">
-                    {formatCurrency(totalAmount)}
-                  </TableCell>
-                  <TableCell className="text-right font-medium text-red-500">
-                    {formatCurrency(totalAmount - totalNet)}
-                  </TableCell>
-                  <TableCell className="text-right font-medium text-green-600">
-                    {formatCurrency(totalNet)}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+        {currentReservations.length === 0 ? (
+          <div className="px-4 py-8 text-center text-muted-foreground">
+            {t("reports.noReservations", "Não existem reservas no período selecionado.")}
           </div>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead 
+                  className="cursor-pointer hover:bg-muted/50 transition-colors" 
+                  onClick={() => toggleSort("checkInDate")}
+                >
+                  {t("reports.period", "Período")}
+                  {sortBy === "checkInDate" && (
+                    <span className="ml-1">
+                      {sortDirection === "asc" ? "↑" : "↓"}
+                    </span>
+                  )}
+                </TableHead>
+                <TableHead 
+                  className="cursor-pointer hover:bg-muted/50 transition-colors"
+                  onClick={() => toggleSort("guestName")}
+                >
+                  {t("reports.guest", "Hóspede")}
+                  {sortBy === "guestName" && (
+                    <span className="ml-1">
+                      {sortDirection === "asc" ? "↑" : "↓"}
+                    </span>
+                  )}
+                </TableHead>
+                <TableHead 
+                  className="text-center cursor-pointer hover:bg-muted/50 transition-colors"
+                  onClick={() => toggleSort("nights")}
+                >
+                  {t("reports.nights", "Noites")}
+                  {sortBy === "nights" && (
+                    <span className="ml-1">
+                      {sortDirection === "asc" ? "↑" : "↓"}
+                    </span>
+                  )}
+                </TableHead>
+                <TableHead 
+                  className="cursor-pointer hover:bg-muted/50 transition-colors"
+                  onClick={() => toggleSort("platform")}
+                >
+                  {t("reports.platform", "Plataforma")}
+                  {sortBy === "platform" && (
+                    <span className="ml-1">
+                      {sortDirection === "asc" ? "↑" : "↓"}
+                    </span>
+                  )}
+                </TableHead>
+                {showMonetary && (
+                  <>
+                    <TableHead 
+                      className="text-right cursor-pointer hover:bg-muted/50 transition-colors"
+                      onClick={() => toggleSort("totalAmount")}
+                    >
+                      {t("reports.amount", "Valor")}
+                      {sortBy === "totalAmount" && (
+                        <span className="ml-1">
+                          {sortDirection === "asc" ? "↑" : "↓"}
+                        </span>
+                      )}
+                    </TableHead>
+                    <TableHead 
+                      className="text-right cursor-pointer hover:bg-muted/50 transition-colors"
+                      onClick={() => toggleSort("netAmount")}
+                    >
+                      {t("reports.netAmount", "Valor Líquido")}
+                      {sortBy === "netAmount" && (
+                        <span className="ml-1">
+                          {sortDirection === "asc" ? "↑" : "↓"}
+                        </span>
+                      )}
+                    </TableHead>
+                  </>
+                )}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {currentReservations.map(reservation => {
+                const platformColor = getPlatformColor(reservation.platform);
+                
+                return (
+                  <TableRow key={reservation.id}>
+                    <TableCell>
+                      <div className="flex items-center">
+                        <Calendar className="h-4 w-4 mr-1.5 text-muted-foreground" />
+                        <div>
+                          <div className="font-medium">
+                            {formatDate(reservation.checkInDate)}
+                          </div>
+                          <div className="text-xs text-muted-foreground flex items-center">
+                            <ArrowRight className="h-3 w-3 mx-1" />
+                            {formatDate(reservation.checkOutDate)}
+                          </div>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center">
+                        <User className="h-4 w-4 mr-1.5 text-muted-foreground" />
+                        {reservation.guestName}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {reservation.nights}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant="outline"
+                        className={`capitalize font-normal ${platformColor.bg} ${platformColor.text}`}
+                      >
+                        {reservation.platform}
+                      </Badge>
+                    </TableCell>
+                    {showMonetary && (
+                      <>
+                        <TableCell className="text-right">
+                          {formatCurrency(reservation.totalAmount)}
+                        </TableCell>
+                        <TableCell className="text-right font-medium">
+                          {formatCurrency(reservation.netAmount)}
+                        </TableCell>
+                      </>
+                    )}
+                  </TableRow>
+                );
+              })}
+              
+              {/* Totais */}
+              {showMonetary && (
+                <TableRow className="bg-muted/50 font-medium">
+                  <TableCell colSpan={4}>
+                    {t("reports.total", "Total")}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {formatCurrency(totals.totalAmount)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {formatCurrency(totals.netAmount)}
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         )}
       </CardContent>
+      
+      {totalPages > 1 && (
+        <CardFooter className="flex justify-between items-center py-2">
+          <div className="text-sm text-muted-foreground">
+            {t("reports.showing", "Mostrando")} {startIndex + 1}-{endIndex} {t("reports.of", "de")} {sortedReservations.length}
+          </div>
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
+              {[...Array(totalPages)].map((_, i) => (
+                <PaginationItem key={i}>
+                  <Button
+                    variant={currentPage === i + 1 ? "default" : "outline"}
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => setCurrentPage(i + 1)}
+                  >
+                    {i + 1}
+                  </Button>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </CardFooter>
+      )}
     </Card>
   );
 }

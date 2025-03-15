@@ -27,6 +27,7 @@ import CleaningTeamsPage from "@/pages/cleaning-teams";
 import CleaningReportsPage from "@/pages/cleaning-reports";
 import OwnerReportPage from "@/pages/reports/owner-report";
 import TrendsReportPage from "@/pages/reports/trends";
+import MonthlyInvoicePage from "@/pages/reports/monthly-invoice";
 
 // Imports das novas páginas de manutenção e pagamentos
 import MaintenancePending from "@/pages/maintenance/pending";
@@ -112,6 +113,7 @@ function Router() {
       <Route path="/cleaning-reports" component={CleaningReportsPage} />
       <Route path="/reports" component={ReportsPage} />
       <Route path="/reports/owner-report" component={OwnerReportPage} />
+      <Route path="/reports/monthly-invoice" component={MonthlyInvoicePage} />
       <Route path="/reports/trends" component={TrendsReportPage} />
       <Route path="/settings" component={SettingsPage} />
       <Route path="/assistant" component={AssistantPage} />
@@ -151,6 +153,7 @@ function Router() {
       <Route path="/relatorios-limpeza" component={CleaningReportsPage} />
       <Route path="/relatorios" component={ReportsPage} />
       <Route path="/relatorios/proprietario" component={OwnerReportPage} />
+      <Route path="/relatorios/faturacao-mensal" component={MonthlyInvoicePage} />
       <Route path="/relatorios/tendencias" component={TrendsReportPage} />
       <Route path="/configuracoes" component={SettingsPage} />
       <Route path="/assistente" component={AssistantPage} />
