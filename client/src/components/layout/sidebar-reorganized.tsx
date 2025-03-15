@@ -335,7 +335,7 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
       iconColor: "text-violet-500"
     },
     {
-      name: t("navigation.pdfUpload", "Upload PDF"),
+      name: t("navigation.documentScan", "Digitalizar Documentos"),
       href: "/upload-pdf", // Caminho consistente com o App.tsx
       icon: FileUp,
       iconColor: "text-rose-500"
