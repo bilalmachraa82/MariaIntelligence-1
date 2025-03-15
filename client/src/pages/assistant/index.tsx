@@ -201,17 +201,17 @@ const SuggestionCard = ({ icon, title, description, onClick, gradient = "from-bl
   return (
     <motion.div
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
-      className={`cursor-pointer rounded-xl p-4 shadow-sm border border-border/40 bg-gradient-to-br ${gradient}`}
+      className={`cursor-pointer rounded-xl p-5 shadow-sm border border-border/40 bg-gradient-to-br ${gradient}`}
       onClick={onClick}
     >
-      <div className="flex items-start">
+      <div className="flex items-center mb-3">
         <div className="mr-3 rounded-full bg-primary/10 p-2.5 text-primary">
           {icon}
         </div>
-        <div>
-          <h3 className="font-medium">{title}</h3>
-          <p className="mt-1 text-xs text-muted-foreground">{description}</p>
-        </div>
+      </div>
+      <div>
+        <h3 className="text-xl font-semibold mb-1">{title}</h3>
+        <p className="text-sm text-muted-foreground">{description}</p>
       </div>
     </motion.div>
   );
