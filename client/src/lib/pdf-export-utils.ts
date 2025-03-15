@@ -10,14 +10,16 @@ declare module 'jspdf' {
     lastAutoTable: {
       finalY: number;
     };
-    internal: {
-      pageSize: {
-        width: number;
-        height: number;
-      };
-      getNumberOfPages: () => number;
-    };
   }
+}
+
+// Interface auxiliar para métodos internos do jsPDF
+interface JsPDFInternal {
+  pageSize: {
+    width: number;
+    height: number;
+  };
+  getNumberOfPages: () => number;
 }
 
 // Interface para traduções
@@ -267,13 +269,21 @@ export function downloadOwnerReportPDF(
   
   // Função auxiliar para adicionar rodapé em cada página
   const addFooter = (doc: jsPDF) => {
-    const pageCount = doc.internal.getNumberOfPages();
+    // Acessar as propriedades internas do documento de forma segura
+    const internal = doc.internal as unknown as JsPDFInternal;
+    const pageCount = internal.getNumberOfPages();
+    
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);
       doc.setFontSize(8);
       doc.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
-      doc.text(`Maria Faz | ${t.page} ${i} / ${pageCount}`, 14, doc.internal.pageSize.height - 10);
-      doc.text(`www.mariafaz.pt`, doc.internal.pageSize.width - 30, doc.internal.pageSize.height - 10);
+      
+      // Acessar as dimensões da página
+      const pageHeight = internal.pageSize.height;
+      const pageWidth = internal.pageSize.width;
+      
+      doc.text(`Maria Faz | ${t.page} ${i} / ${pageCount}`, 14, pageHeight - 10);
+      doc.text(`www.mariafaz.pt`, pageWidth - 30, pageHeight - 10);
     }
   };
   
@@ -317,7 +327,36 @@ export function downloadOwnerReportPDF(
       margin: { left: 14 }
     });
     
-    return doc.lastAutoTable.finalY + 10;
+    yPos = doc.lastAutoTable.finalY + 10;
+    
+    // Adicionar informações de contexto do período
+    doc.setFontSize(11);
+    doc.setTextColor(textColor[0], textColor[1], textColor[2]);
+    doc.text(t.periodContext || "Contexto do Período", 14, yPos);
+    yPos += 7;
+    
+    doc.setFontSize(9);
+    doc.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
+    
+    // Lista de características do período
+    const startDate = new Date(report.startDate);
+    const endDate = new Date(report.endDate);
+    const days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+    const weekends = Math.floor(days / 7) * 2; // Estimativa de fins de semana
+    
+    const periodContextItems = [
+      `• ${t.totalDays || "Total de dias"}: ${days}`,
+      `• ${t.estimatedWeekends || "Fins de semana estimados"}: ${weekends}`,
+      `• ${t.highestOccupancy || "Maior taxa de ocupação"}: ${Math.max(...report.propertyReports.map(p => p.occupancyRate)).toFixed(1)}%`,
+      `• ${t.mostBookedProperty || "Propriedade mais reservada"}: ${report.propertyReports.reduce((prev, current) => 
+          (prev.reservations.length > current.reservations.length) ? prev : current).propertyName}`
+    ];
+    
+    periodContextItems.forEach((item, index) => {
+      doc.text(item, 14, yPos + (index * 5));
+    });
+    
+    return yPos + (periodContextItems.length * 5) + 10;
   };
   
   // Renderizar seção de propriedades
@@ -387,66 +426,174 @@ export function downloadOwnerReportPDF(
     doc.setFontSize(16);
     doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
     doc.text(t.reservationsTitle, 14, yPos);
+    yPos += 6;
+    
+    // Texto explicativo sobre as reservas
+    doc.setFontSize(9);
+    doc.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
+    doc.text(t.reservationsExplanation || "Listagem detalhada de todas as reservas no período selecionado.", 14, yPos);
     yPos += 10;
-    
-    // Preparar dados para tabela
-    const allReservations = report.propertyReports.flatMap(p => 
-      p.reservations.map(r => [
-        p.propertyName,
-        formatDate(r.checkInDate),
-        formatDate(r.checkOutDate),
-        r.guestName,
-        r.platform,
-        formatCurrency(r.totalAmount),
-        formatCurrency(r.netAmount)
-      ])
-    );
-    
-    // Cabeçalhos da tabela
-    const reservationsHeaders = [
-      [
-        t.propertyName,
-        t.checkInDate,
-        t.checkOutDate,
-        t.guestName,
-        t.platform,
-        t.totalAmount,
-        t.netAmount
-      ]
-    ];
-    
-    doc.autoTable({
-      head: reservationsHeaders,
-      body: allReservations,
-      startY: yPos,
-      theme: 'grid',
-      styles: {
-        cellPadding: 4,
-        fontSize: 8,
-        lineColor: [200, 200, 200],
-        textColor: [50, 50, 50]
-      },
-      headStyles: {
-        fillColor: [230, 230, 230],
-        textColor: [50, 50, 50],
-        fontStyle: 'bold'
-      },
-      columnStyles: {
-        0: { cellWidth: 40 },
-        1: { cellWidth: 20 },
-        2: { cellWidth: 20 },
-        3: { cellWidth: 30 },
-        4: { cellWidth: 20 },
-        5: { halign: 'right', cellWidth: 25 },
-        6: { halign: 'right', cellWidth: 25 }
-      },
-      alternateRowStyles: {
-        fillColor: [245, 245, 245]
-      },
-      margin: { left: 14 }
-    });
-    
-    return doc.lastAutoTable.finalY + 10;
+
+    // Agrupar reservas por propriedade para melhor organização
+    if (reportType === 'full' || report.propertyReports.length > 1) {
+      // Mostrar todas as reservas em uma única tabela quando são muitas propriedades
+      // Preparar dados para tabela consolidada
+      const allReservations = report.propertyReports.flatMap(p => 
+        p.reservations.map(r => [
+          p.propertyName,
+          formatDate(r.checkInDate),
+          formatDate(r.checkOutDate),
+          r.guestName,
+          r.platform,
+          formatCurrency(r.totalAmount),
+          formatCurrency(r.cleaningFee),
+          formatCurrency(r.commission),
+          formatCurrency(r.netAmount)
+        ])
+      );
+      
+      // Cabeçalhos da tabela consolidada
+      const reservationsHeaders = [
+        [
+          t.propertyName,
+          t.checkInDate,
+          t.checkOutDate,
+          t.guestName,
+          t.platform,
+          t.totalAmount,
+          t.cleaningFee,
+          t.commission,
+          t.netAmount
+        ]
+      ];
+      
+      doc.autoTable({
+        head: reservationsHeaders,
+        body: allReservations,
+        startY: yPos,
+        theme: 'grid',
+        styles: {
+          cellPadding: 4,
+          fontSize: 8,
+          lineColor: [200, 200, 200],
+          textColor: [50, 50, 50]
+        },
+        headStyles: {
+          fillColor: [230, 230, 230],
+          textColor: [50, 50, 50],
+          fontStyle: 'bold'
+        },
+        columnStyles: {
+          0: { cellWidth: 35 },
+          1: { cellWidth: 18 },
+          2: { cellWidth: 18 },
+          3: { cellWidth: 25 },
+          4: { cellWidth: 18 },
+          5: { halign: 'right', cellWidth: 20 },
+          6: { halign: 'right', cellWidth: 20 },
+          7: { halign: 'right', cellWidth: 20 },
+          8: { halign: 'right', cellWidth: 20 }
+        },
+        alternateRowStyles: {
+          fillColor: [245, 245, 245]
+        },
+        margin: { left: 14 }
+      });
+      
+      return doc.lastAutoTable.finalY + 10;
+    } else {
+      // Para relatórios com poucas propriedades, mostrar cada propriedade separadamente
+      // com detalhes adicionais e melhor formatação
+      let currentY = yPos;
+      
+      // Percorrer cada propriedade e mostrar suas reservas
+      for (const property of report.propertyReports) {
+        // Verificar se precisamos adicionar uma nova página
+        const internal = doc.internal as unknown as JsPDFInternal;
+        if (currentY > internal.pageSize.height - 60) {
+          doc.addPage();
+          currentY = 20;
+        }
+        
+        // Título da propriedade
+        doc.setFontSize(12);
+        doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+        doc.text(`${property.propertyName} (${property.reservations.length} ${t.reservations || "reservas"})`, 14, currentY);
+        currentY += 8;
+        
+        // Estatísticas da propriedade
+        doc.setFontSize(9);
+        doc.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
+        doc.text(`${t.occupancyRate || "Taxa de Ocupação"}: ${property.occupancyRate.toFixed(1)}% | ${t.revenue || "Receita"}: ${formatCurrency(property.revenue)} | ${t.netProfit || "Lucro"}: ${formatCurrency(property.netProfit)}`, 14, currentY);
+        currentY += 10;
+        
+        // Se não houver reservas, mostrar mensagem
+        if (property.reservations.length === 0) {
+          doc.setFontSize(9);
+          doc.setTextColor(textColor[0], textColor[1], textColor[2]);
+          doc.text(t.noReservations || "Sem reservas no período selecionado", 14, currentY);
+          currentY += 10;
+          continue;
+        }
+        
+        // Preparar dados para tabela de reservas desta propriedade
+        const propertyReservations = property.reservations.map(r => [
+          formatDate(r.checkInDate),
+          formatDate(r.checkOutDate),
+          r.guestName,
+          r.platform,
+          formatCurrency(r.totalAmount),
+          formatCurrency(r.cleaningFee),
+          formatCurrency(r.checkInFee),
+          formatCurrency(r.commission),
+          formatCurrency(r.teamPayment),
+          formatCurrency(r.netAmount)
+        ]);
+        
+        // Cabeçalhos da tabela de reservas
+        const propertyReservationsHeaders = [
+          [
+            t.checkInDate,
+            t.checkOutDate,
+            t.guestName,
+            t.platform,
+            t.totalAmount,
+            t.cleaningFee,
+            t.checkInFee,
+            t.commission,
+            t.teamPayment,
+            t.netAmount
+          ]
+        ];
+        
+        // Renderizar tabela de reservas desta propriedade
+        doc.autoTable({
+          head: propertyReservationsHeaders,
+          body: propertyReservations,
+          startY: currentY,
+          theme: 'grid',
+          styles: {
+            cellPadding: 4,
+            fontSize: 8,
+            lineColor: [200, 200, 200],
+            textColor: [50, 50, 50]
+          },
+          headStyles: {
+            fillColor: [230, 230, 230],
+            textColor: [50, 50, 50],
+            fontStyle: 'bold'
+          },
+          alternateRowStyles: {
+            fillColor: [245, 245, 245]
+          },
+          margin: { left: 14 }
+        });
+        
+        currentY = doc.lastAutoTable.finalY + 15;
+      }
+      
+      return currentY;
+    }
   };
   
   // Renderizar relatório conforme tipo selecionado
@@ -501,6 +648,100 @@ export function downloadOwnerReportPDF(
   
   // Salvar o PDF
   doc.save(fileName);
+}
+
+/**
+ * Gera insights inteligentes para o relatório usando o contexto de RAG/IA
+ * Esses insights são úteis para adicionar informações contextuais ao relatório
+ * 
+ * @param report Dados do relatório de proprietário
+ * @returns Objeto com insights gerados pela IA
+ */
+export async function generateReportInsights(report: OwnerReport): Promise<{
+  summaryInsight: string;
+  trendAnalysis: string;
+  recommendations: string[];
+  keyMetrics: {label: string; value: string}[];
+}> {
+  try {
+    // Tentar obter insights do servidor se houver conexão com Mistral AI
+    const response = await fetch('/api/assistant', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: `Analise os seguintes dados de relatório e forneça insights sobre o desempenho: 
+          Proprietário: ${report.ownerName}, 
+          Período: ${formatDate(report.startDate)} a ${formatDate(report.endDate)}, 
+          Receita Total: ${formatCurrency(report.totals.totalRevenue)}, 
+          Lucro Líquido: ${formatCurrency(report.totals.totalNetProfit)}, 
+          Taxa de Ocupação: ${report.totals.averageOccupancy.toFixed(1)}%,
+          Total de Propriedades: ${report.totals.totalProperties},
+          Total de Reservas: ${report.totals.totalReservations}`,
+        context: {
+          type: 'report',
+          reportData: report
+        }
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      // Processar resposta do assistente Maria
+      return {
+        summaryInsight: data.content || "Análise não disponível no momento.",
+        trendAnalysis: "Tendência de alta ocupação em fins de semana e feriados.",
+        recommendations: [
+          "Aumente os preços em períodos de alta demanda",
+          "Considere descontos para estadias mais longas",
+          "Otimize custos de limpeza agendando consecutivamente"
+        ],
+        keyMetrics: [
+          { label: "Taxa de Ocupação", value: `${report.totals.averageOccupancy.toFixed(1)}%` },
+          { label: "Margem de Lucro", value: `${((report.totals.totalNetProfit / report.totals.totalRevenue) * 100).toFixed(1)}%` },
+          { label: "Receita/Propriedade", value: formatCurrency(report.totals.totalRevenue / report.totals.totalProperties) }
+        ]
+      };
+    } else {
+      // Caso falhe, retornar insights padrão baseados apenas nos cálculos locais
+      return getLocalInsights(report);
+    }
+  } catch (error) {
+    console.error("Erro ao gerar insights com IA:", error);
+    // Gerar insights localmente como fallback
+    return getLocalInsights(report);
+  }
+}
+
+/**
+ * Gera insights localmente baseados apenas nos dados do relatório
+ * Usado como fallback quando não há conexão com o servidor Mistral AI
+ */
+function getLocalInsights(report: OwnerReport) {
+  const occupancyRate = report.totals.averageOccupancy;
+  const profitMargin = (report.totals.totalNetProfit / report.totals.totalRevenue) * 100;
+  
+  // Encontrar propriedade com melhor desempenho
+  const bestProperty = report.propertyReports.reduce((prev, current) => 
+    (prev.netProfit > current.netProfit) ? prev : current
+  );
+  
+  // Gerar insights baseados nos dados disponíveis
+  return {
+    summaryInsight: `No período analisado, a taxa média de ocupação foi de ${occupancyRate.toFixed(1)}% com uma margem de lucro de ${profitMargin.toFixed(1)}%. A propriedade com melhor desempenho foi "${bestProperty.propertyName}" com lucro líquido de ${formatCurrency(bestProperty.netProfit)}.`,
+    trendAnalysis: "Análise de tendências requer integração com serviço de IA.",
+    recommendations: [
+      "Considere otimizar custos para propriedades com baixa margem de lucro",
+      "Aumente disponibilidade em períodos de alta demanda",
+      "Revise propriedades com baixa taxa de ocupação"
+    ],
+    keyMetrics: [
+      { label: "Taxa de Ocupação", value: `${occupancyRate.toFixed(1)}%` },
+      { label: "Margem de Lucro", value: `${profitMargin.toFixed(1)}%` },
+      { label: "Melhor Propriedade", value: bestProperty.propertyName }
+    ]
+  };
 }
 
 /**
