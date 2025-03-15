@@ -10,16 +10,11 @@ function determineGranularity(startDate, endDate) {
   const dateDiffTime = endDateObj.getTime() - startDateObj.getTime();
   const dateDiffDays = Math.ceil(dateDiffTime / (1000 * 3600 * 24));
   
-  // Determinar a granularidade com base na diferença de datas
-  let granularity = 'month'; // Valor padrão
+  // Sempre usar granularidade mensal conforme padronização
+  let granularity = 'month';
   
-  if (dateDiffDays <= 35) { // Aproximadamente um mês
-    granularity = 'week';
-  } else if (dateDiffDays <= 90) { // Entre 1 e 3 meses 
-    granularity = 'biweek'; // Duas semanas
-  } else { // Mais de 3 meses (trimestral, semestral, anual)
-    granularity = 'month';
-  }
+  // Registrar o período para fins de teste
+  console.log(`Período de ${dateDiffDays} dias - granularidade padronizada para mensal`);
   
   return { dateDiffDays, granularity };
 }
@@ -34,13 +29,13 @@ function testGranularity() {
       name: "Período curto (30 dias)",
       startDate: "2025-02-15",
       endDate: "2025-03-15",
-      expectedGranularity: "week"
+      expectedGranularity: "month" // Agora sempre esperamos mensal
     },
     {
       name: "Período médio (60 dias)",
       startDate: "2025-01-15", 
       endDate: "2025-03-15",
-      expectedGranularity: "biweek"
+      expectedGranularity: "month" // Agora sempre esperamos mensal
     },
     {
       name: "Período longo (6 meses)",
