@@ -69,7 +69,7 @@ export function RecentReservations({ reservations, isLoading }: RecentReservatio
                               </svg>
                               {reservation.guestName} 
                               <span className="ml-1 px-1.5 py-0.5 rounded-full bg-maria-primary-light bg-opacity-30 text-maria-dark text-xs">
-                                {reservation.numGuests} hóspedes
+                                {reservation.numGuests || 1} hóspedes
                               </span>
                             </p>
                           </div>
@@ -85,7 +85,7 @@ export function RecentReservations({ reservations, isLoading }: RecentReservatio
                             {reservation.status === "cancelled" && "Cancelada"}
                             {reservation.status === "completed" && "Completada"}
                           </span>
-                          <p className="mt-1 text-sm font-bold text-maria-primary">{formatCurrency(Number(reservation.totalAmount))}</p>
+                          <p className="mt-1 text-sm font-bold text-maria-primary">{formatCurrency(typeof reservation.totalAmount === 'string' ? parseFloat(reservation.totalAmount) : Number(reservation.totalAmount))}</p>
                         </div>
                       </div>
                     </li>

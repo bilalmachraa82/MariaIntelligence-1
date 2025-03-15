@@ -138,7 +138,7 @@ export function RecentActivity({ activities, isLoading }: RecentActivityProps) {
                                 </span>
                               </div>
                               <p className="mt-0.5 text-xs font-medium text-maria-gray">
-                                {formatDateTime(activity.createdAt)}
+                                {activity.createdAt ? formatDateTime(activity.createdAt) : 'Sem data'}
                               </p>
                             </div>
                             <div className="mt-2 text-sm text-maria-dark">
