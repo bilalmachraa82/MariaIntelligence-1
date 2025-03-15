@@ -1,52 +1,68 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "wouter/use-browser-location";
+import { useLocation } from "wouter";
 import { motion } from "framer-motion";
-import { subMonths } from "date-fns";
+import { subMonths, format, addMonths, addDays } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
 
 import { TrendsReport } from "@/components/reports/trends-report";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { DatePickerWithRange } from "@/components/ui/date-range-picker";
+import { Label } from "@/components/ui/label"; 
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { getQueryFn } from "@/lib/queryClient";
+
+// Função para obter parâmetros da URL
+function useURLParams() {
+  const [location] = useLocation();
+  
+  const getURLParam = (param: string): string | null => {
+    const url = new URL(window.location.href);
+    return url.searchParams.get(param);
+  };
+  
+  return { getURLParam };
+}
 
 // Página de Relatório de Tendências
 export default function TrendsReportPage() {
   const { t } = useTranslation();
-  const searchParams = useSearchParams();
+  const { getURLParam } = useURLParams();
   
   // Estado para filtros
-  const [ownerId, setOwnerId] = useState<number | undefined>(
-    searchParams.get("ownerId") ? parseInt(searchParams.get("ownerId") as string) : undefined
-  );
-  const [propertyId, setPropertyId] = useState<number | undefined>(
-    searchParams.get("propertyId") ? parseInt(searchParams.get("propertyId") as string) : undefined
-  );
+  const [ownerId, setOwnerId] = useState<number | undefined>(() => {
+    const param = getURLParam("ownerId");
+    return param ? parseInt(param) : undefined;
+  });
+  
+  const [propertyId, setPropertyId] = useState<number | undefined>(() => {
+    const param = getURLParam("propertyId");
+    return param ? parseInt(param) : undefined;
+  });
   const [dateRange, setDateRange] = useState({
     from: subMonths(new Date(), 12),
     to: new Date()
   });
   
   // Buscar proprietários
-  const { data: owners, isLoading: isLoadingOwners } = useQuery({
+  const { data: owners = [], isLoading: isLoadingOwners } = useQuery({
     queryKey: ["/api/owners"],
     queryFn: getQueryFn({ on401: "returnNull" }),
   });
   
   // Buscar propriedades
-  const { data: properties, isLoading: isLoadingProperties } = useQuery({
+  const { data: properties = [], isLoading: isLoadingProperties } = useQuery({
     queryKey: ["/api/properties"],
     queryFn: getQueryFn({ on401: "returnNull" }),
   });
   
   // Filtrar propriedades por proprietário
   const filteredProperties = ownerId
-    ? properties?.filter((p: any) => p.ownerId === ownerId)
+    ? (properties as any[]).filter((p) => p.ownerId === ownerId)
     : properties;
   
   return (
@@ -79,12 +95,66 @@ export default function TrendsReportPage() {
               <Label htmlFor="date-range" className="mb-2 block">
                 {t("trendsReport.period", "Período")}
               </Label>
-              <DatePickerWithRange
-                id="date-range"
-                value={dateRange}
-                onChange={setDateRange}
-                className="w-full"
-              />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-full justify-start text-left font-normal">
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    <span>
+                      {format(dateRange.from, "dd/MM/yyyy")} - {format(dateRange.to, "dd/MM/yyyy")}
+                    </span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <div className="p-3">
+                    <div className="space-y-3">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full justify-start"
+                        onClick={() => setDateRange({
+                          from: subMonths(new Date(), 1),
+                          to: new Date()
+                        })}
+                      >
+                        {t("trendsReport.lastMonth", "Último mês")}
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full justify-start"
+                        onClick={() => setDateRange({
+                          from: subMonths(new Date(), 3),
+                          to: new Date()
+                        })}
+                      >
+                        {t("trendsReport.last3Months", "Últimos 3 meses")}
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full justify-start"
+                        onClick={() => setDateRange({
+                          from: subMonths(new Date(), 6),
+                          to: new Date()
+                        })}
+                      >
+                        {t("trendsReport.last6Months", "Últimos 6 meses")}
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full justify-start"
+                        onClick={() => setDateRange({
+                          from: subMonths(new Date(), 12),
+                          to: new Date()
+                        })}
+                      >
+                        {t("trendsReport.lastYear", "Último ano")}
+                      </Button>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
             
             {/* Seletor de proprietário */}
@@ -111,7 +181,7 @@ export default function TrendsReportPage() {
                   <SelectItem value="">
                     {t("trendsReport.allOwners", "Todos os proprietários")}
                   </SelectItem>
-                  {owners?.map((owner: any) => (
+                  {(owners as any[]).map((owner: any) => (
                     <SelectItem key={owner.id} value={owner.id.toString()}>
                       {owner.name}
                     </SelectItem>
@@ -140,7 +210,7 @@ export default function TrendsReportPage() {
                   <SelectItem value="">
                     {t("trendsReport.allProperties", "Todas as propriedades")}
                   </SelectItem>
-                  {filteredProperties?.map((property: any) => (
+                  {(filteredProperties as any[]).map((property: any) => (
                     <SelectItem key={property.id} value={property.id.toString()}>
                       {property.name}
                     </SelectItem>

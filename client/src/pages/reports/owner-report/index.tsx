@@ -15,9 +15,8 @@ export default function OwnerReportPage() {
   const { data: owners, isLoading: isOwnersLoading } = useOwners();
   const [selectedOwner, setSelectedOwner] = useState<string>("");
   const [dateRange, setDateRange] = useState<DateRange>({
-    startDate: format(addDays(new Date(), -30), "yyyy-MM-dd"),
-    endDate: format(new Date(), "yyyy-MM-dd"),
-    label: t("reports.last30Days", "Últimos 30 dias"),
+    from: addDays(new Date(), -30),
+    to: new Date()
   });
   
   // Usar o hook personalizado para obter o relatório com dados reais

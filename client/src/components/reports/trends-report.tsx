@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -20,8 +20,6 @@ import {
   Flex,
   Select,
   SelectItem,
-  DateRangePicker,
-  DateRangePickerValue,
   Subtitle,
   Callout,
   Metric,
@@ -118,7 +116,7 @@ export function TrendsReport({
   const [selectedProperty, setSelectedProperty] = useState<number | undefined>(propertyId);
   const [showYoY, setShowYoY] = useState<boolean>(true);
   const [sortOption, setSortOption] = useState<string>("revenue");
-  const [dateRange, setDateRange] = useState<DateRangePickerValue>(
+  const [dateRange, setDateRange] = useState<any>(
     initialDateRange || {
       from: subMonths(new Date(), 12),
       to: new Date()
@@ -457,13 +455,11 @@ export function TrendsReport({
               <Label htmlFor="date-range" className="mb-2 block">
                 {t("trendsReport.period", "Período")}
               </Label>
-              <DateRangePicker
-                id="date-range"
-                value={dateRange}
-                onValueChange={setDateRange}
-                selectPlaceholder={t("trendsReport.selectRange", "Selecionar período")}
-                className="max-w-full"
-              />
+              <div className="border rounded-md p-2 flex gap-2 items-center">
+                <span className="text-sm">
+                  {format(new Date(dateRange.from), "dd/MM/yyyy")} - {format(new Date(dateRange.to), "dd/MM/yyyy")}
+                </span>
+              </div>
             </div>
             
             <div className="w-full lg:w-auto flex-1">
@@ -891,7 +887,7 @@ export function TrendsReport({
                                     <div className="mt-1">
                                       <CategoryBar
                                         values={[property.totals.averageOccupancy, 100 - property.totals.averageOccupancy]}
-                                        colors={["blue", "transparent"]}
+                                        colors={["blue", "slate"]}
                                         markerValue={property.totals.averageOccupancy}
                                         showAnimation={true}
                                         className="h-2"
@@ -1140,13 +1136,4 @@ function TrendsReportSkeleton() {
   );
 }
 
-// Hook useMemo para memorização de valores calculados
-function useMemo<T>(factory: () => T, deps: React.DependencyList): T {
-  const [value, setValue] = useState<T>(factory);
-  
-  useEffect(() => {
-    setValue(factory());
-  }, deps);
-  
-  return value;
-}
+// Removida a implementação duplicada de useMemo - já importada do React
