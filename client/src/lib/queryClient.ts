@@ -79,7 +79,28 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey[0] as string, {
+    // Extrair a URL base e os parâmetros da queryKey
+    const baseUrl = queryKey[0] as string;
+    const params = new URLSearchParams();
+    
+    // Adicionar parâmetros adicionais se existirem
+    if (queryKey.length > 1) {
+      // Processa parâmetros de startDate e endDate se existirem
+      for (let i = 1; i < queryKey.length; i++) {
+        const param = queryKey[i];
+        if (i === 1 && param) {
+          params.append('startDate', param as string);
+        } else if (i === 2 && param) {
+          params.append('endDate', param as string);
+        }
+      }
+    }
+    
+    // Construir a URL completa com parâmetros
+    const url = params.toString() ? `${baseUrl}?${params.toString()}` : baseUrl;
+    console.log(`Fazendo requisição para: ${url}`);
+    
+    const res = await fetch(url, {
       credentials: "include",
     });
 
