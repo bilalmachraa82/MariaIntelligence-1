@@ -21,6 +21,24 @@ import {
   LineChart
 } from "lucide-react";
 
+// Recharts - biblioteca para gráficos interativos
+import {
+  LineChart as ReLineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip as ReTooltip,
+  ResponsiveContainer,
+  Area,
+  AreaChart as ReAreaChart,
+  PieChart as RePieChart,
+  Pie,
+  Cell,
+  Sector,
+  Legend as ReLegend
+} from 'recharts';
+
 // Tremor components
 import { Card, Text, Metric, Flex, ProgressBar } from "@tremor/react";
 import { 
@@ -494,184 +512,178 @@ export default function ModernDashboard() {
                           </div>
                         ) : revenueData.length > 0 ? (
                           <div className="h-full p-2">
-                            <div className="flex items-center justify-between mb-6">
-                              <div className="flex items-center gap-6">
-                                <div className="flex items-center gap-2">
-                                  <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                                  <span className="text-sm font-medium">Receita</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
-                                  <span className="text-sm font-medium">Lucro</span>
-                                </div>
-                              </div>
-                              <div className="text-sm font-bold">
-                                {formatCurrency(Math.max(...revenueData.map(d => d.Receita || 0)))}
-                              </div>
-                            </div>
-                            
-                            <div className="relative h-[calc(100%-3rem)]">
-                              {/* Valores no eixo Y */}
-                              <div className="absolute left-0 top-0 h-full flex flex-col justify-between items-start">
-                                {Array.from({ length: 5 }).map((_, i) => {
-                                  const maxValue = Math.max(...revenueData.map(d => Math.max(d.Receita || 0, d.Lucro || 0)));
-                                  const value = maxValue * (4 - i) / 4;
+                            {/* Componente Recharts */}
+                            {(() => {
+                              // Usando as importações já feitas no topo do arquivo
+                              // Não é necessário importar novamente
+                              
+                              // Preparando os dados no formato que o Recharts espera
+                              const formattedData = revenueData.map(item => ({
+                                name: item.month,
+                                Receita: item.Receita,
+                                Lucro: item.Lucro
+                              }));
+                              
+                              // Estado para controlar qual ponto está ativo/selecionado
+                              const [activePoint, setActivePoint] = useState<{
+                                dataKey: string;
+                                name: string;
+                                value: number;
+                              } | null>(null);
+                              
+                              // Função para formatar valores monetários no tooltip
+                              const formatTooltipValue = (value: number) => {
+                                return formatCurrency(value);
+                              };
+                              
+                              // Função para lidar com o clique em um ponto do gráfico
+                              const handlePointClick = (dataKey: string, name: string, value: number) => {
+                                setActivePoint({ dataKey, name, value });
+                                // Poderíamos abrir um modal ou mostrar mais informações
+                              };
+                              
+                              // Componente de tooltip customizado
+                              const CustomTooltip = ({ active, payload, label }: any) => {
+                                if (active && payload && payload.length) {
                                   return (
-                                    <div key={i} className="flex items-center h-6">
-                                      <span className="text-xs text-muted-foreground whitespace-nowrap">
-                                        {formatCurrency(value).replace('€', '')} €
-                                      </span>
+                                    <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
+                                      <p className="font-medium text-sm mb-2">{label}</p>
+                                      {payload.map((entry: any, index: number) => (
+                                        <div key={`tooltip-${index}`} className="flex items-center gap-2 text-sm">
+                                          <div 
+                                            className="w-3 h-3 rounded-full" 
+                                            style={{ backgroundColor: entry.color }}
+                                          />
+                                          <span className="font-medium">{entry.name}:</span>
+                                          <span className="font-bold">{formatCurrency(entry.value)}</span>
+                                        </div>
+                                      ))}
                                     </div>
                                   );
-                                })}
-                              </div>
+                                }
+                                return null;
+                              };
                               
-                              {/* Área principal do gráfico */}
-                              <div className="ml-[4.5rem] h-full">
-                                {/* Linhas de grade horizontais */}
-                                <div className="absolute left-[4.5rem] right-0 top-0 h-full flex flex-col justify-between pointer-events-none">
-                                  {Array.from({ length: 5 }).map((_, i) => (
-                                    <div key={i} className="w-full h-[1px] bg-gray-200/40 dark:bg-gray-700/40"></div>
-                                  ))}
-                                </div>
-                                
-                                {/* SVG do Gráfico */}
-                                <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                                  {/* Área preenchida de fundo */}
-                                  <defs>
-                                    <linearGradient id="revenueGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                      <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.2" />
-                                      <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.02" />
-                                    </linearGradient>
-                                    <linearGradient id="profitGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                      <stop offset="0%" stopColor="#10b981" stopOpacity="0.2" />
-                                      <stop offset="100%" stopColor="#10b981" stopOpacity="0.02" />
-                                    </linearGradient>
-                                  </defs>
-                                  
-                                  {/* Criando áreas e linhas */}
-                                  {(() => {
-                                    const maxValue = Math.max(
-                                      ...revenueData.map(d => Math.max(d.Receita || 0, d.Lucro || 0))
-                                    );
-                                    
-                                    // Pontos para desenhar as linhas
-                                    const getPoints = (data: any[], key: string) => {
-                                      const points: [number, number][] = [];
-                                      data.forEach((d, i) => {
-                                        if (d[key] !== undefined) {
-                                          const x = (i / (data.length - 1)) * 100;
-                                          const y = 100 - (d[key] / maxValue) * 100;
-                                          points.push([x, y]);
-                                        }
-                                      });
-                                      return points;
-                                    };
-                                    
-                                    const revenuePoints = getPoints(revenueData, 'Receita');
-                                    const profitPoints = getPoints(revenueData, 'Lucro');
-                                    
-                                    // Criar SVG path string
-                                    const createPathD = (points: [number, number][]) => {
-                                      if (points.length === 0) return '';
-                                      const [firstX, firstY] = points[0];
-                                      let path = `M ${firstX} ${firstY}`;
-                                      for (let i = 1; i < points.length; i++) {
-                                        const [x, y] = points[i];
-                                        path += ` L ${x} ${y}`;
-                                      }
-                                      return path;
-                                    };
-                                    
-                                    // Caminho para área preenchida abaixo da linha
-                                    const createAreaPath = (points: [number, number][]) => {
-                                      if (points.length === 0) return '';
-                                      const [firstX, firstY] = points[0];
-                                      let path = `M ${firstX} ${firstY}`;
-                                      for (let i = 1; i < points.length; i++) {
-                                        const [x, y] = points[i];
-                                        path += ` L ${x} ${y}`;
-                                      }
-                                      // Fechar o path para criar uma área
-                                      const [lastX] = points[points.length - 1];
-                                      path += ` L ${lastX} 100 L ${firstX} 100 Z`;
-                                      return path;
-                                    };
-                                    
-                                    const revenuePath = createPathD(revenuePoints);
-                                    const profitPath = createPathD(profitPoints);
-                                    const revenueAreaPath = createAreaPath(revenuePoints);
-                                    const profitAreaPath = createAreaPath(profitPoints);
-                                    
-                                    return (
-                                      <>
-                                        {/* Áreas preenchidas */}
-                                        <path d={revenueAreaPath} fill="url(#revenueGradient)" className="opacity-70" />
-                                        <path d={profitAreaPath} fill="url(#profitGradient)" className="opacity-70" />
-                                        
-                                        {/* Linhas */}
-                                        <path
-                                          d={revenuePath}
-                                          fill="none"
-                                          stroke="#3b82f6"
-                                          strokeWidth="2.5"
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          className="path-animation"
-                                        />
-                                        <path
-                                          d={profitPath}
-                                          fill="none"
-                                          stroke="#10b981"
-                                          strokeWidth="2.5"
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          className="path-animation"
-                                          style={{ animationDelay: "0.5s" }}
-                                        />
-                                        
-                                        {/* Pontos */}
-                                        {revenuePoints.map(([x, y], i) => (
-                                          <circle
-                                            key={`rev-${i}`}
-                                            cx={x}
-                                            cy={y}
-                                            r="3.5"
-                                            fill="#fff"
-                                            stroke="#3b82f6"
-                                            strokeWidth="2"
-                                            className="drop-shadow-sm point-animation"
-                                            style={{ animationDelay: `${i * 0.1 + 0.5}s` }}
-                                          />
-                                        ))}
-                                        {profitPoints.map(([x, y], i) => (
-                                          <circle
-                                            key={`pro-${i}`}
-                                            cx={x}
-                                            cy={y}
-                                            r="3.5"
-                                            fill="#fff"
-                                            stroke="#10b981"
-                                            strokeWidth="2"
-                                            className="drop-shadow-sm point-animation"
-                                            style={{ animationDelay: `${i * 0.1 + 1}s` }}
-                                          />
-                                        ))}
-                                      </>
-                                    );
-                                  })()}
-                                </svg>
-                              </div>
-                              
-                              {/* Meses no eixo X */}
-                              <div className="absolute bottom-[-0.5rem] left-[4.5rem] right-0 flex justify-between">
-                                {revenueData.map((d, i) => (
-                                  <div key={i} className="text-xs text-muted-foreground pb-1 w-10 text-center">
-                                    {d.month}
+                              // Renderização do componente de gráfico
+                              return (
+                                <div className="h-full relative">
+                                  <div className="flex items-center justify-between mb-4">
+                                    <div className="flex items-center gap-6">
+                                      <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#3b82f6" }}></div>
+                                        <span className="text-sm font-medium">Receita</span>
+                                      </div>
+                                      <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#10b981" }}></div>
+                                        <span className="text-sm font-medium">Lucro</span>
+                                      </div>
+                                    </div>
+                                    <div className="text-sm font-bold">
+                                      {formatCurrency(Math.max(...formattedData.map(d => d.Receita || 0)))}
+                                    </div>
                                   </div>
-                                ))}
-                              </div>
-                            </div>
+                                  
+                                  {/* Componente responsivo do Recharts */}
+                                  <div className="h-[calc(100%-2rem)]">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                      <AreaChart
+                                        data={formattedData}
+                                        margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
+                                        onClick={(data) => {
+                                          if (data && data.activePayload && data.activePayload.length) {
+                                            const entry = data.activePayload[0];
+                                            if (entry.dataKey && entry.payload) {
+                                              handlePointClick(
+                                                entry.dataKey as string,
+                                                entry.payload.name as string,
+                                                entry.payload[entry.dataKey] as number
+                                              );
+                                            }
+                                          }
+                                        }}
+                                      >
+                                        <defs>
+                                          <linearGradient id="colorReceita" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2} />
+                                            <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.01} />
+                                          </linearGradient>
+                                          <linearGradient id="colorLucro" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#10b981" stopOpacity={0.2} />
+                                            <stop offset="95%" stopColor="#10b981" stopOpacity={0.01} />
+                                          </linearGradient>
+                                        </defs>
+                                        <CartesianGrid strokeDasharray="3 3" opacity={0.15} vertical={false} />
+                                        <XAxis 
+                                          dataKey="name" 
+                                          tick={{ fontSize: 12, fill: '#6b7280' }}
+                                          axisLine={false} 
+                                          tickLine={false}
+                                        />
+                                        <YAxis 
+                                          tick={{ fontSize: 12, fill: '#6b7280' }}
+                                          axisLine={false}
+                                          tickLine={false}
+                                          tickFormatter={(value) => `${value.toLocaleString('pt-BR')} €`}
+                                        />
+                                        <ReTooltip 
+                                          content={<CustomTooltip />}
+                                          cursor={{ stroke: '#9ca3af', strokeWidth: 1, strokeDasharray: '3 3' }}
+                                        />
+                                        <Area 
+                                          type="monotone" 
+                                          dataKey="Receita" 
+                                          stroke="#3b82f6" 
+                                          strokeWidth={3}
+                                          fill="url(#colorReceita)"
+                                          activeDot={{ 
+                                            r: 6, 
+                                            stroke: 'white', 
+                                            strokeWidth: 2,
+                                            fill: '#3b82f6',
+                                            className: 'cursor-pointer hover:r-8 transition-all duration-300 drop-shadow-md'
+                                          }}
+                                        />
+                                        <Area 
+                                          type="monotone" 
+                                          dataKey="Lucro" 
+                                          stroke="#10b981" 
+                                          strokeWidth={3}
+                                          fill="url(#colorLucro)"
+                                          activeDot={{ 
+                                            r: 6, 
+                                            stroke: 'white', 
+                                            strokeWidth: 2,
+                                            fill: '#10b981',
+                                            className: 'cursor-pointer hover:r-8 transition-all duration-300 drop-shadow-md'
+                                          }}
+                                        />
+                                      </AreaChart>
+                                    </ResponsiveContainer>
+                                  </div>
+                                  
+                                  {/* Mostrar informações do ponto selecionado */}
+                                  {activePoint && (
+                                    <div className="absolute top-0 right-0 mt-2 mr-2 px-3 py-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 animate-fadeIn">
+                                      <div className="flex items-center gap-2 mb-1">
+                                        <div 
+                                          className="w-3 h-3 rounded-full" 
+                                          style={{ 
+                                            backgroundColor: activePoint.dataKey === 'Receita' ? '#3b82f6' : '#10b981' 
+                                          }}
+                                        />
+                                        <span className="text-sm font-medium">{activePoint.dataKey}</span>
+                                      </div>
+                                      <div className="text-sm font-bold">
+                                        {formatCurrency(activePoint.value)}
+                                      </div>
+                                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                        {activePoint.name}
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })()}
                           </div>
                         ) : (
                           <div className="h-full flex flex-col items-center justify-center">
@@ -712,100 +724,185 @@ export default function ModernDashboard() {
                             <Skeleton className="h-full w-full" />
                           </div>
                         ) : statistics?.totalRevenue ? (
-                          <div className="flex flex-col items-center justify-center h-full">
-                            <div className="relative w-64 h-64 mx-auto">
-                              {/* SVG para o gráfico de pizza animado */}
-                              <svg viewBox="0 0 100 100" className="w-full h-full">
-                                {/* Círculo base para background */}
-                                <circle
-                                  cx="50"
-                                  cy="50"
-                                  r="40"
-                                  fill="white"
-                                  className="drop-shadow-sm"
-                                />
+                          <div className="h-full">
+                            {(() => {
+                              // Usando as importações já feitas no topo do arquivo
+                              // Não é necessário importar novamente
+                              
+                              // Preparar dados para o gráfico
+                              const data = [
+                                { 
+                                  name: 'Receita Líquida', 
+                                  value: statistics.netProfit, 
+                                  color: '#10b981',
+                                  textColor: '#059669'
+                                },
+                                { 
+                                  name: 'Custos e Despesas', 
+                                  value: statistics.totalRevenue - statistics.netProfit, 
+                                  color: '#f43f5e',
+                                  textColor: '#e11d48'
+                                }
+                              ];
+                              
+                              // Estado para controlar qual fatia está ativa
+                              const [activeIndex, setActiveIndex] = useState(0);
+                              
+                              // Componente personalizado para renderizar a fatia ativa
+                              const renderActiveShape = (props: any) => {
+                                const { 
+                                  cx, cy, innerRadius, outerRadius, startAngle, endAngle,
+                                  fill, payload, percent, value
+                                } = props;
                                 
-                                {/* Camada de despesas (vermelho) */}
-                                <circle
-                                  cx="50"
-                                  cy="50"
-                                  r="32"
-                                  fill="transparent"
-                                  stroke="#ff5a7d"
-                                  strokeWidth="16"
-                                  strokeDasharray="201.06"
-                                  strokeDashoffset="0"
-                                  className="animate-chart-fill-delay"
-                                />
+                                return (
+                                  <g>
+                                    <Sector
+                                      cx={cx}
+                                      cy={cy}
+                                      innerRadius={innerRadius}
+                                      outerRadius={outerRadius + 6} // Aumentar o tamanho da fatia ativa
+                                      startAngle={startAngle}
+                                      endAngle={endAngle}
+                                      fill={fill}
+                                      className="drop-shadow-lg"
+                                    />
+                                  </g>
+                                );
+                              };
+                              
+                              // Componente personalizado para tooltip
+                              const CustomTooltip = ({ active, payload }: any) => {
+                                if (active && payload && payload.length) {
+                                  return (
+                                    <div className="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+                                      <div className="font-medium mb-1">{payload[0].name}</div>
+                                      <div className="font-bold text-lg" style={{ color: payload[0].payload.textColor }}>
+                                        {formatCurrency(payload[0].value)}
+                                      </div>
+                                      <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                        {(payload[0].payload.value / statistics.totalRevenue * 100).toFixed(1)}% do total
+                                      </div>
+                                    </div>
+                                  );
+                                }
                                 
-                                {/* Camada de receita líquida (verde) */}
-                                <circle
-                                  cx="50"
-                                  cy="50"
-                                  r="32"
-                                  fill="transparent"
-                                  stroke="#12b981"
-                                  strokeWidth="16"
-                                  strokeDasharray={`${(statistics?.netProfit / statistics?.totalRevenue) * 201.06} 201.06`}
-                                  strokeDashoffset={`${-((statistics?.totalRevenue - statistics?.netProfit) / statistics?.totalRevenue) * 201.06}`}
-                                  className="animate-chart-fill"
-                                />
-                                
-                                {/* Círculo central branco */}
-                                <circle
-                                  cx="50"
-                                  cy="50"
-                                  r="24"
-                                  fill="white"
-                                  className="drop-shadow-sm"
-                                />
-                                
-                                {/* Texto central com valor total */}
-                                <text
-                                  x="50"
-                                  y="45"
-                                  textAnchor="middle"
-                                  fontSize="5"
-                                  fill="#6b7280"
-                                  className="font-medium"
-                                >
-                                  Total
-                                </text>
-                                <text
-                                  x="50"
-                                  y="55"
-                                  textAnchor="middle"
-                                  fontSize="8"
-                                  fontWeight="bold"
-                                  fill="#111827"
-                                  className="font-bold dark:fill-white"
-                                >
-                                  {formatCurrency(statistics?.totalRevenue).replace('€', '')} €
-                                </text>
-                              </svg>
-                            </div>
-                            
-                            {/* Legenda com indicadores e valores */}
-                            <div className="flex flex-col gap-4 mt-6 w-full max-w-xs">
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                  <div className="w-4 h-4 rounded-full bg-emerald-500"></div>
-                                  <span className="text-sm font-medium">Receita Líquida</span>
+                                return null;
+                              };
+                              
+                              // Para detectar cliques nas fatias e atualizar o estado
+                              const onPieEnter = (_: any, index: number) => {
+                                setActiveIndex(index);
+                              };
+                              
+                              return (
+                                <div className="flex flex-col items-center justify-center h-full">
+                                  <div className="w-64 h-64 mx-auto relative">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                      <RePieChart>
+                                        <defs>
+                                          <filter id="dropShadow" height="130%">
+                                            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/> 
+                                            <feOffset dx="0" dy="2" result="offsetblur"/>
+                                            <feComponentTransfer>
+                                              <feFuncA type="linear" slope="0.2"/>
+                                            </feComponentTransfer>
+                                            <feMerge> 
+                                              <feMergeNode/>
+                                              <feMergeNode in="SourceGraphic"/> 
+                                            </feMerge>
+                                          </filter>
+                                        </defs>
+                                        <Pie
+                                          activeIndex={activeIndex}
+                                          activeShape={renderActiveShape}
+                                          data={data}
+                                          cx="50%"
+                                          cy="50%"
+                                          innerRadius={50}
+                                          outerRadius={80}
+                                          dataKey="value"
+                                          onMouseEnter={onPieEnter}
+                                          onClick={(_, index) => {
+                                            setActiveIndex(index);
+                                            // Poderíamos abrir um modal ou navegar para detalhes
+                                          }}
+                                          className="cursor-pointer"
+                                          filter="url(#dropShadow)"
+                                        >
+                                          {data.map((entry, index) => (
+                                            <Cell 
+                                              key={`cell-${index}`} 
+                                              fill={entry.color} 
+                                              style={{
+                                                filter: index === activeIndex ? 'brightness(1.1)' : 'none',
+                                                transition: 'filter 0.3s ease'
+                                              }}
+                                              className="hover:brightness-110 transition-all duration-300"
+                                            />
+                                          ))}
+                                        </Pie>
+                                        <ReTooltip content={<CustomTooltip />} />
+                                        
+                                        {/* Texto central */}
+                                        <text
+                                          x="50%"
+                                          y="45%"
+                                          textAnchor="middle"
+                                          dominantBaseline="middle"
+                                          className="fill-gray-500 text-sm"
+                                        >
+                                          Total
+                                        </text>
+                                        <text
+                                          x="50%"
+                                          y="55%"
+                                          textAnchor="middle"
+                                          dominantBaseline="middle"
+                                          className="fill-gray-900 dark:fill-white font-bold text-lg"
+                                        >
+                                          {formatCurrency(statistics.totalRevenue)}
+                                        </text>
+                                      </RePieChart>
+                                    </ResponsiveContainer>
+                                    
+                                    {/* Círculo animado ao redor do gráfico */}
+                                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                      <div className="w-[170px] h-[170px] rounded-full border-2 border-blue-100 dark:border-blue-900/40 animate-pulse-slow"></div>
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Legenda interativa */}
+                                  <div className="flex flex-col gap-4 mt-6 w-full max-w-xs">
+                                    {data.map((item, index) => (
+                                      <div 
+                                        key={`legend-${index}`}
+                                        className={`flex items-center justify-between p-2 rounded-lg transition-all duration-200 cursor-pointer ${
+                                          activeIndex === index 
+                                            ? 'bg-gray-100 dark:bg-gray-800/60' 
+                                            : 'hover:bg-gray-50 dark:hover:bg-gray-900/30'
+                                        }`}
+                                        onClick={() => setActiveIndex(index)}
+                                      >
+                                        <div className="flex items-center gap-2">
+                                          <div 
+                                            className="w-4 h-4 rounded-full"
+                                            style={{ backgroundColor: item.color }}
+                                          />
+                                          <span className="text-sm font-medium">{item.name}</span>
+                                        </div>
+                                        <span 
+                                          className="text-sm font-bold tabular-nums"
+                                          style={{ color: item.textColor }}
+                                        >
+                                          {formatCurrency(item.value)}
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
                                 </div>
-                                <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
-                                  {formatCurrency(statistics?.netProfit)}
-                                </span>
-                              </div>
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                  <div className="w-4 h-4 rounded-full bg-pink-500"></div>
-                                  <span className="text-sm font-medium">Custos e Despesas</span>
-                                </div>
-                                <span className="text-sm font-bold text-pink-600 dark:text-pink-400 tabular-nums">
-                                  {formatCurrency(statistics?.totalRevenue - statistics?.netProfit)}
-                                </span>
-                              </div>
-                            </div>
+                              );
+                            })()}
                           </div>
                         ) : (
                           <div className="h-full flex flex-col items-center justify-center">
