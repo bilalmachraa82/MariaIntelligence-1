@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { format, parseISO } from "date-fns";
@@ -19,6 +19,11 @@ import {
   CategoryBar,
   Grid,
   Col,
+  Callout,
+  List,
+  ListItem,
+  Divider,
+  Badge,
 } from "@tremor/react";
 import { 
   Download, 
@@ -33,14 +38,20 @@ import {
   ArrowDownRight,
   ChevronsUpDown,
   Wallet,
-  FileType2
+  FileType2,
+  Lightbulb,
+  BarChart2,
+  AlertCircle,
+  LineChart,
+  PieChart,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { DateRange } from "@/components/ui/date-range-picker";
 import { OwnerReport } from "@/hooks/use-owner-report";
 import { downloadOwnerReportCSV } from "@/lib/export-utils";
-import { downloadOwnerReportPDF } from "@/lib/pdf-export-utils";
+import { downloadOwnerReportPDF, generateReportInsights } from "@/lib/pdf-export-utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
