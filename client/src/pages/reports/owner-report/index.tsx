@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DateRangePicker, DateRange } from "@/components/ui/date-range-picker";
-import { format, addDays } from "date-fns";
+import { DateRange } from "@/components/ui/date-range-picker";
+import { DateRangePresetPicker } from "@/components/ui/date-range-preset-picker";
+import { format, startOfMonth, endOfMonth } from "date-fns";
 import { useOwners } from "@/hooks/use-owners";
 import { useOwnerReport } from "@/hooks/use-owner-report";
 import { downloadOwnerReportCSV } from "@/lib/export-utils";
@@ -18,8 +19,9 @@ export default function OwnerReportPage() {
   const { data: owners, isLoading: isOwnersLoading } = useOwners();
   const [selectedOwner, setSelectedOwner] = useState<string>("");
   const [dateRange, setDateRange] = useState<DateRange>({
-    from: addDays(new Date(), -30),
-    to: new Date()
+    startDate: startOfMonth(new Date()).toISOString().split('T')[0],
+    endDate: endOfMonth(new Date()).toISOString().split('T')[0],
+    label: t("dateRanges.currentMonth", "Mês Atual")
   });
   
   // Usar o hook personalizado para obter o relatório com dados reais
@@ -107,7 +109,7 @@ export default function OwnerReportPage() {
               <label className="text-sm font-medium mb-1 block">
                 {t("ownerReport.period", "Período")}
               </label>
-              <DateRangePicker 
+              <DateRangePresetPicker 
                 value={dateRange} 
                 onChange={handleDateRangeChange} 
                 className="w-full"
