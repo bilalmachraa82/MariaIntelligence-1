@@ -60,8 +60,15 @@ export function DateRangePicker({
             initialFocus
             mode="range"
             defaultMonth={value?.from}
-            selected={value}
-            onSelect={onChange}
+            selected={{
+              from: value?.from,
+              to: value?.to
+            }}
+            onSelect={(range) => {
+              if (range) {
+                onChange(range);
+              }
+            }}
             numberOfMonths={2}
             disabled={disabled}
           />

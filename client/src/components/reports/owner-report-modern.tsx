@@ -400,8 +400,8 @@ export function OwnerReportModern({
           >
             <Calendar className="h-4 w-4 mr-1" />
             {t("ownerReport.periodDetails", "Período: {{startDate}} a {{endDate}}", {
-              startDate: format(parseISO(dateRange.startDate), "dd/MM/yyyy"),
-              endDate: format(parseISO(dateRange.endDate), "dd/MM/yyyy")
+              startDate: dateRange.from ? format(dateRange.from, "dd/MM/yyyy") : "-",
+              endDate: dateRange.to ? format(dateRange.to, "dd/MM/yyyy") : "-"
             })}
           </motion.p>
         </div>

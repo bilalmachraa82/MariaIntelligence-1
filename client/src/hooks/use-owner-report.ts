@@ -4,11 +4,14 @@ import { useProperties } from "@/hooks/use-properties";
 import { useReservations } from "@/hooks/use-reservations";
 import { useOwners } from "@/hooks/use-owners";
 
-export interface DateRange {
+export interface DateRangeWithLabel {
   startDate: string;
   endDate: string;
   label: string;
 }
+
+// Interface adaptada do componente date-range-picker
+import { DateRange as CalendarDateRange } from "@/components/ui/date-range-picker";
 
 export interface OwnerReport {
   ownerId: number;
@@ -60,7 +63,7 @@ export interface ReportTotals {
   totalReservations: number;
 }
 
-export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
+export function useOwnerReport(ownerId: number | null, dateRange: CalendarDateRange) {
   const { data: owners, isLoading: isOwnersLoading } = useOwners();
   const { data: properties, isLoading: isPropertiesLoading } = useProperties();
   const { data: allReservations, isLoading: isReservationsLoading } = useReservations();
@@ -86,8 +89,8 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
     }
     
     // Filtrar as reservas do período para cada propriedade
-    const start = new Date(dateRange.startDate);
-    const end = new Date(dateRange.endDate);
+    const start = dateRange.from || new Date();
+    const end = dateRange.to || new Date();
     
     // Calcular os dias disponíveis no período
     const availableDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
@@ -202,8 +205,8 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
     return {
       ownerId,
       ownerName: owner.name,
-      startDate: dateRange.startDate,
-      endDate: dateRange.endDate,
+      startDate: format(start, "yyyy-MM-dd"),
+      endDate: format(end, "yyyy-MM-dd"),
       propertyReports,
       totals
     };
