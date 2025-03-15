@@ -155,15 +155,31 @@ export default function ModernDashboard() {
   // Recent reservations data (latest 4)
   const recentReservations = reservations?.slice(0, 4) || [];
 
-  // Preparing financial data for pie chart
+  // Preparing financial data for pie chart with custom color values
   const financialData = statistics?.totalRevenue
     ? [
-        { name: 'Receita Líquida', value: statistics.netProfit, color: "emerald" },
-        { name: 'Custos e Despesas', value: statistics.totalRevenue - statistics.netProfit, color: "rose" }
+        { 
+          name: 'Receita Líquida', 
+          value: statistics.netProfit, 
+          color: "#10b981" // tailwind emerald-500
+        },
+        { 
+          name: 'Custos e Despesas', 
+          value: statistics.totalRevenue - statistics.netProfit, 
+          color: "#f43f5e" // tailwind rose-500
+        }
       ]
     : [
-        { name: 'Receita Líquida', value: 7800, color: "emerald" },
-        { name: 'Custos e Despesas', value: 4300, color: "rose" }
+        { 
+          name: 'Receita Líquida', 
+          value: 7800, 
+          color: "#10b981" // tailwind emerald-500
+        },
+        { 
+          name: 'Custos e Despesas', 
+          value: 4300, 
+          color: "#f43f5e" // tailwind rose-500
+        }
       ];
 
   // Prepare property occupancy data
@@ -534,34 +550,63 @@ export default function ModernDashboard() {
                             <Skeleton className="h-full w-full" />
                           </div>
                         ) : statistics?.totalRevenue ? (
-                          <DonutChart
-                            className="h-full"
-                            data={financialData}
-                            category="value"
-                            index="name"
-                            valueFormatter={(number) => `${formatCurrency(number)}`}
-                            colors={["emerald", "rose"]}
-                            variant="pie"
-                            showAnimation
-                            showLabel
-                            showTooltip
-                            animationDuration={1500}
-                            customTooltip={(props) => {
-                              const { payload } = props;
-                              if (!payload || payload.length === 0) return null;
-                              const data = payload[0];
-                              return (
-                                <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200 dark:border-gray-700 shadow-lg rounded-lg p-2">
-                                  <p className="font-medium">{data.name}</p>
-                                  <p className={`text-sm font-bold ${
-                                    data.name === "Receita Líquida" ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"
-                                  }`}>
-                                    {formatCurrency(data.value)}
-                                  </p>
+                          <div className="flex flex-col items-center justify-center h-full">
+                            {/* Implementação de um gráfico de pizza personalizado */}
+                            <div className="relative w-60 h-60 mx-auto">
+                              <svg viewBox="0 0 100 100" className="w-full h-full">
+                                {/* Receita Líquida */}
+                                <circle 
+                                  cx="50" 
+                                  cy="50" 
+                                  r="40" 
+                                  fill="transparent"
+                                  stroke="#10b981" 
+                                  strokeWidth="20"
+                                  strokeDasharray={`${(statistics?.netProfit || 7800) / (statistics?.totalRevenue || 12100) * 251.2} 251.2`}
+                                  strokeDashoffset="0"
+                                  transform="rotate(-90) translate(-100, 0)"
+                                />
+                                {/* Custos e Despesas */}
+                                <circle 
+                                  cx="50" 
+                                  cy="50" 
+                                  r="40" 
+                                  fill="transparent"
+                                  stroke="#f43f5e" 
+                                  strokeWidth="20"
+                                  strokeDasharray={`${((statistics?.totalRevenue || 12100) - (statistics?.netProfit || 7800)) / (statistics?.totalRevenue || 12100) * 251.2} 251.2`}
+                                  strokeDashoffset={`${-(statistics?.netProfit || 7800) / (statistics?.totalRevenue || 12100) * 251.2}`}
+                                  transform="rotate(-90) translate(-100, 0)"
+                                />
+                              </svg>
+                              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                <span className="text-xs text-muted-foreground font-medium">Total</span>
+                                <span className="text-xl font-bold">{formatCurrency(statistics?.totalRevenue || 12100)}</span>
+                              </div>
+                            </div>
+                            
+                            {/* Legenda */}
+                            <div className="flex flex-col gap-3 mt-4 px-4">
+                              <div className="flex items-center gap-2">
+                                <div className="w-4 h-4 rounded-full bg-emerald-500"></div>
+                                <div className="flex-1 flex justify-between">
+                                  <span className="text-sm font-medium">Receita Líquida</span>
+                                  <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                                    {formatCurrency(statistics?.netProfit || 7800)}
+                                  </span>
                                 </div>
-                              );
-                            }}
-                          />
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <div className="w-4 h-4 rounded-full bg-rose-500"></div>
+                                <div className="flex-1 flex justify-between">
+                                  <span className="text-sm font-medium">Custos e Despesas</span>
+                                  <span className="text-sm font-bold text-rose-600 dark:text-rose-400">
+                                    {formatCurrency((statistics?.totalRevenue || 12100) - (statistics?.netProfit || 7800))}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         ) : (
                           <div className="h-full flex flex-col items-center justify-center">
                             <PieChart className="h-16 w-16 text-gray-300 dark:text-gray-600 mb-3" />
