@@ -104,6 +104,20 @@ export default function SettingsPage() {
     });
   };
   
+  // Definição dos tipos de teste fora da função para reutilização
+  interface TestResult {
+    name: string;
+    success: boolean;
+    details?: any;
+    error?: string;
+  }
+  
+  interface TestResponse {
+    success: boolean;
+    timestamp: string;
+    tests: TestResult[];
+  }
+
   // Função para testar as integrações
   const handleTestIntegrations = async () => {
     setIsTestingIntegrations(true);
@@ -116,33 +130,19 @@ export default function SettingsPage() {
     });
     
     try {
-      // Definir o tipo de resposta explicitamente
-      interface TestResult {
-        name: string;
-        success: boolean;
-        details?: any;
-        error?: string;
-      }
-      
-      interface TestResponse {
-        success: boolean;
-        timestamp: string;
-        tests: TestResult[];
-      }
-      
-      const response = await apiRequest("GET", "/api/test-integrations");
-      const data = await response.json() as TestResponse;
+      console.log("Iniciando testes de integração");
+      const data = await apiRequest<TestResponse>("/api/test-integrations");
       
       console.log("Resposta completa:", data);
       
       if (data && data.tests && Array.isArray(data.tests)) {
         // Extrai os resultados de cada teste pelo nome
-        const mistralTest = data.tests.find(test => test.name === "Mistral AI");
-        const dbTest = data.tests.find(test => test.name === "Base de Dados");
-        const ocrTest = data.tests.find(test => test.name === "OCR (Processamento de PDFs)");
-        const ragTest = data.tests.find(test => test.name === "RAG (Retrieval Augmented Generation)");
+        const mistralTest = data.tests.find((test: TestResult) => test.name === "Mistral AI");
+        const dbTest = data.tests.find((test: TestResult) => test.name === "Base de Dados");
+        const ocrTest = data.tests.find((test: TestResult) => test.name === "OCR (Processamento de PDFs)");
+        const ragTest = data.tests.find((test: TestResult) => test.name === "RAG (Retrieval Augmented Generation)");
         
-        console.log("Tests individuais:", {
+        console.log("Testes individuais:", {
           mistralTest,
           dbTest,
           ocrTest,
@@ -151,8 +151,8 @@ export default function SettingsPage() {
         
         // Processa qualquer mensagem de erro
         const errorMessages = data.tests
-          .filter(test => !test.success && test.error)
-          .map(test => `${test.name}: ${test.error}`)
+          .filter((test: TestResult) => !test.success && test.error)
+          .map((test: TestResult) => `${test.name}: ${test.error}`)
           .join("\n");
         
         // Atualiza o estado com os resultados dos testes
