@@ -363,19 +363,19 @@ export default function AssistantPage() {
       // Processamento do contexto (se disponível)
       let context;
       if (data.context) {
-        if (data.context.type === "property" && properties) {
-          const property = properties.find(p => p.id === data.context.propertyId);
+        if (data.context.type === "property" && properties && Array.isArray(properties)) {
+          const property = properties.find((p: any) => p.id === data.context.propertyId);
           if (property) {
             context = {
-              type: "property",
+              type: "property" as "property" | "reservation" | "owner" | "report" | "suggestion",
               data: property
             };
           }
-        } else if (data.context.type === "reservation" && reservations) {
-          const reservation = reservations.find(r => r.id === data.context.reservationId);
+        } else if (data.context.type === "reservation" && reservations && Array.isArray(reservations)) {
+          const reservation = reservations.find((r: any) => r.id === data.context.reservationId);
           if (reservation) {
             context = {
-              type: "reservation",
+              type: "reservation" as "property" | "reservation" | "owner" | "report" | "suggestion",
               data: reservation
             };
           }
@@ -392,7 +392,7 @@ export default function AssistantPage() {
         content: data.reply || t("aiAssistant.errorMessage", "Desculpe, não consegui processar sua solicitação."), 
         timestamp: new Date(),
         id: generateId(),
-        context
+        context: context as { type: "property" | "reservation" | "owner" | "report" | "suggestion"; data: any; } | undefined
       };
       
       setMessages(prev => [...prev, assistantMessage]);
@@ -664,303 +664,320 @@ export default function AssistantPage() {
       )}
       
       {/* Interface Principal - Layout responsivo */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="md:col-span-3">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="mb-4">
-              <TabsTrigger value="chat" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                <MessageSquare className="h-4 w-4 mr-2" />
-                {t("aiAssistant.tabs.chat", "Chat")}
+      <div className="grid grid-cols-1 gap-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="mb-4">
+            <TabsTrigger value="chat" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <MessageSquare className="h-4 w-4 mr-2" />
+              {t("aiAssistant.tabs.chat", "Chat")}
+            </TabsTrigger>
+            <TabsTrigger value="suggestions" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <LightbulbIcon className="h-4 w-4 mr-2" />
+              {t("aiAssistant.tabs.suggestions", "Sugestões")}
+            </TabsTrigger>
+            <TabsTrigger value="quick-access" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Sparkles className="h-4 w-4 mr-2" />
+              {t("aiAssistant.tabs.quickAccess", "Acesso Rápido")}
+            </TabsTrigger>
+            {isMobile && (
+              <TabsTrigger value="tools" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                <Settings className="h-4 w-4 mr-2" />
+                {t("aiAssistant.tabs.tools", "Ferramentas")}
               </TabsTrigger>
-              <TabsTrigger value="suggestions" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                <LightbulbIcon className="h-4 w-4 mr-2" />
-                {t("aiAssistant.tabs.suggestions", "Sugestões")}
-              </TabsTrigger>
-              {isMobile && (
-                <TabsTrigger value="tools" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                  <Settings className="h-4 w-4 mr-2" />
-                  {t("aiAssistant.tabs.tools", "Ferramentas")}
-                </TabsTrigger>
-              )}
-            </TabsList>
-            
-            <TabsContent value="chat" className="m-0">
-              <Card className="h-[calc(100vh-14rem)]">
-                <CardHeader className="border-b p-4">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <CardTitle className="flex items-center gap-2">
-                        <Bot className="h-5 w-5 text-primary" />
-                        {t("aiAssistant.chatTitle", "Maria Faz Assistant")}
-                      </CardTitle>
-                      <CardDescription>{t("aiAssistant.chatDescription", "Pergunte sobre suas propriedades, reservas e relatórios")}</CardDescription>
-                    </div>
-                    {isMobile && (
-                      <Button 
-                        variant="ghost" 
-                        size="icon"
-                        onClick={clearConversation}
-                      >
-                        <RefreshCw className="h-4 w-4" />
-                      </Button>
-                    )}
+            )}
+          </TabsList>
+          
+          <TabsContent value="chat" className="m-0">
+            <Card className="h-[calc(100vh-14rem)]">
+              <CardHeader className="border-b p-4">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Bot className="h-5 w-5 text-primary" />
+                      {t("aiAssistant.chatTitle", "Maria Faz Assistant")}
+                    </CardTitle>
+                    <CardDescription>{t("aiAssistant.chatDescription", "Pergunte sobre suas propriedades, reservas e relatórios")}</CardDescription>
                   </div>
-                </CardHeader>
-                
-                <CardContent className="p-0 flex flex-col h-[calc(100%-9rem)]">
-                  <ScrollArea className="flex-grow p-4">
-                    <div className="space-y-6">
-                      {/* Mensagens com o novo componente ChatBubble */}
-                      <AnimatePresence>
-                        {messages.map((msg, index) => (
-                          <ChatBubble 
-                            key={msg.id || index} 
-                            message={msg} 
-                            onFeedback={handleMessageFeedback}
-                          />
-                        ))}
-                        
-                        {/* Indicação de digitação */}
-                        {isLoading && (
-                          <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="flex justify-start"
-                          >
-                            <div className="flex items-center gap-2">
-                              <Avatar className="h-8 w-8 border border-primary/20">
-                                <AvatarFallback className="bg-primary/10 text-primary text-xs">
-                                  MF
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="max-w-[80%] p-3 rounded-lg bg-muted/70 border border-border/50 animate-pulse">
-                                <div className="flex items-center gap-1 h-5">
-                                  <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                                  <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-100"></div>
-                                  <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-200"></div>
-                                </div>
-                              </div>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                      
-                      {/* Referência para rolagem automática */}
-                      <div ref={bottomRef} />
-                    </div>
-                  </ScrollArea>
-                </CardContent>
-                
-                <CardFooter className="p-4 border-t">
-                  <div className="flex w-full gap-2 items-center">
+                  {isMobile && (
                     <Button 
                       variant="ghost" 
                       size="icon"
-                      onClick={triggerFileUpload}
-                      title={t("aiAssistant.attachFile", "Anexar arquivo")}
-                      disabled={isLoading}
+                      onClick={clearConversation}
                     >
-                      <UploadCloud className="h-4 w-4 text-muted-foreground" />
+                      <RefreshCw className="h-4 w-4" />
                     </Button>
+                  )}
+                </div>
+              </CardHeader>
+              
+              <CardContent className="p-0 flex flex-col h-[calc(100%-9rem)]">
+                <ScrollArea className="flex-grow p-4">
+                  <div className="space-y-6">
+                    {/* Mensagens com o novo componente ChatBubble */}
+                    <AnimatePresence>
+                      {messages.map((msg, index) => (
+                        <ChatBubble 
+                          key={msg.id || index} 
+                          message={msg} 
+                          onFeedback={handleMessageFeedback}
+                        />
+                      ))}
+                      
+                      {/* Indicação de digitação */}
+                      {isLoading && (
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="flex justify-start"
+                        >
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-8 w-8 border border-primary/20">
+                              <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                                MF
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="max-w-[80%] p-3 rounded-lg bg-muted/70 border border-border/50 animate-pulse">
+                              <div className="flex items-center gap-1 h-5">
+                                <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+                                <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-100"></div>
+                                <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-200"></div>
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                     
-                    <Input 
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      onKeyDown={handleKeyDown}
-                      placeholder={t("aiAssistant.placeholder", "Digite sua mensagem aqui...")}
-                      disabled={isLoading}
-                      className="flex-1"
-                    />
-                    
-                    <Button 
-                      onClick={sendMessage} 
-                      disabled={!message.trim() || isLoading}
-                      size="icon"
-                      className="bg-primary hover:bg-primary/90"
-                    >
-                      <Send className="h-4 w-4" />
-                    </Button>
-                    
-                    {/* Input oculto para upload de arquivo */}
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      style={{ display: 'none' }}
-                      onChange={handleFileInputChange}
-                      accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-                    />
+                    {/* Referência para rolagem automática */}
+                    <div ref={bottomRef} />
                   </div>
-                </CardFooter>
-              </Card>
-            </TabsContent>
-            
-            <TabsContent value="suggestions" className="m-0">
+                </ScrollArea>
+              </CardContent>
+              
+              <CardFooter className="p-4 border-t">
+                <div className="flex w-full gap-2 items-center">
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={triggerFileUpload}
+                    title={t("aiAssistant.attachFile", "Anexar arquivo")}
+                    disabled={isLoading}
+                  >
+                    <UploadCloud className="h-4 w-4 text-muted-foreground" />
+                  </Button>
+                  
+                  <Input 
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder={t("aiAssistant.placeholder", "Digite sua mensagem aqui...")}
+                    disabled={isLoading}
+                    className="flex-1"
+                  />
+                  
+                  <Button 
+                    onClick={sendMessage} 
+                    disabled={!message.trim() || isLoading}
+                    size="icon"
+                    className="bg-primary hover:bg-primary/90"
+                  >
+                    <Send className="h-4 w-4" />
+                  </Button>
+                  
+                  {/* Input oculto para upload de arquivo */}
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: 'none' }}
+                    onChange={handleFileInputChange}
+                    accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                  />
+                </div>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="suggestions" className="m-0">
+            <Card className="h-[calc(100vh-14rem)]">
+              <CardHeader>
+                <CardTitle>{t("aiAssistant.allSuggestions", "Todas as sugestões")}</CardTitle>
+                <CardDescription>{t("aiAssistant.allSuggestionsDesc", "Explore sugestões por categoria para obter insights valiosos")}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Tabs defaultValue="business">
+                  <TabsList className="mb-4 grid grid-cols-4 h-auto">
+                    <TabsTrigger value="business" className="text-xs">
+                      <BarChart className="h-3 w-3 mr-1" />
+                      {t("aiAssistant.categories.business", "Negócios")}
+                    </TabsTrigger>
+                    <TabsTrigger value="properties" className="text-xs">
+                      <Home className="h-3 w-3 mr-1" />
+                      {t("aiAssistant.categories.properties", "Propriedades")}
+                    </TabsTrigger>
+                    <TabsTrigger value="reservations" className="text-xs">
+                      <Calendar className="h-3 w-3 mr-1" />
+                      {t("aiAssistant.categories.reservations", "Reservas")}
+                    </TabsTrigger>
+                    <TabsTrigger value="assistant" className="text-xs">
+                      <Bot className="h-3 w-3 mr-1" />
+                      {t("aiAssistant.categories.assistant", "Assistente")}
+                    </TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="business" className="m-0 space-y-2">
+                    {suggestionCategories.business.map(item => (
+                      <Button
+                        key={item.id}
+                        variant="outline"
+                        className="w-full justify-start text-left h-auto py-2"
+                        onClick={() => handleSuggestionClick(item.text)}
+                      >
+                        <BarChart className="h-4 w-4 mr-2 flex-shrink-0 text-blue-500" />
+                        <span className="truncate">{item.text}</span>
+                      </Button>
+                    ))}
+                  </TabsContent>
+                  
+                  <TabsContent value="properties" className="m-0 space-y-2">
+                    {suggestionCategories.properties.map(item => (
+                      <Button
+                        key={item.id}
+                        variant="outline"
+                        className="w-full justify-start text-left h-auto py-2"
+                        onClick={() => handleSuggestionClick(item.text)}
+                      >
+                        <Home className="h-4 w-4 mr-2 flex-shrink-0 text-emerald-500" />
+                        <span className="truncate">{item.text}</span>
+                      </Button>
+                    ))}
+                  </TabsContent>
+                  
+                  <TabsContent value="reservations" className="m-0 space-y-2">
+                    {suggestionCategories.reservations.map(item => (
+                      <Button
+                        key={item.id}
+                        variant="outline"
+                        className="w-full justify-start text-left h-auto py-2"
+                        onClick={() => handleSuggestionClick(item.text)}
+                      >
+                        <Calendar className="h-4 w-4 mr-2 flex-shrink-0 text-amber-500" />
+                        <span className="truncate">{item.text}</span>
+                      </Button>
+                    ))}
+                  </TabsContent>
+                  
+                  <TabsContent value="assistant" className="m-0 space-y-2">
+                    {suggestionCategories.assistant.map(item => (
+                      <Button
+                        key={item.id}
+                        variant="outline"
+                        className="w-full justify-start text-left h-auto py-2"
+                        onClick={() => handleSuggestionClick(item.text)}
+                      >
+                        <Bot className="h-4 w-4 mr-2 flex-shrink-0 text-violet-500" />
+                        <span className="truncate">{item.text}</span>
+                      </Button>
+                    ))}
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="quick-access" className="m-0">
+            <Card className="h-[calc(100vh-14rem)]">
+              <CardHeader>
+                <CardTitle>{t("aiAssistant.quickSuggestions.title", "Acesso Rápido")}</CardTitle>
+                <CardDescription>{t("aiAssistant.quickSuggestions.subtitle", "Acesse rapidamente recursos e informações importantes")}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {suggestions.map(suggestion => (
+                    <SuggestionCard
+                      key={suggestion.id}
+                      icon={suggestion.icon}
+                      title={suggestion.title}
+                      description={suggestion.description}
+                      gradient={suggestion.gradient}
+                      onClick={() => handleQuickSuggestionClick(suggestion.id)}
+                    />
+                  ))}
+                </div>
+                
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center">
+                    <BadgeInfo className="h-4 w-4 mr-2 text-blue-500" />
+                    {t("aiAssistant.features.title", "Recursos")}
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-4 rounded-lg border bg-card">
+                      <div className="flex items-center mb-2">
+                        <Gauge className="h-5 w-5 mr-2 text-emerald-500" />
+                        <h4 className="font-medium">{t("aiAssistant.features.analyticsTitle", "Análise de Dados")}</h4>
+                      </div>
+                      <p className="text-sm text-muted-foreground">{t("aiAssistant.features.analytics", "Análises de desempenho e estatísticas em tempo real")}</p>
+                    </div>
+                    
+                    <div className="p-4 rounded-lg border bg-card">
+                      <div className="flex items-center mb-2">
+                        <FileQuestion className="h-5 w-5 mr-2 text-blue-500" />
+                        <h4 className="font-medium">{t("aiAssistant.features.recommendationsTitle", "Recomendações")}</h4>
+                      </div>
+                      <p className="text-sm text-muted-foreground">{t("aiAssistant.features.recommendations", "Recomendações personalizadas baseadas em dados")}</p>
+                    </div>
+                    
+                    <div className="p-4 rounded-lg border bg-card">
+                      <div className="flex items-center mb-2">
+                        <Search className="h-5 w-5 mr-2 text-violet-500" />
+                        <h4 className="font-medium">{t("aiAssistant.features.knowledgebaseTitle", "Base de Conhecimento")}</h4>
+                      </div>
+                      <p className="text-sm text-muted-foreground">{t("aiAssistant.features.knowledgebase", "Acesso à base de conhecimento e FAQs")}</p>
+                    </div>
+                    
+                    <div className="p-4 rounded-lg border bg-card">
+                      <div className="flex items-center mb-2">
+                        <FileText className="h-5 w-5 mr-2 text-amber-500" />
+                        <h4 className="font-medium">{t("aiAssistant.features.documentsTitle", "Processamento")}</h4>
+                      </div>
+                      <p className="text-sm text-muted-foreground">{t("aiAssistant.features.documents", "Processamento inteligente de documentos")}</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          {isMobile && (
+            <TabsContent value="tools" className="m-0">
               <Card className="h-[calc(100vh-14rem)]">
                 <CardHeader>
-                  <CardTitle>{t("aiAssistant.allSuggestions", "Todas as sugestões")}</CardTitle>
-                  <CardDescription>{t("aiAssistant.allSuggestionsDesc", "Explore sugestões por categoria para obter insights valiosos")}</CardDescription>
+                  <CardTitle>{t("aiAssistant.tools.title", "Ferramentas")}</CardTitle>
+                  <CardDescription>{t("aiAssistant.tools.description", "Ações e configurações do assistente")}</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <Tabs defaultValue="business">
-                    <TabsList className="mb-4 grid grid-cols-4 h-auto">
-                      <TabsTrigger value="business" className="text-xs">
-                        <BarChart className="h-3 w-3 mr-1" />
-                        {t("aiAssistant.categories.business", "Negócios")}
-                      </TabsTrigger>
-                      <TabsTrigger value="properties" className="text-xs">
-                        <Home className="h-3 w-3 mr-1" />
-                        {t("aiAssistant.categories.properties", "Propriedades")}
-                      </TabsTrigger>
-                      <TabsTrigger value="reservations" className="text-xs">
-                        <Calendar className="h-3 w-3 mr-1" />
-                        {t("aiAssistant.categories.reservations", "Reservas")}
-                      </TabsTrigger>
-                      <TabsTrigger value="assistant" className="text-xs">
-                        <Bot className="h-3 w-3 mr-1" />
-                        {t("aiAssistant.categories.assistant", "Assistente")}
-                      </TabsTrigger>
-                    </TabsList>
-                    
-                    <TabsContent value="business" className="m-0 space-y-2">
-                      {suggestionCategories.business.map(item => (
-                        <Button
-                          key={item.id}
-                          variant="outline"
-                          className="w-full justify-start text-left h-auto py-2"
-                          onClick={() => handleSuggestionClick(item.text)}
-                        >
-                          <BarChart className="h-4 w-4 mr-2 flex-shrink-0 text-blue-500" />
-                          <span className="truncate">{item.text}</span>
-                        </Button>
-                      ))}
-                    </TabsContent>
-                    
-                    <TabsContent value="properties" className="m-0 space-y-2">
-                      {suggestionCategories.properties.map(item => (
-                        <Button
-                          key={item.id}
-                          variant="outline"
-                          className="w-full justify-start text-left h-auto py-2"
-                          onClick={() => handleSuggestionClick(item.text)}
-                        >
-                          <Home className="h-4 w-4 mr-2 flex-shrink-0 text-emerald-500" />
-                          <span className="truncate">{item.text}</span>
-                        </Button>
-                      ))}
-                    </TabsContent>
-                    
-                    <TabsContent value="reservations" className="m-0 space-y-2">
-                      {suggestionCategories.reservations.map(item => (
-                        <Button
-                          key={item.id}
-                          variant="outline"
-                          className="w-full justify-start text-left h-auto py-2"
-                          onClick={() => handleSuggestionClick(item.text)}
-                        >
-                          <Calendar className="h-4 w-4 mr-2 flex-shrink-0 text-amber-500" />
-                          <span className="truncate">{item.text}</span>
-                        </Button>
-                      ))}
-                    </TabsContent>
-                    
-                    <TabsContent value="assistant" className="m-0 space-y-2">
-                      {suggestionCategories.assistant.map(item => (
-                        <Button
-                          key={item.id}
-                          variant="outline"
-                          className="w-full justify-start text-left h-auto py-2"
-                          onClick={() => handleSuggestionClick(item.text)}
-                        >
-                          <Bot className="h-4 w-4 mr-2 flex-shrink-0 text-violet-500" />
-                          <span className="truncate">{item.text}</span>
-                        </Button>
-                      ))}
-                    </TabsContent>
-                  </Tabs>
+                <CardContent className="space-y-4">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start"
+                    onClick={clearConversation}
+                  >
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    {t("aiAssistant.clearConversation", "Limpar conversa")}
+                  </Button>
+                  
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start"
+                    onClick={triggerFileUpload}
+                  >
+                    <UploadCloud className="h-4 w-4 mr-2" />
+                    {t("aiAssistant.uploadDocument", "Anexar documento")}
+                  </Button>
                 </CardContent>
               </Card>
             </TabsContent>
-            
-            {isMobile && (
-              <TabsContent value="tools" className="m-0">
-                <Card className="h-[calc(100vh-14rem)]">
-                  <CardHeader>
-                    <CardTitle>{t("aiAssistant.tools.title", "Ferramentas")}</CardTitle>
-                    <CardDescription>{t("aiAssistant.tools.description", "Ações e configurações do assistente")}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <Button 
-                      variant="outline" 
-                      className="w-full justify-start"
-                      onClick={clearConversation}
-                    >
-                      <RefreshCw className="h-4 w-4 mr-2" />
-                      {t("aiAssistant.clearConversation", "Limpar conversa")}
-                    </Button>
-                    
-                    <Button 
-                      variant="outline" 
-                      className="w-full justify-start"
-                      onClick={triggerFileUpload}
-                    >
-                      <UploadCloud className="h-4 w-4 mr-2" />
-                      {t("aiAssistant.uploadDocument", "Anexar documento")}
-                    </Button>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            )}
-          </Tabs>
-        </div>
-        
-        <div className="hidden md:block">
-          {/* Card de contexto - Sugestões rápidas */}
-          <div className="space-y-6">
-            <ContextCard
-              title={t("aiAssistant.quickSuggestions.title", "Sugestões Rápidas")}
-              icon={<LightbulbIcon className="h-4 w-4 text-amber-500" />}
-            >
-              <div className="grid grid-cols-1 gap-3">
-                {suggestions.map(suggestion => (
-                  <SuggestionCard
-                    key={suggestion.id}
-                    icon={suggestion.icon}
-                    title={suggestion.title}
-                    description={suggestion.description}
-                    gradient={suggestion.gradient}
-                    onClick={() => handleQuickSuggestionClick(suggestion.id)}
-                  />
-                ))}
-              </div>
-            </ContextCard>
-            
-            {/* Card de contexto - Informações */}
-            <ContextCard
-              title={t("aiAssistant.features.title", "Recursos")}
-              icon={<BadgeInfo className="h-4 w-4 text-blue-500" />}
-            >
-              <ul className="space-y-3 text-sm">
-                <li className="flex items-start">
-                  <Gauge className="h-4 w-4 mr-2 mt-0.5 text-emerald-500" />
-                  <span>{t("aiAssistant.features.analytics", "Análises de desempenho e estatísticas em tempo real")}</span>
-                </li>
-                <li className="flex items-start">
-                  <FileQuestion className="h-4 w-4 mr-2 mt-0.5 text-blue-500" />
-                  <span>{t("aiAssistant.features.recommendations", "Recomendações personalizadas baseadas em dados")}</span>
-                </li>
-                <li className="flex items-start">
-                  <Search className="h-4 w-4 mr-2 mt-0.5 text-violet-500" />
-                  <span>{t("aiAssistant.features.knowledgebase", "Acesso à base de conhecimento e FAQs")}</span>
-                </li>
-                <li className="flex items-start">
-                  <FileText className="h-4 w-4 mr-2 mt-0.5 text-amber-500" />
-                  <span>{t("aiAssistant.features.documents", "Processamento inteligente de documentos")}</span>
-                </li>
-              </ul>
-            </ContextCard>
-          </div>
-        </div>
+          )}
+        </Tabs>
       </div>
     </div>
   );
