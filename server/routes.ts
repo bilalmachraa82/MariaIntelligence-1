@@ -418,7 +418,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const properties = await storage.getProperties();
       const activeProperties = properties.filter(p => p.active).length;
 
-      // Get reservations for this period
+      // Get revenue and profit using storage methods with date parameters
+      let totalRevenue = 0;
+      let netProfit = 0;
+      let occupancyRate = 0;
+      
+      try {
+        // Use the storage layer methods that already have date filtering
+        totalRevenue = await storage.getTotalRevenue(startDate, endDate);
+        netProfit = await storage.getNetProfit(startDate, endDate);
+        occupancyRate = await storage.getOccupancyRate(undefined, startDate, endDate);
+      } catch (error) {
+        console.error("Erro ao obter estatísticas:", error);
+        // Continuamos sem quebrar a API
+      }
+      
+      // Get reservations for the period (for other calculations)
       let reservations = await storage.getReservations();
       
       // Filter reservations by date if parameters are provided
@@ -434,29 +449,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         );
       }
       
-      // Calculate revenue directly from reservations
-      let confirmedAndCompletedReservations = reservations.filter(
+      // Calculate reservations count
+      const confirmedAndCompletedReservations = reservations.filter(
         r => r.status === "confirmed" || r.status === "completed"
       );
-      
-      const totalRevenue = confirmedAndCompletedReservations.reduce(
-        (sum, r) => sum + parseFloat(r.totalAmount), 
-        0
-      );
-      
-      const netProfit = confirmedAndCompletedReservations.reduce(
-        (sum, r) => sum + parseFloat(r.netAmount), 
-        0
-      );
-
-      // Vamos tratar a função getOccupancyRate com cuidado adicional
-      let occupancyRate = 0;
-      try {
-        occupancyRate = await storage.getOccupancyRate(undefined, startDate, endDate);
-      } catch (error) {
-        console.error("Erro ao calcular taxa de ocupação:", error);
-        // Continuamos sem quebrar a API
-      }
 
       // Get property occupancy rates for top performing properties
       const propertyStats = await Promise.all(
