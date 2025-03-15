@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
@@ -6,7 +6,6 @@ import {
   Home,
   Building2,
   CalendarDays,
-  LayoutDashboard,
   FileText,
   BarChart3,
   Users,
@@ -15,18 +14,14 @@ import {
   Wrench,
   PaintBucket,
   BadgeDollarSign,
-  Receipt,
   PiggyBank,
   CreditCard,
   FileSpreadsheet,
   Settings,
   ChevronRight,
   Bot,
-  ArrowUpDown,
-  ArrowDownUp,
   HardHat,
-  ChevronLeft,
-  Menu
+  ChevronLeft
 } from "lucide-react";
 import {
   Collapsible,
@@ -65,6 +60,21 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
     operations: false
   });
 
+  // Auto-expand section if a child is active
+  useEffect(() => {
+    if (location.includes('relatorio') || location.includes('report') || 
+        location.includes('pagamento') || location.includes('payment') ||
+        location.includes('financial') || location.includes('documento')) {
+      setOpenSections(prev => ({ ...prev, finances: true }));
+    }
+    
+    if (location.includes('cleaning') || location.includes('limpeza') || 
+        location.includes('maintenance') || location.includes('manutencao') || 
+        location.includes('owner') || location.includes('proprietario')) {
+      setOpenSections(prev => ({ ...prev, operations: true }));
+    }
+  }, [location]);
+
   // Toggle para uma seção específica
   const toggleSection = (section: string) => {
     setOpenSections(prev => ({
@@ -81,18 +91,41 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
     // Verifica subpáginas
     if (location.startsWith(`${href}/`)) return true;
     
-    // Verifica padrões específicos
-    if (href.includes('relatorios') || href.includes('reports')) {
-      if (location.includes('relatorios') || location.includes('reports')) {
-        return true;
-      }
+    // Verifica padrões específicos para finanças
+    if ((href.includes('relatorios') || href.includes('reports')) && 
+        (location.includes('relatorios') || location.includes('reports'))) {
+      return true;
     }
     
-    if (href.includes('limpeza') || href.includes('cleaning')) {
-      if (location.includes('limpeza') || location.includes('cleaning') ||
-          location.includes('manutencao') || location.includes('maintenance')) {
-        return true;
-      }
+    if ((href.includes('pagamentos/entrada') || href.includes('payments/incoming')) &&
+        (location.includes('pagamentos/entrada') || location.includes('payments/incoming'))) {
+      return true;
+    }
+    
+    if ((href.includes('pagamentos/saida') || href.includes('payments/outgoing')) &&
+        (location.includes('pagamentos/saida') || location.includes('payments/outgoing'))) {
+      return true;
+    }
+    
+    if ((href.includes('documentos') || href.includes('documents')) &&
+        (location.includes('documentos') || location.includes('financial/documents'))) {
+      return true;
+    }
+    
+    // Verifica padrões específicos para operações
+    if ((href.includes('equipas-limpeza') || href.includes('cleaning-teams')) &&
+        (location.includes('equipas-limpeza') || location.includes('cleaning-teams'))) {
+      return true;
+    }
+    
+    if ((href.includes('manutencao') || href.includes('maintenance')) &&
+        (location.includes('manutencao') || location.includes('maintenance'))) {
+      return true;
+    }
+    
+    if ((href.includes('proprietarios') || href.includes('owners')) &&
+        (location.includes('proprietarios') || location.includes('owners'))) {
+      return true;
     }
     
     return false;
@@ -116,18 +149,15 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
           className={cn(
             "flex items-center w-full gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors",
             isActive
-              ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-foreground"
-              : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+              ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-foreground font-semibold"
+              : "text-foreground hover:bg-accent hover:text-accent-foreground",
             isSubItem && "pl-10 text-xs"
           )}
           onClick={onClick}
         >
           {!isSubItem && <Icon className={cn("h-5 w-5", isActive ? "text-primary dark:text-primary-foreground" : iconColor)} />}
           {!collapsed && (
-            <>
-              <span className="flex-1 truncate">{label}</span>
-              {children && <ChevronRight className={cn("h-4 w-4 transition-transform", openSections[href] ? "rotate-90" : "")} />}
-            </>
+            <span className="flex-1 truncate">{label}</span>
           )}
         </button>
         {children}
@@ -142,7 +172,7 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
     }
     
     return (
-      <div className="mb-2">
+      <div className="mb-3">
         <div className="px-3 py-2">
           <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
             {title}
@@ -258,63 +288,218 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
     }
   ];
 
+  // Se modo colapsado, apenas mostre ícones
+  if (collapsed) {
+    return (
+      <aside className="fixed top-[57px] left-0 z-30 h-[calc(100vh-57px)] w-[60px] border-r border-border bg-background transition-all duration-300 ease-in-out">
+        <div className="flex h-full flex-col">
+          <div className="flex items-center justify-center p-2 border-b border-border">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="mx-auto"
+              onClick={onToggleCollapse}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+          
+          <div className="flex-1 overflow-y-auto py-2">
+            <div className="space-y-2 px-2">
+              {/* Main items */}
+              {mainNavItems.map((item) => (
+                <Button
+                  key={item.href}
+                  variant={isActive(item.href, item.altHref) ? "secondary" : "ghost"}
+                  size="icon"
+                  className="w-full h-10"
+                  onClick={() => navigate(item.href)}
+                >
+                  <item.icon className={cn("h-5 w-5", 
+                    isActive(item.href, item.altHref) 
+                      ? "text-primary" 
+                      : item.iconColor
+                  )} />
+                </Button>
+              ))}
+              
+              <Separator className="my-2" />
+              
+              {/* Finance Icon */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="w-full h-10"
+                onClick={() => setOpenSections(prev => ({ ...prev, finances: !prev.finances }))}
+              >
+                <BadgeDollarSign className="h-5 w-5 text-green-500" />
+              </Button>
+              
+              {/* Operation Icon */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="w-full h-10"
+                onClick={() => setOpenSections(prev => ({ ...prev, operations: !prev.operations }))}
+              >
+                <HardHat className="h-5 w-5 text-amber-500" />
+              </Button>
+              
+              <Separator className="my-2" />
+              
+              {/* Tools */}
+              {toolsNavItems.map((item) => (
+                <Button
+                  key={item.href}
+                  variant={isActive(item.href) ? "secondary" : "ghost"}
+                  size="icon"
+                  className="w-full h-10"
+                  onClick={() => navigate(item.href)}
+                >
+                  <item.icon className={cn("h-5 w-5", 
+                    isActive(item.href) 
+                      ? "text-primary" 
+                      : item.iconColor
+                  )} />
+                </Button>
+              ))}
+              
+              <Separator className="my-2" />
+              
+              {/* Utilities */}
+              {otherNavItems.map((item) => (
+                <Button
+                  key={item.href}
+                  variant={isActive(item.href) ? "secondary" : "ghost"}
+                  size="icon"
+                  className="w-full h-10"
+                  onClick={() => navigate(item.href)}
+                >
+                  <item.icon className={cn("h-5 w-5", 
+                    isActive(item.href) 
+                      ? "text-primary" 
+                      : item.iconColor
+                  )} />
+                </Button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </aside>
+    );
+  }
+
+  // Versão expandida do menu
   return (
-    <aside className={cn(
-      "fixed top-[57px] left-0 z-30 h-[calc(100vh-57px)] border-r border-border bg-background transition-all duration-300 ease-in-out",
-      collapsed ? "w-[60px]" : "w-[240px]"
-    )}>
+    <aside className="fixed top-[57px] left-0 z-30 h-[calc(100vh-57px)] w-[240px] border-r border-border bg-background transition-all duration-300 ease-in-out">
       <div className="flex h-full flex-col">
-        <div className="flex items-center justify-between p-2">
-          {!collapsed && <span className="text-sm font-medium">Maria Faz</span>}
+        <div className="flex items-center justify-between p-2 border-b border-border">
+          <span className="text-sm font-medium ml-2">Maria Faz</span>
           <Button
             variant="ghost"
             size="icon"
-            className="ml-auto"
             onClick={onToggleCollapse}
           >
-            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+            <ChevronLeft className="h-4 w-4" />
           </Button>
         </div>
         
-        <ScrollArea className="flex-1 px-1">
-          <SidebarSection title={t("navigation.categories.main", "Main")}>
-            {mainNavItems.map((item) => (
-              <SidebarItem
-                key={item.href}
-                icon={item.icon}
-                label={item.name}
-                href={item.href}
-                altHref={item.altHref}
-                isActive={isActive(item.href, item.altHref)}
-                onClick={() => navigate(item.href)}
-                iconColor={item.iconColor}
-              />
-            ))}
-          </SidebarSection>
-          
-          <Separator className="my-2" />
-          
-          <SidebarSection title={t("navigation.categories.finances", "Finances")}>
-            <Collapsible 
-              open={openSections.finances && !collapsed}
-              onOpenChange={() => !collapsed && toggleSection('finances')}
-            >
-              <CollapsibleTrigger asChild>
-                <button className={cn(
-                  "flex items-center w-full gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors",
-                  "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                )}>
-                  <BadgeDollarSign className="h-5 w-5 text-green-500" />
-                  {!collapsed && (
-                    <>
-                      <span className="flex-1 truncate">{t("navigation.categories.finances", "Finances")}</span>
-                      <ChevronRight className={cn("h-4 w-4 transition-transform", openSections.finances ? "rotate-90" : "")} />
-                    </>
-                  )}
-                </button>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                {financeNavItems.map((item) => (
+        <ScrollArea className="flex-1 py-2">
+          <div className="px-2">
+            <SidebarSection title={t("navigation.categories.main", "Main")}>
+              <div className="space-y-1">
+                {mainNavItems.map((item) => (
+                  <SidebarItem
+                    key={item.href}
+                    icon={item.icon}
+                    label={item.name}
+                    href={item.href}
+                    altHref={item.altHref}
+                    isActive={isActive(item.href, item.altHref)}
+                    onClick={() => navigate(item.href)}
+                    iconColor={item.iconColor}
+                  />
+                ))}
+              </div>
+            </SidebarSection>
+            
+            <Separator className="my-3" />
+            
+            <SidebarSection title={t("navigation.categories.finances", "Finances")}>
+              <Collapsible 
+                open={openSections.finances}
+                onOpenChange={() => toggleSection('finances')}
+                className="space-y-1"
+              >
+                <CollapsibleTrigger asChild>
+                  <button className={cn(
+                    "flex items-center w-full gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors",
+                    "text-foreground hover:bg-accent hover:text-accent-foreground"
+                  )}>
+                    <BadgeDollarSign className="h-5 w-5 text-green-500" />
+                    <span className="flex-1 truncate">{t("navigation.categories.finances", "Finances")}</span>
+                    <ChevronRight className={cn("h-4 w-4 transition-transform", openSections.finances ? "rotate-90" : "")} />
+                  </button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pt-1">
+                  <div className="space-y-1">
+                    {financeNavItems.map((item) => (
+                      <SidebarItem
+                        key={item.href}
+                        icon={item.icon}
+                        label={item.name}
+                        href={item.href}
+                        isActive={isActive(item.href)}
+                        onClick={() => navigate(item.href)}
+                        iconColor={item.iconColor}
+                        isSubItem
+                      />
+                    ))}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            </SidebarSection>
+            
+            <SidebarSection title={t("navigation.categories.operations", "Operations")}>
+              <Collapsible 
+                open={openSections.operations}
+                onOpenChange={() => toggleSection('operations')}
+                className="space-y-1"
+              >
+                <CollapsibleTrigger asChild>
+                  <button className={cn(
+                    "flex items-center w-full gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors",
+                    "text-foreground hover:bg-accent hover:text-accent-foreground"
+                  )}>
+                    <HardHat className="h-5 w-5 text-amber-500" />
+                    <span className="flex-1 truncate">{t("navigation.categories.operations", "Operations")}</span>
+                    <ChevronRight className={cn("h-4 w-4 transition-transform", openSections.operations ? "rotate-90" : "")} />
+                  </button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pt-1">
+                  <div className="space-y-1">
+                    {operationsNavItems.map((item) => (
+                      <SidebarItem
+                        key={item.href}
+                        icon={item.icon}
+                        label={item.name}
+                        href={item.href}
+                        isActive={isActive(item.href)}
+                        onClick={() => navigate(item.href)}
+                        iconColor={item.iconColor}
+                        isSubItem
+                      />
+                    ))}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            </SidebarSection>
+            
+            <Separator className="my-3" />
+            
+            <SidebarSection title={t("navigation.categories.tools", "Tools")}>
+              <div className="space-y-1">
+                {toolsNavItems.map((item) => (
                   <SidebarItem
                     key={item.href}
                     icon={item.icon}
@@ -323,34 +508,16 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
                     isActive={isActive(item.href)}
                     onClick={() => navigate(item.href)}
                     iconColor={item.iconColor}
-                    isSubItem
                   />
                 ))}
-              </CollapsibleContent>
-            </Collapsible>
-          </SidebarSection>
-          
-          <SidebarSection title={t("navigation.categories.operations", "Operations")}>
-            <Collapsible 
-              open={openSections.operations && !collapsed}
-              onOpenChange={() => !collapsed && toggleSection('operations')}
-            >
-              <CollapsibleTrigger asChild>
-                <button className={cn(
-                  "flex items-center w-full gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors",
-                  "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                )}>
-                  <HardHat className="h-5 w-5 text-amber-500" />
-                  {!collapsed && (
-                    <>
-                      <span className="flex-1 truncate">{t("navigation.categories.operations", "Operations")}</span>
-                      <ChevronRight className={cn("h-4 w-4 transition-transform", openSections.operations ? "rotate-90" : "")} />
-                    </>
-                  )}
-                </button>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                {operationsNavItems.map((item) => (
+              </div>
+            </SidebarSection>
+            
+            <Separator className="my-3" />
+            
+            <SidebarSection title={t("navigation.categories.utilities", "Utilities")}>
+              <div className="space-y-1">
+                {otherNavItems.map((item) => (
                   <SidebarItem
                     key={item.href}
                     icon={item.icon}
@@ -359,44 +526,11 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
                     isActive={isActive(item.href)}
                     onClick={() => navigate(item.href)}
                     iconColor={item.iconColor}
-                    isSubItem
                   />
                 ))}
-              </CollapsibleContent>
-            </Collapsible>
-          </SidebarSection>
-          
-          <Separator className="my-2" />
-          
-          <SidebarSection title={t("navigation.categories.tools", "Tools")}>
-            {toolsNavItems.map((item) => (
-              <SidebarItem
-                key={item.href}
-                icon={item.icon}
-                label={item.name}
-                href={item.href}
-                isActive={isActive(item.href)}
-                onClick={() => navigate(item.href)}
-                iconColor={item.iconColor}
-              />
-            ))}
-          </SidebarSection>
-          
-          <Separator className="my-2" />
-          
-          <SidebarSection title={t("navigation.categories.utilities", "Utilities")}>
-            {otherNavItems.map((item) => (
-              <SidebarItem
-                key={item.href}
-                icon={item.icon}
-                label={item.name}
-                href={item.href}
-                isActive={isActive(item.href)}
-                onClick={() => navigate(item.href)}
-                iconColor={item.iconColor}
-              />
-            ))}
-          </SidebarSection>
+              </div>
+            </SidebarSection>
+          </div>
         </ScrollArea>
       </div>
     </aside>
