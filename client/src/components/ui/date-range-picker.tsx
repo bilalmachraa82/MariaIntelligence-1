@@ -7,9 +7,15 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
+// Interface compatível com react-day-picker
 export interface DateRange {
   from: Date | undefined;
   to: Date | undefined;
+}
+
+export interface DateRangePreset {
+  label: string;
+  dateRange: DateRange;
 }
 
 interface DateRangePickerProps {
@@ -17,6 +23,7 @@ interface DateRangePickerProps {
   onChange: (value: DateRange) => void;
   className?: string;
   disabled?: boolean;
+  presets?: DateRangePreset[];
 }
 
 export function DateRangePicker({
@@ -24,6 +31,7 @@ export function DateRangePicker({
   onChange,
   className,
   disabled = false,
+  presets,
 }: DateRangePickerProps) {
   const { t } = useTranslation();
   
@@ -56,22 +64,46 @@ export function DateRangePicker({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            initialFocus
-            mode="range"
-            defaultMonth={value?.from}
-            selected={{
-              from: value?.from,
-              to: value?.to
-            }}
-            onSelect={(range) => {
-              if (range) {
-                onChange(range);
-              }
-            }}
-            numberOfMonths={2}
-            disabled={disabled}
-          />
+          <div className="flex">
+            {presets && presets.length > 0 && (
+              <div className="border-r p-3 space-y-3">
+                {presets.map((preset, index) => (
+                  <Button
+                    key={index}
+                    variant="outline"
+                    size="sm"
+                    className="w-full justify-start"
+                    onClick={() => onChange(preset.dateRange)}
+                  >
+                    {preset.label}
+                  </Button>
+                ))}
+              </div>
+            )}
+            <div>
+              <Calendar
+                initialFocus
+                mode="range"
+                defaultMonth={value?.from}
+                selected={{
+                  from: value?.from,
+                  to: value?.to
+                }}
+                onSelect={(range) => {
+                  if (range) {
+                    // Garantir que o objeto DateRange tem o formato correto
+                    const dateRange: DateRange = {
+                      from: range.from,
+                      to: range.to
+                    };
+                    onChange(dateRange);
+                  }
+                }}
+                numberOfMonths={2}
+                disabled={disabled}
+              />
+            </div>
+          </div>
         </PopoverContent>
       </Popover>
     </div>
