@@ -4,14 +4,11 @@ import { useProperties } from "@/hooks/use-properties";
 import { useReservations } from "@/hooks/use-reservations";
 import { useOwners } from "@/hooks/use-owners";
 
-export interface DateRangeWithLabel {
+export interface DateRange {
   startDate: string;
   endDate: string;
   label: string;
 }
-
-// Interface adaptada do componente date-range-picker
-import { DateRange as CalendarDateRange } from "@/components/ui/date-range-picker";
 
 export interface OwnerReport {
   ownerId: number;
@@ -49,6 +46,7 @@ export interface ReservationSummary {
   teamPayment: number;
   netAmount: number;
   platform: string;
+  nights: number; // Duração da estadia em noites
 }
 
 export interface ReportTotals {
@@ -63,7 +61,7 @@ export interface ReportTotals {
   totalReservations: number;
 }
 
-export function useOwnerReport(ownerId: number | null, dateRange: CalendarDateRange) {
+export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
   const { data: owners, isLoading: isOwnersLoading } = useOwners();
   const { data: properties, isLoading: isPropertiesLoading } = useProperties();
   const { data: allReservations, isLoading: isReservationsLoading } = useReservations();
@@ -89,8 +87,8 @@ export function useOwnerReport(ownerId: number | null, dateRange: CalendarDateRa
     }
     
     // Filtrar as reservas do período para cada propriedade
-    const start = dateRange.from || new Date();
-    const end = dateRange.to || new Date();
+    const start = dateRange.startDate ? new Date(dateRange.startDate) : new Date();
+    const end = dateRange.endDate ? new Date(dateRange.endDate) : new Date();
     
     // Calcular os dias disponíveis no período
     const availableDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
@@ -156,6 +154,11 @@ export function useOwnerReport(ownerId: number | null, dateRange: CalendarDateRa
         const totalAmount = parseFloat(res.totalAmount);
         const reserveCommission = totalAmount * commissionRate;
         
+        // Calcular número de noites
+        const checkIn = new Date(res.checkInDate);
+        const checkOut = new Date(res.checkOutDate);
+        const nights = Math.max(1, Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)));
+        
         return {
           id: res.id,
           checkInDate: res.checkInDate,
@@ -167,7 +170,8 @@ export function useOwnerReport(ownerId: number | null, dateRange: CalendarDateRa
           commission: reserveCommission,
           teamPayment,
           netAmount: totalAmount - cleaningCost - checkInFee - reserveCommission - teamPayment,
-          platform: res.platform || "other"
+          platform: res.platform || "other",
+          nights
         };
       });
       
