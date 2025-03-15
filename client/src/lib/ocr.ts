@@ -39,6 +39,27 @@ interface UploadResponse {
 export const MISTRAL_API_KEY = import.meta.env.VITE_MISTRAL_API_KEY;
 
 /**
+ * Função de utilidade para fazer parse seguro de argumentos Function Call
+ * @param args Argumentos da chamada de função (string ou objeto)
+ * @returns Objeto parseado ou null se falhar
+ */
+function safeParseArguments(args: any): any {
+  if (!args) return null;
+  
+  try {
+    if (typeof args === 'string') {
+      return JSON.parse(args);
+    } else if (typeof args === 'object') {
+      return args;
+    }
+    return null;
+  } catch (err) {
+    console.error("Erro ao fazer parse de argumentos:", err);
+    return null;
+  }
+}
+
+/**
  * Getter para obter uma instância do cliente Mistral
  * Lazy initialization para garantir que só criamos quando necessário
  */
