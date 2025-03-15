@@ -493,24 +493,190 @@ export default function ModernDashboard() {
                             <Skeleton className="h-full w-full" />
                           </div>
                         ) : revenueData.length > 0 ? (
-                          <AreaChart
-                            className="h-full"
-                            data={revenueData}
-                            index="month"
-                            categories={["Receita", "Lucro"]}
-                            colors={["blue", "emerald"]}
-                            valueFormatter={(number) => `${formatCurrency(number)}`}
-                            showLegend
-                            showAnimation
-                            showGradient={true}
-                            showYAxis={true}
-                            showXAxis={true}
-                            animationDuration={1500}
-                            yAxisWidth={65}
-                            showTooltip={true}
-                            autoMinValue={true}
-                            curveType="monotone"
-                          />
+                          <div className="h-full">
+                            {/* Gráfico de linha customizado */}
+                            <div className="mb-3 flex space-x-6 justify-end">
+                              <div className="flex items-center space-x-2">
+                                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                                <span className="text-sm font-medium">Receita</span>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
+                                <span className="text-sm font-medium">Lucro</span>
+                              </div>
+                            </div>
+                            
+                            <div className="relative h-[calc(100%-1.5rem)]">
+                              {/* Determinar o valor máximo para escala */}
+                              {(() => {
+                                const maxValue = Math.max(
+                                  ...revenueData.map(d => Math.max(d.Receita || 0, d.Lucro || 0))
+                                );
+                                
+                                // Pontos para desenhar as linhas
+                                const getPoints = (data: any[], key: string) => {
+                                  const points: [number, number][] = [];
+                                  data.forEach((d, i) => {
+                                    if (d[key] !== undefined) {
+                                      const x = (i / (data.length - 1)) * 100;
+                                      const y = 100 - (d[key] / maxValue) * 100;
+                                      points.push([x, y]);
+                                    }
+                                  });
+                                  return points;
+                                };
+                                
+                                const revenuePoints = getPoints(revenueData, 'Receita');
+                                const profitPoints = getPoints(revenueData, 'Lucro');
+                                
+                                // Criar SVG path string
+                                const createPathD = (points: [number, number][]) => {
+                                  if (points.length === 0) return '';
+                                  const [firstX, firstY] = points[0];
+                                  let path = `M ${firstX} ${firstY}`;
+                                  for (let i = 1; i < points.length; i++) {
+                                    const [x, y] = points[i];
+                                    path += ` L ${x} ${y}`;
+                                  }
+                                  return path;
+                                };
+                                
+                                const revenuePath = createPathD(revenuePoints);
+                                const profitPath = createPathD(profitPoints);
+                                
+                                // Caminho para área preenchida abaixo da linha
+                                const createAreaPath = (points: [number, number][]) => {
+                                  if (points.length === 0) return '';
+                                  const [firstX, firstY] = points[0];
+                                  let path = `M ${firstX} ${firstY}`;
+                                  for (let i = 1; i < points.length; i++) {
+                                    const [x, y] = points[i];
+                                    path += ` L ${x} ${y}`;
+                                  }
+                                  // Fechar o path para criar uma área
+                                  const [lastX] = points[points.length - 1];
+                                  path += ` L ${lastX} 100 L ${firstX} 100 Z`;
+                                  return path;
+                                };
+                                
+                                const revenueAreaPath = createAreaPath(revenuePoints);
+                                const profitAreaPath = createAreaPath(profitPoints);
+                                
+                                return (
+                                  <div className="relative w-full h-full">
+                                    {/* Linhas de grade horizontais */}
+                                    <div className="absolute left-0 top-0 w-full h-full flex flex-col justify-between">
+                                      {[0, 1, 2, 3, 4].map((i) => (
+                                        <div key={i} className="w-full h-px bg-gray-200/40 dark:bg-gray-700/40"></div>
+                                      ))}
+                                    </div>
+                                    
+                                    {/* Meses no eixo X */}
+                                    <div className="absolute bottom-0 left-0 w-full flex justify-between">
+                                      {revenueData.map((d, i) => (
+                                        <div key={i} className="text-xs text-muted-foreground pb-1">
+                                          {d.month}
+                                        </div>
+                                      ))}
+                                    </div>
+                                    
+                                    {/* Valores no eixo Y */}
+                                    <div className="absolute top-0 left-0 h-full flex flex-col justify-between items-start">
+                                      {[0, 1, 2, 3, 4].reverse().map((i) => (
+                                        <div key={i} className="text-xs text-muted-foreground -translate-x-1">
+                                          {formatCurrency(maxValue * i / 4)}
+                                        </div>
+                                      ))}
+                                    </div>
+                                    
+                                    {/* Gráfico SVG */}
+                                    <svg className="absolute inset-8 w-[calc(100%-2.5rem)] h-[calc(100%-2.75rem)]" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                      {/* Áreas preenchidas */}
+                                      <path d={revenueAreaPath} fill="rgba(59, 130, 246, 0.1)" />
+                                      <path d={profitAreaPath} fill="rgba(16, 185, 129, 0.1)" />
+                                      
+                                      {/* Linhas */}
+                                      <path
+                                        d={revenuePath}
+                                        fill="none"
+                                        stroke="#3b82f6"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className="path-animation"
+                                      />
+                                      <path
+                                        d={profitPath}
+                                        fill="none"
+                                        stroke="#10b981"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className="path-animation"
+                                        style={{ animationDelay: "0.5s" }}
+                                      />
+                                      
+                                      {/* Pontos */}
+                                      {revenuePoints.map(([x, y], i) => (
+                                        <circle
+                                          key={`rev-${i}`}
+                                          cx={x}
+                                          cy={y}
+                                          r="2.5"
+                                          fill="#fff"
+                                          stroke="#3b82f6"
+                                          strokeWidth="1.5"
+                                          className="point-animation"
+                                          style={{ animationDelay: `${i * 0.1 + 0.5}s` }}
+                                        />
+                                      ))}
+                                      {profitPoints.map(([x, y], i) => (
+                                        <circle
+                                          key={`pro-${i}`}
+                                          cx={x}
+                                          cy={y}
+                                          r="2.5"
+                                          fill="#fff"
+                                          stroke="#10b981"
+                                          strokeWidth="1.5"
+                                          className="point-animation"
+                                          style={{ animationDelay: `${i * 0.1 + 1}s` }}
+                                        />
+                                      ))}
+                                    </svg>
+                                  </div>
+                                );
+                              })()}
+                            </div>
+                            
+                            {/* Estilos para as animações */}
+                            <style jsx>{`
+                              .path-animation {
+                                stroke-dasharray: 1000;
+                                stroke-dashoffset: 1000;
+                                animation: dash 2s ease-out forwards;
+                              }
+                              
+                              @keyframes dash {
+                                to {
+                                  stroke-dashoffset: 0;
+                                }
+                              }
+                              
+                              .point-animation {
+                                opacity: 0;
+                                transform: scale(0);
+                                animation: pointAppear 0.3s ease-out forwards;
+                              }
+                              
+                              @keyframes pointAppear {
+                                to {
+                                  opacity: 1;
+                                  transform: scale(1);
+                                }
+                              }
+                            `}</style>
+                          </div>
                         ) : (
                           <div className="h-full flex flex-col items-center justify-center">
                             <LineChart className="h-16 w-16 text-gray-300 dark:text-gray-600 mb-3" />
@@ -649,23 +815,50 @@ export default function ModernDashboard() {
                           <Skeleton className="h-full w-full" />
                         </div>
                       ) : propertyOccupancyData.length > 0 ? (
-                        <BarChart
-                          className="h-full"
-                          data={propertyOccupancyData}
-                          index="name"
-                          categories={["Ocupação"]}
-                          colors={["blue"]}
-                          valueFormatter={(number) => `${number.toFixed(1)}%`}
-                          layout="vertical"
-                          showLegend
-                          showAnimation
-                          animationDuration={1500}
-                          showTooltip
-                          showGridLines={false}
-                          showXAxis
-                          showYAxis
-                          yAxisWidth={130}
-                        />
+                        <div className="h-full">
+                          {/* Gráfico de barras customizado */}
+                          <div className="flex flex-col h-full">
+                            <div className="mb-2 flex justify-between items-center">
+                              <div className="text-sm font-medium">Propriedade</div>
+                              <div className="text-sm font-medium">Taxa de Ocupação</div>
+                            </div>
+                            <div className="space-y-5 flex-1">
+                              {propertyOccupancyData.map((property, index) => (
+                                <div key={index} className="space-y-2">
+                                  <div className="flex justify-between">
+                                    <span className="text-sm font-medium truncate max-w-[120px]" title={property.name}>
+                                      {property.name}
+                                    </span>
+                                    <span className="text-sm font-bold">
+                                      {property.Ocupação.toFixed(1)}%
+                                    </span>
+                                  </div>
+                                  <div className="h-2.5 w-full bg-gray-200/30 dark:bg-gray-700/30 rounded-full overflow-hidden">
+                                    <div 
+                                      className={`h-full rounded-full transition-all duration-1000 ${
+                                        property.Ocupação >= 80 ? 'bg-gradient-to-r from-emerald-500 to-emerald-300' : 
+                                        property.Ocupação >= 60 ? 'bg-gradient-to-r from-blue-500 to-blue-300' : 
+                                        property.Ocupação >= 40 ? 'bg-gradient-to-r from-amber-500 to-amber-300' : 
+                                        'bg-gradient-to-r from-rose-500 to-rose-300'
+                                      }`}
+                                      style={{ 
+                                        width: `${property.Ocupação}%`,
+                                        animation: `growWidth 1.5s ease-out ${index * 0.2}s` 
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          
+                          <style jsx>{`
+                            @keyframes growWidth {
+                              from { width: 0%; }
+                              to { width: 100%; }
+                            }
+                          `}</style>
+                        </div>
                       ) : (
                         <div className="h-full flex flex-col items-center justify-center">
                           <BarChart3 className="h-16 w-16 text-gray-300 dark:text-gray-600 mb-3" />
