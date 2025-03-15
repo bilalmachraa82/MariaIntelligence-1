@@ -325,25 +325,39 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
               
               <Separator className="my-2" />
               
-              {/* Finance Icon */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="w-full h-10"
-                onClick={() => setOpenSections(prev => ({ ...prev, finances: !prev.finances }))}
-              >
-                <BadgeDollarSign className="h-5 w-5 text-green-500" />
-              </Button>
+              {/* Finance icon - navegação quando colapsado */}
+              <div className="relative">
+                <Button
+                  variant={financeNavItems.some(item => isActive(item.href)) ? "secondary" : "ghost"}
+                  size="icon"
+                  className="w-full h-10"
+                  onClick={() => {
+                    // Navega para o primeiro item do submenu quando em modo colapsado
+                    if (financeNavItems.length > 0) {
+                      navigate(financeNavItems[0].href);
+                    }
+                  }}
+                >
+                  <BadgeDollarSign className="h-5 w-5 text-green-500" />
+                </Button>
+              </div>
               
-              {/* Operation Icon */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="w-full h-10"
-                onClick={() => setOpenSections(prev => ({ ...prev, operations: !prev.operations }))}
-              >
-                <HardHat className="h-5 w-5 text-amber-500" />
-              </Button>
+              {/* Operation icon - navegação quando colapsado  */}
+              <div className="relative">
+                <Button
+                  variant={operationsNavItems.some(item => isActive(item.href)) ? "secondary" : "ghost"}
+                  size="icon"
+                  className="w-full h-10"
+                  onClick={() => {
+                    // Navega para o primeiro item do submenu quando em modo colapsado
+                    if (operationsNavItems.length > 0) {
+                      navigate(operationsNavItems[0].href);
+                    }
+                  }}
+                >
+                  <HardHat className="h-5 w-5 text-amber-500" />
+                </Button>
+              </div>
               
               <Separator className="my-2" />
               
@@ -432,14 +446,19 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
                 className="space-y-1"
               >
                 <CollapsibleTrigger asChild>
-                  <button className={cn(
-                    "flex items-center w-full gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors",
-                    "text-foreground hover:bg-accent hover:text-accent-foreground"
-                  )}>
-                    <BadgeDollarSign className="h-5 w-5 text-green-500" />
-                    <span className="flex-1 truncate">{t("navigation.categories.finances", "Finances")}</span>
-                    <ChevronRight className={cn("h-4 w-4 transition-transform", openSections.finances ? "rotate-90" : "")} />
-                  </button>
+                  <div className="flex items-center">
+                    {/* Este wrapper permite clicar no ícone separadamente do texto */}
+                    <button 
+                      className={cn(
+                        "flex-grow flex items-center w-full gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors",
+                        "text-foreground hover:bg-accent hover:text-accent-foreground"
+                      )}
+                    >
+                      <BadgeDollarSign className="h-5 w-5 text-green-500" />
+                      <span className="flex-1 truncate">{t("navigation.categories.finances", "Finances")}</span>
+                      <ChevronRight className={cn("h-4 w-4 transition-transform", openSections.finances ? "rotate-90" : "")} />
+                    </button>
+                  </div>
                 </CollapsibleTrigger>
                 <CollapsibleContent className="pt-1">
                   <div className="space-y-1">
@@ -467,14 +486,19 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
                 className="space-y-1"
               >
                 <CollapsibleTrigger asChild>
-                  <button className={cn(
-                    "flex items-center w-full gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors",
-                    "text-foreground hover:bg-accent hover:text-accent-foreground"
-                  )}>
-                    <HardHat className="h-5 w-5 text-amber-500" />
-                    <span className="flex-1 truncate">{t("navigation.categories.operations", "Operations")}</span>
-                    <ChevronRight className={cn("h-4 w-4 transition-transform", openSections.operations ? "rotate-90" : "")} />
-                  </button>
+                  <div className="flex items-center">
+                    {/* Este wrapper permite clicar no ícone separadamente do texto */}
+                    <button 
+                      className={cn(
+                        "flex-grow flex items-center w-full gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors",
+                        "text-foreground hover:bg-accent hover:text-accent-foreground"
+                      )}
+                    >
+                      <HardHat className="h-5 w-5 text-amber-500" />
+                      <span className="flex-1 truncate">{t("navigation.categories.operations", "Operations")}</span>
+                      <ChevronRight className={cn("h-4 w-4 transition-transform", openSections.operations ? "rotate-90" : "")} />
+                    </button>
+                  </div>
                 </CollapsibleTrigger>
                 <CollapsibleContent className="pt-1">
                   <div className="space-y-1">
