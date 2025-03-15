@@ -336,7 +336,7 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
     },
     {
       name: t("navigation.pdfUpload", "Upload PDF"),
-      href: isPortuguese ? "/upload-pdf" : "/pdf-upload",
+      href: "/upload-pdf", // Caminho consistente com o App.tsx
       icon: FileUp,
       iconColor: "text-rose-500"
     }
