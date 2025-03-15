@@ -21,7 +21,7 @@ import {
   type PaymentRecord,
   type InsertPaymentRecord
 } from "@shared/schema";
-import { db } from './db';
+import { db, pool } from './db';
 
 export interface IStorage {
   // User methods (from original template)
@@ -1443,7 +1443,7 @@ export class MemStorage implements IStorage {
 }
 
 // DatabaseStorage implementation
-import { db } from "./db";
+import { db, pool } from "./db";
 import { 
   properties, owners, reservations, activities,
   type Property, type Owner, type Reservation, type Activity,
@@ -1453,6 +1453,13 @@ import { eq, desc, sql, and, gte, lte, count, sum, avg } from "drizzle-orm";
 
 // Implementação da classe DatabaseStorage
 export class DatabaseStorage implements IStorage {
+  private poolInstance: any;
+
+  constructor() {
+    // Armazena a referência para o pool para uso em todos os métodos
+    this.poolInstance = pool;
+  }
+  
   // User methods (original da template)
   async getUser(id: number): Promise<any | undefined> {
     // Não temos tabela de users atualmente, mas mantemos a interface
@@ -1689,58 +1696,38 @@ export class DatabaseStorage implements IStorage {
     }
     
     try {
-      // Verificação direta da receita total usando consulta bruta
-      console.log("Tentando executar consulta direta para verificar os dados...");
-      try {
-        const directQuery = `SELECT SUM(CAST(total_amount AS DECIMAL)) as direct_total FROM reservations WHERE status = 'completed'`;
-        const directResult = await db.execute(sql.raw(directQuery));
-        console.log("Resultado da consulta direta:", directResult);
-        console.log("Valor total diretamente da tabela:", directResult[0]?.direct_total);
-      } catch (e) {
-        console.error("Erro na consulta direta:", e);
-      }
-      
-      // Converter datas para strings ISO
-      const startDateStr = startDate ? startDate.toISOString().split('T')[0] : null;
-      const endDateStr = endDate ? endDate.toISOString().split('T')[0] : null;
-      console.log("Datas convertidas:", { startDateStr, endDateStr });
-      
-      // Construir a consulta base
-      let queryStr = `
-        SELECT SUM(CAST(total_amount AS DECIMAL)) as total_revenue
-        FROM reservations
-        WHERE status = 'completed'
-      `;
-      
+      // Abordagem simples e direta usando o pool de conexões
+      let queryStr = `SELECT SUM(CAST(total_amount AS DECIMAL)) as total_revenue FROM reservations WHERE status = 'completed'`;
       const params: any[] = [];
-      let paramIndex = 1;
       
       // Adicionar filtros de data se fornecidos
-      if (startDateStr) {
-        queryStr += ` AND check_in_date::DATE >= $${paramIndex}::DATE`;
-        params.push(startDateStr);
-        paramIndex++;
+      if (startDate) {
+        queryStr += ` AND check_in_date::DATE >= $${params.length + 1}::DATE`;
+        params.push(startDate.toISOString().split('T')[0]);
       }
       
-      if (endDateStr) {
-        queryStr += ` AND check_in_date::DATE <= $${paramIndex}::DATE`;
-        params.push(endDateStr);
-        paramIndex++;
+      if (endDate) {
+        queryStr += ` AND check_in_date::DATE <= $${params.length + 1}::DATE`;
+        params.push(endDate.toISOString().split('T')[0]);
       }
       
-      // Executar a consulta
-      console.log("Query revenue:", queryStr, "Params:", params);
-      const result = await db.execute(sql.raw(queryStr, ...params));
-      console.log("Revenue result:", result);
-      console.log("Revenue result rows:", result.rows);
+      console.log("Executando query direta:", queryStr, params);
       
-      if (result && result[0]) {
-        console.log("Revenue value:", result[0].total_revenue);
-        return Number(result[0]?.total_revenue) || 0;
+      // Usar o pool de conexões para acessar diretamente o banco
+      if (this.poolInstance) {
+        const result = await this.poolInstance.query(queryStr, params);
+        console.log("Resultado da query:", result.rows);
+        
+        if (result.rows && result.rows.length > 0) {
+          const revenue = Number(result.rows[0].total_revenue) || 0;
+          console.log("Receita calculada:", revenue);
+          return revenue;
+        }
       } else {
-        console.log("Nenhum resultado encontrado ou formato inesperado");
-        return 0;
+        console.log("Pool de conexões não disponível");
       }
+      
+      return 0;
     } catch (error) {
       console.error("Erro ao calcular receita total:", error);
       return 0;
@@ -1750,14 +1737,16 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getNetProfit(startDate?: Date, endDate?: Date): Promise<number> {
-    if (!db) return 0;
+    console.log("============== INÍCIO getNetProfit ==============");
+    console.log("Parâmetros:", { startDate, endDate });
+    
+    if (!this.poolInstance) {
+      console.log("Pool de conexões não disponível");
+      return 0;
+    }
     
     try {
-      // Converter datas para strings ISO
-      const startDateStr = startDate ? startDate.toISOString().split('T')[0] : null;
-      const endDateStr = endDate ? endDate.toISOString().split('T')[0] : null;
-      
-      // Construir a consulta
+      // Construir a consulta com formatação clara
       let queryStr = `
         SELECT 
           SUM(CAST(total_amount AS DECIMAL)) as total_revenue,
@@ -1772,37 +1761,49 @@ export class DatabaseStorage implements IStorage {
       `;
       
       const params: any[] = [];
-      let paramIndex = 1;
       
       // Adicionar filtros de data se fornecidos
-      if (startDateStr) {
-        queryStr += ` AND check_in_date::DATE >= $${paramIndex}::DATE`;
-        params.push(startDateStr);
-        paramIndex++;
+      if (startDate) {
+        queryStr += ` AND check_in_date::DATE >= $${params.length + 1}::DATE`;
+        params.push(startDate.toISOString().split('T')[0]);
       }
       
-      if (endDateStr) {
-        queryStr += ` AND check_in_date::DATE <= $${paramIndex}::DATE`;
-        params.push(endDateStr);
-        paramIndex++;
+      if (endDate) {
+        queryStr += ` AND check_in_date::DATE <= $${params.length + 1}::DATE`;
+        params.push(endDate.toISOString().split('T')[0]);
       }
       
-      // Executar a consulta
-      console.log("Query net profit:", queryStr, "Params:", params);
-      const result = await db.execute(sql.raw(queryStr, ...params));
-      console.log("Net profit result:", result);
-      const revenue = Number(result[0]?.total_revenue) || 0;
-      const costs = Number(result[0]?.total_costs) || 0;
-      return revenue - costs;
+      console.log("Executando query de lucro:", queryStr, params);
+      
+      // Usar o pool de conexões para acessar diretamente o banco
+      const result = await this.poolInstance.query(queryStr, params);
+      console.log("Resultado da query de lucro:", result.rows);
+      
+      if (result.rows && result.rows.length > 0) {
+        const revenue = Number(result.rows[0].total_revenue) || 0;
+        const costs = Number(result.rows[0].total_costs) || 0;
+        const profit = revenue - costs;
+        console.log("Lucro calculado:", { revenue, costs, profit });
+        return profit;
+      }
+      
+      return 0;
     } catch (error) {
       console.error("Erro ao calcular lucro líquido:", error);
       return 0;
+    } finally {
+      console.log("============== FIM getNetProfit ==============");
     }
   }
 
   async getOccupancyRate(propertyId?: number, startDate?: Date, endDate?: Date): Promise<number> {
-    // Se não há conexão com banco de dados, retorna zero
-    if (!db) return 0;
+    console.log("============== INÍCIO getOccupancyRate ==============");
+    console.log("Parâmetros:", { propertyId, startDate, endDate });
+    
+    if (!this.poolInstance) {
+      console.log("Pool de conexões não disponível");
+      return 0;
+    }
     
     try {
       // Definir datas padrão se não forem fornecidas
@@ -1817,81 +1818,99 @@ export class DatabaseStorage implements IStorage {
       const startDateStr = start.toISOString().split('T')[0];
       const endDateStr = end.toISOString().split('T')[0];
       
-      // Log de depuração removido para evitar excesso de mensagens no console
-      
-      // Obter dias ocupados para as propriedades
-      let occupiedDaysQuery;
-      
       // Query específica para uma propriedade
       if (propertyId) {
-        const query = sql`
+        const occupancyQuery = `
           SELECT SUM(
             (LEAST(
               "check_out_date"::DATE, 
-              ${endDateStr}::DATE
+              $1::DATE
             ) - 
             GREATEST(
               "check_in_date"::DATE, 
-              ${startDateStr}::DATE
+              $2::DATE
             ))
           ) as days
           FROM reservations
-          WHERE property_id = ${propertyId}
+          WHERE property_id = $3
           AND status = 'completed'
-          AND "check_in_date"::DATE <= ${endDateStr}::DATE
-          AND "check_out_date"::DATE >= ${startDateStr}::DATE
+          AND "check_in_date"::DATE <= $1::DATE
+          AND "check_out_date"::DATE >= $2::DATE
         `;
-        console.log("Occupancy rate query (property):", query);
-        occupiedDaysQuery = await db.execute(query);
-        console.log("Occupancy result (property):", occupiedDaysQuery);
         
-        const occupiedDays = Number(occupiedDaysQuery[0]?.days) || 0;
-        console.log("Occupied days:", occupiedDays, "Total days:", totalDays);
-        return (occupiedDays / totalDays) * 100;
+        const params = [endDateStr, startDateStr, propertyId];
+        console.log("Query de ocupação (propriedade):", occupancyQuery, params);
+        
+        const result = await this.poolInstance.query(occupancyQuery, params);
+        console.log("Resultado da query de ocupação:", result.rows);
+        
+        if (result.rows && result.rows.length > 0) {
+          const occupiedDays = Number(result.rows[0].days) || 0;
+          console.log("Dias ocupados:", occupiedDays, "Total dias:", totalDays);
+          const occupancyRate = (occupiedDays / totalDays) * 100;
+          console.log("Taxa de ocupação calculada:", occupancyRate);
+          return occupancyRate;
+        }
       } 
       // Query para todas as propriedades
       else {
         // Obter contagem de propriedades
-        console.log("Consultando propriedades ativas");
-        const propertiesQuery = sql`
+        const propertiesCountQuery = `
           SELECT COUNT(*) as count FROM properties WHERE active = true
         `;
-        const propertiesResult = await db.execute(propertiesQuery);
-        console.log("Resultado da contagem de propriedades:", propertiesResult);
-        const numProperties = Number(propertiesResult[0]?.count) || 1;
-        console.log("Número de propriedades:", numProperties);
+        
+        console.log("Query de contagem de propriedades:", propertiesCountQuery);
+        const propertiesResult = await this.poolInstance.query(propertiesCountQuery);
+        
+        if (!propertiesResult.rows || propertiesResult.rows.length === 0) {
+          console.log("Nenhuma propriedade ativa encontrada");
+          return 0;
+        }
+        
+        const numProperties = Number(propertiesResult.rows[0].count) || 1;
+        console.log("Número de propriedades ativas:", numProperties);
         
         // Obter dias ocupados para todas as propriedades
-        console.log("Consultando dias ocupados para todas as propriedades");
-        const occupiedDaysQuery = sql`
+        const occupiedDaysQuery = `
           SELECT SUM(
             (LEAST(
               "check_out_date"::DATE, 
-              ${endDateStr}::DATE
+              $1::DATE
             ) - 
             GREATEST(
               "check_in_date"::DATE, 
-              ${startDateStr}::DATE
+              $2::DATE
             ))
           ) as days
           FROM reservations
           WHERE status = 'completed' 
-          AND "check_in_date"::DATE <= ${endDateStr}::DATE
-          AND "check_out_date"::DATE >= ${startDateStr}::DATE
+          AND "check_in_date"::DATE <= $1::DATE
+          AND "check_out_date"::DATE >= $2::DATE
         `;
-        console.log("Query de dias ocupados:", occupiedDaysQuery);
-        const occupiedDaysResult = await db.execute(occupiedDaysQuery);
-        console.log("Resultado de dias ocupados:", occupiedDaysResult);
         
-        const totalOccupiedDays = Number(occupiedDaysResult[0]?.days) || 0;
-        const totalPossibleDays = totalDays * numProperties;
-        console.log("Dias ocupados total:", totalOccupiedDays, "Dias possíveis total:", totalPossibleDays);
+        const params = [endDateStr, startDateStr];
+        console.log("Query de dias ocupados:", occupiedDaysQuery, params);
         
-        return (totalOccupiedDays / totalPossibleDays) * 100;
+        const result = await this.poolInstance.query(occupiedDaysQuery, params);
+        console.log("Resultado da query de dias ocupados:", result.rows);
+        
+        if (result.rows && result.rows.length > 0) {
+          const totalOccupiedDays = Number(result.rows[0].days) || 0;
+          const totalPossibleDays = totalDays * numProperties;
+          console.log("Dias ocupados total:", totalOccupiedDays, "Dias possíveis total:", totalPossibleDays);
+          
+          const occupancyRate = (totalOccupiedDays / totalPossibleDays) * 100;
+          console.log("Taxa de ocupação calculada:", occupancyRate);
+          return occupancyRate;
+        }
       }
+      
+      return 0;
     } catch (error) {
       console.error("Erro no cálculo da taxa de ocupação:", error);
       return 0;
+    } finally {
+      console.log("============== FIM getOccupancyRate ==============");
     }
   }
 

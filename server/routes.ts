@@ -397,6 +397,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Statistics routes
   app.get("/api/statistics", async (req: Request, res: Response) => {
     try {
+      console.log("########### INICIANDO /api/statistics ###########");
+      
       // Tratamento especial para as datas para evitar erros de formato
       let startDate: Date | undefined = undefined;
       let endDate: Date | undefined = undefined;
@@ -412,11 +414,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         endDate = new Date(endDateStr);
       }
 
-      // Log para diagnóstico removido para reduzir ruído no console
+      console.log("Usando datas:", { startDate, endDate });
 
       // Get properties for active property count
+      console.log("Obtendo propriedades...");
       const properties = await storage.getProperties();
+      console.log(`Obtidas ${properties.length} propriedades`);
       const activeProperties = properties.filter(p => p.active).length;
+      console.log(`Propriedades ativas: ${activeProperties}`);
 
       // Get revenue and profit using storage methods with date parameters
       let totalRevenue = 0;
@@ -425,13 +430,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       try {
         // Use the storage layer methods that already have date filtering
+        console.log("CHAMANDO storage.getTotalRevenue...");
+        // Teste direto com o SQL
+        console.log("Consultando receita total diretamente via SQL...");
+        try {
+          const { db } = await import('./db');
+          const { sql } = await import('drizzle-orm');
+          if (db) {
+            const directQuery = `SELECT SUM(CAST(total_amount AS DECIMAL)) as direct_total FROM reservations WHERE status = 'completed'`;
+            const directResult = await db.execute(sql.raw(directQuery));
+            console.log("Resultado da consulta SQL direta:", directResult);
+            console.log("Valor total diretamente da tabela:", directResult[0]?.direct_total);
+          } else {
+            console.log("Banco de dados não disponível para consulta direta");
+          }
+        } catch (e) {
+          console.error("Erro na consulta direta SQL:", e);
+        }
+        
         totalRevenue = await storage.getTotalRevenue(startDate, endDate);
+        console.log("Receita total:", totalRevenue);
+        
+        console.log("CHAMANDO storage.getNetProfit...");
         netProfit = await storage.getNetProfit(startDate, endDate);
+        console.log("Lucro líquido:", netProfit);
+        
+        console.log("CHAMANDO storage.getOccupancyRate...");
         occupancyRate = await storage.getOccupancyRate(undefined, startDate, endDate);
+        console.log("Taxa de ocupação:", occupancyRate);
       } catch (error) {
         console.error("Erro ao obter estatísticas:", error);
         // Continuamos sem quebrar a API
       }
+      
+      console.log("Estatísticas calculadas:", { totalRevenue, netProfit, occupancyRate });
       
       // Get reservations for the period (for other calculations)
       let reservations = await storage.getReservations();
