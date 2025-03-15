@@ -44,6 +44,30 @@ export default function OwnerReportPage() {
     <div className="container mx-auto py-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <h1 className="text-2xl font-bold">{t("ownerReport.title", "Relatório Financeiro por Proprietário")}</h1>
+        
+        {selectedOwner && ownerReport && (
+          <div className="flex space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-1"
+              onClick={() => downloadOwnerReportCSV(ownerReport, 'full', i18n.language)}
+            >
+              <Download className="h-4 w-4" />
+              {t("export.csv", "Exportar CSV")}
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-1"
+              onClick={() => downloadOwnerReportPDF(ownerReport, 'full', i18n.language)}
+            >
+              <FileText className="h-4 w-4" />
+              {t("export.pdf", "Exportar PDF")}
+            </Button>
+          </div>
+        )}
       </div>
       
       <Card className="mb-6">
