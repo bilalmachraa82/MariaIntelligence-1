@@ -30,21 +30,37 @@ import { useToast } from "@/hooks/use-toast";
 import { Link, useLocation } from "wouter";
 
 export function UploadPDF() {
+  // Estados para arquivos selecionados
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  
+  // Estados para diálogos e modais
   const [isFilePreviewOpen, setIsFilePreviewOpen] = useState(false);
   const [isValidationDialogOpen, setIsValidationDialogOpen] = useState(false);
-  // Por padrão, começamos com modo único (false) para simplificar a experiência do usuário
-  const [isMultiUploadMode, setIsMultiUploadMode] = useState(false);
   const [isMultiResultsDialogOpen, setIsMultiResultsDialogOpen] = useState(false);
+  
+  // Estados de modo e visualização
+  const [isMultiUploadMode, setIsMultiUploadMode] = useState(false);
+  const [showRawText, setShowRawText] = useState(false);
+  
+  // Estado de disponibilidade da API Mistral
   const [mistralAvailable, setMistralAvailable] = useState<boolean | null>(null);
+  
+  // Estado para feedback visual do processamento
   const [processingProgress, setProcessingProgress] = useState<{
     processed: number;
     total: number;
     success: number;
     failure: number;
     currentFile: string;
+    percentage: number;
   } | null>(null);
+  
+  // Estados para controle de qualidade e cache
+  const [useCache, setUseCache] = useState(true);
+  const [skipQualityCheck, setSkipQualityCheck] = useState(false);
+  
+  // Hooks
   const { toast } = useToast();
   const [_, setLocation] = useLocation();
   

@@ -31,6 +31,8 @@ interface UploadResponse {
     filename: string;
     path: string;
   };
+  rawText?: string;
+  fromCache?: boolean;
 }
 
 // Configure cliente Mistral AI com a chave API
@@ -44,6 +46,48 @@ function getMistralClient(): Mistral {
   return new Mistral({
     apiKey: MISTRAL_API_KEY || ""
   });
+}
+
+/**
+ * Função auxiliar para processar de forma segura argumentos de uma função call Mistral
+ * @param functionCall Objeto de chamada de função retornado pela API Mistral
+ * @returns Dados extraídos ou null se houver falha
+ */
+function processFunctionCallArguments(functionCall: any): any {
+  try {
+    if (!functionCall || 
+        functionCall.type !== 'function' || 
+        functionCall.function.name !== 'extract_reservation_data') {
+      return null;
+    }
+    
+    // Garantir que o argumento é uma string antes de fazer o parse
+    const args = typeof functionCall.function.arguments === 'string' 
+      ? functionCall.function.arguments 
+      : JSON.stringify(functionCall.function.arguments);
+      
+    return JSON.parse(args);
+  } catch (err) {
+    console.error("Erro ao processar argumentos da chamada de função:", err);
+    return null;
+  }
+}
+
+/**
+ * Função auxiliar para processar conteúdo de texto, garantindo que seja string
+ * @param content Conteúdo textual da resposta da API Mistral
+ * @returns Conteúdo como string, vazio se for inválido
+ */
+function extractTextContent(content: any): string {
+  if (!content) return '';
+  if (typeof content === 'string') return content;
+  if (Array.isArray(content)) {
+    return content
+      .filter(chunk => typeof chunk === 'object' && chunk.type === 'text')
+      .map(chunk => chunk.text)
+      .join('\n');
+  }
+  return '';
 }
 
 /**
@@ -73,11 +117,10 @@ export async function uploadAndProcessPDF(file: File): Promise<UploadResponse> {
  */
 export async function createReservationFromExtractedData(data: ExtractedData) {
   try {
-    const response = await apiRequest(
-      "POST",
-      "/api/reservations",
-      data
-    );
+    const response = await apiRequest("/api/reservations", {
+      method: "POST",
+      body: data
+    });
     
     return await response.json();
   } catch (error) {
@@ -571,25 +614,116 @@ export async function processImageWithMistralOCR(file: File): Promise<any> {
 }
 
 /**
- * Processa uma imagem ou PDF de reserva
+ * Processa uma imagem ou PDF de reserva com sistema aprimorado
  * @param file Arquivo (imagem ou PDF) a ser processado
+ * @param options Opções adicionais para o processamento
  */
-export async function processReservationFile(file: File): Promise<UploadResponse> {
+export async function processReservationFile(
+  file: File, 
+  options: { 
+    useCache?: boolean, 
+    skipQualityCheck?: boolean,
+    onProgress?: (progress: number) => void
+  } = {}
+): Promise<UploadResponse> {
   try {
-    // Determinar tipo de processamento com base no tipo de arquivo
+    const { useCache = true, skipQualityCheck = false, onProgress } = options;
+    
+    // Verificar tipo de arquivo suportado
+    const isSupported = file.type.includes('pdf') || 
+                        file.type.includes('image/jpeg') || 
+                        file.type.includes('image/png') || 
+                        file.type.includes('image/webp') ||
+                        file.type.includes('image/gif');
+    
+    if (!isSupported) {
+      throw new Error(
+        "Tipo de arquivo não suportado. Por favor, envie um PDF ou uma imagem (JPEG, PNG, WEBP, GIF)."
+      );
+    }
+    
+    // Verificar tamanho do arquivo (limite de 10MB)
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    if (file.size > MAX_FILE_SIZE) {
+      throw new Error(
+        `O arquivo é muito grande (${(file.size / (1024 * 1024)).toFixed(2)}MB). O tamanho máximo é 10MB.`
+      );
+    }
+    
+    // Verificação de cache (usando localStorage como armazenamento temporário)
+    if (useCache) {
+      try {
+        const cacheKey = `ocr_cache_${file.name}_${file.size}_${file.lastModified}`;
+        const cachedResult = localStorage.getItem(cacheKey);
+        
+        if (cachedResult) {
+          console.log("Usando resultado em cache para:", file.name);
+          const parsedResult = JSON.parse(cachedResult);
+          
+          // Verificar se o cache tem todos os dados necessários
+          if (parsedResult.extractedData && Object.keys(parsedResult.extractedData).length > 5) {
+            onProgress && onProgress(100);
+            
+            return {
+              extractedData: parsedResult.extractedData,
+              file: {
+                filename: file.name,
+                path: URL.createObjectURL(file)
+              },
+              fromCache: true
+            };
+          }
+        }
+      } catch (cacheError) {
+        console.warn("Erro ao verificar cache:", cacheError);
+        // Continuar sem cache
+      }
+    }
+    
+    // Atualizar progresso
+    onProgress && onProgress(10);
+    
+    // Verificação de qualidade de imagem antes do processamento (opcional)
+    if (!skipQualityCheck && file.type.includes('image')) {
+      const qualityCheckResult = await checkImageQuality(file);
+      
+      if (!qualityCheckResult.isAcceptable) {
+        throw new Error(
+          `A imagem tem qualidade insuficiente para processamento OCR: ${qualityCheckResult.reason}. ` +
+          "Tente uma imagem com melhor resolução, iluminação adequada e sem desfoque."
+        );
+      }
+    }
+    
+    // Atualizar progresso
+    onProgress && onProgress(30);
+    
+    // Processar o arquivo com base no tipo
     let result;
     
     if (file.type.includes('pdf')) {
       result = await processPDFWithMistralOCR(file);
     } else if (file.type.includes('image')) {
       result = await processImageWithMistralOCR(file);
-    } else {
-      throw new Error("Tipo de arquivo não suportado. Por favor, envie um PDF ou uma imagem.");
     }
     
-    // Verificar se temos dados extraídos
+    // Atualizar progresso
+    onProgress && onProgress(80);
+    
+    // Verificar se temos dados extraídos válidos
     if (!result.extractedData) {
-      throw new Error("Não foi possível extrair dados suficientes do arquivo. Por favor, tente novamente ou envie um arquivo diferente.");
+      throw new Error(
+        "Não foi possível extrair dados suficientes do arquivo. " +
+        "Por favor, tente novamente ou envie um arquivo diferente."
+      );
+    }
+    
+    // Validação dos dados extraídos
+    const validationErrors = validateExtractedData(result.extractedData);
+    if (validationErrors.length > 0) {
+      throw new Error(
+        `Dados extraídos inválidos ou incompletos: ${validationErrors.join(", ")}`
+      );
     }
     
     // Formatar a resposta
@@ -597,16 +731,119 @@ export async function processReservationFile(file: File): Promise<UploadResponse
       extractedData: result.extractedData,
       file: {
         filename: file.name,
-        path: URL.createObjectURL(file) // Cria uma URL temporária para o arquivo
-      }
+        path: URL.createObjectURL(file)
+      },
+      rawText: result.extractedText?.substring(0, 500), // Primeiros 500 caracteres para debug
+      fromCache: false
     };
     
-    return response;
+    // Armazenar no cache se solicitado
+    if (useCache) {
+      try {
+        const cacheKey = `ocr_cache_${file.name}_${file.size}_${file.lastModified}`;
+        localStorage.setItem(cacheKey, JSON.stringify({
+          extractedData: result.extractedData,
+          timestamp: new Date().toISOString()
+        }));
+      } catch (cacheError) {
+        console.warn("Erro ao armazenar em cache:", cacheError);
+        // Continuar mesmo sem poder armazenar cache
+      }
+    }
     
+    // Atualizar progresso
+    onProgress && onProgress(100);
+    
+    return response;
   } catch (error) {
     console.error("Erro ao processar arquivo de reserva:", error);
     throw error;
   }
+}
+
+/**
+ * Verifica a qualidade de uma imagem para OCR
+ * @param imageFile Arquivo de imagem
+ */
+async function checkImageQuality(imageFile: File): Promise<{isAcceptable: boolean, reason?: string}> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(imageFile);
+    
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      
+      // Verificar dimensões mínimas (600x400 pixels)
+      if (img.width < 600 || img.height < 400) {
+        resolve({
+          isAcceptable: false, 
+          reason: `Resolução insuficiente (${img.width}x${img.height}). Mínimo recomendado: 600x400`
+        });
+        return;
+      }
+      
+      // Verificar proporção (não deve ser extremamente desproporcional)
+      const aspectRatio = img.width / img.height;
+      if (aspectRatio < 0.5 || aspectRatio > 2.0) {
+        resolve({
+          isAcceptable: false,
+          reason: `Proporção incomum (${aspectRatio.toFixed(2)}). Deve estar entre 0.5 e 2.0`
+        });
+        return;
+      }
+      
+      // Imagem passou em todas as verificações
+      resolve({ isAcceptable: true });
+    };
+    
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve({ isAcceptable: false, reason: "Não foi possível carregar a imagem para verificação" });
+    };
+    
+    img.src = objectUrl;
+  });
+}
+
+/**
+ * Valida os dados extraídos para garantir completude mínima
+ * @param data Dados extraídos
+ * @returns Array de erros, vazio se não houver erros
+ */
+function validateExtractedData(data: any): string[] {
+  const errors: string[] = [];
+  
+  // Verificar campos essenciais
+  if (!data.checkInDate) errors.push("Data de check-in não encontrada");
+  if (!data.checkOutDate) errors.push("Data de check-out não encontrada");
+  if (!data.guestName) errors.push("Nome do hóspede não encontrado");
+  if (!data.totalAmount || isNaN(data.totalAmount)) errors.push("Valor total não encontrado ou inválido");
+  
+  // Verificar formatos de data
+  const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+  if (data.checkInDate && !datePattern.test(data.checkInDate)) {
+    errors.push("Formato de data de check-in inválido (deve ser YYYY-MM-DD)");
+  }
+  if (data.checkOutDate && !datePattern.test(data.checkOutDate)) {
+    errors.push("Formato de data de check-out inválido (deve ser YYYY-MM-DD)");
+  }
+  
+  // Verificar lógica de datas
+  if (data.checkInDate && data.checkOutDate) {
+    const checkIn = new Date(data.checkInDate);
+    const checkOut = new Date(data.checkOutDate);
+    
+    if (checkIn > checkOut) {
+      errors.push("Data de check-in é posterior à data de check-out");
+    }
+    
+    const diffDays = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
+    if (diffDays > 60) {
+      errors.push(`Duração da estadia é muito longa (${diffDays} dias)`);
+    }
+  }
+  
+  return errors;
 }
 
 /**
