@@ -80,6 +80,221 @@ interface OwnerReportModernProps {
   onExport: (format: 'full' | 'summary' | 'properties' | 'reservations') => void;
 }
 
+// Componente para exibir insights baseados em AI
+interface InsightsSectionProps {
+  report: OwnerReport;
+}
+
+function InsightsSection({ report }: InsightsSectionProps) {
+  const { t } = useTranslation();
+  const [insights, setInsights] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Carregar insights ao inicializar ou quando o relatório mudar
+    async function loadInsights() {
+      setLoading(true);
+      setError(null);
+      try {
+        const generatedInsights = await generateReportInsights(report);
+        setInsights(generatedInsights);
+      } catch (err) {
+        console.error("Erro ao carregar insights:", err);
+        setError(t(
+          "ownerReport.insightsError",
+          "Não foi possível gerar insights para este relatório. Por favor, tente novamente mais tarde."
+        ));
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadInsights();
+  }, [report, t]);
+
+  if (loading) {
+    return (
+      <div className="p-4 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-2">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <Text>{t("ownerReport.generatingInsights", "Gerando insights...")}</Text>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Callout
+        title={t("ownerReport.insightsUnavailable", "Insights não disponíveis")}
+        icon={AlertCircle}
+        color="rose"
+        className="mt-4"
+      >
+        {error}
+      </Callout>
+    );
+  }
+
+  // Fallback para quando não temos insights da IA
+  if (!insights) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Callout
+          title={t("ownerReport.baseInsights", "Análise Básica")}
+          icon={LineChart}
+          color="blue"
+        >
+          <p className="text-sm mt-2">
+            {report.totals.totalNetProfit > 0
+              ? t(
+                  "ownerReport.profitableInsight",
+                  "Este período foi lucrativo com {{profit}} de lucro líquido, representando {{percentage}}% da receita total.",
+                  {
+                    profit: formatCurrency(report.totals.totalNetProfit),
+                    percentage: ((report.totals.totalNetProfit / report.totals.totalRevenue) * 100).toFixed(1),
+                  }
+                )
+              : t(
+                  "ownerReport.unprofitableInsight",
+                  "Este período apresentou um déficit de {{loss}}, representando uma margem negativa de {{percentage}}%.",
+                  {
+                    loss: formatCurrency(Math.abs(report.totals.totalNetProfit)),
+                    percentage: ((report.totals.totalNetProfit / report.totals.totalRevenue) * 100).toFixed(1),
+                  }
+                )
+            }
+          </p>
+        </Callout>
+
+        <Callout
+          title={t("ownerReport.occupancyInsight", "Análise de Ocupação")}
+          icon={BarChart2}
+          color="indigo"
+        >
+          <p className="text-sm mt-2">
+            {t(
+              "ownerReport.occupancyInsightText",
+              "A taxa média de ocupação foi de {{rate}}%. {{bestProperty}} teve a melhor performance com {{bestRate}}% de ocupação.",
+              {
+                rate: (report.propertyReports.reduce((sum, p) => sum + p.occupancyRate, 0) / report.propertyReports.length).toFixed(1),
+                bestProperty: report.propertyReports.reduce((best, p) => 
+                  best.occupancyRate > p.occupancyRate ? best : p
+                ).propertyName,
+                bestRate: report.propertyReports.reduce((best, p) => 
+                  best.occupancyRate > p.occupancyRate ? best : p
+                ).occupancyRate.toFixed(1),
+              }
+            )}
+          </p>
+        </Callout>
+      </div>
+    );
+  }
+
+  // Renderização dos insights avançados da IA
+  return (
+    <Grid numItemsMd={2} className="gap-4 mt-2">
+      {/* Insights gerais */}
+      <Col numColSpanMd={2}>
+        <Callout
+          title={t("ownerReport.overallPerformance", "Desempenho Geral")}
+          icon={Sparkles}
+          color="amber"
+        >
+          <p className="text-sm mt-2">
+            {insights.overallSummary || insights.summaryInsight || 
+              t("ownerReport.fallbackSummary", "Análise do período mostra uma performance geral estável com oportunidades de melhoria.")}
+          </p>
+        </Callout>
+      </Col>
+
+      {/* Insights de propriedades de destaque */}
+      <Col>
+        <div className="space-y-4">
+          <Callout
+            title={t("ownerReport.topPerformers", "Propriedades em Destaque")}
+            icon={TrendingUp}
+            color="emerald"
+          >
+            <List className="mt-2">
+              {(insights.propertyInsights?.map((p: any) => p.insight) || []).slice(0, 3).map((insight: string, idx: number) => (
+                <ListItem key={idx}>
+                  <span className="text-sm">{insight}</span>
+                </ListItem>
+              ))}
+              {(!insights.propertyInsights || insights.propertyInsights.length === 0) && (
+                <ListItem>
+                  <span className="text-sm">
+                    {t("ownerReport.noTopPerformers", "Não há propriedades com desempenho excepcional no período.")}
+                  </span>
+                </ListItem>
+              )}
+            </List>
+          </Callout>
+
+          <Callout
+            title={t("ownerReport.seasonalTrends", "Tendências Sazonais")}
+            icon={Calendar}
+            color="indigo"
+          >
+            <p className="text-sm mt-2">
+              {insights.seasonalTrends || insights.seasonalTips?.[0] || 
+                t("ownerReport.noSeasonalData", "Dados insuficientes para análise de sazonalidade.")}
+            </p>
+          </Callout>
+        </div>
+      </Col>
+
+      {/* Recomendações baseadas em IA */}
+      <Col>
+        <Callout
+          title={t("ownerReport.recommendations", "Recomendações Inteligentes")}
+          icon={Lightbulb}
+          color="amber"
+        >
+          <List className="mt-2">
+            {(insights.recommendations || []).slice(0, 3).map((recommendation: string, idx: number) => (
+              <ListItem key={idx}>
+                <span className="text-sm">{recommendation}</span>
+              </ListItem>
+            ))}
+            {!insights.recommendations?.length && (
+              <ListItem>
+                <span className="text-sm">
+                  {t("ownerReport.noRecommendations", "Não há recomendações específicas para este período.")}
+                </span>
+              </ListItem>
+            )}
+          </List>
+        </Callout>
+      </Col>
+
+      {/* Métricas de negócio */}
+      {insights.keyMetrics && insights.keyMetrics.length > 0 && (
+        <Col numColSpanMd={2}>
+          <Card className="mt-2">
+            <Title className="mb-2">{t("ownerReport.businessMetrics", "Métricas de Negócio")}</Title>
+            <div className="flex flex-wrap gap-2">
+              {insights.keyMetrics.map((metric: any, idx: number) => (
+                <Badge key={idx} color="blue">
+                  {metric.label}: {metric.value}
+                </Badge>
+              ))}
+            </div>
+            <Divider className="my-3" />
+            <Text>
+              {insights.trendAnalysis || 
+                t("ownerReport.noBusinessSummary", "Análise detalhada de métricas de negócio não disponível.")}
+            </Text>
+          </Card>
+        </Col>
+      )}
+    </Grid>
+  );
+}
+
 export function OwnerReportModern({
   report,
   dateRange,
@@ -724,17 +939,15 @@ export function OwnerReportModern({
                                 </TableCell>
                                 <TableCell>
                                   <div className="text-sm">
-                                    {formatDate(reservation.checkInDate)} - {formatDate(reservation.checkOutDate)}
+                                    <div className="whitespace-nowrap">{formatDate(reservation.checkInDate)} - {formatDate(reservation.checkOutDate)}</div>
+                                    <div className="text-xs text-muted-foreground">{reservation.nights} {reservation.nights === 1 ? 'noite' : 'noites'}</div>
                                   </div>
                                 </TableCell>
-                                <TableCell className="text-right">{formatCurrency(reservation.totalAmount)}</TableCell>
+                                <TableCell className="text-right font-medium">
+                                  {formatCurrency(reservation.totalAmount)}
+                                </TableCell>
                                 <TableCell className="text-right text-muted-foreground">
-                                  {formatCurrency(
-                                    reservation.cleaningFee + 
-                                    reservation.checkInFee + 
-                                    reservation.commission + 
-                                    reservation.teamPayment
-                                  )}
+                                  {formatCurrency(reservation.totalAmount - reservation.netAmount)}
                                 </TableCell>
                                 <TableCell className={cn(
                                   "text-right font-medium",
@@ -756,220 +969,5 @@ export function OwnerReportModern({
         </motion.div>
       </motion.div>
     </AnimatePresence>
-  );
-}
-
-// Componente para exibir insights baseados em AI
-interface InsightsSectionProps {
-  report: OwnerReport;
-}
-
-function InsightsSection({ report }: InsightsSectionProps) {
-  const { t } = useTranslation();
-  const [insights, setInsights] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Carregar insights ao inicializar ou quando o relatório mudar
-    async function loadInsights() {
-      setLoading(true);
-      setError(null);
-      try {
-        const generatedInsights = await generateReportInsights(report);
-        setInsights(generatedInsights);
-      } catch (err) {
-        console.error("Erro ao carregar insights:", err);
-        setError(t(
-          "ownerReport.insightsError",
-          "Não foi possível gerar insights para este relatório. Por favor, tente novamente mais tarde."
-        ));
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadInsights();
-  }, [report, t]);
-
-  if (loading) {
-    return (
-      <div className="p-4 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-2">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          <Text>{t("ownerReport.generatingInsights", "Gerando insights...")}</Text>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <Callout
-        title={t("ownerReport.insightsUnavailable", "Insights não disponíveis")}
-        icon={AlertCircle}
-        color="rose"
-        className="mt-4"
-      >
-        {error}
-      </Callout>
-    );
-  }
-
-  // Fallback para quando não temos insights da IA
-  if (!insights) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Callout
-          title={t("ownerReport.baseInsights", "Análise Básica")}
-          icon={LineChart}
-          color="blue"
-        >
-          <p className="text-sm mt-2">
-            {report.totals.totalNetProfit > 0
-              ? t(
-                  "ownerReport.profitableInsight",
-                  "Este período foi lucrativo com {{profit}} de lucro líquido, representando {{percentage}}% da receita total.",
-                  {
-                    profit: formatCurrency(report.totals.totalNetProfit),
-                    percentage: ((report.totals.totalNetProfit / report.totals.totalRevenue) * 100).toFixed(1),
-                  }
-                )
-              : t(
-                  "ownerReport.unprofitableInsight",
-                  "Este período apresentou um déficit de {{loss}}, representando uma margem negativa de {{percentage}}%.",
-                  {
-                    loss: formatCurrency(Math.abs(report.totals.totalNetProfit)),
-                    percentage: ((report.totals.totalNetProfit / report.totals.totalRevenue) * 100).toFixed(1),
-                  }
-                )
-            }
-          </p>
-        </Callout>
-
-        <Callout
-          title={t("ownerReport.occupancyInsight", "Análise de Ocupação")}
-          icon={BarChart2}
-          color="indigo"
-        >
-          <p className="text-sm mt-2">
-            {t(
-              "ownerReport.occupancyInsightText",
-              "A taxa média de ocupação foi de {{rate}}%. {{bestProperty}} teve a melhor performance com {{bestRate}}% de ocupação.",
-              {
-                rate: (report.propertyReports.reduce((sum, p) => sum + p.occupancyRate, 0) / report.propertyReports.length).toFixed(1),
-                bestProperty: report.propertyReports.reduce((best, p) => 
-                  best.occupancyRate > p.occupancyRate ? best : p
-                ).propertyName,
-                bestRate: report.propertyReports.reduce((best, p) => 
-                  best.occupancyRate > p.occupancyRate ? best : p
-                ).occupancyRate.toFixed(1),
-              }
-            )}
-          </p>
-        </Callout>
-      </div>
-    );
-  }
-
-  // Renderização dos insights avançados da IA
-  return (
-    <Grid numItemsMd={2} className="gap-4 mt-2">
-      {/* Insights gerais */}
-      <Col numColSpanMd={2}>
-        <Callout
-          title={t("ownerReport.overallPerformance", "Desempenho Geral")}
-          icon={Sparkles}
-          color="amber"
-        >
-          <p className="text-sm mt-2">
-            {insights.overallSummary || 
-              t("ownerReport.fallbackSummary", "Análise do período mostra uma performance geral estável com oportunidades de melhoria.")}
-          </p>
-        </Callout>
-      </Col>
-
-      {/* Insights de propriedades de destaque */}
-      <Col>
-        <div className="space-y-4">
-          <Callout
-            title={t("ownerReport.topPerformers", "Propriedades em Destaque")}
-            icon={TrendingUp}
-            color="emerald"
-          >
-            <List className="mt-2">
-              {(insights.propertyInsights?.topPerformers || []).map((insight: string, idx: number) => (
-                <ListItem key={idx}>
-                  <span className="text-sm">{insight}</span>
-                </ListItem>
-              ))}
-              {!insights.propertyInsights?.topPerformers?.length && (
-                <ListItem>
-                  <span className="text-sm">
-                    {t("ownerReport.noTopPerformers", "Não há propriedades com desempenho excepcional no período.")}
-                  </span>
-                </ListItem>
-              )}
-            </List>
-          </Callout>
-
-          <Callout
-            title={t("ownerReport.seasonalTrends", "Tendências Sazonais")}
-            icon={Calendar}
-            color="indigo"
-          >
-            <p className="text-sm mt-2">
-              {insights.seasonalTrends || 
-                t("ownerReport.noSeasonalData", "Dados insuficientes para análise de sazonalidade.")}
-            </p>
-          </Callout>
-        </div>
-      </Col>
-
-      {/* Recomendações baseadas em IA */}
-      <Col>
-        <Callout
-          title={t("ownerReport.recommendations", "Recomendações Inteligentes")}
-          icon={Lightbulb}
-          color="amber"
-        >
-          <List className="mt-2">
-            {(insights.recommendations || []).map((recommendation: string, idx: number) => (
-              <ListItem key={idx}>
-                <span className="text-sm">{recommendation}</span>
-              </ListItem>
-            ))}
-            {!insights.recommendations?.length && (
-              <ListItem>
-                <span className="text-sm">
-                  {t("ownerReport.noRecommendations", "Não há recomendações específicas para este período.")}
-                </span>
-              </ListItem>
-            )}
-          </List>
-        </Callout>
-      </Col>
-
-      {/* Avaliação de negócio com badges */}
-      {insights.businessMetrics && (
-        <Col numColSpanMd={2}>
-          <Card className="mt-2">
-            <Title className="mb-2">{t("ownerReport.businessMetrics", "Métricas de Negócio")}</Title>
-            <div className="flex flex-wrap gap-2">
-              {Object.entries(insights.businessMetrics).map(([key, value]: [string, any]) => (
-                <Badge key={key} color={value.score > 70 ? "emerald" : value.score > 40 ? "amber" : "rose"}>
-                  {key}: {value.score}%
-                </Badge>
-              ))}
-            </div>
-            <Divider className="my-3" />
-            <Text>
-              {insights.businessSummary || 
-                t("ownerReport.noBusinessSummary", "Análise detalhada de métricas de negócio não disponível.")}
-            </Text>
-          </Card>
-        </Col>
-      )}
-    </Grid>
   );
 }
