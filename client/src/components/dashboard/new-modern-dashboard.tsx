@@ -138,7 +138,7 @@ export default function NewModernDashboard() {
 
   // Buscar dados de receita mensal da API
   const { data: monthlyStats, isLoading: isLoadingMonthly } = useQuery({
-    queryKey: ["/api/statistics/monthly-revenue"],
+    queryKey: ["/api/statistics/monthly-revenue", selectedDateRange.startDate, selectedDateRange.endDate],
   });
   
   // Prepare data for charts

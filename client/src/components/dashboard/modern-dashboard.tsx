@@ -156,9 +156,14 @@ export default function ModernDashboard() {
     }
   };
 
+  // Buscar dados de receita mensal da API
+  const { data: monthlyStats, isLoading: isLoadingMonthly } = useQuery({
+    queryKey: ["/api/statistics/monthly-revenue", selectedDateRange.startDate, selectedDateRange.endDate],
+  });
+  
   // Prepare data for charts
-  const revenueData = statistics && Array.isArray(statistics.revenueByMonth) 
-    ? statistics.revenueByMonth.map((item: any) => ({
+  const revenueData = monthlyStats && monthlyStats.revenueByMonth 
+    ? monthlyStats.revenueByMonth.map((item: any) => ({
         name: item.month,
         Receita: item.revenue,
         Lucro: item.profit

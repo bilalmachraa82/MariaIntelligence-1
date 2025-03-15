@@ -511,15 +511,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
    */
   app.get("/api/statistics/monthly-revenue", async (req: Request, res: Response) => {
     try {
-      // Parametros opcionais de data
-      const year = req.query.year ? Number(req.query.year) : new Date().getFullYear();
+      // Pegar parâmetros de filtro de data do request
+      const startDateParam = req.query.startDate as string | undefined;
+      const endDateParam = req.query.endDate as string | undefined;
+      
+      // Definir datas de início e fim
+      const startDate = startDateParam ? new Date(startDateParam) : new Date(new Date().getFullYear(), 0, 1);
+      const endDate = endDateParam ? new Date(endDateParam) : new Date(new Date().getFullYear(), 11, 31);
+      const year = startDate.getFullYear();
       
       // Buscar todas as reservas confirmadas ou concluídas
       const reservations = await storage.getReservations();
-      const confirmedReservations = reservations.filter(
-        r => (r.status === "confirmed" || r.status === "completed") 
-          && new Date(r.checkInDate).getFullYear() === year
-      );
+      const confirmedReservations = reservations.filter(r => {
+        const checkInDate = new Date(r.checkInDate);
+        return (r.status === "confirmed" || r.status === "completed") 
+          && checkInDate >= startDate
+          && checkInDate <= endDate;
+      });
       
       // Inicializar array com todos os meses
       const months = [
