@@ -562,10 +562,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let granularity = 'month';
       if (dateDiffDays <= 35) { // Aproximadamente um mês
         granularity = 'week';
-      } else if (dateDiffDays > 90) { // Mais de 3 meses
-        granularity = 'month';
-      } else {
+      } else if (dateDiffDays <= 90) { // Entre 1 e 3 meses
         granularity = 'biweek'; // Duas semanas
+      } else { // Mais de 3 meses (trimestral, semestral, anual)
+        granularity = 'month';
       }
       
       console.log(`Granularidade escolhida: ${granularity}`);
@@ -593,7 +593,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Calcular receita e lucro por mês
         revenueData = months.map((month, index) => {
-          // Filtrar reservas para este mês e ano
+          // Filtrar reservas para este mês, considerando todos os anos no intervalo
           const monthReservations = confirmedReservations.filter(r => {
             const checkInDate = new Date(r.checkInDate);
             return checkInDate.getMonth() === index;
