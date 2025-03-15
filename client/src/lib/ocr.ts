@@ -117,6 +117,11 @@ export async function uploadAndProcessPDF(file: File): Promise<UploadResponse> {
  */
 export async function createReservationFromExtractedData(data: ExtractedData) {
   try {
+    // Verificar se temos dados válidos
+    if (!data || typeof data !== 'object') {
+      throw new Error('Dados de reserva inválidos ou incompletos');
+    }
+    
     const response = await apiRequest("/api/reservations", {
       method: "POST",
       body: data
@@ -1068,7 +1073,7 @@ export async function processMultiplePDFs(files: File[]): Promise<any[]> {
         results.push({
           filename: file.name,
           success: !!extractedData,
-          text: contentText.substring(0, 500) + "...", // Truncar para evitar respostas muito grandes
+          text: typeof contentText === 'string' ? contentText.substring(0, 500) + "..." : String(contentText), // Truncar para evitar respostas muito grandes
           extractedData,
           error: extractionError
         });
