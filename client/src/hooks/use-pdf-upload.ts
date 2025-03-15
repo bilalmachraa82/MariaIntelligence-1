@@ -26,6 +26,7 @@ interface ProcessingResult {
 interface ProcessingOptions {
   useCache?: boolean;
   skipQualityCheck?: boolean;
+  onProgress?: (progress: number) => void;
 }
 
 export function usePdfUpload() {
