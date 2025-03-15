@@ -555,27 +555,27 @@ export function UploadPDF() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <div className="text-sm font-medium text-secondary-500">Propriedade</div>
-                    <div className="mt-1 text-sm text-secondary-900 font-medium">{extractedData.propertyName}</div>
+                    <div className="mt-1 text-sm text-secondary-900 font-medium">{extractedData?.propertyName || "Não definida"}</div>
                   </div>
                   <div>
                     <div className="text-sm font-medium text-secondary-500">Hóspede</div>
-                    <div className="mt-1 text-sm text-secondary-900 font-medium">{extractedData.guestName}</div>
+                    <div className="mt-1 text-sm text-secondary-900 font-medium">{extractedData?.guestName || "Não definido"}</div>
                   </div>
                   <div>
                     <div className="text-sm font-medium text-secondary-500">Check-in</div>
-                    <div className="mt-1 text-sm text-secondary-900 font-medium">{formatDate(extractedData.checkInDate)}</div>
+                    <div className="mt-1 text-sm text-secondary-900 font-medium">{extractedData?.checkInDate ? formatDate(extractedData.checkInDate) : "Não definido"}</div>
                   </div>
                   <div>
                     <div className="text-sm font-medium text-secondary-500">Check-out</div>
-                    <div className="mt-1 text-sm text-secondary-900 font-medium">{formatDate(extractedData.checkOutDate)}</div>
+                    <div className="mt-1 text-sm text-secondary-900 font-medium">{extractedData?.checkOutDate ? formatDate(extractedData.checkOutDate) : "Não definido"}</div>
                   </div>
                   <div>
                     <div className="text-sm font-medium text-secondary-500">N° de Hóspedes</div>
-                    <div className="mt-1 text-sm text-secondary-900 font-medium">{extractedData.numGuests}</div>
+                    <div className="mt-1 text-sm text-secondary-900 font-medium">{extractedData?.numGuests || "Não definido"}</div>
                   </div>
                   <div>
                     <div className="text-sm font-medium text-secondary-500">Valor Total</div>
-                    <div className="mt-1 text-sm text-secondary-900 font-medium">{formatCurrency(extractedData.totalAmount)}</div>
+                    <div className="mt-1 text-sm text-secondary-900 font-medium">{extractedData?.totalAmount ? formatCurrency(extractedData.totalAmount) : "Não definido"}</div>
                   </div>
                 </div>
               </div>
@@ -700,19 +700,19 @@ export function UploadPDF() {
                       className={`grid grid-cols-5 gap-2 p-3 text-sm ${index % 2 === 0 ? 'bg-white' : 'bg-secondary-50'} border-b last:border-b-0`}
                     >
                       <div className="font-medium text-secondary-900">
-                        {result.extractedData.propertyName}
+                        {result.extractedData?.propertyName || "Não definida"}
                       </div>
                       <div className="text-secondary-700">
-                        {result.extractedData.guestName}
+                        {result.extractedData?.guestName || "Não definido"}
                       </div>
                       <div className="text-secondary-700">
-                        {formatDate(result.extractedData.checkInDate)}
+                        {result.extractedData?.checkInDate ? formatDate(result.extractedData.checkInDate) : "Não definido"}
                       </div>
                       <div className="text-secondary-700">
-                        {formatDate(result.extractedData.checkOutDate)}
+                        {result.extractedData?.checkOutDate ? formatDate(result.extractedData.checkOutDate) : "Não definido"}
                       </div>
                       <div className="text-secondary-700">
-                        {formatCurrency(result.extractedData.totalAmount)}
+                        {result.extractedData?.totalAmount ? formatCurrency(result.extractedData.totalAmount) : "Não definido"}
                       </div>
                     </div>
                   ))}
