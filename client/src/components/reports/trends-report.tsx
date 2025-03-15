@@ -1,6 +1,8 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
+import { jsPDF } from "jspdf";
+import { saveAs } from "file-saver";
 import {
   Card,
   Title,
@@ -44,6 +46,8 @@ import {
   AreaChart as AreaChartIcon,
   Filter,
   ArrowUpDown,
+  FileText,
+  Download,
 } from "lucide-react";
 import { format, parseISO, subMonths, differenceInMonths, compareDesc, startOfMonth, endOfMonth } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -120,6 +124,9 @@ export function TrendsReport({
       to: new Date()
     }
   );
+  
+  // Referência para gráficos (para exportação como imagem)
+  const chartRef = useRef<HTMLDivElement>(null);
   
   // Dados simulados de tendências (seriam substituídos por dados reais da API)
   const [trendsData, setTrendsData] = useState<PropertyTrend[]>([]);
@@ -427,23 +434,79 @@ export function TrendsReport({
         className="space-y-6"
       >
         {/* Cabeçalho do relatório de tendências */}
-        <div className="mb-6">
-          <motion.h2 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-xl font-semibold mb-2"
-          >
-            {t("trendsReport.title", "Análise de Tendências")}
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-muted-foreground"
-          >
-            {t("trendsReport.description", "Acompanhe as tendências de desempenho ao longo do tempo")}
-          </motion.p>
+        <div className="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <motion.h2 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-xl font-semibold mb-2"
+            >
+              {t("trendsReport.title", "Análise de Tendências")}
+            </motion.h2>
+            <motion.p 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-muted-foreground"
+            >
+              {t("trendsReport.description", "Acompanhe as tendências de desempenho ao longo do tempo")}
+            </motion.p>
+          </div>
+          
+          {/* Botões de exportação */}
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-1"
+              onClick={() => {
+                const formattedStartDate = dateRange.from ? format(new Date(dateRange.from), "yyyy-MM-dd") : '';
+                const formattedEndDate = dateRange.to ? format(new Date(dateRange.to), "yyyy-MM-dd") : '';
+                const exportData = aggregatedData.map(item => ({
+                  data: format(new Date(item.date), "dd/MM/yyyy"),
+                  receita: item.revenue.toFixed(2),
+                  lucro: item.profit.toFixed(2),
+                  ocupacao: `${item.occupancy.toFixed(1)}%`,
+                  reservas: item.reservations
+                }));
+                
+                exportToCSV(
+                  exportData, 
+                  `tendencias_${formattedStartDate}_${formattedEndDate}.csv`
+                );
+              }}
+            >
+              <BarChart4 className="h-4 w-4" />
+              {t("export.csv", "Exportar CSV")}
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-1"
+              onClick={() => {
+                const formattedStartDate = dateRange.from ? format(new Date(dateRange.from), "yyyy-MM-dd") : '';
+                const formattedEndDate = dateRange.to ? format(new Date(dateRange.to), "yyyy-MM-dd") : '';
+                const exportData = aggregatedData.map(item => ({
+                  data: format(new Date(item.date), "dd/MM/yyyy"),
+                  receita: formatCurrency(item.revenue),
+                  lucro: formatCurrency(item.profit),
+                  ocupacao: `${item.occupancy.toFixed(1)}%`,
+                  reservas: item.reservations
+                }));
+                
+                exportToPDF(
+                  exportData,
+                  `${t("trendsReport.title", "Análise de Tendências")} (${formattedStartDate} - ${formattedEndDate})`,
+                  `tendencias_${formattedStartDate}_${formattedEndDate}.pdf`
+                );
+              }}
+            >
+              <FileText className="h-4 w-4" />
+              {t("export.pdf", "Exportar PDF")}
+            </Button>
+          </div>
         </div>
         
         {/* Controles de filtro */}
@@ -1134,4 +1197,38 @@ function TrendsReportSkeleton() {
   );
 }
 
-// Removida a implementação duplicada de useMemo - já importada do React
+// Funções de exportação de dados
+function exportToCSV(data: any[], filename: string) {
+  const headers = Object.keys(data[0]).join(',');
+  const csvData = data.map(row => Object.values(row).join(',')).join('\n');
+  const csvContent = `${headers}\n${csvData}`;
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  saveAs(blob, filename);
+}
+
+function exportToPDF(data: any[], title: string, filename: string) {
+  const doc = new jsPDF();
+  
+  // Configuração de estilos e página
+  doc.setFontSize(18);
+  doc.text(title, 14, 20);
+  doc.setFontSize(11);
+  doc.text(new Date().toLocaleDateString(), 14, 30);
+  
+  // Tabela de dados
+  const tableColumn = Object.keys(data[0]);
+  const tableRows = data.map(item => Object.values(item));
+  
+  (doc as any).autoTable({
+    head: [tableColumn],
+    body: tableRows,
+    startY: 40,
+    theme: 'grid',
+    styles: { fontSize: 9 },
+    headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+    alternateRowStyles: { fillColor: [240, 240, 240] },
+    margin: { top: 40 }
+  });
+  
+  doc.save(filename);
+}
