@@ -114,8 +114,8 @@ export function RevenueVsProfitChart({ data, isLoading }: RevenueVsProfitChartPr
       </div>
       
       {/* Componente responsivo do Recharts */}
-      <div className="h-[calc(100%-2rem)]">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="h-[calc(100%-2rem)]" style={{ minHeight: "200px", width: "100%" }}>
+        <ResponsiveContainer width="100%" height="100%" minHeight={200}>
           <ReAreaChart
             data={data}
             margin={{ top: 5, right: 5, left: 0, bottom: 5 }}

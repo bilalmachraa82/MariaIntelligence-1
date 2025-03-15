@@ -104,8 +104,8 @@ export function FinancialDistributionChart({
 
   return (
     <div className="flex flex-col items-center justify-center h-full">
-      <div className="w-64 h-64 mx-auto relative">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="w-64 h-64 mx-auto relative" style={{ minHeight: "200px" }}>
+        <ResponsiveContainer width="100%" height="100%" minHeight={200}>
           <RePieChart>
             <defs>
               <filter id="dropShadow" height="130%">
