@@ -70,6 +70,7 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { PropertyReservationsTable, PropertyReservationsDetails } from "@/components/reports/property-reservations-table";
 
 interface OwnerReportModernProps {
   report: OwnerReport | null;
@@ -829,139 +830,58 @@ export function OwnerReportModern({
               <TabPanel>
                 {isMobile ? (
                   <div className="space-y-4">
-                    {report.propertyReports.flatMap(property => (
-                      property.reservations.map((reservation, idx) => (
-                        <motion.div
-                          key={reservation.id}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.1 * idx }}
-                        >
-                          <Card className="overflow-hidden">
-                            <div className="flex justify-between mb-3">
-                              <div className="flex items-center">
-                                <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
-                                <Text>{reservation.guestName}</Text>
-                              </div>
-                              <Text className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-                                {reservation.platform}
-                              </Text>
-                            </div>
-                            
-                            <div className="mb-3 text-xs text-muted-foreground">
-                              <div>{property.propertyName}</div>
-                              <div className="mt-1">
-                                {formatDate(reservation.checkInDate)} - {formatDate(reservation.checkOutDate)}
-                              </div>
-                            </div>
-                            
-                            <Grid numItemsSm={2} className="gap-4">
-                              <Col>
-                                <Text className="text-muted-foreground text-sm">{t("ownerReport.revenue", "Valor")}</Text>
-                                <p className="text-lg font-semibold">{formatCurrency(reservation.totalAmount)}</p>
-                              </Col>
-                              <Col>
-                                <Text className="text-muted-foreground text-sm">{t("ownerReport.netAmount", "Valor Líquido")}</Text>
-                                <p className={cn(
-                                  "text-lg font-semibold",
-                                  reservation.netAmount >= 0 ? "text-green-600" : "text-red-600"
-                                )}>
-                                  {formatCurrency(reservation.netAmount)}
-                                </p>
-                              </Col>
-                            </Grid>
-                            
-                            <div className="mt-4 grid grid-cols-2 gap-3 text-xs text-muted-foreground">
-                              <div>
-                                <span>Limpeza:</span>
-                                <span className="ml-1 font-semibold">{formatCurrency(reservation.cleaningFee)}</span>
-                              </div>
-                              <div>
-                                <span>Check-in:</span>
-                                <span className="ml-1 font-semibold">{formatCurrency(reservation.checkInFee)}</span>
-                              </div>
-                              <div>
-                                <span>Comissão:</span>
-                                <span className="ml-1 font-semibold">{formatCurrency(reservation.commission)}</span>
-                              </div>
-                              <div>
-                                <span>Equipa:</span>
-                                <span className="ml-1 font-semibold">{formatCurrency(reservation.teamPayment)}</span>
-                              </div>
-                            </div>
-                          </Card>
-                        </motion.div>
-                      ))
+                    {report.propertyReports.map((property, index) => (
+                      <motion.div
+                        key={property.propertyId}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 * index }}
+                      >
+                        <PropertyReservationsTable 
+                          propertyName={property.propertyName}
+                          reservations={property.reservations}
+                        />
+                      </motion.div>
                     ))}
                   </div>
                 ) : (
-                  <Card>
-                    <Title>{t("ownerReport.reservationsDetails", "Detalhes das Reservas")}</Title>
-                    <Text className="mt-1 text-sm mb-4">
-                      {t("ownerReport.reservationsDetailsDesc", "Dados financeiros de todas as reservas no período")}
-                    </Text>
+                  <div className="space-y-6">
+                    <Card className="p-4">
+                      <Title>{t("ownerReport.reservationsDetails", "Detalhes das Reservas por Propriedade")}</Title>
+                      <Text className="mt-1 text-sm mb-4">
+                        {t("ownerReport.reservationsDetailsDesc", "Dados financeiros de todas as reservas no período, agrupados por propriedade")}
+                      </Text>
+                    </Card>
                     
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>{t("ownerReport.property", "Propriedade")}</TableHead>
-                          <TableHead>{t("ownerReport.guest", "Hóspede")}</TableHead>
-                          <TableHead>{t("ownerReport.platform", "Plataforma")}</TableHead>
-                          <TableHead>{t("ownerReport.period", "Período")}</TableHead>
-                          <TableHead className="text-right">{t("ownerReport.total", "Total")}</TableHead>
-                          <TableHead className="text-right">{t("ownerReport.costs", "Custos")}</TableHead>
-                          <TableHead className="text-right">{t("ownerReport.netAmount", "Valor Líquido")}</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        <AnimatePresence>
-                          {report.propertyReports.flatMap(property => (
-                            property.reservations.map((reservation, idx) => (
-                              <motion.tr 
-                                key={reservation.id}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                transition={{ delay: idx * 0.05 }}
-                                className="group hover:bg-muted/50"
-                              >
-                                <TableCell>
-                                  <div className="flex items-center">
-                                    <Home className="h-4 w-4 mr-2 text-muted-foreground" />
-                                    {property.propertyName}
-                                  </div>
-                                </TableCell>
-                                <TableCell>{reservation.guestName}</TableCell>
-                                <TableCell>
-                                  <span className="inline-flex items-center rounded-full px-2 py-1 text-xs bg-primary/10 text-primary">
-                                    {reservation.platform}
-                                  </span>
-                                </TableCell>
-                                <TableCell>
-                                  <div className="text-sm">
-                                    <div className="whitespace-nowrap">{formatDate(reservation.checkInDate)} - {formatDate(reservation.checkOutDate)}</div>
-                                    <div className="text-xs text-muted-foreground">{reservation.nights} {reservation.nights === 1 ? 'noite' : 'noites'}</div>
-                                  </div>
-                                </TableCell>
-                                <TableCell className="text-right font-medium">
-                                  {formatCurrency(reservation.totalAmount)}
-                                </TableCell>
-                                <TableCell className="text-right text-muted-foreground">
-                                  {formatCurrency(reservation.totalAmount - reservation.netAmount)}
-                                </TableCell>
-                                <TableCell className={cn(
-                                  "text-right font-medium",
-                                  reservation.netAmount >= 0 ? "text-green-600" : "text-red-600"
-                                )}>
-                                  {formatCurrency(reservation.netAmount)}
-                                </TableCell>
-                              </motion.tr>
-                            ))
-                          ))}
-                        </AnimatePresence>
-                      </TableBody>
-                    </Table>
-                  </Card>
+                    {report.propertyReports.map((property, index) => (
+                      <motion.div
+                        key={property.propertyId}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                      >
+                        {property.reservations.length > 0 ? (
+                          <PropertyReservationsDetails
+                            propertyName={property.propertyName}
+                            reservations={property.reservations}
+                          />
+                        ) : (
+                          <Card className="w-full mb-6 p-4">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <Title className="text-lg">{property.propertyName}</Title>
+                                <Text className="text-muted-foreground">{t("reports.noReservations", "Sem reservas no período")}</Text>
+                              </div>
+                              <div className="text-muted-foreground">
+                                <span className="text-xs">{t("reports.occupancyRate", "Taxa de ocupação")}:</span>
+                                <span className="ml-1 text-lg">{property.occupancyRate.toFixed(1)}%</span>
+                              </div>
+                            </div>
+                          </Card>
+                        )}
+                      </motion.div>
+                    ))}
+                  </div>
                 )}
               </TabPanel>
             </TabPanels>
