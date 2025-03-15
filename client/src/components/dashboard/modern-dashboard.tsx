@@ -158,12 +158,12 @@ export default function ModernDashboard() {
   // Preparing financial data for pie chart
   const financialData = statistics?.totalRevenue
     ? [
-        { name: 'Receita Líquida', value: statistics.netProfit },
-        { name: 'Custos e Despesas', value: statistics.totalRevenue - statistics.netProfit }
+        { name: 'Receita Líquida', value: statistics.netProfit, color: "emerald" },
+        { name: 'Custos e Despesas', value: statistics.totalRevenue - statistics.netProfit, color: "rose" }
       ]
     : [
-        { name: 'Receita Líquida', value: 7800 },
-        { name: 'Custos e Despesas', value: 4300 }
+        { name: 'Receita Líquida', value: 7800, color: "emerald" },
+        { name: 'Custos e Despesas', value: 4300, color: "rose" }
       ];
 
   // Prepare property occupancy data
@@ -546,6 +546,21 @@ export default function ModernDashboard() {
                             showLabel
                             showTooltip
                             animationDuration={1500}
+                            customTooltip={(props) => {
+                              const { payload } = props;
+                              if (!payload || payload.length === 0) return null;
+                              const data = payload[0];
+                              return (
+                                <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200 dark:border-gray-700 shadow-lg rounded-lg p-2">
+                                  <p className="font-medium">{data.name}</p>
+                                  <p className={`text-sm font-bold ${
+                                    data.name === "Receita Líquida" ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"
+                                  }`}>
+                                    {formatCurrency(data.value)}
+                                  </p>
+                                </div>
+                              );
+                            }}
                           />
                         ) : (
                           <div className="h-full flex flex-col items-center justify-center">
