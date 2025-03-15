@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { format, subDays } from "date-fns";
 import { motion } from "framer-motion";
+import { type Reservation, type Activity } from "@shared/schema";
 
 // UI Components
 import {
@@ -140,15 +141,15 @@ export default function NewModernDashboard() {
   });
 
   // Fetch recent reservations
-  const { data: reservations, isLoading: isLoadingReservations } = useQuery({
+  const { data: reservations, isLoading: isLoadingReservations } = useQuery<Reservation[]>({
     queryKey: ["/api/reservations"],
     staleTime: 0,
     gcTime: 30 * 1000, // Cache de 30 segundos
     refetchOnWindowFocus: true,
   });
-
+  
   // Fetch recent activities
-  const { data: activities, isLoading: isLoadingActivities } = useQuery({
+  const { data: activities, isLoading: isLoadingActivities } = useQuery<Activity[]>({
     queryKey: ["/api/activities?limit=4"],
     staleTime: 0,
     gcTime: 30 * 1000,
@@ -193,7 +194,7 @@ export default function NewModernDashboard() {
   });
   
   // Adicionar logs quando os dados são recebidos
-  React.useEffect(() => {
+  useEffect(() => {
     if (monthlyStats) {
       console.log("📊 Dados de receita mensal recebidos:", monthlyStats);
       console.log(`📅 Período selecionado: ${selectedDateRange.startDate} até ${selectedDateRange.endDate}`);
