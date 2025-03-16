@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { SidebarReorganized } from "./sidebar-reorganized";
 import { MobileNav } from "./mobile-nav";
+import { BottomNav } from "./bottom-nav";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -111,14 +112,19 @@ export function Layout({ children, className }: LayoutProps) {
         {/* Conteúdo principal */}
         <main 
           className={cn(
-            "flex-1 overflow-y-auto p-4 md:p-6 pb-20 md:pb-6 transition-all duration-300 ease-in-out", 
+            "flex-1 overflow-y-auto p-4 md:p-6 transition-all duration-300 ease-in-out", 
             className,
-            sidebarOpen ? "md:ml-[240px]" : "md:ml-[60px]"
+            sidebarOpen ? "md:ml-[240px]" : "md:ml-[60px]",
+            // Adiciona espaço no bottom em dispositivos móveis para a barra de navegação
+            "pb-24 md:pb-6"
           )}
         >
           {children}
         </main>
       </div>
+      
+      {/* Barra de navegação inferior para mobile */}
+      <BottomNav />
     </div>
   );
 }
