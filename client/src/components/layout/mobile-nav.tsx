@@ -41,7 +41,7 @@ export function MobileNav({ className }: MobileNavProps) {
           </VisuallyHidden>
         </SheetHeader>
         <div className="overflow-y-auto h-[calc(100vh-57px)]">
-          <SidebarReorganized />
+          <SidebarReorganized isMobile={true} />
         </div>
       </SheetContent>
     </Sheet>

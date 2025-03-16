@@ -192,27 +192,45 @@ export function SidebarReorganized({
         <div className="relative">
           <button
             className={cn(
-              "flex items-center w-full gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors",
+              "flex items-center w-full gap-3 px-3 rounded-md transition-colors",
+              // Ajusta o tamanho e espaçamento baseado no modo mobile
+              isMobile ? "py-3 text-base" : "py-2 text-sm",
+              // Estilo quando ativo
               isActive
                 ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-foreground font-semibold"
                 : "text-foreground hover:bg-accent hover:text-accent-foreground",
-              isSubItem && "pl-10 text-xs"
+              // Recuo para subitens
+              isSubItem && (isMobile ? "pl-12 text-sm" : "pl-10 text-xs"),
+              // Fonte mais forte em mobile
+              isMobile && "font-medium"
             )}
             onClick={hasSubmenu ? () => setIsSubmenuOpen(!isSubmenuOpen) : onClick}
           >
-            {!isSubItem && <Icon className={cn("h-5 w-5", isActive ? "text-primary dark:text-primary-foreground" : iconColor)} />}
+            {!isSubItem && (
+              <Icon className={cn(
+                isMobile ? "h-6 w-6" : "h-5 w-5", 
+                isActive ? "text-primary dark:text-primary-foreground" : iconColor
+              )} />
+            )}
             {!collapsed && (
               <>
                 <span className="flex-1 truncate">{label}</span>
                 {hasSubmenu && (
-                  <ChevronRight className={cn("h-4 w-4 transition-transform", isSubmenuOpen ? "rotate-90" : "")} />
+                  <ChevronRight className={cn(
+                    "transition-transform", 
+                    isSubmenuOpen ? "rotate-90" : "",
+                    isMobile ? "h-5 w-5" : "h-4 w-4"
+                  )} />
                 )}
               </>
             )}
           </button>
           
           {hasSubmenu && isSubmenuOpen && !collapsed && (
-            <div className="pl-4 mt-1 space-y-1">
+            <div className={cn(
+              "mt-1 space-y-1",
+              isMobile ? "pl-6" : "pl-4"
+            )}>
               {submenu.map((subItem) => (
                 <SidebarItem
                   key={subItem.href}
@@ -242,7 +260,10 @@ export function SidebarReorganized({
     return (
       <div className="mb-3">
         <div className="px-3 py-2">
-          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <h3 className={cn(
+            "font-semibold text-muted-foreground uppercase tracking-wider",
+            isMobile ? "text-sm" : "text-xs"
+          )}>
             {title}
           </h3>
         </div>
@@ -492,20 +513,28 @@ export function SidebarReorganized({
 
   // Versão expandida do menu
   return (
-    <aside className="fixed top-[57px] left-0 z-30 h-[calc(100vh-57px)] w-[240px] border-r border-border bg-background transition-all duration-300 ease-in-out">
+    <aside className={cn(
+      !isMobile && "fixed top-[57px] left-0 z-30 h-[calc(100vh-57px)] w-[240px] border-r border-border",
+      "bg-background transition-all duration-300 ease-in-out"
+    )}>
       <div className="flex h-full flex-col">
-        <div className="flex items-center justify-between p-2 border-b border-border">
-          <span className="text-sm font-medium ml-2">Maria Faz</span>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onToggleCollapse}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-        </div>
+        {!isMobile && (
+          <div className="flex items-center justify-between p-2 border-b border-border">
+            <span className="text-sm font-medium ml-2">Maria Faz</span>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onToggleCollapse}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
         
-        <ScrollArea className="flex-1 py-2">
+        <ScrollArea className={cn(
+          "flex-1", 
+          isMobile ? "py-4" : "py-2"
+        )}>
           <div className="px-2">
             <SidebarSection title={t("navigation.categories.main", "Main")}>
               <div className="space-y-1">
@@ -537,13 +566,22 @@ export function SidebarReorganized({
                     {/* Este wrapper permite clicar no ícone separadamente do texto */}
                     <button 
                       className={cn(
-                        "flex-grow flex items-center w-full gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors",
-                        "text-foreground hover:bg-accent hover:text-accent-foreground"
+                        "flex-grow flex items-center w-full gap-3 px-3 rounded-md transition-colors",
+                        isMobile ? "py-3 text-base" : "py-2 text-sm",
+                        "text-foreground hover:bg-accent hover:text-accent-foreground",
+                        isMobile && "font-medium"
                       )}
                     >
-                      <BadgeDollarSign className="h-5 w-5 text-green-500" />
+                      <BadgeDollarSign className={cn(
+                        isMobile ? "h-6 w-6" : "h-5 w-5", 
+                        "text-green-500"
+                      )} />
                       <span className="flex-1 truncate">{t("navigation.categories.finances", "Finances")}</span>
-                      <ChevronRight className={cn("h-4 w-4 transition-transform", openSections.finances ? "rotate-90" : "")} />
+                      <ChevronRight className={cn(
+                        "transition-transform", 
+                        openSections.finances ? "rotate-90" : "",
+                        isMobile ? "h-5 w-5" : "h-4 w-4"
+                      )} />
                     </button>
                   </div>
                 </CollapsibleTrigger>
@@ -578,13 +616,22 @@ export function SidebarReorganized({
                     {/* Este wrapper permite clicar no ícone separadamente do texto */}
                     <button 
                       className={cn(
-                        "flex-grow flex items-center w-full gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors",
-                        "text-foreground hover:bg-accent hover:text-accent-foreground"
+                        "flex-grow flex items-center w-full gap-3 px-3 rounded-md transition-colors",
+                        isMobile ? "py-3 text-base" : "py-2 text-sm",
+                        "text-foreground hover:bg-accent hover:text-accent-foreground",
+                        isMobile && "font-medium"
                       )}
                     >
-                      <HardHat className="h-5 w-5 text-amber-500" />
+                      <HardHat className={cn(
+                        isMobile ? "h-6 w-6" : "h-5 w-5", 
+                        "text-amber-500"
+                      )} />
                       <span className="flex-1 truncate">{t("navigation.categories.operations", "Operations")}</span>
-                      <ChevronRight className={cn("h-4 w-4 transition-transform", openSections.operations ? "rotate-90" : "")} />
+                      <ChevronRight className={cn(
+                        "transition-transform", 
+                        openSections.operations ? "rotate-90" : "",
+                        isMobile ? "h-5 w-5" : "h-4 w-4"
+                      )} />
                     </button>
                   </div>
                 </CollapsibleTrigger>
