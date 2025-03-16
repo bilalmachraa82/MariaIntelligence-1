@@ -68,7 +68,15 @@ interface SidebarSectionProps {
   children: React.ReactNode;
 }
 
-export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { collapsed?: boolean, onToggleCollapse?: () => void }) {
+export function SidebarReorganized({ 
+  collapsed = false, 
+  onToggleCollapse,
+  isMobile = false
+}: { 
+  collapsed?: boolean, 
+  onToggleCollapse?: () => void,
+  isMobile?: boolean
+}) {
   const [location, navigate] = useLocation();
   const { t, i18n } = useTranslation();
   const isPortuguese = i18n.language?.startsWith("pt");
