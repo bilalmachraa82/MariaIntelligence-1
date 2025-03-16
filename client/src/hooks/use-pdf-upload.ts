@@ -381,12 +381,20 @@ export function usePdfUpload() {
       const results = [];
       for (const result of validResults) {
         try {
-          const createdReservation = await createReservationFromExtractedData(result.extractedData);
-          results.push({
-            success: true,
-            data: createdReservation,
-            filename: result.file.filename
-          });
+          if (result.extractedData) {
+            const createdReservation = await createReservationFromExtractedData(result.extractedData);
+            results.push({
+              success: true,
+              data: createdReservation,
+              filename: result.file.filename
+            });
+          } else {
+            results.push({
+              success: false,
+              error: "Dados extraídos ausentes ou inválidos",
+              filename: result.file.filename
+            });
+          }
         } catch (err) {
           results.push({
             success: false,

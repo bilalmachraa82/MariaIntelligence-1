@@ -219,9 +219,33 @@ export async function createReservationFromExtractedData(data: ExtractedData) {
       throw new Error('Dados de reserva inválidos ou incompletos');
     }
     
-    const response = await apiRequest("/api/reservations", {
+    // Extrair apenas os dados relevantes para a criação da reserva (excluindo metadados de validação)
+    // e convertendo para o formato esperado pela API
+    const reservationData: any = {
+      propertyId: data.propertyId,
+      propertyName: data.propertyName,
+      guestName: data.guestName,
+      guestEmail: data.guestEmail || '',
+      guestPhone: data.guestPhone || '',
+      checkInDate: data.checkInDate,
+      checkOutDate: data.checkOutDate,
+      numGuests: data.numGuests || 2,
+      totalAmount: data.totalAmount || 0,
+      platform: data.platform || 'other',
+      platformFee: data.platformFee || 0,
+      cleaningFee: data.cleaningFee || 0,
+      checkInFee: data.checkInFee || 0,
+      commissionFee: data.commissionFee || 0,
+      teamPayment: data.teamPayment || 0
+    };
+    
+    // Usar fetch diretamente para evitar problemas de tipo com apiRequest
+    const response = await fetch("/api/reservations", {
       method: "POST",
-      body: data
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(reservationData)
     });
     
     return await response.json();
@@ -358,7 +382,15 @@ export async function processReservationFile(
             onProgress && onProgress(100);
             
             return {
+              success: true,
               extractedData: parsedResult.extractedData,
+              validation: parsedResult.validation || {
+                status: ValidationStatus.NEEDS_REVIEW,
+                isValid: true,
+                errors: [],
+                missingFields: [],
+                warningFields: []
+              },
               file: {
                 filename: file.name,
                 path: URL.createObjectURL(file)
@@ -399,7 +431,15 @@ export async function processReservationFile(
     
     // Formatar a resposta
     const response: UploadResponse = {
+      success: true,
       extractedData: result.extractedData,
+      validation: {
+        status: ValidationStatus.NEEDS_REVIEW,
+        isValid: true,
+        errors: [],
+        missingFields: [],
+        warningFields: []
+      },
       file: {
         filename: file.name,
         path: URL.createObjectURL(file)

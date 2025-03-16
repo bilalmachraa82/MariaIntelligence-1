@@ -691,7 +691,7 @@ export function UploadPDF() {
                           Os seguintes campos não puderam ser extraídos:
                         </p>
                         <ul className="list-disc pl-5 mt-1 space-y-1">
-                          {extractedData.validation.missingFields.map((field, index) => (
+                          {extractedData.validation.missingFields.map((field: string, index: number) => (
                             <li key={index}>{field}</li>
                           ))}
                         </ul>
