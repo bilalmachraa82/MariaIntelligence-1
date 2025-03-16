@@ -4,44 +4,16 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 
 // Importando os recursos de idioma
 import ptPT from './locales/pt-PT.json';
-import enUS from './locales/en-US.json';
-import frFR from './locales/fr-FR.json';
-import esES from './locales/es-ES.json';
-
-// Importando os recursos atualizados
-import ptPTUpdated from './locales/pt-PT-updated.json';
-import enUSUpdated from './locales/en-US-updated.json';
-
-// Mesclar com os recursos atualizados
-const mergedPtPT = { ...ptPT, ...ptPTUpdated };
-const mergedEnUS = { ...enUS, ...enUSUpdated };
+import enGB from './locales/en-GB.json';
 
 const resources = {
-  'pt-PT': {
-    translation: mergedPtPT
-  },
-  'en-US': {
-    translation: mergedEnUS
-  },
-  'fr-FR': {
-    translation: frFR
-  },
-  'es-ES': {
-    translation: esES
-  },
+  'pt-PT': ptPT,
+  'en-GB': enGB,
   // Adicionar aliases para variantes de idioma
-  'pt': {
-    translation: mergedPtPT
-  },
-  'pt-BR': {
-    translation: mergedPtPT
-  },
-  'en': {
-    translation: mergedEnUS
-  },
-  'en-GB': {
-    translation: mergedEnUS
-  }
+  'pt': ptPT,
+  'pt-BR': ptPT,
+  'en': enGB,
+  'en-US': enGB
 };
 
 i18n

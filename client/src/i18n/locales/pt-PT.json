@@ -1,424 +1,47 @@
 {
-  "app": {
-    "name": "Maria Faz",
-    "tagline": "Gestão de Propriedades Simplificada"
-  },
-  "navigation": {
-    "dashboard": "Painel",
-    "properties": "Propriedades",
-    "reservations": "Reservas",
-    "owners": "Proprietários",
-    "reports": "Relatórios",
-    "settings": "Configurações",
-    "aiAssistant": "Assistente IA",
-    "pdfUpload": "Importar Reservas",
-    "cleaningTeams": "Equipas de Limpeza",
-    "maintenance": "Manutenção",
-    "pendingTasks": "Tarefas Pendentes",
-    "requestMaintenance": "Solicitar Manutenção",
-    "payments": "Finanças",
-    "outgoingPayments": "Pagamentos a Efetuar",
-    "incomingPayments": "Receitas a Receber",
-    "categories": {
-      "main": "Principal",
-      "tools": "Ferramentas",
-      "management": "Gestão"
-    }
-  },
-  "common": {
-    "search": "Pesquisar",
-    "filter": "Filtrar",
-    "add": "Adicionar",
-    "edit": "Editar",
-    "delete": "Eliminar",
-    "save": "Guardar",
-    "cancel": "Cancelar",
-    "confirm": "Confirmar",
-    "back": "Voltar",
-    "loading": "A carregar...",
-    "noResults": "Sem resultados",
-    "success": "Sucesso",
-    "error": "Erro",
-    "warning": "Aviso",
-    "info": "Informação",
-    "all": "Todos",
-    "none": "Nenhum",
-    "details": "Detalhes",
-    "actions": "Ações",
-    "status": "Estado",
-    "name": "Nome",
-    "email": "Email",
-    "phone": "Telefone",
-    "address": "Morada",
-    "city": "Cidade",
-    "country": "País",
-    "date": "Data",
-    "amount": "Valor",
-    "total": "Total",
-    "help": "Ajuda",
-    "company": "Empresa"
-  },
-  "dashboard": {
-    "title": "Painel",
-    "welcome": "Bem-vindo ao Maria Faz",
-    "description": "Visão geral do seu negócio de aluguel de imóveis",
-    "summary": "Resumo",
-    "period": "Período",
-    "export": "Exportar",
-    "totalRevenue": "Receita Total",
-    "netProfit": "Lucro Líquido",
-    "activeProperties": "Propriedades Ativas",
-    "occupancyRate": "Taxa de Ocupação",
-    "recentReservations": "Reservas Recentes",
-    "recentActivity": "Atividade Recente",
-    "propertyInsights": "Análise de Propriedades",
-    "viewAll": "Ver Tudo",
-    "filters": {
-      "title": "Filtros",
-      "today": "Hoje",
-      "thisWeek": "Esta Semana",
-      "thisMonth": "Este Mês",
-      "thisYear": "Este Ano",
-      "custom": "Personalizado"
-    }
-  },
-  "properties": {
-    "title": "Propriedades",
-    "add": "Adicionar Propriedade",
-    "edit": "Editar Propriedade",
-    "details": "Detalhes da Propriedade",
-    "delete": "Eliminar Propriedade",
-    "deleteConfirm": "Tem certeza que deseja eliminar esta propriedade?",
-    "fields": {
-      "name": "Nome",
-      "address": "Morada",
-      "city": "Cidade",
-      "country": "País",
-      "type": "Tipo",
-      "capacity": "Capacidade",
-      "bedrooms": "Quartos",
-      "bathrooms": "Casas de Banho",
-      "size": "Área (m²)",
-      "cleaningCost": "Custo de Limpeza",
-      "checkInFee": "Taxa de Check-in",
-      "owner": "Proprietário",
-      "commission": "Comissão (%)",
-      "description": "Descrição"
-    },
-    "types": {
-      "apartment": "Apartamento",
-      "house": "Casa",
-      "villa": "Moradia",
-      "cottage": "Chalé",
-      "hotel": "Hotel",
-      "hostel": "Hostel"
-    },
-    "statistics": {
-      "title": "Estatísticas",
-      "occupancyRate": "Taxa de Ocupação",
-      "totalRevenue": "Receita Total",
-      "totalProfit": "Lucro Total",
-      "totalReservations": "Total de Reservas"
-    }
-  },
-  "reservations": {
-    "title": "Reservas",
-    "add": "Adicionar Reserva",
-    "edit": "Editar Reserva",
-    "details": "Detalhes da Reserva",
-    "delete": "Eliminar Reserva",
-    "deleteConfirm": "Tem certeza que deseja eliminar esta reserva?",
-    "processReservation": "Processar Reserva",
-    "uploadPDF": "Carregar PDF",
-    "fields": {
-      "property": "Propriedade",
-      "guestName": "Nome do Hóspede",
-      "guestEmail": "Email do Hóspede",
-      "guestPhone": "Telefone do Hóspede",
-      "checkIn": "Check-in",
-      "checkOut": "Check-out",
-      "numGuests": "Número de Hóspedes",
-      "totalAmount": "Valor Total",
-      "platformFee": "Taxa da Plataforma",
-      "cleaningFee": "Taxa de Limpeza",
-      "checkInFee": "Taxa de Check-in",
-      "commissionFee": "Comissão",
-      "teamPayment": "Pagamento à Equipa",
-      "netAmount": "Valor Líquido",
-      "status": "Estado",
-      "platform": "Plataforma",
-      "notes": "Notas"
-    },
-    "status": {
-      "pending": "Pendente",
-      "confirmed": "Confirmada",
-      "cancelled": "Cancelada",
-      "completed": "Concluída",
-      "noShow": "Não Compareceu"
-    },
-    "platforms": {
-      "airbnb": "Airbnb",
-      "booking": "Booking.com",
-      "expedia": "Expedia",
-      "direct": "Direto",
-      "other": "Outro"
-    }
-  },
-  "owners": {
-    "title": "Proprietários",
-    "add": "Adicionar Proprietário",
-    "edit": "Editar Proprietário",
-    "details": "Detalhes do Proprietário",
-    "delete": "Eliminar Proprietário",
-    "deleteConfirm": "Tem certeza que deseja eliminar este proprietário?",
-    "fields": {
-      "name": "Nome",
-      "company": "Empresa",
-      "email": "Email",
-      "phone": "Telefone",
-      "address": "Morada",
-      "bankInfo": "Informações Bancárias",
-      "taxNumber": "NIF",
-      "notes": "Notas"
-    },
-    "properties": "Propriedades",
-    "earnings": "Rendimentos",
-    "payments": "Pagamentos"
-  },
-  "reports": {
-    "title": "Relatórios",
-    "generate": "Gerar Relatório",
-    "export": "Exportar",
-    "print": "Imprimir",
-    "types": {
-      "financial": "Financeiro",
-      "occupancy": "Ocupação",
-      "performance": "Desempenho",
-      "owners": "Proprietários"
-    },
-    "filters": {
-      "property": "Propriedade",
-      "owner": "Proprietário",
-      "dateRange": "Período",
-      "platform": "Plataforma"
-    },
-    "charts": {
-      "revenueByMonth": "Receita por Mês",
-      "occupancyByMonth": "Ocupação por Mês",
-      "revenueByProperty": "Receita por Propriedade",
-      "revenueByPlatform": "Receita por Plataforma"
-    },
-    "revenue": "Receita",
-    "operationalCosts": "Custos Operacionais",
-    "occupied": "Ocupado",
-    "available": "Disponível",
-    "period": "Período",
-    "property": "Propriedade",
-    "allProperties": "Todas as propriedades",
-    "exportReport": "Exportar Relatório",
-    "general": "Geral",
-    "owner": "Proprietário",
-    "operational": "Operacional",
-    "cleaningTeams": "Equipas de Limpeza",
-    "ownerReport": "Relatório de Proprietário",
-    "viewFullReport": "Ver relatório completo",
-    "operationalReport": "Relatório Operacional",
-    "cleaningTeamsReport": "Relatório de Equipas de Limpeza"
-  },
-  "activities": {
-    "reservation_created": "Reserva criada",
-    "reservation_updated": "Reserva atualizada",
-    "reservation_cancelled": "Reserva cancelada",
-    "reservation_completed": "Reserva concluída",
-    "property_added": "Propriedade adicionada",
-    "property_updated": "Propriedade atualizada",
-    "property_removed": "Propriedade removida",
-    "owner_added": "Proprietário adicionado",
-    "owner_updated": "Proprietário atualizado",
-    "owner_removed": "Proprietário removido",
-    "payment_received": "Pagamento recebido",
-    "payment_sent": "Pagamento enviado"
-  },
-  "settings": {
-    "title": "Configurações",
-    "tabs": {
-      "general": "Geral",
-      "account": "Conta",
-      "notifications": "Notificações",
-      "language": "Idioma",
-      "integrations": "Integrações",
-      "security": "Segurança",
-      "backup": "Cópia de Segurança"
-    },
-    "general": {
-      "title": "Configurações Gerais",
-      "description": "Gerencie as configurações gerais da sua aplicação",
-      "darkMode": "Modo Escuro",
-      "companyName": "Nome da Empresa",
-      "companyLogo": "Logotipo da Empresa",
-      "defaultCurrency": "Moeda Padrão",
-      "timezone": "Fuso Horário",
-      "dateFormat": "Formato de Data",
-      "saveSuccess": "Configurações salvas",
-      "saveSuccessDesc": "As configurações gerais foram salvas com sucesso."
-    },
-    "account": {
-      "title": "Definições de Conta",
-      "description": "Gerencie suas informações de conta pessoal",
-      "name": "Nome",
-      "email": "Email",
-      "password": "Palavra-passe",
-      "changePassword": "Alterar Palavra-passe",
-      "currentPassword": "Palavra-passe Atual",
-      "newPassword": "Nova Palavra-passe",
-      "confirmPassword": "Confirmar Palavra-passe"
-    },
-    "notifications": {
-      "title": "Notificações",
-      "description": "Gerencie as notificações da sua aplicação",
-      "email": "Notificações por Email",
-      "emailDescription": "Receba atualizações importantes por email",
-      "push": "Notificações Push",
-      "sms": "Notificações por SMS",
-      "smsDescription": "Receba alertas importantes por SMS",
-      "newReservation": "Nova Reserva",
-      "cancelledReservation": "Reserva Cancelada",
-      "checkInReminder": "Lembrete de Check-in",
-      "checkOutReminder": "Lembrete de Check-out",
-      "paymentReceived": "Pagamento Recebido",
-      "paymentDue": "Pagamento a Vencer",
-      "weeklyReports": "Relatórios Semanais",
-      "saveSuccess": "Notificações salvas",
-      "saveSuccessDesc": "As configurações de notificações foram salvas com sucesso."
-    },
-    "language": {
-      "title": "Idioma",
-      "selectLanguage": "Selecionar Idioma",
-      "changeSuccess": "Idioma alterado",
-      "changeSuccessDesc": "O idioma da interface foi alterado com sucesso.",
-      "languages": {
-        "pt_PT": "Português (Portugal)",
-        "en_US": "Inglês (EUA)",
-        "fr_FR": "Francês (França)",
-        "es_ES": "Espanhol (Espanha)"
-      }
-    },
-    "integrations": {
-      "title": "Integrações",
-      "description": "Gerencie as integrações com serviços externos",
-      "mistralAI": {
-        "title": "Mistral AI",
-        "apiKey": "Chave API",
-        "apiKeyPlaceholder": "Insira a sua chave de API Mistral AI aqui",
-        "description": "Configure a Integração Mistral AI para processamento de documentos e assistente virtual",
-        "getApiKey": "Obter chave API",
-        "save": "Salvar Chave API",
-        "saveSuccess": "Chave API salva",
-        "saveSuccessDesc": "A chave API da Mistral AI foi salva com sucesso.",
-        "saveError": "Erro ao salvar chave API",
-        "saveErrorDesc": "A chave API não pode estar vazia.",
-        "status": "Estado",
-        "connected": "Conectado",
-        "disconnected": "Desconectado",
-        "connect": "Conectar",
-        "disconnect": "Desconectar",
-        "testConnection": "Testar Conexão"
-      },
-      "calendar": {
-        "title": "Calendário",
-        "google": "Google Agenda",
-        "outlook": "Outlook",
-        "ical": "iCal"
+  "translation": {
+    "navigation": {
+      "mainMenu": "Menu",
+      "mainAppNav": "Navegação principal do aplicativo Maria Faz",
+      "home": "Início",
+      "properties": "Imóveis",
+      "bookings": "Reservas",
+      "finances": "Finanças",
+      "reports": {
+        "financial": "Relatórios",
+        "owner": "Proprietários",
+        "monthly": "Faturas Mensais",
+        "trends": "Tendências"
       },
       "payments": {
-        "title": "Pagamentos",
-        "stripe": "Stripe",
-        "paypal": "PayPal"
+        "income": "Recebimentos",
+        "expenses": "Despesas"
+      },
+      "documents": "Documentos",
+      "cleaning": "Limpeza",
+      "maintenance": "Manutenção",
+      "owners": "Proprietários",
+      "assistant": "Maria IA",
+      "documentScan": "Digitalizar Documentos",
+      "settings": "Configurações",
+      "demoData": "Dados Demo",
+      "categories": {
+        "main": "Principal",
+        "finances": "Finanças",
+        "operations": "Operações",
+        "tools": "Ferramentas",
+        "utilities": "Utilidades"
       }
     },
-    "security": {
-      "title": "Segurança",
-      "twoFactor": "Autenticação de Dois Fatores",
-      "loginHistory": "Histórico de Login",
-      "sessionTimeout": "Tempo Limite da Sessão"
-    },
-    "backup": {
-      "title": "Cópia de Segurança",
-      "createBackup": "Criar Cópia de Segurança",
-      "restoreBackup": "Restaurar Cópia de Segurança",
-      "autoBackup": "Cópia de Segurança Automática",
-      "lastBackup": "Última Cópia de Segurança"
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Visão geral do seu negócio de aluguel de imóveis",
+      "period": "Período",
+      "export": "Exportar",
+      "overview": "Visão Geral",
+      "totalRevenue": "Receita Total",
+      "netProfit": "Lucro Líquido",
+      "occupancyRate": "Taxa de Ocupação"
     }
-  },
-  "aiAssistant": {
-    "title": "Assistente IA",
-    "chatTitle": "Maria Faz Assistente",
-    "chatDescription": "Pergunte sobre as suas propriedades, reservas e relatórios",
-    "welcomeMessage": "Olá! Sou o assistente da Maria Faz. Em que posso ajudar hoje?",
-    "placeholder": "Escreva a sua pergunta aqui...",
-    "sendMessage": "Enviar",
-    "loading": "A pensar...",
-    "error": "Erro",
-    "errorDescription": "Não foi possível conectar ao assistente. Tente novamente.",
-    "errorMessage": "Desculpe, encontrei um problema. Tente novamente mais tarde.",
-    "noApiKeyMessage": "Para usar todas as funcionalidades do assistente, por favor configure a chave da API Mistral nas configurações.",
-    "mistralInfo": "Este assistente utiliza a tecnologia Mistral AI para responder a todas as suas perguntas sobre gestão de propriedades, com personalidade otimista e conhecimento especializado.",
-    "suggestions": {
-      "title": "Sugestões",
-      "suggestionsDescription": "Perguntas sugeridas",
-      "occupancy": "Como está a ocupação este mês?",
-      "revenue": "Qual foi a receita total no último trimestre?",
-      "bestProperty": "Qual é a minha propriedade mais rentável?",
-      "upcomingCheckIns": "Quais são os próximos check-ins?",
-      "pendingTasks": "Existem tarefas pendentes?"
-    },
-    "features": {
-      "title": "Funcionalidades",
-      "featuresDescription": "O que o assistente pode fazer",
-      "analytics": "Análise de Dados e Estatísticas",
-      "recommendations": "Recomendações Personalizadas",
-      "forecasting": "Previsões de Ocupação e Receita",
-      "automation": "Sugestões de Automatização de Tarefas"
-    },
-    "suggestionsDescription": "Perguntas sugeridas",
-    "featuresDescription": "O que o assistente pode fazer"
-  },
-  "errors": {
-    "required": "Este campo é obrigatório",
-    "invalidEmail": "Email inválido",
-    "invalidPhone": "Número de telefone inválido",
-    "invalidDate": "Data inválida",
-    "invalidNumber": "Número inválido",
-    "passwordMismatch": "As palavras-passe não coincidem",
-    "serverError": "Erro no servidor. Tente novamente mais tarde.",
-    "notFound": "Página não encontrada",
-    "unauthorized": "Não autorizado",
-    "forbidden": "Acesso negado",
-    "networkError": "Erro de rede. Verifique a sua conexão à internet."
-  },
-  "ocr": {
-    "upload": "Carregar PDF",
-    "processing": "A processar documento...",
-    "success": "Documento processado com sucesso",
-    "error": "Erro ao processar documento",
-    "extracted": "Dados extraídos",
-    "createReservation": "Criar Reserva",
-    "reviewData": "Rever Dados"
-  },
-  "pdfUpload": {
-    "title": "Processamento de Reservas",
-    "description": "Converta PDFs de reservas em dados estruturados automaticamente",
-    "uploadSection": "Upload de PDFs",
-    "uploadDescription": "Faça upload de PDFs de reservas para processamento com IA",
-    "uploadButton": "Importar PDF",
-    "instructionsTitle": "Como Funciona",
-    "step1Title": "Selecionar PDFs",
-    "step1Description": "Faça upload de um ou múltiplos arquivos PDF das plataformas de reserva",
-    "step2Title": "Processamento com IA",
-    "step2Description": "O sistema analisa automaticamente os dados com OCR e processamento Mistral AI",
-    "step3Title": "Revisão e Confirmação",
-    "step3Description": "Verifique os dados extraídos e confirme para criar uma nova reserva no sistema",
-    "step4Title": "Reserva Criada",
-    "step4Description": "A reserva é automaticamente criada e associada à propriedade, com todos os cálculos feitos"
   }
 }

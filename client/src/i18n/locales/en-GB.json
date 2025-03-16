@@ -1,0 +1,47 @@
+{
+  "translation": {
+    "navigation": {
+      "mainMenu": "Menu",
+      "mainAppNav": "Maria Faz main application navigation",
+      "home": "Home",
+      "properties": "Properties",
+      "bookings": "Bookings",
+      "finances": "Finances",
+      "reports": {
+        "financial": "Reports",
+        "owner": "Owner Reports",
+        "monthly": "Monthly Invoices",
+        "trends": "Trends"
+      },
+      "payments": {
+        "income": "Income",
+        "expenses": "Expenses"
+      },
+      "documents": "Documents",
+      "cleaning": "Cleaning",
+      "maintenance": "Maintenance",
+      "owners": "Owners",
+      "assistant": "Maria AI",
+      "documentScan": "Scan Documents",
+      "settings": "Settings",
+      "demoData": "Demo Data",
+      "categories": {
+        "main": "Main",
+        "finances": "Finances",
+        "operations": "Operations",
+        "tools": "Tools",
+        "utilities": "Utilities"
+      }
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Overview of your property rental business",
+      "period": "Period",
+      "export": "Export",
+      "overview": "Overview",
+      "totalRevenue": "Total Revenue",
+      "netProfit": "Net Profit",
+      "occupancyRate": "Occupancy Rate"
+    }
+  }
+}
