@@ -203,15 +203,15 @@ export function SidebarReorganized({
         <div className="relative">
           <button
             className={cn(
-              "flex items-center w-full gap-3 px-3 rounded-md transition-colors",
+              "flex items-center w-full gap-2 px-2.5 rounded-md transition-colors",
               // Ajusta o tamanho e espaçamento baseado no modo mobile
-              isMobile ? "py-3 text-base" : "py-2 text-sm",
+              isMobile ? "py-2.5 text-base" : "py-2 text-sm",
               // Estilo quando ativo
               isActive
                 ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-foreground font-semibold"
                 : "text-foreground hover:bg-accent hover:text-accent-foreground",
               // Recuo para subitens
-              isSubItem && (isMobile ? "pl-12 text-sm" : "pl-10 text-xs"),
+              isSubItem && (isMobile ? "pl-10 text-sm" : "pl-8 text-xs"),
               // Fonte mais forte em mobile
               isMobile && "font-medium"
             )}
