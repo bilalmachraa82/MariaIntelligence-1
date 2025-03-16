@@ -25,6 +25,7 @@
       "documentScan": "Scanner",
       "settings": "Settings",
       "demoData": "Demo Data",
+      "mobileOptimized": "Mobile Optimized",
       "categories": {
         "main": "Main",
         "finances": "Finances",
@@ -45,7 +46,12 @@
       "detailedDescription": "Detailed analysis of revenue, expenses and profitability by property.",
       "comingSoon": "Detailed analysis is under development. Coming soon!",
       "backToOverview": "Back to Overview",
-      "noDataAvailable": "No data available."
+      "noDataAvailable": "No data available.",
+      "details": "Details",
+      "target": "Target",
+      "totalReservations": "Total Bookings",
+      "revenueVsProfit": "Revenue vs Profit",
+      "financialBreakdown": "Financial Breakdown"
     },
     "reservations": {
       "recentReservations": "Recent Bookings",
@@ -74,7 +80,9 @@
       "resetWarning": "This action will remove all data marked as demo. Real data will not be affected.",
       "resetInfo": "All data marked as demo will be permanently removed. This action cannot be undone.",
       "confirmReset": "Yes, remove data",
-      "footer": "Demo data is identified with [DEMO] and does not affect real data."
+      "footer": "Demo data is identified with [DEMO] and does not affect real data.",
+      "generateDescription": "Generate demo data to visualize features",
+      "warningText": "This is demo data and does not represent real transactions"
     },
     "common": {
       "cancel": "Cancel",
