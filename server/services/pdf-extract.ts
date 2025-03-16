@@ -2,6 +2,7 @@
  * Serviço de extração de texto de PDF
  * Fornece funcionalidades para processar PDFs e extrair texto
  * Implementa estratégias alternativas quando a visão do Mistral não está disponível
+ * Inclui validação para dados ausentes ou incompletos
  */
 
 import fs from 'fs';
@@ -9,24 +10,62 @@ import { Mistral } from '@mistralai/mistralai';
 import { log } from '../vite';
 import pdfParse from 'pdf-parse';
 
-// Interface para dados extraídos
+/**
+ * Interface para dados extraídos
+ * Campos marcados como obrigatórios são essenciais
+ * para o funcionamento do sistema
+ */
 export interface ExtractedReservationData {
   propertyId?: number;
-  propertyName: string;
-  guestName: string;
-  guestEmail?: string;
-  guestPhone?: string;
-  checkInDate: string;
-  checkOutDate: string;
-  numGuests?: number;
-  totalAmount?: number;
-  platform?: string;
-  platformFee?: number;
-  cleaningFee?: number;
-  checkInFee?: number;
-  commissionFee?: number;
-  teamPayment?: number;
-  rawText?: string;
+  propertyName: string;          // Obrigatório
+  guestName: string;             // Obrigatório
+  guestEmail?: string;           // Opcional
+  guestPhone?: string;           // Opcional
+  checkInDate: string;           // Obrigatório
+  checkOutDate: string;          // Obrigatório
+  numGuests?: number;            // Opcional
+  totalAmount?: number;          // Opcional
+  platform?: string;             // Opcional
+  platformFee?: number;          // Opcional
+  cleaningFee?: number;          // Opcional
+  checkInFee?: number;           // Opcional
+  commissionFee?: number;        // Opcional
+  teamPayment?: number;          // Opcional
+  rawText?: string;              // Texto bruto extraído
+  documentType?: string;         // Tipo de documento (reserva, fatura, etc.)
+  observations?: string;         // Observações adicionais
+  validationStatus?: ValidationStatus; // Status de validação
+}
+
+/**
+ * Enum para status de validação
+ */
+export enum ValidationStatus {
+  VALID = 'valid',               // Todos os campos obrigatórios presentes
+  INCOMPLETE = 'incomplete',     // Faltam alguns campos obrigatórios
+  NEEDS_REVIEW = 'needs_review', // Tem informações mas precisa de revisão manual
+  FAILED = 'failed'              // Falha na extração ou validação
+}
+
+/**
+ * Interface para erros de validação
+ */
+export interface ValidationError {
+  field: string;
+  message: string;
+  severity: 'error' | 'warning' | 'info';
+}
+
+/**
+ * Interface para resultado da validação
+ */
+export interface ValidationResult {
+  status: ValidationStatus;
+  isValid: boolean;
+  errors: ValidationError[];
+  missingFields: string[];
+  warningFields: string[];
+  dataWithDefaults: ExtractedReservationData;
 }
 
 /**
@@ -76,6 +115,9 @@ export async function parseReservationFromText(text: string, apiKey: string): Pr
   try {
     log('Analisando texto para extrair dados de reserva...', 'pdf-extract');
     
+    // Limitar o texto para evitar problemas com tokens muito longos
+    const limitedText = text.slice(0, 5000);
+    
     // Inicializar cliente Mistral
     const client = new Mistral({ apiKey });
     
@@ -89,6 +131,10 @@ export async function parseReservationFromText(text: string, apiKey: string): Pr
           parameters: {
             type: "object",
             properties: {
+              documentType: {
+                type: "string",
+                description: "Tipo de documento (reserva, check-in, fatura, etc.)"
+              },
               propertyName: {
                 type: "string",
                 description: "Nome da propriedade"
@@ -132,6 +178,10 @@ export async function parseReservationFromText(text: string, apiKey: string): Pr
               checkInFee: {
                 type: "number",
                 description: "Taxa de check-in (se disponível)"
+              },
+              observations: {
+                type: "string",
+                description: "Observações ou informações adicionais importantes"
               }
             },
             required: ["propertyName", "guestName", "checkInDate", "checkOutDate"]
@@ -146,10 +196,13 @@ export async function parseReservationFromText(text: string, apiKey: string): Pr
       messages: [
         {
           role: 'user',
-          content: `Extraia todas as informações de reserva do seguinte texto. O texto foi extraído de um documento de reserva/check-in. Use a função disponível para estruturar os dados:\n\n${text}`
+          content: `Extraia todas as informações de reserva do seguinte texto. O texto foi extraído de um documento de reserva/check-in. Use a função disponível para estruturar os dados. Se não conseguir determinar um campo com certeza, omita-o completamente (não invente dados):
+
+${limitedText}`
         }
       ],
-      tools: tools
+      tools: tools,
+      temperature: 0.2
     });
     
     // Verificar se há ferramenta chamada
@@ -193,12 +246,117 @@ function cleanExtractedText(text: string): string {
 }
 
 /**
+ * Valida os dados extraídos e preenche valores padrão para campos ausentes
+ * @param data Dados extraídos do PDF
+ * @returns Resultado da validação
+ */
+export function validateReservationData(data: ExtractedReservationData): ValidationResult {
+  const requiredFields = ['propertyName', 'guestName', 'checkInDate', 'checkOutDate'];
+  const financialFields = ['totalAmount', 'cleaningFee', 'checkInFee'];
+  const contactFields = ['guestEmail', 'guestPhone'];
+  
+  const missingFields: string[] = [];
+  const warningFields: string[] = [];
+  const errors: ValidationError[] = [];
+  
+  // Verificar campos obrigatórios
+  for (const field of requiredFields) {
+    if (!data[field as keyof ExtractedReservationData]) {
+      missingFields.push(field);
+      errors.push({
+        field,
+        message: `Campo obrigatório ${field} está ausente`,
+        severity: 'error'
+      });
+    }
+  }
+  
+  // Verificar campos financeiros importantes (não obrigatórios, mas importantes)
+  for (const field of financialFields) {
+    if (!data[field as keyof ExtractedReservationData]) {
+      warningFields.push(field);
+      errors.push({
+        field,
+        message: `Campo financeiro ${field} está ausente`,
+        severity: 'warning'
+      });
+    }
+  }
+  
+  // Verificar pelo menos um campo de contato
+  if (!data.guestEmail && !data.guestPhone) {
+    warningFields.push('contactInfo');
+    errors.push({
+      field: 'contactInfo',
+      message: 'Nenhuma informação de contato (email ou telefone) está disponível',
+      severity: 'warning'
+    });
+  }
+  
+  // Validar formato de data
+  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+  if (data.checkInDate && !dateRegex.test(data.checkInDate)) {
+    errors.push({
+      field: 'checkInDate',
+      message: 'Formato de data de check-in inválido. Deve ser YYYY-MM-DD',
+      severity: 'error'
+    });
+    missingFields.push('checkInDate');
+  }
+  
+  if (data.checkOutDate && !dateRegex.test(data.checkOutDate)) {
+    errors.push({
+      field: 'checkOutDate',
+      message: 'Formato de data de check-out inválido. Deve ser YYYY-MM-DD',
+      severity: 'error'
+    });
+    missingFields.push('checkOutDate');
+  }
+  
+  // Determinar status geral
+  let status: ValidationStatus;
+  
+  if (missingFields.length === 0 && warningFields.length === 0) {
+    status = ValidationStatus.VALID;
+  } else if (missingFields.length > 0) {
+    status = ValidationStatus.INCOMPLETE;
+  } else if (warningFields.length > 0) {
+    status = ValidationStatus.NEEDS_REVIEW;
+  } else {
+    status = ValidationStatus.VALID;
+  }
+  
+  // Criar cópia com valores padrão para campos ausentes
+  const dataWithDefaults: ExtractedReservationData = {
+    ...data,
+    totalAmount: data.totalAmount || 0,
+    numGuests: data.numGuests || 1,
+    platformFee: data.platformFee || 0,
+    cleaningFee: data.cleaningFee || 0,
+    checkInFee: data.checkInFee || 0,
+    commissionFee: data.commissionFee || 0,
+    teamPayment: data.teamPayment || 0,
+    platform: data.platform || 'direct',
+    validationStatus: status
+  };
+  
+  return {
+    status,
+    isValid: status === ValidationStatus.VALID,
+    errors,
+    missingFields,
+    warningFields,
+    dataWithDefaults
+  };
+}
+
+/**
  * Processa um documento PDF para extrair dados de reserva
  * Utiliza pdf-parse para extração de texto e Mistral AI para a análise estruturada
  * @param pdfPath Caminho do arquivo PDF
  * @param apiKey Chave API do Mistral
  */
-export async function processPdf(pdfPath: string, apiKey: string): Promise<ExtractedReservationData> {
+export async function processPdf(pdfPath: string, apiKey: string): Promise<ValidationResult> {
   try {
     log(`Processando PDF: ${pdfPath}`, 'pdf-extract');
     
@@ -221,9 +379,36 @@ export async function processPdf(pdfPath: string, apiKey: string): Promise<Extra
     // Processar o texto extraído para obter dados estruturados
     const reservationData = await parseReservationFromText(cleanedText, apiKey);
     
-    return reservationData;
+    // Validar os dados extraídos
+    const validationResult = validateReservationData(reservationData);
+    log(`Validação concluída: ${validationResult.status}`, 'pdf-extract');
+    
+    if (validationResult.missingFields.length > 0) {
+      log(`Campos ausentes: ${validationResult.missingFields.join(', ')}`, 'pdf-extract');
+    }
+    
+    return validationResult;
   } catch (error: any) {
     log('Erro ao processar PDF: ' + error.message, 'pdf-extract');
-    throw error;
+    
+    // Retornar um resultado de validação com erro
+    return {
+      status: ValidationStatus.FAILED,
+      isValid: false,
+      errors: [{
+        field: 'general',
+        message: error.message,
+        severity: 'error'
+      }],
+      missingFields: ['general'],
+      warningFields: [],
+      dataWithDefaults: {
+        propertyName: '',
+        guestName: '',
+        checkInDate: '',
+        checkOutDate: '',
+        validationStatus: ValidationStatus.FAILED
+      }
+    };
   }
 }

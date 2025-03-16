@@ -671,26 +671,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Usar o serviço de extração de PDF que já importamos no início do arquivo
         console.log(`Processando PDF: ${req.file.path}`);
         
-        // Usar o novo serviço para extrair dados do PDF
-        const extractedData = await processPdf(req.file.path, process.env.MISTRAL_API_KEY);
-        console.log('Dados extraídos com sucesso:', JSON.stringify(extractedData));
+        // Usar o serviço melhorado para extrair e validar dados do PDF
+        const validationResult = await processPdf(req.file.path, process.env.MISTRAL_API_KEY);
+        console.log('Validação concluída:', validationResult.status);
+        
+        // Extrair os dados validados com valores padrão
+        const extractedData = validationResult.dataWithDefaults;
         
         // Adicionar o texto extraído à base de conhecimento RAG
-        if (extractedData.rawText) {
+        if (extractedData && extractedData.rawText) {
           await ragService.addToKnowledgeBase(extractedData.rawText, 'reservation_pdf', {
             filename: req.file.filename,
-            uploadDate: new Date()
+            uploadDate: new Date(),
+            validationStatus: validationResult.status
           });
         }
 
         // Encontrar a propriedade correspondente pelo nome (com lógica mais flexível)
         const properties = await storage.getProperties();
-        console.log(`Buscando correspondência para propriedade: ${extractedData.propertyName}`);
+        console.log(`Buscando correspondência para propriedade: ${extractedData?.propertyName}`);
         
         // Lógica de matching de propriedade mais flexível
         let matchedProperty = null;
         
-        if (extractedData.propertyName) {
+        if (extractedData && extractedData.propertyName) {
           // Primeiro tenta match exato (case insensitive)
           matchedProperty = properties.find(p => 
             p.name.toLowerCase() === extractedData.propertyName.toLowerCase()
@@ -699,10 +703,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Se não encontrar, usa matching mais flexível
           if (!matchedProperty) {
             // Define uma função de similaridade
-            const calculateSimilarity = (str1, str2) => {
+            const calculateSimilarity = (str1: string, str2: string): number => {
               const words1 = str1.toLowerCase().split(/\s+/);
               const words2 = str2.toLowerCase().split(/\s+/);
-              const commonWords = words1.filter(word => words2.includes(word));
+              const commonWords = words1.filter((word: string) => words2.includes(word));
               return commonWords.length / Math.max(words1.length, words2.length);
             };
             
@@ -729,12 +733,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Se não encontrar propriedade, define valores padrão
         if (!matchedProperty) {
           matchedProperty = { id: null, cleaningCost: 0, checkInFee: 0, commission: 0, teamPayment: 0 };
+          
+          // Adicionar erro de validação se não encontrou a propriedade
+          if (extractedData && extractedData.propertyName) {
+            validationResult.errors.push({
+              field: 'propertyName',
+              message: 'Propriedade não encontrada no sistema',
+              severity: 'warning'
+            });
+            
+            validationResult.warningFields.push('propertyName');
+          }
         }
 
         // Calcular taxas e valores baseados na propriedade encontrada
-        const totalAmount = extractedData.totalAmount || 0;
-        const platformFee = extractedData.platformFee || (
-          (extractedData.platform === "airbnb" || extractedData.platform === "booking") 
+        const totalAmount = extractedData?.totalAmount || 0;
+        const platformFee = extractedData?.platformFee || (
+          (extractedData?.platform === "airbnb" || extractedData?.platform === "booking") 
             ? Math.round(totalAmount * 0.1) 
             : 0
         );
@@ -742,27 +757,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Adicionar atividade ao sistema
         await storage.createActivity({
           type: 'pdf_processed',
-          description: `PDF processado: ${extractedData.propertyName || 'Propriedade desconhecida'} - ${extractedData.guestName || 'Hóspede desconhecido'}`,
-          userId: null
+          description: `PDF processado: ${extractedData?.propertyName || 'Propriedade desconhecida'} - ${extractedData?.guestName || 'Hóspede desconhecido'} (${validationResult.status})`,
+          entityId: matchedProperty.id,
+          entityType: 'property'
         });
 
-        // Retorna os dados extraídos com as informações da propriedade
+        // Criar resultados enriquecidos
+        const enrichedData = {
+          ...extractedData,
+          propertyId: matchedProperty.id,
+          platformFee: platformFee,
+          cleaningFee: extractedData?.cleaningFee || Number(matchedProperty.cleaningCost || 0),
+          checkInFee: extractedData?.checkInFee || Number(matchedProperty.checkInFee || 0),
+          commissionFee: extractedData?.commissionFee || (totalAmount * Number(matchedProperty.commission || 0) / 100),
+          teamPayment: extractedData?.teamPayment || Number(matchedProperty.teamPayment || 0)
+        };
+
+        // Retorna os dados extraídos com as informações da propriedade e status de validação
         res.json({
           success: true,
-          extractedData: {
-            ...extractedData,
-            propertyId: matchedProperty.id,
-            platformFee: platformFee,
-            cleaningFee: extractedData.cleaningFee || Number(matchedProperty.cleaningCost || 0),
-            checkInFee: extractedData.checkInFee || Number(matchedProperty.checkInFee || 0),
-            commissionFee: extractedData.commissionFee || (totalAmount * Number(matchedProperty.commission || 0) / 100),
-            teamPayment: extractedData.teamPayment || Number(matchedProperty.teamPayment || 0)
+          extractedData: enrichedData,
+          validation: {
+            status: validationResult.status,
+            isValid: validationResult.isValid,
+            errors: validationResult.errors,
+            missingFields: validationResult.missingFields,
+            warningFields: validationResult.warningFields
           },
           file: {
             filename: req.file.filename,
             path: req.file.path
-          },
-          rawText: extractedData.rawText
+          }
         });
       } catch (processError) {
         console.error('Erro no processamento do PDF:', processError);
