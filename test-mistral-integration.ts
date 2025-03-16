@@ -107,9 +107,9 @@ async function testMistralFunctionCalling() {
     Valor Total: €750,00
     `;
     
-    // Chamar API com function calling
+    // Chamar API com function calling usando modelo mistral-tiny
     const result = await client.chat.complete({
-      model: 'mistral-large-latest',
+      model: 'mistral-tiny',
       messages: [
         { 
           role: 'user', 
@@ -120,13 +120,23 @@ async function testMistralFunctionCalling() {
       toolChoice: { type: "function", function: { name: "extract_reservation_info" } }
     });
     
-    // Extrair resultado da chamada de função
-    if (result.choices[0].message.toolCalls && 
-        result.choices[0].message.toolCalls.length > 0 &&
-        result.choices[0].message.toolCalls[0].type === 'function') {
+    // Salvar a resposta em um arquivo para análise
+    const fs = require('fs');
+    fs.writeFileSync('mistral-response.json', JSON.stringify(result, null, 2));
+    console.log("Resposta completa salva em 'mistral-response.json'");
+    
+    // Verificar os valores em choices[0].message
+    const message = result.choices?.[0]?.message;
+    
+    // Verificar se temos toolCalls na resposta
+    const toolCalls = message?.toolCalls;
+    
+    if (toolCalls && 
+        toolCalls.length > 0 &&
+        toolCalls[0].type === 'function') {
       
-      const functionCall = result.choices[0].message.toolCalls[0];
-      const parsedArgs = JSON.parse(functionCall.function.arguments);
+      const functionCall = toolCalls[0];
+      const parsedArgs = JSON.parse(functionCall.function.arguments as string);
       
       printResult('Dados extraídos via Function Calling', parsedArgs);
       console.log('✅ Function Calling testado com sucesso!');
