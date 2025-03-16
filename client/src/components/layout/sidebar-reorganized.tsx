@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import {
   Home,
   Building2,
@@ -21,7 +22,9 @@ import {
   ChevronRight,
   Bot,
   HardHat,
-  ChevronLeft
+  ChevronLeft,
+  Menu,
+  X
 } from "lucide-react";
 import {
   Collapsible,
@@ -31,6 +34,12 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetClose
+} from "@/components/ui/sheet";
 
 // Interface para itens com submenu
 interface NavItem {
@@ -64,6 +73,8 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
   const [location, navigate] = useLocation();
   const { t, i18n } = useTranslation();
   const isPortuguese = i18n.language?.startsWith("pt");
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const [sheetOpen, setSheetOpen] = useState(false);
   
   // Estado para controle dos menus expansíveis
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
