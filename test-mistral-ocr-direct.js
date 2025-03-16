@@ -22,8 +22,7 @@ async function processarOcr(pdfBase64, apiKey) {
       body: JSON.stringify({
         model: 'mistral-medium',
         document: {
-          data: pdfBase64,
-          mime_type: 'application/pdf'
+          document_url: "https://example.com/document.pdf" // Nome correto do campo conforme erro
         }
       })
     });

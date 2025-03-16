@@ -1,7 +1,7 @@
 // Teste do processamento de PDF simplificado usando pdf-parse + Mistral para análise
 import fs from 'fs';
 import pdfParse from 'pdf-parse';
-import { Mistral } from '@mistralai/mistralai';
+import fetch from 'node-fetch';
 
 async function testPdfExtraction() {
   try {
@@ -13,9 +13,7 @@ async function testPdfExtraction() {
       throw new Error('MISTRAL_API_KEY não está configurada nas variáveis de ambiente');
     }
     
-    // Inicializar cliente Mistral
-    const client = new Mistral({ apiKey });
-    console.log('✅ Cliente Mistral inicializado');
+    console.log('✅ Chave API Mistral configurada');
     
     // Ler arquivo PDF
     const pdfPath = './Check-in Maria faz.pdf';
@@ -26,7 +24,7 @@ async function testPdfExtraction() {
     const pdfBuffer = fs.readFileSync(pdfPath);
     console.log(`📄 PDF lido (${Math.round(pdfBuffer.length / 1024)} KB)`);
     
-    // Extrair texto usando pdf-parse (abordagem mais confiável)
+    // ETAPA 1: Extrair texto usando pdf-parse (abordagem mais confiável)
     console.log('🔄 Extraindo texto do PDF com pdf-parse...');
     const data = await pdfParse(pdfBuffer);
     
@@ -44,8 +42,8 @@ async function testPdfExtraction() {
     fs.writeFileSync('extracted-text-pdf-parse.txt', data.text);
     console.log('📝 Texto completo salvo em: extracted-text-pdf-parse.txt');
     
-    // Agora vamos analisar os dados com Mistral
-    console.log('\n🔄 Analisando texto para extrair dados estruturados...');
+    // ETAPA 2: Analisar o texto para extrair dados estruturados
+    console.log('\n🔄 Analisando texto para extrair dados estruturados usando API Mistral...');
     
     // Definir ferramentas para extração de dados
     const tools = [
@@ -100,28 +98,45 @@ async function testPdfExtraction() {
       }
     ];
     
-    // Enviar o texto extraído para análise
-    const response = await client.chat.complete({
-      model: 'mistral-large-latest', // Usar large para melhor precisão
-      messages: [
-        {
-          role: 'user',
-          content: `Extraia todas as informações de reserva do seguinte texto. O texto foi extraído de um PDF de reserva/check-in. Use a função disponível para estruturar os dados de forma completa:\n\n${data.text}`
-        }
-      ],
-      tools: tools
+    // Limitar o texto para evitar problemas de tamanho (máximo 4000 caracteres)
+    const limitedText = data.text.substring(0, 4000);
+    console.log(`🔄 Enviando texto limitado para análise (${limitedText.length} caracteres)...`);
+    
+    // Enviar texto extraído para análise usando chamada direta da API
+    const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'mistral-small', // Usar modelo menor para resposta mais rápida
+        messages: [
+          {
+            role: 'user',
+            content: `Extraia todas as informações de reserva do seguinte texto. O texto foi extraído de um PDF de reserva/check-in. Use a função disponível para estruturar os dados de forma completa:\n\n${limitedText}`
+          }
+        ],
+        tools: tools
+      })
     });
     
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Erro na API Mistral: ${response.status} - ${response.statusText}\n${errorText}`);
+    }
+    
+    const result = await response.json();
+    
     // Verificar se há ferramenta chamada
-    const toolCalls = response.choices[0].message.tool_calls || [];
+    const toolCalls = result.choices[0].message.tool_calls || [];
     if (toolCalls.length === 0) {
       throw new Error('Não foi possível extrair dados estruturados do texto');
     }
     
     // Extrair os dados estruturados
     const args = toolCalls[0].function.arguments;
-    const argsString = typeof args === 'string' ? args : JSON.stringify(args);
-    const extractedData = JSON.parse(argsString);
+    const extractedData = typeof args === 'string' ? JSON.parse(args) : args;
     
     // Mostrar os dados estruturados
     console.log('✅ Dados estruturados extraídos:');
@@ -131,6 +146,11 @@ async function testPdfExtraction() {
     
     console.log('\n✅ Teste concluído com sucesso!');
     
+    return {
+      rawText: data.text,
+      extractedData: extractedData
+    };
+    
   } catch (error) {
     console.error('❌ Erro durante teste:', error);
     throw error;
@@ -138,7 +158,9 @@ async function testPdfExtraction() {
 }
 
 // Executar o teste
-testPdfExtraction().catch(error => {
+testPdfExtraction().then(result => {
+  console.log('✅ Processo completo finalizado!');
+}).catch(error => {
   console.error('\n❌ Falha no teste:', error);
   process.exit(1);
 });
