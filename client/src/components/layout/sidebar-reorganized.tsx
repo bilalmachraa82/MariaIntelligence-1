@@ -71,13 +71,24 @@ interface SidebarSectionProps {
 export function SidebarReorganized({ 
   collapsed = false, 
   onToggleCollapse,
-  isMobile = false
+  isMobile = false,
+  closeDrawer
 }: { 
   collapsed?: boolean, 
   onToggleCollapse?: () => void,
-  isMobile?: boolean
+  isMobile?: boolean,
+  closeDrawer?: () => void
 }) {
-  const [location, navigate] = useLocation();
+  const [location, useNavigate] = useLocation();
+  
+  // Função de navegação personalizada que também fecha o drawer quando necessário
+  const navigate = (href: string) => {
+    useNavigate(href);
+    // Fecha o drawer se estiver em modo mobile e a função closeDrawer estiver disponível
+    if (isMobile && closeDrawer) {
+      closeDrawer();
+    }
+  };
   const { t, i18n } = useTranslation();
   const isPortuguese = i18n.language?.startsWith("pt");
   const [sheetOpen, setSheetOpen] = useState(false);
