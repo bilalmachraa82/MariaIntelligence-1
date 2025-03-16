@@ -41,7 +41,47 @@
       "overview": "Overview",
       "totalRevenue": "Total Revenue",
       "netProfit": "Net Profit",
-      "occupancyRate": "Occupancy Rate"
+      "occupancyRate": "Occupancy Rate",
+      "detailedDescription": "Detailed analysis of revenue, expenses and profitability by property.",
+      "comingSoon": "Detailed analysis is under development. Coming soon!",
+      "backToOverview": "Back to Overview",
+      "noDataAvailable": "No data available."
+    },
+    "reservations": {
+      "recentReservations": "Recent Bookings",
+      "recentReservationsSubtitle": "Most recent bookings across all properties"
+    },
+    "activities": {
+      "recentActivity": "Recent Activity",
+      "recentActivitySubtitle": "Record of actions and events in the system"
+    },
+    "demoData": {
+      "title": "Demo Data",
+      "description": "Load sample data to visualize dashboard features.",
+      "load": "Load Demo Data",
+      "loadTitle": "Load Demo Data",
+      "loadDescription": "Select which types of data you wish to generate for visualization.",
+      "owners": "Owners",
+      "ownersDesc": "Sample owners to associate with properties",
+      "properties": "Properties",
+      "propertiesDesc": "Rental properties with complete data",
+      "reservations": "Bookings",
+      "reservationsDesc": "Booking history and future bookings",
+      "activities": "Activities",
+      "activitiesDesc": "System activity history",
+      "reset": "Remove Demo Data",
+      "resetTitle": "Remove Demo Data",
+      "resetWarning": "This action will remove all data marked as demo. Real data will not be affected.",
+      "resetInfo": "All data marked as demo will be permanently removed. This action cannot be undone.",
+      "confirmReset": "Yes, remove data",
+      "footer": "Demo data is identified with [DEMO] and does not affect real data."
+    },
+    "common": {
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    },
+    "pdfUpload": {
+      "uploadButton": "Import PDF"
     }
   }
 }
