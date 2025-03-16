@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
-import { useMediaQuery } from "@/hooks/use-media-query";
 import {
   Home,
   Building2,
@@ -73,7 +72,6 @@ export function SidebarReorganized({ collapsed = false, onToggleCollapse }: { co
   const [location, navigate] = useLocation();
   const { t, i18n } = useTranslation();
   const isPortuguese = i18n.language?.startsWith("pt");
-  const isMobile = useMediaQuery("(max-width: 768px)");
   const [sheetOpen, setSheetOpen] = useState(false);
   
   // Estado para controle dos menus expansíveis
