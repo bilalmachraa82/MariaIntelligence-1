@@ -31,52 +31,16 @@ export interface ExtractedReservationData {
 
 /**
  * Tenta extrair texto de um PDF usando o cliente Mistral AI
- * Se o modelo vision não estiver disponível, retorna um erro para tratamento alternativo
+ * Esta função é mantida para compatibilidade com o código existente
+ * Na implementação atual, sempre retorna um erro 'VISION_MODEL_UNAVAILABLE'
+ * para que o fluxo use o método alternativo (pdf-parse)
+ * 
  * @param pdfBase64 PDF em base64
  * @param apiKey Chave API do Mistral
  */
 export async function extractTextFromPdfWithMistral(pdfBase64: string, apiKey: string): Promise<string> {
-  try {
-    log('Tentando extrair texto do PDF via Mistral Vision...', 'pdf-extract');
-    
-    // Inicializar cliente Mistral
-    const client = new Mistral({ apiKey });
-    
-    // Tentar usar o modelo de visão, se disponível
-    const response = await client.chat.complete({
-      model: 'mistral-vision-preview', // Modelo com suporte a visão (pode não estar disponível em todas as chaves)
-      messages: [
-        {
-          role: 'user',
-          content: [
-            {
-              type: 'text',
-              text: 'Extraia todo o texto visível deste documento. Retorne apenas o texto, sem comentários adicionais.'
-            },
-            {
-              type: 'image_url',
-              imageUrl: {
-                url: `data:application/pdf;base64,${pdfBase64}`,
-                detail: 'high'
-              }
-            }
-          ]
-        }
-      ]
-    });
-    
-    // Garantir retorno de string
-    const content = response.choices?.[0]?.message?.content;
-    return typeof content === 'string' ? content : '';
-  } catch (error: any) {
-    // Se o erro for devido ao modelo não estar disponível, lançar erro específico
-    if (error.message && (error.message.includes('Invalid model') || error.message.includes('Input validation failed'))) {
-      throw new Error('VISION_MODEL_UNAVAILABLE');
-    }
-    
-    // Outros erros são repassados
-    throw error;
-  }
+  log('Pulando extração via API Vision (não disponível nesta versão)...', 'pdf-extract');
+  throw new Error('VISION_MODEL_UNAVAILABLE');
 }
 
 /**
