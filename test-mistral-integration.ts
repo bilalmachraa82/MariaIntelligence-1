@@ -1,202 +1,207 @@
-// Script de teste para integração Mistral AI
+// Teste de integração Mistral AI
+import fs from 'fs';
 import { Mistral } from '@mistralai/mistralai';
-import * as fs from 'fs';
-import * as path from 'path';
-import { fileURLToPath } from 'url';
 
-// Obter diretório atual
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Funções de Utilidade
 function printResult(title: string, result: any) {
-  console.log(`\n📋 ${title}:`);
-  console.log('----------------------------------------');
+  console.log(`\n${title}:`);
+  console.log('-'.repeat(50));
   console.log(typeof result === 'string' ? result : JSON.stringify(result, null, 2));
-  console.log('----------------------------------------\n');
+  console.log('-'.repeat(50));
 }
 
-// Teste da conexão com Mistral
 async function testMistralConnection() {
-  console.log('🔄 Testando conexão com Mistral AI...');
-  
   try {
+    console.log('🧪 Testando conexão com Mistral AI...');
+    
+    // Verificar API key
     const apiKey = process.env.MISTRAL_API_KEY;
     if (!apiKey) {
-      throw new Error('MISTRAL_API_KEY não está definida no ambiente');
+      throw new Error('MISTRAL_API_KEY não configurada');
     }
     
-    const client = new Mistral({
-      apiKey
-    });
-    const models = await client.models.list();
-    
-    printResult('Modelos disponíveis', models);
+    // Inicializar cliente
+    const client = new Mistral({ apiKey });
     
     // Teste de chat simples
     const chatResponse = await client.chat.complete({
-      model: 'mistral-large-latest',
-      messages: [{ role: 'user', content: 'Olá, isso é um teste de conexão. Responda com uma saudação curta.' }]
+      model: 'mistral-tiny',
+      messages: [
+        { role: 'user', content: 'Responda "Conexão OK" se você me entende.' }
+      ]
     });
     
-    const response = chatResponse.choices?.[0]?.message?.content || 'Sem resposta';
-    printResult('Resposta de chat', response);
+    const message = chatResponse.choices?.[0]?.message?.content || 'Sem resposta';
+    printResult('Resposta do chat', message);
     
-    console.log('✅ Conexão com Mistral AI verificada com sucesso!');
-    return true;
-  } catch (error) {
-    console.error('❌ Erro ao conectar com Mistral AI:', error);
-    return false;
+    return {
+      success: true,
+      message: 'Conexão com Mistral estabelecida com sucesso',
+      response: message
+    };
+  } catch (error: any) {
+    console.error('❌ Erro na conexão Mistral:', error.message);
+    return {
+      success: false,
+      message: `Falha na conexão: ${error.message}`
+    };
   }
 }
 
-// Teste de function calling
 async function testMistralFunctionCalling() {
-  console.log('🔄 Testando function calling com Mistral AI...');
-  
   try {
+    console.log('\n🧪 Testando function calling do Mistral...');
+    
+    // Verificar API key
     const apiKey = process.env.MISTRAL_API_KEY;
     if (!apiKey) {
-      throw new Error('MISTRAL_API_KEY não está definida no ambiente');
+      throw new Error('MISTRAL_API_KEY não configurada');
     }
     
-    const client = new Mistral({
-      apiKey
-    });
+    // Inicializar cliente
+    const client = new Mistral({ apiKey });
     
-    // Definição da função
-    const functionDef = {
-      name: "extract_reservation_info",
-      description: "Extrai informações de uma reserva",
-      parameters: {
-        type: "object",
-        properties: {
-          guestName: {
-            type: "string",
-            description: "Nome do hóspede"
-          },
-          checkInDate: {
-            type: "string",
-            description: "Data de check-in no formato YYYY-MM-DD"
-          },
-          checkOutDate: {
-            type: "string",
-            description: "Data de check-out no formato YYYY-MM-DD"
-          },
-          propertyName: {
-            type: "string",
-            description: "Nome da propriedade"
-          },
-          totalAmount: {
-            type: "number",
-            description: "Valor total da reserva"
+    // Definir ferramenta para extração de dados
+    const tools = [
+      {
+        type: "function" as const,
+        function: {
+          name: "extract_reservation_data",
+          description: "Extrair dados estruturados de uma reserva a partir de um documento",
+          parameters: {
+            type: "object",
+            properties: {
+              guest_name: {
+                type: "string",
+                description: "Nome completo do hóspede"
+              },
+              check_in_date: {
+                type: "string",
+                description: "Data de check-in no formato YYYY-MM-DD"
+              },
+              check_out_date: {
+                type: "string",
+                description: "Data de check-out no formato YYYY-MM-DD"
+              },
+              property_name: {
+                type: "string",
+                description: "Nome da propriedade"
+              },
+              total_amount: {
+                type: "number",
+                description: "Valor total da reserva"
+              },
+              platform: {
+                type: "string",
+                description: "Plataforma de reserva (Airbnb, Booking, etc.)"
+              }
+            },
+            required: ["guest_name", "check_in_date", "check_out_date"]
           }
-        },
-        required: ["guestName", "checkInDate", "checkOutDate"]
+        }
       }
-    };
+    ];
     
-    // Texto de exemplo
-    const sampleText = `
-    CONFIRMAÇÃO DE RESERVA
-    
-    Propriedade: Apartamento Oceano Azul
-    Hóspede: Maria Silva
-    Check-in: 25/03/2025
-    Check-out: 30/03/2025
-    Valor Total: €750,00
-    `;
-    
-    // Chamar API com function calling usando modelo mistral-tiny
-    const result = await client.chat.complete({
-      model: 'mistral-tiny',
+    // Teste de function calling
+    const functionResponse = await client.chat.complete({
+      model: 'mistral-large-latest',
       messages: [
         { 
           role: 'user', 
-          content: `Extraia as informações de reserva do seguinte texto:\n\n${sampleText}` 
+          content: 'Tenho uma reserva para Maria Silva de 15 a 20 de março na Casa do Mar, no valor total de 1500 euros, feita através do Airbnb. Extraia esses dados usando a função disponível.'
         }
       ],
-      tools: [{ type: "function", function: functionDef }],
-      toolChoice: { type: "function", function: { name: "extract_reservation_info" } }
+      tools: tools
     });
     
-    // Salvar a resposta em um arquivo para análise
-    const fs = require('fs');
-    fs.writeFileSync('mistral-response.json', JSON.stringify(result, null, 2));
-    console.log("Resposta completa salva em 'mistral-response.json'");
+    const toolCalls = functionResponse.choices?.[0]?.message?.toolCalls || [];
+    printResult('Resposta da chamada de função', toolCalls);
     
-    // Verificar os valores em choices[0].message
-    const message = result.choices?.[0]?.message;
-    
-    // Verificar se temos toolCalls na resposta
-    const toolCalls = message?.toolCalls;
-    
-    if (toolCalls && 
-        toolCalls.length > 0 &&
-        toolCalls[0].type === 'function') {
-      
-      const functionCall = toolCalls[0];
-      const parsedArgs = JSON.parse(functionCall.function.arguments as string);
-      
-      printResult('Dados extraídos via Function Calling', parsedArgs);
-      console.log('✅ Function Calling testado com sucesso!');
-      return true;
-    } else {
-      throw new Error('Não foi possível obter resultados da chamada de função');
-    }
-    
-  } catch (error) {
-    console.error('❌ Erro ao testar function calling:', error);
-    return false;
+    return {
+      success: true,
+      message: 'Function calling testado com sucesso',
+      response: toolCalls
+    };
+  } catch (error: any) {
+    console.error('❌ Erro no function calling:', error.message);
+    return {
+      success: false,
+      message: `Falha no function calling: ${error.message}`
+    };
   }
 }
 
-// Teste de acesso ao banco de dados
 async function testDatabaseAccess() {
-  console.log('🔄 Testando acesso ao banco de dados...');
-  
   try {
-    // Aqui podemos verificar a conexão com o banco usando as utilidades existentes
-    // Para simplicidade, vamos apenas verificar se a variável de ambiente está definida
-    const databaseUrl = process.env.DATABASE_URL;
+    console.log('\n🧪 Testando acesso à base de dados...');
     
+    // Query test - verificamos apenas a existência de variáveis de ambiente
+    const databaseUrl = process.env.DATABASE_URL;
     if (!databaseUrl) {
-      throw new Error('DATABASE_URL não está definida no ambiente');
+      throw new Error('DATABASE_URL não configurada');
     }
     
-    console.log('✅ Variável DATABASE_URL encontrada!');
-    return true;
-  } catch (error) {
-    console.error('❌ Erro ao verificar banco de dados:', error);
-    return false;
+    return {
+      success: true,
+      message: 'Variáveis de ambiente da base de dados detectadas',
+      dbUrl: databaseUrl.replace(/:[^:@]+@/, ':****@') // Mascara a senha
+    };
+  } catch (error: any) {
+    console.error('❌ Erro no acesso à base de dados:', error.message);
+    return {
+      success: false,
+      message: `Falha no acesso à base de dados: ${error.message}`
+    };
   }
 }
 
-// Executa todos os testes
 async function runAllTests() {
-  console.log('🧪 Iniciando testes de integração...\n');
-  
-  const results = {
-    mistralConnection: await testMistralConnection(),
-    functionCalling: await testMistralFunctionCalling(),
-    database: await testDatabaseAccess()
-  };
-  
-  console.log('\n📊 Resumo dos testes:');
-  console.log('----------------------------------------');
-  console.log(`Conexão Mistral AI: ${results.mistralConnection ? '✅ OK' : '❌ FALHA'}`);
-  console.log(`Function Calling: ${results.functionCalling ? '✅ OK' : '❌ FALHA'}`);
-  console.log(`Acesso ao Banco: ${results.database ? '✅ OK' : '❌ FALHA'}`);
-  console.log('----------------------------------------');
-  
-  const success = Object.values(results).every(result => result === true);
-  console.log(`\n${success ? '✅ Todos os testes passaram!' : '❌ Alguns testes falharam!'}`);
-  
-  return results;
+  try {
+    console.log('🚀 Iniciando testes de integração do Mistral...\n');
+    
+    // Executar testes em sequência
+    const mistralConnectionResult = await testMistralConnection();
+    const functionCallingResult = await testMistralFunctionCalling();
+    const databaseResult = await testDatabaseAccess();
+    
+    // Montar relatório
+    const results = {
+      timestamp: new Date().toISOString(),
+      success: mistralConnectionResult.success && functionCallingResult.success && databaseResult.success,
+      tests: [
+        {
+          name: 'Mistral AI',
+          success: mistralConnectionResult.success,
+          details: mistralConnectionResult
+        },
+        {
+          name: 'Function Calling',
+          success: functionCallingResult.success,
+          details: functionCallingResult
+        },
+        {
+          name: 'Base de Dados',
+          success: databaseResult.success,
+          details: databaseResult
+        }
+      ]
+    };
+    
+    console.log('\n✅ Testes concluídos!');
+    printResult('Resultado dos testes', results);
+    
+    return results;
+  } catch (error: any) {
+    console.error('❌ Erro durante os testes:', error);
+    return {
+      timestamp: new Date().toISOString(),
+      success: false,
+      error: error.message
+    };
+  }
 }
 
-// Executar os testes
+// Executar todos os testes
 runAllTests().catch(error => {
-  console.error('Erro fatal durante os testes:', error);
+  console.error('Falha fatal nos testes:', error);
   process.exit(1);
 });

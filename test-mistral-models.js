@@ -60,9 +60,9 @@ async function testConnectivity() {
 // Função principal para testar
 async function main() {
   try {
-    console.log('🧪 Iniciando teste de modelos Mistral AI...\n');
+    console.log('🧪 Iniciando teste de conectividade com Mistral AI...\n');
     
-    const visionModels = await listModels();
+    await testConnectivity();
     
     console.log('\n✅ Teste concluído com sucesso!');
   } catch (error) {
