@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Upload de PDF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            min-height: 200px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>Teste de Upload de PDF</h1>
+    
+    <div class="form-group">
+        <label for="pdf-file">Selecione um arquivo PDF:</label>
+        <input type="file" id="pdf-file" accept=".pdf">
+    </div>
+    
+    <button onclick="uploadPDF()">Enviar PDF</button>
+    
+    <div>
+        <h2>Resultado:</h2>
+        <div id="result">Os resultados aparecerão aqui...</div>
+    </div>
+
+    <script>
+        async function uploadPDF() {
+            const fileInput = document.getElementById('pdf-file');
+            const resultDiv = document.getElementById('result');
+            
+            if (!fileInput.files.length) {
+                resultDiv.textContent = "Por favor, selecione um arquivo PDF.";
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('pdf', fileInput.files[0]);
+            
+            resultDiv.textContent = "Enviando PDF para o servidor...";
+            
+            try {
+                console.log("Enviando PDF para o servidor...");
+                const response = await fetch('/api/upload-pdf', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                console.log("Resposta recebida:", response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Erro ${response.status}: ${errorText}`);
+                }
+                
+                const data = await response.json();
+                console.log("Dados extraídos:", data);
+                
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                console.error("Erro ao processar PDF:", error);
+                resultDiv.textContent = `Erro: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
