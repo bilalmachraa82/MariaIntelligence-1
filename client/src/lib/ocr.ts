@@ -2,37 +2,69 @@ import { apiRequest } from "./queryClient";
 import { Mistral } from "@mistralai/mistralai";
 
 /**
+ * Enum para status de validação
+ */
+export enum ValidationStatus {
+  VALID = 'valid',               // Todos os campos obrigatórios presentes
+  INCOMPLETE = 'incomplete',     // Faltam alguns campos obrigatórios
+  NEEDS_REVIEW = 'needs_review', // Tem informações mas precisa de revisão manual
+  FAILED = 'failed'              // Falha na extração ou validação
+}
+
+/**
+ * Interface para erros de validação
+ */
+export interface ValidationError {
+  field: string;
+  message: string;
+  severity: 'error' | 'warning' | 'info';
+}
+
+/**
  * Interface para dados extraídos do PDF
  */
-interface ExtractedData {
-  propertyId: number;
-  propertyName: string;
-  guestName: string;
-  guestEmail: string;
-  guestPhone: string;
-  checkInDate: string;
-  checkOutDate: string;
-  numGuests: number;
-  totalAmount: number;
-  platform: string;
-  platformFee: number;
-  cleaningFee: number;
-  checkInFee: number;
-  commissionFee: number;
-  teamPayment: number;
+export interface ExtractedData {
+  propertyId?: number;
+  propertyName: string;          // Obrigatório
+  guestName: string;             // Obrigatório
+  guestEmail?: string;           // Opcional
+  guestPhone?: string;           // Opcional
+  checkInDate: string;           // Obrigatório
+  checkOutDate: string;          // Obrigatório
+  numGuests?: number;            // Opcional
+  totalAmount?: number;          // Opcional
+  platform?: string;             // Opcional
+  platformFee?: number;          // Opcional
+  cleaningFee?: number;          // Opcional
+  checkInFee?: number;           // Opcional
+  commissionFee?: number;        // Opcional
+  teamPayment?: number;          // Opcional
+  rawText?: string;              // Texto bruto extraído
+  documentType?: string;         // Tipo de documento (reserva, fatura, etc.)
+  observations?: string;         // Observações adicionais
+  validationStatus?: ValidationStatus; // Status de validação
 }
 
 /**
  * Interface para a resposta do upload de PDF
  */
-interface UploadResponse {
+export interface UploadResponse {
+  success: boolean;
   extractedData: ExtractedData;
+  validation: {
+    status: ValidationStatus;
+    isValid: boolean;
+    errors: ValidationError[];
+    missingFields: string[];
+    warningFields: string[];
+  };
   file: {
     filename: string;
     path: string;
   };
   rawText?: string;
   fromCache?: boolean;
+  warning?: string;
 }
 
 // Configure cliente Mistral AI com a chave API

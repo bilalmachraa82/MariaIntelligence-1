@@ -611,24 +611,117 @@ export function UploadPDF() {
                 )}
               </div>
               
-              <div className="rounded-md bg-yellow-50 p-4 mt-4 border border-yellow-200">
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <AlertCircle className="h-5 w-5 text-yellow-500" />
-                  </div>
-                  <div className="ml-3">
-                    <h3 className="text-sm font-medium text-yellow-800">
-                      Confirmação Necessária
-                    </h3>
-                    <div className="mt-2 text-sm text-yellow-700">
-                      <p>
-                        Verifique os dados extraídos pela IA antes de confirmar a reserva. 
-                        Você pode editar quaisquer informações que precisem de correção.
-                      </p>
+              {extractedData?.validationStatus && (
+                <div className={`rounded-md p-4 mt-4 border ${
+                  extractedData.validationStatus === 'valid' 
+                    ? 'bg-green-50 border-green-200' 
+                    : extractedData.validationStatus === 'needs_review'
+                      ? 'bg-yellow-50 border-yellow-200'
+                      : extractedData.validationStatus === 'incomplete'
+                        ? 'bg-orange-50 border-orange-200'
+                        : 'bg-red-50 border-red-200'
+                }`}>
+                  <div className="flex">
+                    <div className="flex-shrink-0">
+                      {extractedData.validationStatus === 'valid' ? (
+                        <CheckCircle2 className="h-5 w-5 text-green-500" />
+                      ) : extractedData.validationStatus === 'needs_review' ? (
+                        <AlertCircle className="h-5 w-5 text-yellow-500" />
+                      ) : extractedData.validationStatus === 'incomplete' ? (
+                        <AlertCircle className="h-5 w-5 text-orange-500" />
+                      ) : (
+                        <AlertCircle className="h-5 w-5 text-red-500" />
+                      )}
+                    </div>
+                    <div className="ml-3">
+                      <h3 className={`text-sm font-medium ${
+                        extractedData.validationStatus === 'valid' 
+                          ? 'text-green-800' 
+                          : extractedData.validationStatus === 'needs_review'
+                            ? 'text-yellow-800'
+                            : extractedData.validationStatus === 'incomplete'
+                              ? 'text-orange-800'
+                              : 'text-red-800'
+                      }`}>
+                        {extractedData.validationStatus === 'valid' 
+                          ? 'Dados Completos' 
+                          : extractedData.validationStatus === 'needs_review'
+                            ? 'Revisão Recomendada'
+                            : extractedData.validationStatus === 'incomplete'
+                              ? 'Dados Incompletos'
+                              : 'Validação Falhou'}
+                      </h3>
+                      <div className={`mt-2 text-sm ${
+                        extractedData.validationStatus === 'valid' 
+                          ? 'text-green-700' 
+                          : extractedData.validationStatus === 'needs_review'
+                            ? 'text-yellow-700'
+                            : extractedData.validationStatus === 'incomplete'
+                              ? 'text-orange-700'
+                              : 'text-red-700'
+                      }`}>
+                        <p>
+                          {extractedData.validationStatus === 'valid' 
+                            ? 'Todos os dados foram extraídos com sucesso. Verifique antes de confirmar.' 
+                            : extractedData.validationStatus === 'needs_review'
+                              ? 'Os dados foram extraídos, mas é recomendável revisar antes de confirmar.'
+                              : extractedData.validationStatus === 'incomplete'
+                                ? 'Alguns dados importantes não puderam ser extraídos. Por favor, edite manualmente.'
+                                : 'Não foi possível validar os dados extraídos. Edite manualmente.'}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
+              
+              {/* Se houver campos ausentes, listá-los */}
+              {extractedData?.validation?.missingFields && extractedData.validation.missingFields.length > 0 && (
+                <div className="rounded-md bg-yellow-50 p-4 mt-4 border border-yellow-200">
+                  <div className="flex">
+                    <div className="flex-shrink-0">
+                      <Info className="h-5 w-5 text-yellow-500" />
+                    </div>
+                    <div className="ml-3">
+                      <h3 className="text-sm font-medium text-yellow-800">
+                        Campos Ausentes
+                      </h3>
+                      <div className="mt-2 text-sm text-yellow-700">
+                        <p>
+                          Os seguintes campos não puderam ser extraídos:
+                        </p>
+                        <ul className="list-disc pl-5 mt-1 space-y-1">
+                          {extractedData.validation.missingFields.map((field, index) => (
+                            <li key={index}>{field}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {/* Se não houver status de validação, mostrar mensagem padrão */}
+              {!extractedData?.validationStatus && (
+                <div className="rounded-md bg-yellow-50 p-4 mt-4 border border-yellow-200">
+                  <div className="flex">
+                    <div className="flex-shrink-0">
+                      <AlertCircle className="h-5 w-5 text-yellow-500" />
+                    </div>
+                    <div className="ml-3">
+                      <h3 className="text-sm font-medium text-yellow-800">
+                        Confirmação Necessária
+                      </h3>
+                      <div className="mt-2 text-sm text-yellow-700">
+                        <p>
+                          Verifique os dados extraídos pela IA antes de confirmar a reserva. 
+                          Você pode editar quaisquer informações que precisem de correção.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
             <DialogFooter className="mt-4">
               <Button 

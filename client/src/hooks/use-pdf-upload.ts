@@ -4,14 +4,25 @@ import {
   createReservationFromExtractedData, 
   processPDFWithMistralOCR,
   processMultiplePDFs,
-  processReservationFile 
+  processReservationFile,
+  ExtractedData,
+  ValidationStatus,
+  ValidationError,
+  UploadResponse
 } from "@/lib/ocr";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
 // Interface para resultados do processamento múltiplo
 interface ProcessingResult {
-  extractedData?: any;
+  extractedData?: ExtractedData;
+  validation?: {
+    status: ValidationStatus;
+    isValid: boolean;
+    errors: ValidationError[];
+    missingFields: string[];
+    warningFields: string[];
+  };
   error?: boolean;
   message?: string;
   file: {
