@@ -195,7 +195,10 @@ export async function parseReservationFromText(text: string, apiKey: string): Pr
     }
     
     // Obter os argumentos da chamada da ferramenta
-    const extractedData = JSON.parse(toolCalls[0].function.arguments);
+    const args = toolCalls[0].function.arguments;
+    // Tratando como string para compatibilidade com a tipagem
+    const argsString = typeof args === 'string' ? args : JSON.stringify(args);
+    const extractedData = JSON.parse(argsString);
     
     // Adicionar o texto original para referência
     return {
@@ -227,7 +230,7 @@ function cleanExtractedText(text: string): string {
 
 /**
  * Processa um documento PDF para extrair dados de reserva
- * Implementa diferentes estratégias caso o modelo de visão não esteja disponível
+ * Utiliza pdf-parse para extração de texto e Mistral AI para a análise estruturada
  * @param pdfPath Caminho do arquivo PDF
  * @param apiKey Chave API do Mistral
  */
@@ -242,28 +245,10 @@ export async function processPdf(pdfPath: string, apiKey: string): Promise<Extra
     
     // Ler arquivo
     const pdfBuffer = fs.readFileSync(pdfPath);
+    log(`PDF carregado (${Math.round(pdfBuffer.length / 1024)} KB)`, 'pdf-extract');
     
-    // Converter para base64 (para tentativa com API de visão)
-    const pdfBase64 = pdfBuffer.toString('base64');
-    log(`PDF convertido para base64 (${Math.round(pdfBase64.length / 1024)} KB)`, 'pdf-extract');
-    
-    let extractedText: string;
-    
-    try {
-      // Tentar extrair texto com Mistral Vision (pode falhar se modelo não estiver disponível)
-      extractedText = await extractTextFromPdfWithMistral(pdfBase64, apiKey);
-      log('Texto extraído com sucesso via Mistral Vision', 'pdf-extract');
-    } catch (extractError: any) {
-      if (extractError.message === 'VISION_MODEL_UNAVAILABLE') {
-        log('Modelo de visão não disponível. Usando extração com pdf-parse.', 'pdf-extract');
-        
-        // Usar pdf-parse como alternativa
-        extractedText = await extractTextWithPdfParse(pdfBuffer);
-      } else {
-        // Se for outro tipo de erro, repassar
-        throw extractError;
-      }
-    }
+    // Extrair texto usando pdf-parse
+    const extractedText = await extractTextWithPdfParse(pdfBuffer);
     
     // Limpar e normalizar o texto
     const cleanedText = cleanExtractedText(extractedText);
