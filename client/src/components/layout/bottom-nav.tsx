@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation } from "wouter";
+import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import {
@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 
 export function BottomNav() {
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const { t, i18n } = useTranslation();
   const isPortuguese = i18n.language?.startsWith("pt");
   
@@ -68,22 +68,24 @@ export function BottomNav() {
     <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-background border-t border-border z-40">
       <div className="grid grid-cols-5 h-full">
         {navItems.map((item) => (
-          <Link key={item.href} href={item.href}>
-            <a className={cn(
-              "flex flex-col items-center justify-center h-full p-1",
+          <button
+            key={item.href}
+            onClick={() => navigate(item.href)}
+            className={cn(
+              "flex flex-col items-center justify-center h-full p-1 w-full",
               isActive(item.href, item.altHref) 
                 ? "text-primary" 
                 : "text-muted-foreground hover:text-foreground"
-            )}>
-              <item.icon className={cn(
-                "h-5 w-5 mb-1", 
-                isActive(item.href, item.altHref) ? "text-primary" : ""
-              )} />
-              <span className="text-xs font-medium truncate max-w-full">
-                {item.name}
-              </span>
-            </a>
-          </Link>
+            )}
+          >
+            <item.icon className={cn(
+              "h-5 w-5 mb-1", 
+              isActive(item.href, item.altHref) ? "text-primary" : ""
+            )} />
+            <span className="text-xs font-medium truncate max-w-full">
+              {item.name}
+            </span>
+          </button>
         ))}
       </div>
     </div>
