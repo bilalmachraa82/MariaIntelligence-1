@@ -649,90 +649,137 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // PDF Upload and Processing
   app.post("/api/upload-pdf", upload.single('pdf'), async (req: Request, res: Response) => {
     try {
+      console.log('Iniciando processamento de upload de PDF...');
+      
       if (!req.file) {
-        return res.status(400).json({ message: "Nenhum arquivo enviado" });
+        return res.status(400).json({ 
+          success: false,
+          message: "Nenhum arquivo enviado" 
+        });
       }
 
       // Verifica se a chave da API Mistral está disponível
       if (!process.env.MISTRAL_API_KEY) {
-        return res.status(500).json({ message: "Chave da API Mistral não configurada" });
+        return res.status(500).json({ 
+          success: false,
+          message: "Chave da API Mistral não configurada" 
+        });
       }
 
       try {
-        // Lê o conteúdo do arquivo PDF enviado
-        const filePath = req.file.path;
-        const fileBuffer = await fs.promises.readFile(filePath);
-        const fileBase64 = fileBuffer.toString('base64');
-
-        // Extrair texto do PDF usando Mistral AI
-        const extractedText = await mistralService.extractTextFromPDF(fileBase64);
-
+        // Importar o serviço de extração de PDF
+        const { processPdf } = require('./services/pdf-extract');
+        console.log(`Processando PDF: ${req.file.path}`);
+        
+        // Usar o novo serviço para extrair dados do PDF
+        const extractedData = await processPdf(req.file.path, process.env.MISTRAL_API_KEY);
+        console.log('Dados extraídos com sucesso:', JSON.stringify(extractedData));
+        
         // Adicionar o texto extraído à base de conhecimento RAG
-        await ragService.addToKnowledgeBase(extractedText, 'reservation_pdf', {
-          filename: req.file.filename,
-          uploadDate: new Date()
-        });
-
-        // Analisar dados da reserva
-        const parsedData = await mistralService.parseReservationData(extractedText);
-
-        // Encontrar a propriedade correspondente pelo nome
-        const properties = await storage.getProperties();
-
-        // Verificação de segurança para garantir que parsedData e propertyName existem
-        if (!parsedData || !parsedData.propertyName) {
-          return res.status(400).json({ 
-            message: "Não foi possível extrair o nome da propriedade do documento",
-            extractedData: parsedData || {}
+        if (extractedData.rawText) {
+          await ragService.addToKnowledgeBase(extractedData.rawText, 'reservation_pdf', {
+            filename: req.file.filename,
+            uploadDate: new Date()
           });
         }
 
-        const matchedProperty = properties.find(p => 
-          p.name.toLowerCase() === parsedData.propertyName.toLowerCase()
-        );
-
+        // Encontrar a propriedade correspondente pelo nome (com lógica mais flexível)
+        const properties = await storage.getProperties();
+        console.log(`Buscando correspondência para propriedade: ${extractedData.propertyName}`);
+        
+        // Lógica de matching de propriedade mais flexível
+        let matchedProperty = null;
+        
+        if (extractedData.propertyName) {
+          // Primeiro tenta match exato (case insensitive)
+          matchedProperty = properties.find(p => 
+            p.name.toLowerCase() === extractedData.propertyName.toLowerCase()
+          );
+          
+          // Se não encontrar, usa matching mais flexível
+          if (!matchedProperty) {
+            // Define uma função de similaridade
+            const calculateSimilarity = (str1, str2) => {
+              const words1 = str1.toLowerCase().split(/\s+/);
+              const words2 = str2.toLowerCase().split(/\s+/);
+              const commonWords = words1.filter(word => words2.includes(word));
+              return commonWords.length / Math.max(words1.length, words2.length);
+            };
+            
+            // Encontrar a propriedade com maior similaridade
+            let bestMatch = null;
+            let highestSimilarity = 0;
+            
+            for (const property of properties) {
+              const similarity = calculateSimilarity(
+                extractedData.propertyName, 
+                property.name
+              );
+              
+              if (similarity > highestSimilarity && similarity > 0.6) {
+                highestSimilarity = similarity;
+                bestMatch = property;
+              }
+            }
+            
+            matchedProperty = bestMatch;
+          }
+        }
+        
+        // Se não encontrar propriedade, define valores padrão
         if (!matchedProperty) {
-          return res.status(400).json({ 
-            message: `Não foi possível encontrar uma propriedade com o nome "${parsedData.propertyName}"`,
-            extractedData: parsedData
-          });
+          matchedProperty = { id: null, cleaningCost: 0, checkInFee: 0, commission: 0, teamPayment: 0 };
         }
 
         // Calcular taxas e valores baseados na propriedade encontrada
-        const totalAmount = parsedData.totalAmount || 0;
-        const platformFee = parsedData.platformFee || (
-          (parsedData.platform === "airbnb" || parsedData.platform === "booking") 
+        const totalAmount = extractedData.totalAmount || 0;
+        const platformFee = extractedData.platformFee || (
+          (extractedData.platform === "airbnb" || extractedData.platform === "booking") 
             ? Math.round(totalAmount * 0.1) 
             : 0
         );
 
+        // Adicionar atividade ao sistema
+        await storage.createActivity({
+          type: 'pdf_processed',
+          description: `PDF processado: ${extractedData.propertyName || 'Propriedade desconhecida'} - ${extractedData.guestName || 'Hóspede desconhecido'}`,
+          userId: null
+        });
+
         // Retorna os dados extraídos com as informações da propriedade
         res.json({
+          success: true,
           extractedData: {
-            ...parsedData,
+            ...extractedData,
             propertyId: matchedProperty.id,
             platformFee: platformFee,
-            cleaningFee: parsedData.cleaningFee || Number(matchedProperty.cleaningCost || 0),
-            checkInFee: parsedData.checkInFee || Number(matchedProperty.checkInFee || 0),
-            commissionFee: parsedData.commissionFee || (totalAmount * Number(matchedProperty.commission || 0) / 100),
-            teamPayment: parsedData.teamPayment || Number(matchedProperty.teamPayment || 0)
+            cleaningFee: extractedData.cleaningFee || Number(matchedProperty.cleaningCost || 0),
+            checkInFee: extractedData.checkInFee || Number(matchedProperty.checkInFee || 0),
+            commissionFee: extractedData.commissionFee || (totalAmount * Number(matchedProperty.commission || 0) / 100),
+            teamPayment: extractedData.teamPayment || Number(matchedProperty.teamPayment || 0)
           },
           file: {
             filename: req.file.filename,
             path: req.file.path
-          }
+          },
+          rawText: extractedData.rawText
         });
-      } catch (mistralError: any) {
-        console.error('Erro na API Mistral:', mistralError);
-        // Caso falhe a chamada à API Mistral, respondemos com um erro adequado
+      } catch (processError) {
+        console.error('Erro no processamento do PDF:', processError);
+        // Retornar erro formatado
         return res.status(500).json({ 
-          message: "Falha ao processar PDF com Mistral AI", 
-          error: mistralError?.message || "Erro desconhecido na API Mistral"
+          success: false,
+          message: "Falha ao processar PDF", 
+          error: processError instanceof Error ? processError.message : "Erro desconhecido no processamento"
         });
       }
     } catch (err) {
       console.error('Erro ao processar upload de PDF:', err);
-      handleError(err, res);
+      return res.status(500).json({
+        success: false,
+        message: "Erro interno no servidor",
+        error: err instanceof Error ? err.message : "Erro desconhecido"
+      });
     }
   });
 

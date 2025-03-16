@@ -119,17 +119,61 @@ export async function uploadAndProcessPDF(file: File): Promise<UploadResponse> {
   const formData = new FormData();
   formData.append("pdf", file);
 
-  const response = await fetch("/api/upload-pdf", {
-    method: "POST",
-    body: formData,
-    credentials: "include",
-  });
+  console.log(`Enviando PDF para servidor: ${file.name} (${file.size} bytes)`);
+  
+  try {
+    // Fazer a requisição ao servidor
+    const response = await fetch("/api/upload-pdf", {
+      method: "POST",
+      body: formData,
+      credentials: "include",
+    });
 
-  if (!response.ok) {
-    throw new Error(`Erro ${response.status}: ${await response.text()}`);
+    // Resposta obtida - verificar status
+    console.log(`Resposta recebida do servidor: ${response.status} ${response.statusText}`);
+    
+    // Em caso de erro de status, obter texto de erro
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`Erro na resposta do servidor: ${response.status}`, errorText);
+      throw new Error(`Erro ${response.status}: ${errorText}`);
+    }
+
+    // Processar resposta JSON
+    const result = await response.json();
+    console.log("Dados extraídos do PDF:", result);
+    
+    // Verificação de segurança
+    if (!result.success && !result.extractedData) {
+      throw new Error(result.message || "Falha no processamento do PDF");
+    }
+    
+    // Se não houver extractedData ou estiver vazio
+    if (!result.extractedData) {
+      // Criar estrutura para não quebrar o fluxo na interface
+      console.warn("Resposta sem dados extraídos, criando estrutura mínima");
+      
+      // Definir dados extraídos mínimos como objeto, não como string
+      result.extractedData = {
+        propertyName: "Não identificada",
+        guestName: "Não identificado",
+        checkInDate: new Date().toISOString().split('T')[0],
+        checkOutDate: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+        numGuests: 1,
+        totalAmount: 0,
+        platform: "other"
+      } as any; // Usar 'as any' temporariamente para evitar problemas de tipo
+      
+      // Adicionar aviso ao componente do resultado
+      result.warning = "Não foi possível extrair todos os dados do PDF. Por favor, preencha manualmente os campos em branco.";
+    }
+    
+    return result;
+  } catch (error) {
+    console.error("Erro ao processar PDF:", error);
+    // Relançar o erro para tratamento no componente
+    throw error;
   }
-
-  return await response.json();
 }
 
 /**
