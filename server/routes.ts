@@ -7,6 +7,7 @@ import { Mistral } from "@mistralai/mistralai";
 import { MistralService } from "./services/mistral.service";
 import { RAGService } from "./services/rag.service";
 import { RagService } from "./services/rag-service";
+import { processPdf } from "./services/pdf-extract";
 import { 
   extendedPropertySchema, 
   extendedOwnerSchema,
@@ -667,8 +668,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       try {
-        // Importar o serviço de extração de PDF
-        const { processPdf } = require('./services/pdf-extract');
+        // Usar o serviço de extração de PDF que já importamos no início do arquivo
         console.log(`Processando PDF: ${req.file.path}`);
         
         // Usar o novo serviço para extrair dados do PDF
