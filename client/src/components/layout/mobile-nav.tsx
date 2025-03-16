@@ -39,7 +39,7 @@ export function MobileNav({ className }: MobileNavProps) {
       </SheetTrigger>
       <SheetContent 
         side="left" 
-        className="p-0 border-r w-full sm:w-72 max-w-[calc(100vw-60px)]"
+        className="p-0 border-r w-full sm:w-64 max-w-[calc(100vw-70px)]"
         aria-describedby="menu-description"
       >
         <SheetHeader className="px-4 py-3 border-b">

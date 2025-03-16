@@ -384,7 +384,7 @@ export function SidebarReorganized({
       iconColor: "text-violet-500"
     },
     {
-      name: t("navigation.documentScan", "Digitalizar Documentos"),
+      name: t("navigation.documentScan", "Scanner"),
       href: "/upload-pdf", // Caminho consistente com o App.tsx
       icon: FileUp,
       iconColor: "text-rose-500"
@@ -525,7 +525,7 @@ export function SidebarReorganized({
   // Versão expandida do menu
   return (
     <aside className={cn(
-      !isMobile && "fixed top-[57px] left-0 z-30 h-[calc(100vh-57px)] w-[220px] border-r border-border",
+      !isMobile && "fixed top-[57px] left-0 z-30 h-[calc(100vh-57px)] w-[210px] border-r border-border",
       "bg-background transition-all duration-300 ease-in-out"
     )}>
       <div className="flex h-full flex-col">
