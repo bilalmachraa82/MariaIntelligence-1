@@ -75,7 +75,7 @@ const SuggestionCard = ({ icon, title, description, onClick, gradient = "from-bl
   return (
     <motion.div
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
-      className={`cursor-pointer rounded-xl p-5 shadow-sm border border-border/40 bg-gradient-to-br ${gradient} overflow-hidden flex flex-col`}
+      className={`cursor-pointer rounded-xl p-5 shadow-sm border border-border/40 bg-gradient-to-br ${gradient} overflow-hidden flex flex-col h-full`}
       onClick={onClick}
     >
       <div className="flex items-center mb-3">
