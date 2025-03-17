@@ -82,16 +82,16 @@ export default function DailyTasksDashboard() {
     propertyName?: string;
   }
 
-  // Fetch properties para obter nomes das propriedades
-  const { data: properties } = useQuery({
+  // Fetch properties para obter nomes das propriedades com cache estendido
+  const { data: properties = [] } = useQuery<Property[]>({
     queryKey: ["/api/properties"],
-    staleTime: 5000,
+    staleTime: 10 * 60 * 1000, // 10 minutos de cache
   });
 
-  // Fetch reservations
-  const { data: rawReservations, isLoading: isLoadingReservations } = useQuery<Reservation[]>({
+  // Fetch reservations com cache estendido
+  const { data: rawReservations = [], isLoading: isLoadingReservations } = useQuery<Reservation[]>({
     queryKey: ["/api/reservations"],
-    staleTime: 5000,
+    staleTime: 5 * 60 * 1000, // 5 minutos de cache
   });
   
   // Processar reservas para adicionar nomes de propriedades
