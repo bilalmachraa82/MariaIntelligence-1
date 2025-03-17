@@ -638,7 +638,7 @@ export default function AssistantPage() {
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={triggerFileUpload}>
                   <UploadCloud className="h-4 w-4 mr-2" />
-                  {t("aiAssistant.uploadDocument", "Anexar documento")}
+                  {t("aiAssistant.uploadDocument", "Anexar ficheiro")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -760,7 +760,7 @@ export default function AssistantPage() {
                     variant="ghost" 
                     size="icon"
                     onClick={triggerFileUpload}
-                    title={t("aiAssistant.attachFile", "Anexar arquivo")}
+                    title={t("aiAssistant.attachFile", "Anexar ficheiro")}
                     disabled={isLoading}
                   >
                     <UploadCloud className="h-4 w-4 text-muted-foreground" />
@@ -784,7 +784,7 @@ export default function AssistantPage() {
                     <Send className="h-4 w-4" />
                   </Button>
                   
-                  {/* Input oculto para upload de arquivo */}
+                  {/* Input oculto para upload de ficheiro */}
                   <input
                     type="file"
                     ref={fileInputRef}
@@ -943,7 +943,7 @@ export default function AssistantPage() {
                     onClick={triggerFileUpload}
                   >
                     <UploadCloud className="h-4 w-4 mr-2" />
-                    {t("aiAssistant.uploadDocument", "Enviar documento")}
+                    {t("aiAssistant.uploadDocument", "Enviar ficheiro")}
                   </Button>
                 </CardContent>
               </Card>
