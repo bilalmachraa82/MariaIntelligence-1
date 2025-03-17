@@ -144,7 +144,7 @@ export async function parseReservationFromText(
         const client = new Mistral({ apiKey });
         
         // Preparar a requisição para o modelo Mistral
-        const response = await client.chatCompletions.create({
+        const response = await client.chat.complete({
           model: "mistral-large-latest",
           messages: [
             {
@@ -238,9 +238,9 @@ export async function parseReservationFromText(
               }
             }
           ],
-          tool_choice: { type: "function", function: { name: "extractReservationData" } },
+          toolChoice: { type: "function", function: { name: "extractReservationData" } },
           temperature: 0.1,
-          max_tokens: 4000
+          maxTokens: 4000
         });
         
         // Extrair os dados da resposta
@@ -248,10 +248,10 @@ export async function parseReservationFromText(
             response.choices && 
             response.choices[0] && 
             response.choices[0].message && 
-            response.choices[0].message.tool_calls && 
-            response.choices[0].message.tool_calls.length > 0) {
+            response.choices[0].message.toolCalls && 
+            response.choices[0].message.toolCalls.length > 0) {
           
-          const toolCall = response.choices[0].message.tool_calls[0];
+          const toolCall = response.choices[0].message.toolCalls[0];
           
           if (toolCall.function && toolCall.function.arguments) {
             // Parse JSON da resposta
