@@ -1,5 +1,29 @@
 {
   "translation": {
+    "aiAssistant": {
+      "title": "Maria Assistant",
+      "tabs": {
+        "chat": "Chat",
+        "suggestions": "Suggestions",
+        "quickAccess": "Quick Access",
+        "tools": "Tools"
+      },
+      "chatTitle": "Maria Assistant",
+      "chatDescription": "Ask questions about properties, bookings and reports",
+      "attachFile": "Attach file",
+      "placeholder": "Type your message here...",
+      "showMore": "Show more",
+      "showLess": "Show less",
+      "welcomeMessage": "Hello! I'm Maria, your Maria Faz intelligent assistant. How can I help you today?",
+      "clearConversation": "New conversation",
+      "uploadDocument": "Upload document",
+      "allSuggestions": "All suggestions",
+      "allSuggestionsDesc": "Explore suggestions by category to get useful information",
+      "contextProperty": "Property",
+      "contextReservation": "Booking",
+      "contextReport": "Report",
+      "contextSuggestion": "Suggestion"
+    },
     "navigation": {
       "mainMenu": "Menu",
       "mainAppNav": "Maria Faz main application navigation",
