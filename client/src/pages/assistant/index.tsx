@@ -73,21 +73,19 @@ const MISTRAL_API_ENDPOINT = "https://api.mistral.ai/v1/chat/completions";
 // Componente para sugestões aprimorado
 const SuggestionCard = ({ icon, title, description, onClick, gradient = "from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/30" }: SuggestionCardProps) => {
   return (
-    <motion.div
-      whileHover={{ y: -4, transition: { duration: 0.2 } }}
-      className={`cursor-pointer rounded-xl p-5 shadow-sm border border-border/40 bg-gradient-to-br ${gradient} overflow-hidden flex flex-col h-full`}
+    <Button 
+      variant="ghost" 
+      className={`w-full p-4 h-auto shadow-sm border border-border/40 bg-gradient-to-br ${gradient} flex flex-col items-start text-left`}
       onClick={onClick}
     >
-      <div className="flex items-center mb-3">
-        <div className="mr-3 rounded-full bg-primary/10 p-2.5 text-primary">
+      <div className="flex w-full items-center gap-3 mb-2">
+        <div className="rounded-full bg-primary/10 p-2 text-primary flex-shrink-0">
           {icon}
         </div>
+        <h3 className="text-base font-semibold line-clamp-1">{title}</h3>
       </div>
-      <div className="flex-1">
-        <h3 className="text-lg font-semibold mb-1 line-clamp-1">{title}</h3>
-        <p className="text-sm text-muted-foreground line-clamp-2">{description}</p>
-      </div>
-    </motion.div>
+      <p className="text-sm text-muted-foreground line-clamp-2 pl-11">{description}</p>
+    </Button>
   );
 };
 
@@ -822,8 +820,8 @@ export default function AssistantPage() {
                 <CardTitle>{t("aiAssistant.quickSuggestions.title", "Atalhos")}</CardTitle>
                 <CardDescription>{t("aiAssistant.quickSuggestions.subtitle", "Ações rápidas para as tuas tarefas mais comuns")}</CardDescription>
               </CardHeader>
-              <CardContent className="p-4 overflow-y-auto">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <CardContent className="p-6 overflow-y-auto">
+                <div className="grid grid-cols-1 gap-4">
                   {suggestions.map(suggestion => (
                     <SuggestionCard
                       key={suggestion.id}
