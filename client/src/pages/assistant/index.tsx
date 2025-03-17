@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReactMarkdown from "react-markdown";
+import { ChatBubble, Message } from "@/components/chat/chat-bubble";
 import { 
   Send, 
   Bot, 
@@ -51,25 +52,7 @@ import { cn } from "@/lib/utils";
 import { useProperties } from "@/hooks/use-properties";
 import { useReservations } from "@/hooks/use-reservations";
 
-// Interface para as mensagens
-interface Message {
-  role: "user" | "assistant";
-  content: string;
-  timestamp: Date;
-  id?: string;
-  feedback?: "positive" | "negative" | null;
-  context?: {
-    type: "property" | "reservation" | "owner" | "report" | "suggestion";
-    data: any;
-  };
-}
-
 // Interfaces para os componentes do assistente
-interface ChatBubbleProps {
-  message: Message;
-  onFeedback?: (id: string, type: "positive" | "negative") => void;
-}
-
 interface SuggestionCardProps {
   icon: ReactNode;
   title: string;
@@ -86,125 +69,6 @@ interface ContextCardProps {
 }
 
 const MISTRAL_API_ENDPOINT = "https://api.mistral.ai/v1/chat/completions";
-
-// Componente de bolha de chat melhorado
-const ChatBubble = ({ message, onFeedback }: ChatBubbleProps) => {
-  const { t } = useTranslation();
-  const isUser = message.role === "user";
-  const [expanded, setExpanded] = useState(false);
-  const messageLength = message.content.length;
-  const isLongMessage = messageLength > 600;
-  
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
-  
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className={`flex ${isUser ? 'justify-end' : 'justify-start'} group`}
-    >
-      {!isUser && (
-        <div className="flex-shrink-0 mr-2">
-          <Avatar className="h-8 w-8 border border-primary/20">
-            <AvatarImage src="/maria-assistant.png" />
-            <AvatarFallback className="bg-primary/10 text-primary text-xs">
-              MF
-            </AvatarFallback>
-          </Avatar>
-        </div>
-      )}
-      
-      <div 
-        className={cn(
-          "max-w-[85%] p-3 rounded-lg shadow-sm",
-          isUser ? 
-            "bg-primary text-primary-foreground rounded-tr-none" : 
-            "bg-muted/70 border border-border/50 rounded-tl-none"
-        )}
-      >
-        <div className={`text-sm mb-2 prose dark:prose-invert prose-sm max-w-none ${isLongMessage && !expanded ? 'line-clamp-8' : ''}`}>
-          {isUser ? (
-            <div>{message.content}</div>
-          ) : (
-            <ReactMarkdown>
-              {message.content}
-            </ReactMarkdown>
-          )}
-        </div>
-        
-        {isLongMessage && (
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="px-2 py-0 h-6 text-xs" 
-            onClick={() => setExpanded(!expanded)}
-          >
-            {expanded ? t("aiAssistant.showLess", "Mostrar menos") : t("aiAssistant.showMore", "Mostrar mais")}
-          </Button>
-        )}
-        
-        {message.context && (
-          <div className="mt-2 pt-2 border-t border-border/30">
-            <Badge variant="outline" className="text-xs flex items-center gap-1">
-              {message.context.type === "property" && <Home className="h-3 w-3" />}
-              {message.context.type === "reservation" && <Calendar className="h-3 w-3" />}
-              {message.context.type === "report" && <BarChart className="h-3 w-3" />}
-              {message.context.type === "suggestion" && <LightbulbIcon className="h-3 w-3" />}
-              {message.context.type === "property" && t("aiAssistant.contextProperty", "Propriedade")}
-              {message.context.type === "reservation" && t("aiAssistant.contextReservation", "Reserva")}
-              {message.context.type === "report" && t("aiAssistant.contextReport", "Relatório")}
-              {message.context.type === "suggestion" && t("aiAssistant.contextSuggestion", "Sugestão")}
-            </Badge>
-          </div>
-        )}
-        
-        <div className="text-xs opacity-70 flex items-center justify-between mt-1">
-          <div className="flex items-center">
-            <Clock className="h-3 w-3 mr-1" />
-            {formatTime(message.timestamp)}
-          </div>
-          
-          {!isUser && message.id && onFeedback && (
-            <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-              <div className="flex gap-1">
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-6 w-6" 
-                  onClick={() => onFeedback(message.id!, "positive")}
-                >
-                  <ThumbsUp className={cn("h-3 w-3", message.feedback === "positive" ? "text-green-500 fill-green-500" : "")} />
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-6 w-6" 
-                  onClick={() => onFeedback(message.id!, "negative")}
-                >
-                  <ThumbsDown className={cn("h-3 w-3", message.feedback === "negative" ? "text-red-500 fill-red-500" : "")} />
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-      
-      {isUser && (
-        <div className="flex-shrink-0 ml-2">
-          <Avatar className="h-8 w-8 border border-primary/20">
-            <AvatarImage src="/user-avatar.png" />
-            <AvatarFallback className="bg-primary/10 text-primary">
-              U
-            </AvatarFallback>
-          </Avatar>
-        </div>
-      )}
-    </motion.div>
-  );
-};
 
 // Componente para sugestões aprimorado
 const SuggestionCard = ({ icon, title, description, onClick, gradient = "from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/30" }: SuggestionCardProps) => {
