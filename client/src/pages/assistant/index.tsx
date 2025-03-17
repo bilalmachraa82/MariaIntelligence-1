@@ -93,7 +93,7 @@ const ChatBubble = ({ message, onFeedback }: ChatBubbleProps) => {
   const isUser = message.role === "user";
   const [expanded, setExpanded] = useState(false);
   const messageLength = message.content.length;
-  const isLongMessage = messageLength > 300;
+  const isLongMessage = messageLength > 600;
   
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -125,7 +125,7 @@ const ChatBubble = ({ message, onFeedback }: ChatBubbleProps) => {
             "bg-muted/70 border border-border/50 rounded-tl-none"
         )}
       >
-        <div className={`text-sm mb-2 prose dark:prose-invert prose-sm max-w-none ${isLongMessage && !expanded ? 'line-clamp-4' : ''}`}>
+        <div className={`text-sm mb-2 prose dark:prose-invert prose-sm max-w-none ${isLongMessage && !expanded ? 'line-clamp-8' : ''}`}>
           {isUser ? (
             <div>{message.content}</div>
           ) : (
@@ -265,15 +265,34 @@ export default function AssistantPage() {
   // ID único para as mensagens
   const generateId = () => Math.random().toString(36).substring(2, 9);
   
-  // Estado das mensagens
-  const [messages, setMessages] = useState<Message[]>([
-    { 
+  // Estado das mensagens com persistência no localStorage
+  const [messages, setMessages] = useState<Message[]>(() => {
+    // Tenta recuperar mensagens do localStorage
+    const savedMessages = localStorage.getItem('chat-messages');
+    
+    if (savedMessages) {
+      try {
+        // Parse as mensagens salvas
+        const parsedMessages = JSON.parse(savedMessages);
+        
+        // Converter strings de data de volta para objetos Date
+        return parsedMessages.map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp)
+        }));
+      } catch (error) {
+        console.error("Erro ao recuperar mensagens do chat:", error);
+      }
+    }
+    
+    // Retorna mensagem de boas-vindas se não houver mensagens salvas
+    return [{ 
       role: "assistant", 
       content: t("aiAssistant.welcomeMessage", "Olá! Sou a Maria, assistente inteligente da plataforma Maria Faz. Como posso ajudar hoje?"), 
       timestamp: new Date(),
       id: generateId()
-    }
-  ]);
+    }];
+  });
 
   // Verificar se a chave da API está disponível
   useEffect(() => {
@@ -306,9 +325,24 @@ export default function AssistantPage() {
   }, [t]);
 
   // Rolar para a última mensagem quando novas mensagens são adicionadas
+  // E salvar as mensagens no localStorage
   useEffect(() => {
+    // Rolagem suave para a última mensagem
     if (bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+    
+    // Salvar mensagens no localStorage para persistência entre navegações
+    try {
+      // Converter as mensagens para um formato serializável
+      const messagesToSave = messages.map(msg => ({
+        ...msg,
+        timestamp: msg.timestamp.toISOString() // Converter Date para string ISO
+      }));
+      
+      localStorage.setItem('chat-messages', JSON.stringify(messagesToSave));
+    } catch (error) {
+      console.error("Erro ao salvar mensagens do chat:", error);
     }
   }, [messages]);
 
@@ -589,16 +623,25 @@ export default function AssistantPage() {
     }
   };
   
-  // Limpar conversa
+  // Limpar conversa e localStorage
   const clearConversation = () => {
-    setMessages([
-      { 
-        role: "assistant", 
-        content: t("aiAssistant.welcomeMessage", "Olá! Sou a Maria, a tua assistente inteligente da Maria Faz. Como posso ajudar-te hoje?"), 
-        timestamp: new Date(),
-        id: generateId()
-      }
-    ]);
+    // Criar nova mensagem de boas-vindas
+    const welcomeMessage = { 
+      role: "assistant", 
+      content: t("aiAssistant.welcomeMessage", "Olá! Sou a Maria, a tua assistente inteligente da Maria Faz. Como posso ajudar-te hoje?"), 
+      timestamp: new Date(),
+      id: generateId()
+    };
+    
+    // Atualizar estado
+    setMessages([welcomeMessage]);
+    
+    // Limpar localStorage também
+    try {
+      localStorage.removeItem('chat-messages');
+    } catch (error) {
+      console.error("Erro ao limpar histórico de chat do localStorage:", error);
+    }
     
     toast({
       title: t("aiAssistant.conversationCleared", "Conversa reiniciada"),
@@ -721,7 +764,8 @@ export default function AssistantPage() {
                   <div className="space-y-6">
                     {/* Mensagens com o novo componente ChatBubble */}
                     <AnimatePresence>
-                      {messages.map((msg, index) => (
+                      {/* Mostra apenas as últimas 20 mensagens para melhorar o desempenho */}
+                      {messages.slice(-20).map((msg, index) => (
                         <ChatBubble 
                           key={msg.id || index} 
                           message={msg} 
