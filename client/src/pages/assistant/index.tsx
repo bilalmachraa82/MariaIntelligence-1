@@ -669,23 +669,23 @@ export default function AssistantPage() {
       {/* Interface Principal - Layout responsivo */}
       <div className="grid grid-cols-1 gap-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="mb-4">
+          <TabsList className="mb-4 flex-wrap h-auto">
             <TabsTrigger value="chat" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              <MessageSquare className="h-4 w-4 mr-2" />
-              {t("aiAssistant.tabs.chat", "Chat")}
+              <MessageSquare className="h-4 w-4 mr-1 flex-shrink-0" />
+              <span className="truncate">{t("aiAssistant.tabs.chat", "Chat")}</span>
             </TabsTrigger>
             <TabsTrigger value="suggestions" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              <LightbulbIcon className="h-4 w-4 mr-2" />
-              {t("aiAssistant.tabs.suggestions", "Sugestões")}
+              <LightbulbIcon className="h-4 w-4 mr-1 flex-shrink-0" />
+              <span className="truncate">{t("aiAssistant.tabs.suggestions", "Sugestões")}</span>
             </TabsTrigger>
             <TabsTrigger value="quick-access" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              <Sparkles className="h-4 w-4 mr-2" />
-              {t("aiAssistant.tabs.quickAccess", "Acesso Rápido")}
+              <Sparkles className="h-4 w-4 mr-1 flex-shrink-0" />
+              <span className="truncate">{t("aiAssistant.tabs.quickAccess", "Acesso Rápido")}</span>
             </TabsTrigger>
             {isMobile && (
               <TabsTrigger value="tools" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                <Settings className="h-4 w-4 mr-2" />
-                {t("aiAssistant.tabs.tools", "Ferramentas")}
+                <Settings className="h-4 w-4 mr-1 flex-shrink-0" />
+                <span className="truncate">{t("aiAssistant.tabs.tools", "Ferramentas")}</span>
               </TabsTrigger>
             )}
           </TabsList>
@@ -809,22 +809,22 @@ export default function AssistantPage() {
               </CardHeader>
               <CardContent>
                 <Tabs defaultValue="business">
-                  <TabsList className="mb-4 grid grid-cols-4 h-auto">
-                    <TabsTrigger value="business" className="text-xs">
-                      <BarChart className="h-3 w-3 mr-1" />
-                      {t("aiAssistant.categories.business", "Negócios")}
+                  <TabsList className="mb-4 grid grid-cols-2 sm:grid-cols-4 h-auto gap-1">
+                    <TabsTrigger value="business" className="text-xs px-2">
+                      <BarChart className="h-3 w-3 mr-1 flex-shrink-0" />
+                      <span className="truncate">{t("aiAssistant.categories.business", "Negócios")}</span>
                     </TabsTrigger>
-                    <TabsTrigger value="properties" className="text-xs">
-                      <Home className="h-3 w-3 mr-1" />
-                      {t("aiAssistant.categories.properties", "Propriedades")}
+                    <TabsTrigger value="properties" className="text-xs px-2">
+                      <Home className="h-3 w-3 mr-1 flex-shrink-0" />
+                      <span className="truncate">{t("aiAssistant.categories.properties", "Propriedades")}</span>
                     </TabsTrigger>
-                    <TabsTrigger value="reservations" className="text-xs">
-                      <Calendar className="h-3 w-3 mr-1" />
-                      {t("aiAssistant.categories.reservations", "Reservas")}
+                    <TabsTrigger value="reservations" className="text-xs px-2">
+                      <Calendar className="h-3 w-3 mr-1 flex-shrink-0" />
+                      <span className="truncate">{t("aiAssistant.categories.reservations", "Reservas")}</span>
                     </TabsTrigger>
-                    <TabsTrigger value="assistant" className="text-xs">
-                      <Bot className="h-3 w-3 mr-1" />
-                      {t("aiAssistant.categories.assistant", "Assistente")}
+                    <TabsTrigger value="assistant" className="text-xs px-2">
+                      <Bot className="h-3 w-3 mr-1 flex-shrink-0" />
+                      <span className="truncate">{t("aiAssistant.categories.assistant", "Assistente")}</span>
                     </TabsTrigger>
                   </TabsList>
                   
@@ -910,13 +910,15 @@ export default function AssistantPage() {
                 
                 {/* Área para informações adicionais ou dicas de uso */}
                 <div className="mt-8">
-                  <Alert className="bg-muted/40 border border-primary/20">
-                    <Book className="h-4 w-4 text-primary" />
-                    <AlertTitle>{t("aiAssistant.tip.title", "Dica")}</AlertTitle>
-                    <AlertDescription>
+                  <div className="bg-muted/40 border border-primary/20 p-4 rounded-lg">
+                    <div className="flex items-center gap-2 mb-1">
+                      <BookOpen className="h-4 w-4 text-primary" />
+                      <h3 className="font-medium">{t("aiAssistant.tip.title", "Dica")}</h3>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
                       {t("aiAssistant.tip.message", "Você pode usar o assistente para obter informações sobre suas propriedades, ajuda com reservas e análises de desempenho. Basta perguntar de forma natural!")}
-                    </AlertDescription>
-                  </Alert>
+                    </p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
