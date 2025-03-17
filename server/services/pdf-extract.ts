@@ -255,7 +255,12 @@ export async function parseReservationFromText(
           
           if (toolCall.function && toolCall.function.arguments) {
             // Parse JSON da resposta
-            const extractedData = JSON.parse(toolCall.function.arguments);
+            const functionArgs = toolCall.function.arguments;
+            const argsString = typeof functionArgs === 'string' 
+              ? functionArgs
+              : JSON.stringify(functionArgs);
+              
+            const extractedData = JSON.parse(argsString);
             
             // Adicionar o texto bruto para referência
             extractedData.rawText = text;
@@ -272,7 +277,7 @@ export async function parseReservationFromText(
             throw new Error('Resposta do Mistral não contém argumentos válidos');
           }
         } else {
-          throw new Error('Resposta do Mistral não contém tool_calls');
+          throw new Error('Resposta do Mistral não contém toolCalls');
         }
       } catch (error) {
         console.error('Erro ao extrair dados de reserva:', error);
