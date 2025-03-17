@@ -183,7 +183,13 @@ export async function processPdfPair(
     // Verificar se temos um par completo
     result.isPairComplete = !!result.checkIn && !!result.checkOut;
     
-    if (!result.checkIn && !result.checkOut) {
+    if (result.isPairComplete) {
+      log('Par completo de documentos identificado (check-in + check-out)', 'pdf-pair');
+    } else if (result.checkIn) {
+      log('Apenas documento de check-in identificado', 'pdf-pair');
+    } else if (result.checkOut) {
+      log('Apenas documento de check-out identificado', 'pdf-pair');
+    } else {
       result.errors.push('Nenhum documento válido de check-in ou check-out encontrado');
       return result;
     }

@@ -1101,12 +1101,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   /**
-   * Endpoint para upload e processamento de múltiplos PDFs
-   * Processa documentos em par (check-in e check-out) para extração completa de dados
+   * Endpoint para upload e processamento de PDFs
+   * Processa documentos individuais ou em par (check-in e check-out) para extração de dados
    * 
-   * Modificado para garantir que sempre processe dois arquivos como par,
-   * identificando o primeiro como check-in e o segundo como check-out
-   * quando necessário.
+   * Pode processar:
+   * - Um único documento (para processamento básico)
+   * - Um par de documentos (para processamento enriquecido com dados de ambos)
+   * 
+   * Para pares, identifica o primeiro como check-in e o segundo como check-out
+   * quando a identificação automática falha.
    */
   app.post("/api/upload-pdf-pair", pdfUpload.array('pdfs', 2), async (req: Request, res: Response) => {
     try {
@@ -1120,14 +1123,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Verifica se temos exatamente 2 arquivos
-      if (req.files.length !== 2) {
+      // Verifica se temos pelo menos um arquivo
+      if (req.files.length === 0) {
         return res.status(400).json({
           success: false,
-          message: "É necessário enviar exatamente 2 arquivos: check-in e check-out",
-          filesReceived: req.files.length
+          message: "É necessário enviar pelo menos um arquivo PDF",
+          filesReceived: 0
         });
       }
+      
+      // Nota: o sistema funciona melhor com 2 arquivos (check-in e check-out),
+      // mas pode processar individualmente quando necessário
 
       // Verifica se a chave da API Mistral está disponível
       if (!process.env.MISTRAL_API_KEY) {
@@ -1274,10 +1280,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
             : 0
         );
 
-        // Adicionar atividade ao sistema
+        // Adicionar atividade ao sistema com tipo adequado (par ou único)
+        const activityType = pairResult.isPairComplete ? 'pdf_pair_processed' : 'pdf_processed';
+        const activityDescription = pairResult.isPairComplete ? 
+          `Par de PDFs processado: ${extractedData?.propertyName || 'Propriedade desconhecida'} - ${extractedData?.guestName || 'Hóspede desconhecido'} (${validationResult.status})` :
+          `PDF processado: ${extractedData?.propertyName || 'Propriedade desconhecida'} - ${extractedData?.guestName || 'Hóspede desconhecido'} (${validationResult.status})`;
+        
         await storage.createActivity({
-          type: 'pdf_pair_processed',
-          description: `Par de PDFs processado: ${extractedData?.propertyName || 'Propriedade desconhecida'} - ${extractedData?.guestName || 'Hóspede desconhecido'} (${validationResult.status})`,
+          type: activityType,
+          description: activityDescription,
           entityId: matchedProperty.id,
           entityType: 'property'
         });
@@ -1293,9 +1304,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
           teamPayment: extractedData?.teamPayment || Number(matchedProperty.teamPayment || 0)
         };
 
+        // Definir uma mensagem adequada com base no tipo de processamento
+        let processMessage = "";
+        if (pairResult.isPairComplete) {
+          processMessage = "Par de documentos processado com sucesso (check-in + check-out)";
+        } else if (pairResult.checkIn) {
+          processMessage = "Documento de check-in processado com sucesso, sem documento de check-out";
+        } else if (pairResult.checkOut) {
+          processMessage = "Documento de check-out processado com sucesso, sem documento de check-in";
+        }
+        
         // Retorna os dados extraídos com as informações da propriedade e status de validação
         res.json({
           success: true,
+          message: processMessage,
           extractedData: enrichedData,
           validation: {
             status: validationResult.status,
