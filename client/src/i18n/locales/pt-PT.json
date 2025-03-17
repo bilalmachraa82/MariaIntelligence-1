@@ -2,7 +2,7 @@
   "translation": {
     "navigation": {
       "mainMenu": "Menu",
-      "mainAppNav": "Navegação principal do aplicativo Maria Faz",
+      "mainAppNav": "Navegação principal da aplicação Maria Faz",
       "home": "Início",
       "properties": "Imóveis",
       "bookings": "Reservas",
@@ -34,15 +34,276 @@
         "utilities": "Utilidades"
       }
     },
+    "aiAssistant": {
+      "title": "Assistente Maria",
+      "tabs": {
+        "chat": "Conversa",
+        "suggestions": "Sugestões",
+        "quickAccess": "Atalhos",
+        "tools": "Opções"
+      },
+      "chatTitle": "Assistente Maria",
+      "chatDescription": "Tira as tuas dúvidas sobre imóveis, reservas e relatórios",
+      "attachFile": "Anexar ficheiro",
+      "placeholder": "Escreve a tua mensagem aqui...",
+      "showMore": "Mostrar mais",
+      "welcomeMessage": "Olá! Sou a Maria, a tua assistente inteligente da Maria Faz. Como posso ajudar-te hoje?",
+      "clearConversation": "Nova conversa",
+      "uploadDocument": "Enviar documento",
+      "allSuggestions": "Todas as sugestões",
+      "allSuggestionsDesc": "Explora sugestões por categoria para obteres informações úteis",
+      "categories": {
+        "business": "Negócios",
+        "properties": "Imóveis",
+        "reservations": "Reservas",
+        "assistant": "Assistente"
+      },
+      "quickSuggestions": {
+        "title": "Atalhos",
+        "subtitle": "Ações rápidas para as tuas tarefas mais comuns"
+      },
+      "tools": {
+        "title": "Opções",
+        "description": "Gerir a conversa e documentos"
+      },
+      "tip": {
+        "title": "Dica",
+        "message": "Podes usar o assistente para obteres informações sobre os teus imóveis, ajuda com reservas e análises de desempenho. Basta perguntares de forma natural!"
+      },
+      "suggestions": {
+        "business": {
+          "revenue": "Qual foi a receita total no último mês?",
+          "occupancy": "Qual é a taxa de ocupação dos meus imóveis?",
+          "profit": "Como está o lucro este mês comparado com o mês passado?"
+        }
+      },
+      "quickPrompts": {
+        "revenue": "Podes mostrar-me um resumo da receita dos últimos 3 meses?",
+        "properties": "Quais são os meus imóveis com melhor desempenho?",
+        "recommendations": "Que recomendações tens para melhorar o rendimento dos meus alugueres?",
+        "knowledgebase": "Quais são as melhores práticas para gestão de imóveis no sistema?"
+      },
+      "features": {
+        "revenueTitle": "Relatórios",
+        "revenue": "Análise de receitas",
+        "propertiesTitle": "Imóveis",
+        "properties": "Informações detalhadas",
+        "documentsTitle": "Processamento",
+        "documents": "Upload de documentos",
+        "knowledgebaseTitle": "Base de Conhecimento"
+      },
+      "quickSuggestions": {
+        "revenueDesc": "Análises e estatísticas",
+        "propertiesDesc": "Gestão e desempenho",
+        "helpTitle": "Ajuda & Recomendações",
+        "helpDesc": "Dicas para otimização",
+        "marketDesc": "FAQs e melhores práticas"
+      }
+    },
     "dashboard": {
-      "title": "Dashboard",
-      "description": "Visão geral do seu negócio de aluguel de imóveis",
+      "title": "Painel",
+      "description": "Visão geral do teu negócio de aluguer de imóveis",
       "period": "Período",
       "export": "Exportar",
       "overview": "Visão Geral",
       "totalRevenue": "Receita Total",
       "netProfit": "Lucro Líquido",
-      "occupancyRate": "Taxa de Ocupação"
+      "occupancyRate": "Taxa de Ocupação",
+      "details": "Detalhes",
+      "target": "Meta",
+      "totalReservations": "Total de Reservas",
+      "revenueVsProfit": "Receita vs Lucro",
+      "financialBreakdown": "Distribuição Financeira",
+      "detailedDescription": "Análise detalhada de receitas, despesas e lucro por imóvel.",
+      "comingSoon": "Análise detalhada em desenvolvimento. Disponível em breve!",
+      "backToOverview": "Voltar para Visão Geral",
+      "noDataAvailable": "Não há dados disponíveis."
+    },
+    "reservations": {
+      "recentReservations": "Reservas Recentes",
+      "recentReservationsSubtitle": "As reservas mais recentes em todos os imóveis",
+      "new": "Nova Reserva",
+      "upload": "Importar Reserva",
+      "property": "Imóvel",
+      "guest": "Hóspede",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "nights": "Noites",
+      "amount": "Valor",
+      "platform": "Plataforma",
+      "status": "Estado",
+      "details": "Detalhes",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "uploadPdf": "Importar PDF",
+      "dragAndDrop": "Arrasta e larga um PDF aqui ou clica para selecionar",
+      "uploadedFile": "Ficheiro carregado",
+      "remove": "Remover",
+      "process": "Processar",
+      "status": {
+        "confirmed": "Confirmada",
+        "pending": "Pendente",
+        "completed": "Concluída",
+        "cancelled": "Cancelada"
+      },
+      "form": {
+        "title": "Detalhes da Reserva",
+        "propertyId": "Imóvel",
+        "selectProperty": "Seleciona um imóvel",
+        "guestName": "Nome do Hóspede",
+        "guestEmail": "Email do Hóspede",
+        "guestPhone": "Telefone do Hóspede",
+        "checkInDate": "Data de Check-in",
+        "checkOutDate": "Data de Check-out",
+        "platform": "Plataforma",
+        "selectPlatform": "Seleciona uma plataforma",
+        "numGuests": "Número de Hóspedes",
+        "totalAmount": "Valor Total",
+        "cleaningFee": "Taxa de Limpeza",
+        "platformFee": "Taxa da Plataforma",
+        "checkInFee": "Taxa de Check-in",
+        "commissionFee": "Comissão",
+        "teamPayment": "Pagamento da Equipa",
+        "status": "Estado",
+        "selectStatus": "Seleciona um estado",
+        "notes": "Notas",
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "errors": {
+          "propertyRequired": "Seleciona um imóvel",
+          "guestNameRequired": "Nome do hóspede é obrigatório",
+          "checkInRequired": "Data de check-in é obrigatória",
+          "checkOutRequired": "Data de check-out é obrigatória",
+          "invalidEmail": "Email inválido",
+          "invalidPhone": "Telefone inválido",
+          "invalidGuests": "Número de hóspedes inválido",
+          "invalidAmount": "Valor total inválido"
+        }
+      }
+    },
+    "activities": {
+      "recentActivity": "Atividade Recente",
+      "recentActivitySubtitle": "Registo de ações e eventos no sistema",
+      "property_created": "Imóvel criado",
+      "property_updated": "Imóvel atualizado",
+      "property_deleted": "Imóvel eliminado",
+      "reservation_created": "Reserva criada",
+      "reservation_updated": "Reserva atualizada",
+      "reservation_deleted": "Reserva eliminada",
+      "owner_created": "Proprietário criado",
+      "owner_updated": "Proprietário atualizado",
+      "owner_deleted": "Proprietário eliminado",
+      "pdf_processed": "PDF processado",
+      "assistant_chat": "Conversa com assistente",
+      "system_update": "Atualização do sistema",
+      "payment_recorded": "Pagamento registado",
+      "invoice_generated": "Fatura gerada"
+    },
+    "pdfUpload": {
+      "title": "Processamento de Documentos",
+      "subtitle": "Importa PDFs de reservas para processamento automático",
+      "uploadButton": "Importar PDF",
+      "dragAndDrop": "Arrasta e larga um PDF aqui ou clica para selecionar",
+      "processing": "A processar documento...",
+      "success": "Documento processado com sucesso!",
+      "error": "Erro ao processar o documento",
+      "extracted": {
+        "title": "Dados Extraídos",
+        "property": "Imóvel",
+        "guest": "Hóspede",
+        "checkIn": "Check-in",
+        "checkOut": "Check-out",
+        "amount": "Valor",
+        "platform": "Plataforma",
+        "save": "Guardar Reserva",
+        "edit": "Editar Dados",
+        "validation": {
+          "valid": "Dados completos e válidos",
+          "incomplete": "Dados incompletos",
+          "needsReview": "Requer revisão",
+          "failed": "Falha na extração"
+        }
+      }
+    },
+    "common": {
+      "loading": "A carregar...",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "search": "Pesquisar...",
+      "filter": "Filtrar",
+      "name": "Nome",
+      "status": "Estado",
+      "actions": "Ações",
+      "language": "Idioma",
+      "profile": "Perfil",
+      "help": "Ajuda",
+      "confirm": "Confirmar",
+      "email": "Email",
+      "phone": "Telefone",
+      "company": "Empresa"
+    },
+    "demoData": {
+      "title": "Dados de demonstração",
+      "description": "Carrega dados fictícios para visualizares as funcionalidades do sistema.",
+      "load": "Carregar dados de demonstração",
+      "loadTitle": "Carregar dados de demonstração",
+      "loadDescription": "Seleciona quais tipos de dados desejas gerar para visualização.",
+      "owners": "Proprietários",
+      "ownersDesc": "Proprietários fictícios para associar aos imóveis",
+      "properties": "Imóveis",
+      "propertiesDesc": "Imóveis para aluguer com dados completos",
+      "reservations": "Reservas",
+      "reservationsDesc": "Histórico e reservas futuras",
+      "activities": "Atividades",
+      "activitiesDesc": "Histórico de atividades no sistema",
+      "reset": "Remover dados de demonstração",
+      "resetTitle": "Remover dados de demonstração",
+      "resetWarning": "Esta ação removerá todos os dados marcados como demonstração. Dados reais não serão afetados.",
+      "resetInfo": "Todos os dados marcados como demonstração serão removidos permanentemente. Esta ação não pode ser desfeita.",
+      "confirmReset": "Sim, remover dados",
+      "footer": "Os dados de demonstração são identificados com [DEMO] e não afetam os dados reais."
+    },
+    "settings": {
+      "tabs": {
+        "general": "Geral",
+        "notifications": "Notificações",
+        "account": "Conta",
+        "language": "Idioma",
+        "integrations": "Integrações"
+      },
+      "general": {
+        "title": "Configurações Gerais",
+        "description": "Gere as configurações básicas da tua conta",
+        "timezone": "Fuso Horário",
+        "darkMode": "Modo Escuro"
+      },
+      "notifications": {
+        "title": "Preferências de Notificações",
+        "description": "Controla como e quando recebes notificações",
+        "email": "Notificações por Email",
+        "emailDescription": "Recebe atualizações importantes por email",
+        "newReservation": "Nova Reserva",
+        "cancelledReservation": "Reserva Cancelada",
+        "weeklyReports": "Relatórios Semanais",
+        "sms": "Notificações por SMS",
+        "smsDescription": "Recebe alertas urgentes por SMS"
+      },
+      "account": {
+        "title": "Informações da Conta",
+        "description": "Atualiza os teus dados pessoais e de contacto",
+        "name": "Nome Completo",
+        "changePassword": "Alterar Senha"
+      },
+      "language": {
+        "title": "Preferências de Idioma",
+        "selectLanguage": "Seleciona o teu idioma preferido"
+      },
+      "integrations": {
+        "title": "Integrações",
+        "description": "Conecta com outras plataformas e serviços"
+      }
     }
   }
 }
