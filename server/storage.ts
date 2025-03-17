@@ -92,6 +92,14 @@ export interface IStorage {
   // Relatórios financeiros
   generateOwnerFinancialReport(ownerId: number, month: string, year: string): Promise<any>;
   generateFinancialSummary(startDate?: Date, endDate?: Date): Promise<any>;
+  
+  // RAG - Retrieval Augmented Generation
+  createKnowledgeEmbedding(data: any): Promise<any>;
+  getKnowledgeEmbeddings(): Promise<any[]>;
+  saveConversationHistory(data: any): Promise<any>;
+  getRecentConversationHistory(limit?: number): Promise<any[]>;
+  saveQueryEmbedding(data: any): Promise<any>;
+  getQueryEmbeddings(): Promise<any[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -1912,6 +1920,97 @@ export class DatabaseStorage implements IStorage {
     } finally {
       console.log("============== FIM getOccupancyRate ==============");
     }
+  }
+  
+  // RAG - Retrieval Augmented Generation
+  private knowledgeEmbeddings: Map<number, any> = new Map();
+  private conversationHistory: Map<number, any> = new Map();
+  private queryEmbeddings: Map<number, any> = new Map();
+  private currentKnowledgeId: number = 1;
+  private currentConversationId: number = 1;
+  private currentQueryId: number = 1;
+
+  /**
+   * Salva um embedding de conhecimento
+   * @param data Dados do embedding (conteúdo, tipo, metadados, embedding)
+   */
+  async createKnowledgeEmbedding(data: any): Promise<any> {
+    const id = this.currentKnowledgeId++;
+    const timestamp = new Date();
+    const embedding = {
+      id,
+      content: data.content,
+      contentType: data.contentType || 'general',
+      metadata: data.metadata || {},
+      embedding: data.embedding || {},
+      createdAt: timestamp
+    };
+    
+    this.knowledgeEmbeddings.set(id, embedding);
+    return embedding;
+  }
+
+  /**
+   * Recupera todos os embeddings de conhecimento
+   */
+  async getKnowledgeEmbeddings(): Promise<any[]> {
+    return Array.from(this.knowledgeEmbeddings.values());
+  }
+
+  /**
+   * Salva um registro no histórico de conversas
+   * @param data Dados da mensagem (conteúdo, role, metadados)
+   */
+  async saveConversationHistory(data: any): Promise<any> {
+    const id = this.currentConversationId++;
+    const timestamp = new Date();
+    const message = {
+      id,
+      content: data.content,
+      role: data.role || 'user',
+      metadata: data.metadata || {},
+      createdAt: timestamp
+    };
+    
+    this.conversationHistory.set(id, message);
+    return message;
+  }
+
+  /**
+   * Recupera o histórico recente de conversas
+   * @param limit Número máximo de mensagens para recuperar
+   */
+  async getRecentConversationHistory(limit: number = 10): Promise<any[]> {
+    // Converte o mapa para array, ordena por timestamp (mais recentes primeiro) e limita o número de resultados
+    return Array.from(this.conversationHistory.values())
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice(0, limit);
+  }
+
+  /**
+   * Salva um embedding de consulta
+   * @param data Dados da consulta (consulta, resposta, embedding)
+   */
+  async saveQueryEmbedding(data: any): Promise<any> {
+    const id = this.currentQueryId++;
+    const timestamp = new Date();
+    const query = {
+      id,
+      query: data.query,
+      response: data.response,
+      embedding: data.embedding || {},
+      createdAt: timestamp
+    };
+    
+    this.queryEmbeddings.set(id, query);
+    return query;
+  }
+
+  /**
+   * Recupera todos os embeddings de consultas
+   */
+  async getQueryEmbeddings(): Promise<any[]> {
+    return Array.from(this.queryEmbeddings.values());
   }
 
   // Este método foi movido para cima para evitar duplicação
