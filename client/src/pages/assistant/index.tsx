@@ -587,7 +587,7 @@ export default function AssistantPage() {
     setMessages([
       { 
         role: "assistant", 
-        content: t("aiAssistant.welcomeMessage", "Olá! Sou a Maria, assistente inteligente da plataforma Maria Faz. Como posso ajudar hoje?"), 
+        content: t("aiAssistant.welcomeMessage", "Olá! Sou a Maria, a tua assistente inteligente da Maria Faz. Como posso ajudar-te hoje?"), 
         timestamp: new Date(),
         id: generateId()
       }
@@ -695,7 +695,7 @@ export default function AssistantPage() {
                       <Bot className="h-5 w-5 text-primary" />
                       {t("aiAssistant.chatTitle", "Assistente Maria")}
                     </CardTitle>
-                    <CardDescription>{t("aiAssistant.chatDescription", "Tire dúvidas sobre propriedades, reservas e relatórios")}</CardDescription>
+                    <CardDescription>{t("aiAssistant.chatDescription", "Tira as tuas dúvidas sobre imóveis, reservas e relatórios")}</CardDescription>
                   </div>
                   {isMobile && (
                     <Button 
@@ -770,7 +770,7 @@ export default function AssistantPage() {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder={t("aiAssistant.placeholder", "Digite sua mensagem aqui...")}
+                    placeholder={t("aiAssistant.placeholder", "Escreve a tua mensagem aqui...")}
                     disabled={isLoading}
                     className="flex-1"
                   />
@@ -912,7 +912,7 @@ export default function AssistantPage() {
                       <h3 className="font-medium">{t("aiAssistant.tip.title", "Dica")}</h3>
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      {t("aiAssistant.tip.message", "Você pode usar o assistente para obter informações sobre suas propriedades, ajuda com reservas e análises de desempenho. Basta perguntar de forma natural!")}
+                      {t("aiAssistant.tip.message", "Podes usar a assistente para obter informações sobre os teus imóveis, ajuda com reservas e análises de desempenho. Basta perguntares de forma natural!")}
                     </p>
                   </div>
                 </div>
