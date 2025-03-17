@@ -75,7 +75,7 @@ const SuggestionCard = ({ icon, title, description, onClick, gradient = "from-bl
   return (
     <motion.div
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
-      className={`cursor-pointer rounded-xl p-5 shadow-sm border border-border/40 bg-gradient-to-br ${gradient}`}
+      className={`cursor-pointer rounded-xl p-5 shadow-sm border border-border/40 bg-gradient-to-br ${gradient} overflow-hidden flex flex-col`}
       onClick={onClick}
     >
       <div className="flex items-center mb-3">
@@ -83,9 +83,9 @@ const SuggestionCard = ({ icon, title, description, onClick, gradient = "from-bl
           {icon}
         </div>
       </div>
-      <div>
-        <h3 className="text-xl font-semibold mb-1">{title}</h3>
-        <p className="text-sm text-muted-foreground">{description}</p>
+      <div className="flex-1">
+        <h3 className="text-lg font-semibold mb-1 line-clamp-1">{title}</h3>
+        <p className="text-sm text-muted-foreground line-clamp-2">{description}</p>
       </div>
     </motion.div>
   );
@@ -434,7 +434,7 @@ export default function AssistantPage() {
   const suggestions = [
     { 
       id: "s1", 
-      icon: <BarChart className="h-4 w-4" />, 
+      icon: <BarChart className="h-5 w-5" />, 
       title: t("aiAssistant.quickSuggestions.analytics", "Análises de Desempenho"), 
       description: t("aiAssistant.quickSuggestions.analyticsDesc", "Estatísticas do teu negócio"),
       gradient: "from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/30",
@@ -442,27 +442,27 @@ export default function AssistantPage() {
     },
     { 
       id: "s2", 
-      icon: <FileQuestion className="h-4 w-4" />, 
+      icon: <FileQuestion className="h-5 w-5" />, 
       title: t("aiAssistant.quickSuggestions.help", "Ajuda & Recomendações"), 
       description: t("aiAssistant.quickSuggestions.helpDesc", "Dicas para otimização"),
       gradient: "from-emerald-50 to-green-50 dark:from-emerald-950/40 dark:to-green-950/30",
       prompt: t("aiAssistant.quickPrompts.recommendations", "Que recomendações tens para melhorar o rendimento dos meus alugueres?")
     },
     { 
-      id: "s3", 
-      icon: <FileText className="h-4 w-4" />, 
-      title: t("aiAssistant.features.documentsTitle", "Processamento"), 
-      description: t("aiAssistant.features.documents", "Upload de documentos"),
-      gradient: "from-amber-50 to-yellow-50 dark:from-amber-950/40 dark:to-yellow-950/30",
-      isFileUpload: true
-    },
-    { 
       id: "s4", 
-      icon: <Search className="h-4 w-4" />, 
+      icon: <Search className="h-5 w-5" />, 
       title: t("aiAssistant.features.knowledgebaseTitle", "Base de Conhecimento"), 
       description: t("aiAssistant.quickSuggestions.marketDesc", "FAQs e melhores práticas"),
       gradient: "from-violet-50 to-purple-50 dark:from-violet-950/40 dark:to-purple-950/30",
       prompt: t("aiAssistant.quickPrompts.knowledgebase", "Quais são as melhores práticas para gestão de imóveis no sistema?")
+    },
+    { 
+      id: "s5", 
+      icon: <Calendar className="h-5 w-5" />, 
+      title: t("aiAssistant.quickSuggestions.reservations", "Próximas Reservas"), 
+      description: t("aiAssistant.quickSuggestions.reservationsDesc", "Check-ins e disponibilidade"),
+      gradient: "from-amber-50 to-yellow-50 dark:from-amber-950/40 dark:to-yellow-950/30",
+      prompt: t("aiAssistant.quickPrompts.reservations", "Quais são as próximas reservas que tenho agendadas?")
     },
   ];
 
@@ -487,22 +487,17 @@ export default function AssistantPage() {
     const suggestion = suggestions.find(s => s.id === id);
     
     if (suggestion) {
-      if (suggestion.isFileUpload) {
-        // Se for uma sugestão de upload de arquivo, aciona o input de arquivo
-        triggerFileUpload();
-      } else {
-        // Se tiver um prompt específico, usa-o diretamente
-        if (suggestion.prompt) {
-          // Mudando para a aba de chat, se não estiver nela
-          if (activeTab !== "chat") {
-            setActiveTab("chat");
-          }
-          // Enviar a mensagem diretamente com o texto do prompt
-          // Não usamos setTimeout aqui para garantir envio imediato
-          sendMessage(suggestion.prompt);
-        } else {
-          console.warn(`Sugestão com ID ${id} não possui prompt definido.`);
+      // Se tiver um prompt específico, usa-o diretamente
+      if (suggestion.prompt) {
+        // Mudando para a aba de chat, se não estiver nela
+        if (activeTab !== "chat") {
+          setActiveTab("chat");
         }
+        // Enviar a mensagem diretamente com o texto do prompt
+        // Não usamos setTimeout aqui para garantir envio imediato
+        sendMessage(suggestion.prompt);
+      } else {
+        console.warn(`Sugestão com ID ${id} não possui prompt definido.`);
       }
     } else {
       console.warn(`Sugestão com ID ${id} não encontrada.`);
