@@ -822,7 +822,7 @@ export default function AssistantPage() {
                 <CardTitle>{t("aiAssistant.quickSuggestions.title", "Atalhos")}</CardTitle>
                 <CardDescription>{t("aiAssistant.quickSuggestions.subtitle", "Ações rápidas para as tuas tarefas mais comuns")}</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-4 overflow-y-auto">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {suggestions.map(suggestion => (
                     <SuggestionCard
