@@ -1103,16 +1103,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
   /**
    * Endpoint para upload e processamento de múltiplos PDFs
    * Processa documentos em par (check-in e check-out) para extração completa de dados
+   * 
+   * Modificado para garantir que sempre processe dois arquivos como par,
+   * identificando o primeiro como check-in e o segundo como check-out
+   * quando necessário.
    */
   app.post("/api/upload-pdf-pair", pdfUpload.array('pdfs', 2), async (req: Request, res: Response) => {
     try {
       console.log('Iniciando processamento de par de PDFs...');
       
       // Verificar se foram enviados arquivos
-      if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
+      if (!req.files || !Array.isArray(req.files)) {
         return res.status(400).json({ 
           success: false,
           message: "Nenhum arquivo enviado" 
+        });
+      }
+      
+      // Verifica se temos exatamente 2 arquivos
+      if (req.files.length !== 2) {
+        return res.status(400).json({
+          success: false,
+          message: "É necessário enviar exatamente 2 arquivos: check-in e check-out",
+          filesReceived: req.files.length
         });
       }
 

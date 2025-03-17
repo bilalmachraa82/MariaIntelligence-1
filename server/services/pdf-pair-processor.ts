@@ -105,6 +105,9 @@ export async function identifyDocumentType(filePath: string): Promise<DocumentIn
  * completas da reserva. Se apenas um documento estiver disponível, 
  * processa com as informações parciais.
  * 
+ * Quando dois documentos estão presentes, garante que um é identificado como
+ * check-in e outro como check-out, mesmo que a identificação automática falhe.
+ * 
  * @param files Lista de caminhos para os arquivos PDF
  * @param apiKey Chave da API Mistral para processamento de texto
  * @returns Resultado do processamento com informações da reserva
@@ -126,16 +129,56 @@ export async function processPdfPair(
     
     for (const filePath of files) {
       const docInfo = await identifyDocumentType(filePath);
-      if (docInfo.type !== DocumentType.UNKNOWN) {
-        documents.push(docInfo);
-      } else {
-        result.errors.push(`Não foi possível identificar o tipo do documento: ${path.basename(filePath)}`);
-      }
+      documents.push(docInfo); // Incluímos todos, mesmo os não identificados
     }
     
     // Fase 2: Separar em check-in e check-out
-    result.checkIn = documents.find(doc => doc.type === DocumentType.CHECK_IN);
-    result.checkOut = documents.find(doc => doc.type === DocumentType.CHECK_OUT);
+    // Primeiro, tentamos usar a identificação automática
+    let checkInDoc = documents.find(doc => doc.type === DocumentType.CHECK_IN);
+    let checkOutDoc = documents.find(doc => doc.type === DocumentType.CHECK_OUT);
+    
+    // Se temos dois documentos, mas não foram identificados corretamente como par,
+    // vamos forçar a identificação para que sempre tenhamos um par completo
+    if (documents.length === 2) {
+      if (!checkInDoc && !checkOutDoc) {
+        // Nenhum foi identificado, então definimos o primeiro como check-in e o segundo como check-out
+        documents[0].type = DocumentType.CHECK_IN;
+        documents[1].type = DocumentType.CHECK_OUT;
+        checkInDoc = documents[0];
+        checkOutDoc = documents[1];
+        log('Forçando identificação: primeiro arquivo como check-in, segundo como check-out', 'pdf-pair');
+      } 
+      else if (checkInDoc && !checkOutDoc) {
+        // Apenas check-in foi identificado, então o outro é check-out
+        const otherDoc = documents.find(doc => doc !== checkInDoc);
+        if (otherDoc) {
+          otherDoc.type = DocumentType.CHECK_OUT;
+          checkOutDoc = otherDoc;
+          log('Forçando identificação: segundo arquivo como check-out', 'pdf-pair');
+        }
+      } 
+      else if (!checkInDoc && checkOutDoc) {
+        // Apenas check-out foi identificado, então o outro é check-in
+        const otherDoc = documents.find(doc => doc !== checkOutDoc);
+        if (otherDoc) {
+          otherDoc.type = DocumentType.CHECK_IN;
+          checkInDoc = otherDoc;
+          log('Forçando identificação: primeiro arquivo como check-in', 'pdf-pair');
+        }
+      }
+      else if (checkInDoc && checkOutDoc && checkInDoc === checkOutDoc) {
+        // O mesmo documento foi identificado como ambos, o que não deveria acontecer
+        // Neste caso, o primeiro é check-in e o segundo é check-out
+        documents[0].type = DocumentType.CHECK_IN;
+        documents[1].type = DocumentType.CHECK_OUT;
+        checkInDoc = documents[0];
+        checkOutDoc = documents[1];
+        log('Corrigindo identificação conflitante: primeiro arquivo como check-in, segundo como check-out', 'pdf-pair');
+      }
+    }
+    
+    result.checkIn = checkInDoc;
+    result.checkOut = checkOutDoc;
     
     // Verificar se temos um par completo
     result.isPairComplete = !!result.checkIn && !!result.checkOut;
@@ -161,6 +204,28 @@ export async function processPdfPair(
     // Adicionar informação sobre o tipo de documento processado
     if (result.reservationData) {
       result.reservationData.documentType = primaryDoc.type;
+      
+      // Se temos ambos os documentos, podemos enriquecer os dados com informações do segundo documento
+      if (result.isPairComplete && result.checkOut && result.checkIn !== result.checkOut) {
+        try {
+          // Extrair informações adicionais do documento de check-out, se necessário
+          // Isso pode ser usado para complementar dados ausentes no documento primário
+          const secondaryData = await parseReservationFromText(result.checkOut.text, apiKey);
+          
+          if (secondaryData) {
+            // Preencher campos ausentes no documento primário com dados do secundário
+            for (const key in secondaryData) {
+              if (!result.reservationData[key] && secondaryData[key]) {
+                result.reservationData[key] = secondaryData[key];
+                log(`Campo '${key}' preenchido com dados do documento secundário`, 'pdf-pair');
+              }
+            }
+          }
+        } catch (error) {
+          log(`Erro ao processar documento secundário: ${error.message}`, 'pdf-pair');
+          // Não interrompe o processamento principal
+        }
+      }
     }
     
     // Fase 4: Validar os dados extraídos
