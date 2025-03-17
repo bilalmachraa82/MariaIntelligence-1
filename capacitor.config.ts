@@ -16,7 +16,11 @@ const config: CapacitorConfig = {
       keystoreAlias: 'key0',
       keystorePassword: 'maria123',
       keyPassword: 'maria123'
-    }
+    },
+    backgroundColor: "#ffffff",
+    allowMixedContent: true,
+    captureInput: true,
+    webContentsDebuggingEnabled: true
   },
   ios: {
     contentInset: 'always'
