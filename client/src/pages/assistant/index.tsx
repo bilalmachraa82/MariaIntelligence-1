@@ -216,7 +216,7 @@ export default function AssistantPage() {
     
     // Adiciona mensagem do usuário
     const userMessage: Message = { 
-      role: "user", 
+      role: "user" as const, 
       content: message, 
       timestamp: new Date(),
       id: generateId()
@@ -231,7 +231,7 @@ export default function AssistantPage() {
       if (!hasMistralKey) {
         setTimeout(() => {
           const assistantMessage: Message = { 
-            role: "assistant", 
+            role: "assistant" as const, 
             content: t(
               "aiAssistant.noApiKeyMessage", 
               "Para usar todas as funcionalidades do assistente, por favor configure a chave da API Mistral nas configurações."
@@ -296,7 +296,7 @@ export default function AssistantPage() {
       }
       
       const assistantMessage: Message = { 
-        role: "assistant", 
+        role: "assistant" as const, 
         content: data.reply || t("aiAssistant.errorMessage", "Desculpe, não consegui processar sua solicitação."), 
         timestamp: new Date(),
         id: generateId(),
@@ -313,7 +313,7 @@ export default function AssistantPage() {
       });
       
       const errorMessage: Message = { 
-        role: "assistant", 
+        role: "assistant" as const, 
         content: t("aiAssistant.errorMessage", "Desculpe, encontrei um problema. Tente novamente mais tarde."), 
         timestamp: new Date(),
         id: generateId()
@@ -373,7 +373,7 @@ export default function AssistantPage() {
       setIsLoading(false);
       
       const assistantMessage: Message = { 
-        role: "assistant", 
+        role: "assistant" as const, 
         content: t(
           "aiAssistant.fileProcessed", 
           `Recebi seu arquivo "${file.name}". O que gostaria de saber sobre ele?`
@@ -491,7 +491,7 @@ export default function AssistantPage() {
   const clearConversation = () => {
     // Criar nova mensagem de boas-vindas
     const welcomeMessage: Message = { 
-      role: "assistant", 
+      role: "assistant" as const, 
       content: t("aiAssistant.welcomeMessage", "Olá! Sou a Maria, a tua assistente inteligente da Maria Faz. Como posso ajudar-te hoje?"), 
       timestamp: new Date(),
       id: generateId()
