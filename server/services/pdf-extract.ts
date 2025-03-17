@@ -78,7 +78,7 @@ export interface ValidationResult {
  * @param apiKey Chave API do Mistral
  */
 export async function extractTextFromPdfWithMistral(pdfBase64: string, apiKey: string): Promise<string> {
-  log('Pulando extração via API Vision (não disponível nesta versão)...', 'pdf-extract');
+  log('Tentando extrair texto com Mistral Vision...', 'pdf-extract');
   throw new Error('VISION_MODEL_UNAVAILABLE');
 }
 
@@ -91,17 +91,23 @@ export async function extractTextWithPdfParse(pdfBuffer: Buffer): Promise<string
   try {
     log('Extraindo texto do PDF com pdf-parse...', 'pdf-extract');
     
-    const data = await pdfParse(pdfBuffer);
+    // Configuração para melhorar a performance
+    const options = {
+      max: 0 // Sem limite de páginas
+    };
     
-    // Verificar se o texto foi extraído com sucesso
-    if (!data || !data.text || data.text.trim().length === 0) {
-      throw new Error('Não foi possível extrair texto do PDF');
+    // Fazer o parsing do PDF
+    const data = await pdfParse(pdfBuffer, options);
+    
+    // Verificar se temos texto
+    if (!data || !data.text || data.text.trim() === '') {
+      throw new Error('Texto extraído está vazio');
     }
     
     log(`Texto extraído com sucesso (${data.text.length} caracteres)`, 'pdf-extract');
     return data.text;
   } catch (error: any) {
-    log('Erro ao extrair texto com pdf-parse: ' + error.message, 'pdf-extract');
+    log(`Erro ao extrair texto com pdf-parse: ${error.message}`, 'pdf-extract');
     throw error;
   }
 }
@@ -110,166 +116,200 @@ export async function extractTextWithPdfParse(pdfBuffer: Buffer): Promise<string
  * Processa texto já extraído para obter informações estruturadas de reserva
  * @param text Texto extraído do documento
  * @param apiKey Chave API do Mistral
+ * @param timeout Tempo limite em milissegundos (padrão: 25 segundos)
  */
-export async function parseReservationFromText(text: string, apiKey: string): Promise<ExtractedReservationData> {
+export async function parseReservationFromText(
+  text: string, 
+  apiKey: string, 
+  timeout: number = 25000
+): Promise<ExtractedReservationData> {
+  // Criar uma promessa com timeout
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    setTimeout(() => reject(new Error('Tempo limite excedido ao processar texto')), timeout);
+  });
+  
   try {
     log('Analisando texto para extrair dados de reserva...', 'pdf-extract');
     
-    // Limitar o texto para evitar problemas com tokens muito longos
-    const limitedText = text.slice(0, 5000);
-    
-    // Inicializar cliente Mistral
-    const client = new Mistral({ apiKey });
-    
-    // Definir ferramentas para extração de dados
-    const tools = [
-      {
-        type: "function" as const,
-        function: {
-          name: "extract_reservation_data",
-          description: "Extrair dados estruturados de uma reserva a partir do texto",
-          parameters: {
-            type: "object",
-            properties: {
-              documentType: {
-                type: "string",
-                description: "Tipo de documento (reserva, check-in, fatura, etc.)"
-              },
-              propertyName: {
-                type: "string",
-                description: "Nome da propriedade"
-              },
-              guestName: {
-                type: "string",
-                description: "Nome completo do hóspede"
-              },
-              guestEmail: {
-                type: "string",
-                description: "Email do hóspede (se disponível)"
-              },
-              guestPhone: {
-                type: "string",
-                description: "Telefone do hóspede (se disponível)"
-              },
-              checkInDate: {
-                type: "string",
-                description: "Data de check-in no formato YYYY-MM-DD"
-              },
-              checkOutDate: {
-                type: "string",
-                description: "Data de check-out no formato YYYY-MM-DD"
-              },
-              numGuests: {
-                type: "integer",
-                description: "Número de hóspedes"
-              },
-              totalAmount: {
-                type: "number",
-                description: "Valor total da reserva"
-              },
-              platform: {
-                type: "string",
-                description: "Plataforma de reserva (Airbnb, Booking, etc.)"
-              },
-              cleaningFee: {
-                type: "number",
-                description: "Taxa de limpeza (se disponível)"
-              },
-              checkInFee: {
-                type: "number",
-                description: "Taxa de check-in (se disponível)"
-              },
-              observations: {
-                type: "string",
-                description: "Observações ou informações adicionais importantes"
-              }
-            },
-            required: ["propertyName", "guestName", "checkInDate", "checkOutDate"]
-          }
-        }
-      }
-    ];
-    
-    // Enviar texto para análise
-    const response = await client.chat.complete({
-      model: 'mistral-large-latest', // Usar modelo large para melhor precisão
-      messages: [
-        {
-          role: 'user',
-          content: `Extraia todas as informações de reserva do seguinte texto. O texto foi extraído de um documento de reserva/check-in. Use a função disponível para estruturar os dados. Se não conseguir determinar um campo com certeza, omita-o completamente (não invente dados):
-
-${limitedText}`
-        }
-      ],
-      tools: tools,
-      temperature: 0.2
-    });
-    
-    // Verificar se há ferramenta chamada
-    const toolCalls = response.choices?.[0]?.message?.toolCalls || [];
-    if (toolCalls.length === 0) {
-      throw new Error('Não foi possível extrair dados estruturados do texto');
-    }
-    
-    // Obter os argumentos da chamada da ferramenta com tratamento de erro aprimorado
-    try {
-      const toolCall = toolCalls[0];
-      
-      // Verificar se temos uma função válida com argumentos
-      if (!toolCall || !toolCall.function) {
-        throw new Error('Resposta da API inválida: toolCall ou function ausente');
-      }
-      
-      // Extrair argumentos com verificação de tipo e existência
-      const args = toolCall.function.arguments;
-      
-      if (!args) {
-        throw new Error('Argumentos ausentes na chamada da função');
-      }
-      
-      // Tratando como string para compatibilidade com a tipagem
-      const argsString = typeof args === 'string' ? args : JSON.stringify(args);
-      
-      if (!argsString || argsString.trim() === '') {
-        throw new Error('String de argumentos vazia ou inválida');
-      }
-      
-      // Parse dos argumentos com tratamento de erro
-      let extractedData;
+    // Função principal de processamento
+    const processingPromise = async (): Promise<ExtractedReservationData> => {
       try {
-        extractedData = JSON.parse(argsString);
-      } catch (error: unknown) {
-        const parseError = error instanceof Error ? error : new Error(String(error));
-        log('Erro ao fazer parse de JSON: ' + parseError.message, 'pdf-extract');
-        throw new Error('Falha ao analisar dados JSON: ' + parseError.message);
+        // Limitar o texto para evitar problemas com tokens muito longos
+        const limitedText = text.slice(0, 5000);
+        
+        // Limpar e normalizar o texto
+        const cleanedText = cleanExtractedText(limitedText);
+        
+        // Inicializar cliente Mistral
+        const client = new Mistral({ apiKey });
+        
+        // Preparar a requisição para o modelo Mistral
+        const response = await client.chatCompletions.create({
+          model: "mistral-large-latest",
+          messages: [
+            {
+              role: "system",
+              content: `Você é um assistente especializado em extrair informações estruturadas de documentos de reservas de alojamento local.
+              Sua tarefa é analisar o texto extraído de um PDF e identificar as informações relevantes da reserva.
+              Extraia todos os dados solicitados quando disponíveis. Se um dado não estiver explícito no texto, não invente.
+              Use apenas o que está claramente indicado no documento. Retorne os valores nos formatos especificados.`
+            },
+            {
+              role: "user",
+              content: `Extraia os detalhes da reserva deste texto:\n\n${cleanedText}`
+            }
+          ],
+          tools: [
+            {
+              type: "function",
+              function: {
+                name: "extractReservationData",
+                description: "Extrair dados estruturados de uma reserva a partir do texto",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    documentType: {
+                      type: "string",
+                      description: "Tipo de documento (reserva, check-in, fatura, etc.)"
+                    },
+                    propertyName: {
+                      type: "string",
+                      description: "Nome da propriedade"
+                    },
+                    guestName: {
+                      type: "string",
+                      description: "Nome completo do hóspede"
+                    },
+                    guestEmail: {
+                      type: "string",
+                      description: "Email do hóspede (se disponível)"
+                    },
+                    guestPhone: {
+                      type: "string",
+                      description: "Telefone do hóspede (se disponível)"
+                    },
+                    checkInDate: {
+                      type: "string",
+                      description: "Data de check-in no formato YYYY-MM-DD"
+                    },
+                    checkOutDate: {
+                      type: "string",
+                      description: "Data de check-out no formato YYYY-MM-DD"
+                    },
+                    numGuests: {
+                      type: "integer",
+                      description: "Número de hóspedes"
+                    },
+                    totalAmount: {
+                      type: "number",
+                      description: "Valor total da reserva"
+                    },
+                    platform: {
+                      type: "string",
+                      description: "Plataforma de reserva (Airbnb, Booking, etc.)"
+                    },
+                    cleaningFee: {
+                      type: "number",
+                      description: "Taxa de limpeza (se disponível)"
+                    },
+                    checkInFee: {
+                      type: "number",
+                      description: "Taxa de check-in (se disponível)"
+                    },
+                    commissionFee: {
+                      type: "number",
+                      description: "Taxa de comissão (se disponível)"
+                    },
+                    teamPayment: {
+                      type: "number",
+                      description: "Pagamento à equipe (se disponível)"
+                    },
+                    platformFee: {
+                      type: "number",
+                      description: "Taxa da plataforma (se disponível)"
+                    },
+                    observations: {
+                      type: "string",
+                      description: "Observações adicionais ou notas relevantes"
+                    }
+                  },
+                  required: ["propertyName", "guestName", "checkInDate", "checkOutDate"]
+                }
+              }
+            }
+          ],
+          tool_choice: { type: "function", function: { name: "extractReservationData" } },
+          temperature: 0.1,
+          max_tokens: 4000
+        });
+        
+        // Extrair os dados da resposta
+        if (response && 
+            response.choices && 
+            response.choices[0] && 
+            response.choices[0].message && 
+            response.choices[0].message.tool_calls && 
+            response.choices[0].message.tool_calls.length > 0) {
+          
+          const toolCall = response.choices[0].message.tool_calls[0];
+          
+          if (toolCall.function && toolCall.function.arguments) {
+            // Parse JSON da resposta
+            const extractedData = JSON.parse(toolCall.function.arguments);
+            
+            // Adicionar o texto bruto para referência
+            extractedData.rawText = text;
+            
+            // Remover campos vazios ou undefined
+            for (const key in extractedData) {
+              if (extractedData[key] === undefined || extractedData[key] === null || extractedData[key] === '') {
+                delete extractedData[key];
+              }
+            }
+            
+            return extractedData as ExtractedReservationData;
+          } else {
+            throw new Error('Resposta do Mistral não contém argumentos válidos');
+          }
+        } else {
+          throw new Error('Resposta do Mistral não contém tool_calls');
+        }
+      } catch (error) {
+        console.error('Erro ao extrair dados de reserva:', error);
+        // Em caso de erro, retornar objeto vazio com status de falha
+        return {
+          propertyName: 'Desconhecido',
+          guestName: 'Desconhecido',
+          checkInDate: 'Desconhecido',
+          checkOutDate: 'Desconhecido',
+          validationStatus: ValidationStatus.FAILED,
+          rawText: text,
+          observations: `Erro na extração: ${error instanceof Error ? error.message : 'Erro desconhecido'}`
+        };
       }
-      
-      // Verificar se obtivemos um objeto de dados válido
-      if (!extractedData || typeof extractedData !== 'object') {
-        throw new Error('Dados extraídos inválidos: não é um objeto');
-      }
-      
-      // Adicionar o texto original para referência
-      return {
-        ...extractedData,
-        rawText: text
-      };
-    } catch (error: unknown) {
-      const argError = error instanceof Error ? error : new Error(String(error));
-      log('Erro ao extrair argumentos da chamada: ' + argError.message, 'pdf-extract');
-      // Retornar um objeto mínimo para evitar erros de tipo
-      return {
-        propertyName: '',
-        guestName: '', 
-        checkInDate: '', 
-        checkOutDate: '',
-        rawText: text,
-        observations: 'Falha ao extrair dados estruturados: ' + argError.message
-      };
-    }
-  } catch (error: any) {
-    log('Erro ao analisar dados da reserva: ' + error.message, 'pdf-extract');
-    throw error;
+    };
+    
+    // Executar a promessa principal com um limite de tempo
+    return await Promise.race([processingPromise(), timeoutPromise]) as ExtractedReservationData;
+  } catch (error) {
+    log(`Erro ao processar texto: ${error instanceof Error ? error.message : String(error)}`, 'pdf-extract');
+    
+    // Verificar se o erro foi de timeout
+    const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+    const isTimeout = errorMessage.includes('Tempo limite excedido');
+    
+    // Em caso de erro, retornar objeto vazio com status de falha
+    return {
+      propertyName: 'Desconhecido',
+      guestName: 'Desconhecido',
+      checkInDate: 'Desconhecido',
+      checkOutDate: 'Desconhecido',
+      validationStatus: ValidationStatus.FAILED,
+      rawText: text,
+      observations: isTimeout 
+        ? 'O processamento demorou muito tempo e foi interrompido' 
+        : `Erro na extração: ${errorMessage}`
+    };
   }
 }
 
