@@ -225,6 +225,29 @@
         }
       }
     },
+    "documentScan": {
+      "title": "Scanner de Documentos",
+      "subtitle": "Digitaliza e processa documentos de reservas com IA",
+      "uploadPdfSection": "Carregar PDFs",
+      "uploadPdfDescription": "Carrega PDFs de reservas para processamento com IA",
+      "uploadImageSection": "Carregar Imagens",
+      "uploadImageDescription": "Carrega imagens de reservas para processamento com OCR",
+      "selectImage": "Selecionar imagem",
+      "imageSupport": "Suporte para PNG, JPG ou JPEG",
+      "cameraCaptureSection": "Captura com Câmara",
+      "cameraCaptureDescription": "Tira uma foto do documento diretamente com a câmara do dispositivo",
+      "captureImage": "Capturar imagem",
+      "cameraPermission": "Será necessário permitir acesso à câmara",
+      "instructionsTitle": "Como Funciona",
+      "step1Title": "Selecionar ou Capturar",
+      "step1Description": "Carrega PDFs, seleciona imagens ou captura fotos diretamente dos documentos de reserva",
+      "step2Title": "Processamento com IA",
+      "step2Description": "O sistema analisa automaticamente os dados com OCR e processamento Mistral AI, independente do formato",
+      "step3Title": "Revisão e Confirmação",
+      "step3Description": "Verifica os dados extraídos e confirma para criar uma nova reserva no sistema",
+      "step4Title": "Reserva Criada",
+      "step4Description": "A reserva é automaticamente criada e associada ao imóvel, com todos os cálculos feitos"
+    },
     "common": {
       "loading": "A carregar...",
       "save": "Guardar",
