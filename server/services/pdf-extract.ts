@@ -211,17 +211,60 @@ ${limitedText}`
       throw new Error('Não foi possível extrair dados estruturados do texto');
     }
     
-    // Obter os argumentos da chamada da ferramenta
-    const args = toolCalls[0].function.arguments;
-    // Tratando como string para compatibilidade com a tipagem
-    const argsString = typeof args === 'string' ? args : JSON.stringify(args);
-    const extractedData = JSON.parse(argsString);
-    
-    // Adicionar o texto original para referência
-    return {
-      ...extractedData,
-      rawText: text
-    };
+    // Obter os argumentos da chamada da ferramenta com tratamento de erro aprimorado
+    try {
+      const toolCall = toolCalls[0];
+      
+      // Verificar se temos uma função válida com argumentos
+      if (!toolCall || !toolCall.function) {
+        throw new Error('Resposta da API inválida: toolCall ou function ausente');
+      }
+      
+      // Extrair argumentos com verificação de tipo e existência
+      const args = toolCall.function.arguments;
+      
+      if (!args) {
+        throw new Error('Argumentos ausentes na chamada da função');
+      }
+      
+      // Tratando como string para compatibilidade com a tipagem
+      const argsString = typeof args === 'string' ? args : JSON.stringify(args);
+      
+      if (!argsString || argsString.trim() === '') {
+        throw new Error('String de argumentos vazia ou inválida');
+      }
+      
+      // Parse dos argumentos com tratamento de erro
+      let extractedData;
+      try {
+        extractedData = JSON.parse(argsString);
+      } catch (parseError) {
+        log('Erro ao fazer parse de JSON: ' + parseError.message, 'pdf-extract');
+        throw new Error('Falha ao analisar dados JSON: ' + parseError.message);
+      }
+      
+      // Verificar se obtivemos um objeto de dados válido
+      if (!extractedData || typeof extractedData !== 'object') {
+        throw new Error('Dados extraídos inválidos: não é um objeto');
+      }
+      
+      // Adicionar o texto original para referência
+      return {
+        ...extractedData,
+        rawText: text
+      };
+    } catch (argError) {
+      log('Erro ao extrair argumentos da chamada: ' + argError.message, 'pdf-extract');
+      // Retornar um objeto mínimo para evitar erros de tipo
+      return {
+        propertyName: '',
+        guestName: '', 
+        checkInDate: '', 
+        checkOutDate: '',
+        rawText: text,
+        observations: 'Falha ao extrair dados estruturados: ' + argError.message
+      };
+    }
   } catch (error: any) {
     log('Erro ao analisar dados da reserva: ' + error.message, 'pdf-extract');
     throw error;
