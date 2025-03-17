@@ -489,15 +489,15 @@ export default function AssistantPage() {
   const suggestionCategories = {
     business: [
       { id: "b1", text: t("aiAssistant.suggestions.business.revenue", "Qual foi a receita total no último mês?") },
-      { id: "b2", text: t("aiAssistant.suggestions.business.performance", "Qual propriedade teve o melhor desempenho?") },
-      { id: "b3", text: t("aiAssistant.suggestions.business.occupancy", "Qual é a taxa de ocupação das propriedades?") },
+      { id: "b2", text: t("aiAssistant.suggestions.business.performance", "Qual imóvel teve o melhor desempenho?") },
+      { id: "b3", text: t("aiAssistant.suggestions.business.occupancy", "Qual é a taxa de ocupação dos imóveis?") },
       { id: "b4", text: t("aiAssistant.suggestions.business.trends", "Quais são as tendências de receita?") },
     ],
     properties: [
-      { id: "p1", text: t("aiAssistant.suggestions.properties.list", "Lista das minhas propriedades") },
+      { id: "p1", text: t("aiAssistant.suggestions.properties.list", "Lista dos meus imóveis") },
       { id: "p2", text: t("aiAssistant.suggestions.properties.maintenance", "Existem manutenções pendentes?") },
       { id: "p3", text: t("aiAssistant.suggestions.properties.cleaning", "Quando foi a última limpeza?") },
-      { id: "p4", text: t("aiAssistant.suggestions.properties.recommendations", "Como melhorar minhas propriedades?") },
+      { id: "p4", text: t("aiAssistant.suggestions.properties.recommendations", "Como posso melhorar os meus imóveis?") },
     ],
     reservations: [
       { id: "r1", text: t("aiAssistant.suggestions.reservations.upcoming", "Próximos check-ins agendados") },
@@ -506,10 +506,10 @@ export default function AssistantPage() {
       { id: "r4", text: t("aiAssistant.suggestions.reservations.longestStay", "Qual foi a estadia mais longa?") },
     ],
     assistant: [
-      { id: "a1", text: t("aiAssistant.suggestions.assistant.personality", "Que tipo de personalidade você tem?") },
-      { id: "a2", text: t("aiAssistant.suggestions.assistant.capabilities", "O que você pode fazer por mim?") },
-      { id: "a3", text: t("aiAssistant.suggestions.assistant.dataSource", "De onde vêm suas informações?") },
-      { id: "a4", text: t("aiAssistant.suggestions.assistant.improvement", "Como posso dar feedback sobre você?") },
+      { id: "a1", text: t("aiAssistant.suggestions.assistant.personality", "Que tipo de personalidade tens?") },
+      { id: "a2", text: t("aiAssistant.suggestions.assistant.capabilities", "O que podes fazer por mim?") },
+      { id: "a3", text: t("aiAssistant.suggestions.assistant.dataSource", "De onde vêm as tuas informações?") },
+      { id: "a4", text: t("aiAssistant.suggestions.assistant.improvement", "Como posso dar-te feedback?") },
     ],
   };
   
@@ -519,9 +519,9 @@ export default function AssistantPage() {
       id: "s1", 
       icon: <BarChart className="h-4 w-4" />, 
       title: t("aiAssistant.quickSuggestions.analytics", "Análises de Desempenho"), 
-      description: t("aiAssistant.quickSuggestions.analyticsDesc", "Estatísticas do seu negócio"),
+      description: t("aiAssistant.quickSuggestions.analyticsDesc", "Estatísticas do teu negócio"),
       gradient: "from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/30",
-      prompt: t("aiAssistant.quickPrompts.analytics", "Mostra-me um resumo do desempenho das minhas propriedades este mês.")
+      prompt: t("aiAssistant.quickPrompts.analytics", "Mostra-me um resumo do desempenho dos meus imóveis este mês.")
     },
     { 
       id: "s2", 
@@ -529,7 +529,7 @@ export default function AssistantPage() {
       title: t("aiAssistant.quickSuggestions.help", "Ajuda & Recomendações"), 
       description: t("aiAssistant.quickSuggestions.helpDesc", "Dicas para otimização"),
       gradient: "from-emerald-50 to-green-50 dark:from-emerald-950/40 dark:to-green-950/30",
-      prompt: t("aiAssistant.quickPrompts.recommendations", "Quais recomendações você tem para melhorar a performance dos meus aluguéis?")
+      prompt: t("aiAssistant.quickPrompts.recommendations", "Que recomendações tens para melhorar o rendimento dos meus alugueres?")
     },
     { 
       id: "s3", 
@@ -545,7 +545,7 @@ export default function AssistantPage() {
       title: t("aiAssistant.features.knowledgebaseTitle", "Base de Conhecimento"), 
       description: t("aiAssistant.quickSuggestions.marketDesc", "FAQs e melhores práticas"),
       gradient: "from-violet-50 to-purple-50 dark:from-violet-950/40 dark:to-purple-950/30",
-      prompt: t("aiAssistant.quickPrompts.knowledgebase", "Quais são as melhores práticas para gestão de propriedades no sistema?")
+      prompt: t("aiAssistant.quickPrompts.knowledgebase", "Quais são as melhores práticas para gestão de imóveis no sistema?")
     },
   ];
 
@@ -595,7 +595,7 @@ export default function AssistantPage() {
     
     toast({
       title: t("aiAssistant.conversationCleared", "Conversa reiniciada"),
-      description: t("aiAssistant.conversationClearedDesc", "Sua conversa anterior foi apagada."),
+      description: t("aiAssistant.conversationClearedDesc", "A tua conversa anterior foi apagada."),
     });
   };
   
@@ -888,7 +888,7 @@ export default function AssistantPage() {
             <Card className="h-[calc(100vh-14rem)]">
               <CardHeader>
                 <CardTitle>{t("aiAssistant.quickSuggestions.title", "Atalhos")}</CardTitle>
-                <CardDescription>{t("aiAssistant.quickSuggestions.subtitle", "Ações rápidas para suas tarefas mais comuns")}</CardDescription>
+                <CardDescription>{t("aiAssistant.quickSuggestions.subtitle", "Ações rápidas para as tuas tarefas mais comuns")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -925,7 +925,7 @@ export default function AssistantPage() {
               <Card className="h-[calc(100vh-14rem)]">
                 <CardHeader>
                   <CardTitle>{t("aiAssistant.tools.title", "Opções")}</CardTitle>
-                  <CardDescription>{t("aiAssistant.tools.description", "Gerenciar a conversa e documentos")}</CardDescription>
+                  <CardDescription>{t("aiAssistant.tools.description", "Gerir a conversa e documentos")}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <Button 
