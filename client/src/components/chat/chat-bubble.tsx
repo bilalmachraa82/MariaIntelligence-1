@@ -127,7 +127,7 @@ export const ChatBubble = ({ message, onFeedback }: ChatBubbleProps) => {
             "bg-muted/70 border border-border/50 rounded-tl-none"
         )}
       >
-        <div className={`text-sm mb-2 prose dark:prose-invert prose-sm max-w-none ${isLongMessage && !expanded ? 'line-clamp-8' : ''}`}>
+        <div className={`text-sm mb-2 prose dark:prose-invert prose-sm max-w-none ${isLongMessage && !expanded ? 'max-h-40 overflow-hidden' : ''}`}>
           {isUser ? (
             <div>{message.content}</div>
           ) : (
@@ -142,7 +142,7 @@ export const ChatBubble = ({ message, onFeedback }: ChatBubbleProps) => {
             variant="ghost" 
             size="sm" 
             className="px-2 py-0 h-6 text-xs" 
-            onClick={() => setExpanded(!expanded)}
+            onClick={() => setExpanded(prev => !prev)}
           >
             {expanded ? t("aiAssistant.showLess", "Mostrar menos") : t("aiAssistant.showMore", "Mostrar mais")}
           </Button>
