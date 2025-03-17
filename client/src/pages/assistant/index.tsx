@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ReactMarkdown from "react-markdown";
 import { 
   Send, 
   Bot, 
@@ -124,8 +125,14 @@ const ChatBubble = ({ message, onFeedback }: ChatBubbleProps) => {
             "bg-muted/70 border border-border/50 rounded-tl-none"
         )}
       >
-        <div className={`text-sm mb-2 ${isLongMessage && !expanded ? 'line-clamp-4' : ''}`}>
-          {message.content}
+        <div className={`text-sm mb-2 prose dark:prose-invert prose-sm max-w-none ${isLongMessage && !expanded ? 'line-clamp-4' : ''}`}>
+          {isUser ? (
+            <div>{message.content}</div>
+          ) : (
+            <ReactMarkdown className="markdown-content">
+              {message.content}
+            </ReactMarkdown>
+          )}
         </div>
         
         {isLongMessage && (
