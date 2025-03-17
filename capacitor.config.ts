@@ -6,7 +6,20 @@ const config: CapacitorConfig = {
   appName: 'Maria Faz',
   webDir: 'dist/public',
   server: {
-    androidScheme: 'https'
+    androidScheme: 'https',
+    hostname: 'app',
+    cleartext: true
+  },
+  android: {
+    buildOptions: {
+      keystorePath: 'release-key.keystore',
+      keystoreAlias: 'key0',
+      keystorePassword: 'maria123',
+      keyPassword: 'maria123'
+    }
+  },
+  ios: {
+    contentInset: 'always'
   }
 };
 
