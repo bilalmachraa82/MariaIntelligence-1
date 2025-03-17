@@ -75,7 +75,49 @@
       "target": "Target",
       "totalReservations": "Total Bookings",
       "revenueVsProfit": "Revenue vs Profit",
-      "financialBreakdown": "Financial Breakdown"
+      "financialBreakdown": "Financial Breakdown",
+      "scheduleMaintenance": "Schedule Maintenance",
+      "maintenanceDescription": "Broken shower in apartment 3B",
+      "contactSupplier": "Contact Supplier",
+      "supplierDescription": "Confirm delivery of new sheets",
+      "monthlyInvoices": "Prepare Monthly Invoices",
+      "invoicesDescription": "Send to owners by tomorrow",
+      "dailyTasks": "Daily Tasks",
+      "financialView": "Financial View",
+      "maintenanceTask": "Check air conditioning",
+      "maintenanceReported": "Reported by previous guest", 
+      "plumbingIssue": "Plumbing Issue",
+      "plumbingDescription": "Leak reported in kitchen"
+    },
+    "dailyTasks": {
+      "title": "Daily Tasks",
+      "todayDate": "Today",
+      "assistant": "Assistant",
+      "viewAll": "View Complete Dashboard",
+      "todayCheckins": "Today's Check-ins",
+      "todayCheckouts": "Today's Check-outs",
+      "pendingCleanings": "Cleanings",
+      "maintenanceIssues": "Maintenance",
+      "checkins": "Check-ins",
+      "checkinsDescription": "Today's and tomorrow's guest arrivals",
+      "viewAllReservations": "View All Bookings",
+      "checkouts": "Check-outs",
+      "checkoutsDescription": "Today's guest departures",
+      "viewAllCleanings": "View All Cleanings",
+      "maintenance": "Maintenance & Tasks",
+      "maintenanceDescription": "Pending repairs and tasks",
+      "viewAllTasks": "View All Tasks",
+      "noCheckins": "No check-ins scheduled for today",
+      "noCheckouts": "No check-outs scheduled for today",
+      "maintenanceIssues": "Maintenance Issues",
+      "viewProperty": "View Property",
+      "markResolved": "Mark Resolved",
+      "otherTasks": "Other Tasks"
+    },
+    "status": {
+      "pending": "Pending",
+      "attention": "Attention",
+      "upcoming": "Scheduled"
     },
     "reservations": {
       "recentReservations": "Recent Bookings",
@@ -110,7 +152,8 @@
     },
     "common": {
       "cancel": "Cancel",
-      "confirm": "Confirm"
+      "confirm": "Confirm",
+      "logout": "Logout"
     },
     "pdfUpload": {
       "uploadButton": "Import PDF"
