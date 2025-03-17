@@ -101,14 +101,17 @@ export async function identifyDocumentType(filePath: string): Promise<DocumentIn
 }
 
 /**
- * Processa um par de PDFs de check-in e check-out para extrair informações
- * completas da reserva. Se apenas um documento estiver disponível, 
- * processa com as informações parciais.
+ * Processa um ou dois PDFs para extrair informações de reserva.
  * 
- * Quando dois documentos estão presentes, garante que um é identificado como
- * check-in e outro como check-out, mesmo que a identificação automática falhe.
+ * Comportamento:
+ * - Com um arquivo: extrai os dados básicos da reserva do documento
+ * - Com dois arquivos: identifica check-in e check-out, combinando informações de ambos
+ *   para criar uma visão mais completa da reserva
  * 
- * @param files Lista de caminhos para os arquivos PDF
+ * Quando dois documentos estão presentes, tenta identificá-los automaticamente por
+ * conteúdo e nome, e caso falhe, atribui o primeiro como check-in e o segundo como check-out.
+ * 
+ * @param files Lista de caminhos para os arquivos PDF (um ou dois arquivos)
  * @param apiKey Chave da API Mistral para processamento de texto
  * @returns Resultado do processamento com informações da reserva
  */
@@ -116,7 +119,15 @@ export async function processPdfPair(
   files: string[], 
   apiKey: string
 ): Promise<PairProcessingResult> {
-  log(`Iniciando processamento de ${files.length} arquivos`, 'pdf-pair');
+  // Verifica se temos arquivos para processar
+  if (!files || files.length === 0) {
+    return {
+      isPairComplete: false,
+      errors: ['Nenhum arquivo fornecido para processamento']
+    };
+  }
+  
+  log(`Iniciando processamento de ${files.length} arquivo(s)`, 'pdf-pair');
   
   const result: PairProcessingResult = {
     isPairComplete: false,
