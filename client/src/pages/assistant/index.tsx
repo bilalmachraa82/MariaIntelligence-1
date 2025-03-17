@@ -479,13 +479,22 @@ export default function AssistantPage() {
       if (suggestion.isFileUpload) {
         // Se for uma sugestão de upload de arquivo, aciona o input de arquivo
         triggerFileUpload();
-      } else if (suggestion.prompt) {
+      } else {
         // Se tiver um prompt específico, usa-o
-        setMessage(suggestion.prompt);
-        setActiveTab("chat");
-        // Pequeno delay para garantir que a UI esteja pronta antes de enviar
-        setTimeout(() => sendMessage(), 100);
+        if (suggestion.prompt) {
+          setMessage(suggestion.prompt);
+          // Mudando para a aba de chat, se não estiver nela
+          if (activeTab !== "chat") {
+            setActiveTab("chat");
+          }
+          // Pequeno delay para garantir que a UI esteja pronta antes de enviar
+          setTimeout(() => sendMessage(), 100);
+        } else {
+          console.warn(`Sugestão com ID ${id} não possui prompt definido.`);
+        }
       }
+    } else {
+      console.warn(`Sugestão com ID ${id} não encontrada.`);
     }
   };
   
