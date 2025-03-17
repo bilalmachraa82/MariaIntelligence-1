@@ -238,7 +238,8 @@ ${limitedText}`
       let extractedData;
       try {
         extractedData = JSON.parse(argsString);
-      } catch (parseError) {
+      } catch (error: unknown) {
+        const parseError = error instanceof Error ? error : new Error(String(error));
         log('Erro ao fazer parse de JSON: ' + parseError.message, 'pdf-extract');
         throw new Error('Falha ao analisar dados JSON: ' + parseError.message);
       }
@@ -253,7 +254,8 @@ ${limitedText}`
         ...extractedData,
         rawText: text
       };
-    } catch (argError) {
+    } catch (error: unknown) {
+      const argError = error instanceof Error ? error : new Error(String(error));
       log('Erro ao extrair argumentos da chamada: ' + argError.message, 'pdf-extract');
       // Retornar um objeto mínimo para evitar erros de tipo
       return {
