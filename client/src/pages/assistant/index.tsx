@@ -151,7 +151,7 @@ export default function AssistantPage() {
     
     // Retorna mensagem de boas-vindas se não houver mensagens salvas
     return [{ 
-      role: "assistant", 
+      role: "assistant" as const, 
       content: t("aiAssistant.welcomeMessage", "Olá! Sou a Maria, assistente inteligente da plataforma Maria Faz. Como posso ajudar hoje?"), 
       timestamp: new Date(),
       id: generateId()
@@ -490,7 +490,7 @@ export default function AssistantPage() {
   // Limpar conversa e localStorage
   const clearConversation = () => {
     // Criar nova mensagem de boas-vindas
-    const welcomeMessage = { 
+    const welcomeMessage: Message = { 
       role: "assistant", 
       content: t("aiAssistant.welcomeMessage", "Olá! Sou a Maria, a tua assistente inteligente da Maria Faz. Como posso ajudar-te hoje?"), 
       timestamp: new Date(),
