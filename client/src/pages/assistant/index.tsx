@@ -511,35 +511,39 @@ export default function AssistantPage() {
     ],
   };
   
-  // Sugestões rápidas para o chat
+  // Sugestões rápidas simplificadas para o chat
   const suggestions = [
     { 
       id: "s1", 
       icon: <BarChart className="h-4 w-4" />, 
       title: t("aiAssistant.quickSuggestions.analytics", "Análises de Desempenho"), 
-      description: t("aiAssistant.quickSuggestions.analyticsDesc", "Descubra o desempenho dos seus negócios"),
-      gradient: "from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/30"
+      description: t("aiAssistant.quickSuggestions.analyticsDesc", "Estatísticas do seu negócio"),
+      gradient: "from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/30",
+      prompt: t("aiAssistant.quickPrompts.analytics", "Mostra-me um resumo do desempenho das minhas propriedades este mês.")
     },
     { 
       id: "s2", 
-      icon: <Home className="h-4 w-4" />, 
-      title: t("aiAssistant.quickSuggestions.properties", "Gestão de Propriedades"), 
-      description: t("aiAssistant.quickSuggestions.propertiesDesc", "Informações sobre suas propriedades"),
-      gradient: "from-emerald-50 to-green-50 dark:from-emerald-950/40 dark:to-green-950/30"
+      icon: <FileQuestion className="h-4 w-4" />, 
+      title: t("aiAssistant.quickSuggestions.help", "Ajuda & Recomendações"), 
+      description: t("aiAssistant.quickSuggestions.helpDesc", "Dicas para otimização"),
+      gradient: "from-emerald-50 to-green-50 dark:from-emerald-950/40 dark:to-green-950/30",
+      prompt: t("aiAssistant.quickPrompts.recommendations", "Quais recomendações você tem para melhorar a performance dos meus aluguéis?")
     },
     { 
       id: "s3", 
-      icon: <FileQuestion className="h-4 w-4" />, 
-      title: t("aiAssistant.quickSuggestions.help", "Ajuda & Tutoriais"), 
-      description: t("aiAssistant.quickSuggestions.helpDesc", "Aprenda como usar a plataforma"),
-      gradient: "from-amber-50 to-yellow-50 dark:from-amber-950/40 dark:to-yellow-950/30"
+      icon: <FileText className="h-4 w-4" />, 
+      title: t("aiAssistant.features.documentsTitle", "Processamento"), 
+      description: t("aiAssistant.features.documents", "Upload de documentos"),
+      gradient: "from-amber-50 to-yellow-50 dark:from-amber-950/40 dark:to-yellow-950/30",
+      isFileUpload: true
     },
     { 
       id: "s4", 
-      icon: <Tag className="h-4 w-4" />, 
-      title: t("aiAssistant.quickSuggestions.market", "Tendências de Mercado"), 
-      description: t("aiAssistant.quickSuggestions.marketDesc", "Informações sobre o mercado"),
-      gradient: "from-rose-50 to-pink-50 dark:from-rose-950/40 dark:to-pink-950/30"
+      icon: <Search className="h-4 w-4" />, 
+      title: t("aiAssistant.features.knowledgebaseTitle", "Base de Conhecimento"), 
+      description: t("aiAssistant.quickSuggestions.marketDesc", "FAQs e melhores práticas"),
+      gradient: "from-violet-50 to-purple-50 dark:from-violet-950/40 dark:to-purple-950/30",
+      prompt: t("aiAssistant.quickPrompts.knowledgebase", "Quais são as melhores práticas para gestão de propriedades no sistema?")
     },
   ];
 
