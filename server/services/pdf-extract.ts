@@ -143,9 +143,10 @@ export async function parseReservationFromText(
         // Inicializar cliente Mistral
         const client = new Mistral({ apiKey });
         
-        // Preparar a requisição para o modelo Mistral
+        // Preparar a requisição para o modelo Mistral (medium é mais rápido)
+        log('Usando modelo mistral-medium para processamento', 'pdf-extract');
         const response = await client.chat.complete({
-          model: "mistral-large-latest",
+          model: "mistral-medium",
           messages: [
             {
               role: "system",
@@ -240,10 +241,11 @@ export async function parseReservationFromText(
           ],
           toolChoice: { type: "function", function: { name: "extractReservationData" } },
           temperature: 0.1,
-          maxTokens: 4000
+          maxTokens: 1500 // Reduzir tokens para processamento mais rápido
         });
         
         // Extrair os dados da resposta
+        log('Resposta recebida da API Mistral, processando...', 'pdf-extract');
         if (response && 
             response.choices && 
             response.choices[0] && 
@@ -272,6 +274,8 @@ export async function parseReservationFromText(
               }
             }
             
+            log('Dados extraídos com sucesso', 'pdf-extract');
+            
             return extractedData as ExtractedReservationData;
           } else {
             throw new Error('Resposta do Mistral não contém argumentos válidos');
@@ -281,6 +285,14 @@ export async function parseReservationFromText(
         }
       } catch (error) {
         console.error('Erro ao extrair dados de reserva:', error);
+        log(`Falha na API Mistral: ${error instanceof Error ? error.message : 'Erro desconhecido'}`, 'pdf-extract');
+        
+        // Verificar se é um erro de serviço indisponível
+        const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+        const isServiceUnavailable = errorMessage.includes('Service unavailable') || 
+                                    errorMessage.includes('500') ||
+                                    errorMessage.includes('internal_server_error');
+        
         // Em caso de erro, retornar objeto vazio com status de falha
         return {
           propertyName: 'Desconhecido',
@@ -289,7 +301,9 @@ export async function parseReservationFromText(
           checkOutDate: 'Desconhecido',
           validationStatus: ValidationStatus.FAILED,
           rawText: text,
-          observations: `Erro na extração: ${error instanceof Error ? error.message : 'Erro desconhecido'}`
+          observations: isServiceUnavailable
+            ? 'Serviço Mistral temporariamente indisponível. Tente novamente mais tarde.'
+            : `Erro na extração: ${errorMessage}`
         };
       }
     };
@@ -302,6 +316,9 @@ export async function parseReservationFromText(
     // Verificar se o erro foi de timeout
     const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
     const isTimeout = errorMessage.includes('Tempo limite excedido');
+    const isServiceError = errorMessage.includes('Service unavailable') || 
+                           errorMessage.includes('500') ||
+                           errorMessage.includes('internal_server_error');
     
     // Em caso de erro, retornar objeto vazio com status de falha
     return {
@@ -312,8 +329,10 @@ export async function parseReservationFromText(
       validationStatus: ValidationStatus.FAILED,
       rawText: text,
       observations: isTimeout 
-        ? 'O processamento demorou muito tempo e foi interrompido' 
-        : `Erro na extração: ${errorMessage}`
+        ? 'O processamento demorou muito tempo e foi interrompido. Por favor, tente novamente mais tarde.' 
+        : isServiceError
+          ? 'Serviço Mistral temporariamente indisponível. Por favor, tente novamente mais tarde.'
+          : `Erro na extração: ${errorMessage}`
     };
   }
 }
