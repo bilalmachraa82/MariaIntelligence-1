@@ -40,7 +40,7 @@ import path from "path";
 import { format } from "date-fns";
 
 // Set up multer for file uploads
-const upload = multer({
+const pdfUpload = multer({
   storage: multer.diskStorage({
     destination: function(req, file, cb) {
       const uploadDir = path.join(process.cwd(), 'uploads');
@@ -64,7 +64,77 @@ const upload = multer({
     if (file.mimetype === 'application/pdf') {
       cb(null, true);
     } else {
-      cb(new Error('Only PDF files are allowed!') as any, false);
+      cb(new Error('Apenas arquivos PDF são permitidos!') as any, false);
+    }
+  }
+});
+
+// Configuração para upload de imagens (OCR)
+const imageUpload = multer({
+  storage: multer.diskStorage({
+    destination: function(req, file, cb) {
+      const uploadDir = path.join(process.cwd(), 'uploads', 'images');
+      // Create uploads/images directory if it doesn't exist
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      cb(null, uploadDir);
+    },
+    filename: function(req, file, cb) {
+      // Use original filename with timestamp to prevent overwrites
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, uniqueSuffix + '-' + file.originalname);
+    }
+  }),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB max file size for images
+  },
+  fileFilter: function(req, file, cb) {
+    // Accept only images
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Apenas imagens são permitidas (JPG, PNG)!') as any, false);
+    }
+  }
+});
+
+// Configuração para upload de ambos os tipos de arquivo (PDF e imagens)
+const anyFileUpload = multer({
+  storage: multer.diskStorage({
+    destination: function(req, file, cb) {
+      let uploadDir;
+      
+      if (file.mimetype === 'application/pdf') {
+        uploadDir = path.join(process.cwd(), 'uploads');
+      } else if (file.mimetype.startsWith('image/')) {
+        uploadDir = path.join(process.cwd(), 'uploads', 'images');
+      } else {
+        uploadDir = path.join(process.cwd(), 'uploads', 'other');
+      }
+      
+      // Create directory if it doesn't exist
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      
+      cb(null, uploadDir);
+    },
+    filename: function(req, file, cb) {
+      // Use original filename with timestamp to prevent overwrites
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, uniqueSuffix + '-' + file.originalname);
+    }
+  }),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB max file size
+  },
+  fileFilter: function(req, file, cb) {
+    // Accept PDFs and images
+    if (file.mimetype === 'application/pdf' || file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Apenas PDFs e imagens (JPG, PNG) são permitidos!') as any, false);
     }
   }
 });
@@ -651,8 +721,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const mistralService = new MistralService();
   const ragService = new RAGService();
 
-  // PDF Upload and Processing
-  app.post("/api/upload-pdf", upload.single('pdf'), async (req: Request, res: Response) => {
+  // PDF Upload e Processamento
+  app.post("/api/upload-pdf", pdfUpload.single('pdf'), async (req: Request, res: Response) => {
     try {
       console.log('Iniciando processamento de upload de PDF...');
       
@@ -672,127 +742,174 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       try {
-        // Usar o serviço de extração de PDF que já importamos no início do arquivo
         console.log(`Processando PDF: ${req.file.path}`);
         
-        // Usar o serviço melhorado para extrair e validar dados do PDF
-        const validationResult = await processPdf(req.file.path, process.env.MISTRAL_API_KEY);
-        console.log('Validação concluída:', validationResult.status);
+        // Parâmetro para controlar se uma reserva deve ser criada automaticamente
+        const autoCreateReservation = req.query.autoCreate === 'true';
         
-        // Extrair os dados validados com valores padrão
-        const extractedData = validationResult.dataWithDefaults;
+        // Usar o novo serviço de processamento que pode criar reservas
+        let result;
         
-        // Adicionar o texto extraído à base de conhecimento RAG
-        if (extractedData && extractedData.rawText) {
-          await ragService.addToKnowledgeBase(extractedData.rawText, 'reservation_pdf', {
-            filename: req.file.filename,
-            uploadDate: new Date(),
-            validationStatus: validationResult.status
+        if (autoCreateReservation) {
+          // Usar o serviço completo que processa o PDF e cria uma reserva
+          result = await processPdfAndCreateReservation(req.file.path, process.env.MISTRAL_API_KEY);
+          console.log('Processamento e criação de reserva concluídos:', result.success);
+          
+          // Adicionar atividade ao sistema se a reserva foi criada
+          if (result.success && result.reservation) {
+            await storage.createActivity({
+              type: 'reservation_created',
+              description: `Reserva criada automaticamente via PDF: ${result.reservation.propertyId} - ${result.reservation.guestName}`,
+              entityId: result.reservation.id,
+              entityType: 'reservation'
+            });
+          }
+          
+          // Adicionar o texto extraído à base de conhecimento RAG
+          if (result.extractedData && result.extractedData.rawText) {
+            await ragService.addToKnowledgeBase(result.extractedData.rawText, 'reservation_pdf', {
+              filename: req.file.filename,
+              uploadDate: new Date(),
+              reservationId: result.reservation?.id,
+              status: result.success ? 'created' : 'failed'
+            });
+          }
+          
+          // Retornar resultado com a reserva criada e dados extraídos
+          return res.json({
+            success: result.success,
+            message: result.message,
+            reservation: result.reservation,
+            extractedData: result.extractedData,
+            validation: result.validationResult,
+            file: {
+              filename: req.file.filename,
+              path: req.file.path
+            }
+          });
+        } else {
+          // Processar apenas o PDF sem criar reserva (comportamento antigo)
+          console.log('Processando PDF sem criação automática de reserva');
+          
+          // Usar o serviço de extração e validação
+          const validationResult = await processPdf(req.file.path, process.env.MISTRAL_API_KEY);
+          console.log('Validação concluída:', validationResult.status);
+          
+          // Extrair os dados validados com valores padrão
+          const extractedData = validationResult.dataWithDefaults;
+          
+          // Adicionar o texto extraído à base de conhecimento RAG
+          if (extractedData && extractedData.rawText) {
+            await ragService.addToKnowledgeBase(extractedData.rawText, 'reservation_pdf', {
+              filename: req.file.filename,
+              uploadDate: new Date(),
+              validationStatus: validationResult.status
+            });
+          }
+
+          // Encontrar a propriedade correspondente pelo nome (com lógica mais flexível)
+          const properties = await storage.getProperties();
+          console.log(`Buscando correspondência para propriedade: ${extractedData?.propertyName}`);
+          
+          // Lógica de matching de propriedade mais flexível
+          let matchedProperty = null;
+          
+          if (extractedData && extractedData.propertyName) {
+            // Primeiro tenta match exato (case insensitive)
+            matchedProperty = properties.find(p => 
+              p.name.toLowerCase() === extractedData.propertyName.toLowerCase()
+            );
+            
+            // Se não encontrar, usa matching mais flexível
+            if (!matchedProperty) {
+              // Define uma função de similaridade
+              const calculateSimilarity = (str1: string, str2: string): number => {
+                const words1 = str1.toLowerCase().split(/\s+/);
+                const words2 = str2.toLowerCase().split(/\s+/);
+                const commonWords = words1.filter((word: string) => words2.includes(word));
+                return commonWords.length / Math.max(words1.length, words2.length);
+              };
+              
+              // Encontrar a propriedade com maior similaridade
+              let bestMatch = null;
+              let highestSimilarity = 0;
+              
+              for (const property of properties) {
+                const similarity = calculateSimilarity(
+                  extractedData.propertyName, 
+                  property.name
+                );
+                
+                if (similarity > highestSimilarity && similarity > 0.6) {
+                  highestSimilarity = similarity;
+                  bestMatch = property;
+                }
+              }
+              
+              matchedProperty = bestMatch;
+            }
+          }
+          
+          // Se não encontrar propriedade, define valores padrão
+          if (!matchedProperty) {
+            matchedProperty = { id: null, cleaningCost: 0, checkInFee: 0, commission: 0, teamPayment: 0 };
+            
+            // Adicionar erro de validação se não encontrou a propriedade
+            if (extractedData && extractedData.propertyName) {
+              validationResult.errors.push({
+                field: 'propertyName',
+                message: 'Propriedade não encontrada no sistema',
+                severity: 'warning'
+              });
+              
+              validationResult.warningFields.push('propertyName');
+            }
+          }
+
+          // Calcular taxas e valores baseados na propriedade encontrada
+          const totalAmount = extractedData?.totalAmount || 0;
+          const platformFee = extractedData?.platformFee || (
+            (extractedData?.platform === "airbnb" || extractedData?.platform === "booking") 
+              ? Math.round(totalAmount * 0.1) 
+              : 0
+          );
+
+          // Adicionar atividade ao sistema
+          await storage.createActivity({
+            type: 'pdf_processed',
+            description: `PDF processado: ${extractedData?.propertyName || 'Propriedade desconhecida'} - ${extractedData?.guestName || 'Hóspede desconhecido'} (${validationResult.status})`,
+            entityId: matchedProperty.id,
+            entityType: 'property'
+          });
+
+          // Criar resultados enriquecidos
+          const enrichedData = {
+            ...extractedData,
+            propertyId: matchedProperty.id,
+            platformFee: platformFee,
+            cleaningFee: extractedData?.cleaningFee || Number(matchedProperty.cleaningCost || 0),
+            checkInFee: extractedData?.checkInFee || Number(matchedProperty.checkInFee || 0),
+            commissionFee: extractedData?.commissionFee || (totalAmount * Number(matchedProperty.commission || 0) / 100),
+            teamPayment: extractedData?.teamPayment || Number(matchedProperty.teamPayment || 0)
+          };
+
+          // Retorna os dados extraídos com as informações da propriedade e status de validação
+          return res.json({
+            success: true,
+            extractedData: enrichedData,
+            validation: {
+              status: validationResult.status,
+              isValid: validationResult.isValid,
+              errors: validationResult.errors,
+              missingFields: validationResult.missingFields,
+              warningFields: validationResult.warningFields
+            },
+            file: {
+              filename: req.file.filename,
+              path: req.file.path
+            }
           });
         }
-
-        // Encontrar a propriedade correspondente pelo nome (com lógica mais flexível)
-        const properties = await storage.getProperties();
-        console.log(`Buscando correspondência para propriedade: ${extractedData?.propertyName}`);
-        
-        // Lógica de matching de propriedade mais flexível
-        let matchedProperty = null;
-        
-        if (extractedData && extractedData.propertyName) {
-          // Primeiro tenta match exato (case insensitive)
-          matchedProperty = properties.find(p => 
-            p.name.toLowerCase() === extractedData.propertyName.toLowerCase()
-          );
-          
-          // Se não encontrar, usa matching mais flexível
-          if (!matchedProperty) {
-            // Define uma função de similaridade
-            const calculateSimilarity = (str1: string, str2: string): number => {
-              const words1 = str1.toLowerCase().split(/\s+/);
-              const words2 = str2.toLowerCase().split(/\s+/);
-              const commonWords = words1.filter((word: string) => words2.includes(word));
-              return commonWords.length / Math.max(words1.length, words2.length);
-            };
-            
-            // Encontrar a propriedade com maior similaridade
-            let bestMatch = null;
-            let highestSimilarity = 0;
-            
-            for (const property of properties) {
-              const similarity = calculateSimilarity(
-                extractedData.propertyName, 
-                property.name
-              );
-              
-              if (similarity > highestSimilarity && similarity > 0.6) {
-                highestSimilarity = similarity;
-                bestMatch = property;
-              }
-            }
-            
-            matchedProperty = bestMatch;
-          }
-        }
-        
-        // Se não encontrar propriedade, define valores padrão
-        if (!matchedProperty) {
-          matchedProperty = { id: null, cleaningCost: 0, checkInFee: 0, commission: 0, teamPayment: 0 };
-          
-          // Adicionar erro de validação se não encontrou a propriedade
-          if (extractedData && extractedData.propertyName) {
-            validationResult.errors.push({
-              field: 'propertyName',
-              message: 'Propriedade não encontrada no sistema',
-              severity: 'warning'
-            });
-            
-            validationResult.warningFields.push('propertyName');
-          }
-        }
-
-        // Calcular taxas e valores baseados na propriedade encontrada
-        const totalAmount = extractedData?.totalAmount || 0;
-        const platformFee = extractedData?.platformFee || (
-          (extractedData?.platform === "airbnb" || extractedData?.platform === "booking") 
-            ? Math.round(totalAmount * 0.1) 
-            : 0
-        );
-
-        // Adicionar atividade ao sistema
-        await storage.createActivity({
-          type: 'pdf_processed',
-          description: `PDF processado: ${extractedData?.propertyName || 'Propriedade desconhecida'} - ${extractedData?.guestName || 'Hóspede desconhecido'} (${validationResult.status})`,
-          entityId: matchedProperty.id,
-          entityType: 'property'
-        });
-
-        // Criar resultados enriquecidos
-        const enrichedData = {
-          ...extractedData,
-          propertyId: matchedProperty.id,
-          platformFee: platformFee,
-          cleaningFee: extractedData?.cleaningFee || Number(matchedProperty.cleaningCost || 0),
-          checkInFee: extractedData?.checkInFee || Number(matchedProperty.checkInFee || 0),
-          commissionFee: extractedData?.commissionFee || (totalAmount * Number(matchedProperty.commission || 0) / 100),
-          teamPayment: extractedData?.teamPayment || Number(matchedProperty.teamPayment || 0)
-        };
-
-        // Retorna os dados extraídos com as informações da propriedade e status de validação
-        res.json({
-          success: true,
-          extractedData: enrichedData,
-          validation: {
-            status: validationResult.status,
-            isValid: validationResult.isValid,
-            errors: validationResult.errors,
-            missingFields: validationResult.missingFields,
-            warningFields: validationResult.warningFields
-          },
-          file: {
-            filename: req.file.filename,
-            path: req.file.path
-          }
-        });
       } catch (processError) {
         console.error('Erro no processamento do PDF:', processError);
         // Retornar erro formatado
@@ -813,10 +930,181 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   /**
+   * Endpoint para processamento de imagens usando OCR
+   * Extrai dados de reserva a partir de imagens de confirmações e comprovantes
+   */
+  app.post("/api/upload-image", imageUpload.single('image'), async (req: Request, res: Response) => {
+    try {
+      console.log('Iniciando processamento de upload de imagem para OCR...');
+      
+      if (!req.file) {
+        return res.status(400).json({ 
+          success: false,
+          message: "Nenhuma imagem enviada" 
+        });
+      }
+
+      // Verifica se a chave da API Mistral está disponível
+      if (!process.env.MISTRAL_API_KEY) {
+        return res.status(500).json({ 
+          success: false,
+          message: "Chave da API Mistral não configurada" 
+        });
+      }
+
+      try {
+        console.log(`Processando imagem: ${req.file.path}`);
+        
+        // Parâmetro para controlar se uma reserva deve ser criada automaticamente
+        const autoCreateReservation = req.query.autoCreate === 'true';
+        
+        // Usar o novo serviço de processamento que pode criar reservas a partir de imagens
+        const result = await processImageAndCreateReservation(req.file.path, process.env.MISTRAL_API_KEY);
+        console.log('Processamento OCR e criação de reserva concluídos:', result.success);
+        
+        // Adicionar atividade ao sistema se a reserva foi criada
+        if (result.success && result.reservation) {
+          await storage.createActivity({
+            type: 'reservation_created',
+            description: `Reserva criada automaticamente via OCR de imagem: ${result.reservation.propertyId} - ${result.reservation.guestName}`,
+            entityId: result.reservation.id,
+            entityType: 'reservation'
+          });
+        }
+        
+        // Adicionar o texto extraído à base de conhecimento RAG
+        if (result.extractedData && result.extractedData.rawText) {
+          await ragService.addToKnowledgeBase(result.extractedData.rawText, 'reservation_image_ocr', {
+            filename: req.file.filename,
+            uploadDate: new Date(),
+            reservationId: result.reservation?.id,
+            status: result.success ? 'created' : 'failed'
+          });
+        }
+        
+        // Retornar resultado com a reserva criada e dados extraídos
+        return res.json({
+          success: result.success,
+          message: result.message,
+          reservation: result.reservation,
+          extractedData: result.extractedData,
+          validation: result.validationResult,
+          file: {
+            filename: req.file.filename,
+            path: req.file.path,
+            mimetype: req.file.mimetype
+          }
+        });
+      } catch (processError) {
+        console.error('Erro no processamento da imagem:', processError);
+        // Retornar erro formatado
+        return res.status(500).json({ 
+          success: false,
+          message: "Falha ao processar imagem com OCR", 
+          error: processError instanceof Error ? processError.message : "Erro desconhecido no processamento"
+        });
+      }
+    } catch (err) {
+      console.error('Erro ao processar upload de imagem:', err);
+      return res.status(500).json({
+        success: false,
+        message: "Erro interno no servidor",
+        error: err instanceof Error ? err.message : "Erro desconhecido"
+      });
+    }
+  });
+
+  /**
+   * Endpoint para processamento de qualquer arquivo (PDF ou imagem)
+   * Detecta automaticamente o tipo e executa o processamento apropriado
+   */
+  app.post("/api/upload-file", anyFileUpload.single('file'), async (req: Request, res: Response) => {
+    try {
+      console.log('Iniciando processamento de upload de arquivo (PDF/imagem)...');
+      
+      if (!req.file) {
+        return res.status(400).json({ 
+          success: false,
+          message: "Nenhum arquivo enviado" 
+        });
+      }
+
+      // Verifica se a chave da API Mistral está disponível
+      if (!process.env.MISTRAL_API_KEY) {
+        return res.status(500).json({ 
+          success: false,
+          message: "Chave da API Mistral não configurada" 
+        });
+      }
+
+      try {
+        console.log(`Processando arquivo: ${req.file.path} (${req.file.mimetype})`);
+        
+        // Parâmetro para controlar se uma reserva deve ser criada automaticamente
+        const autoCreateReservation = req.query.autoCreate === 'true';
+        
+        // Usar o serviço que processa qualquer tipo de arquivo e cria reserva
+        const result = await processFileAndCreateReservation(req.file.path, process.env.MISTRAL_API_KEY);
+        console.log('Processamento e criação de reserva concluídos:', result.success);
+        
+        // Adicionar atividade ao sistema se a reserva foi criada
+        if (result.success && result.reservation) {
+          await storage.createActivity({
+            type: 'reservation_created',
+            description: `Reserva criada automaticamente via arquivo: ${result.reservation.propertyId} - ${result.reservation.guestName}`,
+            entityId: result.reservation.id,
+            entityType: 'reservation'
+          });
+        }
+        
+        // Adicionar o texto extraído à base de conhecimento RAG
+        if (result.extractedData && result.extractedData.rawText) {
+          await ragService.addToKnowledgeBase(result.extractedData.rawText, 'reservation_file', {
+            filename: req.file.filename,
+            uploadDate: new Date(),
+            reservationId: result.reservation?.id,
+            status: result.success ? 'created' : 'failed',
+            fileType: req.file.mimetype
+          });
+        }
+        
+        // Retornar resultado com a reserva criada e dados extraídos
+        return res.json({
+          success: result.success,
+          message: result.message,
+          reservation: result.reservation,
+          extractedData: result.extractedData,
+          validation: result.validationResult,
+          file: {
+            filename: req.file.filename,
+            path: req.file.path,
+            mimetype: req.file.mimetype
+          }
+        });
+      } catch (processError) {
+        console.error('Erro no processamento do arquivo:', processError);
+        // Retornar erro formatado
+        return res.status(500).json({ 
+          success: false,
+          message: "Falha ao processar arquivo", 
+          error: processError instanceof Error ? processError.message : "Erro desconhecido no processamento"
+        });
+      }
+    } catch (err) {
+      console.error('Erro ao processar upload de arquivo:', err);
+      return res.status(500).json({
+        success: false,
+        message: "Erro interno no servidor",
+        error: err instanceof Error ? err.message : "Erro desconhecido"
+      });
+    }
+  });
+
+  /**
    * Endpoint para upload e processamento de múltiplos PDFs
    * Processa documentos em par (check-in e check-out) para extração completa de dados
    */
-  app.post("/api/upload-pdf-pair", upload.array('pdfs', 2), async (req: Request, res: Response) => {
+  app.post("/api/upload-pdf-pair", pdfUpload.array('pdfs', 2), async (req: Request, res: Response) => {
     try {
       console.log('Iniciando processamento de par de PDFs...');
       
@@ -1290,7 +1578,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
    * Endpoint para processamento de documentos financeiros
    * Suporta faturas, recibos e outros documentos financeiros
    */
-  app.post("/api/process-financial-document", upload.single('document'), async (req: Request, res: Response) => {
+  app.post("/api/process-financial-document", anyFileUpload.single('document'), async (req: Request, res: Response) => {
     try {
       if (!req.file) {
         return res.status(400).json({ 
