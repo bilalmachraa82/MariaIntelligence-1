@@ -9,6 +9,10 @@ import { RAGService } from "./services/rag.service";
 import { RagService } from "./services/rag-service";
 import { processPdf } from "./services/pdf-extract";
 import { 
+  processFileAndCreateReservation,
+  processPdfAndCreateReservation 
+} from "./services/reservation-creator";
+import { 
   extendedPropertySchema, 
   extendedOwnerSchema,
   extendedReservationSchema,
