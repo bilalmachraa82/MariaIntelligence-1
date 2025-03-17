@@ -129,7 +129,7 @@ const ChatBubble = ({ message, onFeedback }: ChatBubbleProps) => {
           {isUser ? (
             <div>{message.content}</div>
           ) : (
-            <ReactMarkdown className="markdown-content">
+            <ReactMarkdown>
               {message.content}
             </ReactMarkdown>
           )}
