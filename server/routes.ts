@@ -959,7 +959,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const autoCreateReservation = req.query.autoCreate === 'true';
         
         // Usar o novo serviço de processamento que pode criar reservas a partir de imagens
-        const result = await processImageAndCreateReservation(req.file.path, process.env.MISTRAL_API_KEY);
+        const result = await processFileAndCreateReservation(req.file.path, process.env.MISTRAL_API_KEY);
         console.log('Processamento OCR e criação de reserva concluídos:', result.success);
         
         // Adicionar atividade ao sistema se a reserva foi criada

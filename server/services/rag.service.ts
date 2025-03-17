@@ -17,9 +17,9 @@ export class RAGService {
   async generateEmbedding(text: string): Promise<number[]> {
     const response = await this.client.embeddings.create({
       model: "mistral-embed",
-      input: text
+      inputs: [text]
     });
-    return response.data[0].embedding;
+    return response.data[0].embedding || [];
   }
 
   async addToKnowledgeBase(content: string, contentType: string, metadata: any = {}) {
@@ -41,11 +41,11 @@ export class RAGService {
     const allContent = await storage.getKnowledgeEmbeddings();
     
     return allContent
-      .map(content => ({
+      .map((content: any) => ({
         ...content,
         similarity: this.cosineSimilarity(queryEmbedding, content.embeddingJson.vector)
       }))
-      .sort((a, b) => b.similarity - a.similarity)
+      .sort((a: any, b: any) => b.similarity - a.similarity)
       .slice(0, limit);
   }
 
