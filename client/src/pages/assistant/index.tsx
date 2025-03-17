@@ -672,20 +672,16 @@ export default function AssistantPage() {
           <TabsList className="mb-4 flex-wrap h-auto">
             <TabsTrigger value="chat" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <MessageSquare className="h-4 w-4 mr-1 flex-shrink-0" />
-              <span className="truncate">{t("aiAssistant.tabs.chat", "Chat")}</span>
-            </TabsTrigger>
-            <TabsTrigger value="suggestions" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              <LightbulbIcon className="h-4 w-4 mr-1 flex-shrink-0" />
-              <span className="truncate">{t("aiAssistant.tabs.suggestions", "Sugestões")}</span>
+              <span className="truncate">{t("aiAssistant.tabs.chat", "Conversa")}</span>
             </TabsTrigger>
             <TabsTrigger value="quick-access" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Sparkles className="h-4 w-4 mr-1 flex-shrink-0" />
-              <span className="truncate">{t("aiAssistant.tabs.quickAccess", "Acesso Rápido")}</span>
+              <span className="truncate">{t("aiAssistant.tabs.quickAccess", "Atalhos")}</span>
             </TabsTrigger>
             {isMobile && (
               <TabsTrigger value="tools" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                 <Settings className="h-4 w-4 mr-1 flex-shrink-0" />
-                <span className="truncate">{t("aiAssistant.tabs.tools", "Ferramentas")}</span>
+                <span className="truncate">{t("aiAssistant.tabs.tools", "Opções")}</span>
               </TabsTrigger>
             )}
           </TabsList>
@@ -697,9 +693,9 @@ export default function AssistantPage() {
                   <div>
                     <CardTitle className="flex items-center gap-2">
                       <Bot className="h-5 w-5 text-primary" />
-                      {t("aiAssistant.chatTitle", "Maria Faz Assistant")}
+                      {t("aiAssistant.chatTitle", "Assistente Maria")}
                     </CardTitle>
-                    <CardDescription>{t("aiAssistant.chatDescription", "Pergunte sobre suas propriedades, reservas e relatórios")}</CardDescription>
+                    <CardDescription>{t("aiAssistant.chatDescription", "Tire dúvidas sobre propriedades, reservas e relatórios")}</CardDescription>
                   </div>
                   {isMobile && (
                     <Button 
@@ -891,8 +887,8 @@ export default function AssistantPage() {
           <TabsContent value="quick-access" className="m-0">
             <Card className="h-[calc(100vh-14rem)]">
               <CardHeader>
-                <CardTitle>{t("aiAssistant.quickSuggestions.title", "Acesso Rápido")}</CardTitle>
-                <CardDescription>{t("aiAssistant.quickSuggestions.subtitle", "Acesse rapidamente recursos e informações importantes")}</CardDescription>
+                <CardTitle>{t("aiAssistant.quickSuggestions.title", "Atalhos")}</CardTitle>
+                <CardDescription>{t("aiAssistant.quickSuggestions.subtitle", "Ações rápidas para suas tarefas mais comuns")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -928,8 +924,8 @@ export default function AssistantPage() {
             <TabsContent value="tools" className="m-0">
               <Card className="h-[calc(100vh-14rem)]">
                 <CardHeader>
-                  <CardTitle>{t("aiAssistant.tools.title", "Ferramentas")}</CardTitle>
-                  <CardDescription>{t("aiAssistant.tools.description", "Ações e configurações do assistente")}</CardDescription>
+                  <CardTitle>{t("aiAssistant.tools.title", "Opções")}</CardTitle>
+                  <CardDescription>{t("aiAssistant.tools.description", "Gerenciar a conversa e documentos")}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <Button 
@@ -938,7 +934,7 @@ export default function AssistantPage() {
                     onClick={clearConversation}
                   >
                     <RefreshCw className="h-4 w-4 mr-2" />
-                    {t("aiAssistant.clearConversation", "Limpar conversa")}
+                    {t("aiAssistant.clearConversation", "Nova conversa")}
                   </Button>
                   
                   <Button 
@@ -947,7 +943,7 @@ export default function AssistantPage() {
                     onClick={triggerFileUpload}
                   >
                     <UploadCloud className="h-4 w-4 mr-2" />
-                    {t("aiAssistant.uploadDocument", "Anexar documento")}
+                    {t("aiAssistant.uploadDocument", "Enviar documento")}
                   </Button>
                 </CardContent>
               </Card>
