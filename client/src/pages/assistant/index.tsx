@@ -467,6 +467,8 @@ export default function AssistantPage() {
     if (activeTab !== "chat") {
       setActiveTab("chat");
     }
+    // Enviar a mensagem automaticamente após um pequeno delay para garantir que a UI atualizou
+    setTimeout(() => sendMessage(), 100);
   };
   
   const handleQuickSuggestionClick = (id: string) => {
