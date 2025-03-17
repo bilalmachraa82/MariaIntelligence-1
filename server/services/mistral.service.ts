@@ -117,7 +117,7 @@ export class MistralService {
     
     try {
       const response = await this.client.chat.complete({
-        model: "mistral-large-latest",
+        model: "mistral-small-latest",
         messages: [
           {
             role: "system",
@@ -189,7 +189,7 @@ export class MistralService {
     
     try {
       const response = await this.client.chat.complete({
-        model: "mistral-large-latest",
+        model: "mistral-small-latest",
         messages: [
           {
             role: "system",

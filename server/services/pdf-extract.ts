@@ -143,10 +143,10 @@ export async function parseReservationFromText(
         // Inicializar cliente Mistral
         const client = new Mistral({ apiKey });
         
-        // Preparar a requisição para o modelo Mistral (medium é mais rápido)
-        log('Usando modelo mistral-medium para processamento', 'pdf-extract');
+        // Preparar a requisição para o modelo Mistral (tiny é o mais confiável para function calling)
+        log('Usando modelo mistral-tiny para processamento', 'pdf-extract');
         const response = await client.chat.complete({
-          model: "mistral-medium",
+          model: "mistral-tiny",
           messages: [
             {
               role: "system",
@@ -402,24 +402,61 @@ export function validateReservationData(data: ExtractedReservationData): Validat
     });
   }
   
-  // Validar formato de data
-  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-  if (data.checkInDate && !dateRegex.test(data.checkInDate)) {
-    errors.push({
-      field: 'checkInDate',
-      message: 'Formato de data de check-in inválido. Deve ser YYYY-MM-DD',
-      severity: 'error'
-    });
-    missingFields.push('checkInDate');
+  // Validar e converter formato de data
+  const dateRegexISO = /^\d{4}-\d{2}-\d{2}$/;
+  const dateRegexEU = /^(\d{2})[-.\/](\d{2})[-.\/](\d{4})$/;
+  
+  // Função para tentar converter a data para o formato ISO
+  const convertToISODate = (dateStr: string): string => {
+    // Verificar se já está no formato ISO
+    if (dateRegexISO.test(dateStr)) return dateStr;
+    
+    // Tentar converter do formato DD-MM-YYYY ou DD/MM/YYYY
+    const euMatch = dateStr.match(dateRegexEU);
+    if (euMatch) {
+      const [_, day, month, year] = euMatch;
+      return `${year}-${month}-${day}`;
+    }
+    
+    // Tentar converter outros formatos comuns
+    const date = new Date(dateStr);
+    if (!isNaN(date.getTime())) {
+      return date.toISOString().split('T')[0];
+    }
+    
+    return dateStr;
+  };
+  
+  // Converter e verificar data de check-in
+  if (data.checkInDate) {
+    const isoDate = convertToISODate(data.checkInDate);
+    
+    if (dateRegexISO.test(isoDate)) {
+      data.checkInDate = isoDate;
+    } else {
+      errors.push({
+        field: 'checkInDate',
+        message: 'Formato de data de check-in inválido. Deve ser YYYY-MM-DD',
+        severity: 'error'
+      });
+      missingFields.push('checkInDate');
+    }
   }
   
-  if (data.checkOutDate && !dateRegex.test(data.checkOutDate)) {
-    errors.push({
-      field: 'checkOutDate',
-      message: 'Formato de data de check-out inválido. Deve ser YYYY-MM-DD',
-      severity: 'error'
-    });
-    missingFields.push('checkOutDate');
+  // Converter e verificar data de check-out
+  if (data.checkOutDate) {
+    const isoDate = convertToISODate(data.checkOutDate);
+    
+    if (dateRegexISO.test(isoDate)) {
+      data.checkOutDate = isoDate;
+    } else {
+      errors.push({
+        field: 'checkOutDate',
+        message: 'Formato de data de check-out inválido. Deve ser YYYY-MM-DD',
+        severity: 'error'
+      });
+      missingFields.push('checkOutDate');
+    }
   }
   
   // Determinar status geral
