@@ -38,7 +38,9 @@ import {
   BookOpen,
   PieChart,
   Calendar,
-  Book
+  Book,
+  LogOut,
+  Wrench
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
@@ -427,39 +429,47 @@ export default function AssistantPage() {
     ],
   };
   
-  // Sugestões rápidas simplificadas para o chat
+  // Sugestões rápidas focadas em tarefas práticas
   const suggestions = [
     { 
       id: "s1", 
-      icon: <BarChart className="h-5 w-5" />, 
-      title: t("aiAssistant.quickSuggestions.analytics", "Análises de Desempenho"), 
-      description: t("aiAssistant.quickSuggestions.analyticsDesc", "Estatísticas do teu negócio"),
+      icon: <Calendar className="h-5 w-5" />, 
+      title: t("aiAssistant.quickTasks.nextCheckins", "Próximos Check-ins"), 
+      description: t("aiAssistant.quickTasks.checkinsDesc", "Quais são os próximos check-ins agendados?"),
       gradient: "from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/30",
-      prompt: t("aiAssistant.quickPrompts.analytics", "Mostra-me um resumo do desempenho dos meus imóveis este mês.")
+      prompt: t("aiAssistant.quickPrompts.nextCheckins", "Quais são os próximos check-ins agendados para hoje e amanhã?")
     },
     { 
       id: "s2", 
-      icon: <FileQuestion className="h-5 w-5" />, 
-      title: t("aiAssistant.quickSuggestions.help", "Ajuda & Recomendações"), 
-      description: t("aiAssistant.quickSuggestions.helpDesc", "Dicas para otimização"),
+      icon: <ArrowRight className="h-5 w-5" />, 
+      title: t("aiAssistant.quickTasks.nextCheckouts", "Próximos Check-outs"), 
+      description: t("aiAssistant.quickTasks.checkoutsDesc", "Check-outs previstos para hoje"),
+      gradient: "from-rose-50 to-pink-50 dark:from-rose-950/40 dark:to-pink-950/30",
+      prompt: t("aiAssistant.quickPrompts.nextCheckouts", "Quais são os check-outs previstos para hoje?")
+    },
+    { 
+      id: "s3", 
+      icon: <Sparkles className="h-5 w-5" />, 
+      title: t("aiAssistant.quickTasks.cleaning", "Limpezas Pendentes"), 
+      description: t("aiAssistant.quickTasks.cleaningDesc", "Limpezas agendadas após check-outs"),
       gradient: "from-emerald-50 to-green-50 dark:from-emerald-950/40 dark:to-green-950/30",
-      prompt: t("aiAssistant.quickPrompts.recommendations", "Que recomendações tens para melhorar o rendimento dos meus alugueres?")
+      prompt: t("aiAssistant.quickPrompts.cleaning", "Quais são as limpezas pendentes após os check-outs de hoje?")
     },
     { 
       id: "s4", 
-      icon: <Search className="h-5 w-5" />, 
-      title: t("aiAssistant.features.knowledgebaseTitle", "Base de Conhecimento"), 
-      description: t("aiAssistant.quickSuggestions.marketDesc", "FAQs e melhores práticas"),
-      gradient: "from-violet-50 to-purple-50 dark:from-violet-950/40 dark:to-purple-950/30",
-      prompt: t("aiAssistant.quickPrompts.knowledgebase", "Quais são as melhores práticas para gestão de imóveis no sistema?")
+      icon: <FileText className="h-5 w-5" />, 
+      title: t("aiAssistant.quickTasks.maintenance", "Manutenções"), 
+      description: t("aiAssistant.quickTasks.maintenanceDesc", "Problemas reportados a resolver"),
+      gradient: "from-amber-50 to-yellow-50 dark:from-amber-950/40 dark:to-yellow-950/30",
+      prompt: t("aiAssistant.quickPrompts.maintenance", "Quais são as manutenções pendentes nos imóveis?")
     },
     { 
       id: "s5", 
-      icon: <Calendar className="h-5 w-5" />, 
-      title: t("aiAssistant.quickSuggestions.reservations", "Próximas Reservas"), 
-      description: t("aiAssistant.quickSuggestions.reservationsDesc", "Check-ins e disponibilidade"),
-      gradient: "from-amber-50 to-yellow-50 dark:from-amber-950/40 dark:to-yellow-950/30",
-      prompt: t("aiAssistant.quickPrompts.reservations", "Quais são as próximas reservas que tenho agendadas?")
+      icon: <Clock className="h-5 w-5" />, 
+      title: t("aiAssistant.quickTasks.today", "Tarefas para Hoje"), 
+      description: t("aiAssistant.quickTasks.todayDesc", "Resumo de tudo para hoje"),
+      gradient: "from-violet-50 to-purple-50 dark:from-violet-950/40 dark:to-purple-950/30",
+      prompt: t("aiAssistant.quickPrompts.today", "Quais são todas as tarefas que preciso fazer hoje?")
     },
   ];
 
