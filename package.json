@@ -11,6 +11,9 @@
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
+    "@capacitor/android": "^7.1.0",
+    "@capacitor/core": "^7.1.0",
+    "@capacitor/ios": "^7.1.0",
     "@fontsource/open-sans": "^5.2.5",
     "@fontsource/playfair-display": "^5.2.5",
     "@hookform/resolvers": "^3.9.1",
