@@ -807,6 +807,223 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+  
+  /**
+   * Endpoint para upload e processamento de múltiplos PDFs
+   * Processa documentos em par (check-in e check-out) para extração completa de dados
+   */
+  app.post("/api/upload-pdf-pair", upload.array('pdfs', 2), async (req: Request, res: Response) => {
+    try {
+      console.log('Iniciando processamento de par de PDFs...');
+      
+      // Verificar se foram enviados arquivos
+      if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
+        return res.status(400).json({ 
+          success: false,
+          message: "Nenhum arquivo enviado" 
+        });
+      }
+
+      // Verifica se a chave da API Mistral está disponível
+      if (!process.env.MISTRAL_API_KEY) {
+        return res.status(500).json({ 
+          success: false,
+          message: "Chave da API Mistral não configurada" 
+        });
+      }
+
+      try {
+        // Importar o serviço de processamento de pares de PDFs
+        const { processPdfPair } = await import('./services/pdf-pair-processor');
+        
+        // Obter caminhos dos arquivos enviados
+        const pdfPaths = (req.files as Express.Multer.File[]).map(file => file.path);
+        const fileInfo = (req.files as Express.Multer.File[]).map(file => ({
+          filename: file.filename,
+          path: file.path,
+          originalname: file.originalname
+        }));
+        
+        console.log(`Processando ${pdfPaths.length} arquivos: ${pdfPaths.join(', ')}`);
+        
+        // Processar o par de PDFs
+        const pairResult = await processPdfPair(pdfPaths, process.env.MISTRAL_API_KEY);
+        
+        // Se não há dados de reserva extraídos, retorna erro
+        if (!pairResult.reservationData) {
+          console.error('Não foi possível extrair dados da reserva');
+          return res.status(422).json({
+            success: false,
+            message: "Não foi possível extrair dados da reserva dos documentos",
+            pairInfo: {
+              isPairComplete: pairResult.isPairComplete,
+              checkInPresent: !!pairResult.checkIn,
+              checkOutPresent: !!pairResult.checkOut
+            },
+            errors: pairResult.errors
+          });
+        }
+        
+        // Adicionar o texto extraído à base de conhecimento RAG
+        if (pairResult.checkIn && pairResult.checkIn.text) {
+          await ragService.addToKnowledgeBase(pairResult.checkIn.text, 'check_in_pdf', {
+            filename: pairResult.checkIn.filename,
+            uploadDate: new Date(),
+            documentType: 'check-in'
+          });
+        }
+        
+        if (pairResult.checkOut && pairResult.checkOut.text) {
+          await ragService.addToKnowledgeBase(pairResult.checkOut.text, 'check_out_pdf', {
+            filename: pairResult.checkOut.filename,
+            uploadDate: new Date(),
+            documentType: 'check-out'
+          });
+        }
+
+        // Extrair os dados validados
+        const extractedData = pairResult.reservationData;
+        const validationResult = pairResult.validationResult;
+        
+        if (!validationResult) {
+          console.error('Resultado de validação não disponível');
+          return res.status(500).json({
+            success: false,
+            message: "Erro no processamento dos documentos",
+            pairInfo: {
+              isPairComplete: pairResult.isPairComplete,
+              checkInPresent: !!pairResult.checkIn,
+              checkOutPresent: !!pairResult.checkOut
+            },
+            errors: [...pairResult.errors, "Falha na validação dos dados extraídos"]
+          });
+        }
+        
+        // Encontrar a propriedade correspondente pelo nome
+        const properties = await storage.getProperties();
+        console.log(`Buscando correspondência para propriedade: ${extractedData?.propertyName}`);
+        
+        // Lógica de matching de propriedade
+        let matchedProperty = null;
+        
+        if (extractedData && extractedData.propertyName) {
+          // Primeiro tenta match exato (case insensitive)
+          matchedProperty = properties.find(p => 
+            p.name.toLowerCase() === extractedData.propertyName.toLowerCase()
+          );
+          
+          // Se não encontrar, usa matching mais flexível
+          if (!matchedProperty) {
+            // Define uma função de similaridade
+            const calculateSimilarity = (str1: string, str2: string): number => {
+              const words1 = str1.toLowerCase().split(/\s+/);
+              const words2 = str2.toLowerCase().split(/\s+/);
+              const commonWords = words1.filter((word: string) => words2.includes(word));
+              return commonWords.length / Math.max(words1.length, words2.length);
+            };
+            
+            // Encontrar a propriedade com maior similaridade
+            let bestMatch = null;
+            let highestSimilarity = 0;
+            
+            for (const property of properties) {
+              const similarity = calculateSimilarity(
+                extractedData.propertyName, 
+                property.name
+              );
+              
+              if (similarity > highestSimilarity && similarity > 0.6) {
+                highestSimilarity = similarity;
+                bestMatch = property;
+              }
+            }
+            
+            matchedProperty = bestMatch;
+          }
+        }
+        
+        // Se não encontrar propriedade, define valores padrão
+        if (!matchedProperty) {
+          matchedProperty = { id: null, cleaningCost: 0, checkInFee: 0, commission: 0, teamPayment: 0 };
+          
+          // Adicionar erro de validação se não encontrou a propriedade
+          if (extractedData && extractedData.propertyName) {
+            validationResult.errors.push({
+              field: 'propertyName',
+              message: 'Propriedade não encontrada no sistema',
+              severity: 'warning'
+            });
+            
+            if (!validationResult.warningFields) {
+              validationResult.warningFields = [];
+            }
+            validationResult.warningFields.push('propertyName');
+          }
+        }
+
+        // Calcular taxas e valores baseados na propriedade encontrada
+        const totalAmount = extractedData?.totalAmount || 0;
+        const platformFee = extractedData?.platformFee || (
+          (extractedData?.platform === "airbnb" || extractedData?.platform === "booking") 
+            ? Math.round(totalAmount * 0.1) 
+            : 0
+        );
+
+        // Adicionar atividade ao sistema
+        await storage.createActivity({
+          type: 'pdf_pair_processed',
+          description: `Par de PDFs processado: ${extractedData?.propertyName || 'Propriedade desconhecida'} - ${extractedData?.guestName || 'Hóspede desconhecido'} (${validationResult.status})`,
+          entityId: matchedProperty.id,
+          entityType: 'property'
+        });
+
+        // Criar resultados enriquecidos
+        const enrichedData = {
+          ...extractedData,
+          propertyId: matchedProperty.id,
+          platformFee: platformFee,
+          cleaningFee: extractedData?.cleaningFee || Number(matchedProperty.cleaningCost || 0),
+          checkInFee: extractedData?.checkInFee || Number(matchedProperty.checkInFee || 0),
+          commissionFee: extractedData?.commissionFee || (totalAmount * Number(matchedProperty.commission || 0) / 100),
+          teamPayment: extractedData?.teamPayment || Number(matchedProperty.teamPayment || 0)
+        };
+
+        // Retorna os dados extraídos com as informações da propriedade e status de validação
+        res.json({
+          success: true,
+          extractedData: enrichedData,
+          validation: {
+            status: validationResult.status,
+            isValid: validationResult.isValid,
+            errors: validationResult.errors,
+            missingFields: validationResult.missingFields,
+            warningFields: validationResult.warningFields
+          },
+          pairInfo: {
+            isPairComplete: pairResult.isPairComplete,
+            checkInPresent: !!pairResult.checkIn,
+            checkOutPresent: !!pairResult.checkOut
+          },
+          files: fileInfo
+        });
+      } catch (processError) {
+        console.error('Erro no processamento dos PDFs:', processError);
+        // Retornar erro formatado
+        return res.status(500).json({ 
+          success: false,
+          message: "Falha ao processar PDFs", 
+          error: processError instanceof Error ? processError.message : "Erro desconhecido no processamento"
+        });
+      }
+    } catch (err) {
+      console.error('Erro ao processar upload de PDFs:', err);
+      return res.status(500).json({
+        success: false,
+        message: "Erro interno no servidor",
+        error: err instanceof Error ? err.message : "Erro desconhecido"
+      });
+    }
+  });
 
   // Função auxiliar para extrair texto de um PDF usando a API Mistral
   async function extractTextFromPDFWithMistral(pdfBase64: string): Promise<string> {
