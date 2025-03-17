@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { type Reservation, type Activity } from "@shared/schema";
+import { type Property, type Reservation, type Activity } from "@shared/schema";
 import { motion } from "framer-motion";
 
 // UI Components
@@ -95,7 +95,7 @@ export default function DailyTasksDashboard() {
   });
   
   // Processar reservas para adicionar nomes de propriedades
-  const reservations: ExtendedReservation[] = rawReservations && properties 
+  const reservations: ExtendedReservation[] = rawReservations && properties && Array.isArray(properties)
     ? rawReservations.map(res => {
         const property = properties.find((p: any) => p.id === res.propertyId);
         return {
