@@ -211,20 +211,32 @@ export default function AssistantPage() {
   }, [messages]);
 
   // Função para enviar mensagem ao assistente com Mistral AI
-  const sendMessage = async () => {
-    if (!message.trim()) return;
+  const sendMessage = async (messageToSend?: string | React.MouseEvent<HTMLButtonElement>) => {
+    // Se for um evento (click do botão), usamos o estado atual da mensagem
+    // Se for uma string, usamos o valor passado
+    // Caso contrário, usamos o estado atual da mensagem
+    let textToSend = message;
+    
+    if (typeof messageToSend === 'string') {
+      textToSend = messageToSend;
+    }
+    
+    if (!textToSend.trim()) return;
     
     // Adiciona mensagem do usuário
     const userMessage: Message = { 
       role: "user" as const, 
-      content: message, 
+      content: textToSend, 
       timestamp: new Date(),
       id: generateId()
     };
     
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
-    setMessage("");
+    // Só limpa o campo de mensagem se estamos usando o valor do estado atual
+    if (messageToSend === undefined) {
+      setMessage("");
+    }
     
     try {
       // Se não tiver a chave da API, use uma mensagem padrão
@@ -252,7 +264,7 @@ export default function AssistantPage() {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          message: message,
+          message: textToSend,
           language: i18n.language,
           history: messages.map(msg => ({
             role: msg.role,
@@ -463,12 +475,11 @@ export default function AssistantPage() {
   
   // Funções para manipular sugestões
   const handleSuggestionClick = (text: string) => {
-    setMessage(text);
     if (activeTab !== "chat") {
       setActiveTab("chat");
     }
-    // Enviar a mensagem automaticamente após um pequeno delay para garantir que a UI atualizou
-    setTimeout(() => sendMessage(), 100);
+    // Enviar a mensagem diretamente, sem depender do estado
+    setTimeout(() => sendMessage(text), 100);
   };
   
   const handleQuickSuggestionClick = (id: string) => {
@@ -480,15 +491,15 @@ export default function AssistantPage() {
         // Se for uma sugestão de upload de arquivo, aciona o input de arquivo
         triggerFileUpload();
       } else {
-        // Se tiver um prompt específico, usa-o
+        // Se tiver um prompt específico, usa-o diretamente
         if (suggestion.prompt) {
-          setMessage(suggestion.prompt);
           // Mudando para a aba de chat, se não estiver nela
           if (activeTab !== "chat") {
             setActiveTab("chat");
           }
-          // Pequeno delay para garantir que a UI esteja pronta antes de enviar
-          setTimeout(() => sendMessage(), 100);
+          // Enviar a mensagem diretamente com o texto do prompt
+          // Não usamos setTimeout aqui para garantir envio imediato
+          sendMessage(suggestion.prompt);
         } else {
           console.warn(`Sugestão com ID ${id} não possui prompt definido.`);
         }
@@ -702,7 +713,7 @@ export default function AssistantPage() {
                   />
                   
                   <Button 
-                    onClick={sendMessage} 
+                    onClick={() => sendMessage()} 
                     disabled={!message.trim() || isLoading}
                     size="icon"
                     className="bg-primary hover:bg-primary/90"
