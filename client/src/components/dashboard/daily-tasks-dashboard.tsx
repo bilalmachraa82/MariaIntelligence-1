@@ -94,58 +94,75 @@ export default function DailyTasksDashboard() {
     staleTime: 5 * 60 * 1000, // 5 minutos de cache
   });
   
-  // Processar reservas para adicionar nomes de propriedades
-  const reservations: ExtendedReservation[] = rawReservations && properties && Array.isArray(properties)
-    ? rawReservations.map(res => {
-        const property = properties.find((p: any) => p.id === res.propertyId);
-        return {
-          ...res,
-          propertyName: property?.name || `Imóvel #${res.propertyId}`
-        };
-      })
-    : [];
+  // Processar reservas para adicionar nomes de propriedades com useMemo para memoização
+  const reservations: ExtendedReservation[] = useMemo(() => {
+    if (!rawReservations || !properties || !Array.isArray(properties) || properties.length === 0) {
+      return [];
+    }
+    
+    return rawReservations.map(res => {
+      const property = properties.find((p: any) => p.id === res.propertyId);
+      return {
+        ...res,
+        propertyName: property?.name || `Imóvel #${res.propertyId}`
+      };
+    });
+  }, [rawReservations, properties]);
   
-  // Fetch recent activities
-  const { data: activities, isLoading: isLoadingActivities } = useQuery<Activity[]>({
+  // Fetch recent activities com cache estendido
+  const { data: activities = [], isLoading: isLoadingActivities } = useQuery<Activity[]>({
     queryKey: ["/api/activities?limit=10"],
-    staleTime: 5000,
+    staleTime: 5 * 60 * 1000, // 5 minutos de cache
   });
 
-  const today = new Date();
-  const todayStr = today.toISOString().split('T')[0];
-  const tomorrowStr = new Date(today.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  // Memoizar strings de data para evitar recálculos 
+  const { todayStr, tomorrowStr } = useMemo(() => {
+    const today = new Date();
+    return {
+      todayStr: today.toISOString().split('T')[0],
+      tomorrowStr: new Date(today.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+    };
+  }, []);
 
-  // Filter today's check-ins from reservations
-  const todayCheckIns = !isLoadingReservations && reservations
-    ? reservations.filter(res => 
+  // Filter today's check-ins from reservations com useMemo
+  const todayCheckIns = useMemo(() => {
+    if (isLoadingReservations || !reservations.length) return [];
+    
+    return reservations
+      .filter(res => 
         res.checkInDate.split('T')[0] === todayStr || 
         res.checkInDate.split('T')[0] === tomorrowStr
-      ).sort((a, b) => new Date(a.checkInDate).getTime() - new Date(b.checkInDate).getTime())
-    : [];
+      )
+      .sort((a, b) => new Date(a.checkInDate).getTime() - new Date(b.checkInDate).getTime());
+  }, [isLoadingReservations, reservations, todayStr, tomorrowStr]);
 
-  // Filter today's check-outs from reservations
-  const todayCheckOuts = !isLoadingReservations && reservations
-    ? reservations.filter(res => 
-        res.checkOutDate.split('T')[0] === todayStr
-      ).sort((a, b) => new Date(a.checkOutDate).getTime() - new Date(b.checkOutDate).getTime())
-    : [];
+  // Filter today's check-outs from reservations com useMemo
+  const todayCheckOuts = useMemo(() => {
+    if (isLoadingReservations || !reservations.length) return [];
+    
+    return reservations
+      .filter(res => res.checkOutDate.split('T')[0] === todayStr)
+      .sort((a, b) => new Date(a.checkOutDate).getTime() - new Date(b.checkOutDate).getTime());
+  }, [isLoadingReservations, reservations, todayStr]);
   
-  // Create cleaning tasks based on check-outs
-  const cleaningTasks = todayCheckOuts.map(checkout => ({
-    id: `cleaning-${checkout.id}`,
-    title: t("dashboard.cleaningAfterCheckout", "Limpeza após check-out"),
-    description: t("dashboard.cleaningTaskDescription", "Preparar imóvel para próximo hóspede"),
-    propertyName: checkout.propertyName,
-    propertyId: checkout.propertyId,
-    time: checkout.checkOutDate,
-    status: "pending" as const,
-    type: "cleaning" as const,
-    icon: <Sparkles className="h-5 w-5 text-emerald-500" />,
-    priority: "high" as const
-  }));
+  // Create cleaning tasks based on check-outs com useMemo para otimização
+  const cleaningTasks = useMemo(() => {
+    return todayCheckOuts.map(checkout => ({
+      id: `cleaning-${checkout.id}`,
+      title: t("dashboard.cleaningAfterCheckout", "Limpeza após check-out"),
+      description: t("dashboard.cleaningTaskDescription", "Preparar imóvel para próximo hóspede"),
+      propertyName: checkout.propertyName,
+      propertyId: checkout.propertyId,
+      time: checkout.checkOutDate,
+      status: "pending" as const,
+      type: "cleaning" as const,
+      icon: <Sparkles className="h-5 w-5 text-emerald-500" />,
+      priority: "high" as const
+    }));
+  }, [todayCheckOuts, t]);
 
-  // Create maintenance tasks (example/mock data)
-  const maintenanceTasks: DailyTask[] = [
+  // Create maintenance tasks (example/mock data) - com useMemo para evitar recriação
+  const maintenanceTasks: DailyTask[] = useMemo(() => [
     {
       id: "maintenance-1",
       title: t("dashboard.maintenanceTask", "Verificar ar-condicionado"),
@@ -168,10 +185,10 @@ export default function DailyTasksDashboard() {
       icon: <AlertTriangle className="h-5 w-5 text-red-500" />,
       priority: "high"
     }
-  ];
+  ], [t]);
 
-  // Create other tasks
-  const otherTasks: DailyTask[] = [
+  // Create other tasks com useMemo
+  const otherTasks: DailyTask[] = useMemo(() => [
     {
       id: "task-1",
       title: t("dashboard.contactSupplier", "Contatar fornecedor"),
@@ -190,11 +207,12 @@ export default function DailyTasksDashboard() {
       icon: <FileText className="h-5 w-5 text-purple-500" />,
       priority: "medium"
     }
-  ];
+  ], [t]);
 
-  // Combine all tasks
-  const allTasks: DailyTask[] = [
-    ...todayCheckIns.map(checkin => ({
+  // Combine all tasks com useMemo para evitar recálculos desnecessários
+  const allTasks: DailyTask[] = useMemo(() => {
+    // Primeiro, criamos as tarefas de check-in
+    const checkInTasks = todayCheckIns.map(checkin => ({
       id: `checkin-${checkin.id}`,
       title: t("dashboard.guestArrival", "Chegada de hóspede"),
       description: t("dashboard.checkInDescription", "Receber e entregar chaves"),
@@ -206,8 +224,10 @@ export default function DailyTasksDashboard() {
       type: "check-in" as const,
       icon: <User className="h-5 w-5 text-blue-500" />,
       priority: "high" as const
-    })),
-    ...todayCheckOuts.map(checkout => ({
+    }));
+    
+    // Depois as tarefas de check-out
+    const checkOutTasks = todayCheckOuts.map(checkout => ({
       id: `checkout-${checkout.id}`,
       title: t("dashboard.guestDeparture", "Saída de hóspede"),
       description: t("dashboard.checkOutDescription", "Receber chaves e verificar imóvel"),
@@ -219,17 +239,29 @@ export default function DailyTasksDashboard() {
       type: "check-out" as const,
       icon: <LogOut className="h-5 w-5 text-rose-500" />,
       priority: "high" as const
-    })),
-    ...cleaningTasks,
-    ...maintenanceTasks,
-    ...otherTasks
-  ];
+    }));
+    
+    // Combinamos todas as tarefas
+    return [
+      ...checkInTasks,
+      ...checkOutTasks,
+      ...cleaningTasks,
+      ...maintenanceTasks,
+      ...otherTasks
+    ];
+  }, [todayCheckIns, todayCheckOuts, cleaningTasks, maintenanceTasks, otherTasks, t]);
 
-  const pendingTasks = allTasks.filter(task => task.status === "pending" || task.status === "upcoming" || task.status === "attention");
-  const priorityTasks = allTasks.filter(task => task.priority === "high");
+  // Otimização: filtrar tarefas pendentes e de alta prioridade com useMemo
+  const pendingTasks = useMemo(() => 
+    allTasks.filter(task => task.status === "pending" || task.status === "upcoming" || task.status === "attention"),
+  [allTasks]);
+  
+  const priorityTasks = useMemo(() => 
+    allTasks.filter(task => task.priority === "high"),
+  [allTasks]);
 
-  // Statistics
-  const taskStatistics = {
+  // Statistics com useMemo para evitar recálculos desnecessários
+  const taskStatistics = useMemo(() => ({
     totalTasks: allTasks.length,
     pendingTasks: pendingTasks.length,
     checkIns: todayCheckIns.length,
@@ -237,7 +269,8 @@ export default function DailyTasksDashboard() {
     cleaningTasks: cleaningTasks.length,
     maintenanceTasks: maintenanceTasks.length,
     highPriorityTasks: priorityTasks.length
-  };
+  }), [allTasks.length, pendingTasks.length, todayCheckIns.length, 
+       todayCheckOuts.length, cleaningTasks.length, maintenanceTasks.length, priorityTasks.length]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
