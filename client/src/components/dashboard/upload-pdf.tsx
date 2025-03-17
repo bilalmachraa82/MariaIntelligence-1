@@ -40,7 +40,7 @@ export function UploadPDF() {
   const [isMultiResultsDialogOpen, setIsMultiResultsDialogOpen] = useState(false);
   
   // Estados de modo e visualização
-  const [isMultiUploadMode, setIsMultiUploadMode] = useState(false);
+  const [isMultiUploadMode, setIsMultiUploadMode] = useState(true); // Agora o modo múltiplo é o padrão
   const [showRawText, setShowRawText] = useState(false);
   
   // Estado de disponibilidade da API Mistral

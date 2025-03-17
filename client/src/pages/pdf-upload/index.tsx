@@ -150,8 +150,16 @@ export default function DocumentScanPage() {
                 {t("documentScan.uploadPdfSection", "Upload de PDFs")}
               </CardTitle>
               <p className="text-sm text-secondary-500 mt-1">
-                {t("documentScan.uploadPdfDescription", "Faça upload de PDFs de reservas para processamento com IA")}
+                {t("documentScan.uploadPdfDescription", "Faça upload de um ou mais PDFs de reservas para processamento automático com IA")}
               </p>
+              <div className="mt-1 flex items-center">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  <svg className="mr-1.5 h-2 w-2 text-green-400" fill="currentColor" viewBox="0 0 8 8">
+                    <circle cx="4" cy="4" r="3" />
+                  </svg>
+                  Por padrão, múltiplos arquivos são aceitos
+                </span>
+              </div>
             </CardHeader>
             <CardContent className="px-6 pb-6">
               <UploadPDF />
@@ -321,7 +329,7 @@ export default function DocumentScanPage() {
                   {t("documentScan.step1Title", "Selecionar ou Capturar")}
                 </h4>
                 <p className="text-sm text-secondary-600 mt-1">
-                  {t("documentScan.step1Description", "Faça upload de PDFs, selecione imagens ou capture fotos diretamente dos documentos de reserva")}
+                  {t("documentScan.step1Description", "Faça upload de PDFs (único ou par de check-in/check-out), selecione imagens ou capture fotos dos documentos de reserva")}
                 </p>
               </div>
             </div>
@@ -335,7 +343,7 @@ export default function DocumentScanPage() {
                   {t("documentScan.step2Title", "Processamento com IA")}
                 </h4>
                 <p className="text-sm text-secondary-600 mt-1">
-                  {t("documentScan.step2Description", "O sistema analisa automaticamente os dados com OCR e processamento Mistral AI, independente do formato")}
+                  {t("documentScan.step2Description", "O sistema analisa automaticamente os dados com OCR e processamento Mistral AI, combinando informações quando disponíveis em pares")}
                 </p>
               </div>
             </div>
