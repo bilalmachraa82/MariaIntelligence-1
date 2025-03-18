@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useReservations, useDeleteReservation, useReservationEnums } from "@/hooks/use-reservations";
 import { useProperties } from "@/hooks/use-properties";
 import { Link, useLocation } from "wouter";
-import { PlusCircle, MoreHorizontal, Edit, Trash2, FileUp, Calendar } from "lucide-react";
+import { PlusCircle, MoreHorizontal, Edit, Trash2, FileUp, Calendar, AlertCircle } from "lucide-react";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { 
   Card, 
   CardContent, 

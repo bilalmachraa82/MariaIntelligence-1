@@ -35,6 +35,7 @@ import MaintenanceRequest from "@/pages/maintenance/request";
 import PaymentsOutgoing from "@/pages/payments/outgoing";
 import PaymentsIncoming from "@/pages/payments/incoming";
 import PaymentNewPage from "@/pages/payments/new";
+import ReservationApprovalPage from "@/pages/reservations/approval";
 
 // Imports das páginas financeiras
 import FinancialDocumentsPage from "@/pages/financial/documents";
@@ -106,6 +107,7 @@ function Router() {
       <Route path="/reservations" component={ReservationsPage} />
       <Route path="/reservations/new" component={ReservationNewPage} />
       <Route path="/reservations/:id" component={ReservationDetailPage} />
+      <Route path="/reservations/approval" component={ReservationApprovalPage} />
       <Route path="/upload-pdf" component={DocumentScanPage} />
       <Route path="/scan" component={DocumentScanPage} />
       <Route path="/pdf-upload" component={DocumentScanPage} />
@@ -147,6 +149,7 @@ function Router() {
       <Route path="/reservas" component={ReservationsPage} />
       <Route path="/reservas/nova" component={ReservationNewPage} />
       <Route path="/reservas/:id" component={ReservationDetailPage} />
+      <Route path="/reservas/aprovacao" component={ReservationApprovalPage} />
       <Route path="/upload-pdf" component={DocumentScanPage} />
       <Route path="/enviar-pdf" component={DocumentScanPage} />
       <Route path="/digitalizar" component={DocumentScanPage} />
