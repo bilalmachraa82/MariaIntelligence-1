@@ -408,7 +408,7 @@ export default function SettingsPage() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Card 
-                  className={`cursor-pointer hover:border-primary ${currentLanguage === 'pt-PT' ? 'border-primary bg-primary-50' : ''}`}
+                  className={`cursor-pointer hover:border-primary ${currentLanguage === 'pt-PT' || currentLanguage === 'pt' ? 'border-primary bg-primary-50' : ''}`}
                   onClick={() => changeLanguage('pt-PT')}
                 >
                   <CardContent className="pt-6 flex items-center">
@@ -417,52 +417,23 @@ export default function SettingsPage() {
                     </div>
                     <div>
                       <h3 className="font-medium">Português (Portugal)</h3>
-                      <p className="text-sm text-muted-foreground">Português (PT)</p>
+                      <p className="text-sm text-muted-foreground">Idioma padrão do sistema</p>
+                      <Badge className="mt-1" variant="outline">Recomendado</Badge>
                     </div>
                   </CardContent>
                 </Card>
                 
                 <Card 
-                  className={`cursor-pointer hover:border-primary ${currentLanguage === 'en-US' ? 'border-primary bg-primary-50' : ''}`}
-                  onClick={() => changeLanguage('en-US')}
+                  className={`cursor-pointer hover:border-primary ${currentLanguage === 'en-GB' || currentLanguage === 'en' ? 'border-primary bg-primary-50' : ''}`}
+                  onClick={() => changeLanguage('en-GB')}
                 >
                   <CardContent className="pt-6 flex items-center">
                     <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 mr-4 bg-gray-100 flex items-center justify-center">
-                      🇺🇸
+                      🇬🇧
                     </div>
                     <div>
-                      <h3 className="font-medium">English (US)</h3>
-                      <p className="text-sm text-muted-foreground">English (US)</p>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card 
-                  className={`cursor-pointer hover:border-primary ${currentLanguage === 'fr-FR' ? 'border-primary bg-primary-50' : ''}`}
-                  onClick={() => changeLanguage('fr-FR')}
-                >
-                  <CardContent className="pt-6 flex items-center">
-                    <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 mr-4 bg-gray-100 flex items-center justify-center">
-                      🇫🇷
-                    </div>
-                    <div>
-                      <h3 className="font-medium">Français (France)</h3>
-                      <p className="text-sm text-muted-foreground">Français (FR)</p>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card 
-                  className={`cursor-pointer hover:border-primary ${currentLanguage === 'es-ES' ? 'border-primary bg-primary-50' : ''}`}
-                  onClick={() => changeLanguage('es-ES')}
-                >
-                  <CardContent className="pt-6 flex items-center">
-                    <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 mr-4 bg-gray-100 flex items-center justify-center">
-                      🇪🇸
-                    </div>
-                    <div>
-                      <h3 className="font-medium">Español (España)</h3>
-                      <p className="text-sm text-muted-foreground">Español (ES)</p>
+                      <h3 className="font-medium">English (UK)</h3>
+                      <p className="text-sm text-muted-foreground">Alternativa em inglês</p>
                     </div>
                   </CardContent>
                 </Card>
