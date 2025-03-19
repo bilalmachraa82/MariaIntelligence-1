@@ -103,12 +103,33 @@ interface DashboardStatistics {
   }>;
 }
 
+interface MonthlyDataPoint {
+  month: string;
+  revenue: number;
+  profit: number;
+}
+
 interface MonthlyStatistics {
-  revenueByMonth: Array<{
-    month: string;
-    revenue: number;
-    profit: number;
-  }>;
+  revenueByMonth: MonthlyDataPoint[];
+}
+
+interface ChartDataPoint {
+  name: string;
+  Receita: number;
+  Lucro: number;
+}
+
+// Interface para tipagem do payload do gráfico
+interface ChartPayload {
+  dataKey: string;
+  name: string;
+  value: number;
+  payload: ChartDataPoint;
+}
+
+// Interface para o evento de clique no gráfico
+interface ChartClickData {
+  activePayload?: ChartPayload[];
 }
 
 const dateRanges: DateRange[] = [
@@ -188,7 +209,7 @@ export default function ModernDashboard() {
   });
   
   // Prepare data for charts
-  const revenueData = monthlyStats?.revenueByMonth 
+  const revenueData: ChartDataPoint[] = monthlyStats?.revenueByMonth 
     ? monthlyStats.revenueByMonth.map((item) => ({
         name: item.month,
         Receita: item.revenue,
