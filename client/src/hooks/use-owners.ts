@@ -4,14 +4,14 @@ import { type Owner } from "@shared/schema";
 
 // Get all owners
 export function useOwners() {
-  return useQuery({
+  return useQuery<Owner[]>({
     queryKey: ["/api/owners"],
   });
 }
 
 // Get a specific owner by ID
 export function useOwner(id: number | undefined) {
-  return useQuery({
+  return useQuery<Owner>({
     queryKey: ["/api/owners", id],
     enabled: !!id,
   });
@@ -23,8 +23,7 @@ export function useCreateOwner() {
   
   return useMutation({
     mutationFn: async (ownerData: Omit<Owner, "id">) => {
-      const res = await apiRequest("POST", "/api/owners", ownerData);
-      return await res.json();
+      return apiRequest("/api/owners", { method: "POST", data: ownerData });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/owners"] });
@@ -38,8 +37,7 @@ export function useUpdateOwner() {
   
   return useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<Owner> }) => {
-      const res = await apiRequest("PATCH", `/api/owners/${id}`, data);
-      return await res.json();
+      return apiRequest(`/api/owners/${id}`, { method: "PATCH", data });
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["/api/owners"] });
@@ -54,7 +52,7 @@ export function useDeleteOwner() {
   
   return useMutation({
     mutationFn: async (id: number) => {
-      await apiRequest("DELETE", `/api/owners/${id}`);
+      await apiRequest(`/api/owners/${id}`, { method: "DELETE" });
       return id;
     },
     onSuccess: () => {

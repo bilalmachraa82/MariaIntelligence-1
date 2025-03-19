@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest } from "../lib/queryClient";
-import type { Property } from "../lib/types";
+import type { Property } from "@shared/schema";
 
 export function useProperties() {
   return useQuery<Property[]>({
