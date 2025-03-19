@@ -229,6 +229,10 @@
     "documentScan": {
       "title": "Scanner de Documentos",
       "subtitle": "Digitaliza e processa documentos de reservas com IA",
+      "description": "Converta PDFs ou imagens de reservas em dados estruturados com reconhecimento inteligente",
+      "pdfTab": "PDF",
+      "imageTab": "Imagem",
+      "cameraTab": "Câmera",
       "uploadPdfSection": "Carregar PDFs",
       "uploadPdfDescription": "Carrega PDFs de reservas para processamento com IA",
       "uploadImageSection": "Carregar Imagens",
@@ -266,7 +270,8 @@
       "confirm": "Confirmar",
       "email": "Email",
       "phone": "Telefone",
-      "company": "Empresa"
+      "company": "Empresa",
+      "back": "Voltar"
     },
     "demoData": {
       "title": "Dados de demonstração",
@@ -378,6 +383,7 @@
       "businessMetrics": "Métricas de Negócio"
     },
     "settings": {
+      "title": "Configurações",
       "tabs": {
         "general": "Geral",
         "notifications": "Notificações",
@@ -410,7 +416,9 @@
       },
       "language": {
         "title": "Preferências de Idioma",
-        "selectLanguage": "Seleciona o teu idioma preferido"
+        "selectLanguage": "Seleciona o teu idioma preferido",
+        "changeSuccess": "Idioma alterado com sucesso",
+        "changeSuccessDesc": "O idioma da aplicação foi atualizado para português europeu"
       },
       "integrations": {
         "title": "Integrações",
