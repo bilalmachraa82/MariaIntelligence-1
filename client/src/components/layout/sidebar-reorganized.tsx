@@ -296,21 +296,23 @@ export function SidebarReorganized({
   // Itens principais da navegação
   const mainNavItems = [
     {
-      name: t("navigation.home", "Home"),
-      href: isPortuguese ? "/painel" : "/dashboard",
-      altHref: "/",
+      name: t("navigation.home", "Início"),
+      href: "/painel",
+      altHref: "/dashboard",
       icon: Home,
       iconColor: "text-blue-500"
     },
     {
       name: t("navigation.properties", "Imóveis"),
-      href: isPortuguese ? "/propriedades" : "/properties",
+      href: "/propriedades",
+      altHref: "/properties",
       icon: Building2,
       iconColor: "text-indigo-500"
     },
     {
       name: t("navigation.bookings", "Reservas"),
-      href: isPortuguese ? "/reservas" : "/reservations",
+      href: "/reservas",
+      altHref: "/reservations",
       icon: CalendarDays,
       iconColor: "text-purple-500"
     }
@@ -321,23 +323,27 @@ export function SidebarReorganized({
     // Relatórios financeiros
     {
       name: t("navigation.reports.financial", "Relatórios"),
-      href: isPortuguese ? "/relatorios" : "/reports",
+      href: "/relatorios",
+      altHref: "/reports",
       icon: FileSpreadsheet,
       iconColor: "text-emerald-500",
       submenu: [
         {
           name: t("navigation.reports.owner", "Proprietários"),
-          href: isPortuguese ? "/relatorios/proprietario" : "/reports/owner-report",
+          href: "/relatorios/proprietario",
+          altHref: "/reports/owner-report",
           icon: FileSpreadsheet,
         },
         {
           name: t("navigation.reports.monthly", "Faturas Mensais"),
-          href: isPortuguese ? "/relatorios/faturacao-mensal" : "/reports/monthly-invoice",
+          href: "/relatorios/faturacao-mensal",
+          altHref: "/reports/monthly-invoice",
           icon: FileSpreadsheet,
         },
         {
           name: t("navigation.reports.trends", "Tendências"),
-          href: isPortuguese ? "/relatorios/tendencias" : "/reports/trends",
+          href: "/relatorios/tendencias",
+          altHref: "/reports/trends",
           icon: FileSpreadsheet,
         }
       ]
@@ -345,19 +351,22 @@ export function SidebarReorganized({
     // Pagamentos
     {
       name: t("navigation.payments.income", "Recebimentos"),
-      href: isPortuguese ? "/pagamentos/entrada" : "/payments/incoming",
+      href: "/pagamentos/entrada",
+      altHref: "/payments/incoming",
       icon: PiggyBank,
       iconColor: "text-green-500"
     },
     {
       name: t("navigation.payments.expenses", "Despesas"),
-      href: isPortuguese ? "/pagamentos/saida" : "/payments/outgoing",
+      href: "/pagamentos/saida",
+      altHref: "/payments/outgoing",
       icon: CreditCard,
       iconColor: "text-red-500"
     },
     {
       name: t("navigation.documents", "Documentos"),
-      href: isPortuguese ? "/documentos" : "/financial/documents",
+      href: "/documentos",
+      altHref: "/financial/documents",
       icon: FileText,
       iconColor: "text-yellow-500"
     }
@@ -367,19 +376,22 @@ export function SidebarReorganized({
   const operationsNavItems = [
     {
       name: t("navigation.cleaning", "Limpeza"),
-      href: isPortuguese ? "/equipas-limpeza" : "/cleaning-teams",
+      href: "/equipas-limpeza",
+      altHref: "/cleaning-teams",
       icon: PaintBucket,
       iconColor: "text-cyan-500"
     },
     {
       name: t("navigation.maintenance", "Manutenção"),
-      href: isPortuguese ? "/manutencao/pendentes" : "/maintenance/pending",
+      href: "/manutencao/pendentes",
+      altHref: "/maintenance/pending",
       icon: Wrench,
       iconColor: "text-amber-500"
     },
     {
       name: t("navigation.owners", "Proprietários"),
-      href: isPortuguese ? "/proprietarios" : "/owners",
+      href: "/proprietarios",
+      altHref: "/owners",
       icon: Users,
       iconColor: "text-orange-500"
     }
@@ -389,13 +401,15 @@ export function SidebarReorganized({
   const toolsNavItems = [
     {
       name: t("navigation.assistant", "Maria IA"),
-      href: isPortuguese ? "/assistente" : "/assistant",
+      href: "/assistente",
+      altHref: "/assistant",
       icon: Bot,
       iconColor: "text-violet-500"
     },
     {
       name: t("navigation.documentScan", "Scanner"),
       href: "/upload-pdf", // Caminho consistente com o App.tsx
+      altHref: "/pdf-upload",
       icon: FileUp,
       iconColor: "text-rose-500"
     }
@@ -405,13 +419,15 @@ export function SidebarReorganized({
   const otherNavItems = [
     {
       name: t("navigation.settings", "Configurações"),
-      href: isPortuguese ? "/configuracoes" : "/settings",
+      href: "/configuracoes",
+      altHref: "/settings",
       icon: Settings,
       iconColor: "text-gray-500"
     },
     {
       name: t("navigation.demoData", "Dados Demo"),
-      href: isPortuguese ? "/dados-demo" : "/demo-data",
+      href: "/dados-demo",
+      altHref: "/demo-data",
       icon: ClipboardCheck,
       iconColor: "text-blue-400"
     }
@@ -557,7 +573,7 @@ export function SidebarReorganized({
           isMobile ? "py-4" : "py-2"
         )}>
           <div className="px-2">
-            <SidebarSection title={t("navigation.categories.main", "Main")}>
+            <SidebarSection title={t("navigation.categories.main", "Principal")}>
               <div className="space-y-1">
                 {mainNavItems.map((item) => (
                   <SidebarItem
@@ -569,7 +585,7 @@ export function SidebarReorganized({
                     isActive={checkIfActive(item.href, item.altHref)}
                     onClick={() => navigate(item.href)}
                     iconColor={item.iconColor}
-                    showPendingBadge={item.href === (isPortuguese ? "/reservas" : "/reservations")}
+                    showPendingBadge={item.href === "/reservas"}
                   />
                 ))}
               </div>
@@ -577,7 +593,7 @@ export function SidebarReorganized({
             
             <Separator className="my-3" />
             
-            <SidebarSection title={t("navigation.categories.finances", "Finances")}>
+            <SidebarSection title={t("navigation.categories.finances", "Finanças")}>
               <Collapsible 
                 open={openSections.finances}
                 onOpenChange={() => toggleSection('finances')}
@@ -598,7 +614,7 @@ export function SidebarReorganized({
                         isMobile ? "h-6 w-6" : "h-5 w-5", 
                         "text-green-500"
                       )} />
-                      <span className="flex-1 truncate">{t("navigation.categories.finances", "Finances")}</span>
+                      <span className="flex-1 truncate">{t("navigation.categories.finances", "Finanças")}</span>
                       <ChevronRight className={cn(
                         "transition-transform", 
                         openSections.finances ? "rotate-90" : "",
@@ -627,7 +643,7 @@ export function SidebarReorganized({
               </Collapsible>
             </SidebarSection>
             
-            <SidebarSection title={t("navigation.categories.operations", "Operations")}>
+            <SidebarSection title={t("navigation.categories.operations", "Operações")}>
               <Collapsible 
                 open={openSections.operations}
                 onOpenChange={() => toggleSection('operations')}
@@ -648,7 +664,7 @@ export function SidebarReorganized({
                         isMobile ? "h-6 w-6" : "h-5 w-5", 
                         "text-amber-500"
                       )} />
-                      <span className="flex-1 truncate">{t("navigation.categories.operations", "Operations")}</span>
+                      <span className="flex-1 truncate">{t("navigation.categories.operations", "Operações")}</span>
                       <ChevronRight className={cn(
                         "transition-transform", 
                         openSections.operations ? "rotate-90" : "",
@@ -678,7 +694,7 @@ export function SidebarReorganized({
             
             <Separator className="my-3" />
             
-            <SidebarSection title={t("navigation.categories.tools", "Tools")}>
+            <SidebarSection title={t("navigation.categories.tools", "Ferramentas")}>
               <div className="space-y-1">
                 {toolsNavItems.map((item) => (
                   <SidebarItem
@@ -696,7 +712,7 @@ export function SidebarReorganized({
             
             <Separator className="my-3" />
             
-            <SidebarSection title={t("navigation.categories.utilities", "Utilities")}>
+            <SidebarSection title={t("navigation.categories.utilities", "Utilidades")}>
               <div className="space-y-1">
                 {otherNavItems.map((item) => (
                   <SidebarItem
