@@ -4,6 +4,7 @@ import NewModernDashboard from "@/components/dashboard/new-modern-dashboard";
 import DailyTasksDashboard from "@/components/dashboard/daily-tasks-dashboard";
 import { motion } from "framer-motion";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { InspirationQuote } from "@/components/ui/inspiration-quote";
 
 export default function DashboardPage() {
   const { t } = useTranslation();
@@ -17,6 +18,14 @@ export default function DashboardPage() {
       transition={{ duration: 0.5 }}
     >
       <div className="container mx-auto px-4 py-4">
+        {/* Componente de citação inspiradora */}
+        <div className="mb-6">
+          <InspirationQuote 
+            context={mode === "daily" ? "dashboard" : "finance"}
+            variant="subtle"
+          />
+        </div>
+        
         <Tabs 
           defaultValue="daily" 
           className="w-full"

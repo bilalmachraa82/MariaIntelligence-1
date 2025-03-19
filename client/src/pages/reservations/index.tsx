@@ -5,6 +5,7 @@ import { useProperties } from "@/hooks/use-properties";
 import { Link, useLocation } from "wouter";
 import { PlusCircle, MoreHorizontal, Edit, Trash2, FileUp, Calendar, AlertCircle } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { InspirationQuote } from "@/components/ui/inspiration-quote";
 import { 
   Card, 
   CardContent, 
@@ -120,6 +121,11 @@ export default function ReservationsPage() {
             </Button>
           </Link>
         </div>
+      </div>
+      
+      {/* Mensagem inspiradora */}
+      <div className="w-full">
+        <InspirationQuote context="reservations" variant="minimal" />
       </div>
 
       <Card>
