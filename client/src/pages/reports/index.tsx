@@ -309,7 +309,7 @@ export default function ReportsPage() {
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
-                      <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                      <Tooltip formatter={(value: ValueType) => formatCurrency(Number(value))} />
                       <Legend />
                     </PieChart>
                   </ResponsiveContainer>
@@ -541,7 +541,7 @@ export default function ReportsPage() {
                         <Cell fill="#8b5cf6" />
                         <Cell fill="#f59e0b" />
                       </Pie>
-                      <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                      <Tooltip formatter={(value: ValueType) => formatCurrency(Number(value))} />
                     </PieChart>
                   </ResponsiveContainer>
                 )}
@@ -1032,7 +1032,7 @@ export default function ReportsPage() {
                   <YAxis 
                     tickFormatter={(value) => `€${value}`}
                   />
-                  <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                  <Tooltip formatter={(value: ValueType) => formatCurrency(Number(value))} />
                   <Legend />
                   <Line type="monotone" dataKey="amount" name="Valor Pago" stroke="#8884d8" activeDot={{ r: 8 }} />
                 </LineChart>
