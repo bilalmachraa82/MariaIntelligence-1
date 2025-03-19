@@ -47,6 +47,26 @@ interface DateRange {
   label: string;
 }
 
+// Interface para representar os dados de estatísticas gerais
+interface Statistics {
+  totalRevenue: number;
+  netProfit: number;
+  occupancyRate: number;
+  reservationsCount: number;
+  topProperties: PropertyStatistics[];
+}
+
+// Interface para representar os dados de estatísticas de propriedades
+interface PropertyStatistics {
+  id: number;
+  name: string;
+  occupancyRate: number;
+  profit: number;
+  totalRevenue: number;
+  totalCosts: number;
+  reservationsCount: number;
+}
+
 const dateRanges: DateRange[] = [
   {
     label: "Últimos 30 dias",
@@ -87,7 +107,7 @@ export default function ReportsPage() {
   const [selectedPropertyId, setSelectedPropertyId] = useState<string>("all");
   
   // Fetch statistics
-  const { data: statistics, isLoading: isLoadingStats } = useQuery({
+  const { data: statistics, isLoading: isLoadingStats } = useQuery<Statistics>({
     queryKey: ["/api/statistics", selectedDateRange.startDate, selectedDateRange.endDate],
   });
   
@@ -95,7 +115,7 @@ export default function ReportsPage() {
   const { data: properties, isLoading: isLoadingProperties } = useProperties();
   
   // Fetch property statistics if a specific property is selected
-  const { data: propertyStats, isLoading: isLoadingPropertyStats } = useQuery({
+  const { data: propertyStats, isLoading: isLoadingPropertyStats } = useQuery<PropertyStatistics>({
     queryKey: ["/api/statistics/property", selectedPropertyId !== "all" ? parseInt(selectedPropertyId) : undefined],
     enabled: selectedPropertyId !== "all",
   });
@@ -114,7 +134,7 @@ export default function ReportsPage() {
   };
 
   // Prepare chart data for top properties
-  const topPropertiesData = statistics?.topProperties || [];
+  const topPropertiesData = (statistics?.topProperties || []) as PropertyStatistics[];
   
   // Prepare data for pie chart
   const COLORS = ['#0ea5e9', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444'];
@@ -365,7 +385,7 @@ export default function ReportsPage() {
                       </div>
                       <div>
                         <p className="text-sm text-secondary-500">Lucro Líquido</p>
-                        <p className="text-lg font-bold text-green-600">{formatCurrency(propertyStats.netProfit)}</p>
+                        <p className="text-lg font-bold text-green-600">{formatCurrency(propertyStats.profit)}</p>
                       </div>
                       <div>
                         <p className="text-sm text-secondary-500">Custos Totais</p>

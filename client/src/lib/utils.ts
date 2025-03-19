@@ -68,11 +68,11 @@ export function sleep(ms: number): Promise<void> {
 // Color Functions
 export function calculateOccupancyColor(occupancy: number): string {
   if (occupancy >= 80) {
-    return "text-green-600";
+    return "bg-green-600";
   } else if (occupancy >= 50) {
-    return "text-yellow-600";
+    return "bg-yellow-600";
   } else {
-    return "text-red-600";
+    return "bg-red-600";
   }
 }
 
