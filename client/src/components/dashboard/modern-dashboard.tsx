@@ -85,6 +85,32 @@ interface DateRange {
   label: string;
 }
 
+interface DashboardStatistics {
+  totalRevenue: number;
+  netProfit: number;
+  occupancyRate: number;
+  reservationsCount: number;
+  revenueChange: number;
+  profitChange: number;
+  occupancyChange: number;
+  reservationsChange: number;
+  topProperties: Array<{
+    id: number;
+    name: string;
+    occupancyRate: number;
+    totalRevenue: number;
+    profit: number;
+  }>;
+}
+
+interface MonthlyStatistics {
+  revenueByMonth: Array<{
+    month: string;
+    revenue: number;
+    profit: number;
+  }>;
+}
+
 const dateRanges: DateRange[] = [
   {
     label: "Últimos 30 dias",
