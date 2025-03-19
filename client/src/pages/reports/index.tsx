@@ -37,6 +37,7 @@ import {
   Pie,
   Cell
 } from "recharts";
+import { ValueType } from "recharts/types/component/DefaultTooltipContent";
 import { formatCurrency, calculateOccupancyColor } from "@/lib/utils";
 import { format, subDays, subMonths, subYears, startOfMonth, endOfMonth } from "date-fns";
 import { Download, FileText, Home, Users, Briefcase, ClipboardCheck } from "lucide-react";
@@ -1031,7 +1032,7 @@ export default function ReportsPage() {
                   <YAxis 
                     tickFormatter={(value) => `€${value}`}
                   />
-                  <Tooltip formatter={(value) => [`${formatCurrency(value)}`, 'Valor Pago']} />
+                  <Tooltip formatter={(value) => formatCurrency(Number(value))} />
                   <Legend />
                   <Line type="monotone" dataKey="amount" name="Valor Pago" stroke="#8884d8" activeDot={{ r: 8 }} />
                 </LineChart>
