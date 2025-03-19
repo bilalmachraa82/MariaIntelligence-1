@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useProperties } from "@/hooks/use-properties";
 import { Link, useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
-import { InspirationQuote } from "@/components/ui/inspiration-quote";
+import { PageWithInspiration } from "@/components/layout/page-with-inspiration";
+import { StatsCardWithQuote } from "@/components/ui/stats-card-with-quote";
 import { 
   Card, 
   CardContent, 
@@ -130,7 +131,7 @@ export default function ReportsPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <PageWithInspiration context="reports" quotePosition="before" rotating={true}>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-2xl font-bold text-secondary-900">{t("reports.title", "Relatórios")}</h2>
         <div className="mt-4 sm:mt-0 flex flex-col sm:flex-row flex-wrap gap-3">
@@ -200,35 +201,31 @@ export default function ReportsPage() {
         <TabsContent value="general" className="space-y-6">
           {/* Statistics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Receita Total</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {isLoadingStats ? (
-                  <Skeleton className="h-10 w-full" />
-                ) : (
-                  <div className="text-3xl font-bold">
-                    {formatCurrency(statistics?.totalRevenue || 0)}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <StatsCardWithQuote
+              title={t("reports.totalRevenue", "Receita Total")}
+              quoteContext="finance"
+            >
+              {isLoadingStats ? (
+                <Skeleton className="h-10 w-full" />
+              ) : (
+                <div className="text-3xl font-bold">
+                  {formatCurrency(statistics?.totalRevenue || 0)}
+                </div>
+              )}
+            </StatsCardWithQuote>
             
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Lucro Líquido</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {isLoadingStats ? (
-                  <Skeleton className="h-10 w-full" />
-                ) : (
-                  <div className="text-3xl font-bold text-green-600">
-                    {formatCurrency(statistics?.netProfit || 0)}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <StatsCardWithQuote
+              title={t("reports.netProfit", "Lucro Líquido")}
+              quoteContext="finance"
+            >
+              {isLoadingStats ? (
+                <Skeleton className="h-10 w-full" />
+              ) : (
+                <div className="text-3xl font-bold text-green-600">
+                  {formatCurrency(statistics?.netProfit || 0)}
+                </div>
+              )}
+            </StatsCardWithQuote>
             
             <Card>
               <CardHeader className="pb-2">
@@ -1023,6 +1020,6 @@ export default function ReportsPage() {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
+    </PageWithInspiration>
   );
 }
