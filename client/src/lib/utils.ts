@@ -8,14 +8,14 @@ export function cn(...inputs: ClassValue[]) {
 
 // Formatting Functions
 export function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('pt-BR', {
+  return new Intl.NumberFormat('pt-PT', {
     style: 'currency',
-    currency: 'BRL'
+    currency: 'EUR'
   }).format(value);
 }
 
 export function formatDate(date: string): string {
-  return new Date(date).toLocaleDateString('pt-BR', {
+  return new Date(date).toLocaleDateString('pt-PT', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric'
@@ -23,7 +23,7 @@ export function formatDate(date: string): string {
 }
 
 export function formatDateTime(date: string): string {
-  return new Date(date).toLocaleString('pt-BR', {
+  return new Date(date).toLocaleString('pt-PT', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',

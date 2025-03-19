@@ -11,8 +11,16 @@ interface MainNavProps {
 
 export function MainNav({ className }: MainNavProps) {
   const { t, i18n } = useTranslation();
+  // Definir a detecção de idioma para reconhecer pt-PT
   const isPortuguese = i18n.language?.startsWith("pt");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  // Garantir que o idioma padrão seja pt-PT quando o aplicativo iniciar
+  React.useEffect(() => {
+    if (!isPortuguese) {
+      i18n.changeLanguage("pt-PT");
+    }
+  }, []);
 
   const toggleSidebar = () => {
     setSidebarCollapsed(!sidebarCollapsed);
@@ -44,10 +52,10 @@ export function MainNav({ className }: MainNavProps) {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => i18n.changeLanguage(isPortuguese ? "en" : "pt-PT")}
+              onClick={() => i18n.changeLanguage(isPortuguese ? "en-GB" : "pt-PT")}
               className="px-2"
             >
-              {isPortuguese ? "EN" : "PT"}
+              {isPortuguese ? "Inglês" : "Português (PT)"}
             </Button>
           </div>
         </div>
