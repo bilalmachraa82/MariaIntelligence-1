@@ -85,7 +85,7 @@ export function PropertyInsights({ topProperties, isLoading }: PropertyInsightsP
                     <XAxis dataKey="name" tick={{ fontSize: 10 }} />
                     <YAxis />
                     <Tooltip 
-                      formatter={(value, name) => {
+                      formatter={(value: number, name: string) => {
                         if (name === "occupancy") return [`${value}%`, "Ocupação"];
                         if (name === "revenue") return [`€${(value * 100).toFixed(0)}`, "Receita"];
                         if (name === "profit") return [`€${(value * 100).toFixed(0)}`, "Lucro"];

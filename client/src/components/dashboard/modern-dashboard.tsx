@@ -608,7 +608,7 @@ export default function ModernDashboard() {
                                           tick={{ fontSize: 12, fill: '#6b7280' }}
                                           axisLine={false}
                                           tickLine={false}
-                                          tickFormatter={(value) => `${value.toLocaleString('pt-BR')} €`}
+                                          tickFormatter={(value: number) => `${value.toLocaleString('pt-BR')} €`}
                                         />
                                         <ReTooltip 
                                           content={<CustomTooltip />}
