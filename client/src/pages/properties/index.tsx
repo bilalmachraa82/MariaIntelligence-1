@@ -3,6 +3,7 @@ import { useProperties, useDeleteProperty } from "@/hooks/use-properties";
 import { useOwners } from "@/hooks/use-owners";
 import { useLocation, Link } from "wouter";
 import { PlusCircle, MoreHorizontal, Edit, Trash2 } from "lucide-react";
+import { InspirationQuote } from "@/components/ui/inspiration-quote";
 import { 
   Card, 
   CardContent, 
@@ -90,6 +91,14 @@ export default function PropertiesPage() {
           </div>
         </div>
       </div>
+      
+      {/* Mensagem inspiradora */}
+      <InspirationQuote 
+        context="properties" 
+        variant="highlight" 
+        rotating={true} 
+        rotationInterval={15000} 
+      />
 
       <Card>
         <CardHeader className="pb-3">

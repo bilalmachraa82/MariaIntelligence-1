@@ -1,133 +1,257 @@
-import React, { useState, useEffect } from "react";
-import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/components/ui/card";
-import { Lightbulb, Heart, Coffee, Sparkles, Sun, Moon, Star } from "lucide-react";
+import { Sparkles, Heart, SunMoon, Book, Coffee, Lightbulb } from "lucide-react";
 
-// Coleção de ícones para variar a apresentação visual
-const icons = [
-  Lightbulb, 
-  Heart, 
-  Coffee, 
-  Sparkles, 
-  Sun, 
-  Moon, 
-  Star
-];
+/**
+ * Tipos de contexto para citações inspiradoras
+ * Define os diferentes contextos onde as citações podem ser exibidas,
+ * permitindo exibir mensagens relevantes para cada seção do app
+ */
+type QuoteContext = 
+  | "dashboard" 
+  | "reservations" 
+  | "properties" 
+  | "finance" 
+  | "reports" 
+  | "general";
 
-interface InspirationQuoteProps {
-  context?: 'dashboard' | 'reservations' | 'finance' | 'property' | 'reports' | 'general';
-  className?: string;
-  variant?: 'default' | 'subtle' | 'minimal';
+/**
+ * Variações visuais do componente de citação
+ */
+type QuoteVariant = 
+  | "default"    // Card com fundo e borda completos
+  | "minimal"    // Sem card, apenas texto e ícone
+  | "subtle"     // Card com background suave
+  | "highlight"; // Card com destaque especial
+
+/**
+ * Interface para uma citação individual
+ */
+interface Quote {
+  text: string;
+  author: string;
+  source?: string;
+  tags: string[];
 }
 
-export const InspirationQuote: React.FC<InspirationQuoteProps> = ({
-  context = 'general',
-  className,
-  variant = 'default'
-}) => {
-  const [quote, setQuote] = useState<{ text: string; author: string }>();
-  const [Icon, setIcon] = useState<React.ElementType>(Lightbulb);
+/**
+ * Coleção de citações inspiradoras organizadas por contexto
+ * Cada contexto tem suas próprias citações relevantes
+ */
+const quotesByContext: Record<QuoteContext, Quote[]> = {
+  dashboard: [
+    {
+      text: "Cada novo dia é uma nova oportunidade para melhorar.",
+      author: "Provérbio",
+      tags: ["motivação", "trabalho", "esperança"]
+    },
+    {
+      text: "A persistência é o caminho do êxito.",
+      author: "Charles Chaplin",
+      tags: ["motivação", "trabalho", "persistência"]
+    },
+    {
+      text: "O segredo de um dia bem organizado está na planificação da noite anterior.",
+      author: "Provérbio Português",
+      tags: ["organização", "trabalho", "planejamento"]
+    }
+  ],
+  reservations: [
+    {
+      text: "O melhor serviço vem do coração, não apenas das mãos.",
+      author: "Provérbio de Hospitalidade",
+      tags: ["serviço", "hospitalidade", "atendimento"]
+    },
+    {
+      text: "Cada hóspede traz bênçãos para a casa.",
+      author: "Provérbio Português",
+      tags: ["hospitalidade", "recepção", "gratidão"]
+    },
+    {
+      text: "Uma boa gestão de reservas é o primeiro passo para a satisfação do cliente.",
+      author: "Maria Faz",
+      tags: ["organização", "hospitalidade", "gestão"]
+    }
+  ],
+  properties: [
+    {
+      text: "Um espaço bem cuidado é um reflexo da alma de quem o habita.",
+      author: "Provérbio",
+      tags: ["espaço", "cuidado", "organização"]
+    },
+    {
+      text: "O lar é onde a história começa.",
+      author: "Provérbio",
+      tags: ["lar", "acolhimento", "história"]
+    },
+    {
+      text: "Uma casa bem gerida traz prosperidade para todos.",
+      author: "Provérbio Português",
+      tags: ["gestão", "prosperidade", "organização"]
+    }
+  ],
+  finance: [
+    {
+      text: "A prosperidade é uma consequência natural de escolhas bem feitas.",
+      author: "Provérbio de Negócios",
+      tags: ["prosperidade", "escolhas", "negócios"]
+    },
+    {
+      text: "Cuida dos centavos que os euros cuidarão de si mesmos.",
+      author: "Adaptação de Provérbio Inglês",
+      tags: ["economia", "gestão", "finanças"]
+    },
+    {
+      text: "A boa contabilidade é o princípio da prosperidade.",
+      author: "Maria Faz",
+      tags: ["contabilidade", "prosperidade", "organização"]
+    }
+  ],
+  reports: [
+    {
+      text: "O conhecimento é poder apenas quando posto em prática.",
+      author: "Provérbio",
+      tags: ["conhecimento", "ação", "decisão"]
+    },
+    {
+      text: "Os números contam histórias para quem os sabe interpretar.",
+      author: "Provérbio de Análise",
+      tags: ["análise", "decisão", "dados"]
+    },
+    {
+      text: "Dados são apenas o começo da sabedoria, não o seu fim.",
+      author: "Maria Faz",
+      tags: ["dados", "sabedoria", "decisão"]
+    }
+  ],
+  general: [
+    {
+      text: "O segredo da mudança é focar toda sua energia não em lutar contra o velho, mas em construir o novo.",
+      author: "Sócrates",
+      tags: ["mudança", "foco", "construção"]
+    },
+    {
+      text: "A gratidão transforma o que temos em suficiente.",
+      author: "Provérbio",
+      tags: ["gratidão", "contentamento", "abundância"]
+    },
+    {
+      text: "Não é o que acontece com você, mas como você reage que importa.",
+      author: "Epicteto",
+      tags: ["reação", "atitude", "sabedoria"]
+    }
+  ]
+};
 
+/**
+ * Mapeia os ícones para cada contexto
+ */
+const contextIcons: Record<QuoteContext, React.ReactNode> = {
+  dashboard: <Coffee className="h-5 w-5 text-primary-500" />,
+  reservations: <Heart className="h-5 w-5 text-rose-500" />,
+  properties: <SunMoon className="h-5 w-5 text-amber-500" />,
+  finance: <Sparkles className="h-5 w-5 text-emerald-500" />,
+  reports: <Book className="h-5 w-5 text-indigo-500" />,
+  general: <Lightbulb className="h-5 w-5 text-sky-500" />
+};
+
+/**
+ * Estilos para cada variante de exibição
+ */
+const variantStyles: Record<QuoteVariant, string> = {
+  default: "bg-white border rounded-lg shadow-sm",
+  minimal: "border-none shadow-none bg-transparent",
+  subtle: "bg-muted/30 border border-muted rounded-lg",
+  highlight: "bg-primary-50 border border-primary-200 shadow-md rounded-lg"
+};
+
+/**
+ * Interface de propriedades do componente InspirationQuote
+ */
+interface InspirationQuoteProps {
+  /** Contexto para selecionar citações relevantes */
+  context?: QuoteContext;
+  /** Variação visual do componente */
+  variant?: QuoteVariant;
+  /** Número fixo de citação (de 0 a 2) ou undefined para aleatório */
+  quoteIndex?: number;
+  /** Classe CSS adicional */
+  className?: string;
+  /** Se verdadeiro, muda a citação a cada intervalo de tempo */
+  rotating?: boolean;
+  /** Intervalo em ms para rotação (padrão: 12000ms) */
+  rotationInterval?: number;
+}
+
+/**
+ * Componente para exibir citações inspiradoras contextuais
+ */
+export function InspirationQuote({
+  context = "general",
+  variant = "default",
+  quoteIndex,
+  className = "",
+  rotating = false,
+  rotationInterval = 12000
+}: InspirationQuoteProps) {
+  const { t } = useTranslation();
+  
+  // Se quoteIndex for fornecido, usamos ele, senão escolhemos aleatoriamente
+  const initialIndex = quoteIndex !== undefined 
+    ? quoteIndex 
+    : Math.floor(Math.random() * quotesByContext[context].length);
+  
+  const [currentIndex, setCurrentIndex] = useState<number>(initialIndex);
+  
+  // Configurar rotação automática se rotating=true
   useEffect(() => {
-    // Selecionamos um ícone aleatório quando o componente é montado
-    const randomIcon = icons[Math.floor(Math.random() * icons.length)];
-    setIcon(randomIcon);
+    if (!rotating) return;
     
-    // Seleciona uma citação baseada no contexto
-    setQuote(getRandomQuote(context));
-  }, [context]);
-
-  if (!quote) return null;
-
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => {
+        const nextIndex = (prevIndex + 1) % quotesByContext[context].length;
+        return nextIndex;
+      });
+    }, rotationInterval);
+    
+    return () => clearInterval(interval);
+  }, [rotating, rotationInterval, context]);
+  
+  // Obter a citação atual
+  const currentQuote = quotesByContext[context][currentIndex];
+  
+  // Formatar o componente com base na variante
   if (variant === 'minimal') {
     return (
-      <div className={cn("text-muted-foreground italic text-sm flex items-center gap-2", className)}>
-        <Icon className="h-4 w-4 text-primary" />
-        <span>"{quote.text}" — {quote.author}</span>
-      </div>
-    );
-  }
-
-  if (variant === 'subtle') {
-    return (
-      <div className={cn("p-3 bg-muted/50 rounded-md text-sm flex items-start gap-3", className)}>
-        <Icon className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-        <div>
-          <p className="italic mb-1">"{quote.text}"</p>
-          <p className="text-xs text-muted-foreground">— {quote.author}</p>
+      <div className={`flex items-center gap-3 px-3 py-2 ${className}`}>
+        {contextIcons[context]}
+        <div className="flex-1">
+          <p className="text-sm italic text-muted-foreground">
+            "{currentQuote.text}" <span className="font-semibold">— {currentQuote.author}</span>
+          </p>
         </div>
       </div>
     );
   }
-
+  
   return (
-    <Card className={cn("overflow-hidden border-primary/20", className)}>
-      <CardContent className="p-4 flex items-start gap-4">
-        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-          <Icon className="h-5 w-5 text-primary" />
-        </div>
-        <div>
-          <p className="italic text-sm mb-2">"{quote.text}"</p>
-          <p className="text-xs text-muted-foreground">— {quote.author}</p>
+    <Card className={`overflow-hidden ${variantStyles[variant]} ${className}`}>
+      <CardContent className="p-4">
+        <div className="flex gap-3">
+          <div className="mt-1">
+            {contextIcons[context]}
+          </div>
+          <div>
+            <p className="text-sm italic text-muted-foreground">
+              "{currentQuote.text}"
+            </p>
+            <p className="text-sm font-semibold mt-1">
+              — {currentQuote.author}
+            </p>
+          </div>
         </div>
       </CardContent>
     </Card>
   );
-};
-
-// Coleção de citações organizadas por contexto
-const quotes = {
-  dashboard: [
-    { text: "Gerenciar com sabedoria hoje traz paz amanhã.", author: "Maria Faz" },
-    { text: "A organização é o primeiro passo para o sucesso.", author: "Peter Drucker" },
-    { text: "Cada dia é uma nova oportunidade para ser melhor.", author: "Anónimo" },
-    { text: "O êxito é a soma de pequenos esforços repetidos dia após dia.", author: "Robert Collier" },
-    { text: "A felicidade está em fazer os outros felizes.", author: "Baden-Powell" }
-  ],
-  reservations: [
-    { text: "Cada hóspede traz consigo uma nova história para contar.", author: "Maria Faz" },
-    { text: "O detalhe faz a diferença entre o bom e o extraordinário.", author: "Anónimo" },
-    { text: "Receba os hóspedes como receberia amigos em sua casa.", author: "Confúcio" },
-    { text: "Viva, ame, receba com alegria.", author: "Maria Faz" },
-    { text: "O sorriso é o idioma universal da hospitalidade.", author: "William Arthur Ward" }
-  ],
-  finance: [
-    { text: "Vá atrás dos seus sonhos, mas leve a contabilidade junto.", author: "Anónimo" },
-    { text: "O dinheiro não traz felicidade, mas a organização financeira traz paz.", author: "Maria Faz" },
-    { text: "Quem guarda tem.", author: "Provérbio Português" },
-    { text: "Prosperidade vem quando gerimos com sabedoria o que temos.", author: "Maria Faz" },
-    { text: "Economizar é ganhar duas vezes.", author: "Provérbio Português" }
-  ],
-  property: [
-    { text: "Uma casa não é feita de paredes, mas de memórias.", author: "Anónimo" },
-    { text: "Cada propriedade tem uma história para contar.", author: "Maria Faz" },
-    { text: "Cuide dos pequenos detalhes e os grandes cuidarão de si mesmos.", author: "Maria Faz" },
-    { text: "O ambiente que criamos reflete o que somos por dentro.", author: "Anónimo" },
-    { text: "Quando a casa está limpa, a mente descansa.", author: "Provérbio Japonês" }
-  ],
-  reports: [
-    { text: "Os números contam uma história, basta saber ler.", author: "Maria Faz" },
-    { text: "Dados são apenas dados até se tornarem conhecimento.", author: "Anónimo" },
-    { text: "O que medimos, melhoramos.", author: "Peter Drucker" },
-    { text: "Ver o passado com clareza ajuda a projetar um futuro melhor.", author: "Maria Faz" },
-    { text: "Os números não mentem, mas precisam de um intérprete.", author: "Edward Deming" }
-  ],
-  general: [
-    { text: "Cada manhã é uma nova página em branco, escreva uma boa história hoje.", author: "Anónimo" },
-    { text: "A vida é 10% do que acontece connosco e 90% como reagimos a isso.", author: "Charles Swindoll" },
-    { text: "Grandes coisas nunca vêm do conforto.", author: "Maria Faz" },
-    { text: "A felicidade não é algo pronto. Ela vem das nossas próprias ações.", author: "Dalai Lama" },
-    { text: "Quem sabe concentrar-se numa coisa e insistir nela como único objetivo, obtém, ao fim e ao cabo, a capacidade de fazer qualquer coisa.", author: "Fernando Pessoa" },
-    { text: "Há apenas uma maneira de evitar críticas: não fazer nada, não dizer nada e não ser nada.", author: "Aristóteles" },
-    { text: "O sucesso é a soma de pequenos esforços repetidos dia após dia.", author: "Robert Collier" },
-    { text: "Acredite que pode e já está a meio caminho.", author: "Theodore Roosevelt" },
-    { text: "A persistência é o caminho do êxito.", author: "Charles Chaplin" },
-    { text: "No meio da dificuldade encontra-se a oportunidade.", author: "Albert Einstein" }
-  ]
-};
-
-// Função para selecionar uma citação aleatória com base no contexto
-function getRandomQuote(context: string): { text: string; author: string } {
-  const contextQuotes = quotes[context as keyof typeof quotes] || quotes.general;
-  return contextQuotes[Math.floor(Math.random() * contextQuotes.length)];
 }
