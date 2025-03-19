@@ -1030,7 +1030,7 @@ export default function ReportsPage() {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
                   <YAxis 
-                    tickFormatter={(value) => `€${value}`}
+                    tickFormatter={(value: number) => `€${value}`}
                   />
                   <Tooltip formatter={(value: ValueType) => formatCurrency(Number(value))} />
                   <Legend />

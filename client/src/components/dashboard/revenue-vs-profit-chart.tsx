@@ -168,7 +168,7 @@ export function RevenueVsProfitChart({ data, isLoading }: RevenueVsProfitChartPr
               tick={{ fontSize: 12, fill: '#6b7280' }}
               axisLine={false}
               tickLine={false}
-              tickFormatter={(value) => `${value.toLocaleString('pt-BR', { maximumFractionDigits: 0 })} €`}
+              tickFormatter={(value: number) => `${value.toLocaleString('pt-BR', { maximumFractionDigits: 0 })} €`}
             />
             <ReTooltip 
               content={<CustomTooltip />}

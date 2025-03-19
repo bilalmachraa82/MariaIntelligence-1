@@ -36,6 +36,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatCurrency, formatDate, reservationStatusColors } from "@/lib/utils";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
+import { ValueType } from "recharts/types/component/DefaultTooltipContent";
 
 export default function PropertyDetailPage() {
   const { id } = useParams();
@@ -225,7 +226,7 @@ export default function PropertyDetailPage() {
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
-                      <Tooltip formatter={(value) => [`${value}%`, 'Percentual']} />
+                      <Tooltip formatter={(value: ValueType) => [`${value}%`, 'Percentual']} />
                       <Legend />
                     </PieChart>
                   </ResponsiveContainer>
