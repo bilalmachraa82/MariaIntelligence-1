@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useProperties } from "@/hooks/use-properties";
 import { Link, useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
+import { InspirationQuote } from "@/components/ui/inspiration-quote";
 import { 
   Card, 
   CardContent, 
