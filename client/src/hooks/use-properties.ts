@@ -1,72 +1,51 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { type Property } from "@shared/schema";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest } from "../lib/queryClient";
+import type { Property } from "../lib/types";
 
-// Get all properties
 export function useProperties() {
-  return useQuery({
-    queryKey: ["/api/properties"],
+  return useQuery<Property[]>({
+    queryKey: ['/api/properties'],
+    queryFn: () => apiRequest('/api/properties')
   });
 }
 
-// Get a specific property by ID
-export function useProperty(id: number | undefined) {
-  return useQuery({
-    queryKey: ["/api/properties", id],
-    enabled: !!id,
+export function useProperty(id: number) {
+  return useQuery<Property>({
+    queryKey: ['/api/properties', id],
+    queryFn: () => apiRequest(`/api/properties/${id}`),
+    enabled: !!id
   });
 }
 
-// Create a new property
 export function useCreateProperty() {
-  const queryClient = useQueryClient();
-  
   return useMutation({
-    mutationFn: async (propertyData: Omit<Property, "id">) => {
-      const res = await apiRequest("POST", "/api/properties", propertyData);
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/properties"] });
-    },
+    mutationFn: (data: Omit<Property, 'id'>) => apiRequest('/api/properties', {
+      method: 'POST',
+      data
+    })
   });
 }
 
-// Update an existing property
 export function useUpdateProperty() {
-  const queryClient = useQueryClient();
-  
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<Property> }) => {
-      const res = await apiRequest("PATCH", `/api/properties/${id}`, data);
-      return res.json();
-    },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/properties"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/properties", variables.id] });
-    },
+    mutationFn: ({ id, data }: { id: number; data: Partial<Property> }) => 
+      apiRequest(`/api/properties/${id}`, {
+        method: 'PATCH',
+        data
+      })
   });
 }
 
-// Delete a property
 export function useDeleteProperty() {
-  const queryClient = useQueryClient();
-  
   return useMutation({
-    mutationFn: async (id: number) => {
-      await apiRequest("DELETE", `/api/properties/${id}`);
-      return id;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/properties"] });
-    },
+    mutationFn: (id: number) => apiRequest(`/api/properties/${id}`, { method: 'DELETE' }),
   });
 }
 
-// Get property statistics
-export function usePropertyStatistics(id: number | undefined) {
+export function usePropertyStatistics(id: number) {
   return useQuery({
-    queryKey: ["/api/statistics/property", id],
-    enabled: !!id,
+    queryKey: ['/api/statistics/property', id],
+    queryFn: () => apiRequest(`/api/statistics/property/${id}`),
+    enabled: !!id
   });
 }

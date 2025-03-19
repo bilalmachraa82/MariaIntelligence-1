@@ -25,6 +25,8 @@ import {
   Menu,
   X
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { usePendingApprovals } from "@/hooks/use-pending-approvals";
 import {
   Collapsible,
   CollapsibleContent,
@@ -61,6 +63,7 @@ interface SidebarItemProps {
   children?: React.ReactNode;
   isSubItem?: boolean;
   submenu?: NavItem[];
+  showPendingBadge?: boolean;
 }
 
 interface SidebarSectionProps {
@@ -181,8 +184,10 @@ export function SidebarReorganized({
     iconColor = "text-gray-500 dark:text-gray-400",
     children,
     isSubItem = false,
-    submenu
+    submenu,
+    showPendingBadge = false
   }: SidebarItemProps) => {
+    const { count } = showPendingBadge ? usePendingApprovals() : { count: 0 };
     const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
     
     // Verificar se o submenu deve estar aberto baseado na navegação atual
@@ -226,6 +231,11 @@ export function SidebarReorganized({
             {!collapsed && (
               <>
                 <span className="flex-1 truncate">{label}</span>
+                {showPendingBadge && count > 0 && (
+                  <Badge variant="destructive" className="ml-auto mr-1">
+                    {count}
+                  </Badge>
+                )}
                 {hasSubmenu && (
                   <ChevronRight className={cn(
                     "transition-transform", 
@@ -559,6 +569,7 @@ export function SidebarReorganized({
                     isActive={checkIfActive(item.href, item.altHref)}
                     onClick={() => navigate(item.href)}
                     iconColor={item.iconColor}
+                    showPendingBadge={item.href === (isPortuguese ? "/reservas" : "/reservations")}
                   />
                 ))}
               </div>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { Reservation, ReservationStatus } from "../../lib/types";
 import { useReservations, useDeleteReservation, useReservationEnums } from "@/hooks/use-reservations";
 import { useProperties } from "@/hooks/use-properties";
 import { Link, useLocation } from "wouter";
@@ -62,7 +63,7 @@ export default function ReservationsPage() {
   const { toast } = useToast();
 
   // Filter reservations
-  const filteredReservations = reservations?.filter(reservation => {
+  const filteredReservations = (reservations || []).filter((reservation: Reservation) => {
     const matchesSearch = 
       reservation.guestName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       reservation.guestEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -144,7 +145,7 @@ export default function ReservationsPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todos os status</SelectItem>
-                  {enums?.reservationStatus?.map((status) => (
+                  {enums?.reservationStatus?.map((status: ReservationStatus) => (
                     <SelectItem key={status} value={status}>
                       {status === "pending" && "Pendente"}
                       {status === "confirmed" && "Confirmada"}
