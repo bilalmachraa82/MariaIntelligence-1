@@ -117,6 +117,8 @@ interface ChartDataPoint {
   name: string;
   Receita: number;
   Lucro: number;
+  month?: string; // Adicionando propriedade opcional para compatibilidade
+  [key: string]: any; // Permitir acesso indexado para propriedades dinâmicas
 }
 
 // Interface para tipagem do payload do gráfico
@@ -125,11 +127,19 @@ interface ChartPayload {
   name: string;
   value: number;
   payload: ChartDataPoint;
+  color?: string;
 }
 
 // Interface para o evento de clique no gráfico
 interface ChartClickData {
   activePayload?: ChartPayload[];
+}
+
+// Interface para as props do tooltip
+interface TooltipProps {
+  active?: boolean;
+  payload?: ChartPayload[];
+  label?: string;
 }
 
 const dateRanges: DateRange[] = [
@@ -569,7 +579,7 @@ export default function ModernDashboard() {
                               };
                               
                               // Função para lidar com o clique em um ponto do gráfico
-                              const handlePointClick = (dataKey: string, name: string, value: number) => {
+                              const handlePointClick = (dataKey: string, name: string, value: number): void => {
                                 setActivePoint({ dataKey, name, value });
                                 // Poderíamos abrir um modal ou mostrar mais informações
                               };
@@ -620,15 +630,15 @@ export default function ModernDashboard() {
                                     <ResponsiveContainer width="100%" height="100%">
                                       <AreaChart
                                         data={formattedData}
-                                        margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
-                                        onClick={(data) => {
-                                          if (data && data.activePayload && data.activePayload.length) {
-                                            const entry = data.activePayload[0];
+                                        onClick={(e: any) => {
+                                          // Usando any temporariamente para compatibilidade com o tipo
+                                          if (e && e.activePayload && e.activePayload.length) {
+                                            const entry = e.activePayload[0];
                                             if (entry.dataKey && entry.payload) {
                                               handlePointClick(
-                                                entry.dataKey as string,
-                                                entry.payload.name as string,
-                                                entry.payload[entry.dataKey] as number
+                                                entry.dataKey,
+                                                entry.payload.name,
+                                                entry.payload[entry.dataKey]
                                               );
                                             }
                                           }
@@ -1015,12 +1025,13 @@ export default function ModernDashboard() {
                             </div>
                           </div>
                           
-                          <style jsx>{`
-                            @keyframes growWidth {
+                          {/* Animação de crescimento para barras */}
+                          <div className="sr-only">
+                            {/* @keyframes growWidth {
                               from { width: 0%; }
                               to { width: 100%; }
-                            }
-                          `}</style>
+                            } */}
+                          </div>
                         </div>
                       ) : (
                         <div className="h-full flex flex-col items-center justify-center">
