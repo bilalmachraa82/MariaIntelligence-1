@@ -160,17 +160,17 @@ export default function ModernDashboard() {
   const [selectedTab, setSelectedTab] = useState("overview");
 
   // Fetch statistics
-  const { data: statistics, isLoading: isLoadingStats } = useQuery({
+  const { data: statistics, isLoading: isLoadingStats } = useQuery<DashboardStatistics>({
     queryKey: ["/api/statistics", selectedDateRange.startDate, selectedDateRange.endDate],
   });
 
   // Fetch recent reservations
-  const { data: reservations, isLoading: isLoadingReservations } = useQuery({
+  const { data: reservations, isLoading: isLoadingReservations } = useQuery<any[]>({
     queryKey: ["/api/reservations"],
   });
 
   // Fetch recent activities
-  const { data: activities, isLoading: isLoadingActivities } = useQuery({
+  const { data: activities, isLoading: isLoadingActivities } = useQuery<any[]>({
     queryKey: ["/api/activities?limit=4"],
   });
 
@@ -183,13 +183,13 @@ export default function ModernDashboard() {
   };
 
   // Buscar dados de receita mensal da API
-  const { data: monthlyStats, isLoading: isLoadingMonthly } = useQuery({
+  const { data: monthlyStats, isLoading: isLoadingMonthly } = useQuery<MonthlyStatistics>({
     queryKey: ["/api/statistics/monthly-revenue", selectedDateRange.startDate, selectedDateRange.endDate],
   });
   
   // Prepare data for charts
-  const revenueData = monthlyStats && monthlyStats.revenueByMonth 
-    ? monthlyStats.revenueByMonth.map((item: any) => ({
+  const revenueData = monthlyStats?.revenueByMonth 
+    ? monthlyStats.revenueByMonth.map((item) => ({
         name: item.month,
         Receita: item.revenue,
         Lucro: item.profit
@@ -218,8 +218,8 @@ export default function ModernDashboard() {
     : [];
 
   // Prepare property occupancy data
-  const propertyOccupancyData = statistics && Array.isArray(statistics.topProperties) 
-    ? statistics.topProperties.map((property: any) => ({
+  const propertyOccupancyData = statistics?.topProperties 
+    ? statistics.topProperties.map((property) => ({
         name: property.name.length > 15 ? property.name.substring(0, 15) + "..." : property.name,
         Ocupação: property.occupancyRate
       }))
