@@ -23,6 +23,16 @@ export function useDeleteReservation() {
   });
 }
 
+export function useCreateReservation() {
+  return useMutation({
+    mutationFn: (reservation: Partial<Reservation>) => 
+      apiRequest('/api/reservations', { 
+        method: 'POST',
+        data: reservation
+      })
+  });
+}
+
 export function useReservationEnums() {
   return useQuery({
     queryKey: ['/api/enums', 'reservations'],

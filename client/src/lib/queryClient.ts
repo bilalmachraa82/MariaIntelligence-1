@@ -57,3 +57,9 @@ export async function apiRequest<T = unknown>(url: string, options: ApiRequestOp
 
   return response.json();
 }
+
+export function getQueryFn<T = unknown>(url: string, options: ApiRequestOptions = {}) {
+  return async (): Promise<T> => {
+    return apiRequest<T>(url, options);
+  };
+}
