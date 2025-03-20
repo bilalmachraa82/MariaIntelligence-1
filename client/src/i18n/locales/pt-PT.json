@@ -118,7 +118,17 @@
       "detailedDescription": "Análise detalhada de receitas, despesas e lucro por imóvel.",
       "comingSoon": "Análise detalhada em desenvolvimento. Disponível em breve!",
       "backToOverview": "Voltar para Visão Geral",
-      "noDataAvailable": "Não há dados disponíveis."
+      "noDataAvailable": "Não há dados disponíveis.",
+      "dailyTasks": "Tarefas do Dia",
+      "financialView": "Visão Financeira",
+      "maintenanceTask": "Verificar ar-condicionado",
+      "maintenanceReported": "Reportado pelo hóspede anterior",
+      "plumbingIssue": "Problema no encanamento",
+      "plumbingDescription": "Vazamento reportado na cozinha",
+      "contactSupplier": "Contatar fornecedor",
+      "supplierDescription": "Confirmar entrega dos novos lençóis",
+      "monthlyInvoices": "Preparar faturas mensais",
+      "invoicesDescription": "Enviar para proprietários até amanhã"
     },
     "reservations": {
       "recentReservations": "Reservas Recentes",
@@ -381,6 +391,36 @@
       "seasonalTrends": "Tendências Sazonais",
       "recommendations": "Recomendações Inteligentes",
       "businessMetrics": "Métricas de Negócio"
+    },
+    "dailyTasks": {
+      "title": "Tarefas do Dia",
+      "todayDate": "Hoje",
+      "assistant": "Assistente",
+      "viewAll": "Ver Dashboard Completo",
+      "todayCheckins": "Check-ins Hoje",
+      "todayCheckouts": "Check-outs Hoje",
+      "pendingCleanings": "Limpezas",
+      "maintenanceIssues": "Manutenções",
+      "checkins": "Check-ins",
+      "checkinsDescription": "Chegadas de hóspedes para hoje e amanhã",
+      "noCheckins": "Não há check-ins agendados para hoje",
+      "viewAllReservations": "Ver Todas as Reservas",
+      "checkouts": "Check-outs",
+      "checkoutsDescription": "Saídas de hóspedes para hoje",
+      "noCheckouts": "Não há check-outs agendados para hoje",
+      "viewAllCleanings": "Ver Todas as Limpezas",
+      "maintenance": "Manutenção & Tarefas",
+      "maintenanceDescription": "Reparos e tarefas pendentes",
+      "maintenanceIssues": "Problemas de Manutenção",
+      "viewProperty": "Ver Imóvel",
+      "markResolved": "Marcar Resolvido",
+      "otherTasks": "Outras Tarefas",
+      "viewAllTasks": "Ver Todas as Tarefas"
+    },
+    "status": {
+      "pending": "Pendente",
+      "attention": "Atenção",
+      "upcoming": "Agendado"
     },
     "settings": {
       "title": "Configurações",
