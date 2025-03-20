@@ -135,7 +135,7 @@ function InsightsSection({ report }: InsightsSectionProps) {
         color="rose"
         className="mt-4"
       >
-        {error}
+        <div>{error}</div>
       </Callout>
     );
   }
