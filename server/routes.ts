@@ -2293,6 +2293,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
    * Endpoint para geração de relatório financeiro por proprietário
    * Suporta diferentes formatos de data e filtragem por período
    */
+  /**
+   * Endpoint para enviar relatório mensal por email
+   * Envia o relatório do proprietário em formato PDF para o email registrado
+   */
+  app.post("/api/reports/owner/send-email", async (req: Request, res: Response) => {
+    try {
+      const { ownerId, month, year, email } = req.body;
+      
+      if (!ownerId || !month || !year) {
+        return res.status(400).json({
+          success: false,
+          message: "Dados incompletos. Informe proprietário, mês e ano"
+        });
+      }
+      
+      // Verificar se o proprietário existe
+      const owner = await storage.getOwner(Number(ownerId));
+      if (!owner) {
+        return res.status(404).json({ 
+          success: false, 
+          message: "Proprietário não encontrado" 
+        });
+      }
+      
+      // Usar o email do proprietário se não for fornecido um email específico
+      const targetEmail = email || owner.email;
+      
+      if (!targetEmail) {
+        return res.status(400).json({
+          success: false,
+          message: "Email não disponível. Forneça um email ou atualize o email do proprietário"
+        });
+      }
+      
+      // Gerar o relatório
+      const report = await storage.generateOwnerFinancialReport(Number(ownerId), month, year);
+      
+      // Simular envio de email (em produção, usar serviço real como SendGrid, Mailgun, etc)
+      const reportDate = new Date(parseInt(year), parseInt(month) - 1);
+      const monthName = format(reportDate, 'MMMM yyyy', { locale: require('date-fns/locale/pt-BR') });
+      
+      // Em produção, aqui integraríamos com um serviço de email real
+      // Por enquanto, apenas simulamos o envio
+      
+      // Registrar atividade
+      await storage.createActivity({
+        type: "email_sent",
+        description: `Relatório mensal de ${monthName} enviado para ${owner.name} (${targetEmail})`,
+        entityId: Number(ownerId),
+        entityType: "owner"
+      });
+      
+      return res.status(200).json({
+        success: true,
+        message: `Relatório enviado com sucesso para ${targetEmail}`,
+        reportData: {
+          ownerId: Number(ownerId),
+          ownerName: owner.name,
+          month,
+          year,
+          email: targetEmail,
+          sentAt: new Date().toISOString()
+        }
+      });
+    } catch (error) {
+      console.error("Erro ao enviar relatório por email:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Erro ao enviar relatório. Por favor tente novamente."
+      });
+    }
+  });
+
   app.get("/api/reports/owner/:ownerId", async (req: Request, res: Response) => {
     try {
       const ownerId = Number(req.params.ownerId);

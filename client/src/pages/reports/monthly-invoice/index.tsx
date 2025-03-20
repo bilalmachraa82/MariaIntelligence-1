@@ -24,6 +24,9 @@ import { useOwners } from "@/hooks/use-owners";
 import { useOwnerReport } from "@/hooks/use-owner-report";
 import { downloadOwnerReportCSV } from "@/lib/export-utils";
 import { downloadOwnerReportPDF } from "@/lib/pdf-export-utils";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 // Generate last 12 months for the dropdown
 function getLast12Months() {
@@ -109,11 +112,59 @@ export default function MonthlyInvoicePage() {
     }
   };
   
+  // Toast hook for notifications
+  const { toast } = useToast();
+  
+  // Email sending mutation
+  const sendEmailMutation = useMutation({
+    mutationFn: (data: { ownerId: number; month: string; year: string; }) => {
+      return apiRequest('/api/reports/owner/send-email', {
+        method: 'POST',
+        data
+      });
+    },
+    onSuccess: (response: any) => {
+      toast({
+        title: t("monthlyInvoice.emailSent", "Email enviado com sucesso"),
+        description: response.message || t("monthlyInvoice.emailSentDesc", "O relatório foi enviado para o email do proprietário."),
+        variant: "default",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: t("monthlyInvoice.emailError", "Erro ao enviar email"),
+        description: error.message || t("monthlyInvoice.emailErrorDesc", "Não foi possível enviar o relatório. Por favor tente novamente."),
+        variant: "destructive",
+      });
+    }
+  });
+  
+  // Handler for email sending
+  const handleSendEmail = () => {
+    if (!selectedOwner || !selectedMonth) {
+      toast({
+        title: t("monthlyInvoice.missingData", "Dados incompletos"),
+        description: t("monthlyInvoice.selectOwnerAndMonthForEmail", "Selecione o proprietário e o mês para enviar o relatório por email."),
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Extract month and year from selectedMonth (format: YYYY-MM)
+    const [year, month] = selectedMonth.split('-');
+    
+    sendEmailMutation.mutate({
+      ownerId: parseInt(selectedOwner),
+      month,
+      year
+    });
+  };
+  
   // Get months list for dropdown
   const months = getLast12Months();
   
   // Define loading state
-  const isLoading = isOwnersLoading || isReportLoading;
+  const isLoading = isOwnersLoading || isReportLoading || sendEmailMutation.isPending;
   
   return (
     <div className="container mx-auto py-6">
@@ -224,6 +275,7 @@ export default function MonthlyInvoicePage() {
           report={ownerReport}
           selectedMonth={selectedMonth}
           onExport={handleExport}
+          onSendEmail={handleSendEmail}
         />
       )}
     </div>

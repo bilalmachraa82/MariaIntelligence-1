@@ -24,7 +24,8 @@ import {
   Calendar,
   Home,
   User,
-  Euro
+  Euro,
+  Mail
 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { OwnerReport, PropertyReportItem, ReservationSummary } from "@/hooks/use-owner-report";
@@ -36,9 +37,10 @@ interface MonthlyInvoiceReportProps {
   report: OwnerReport;
   selectedMonth?: string; // ISO string (YYYY-MM)
   onExport: (format: 'pdf' | 'csv') => void;
+  onSendEmail?: () => void;
 }
 
-export function MonthlyInvoiceReport({ report, selectedMonth, onExport }: MonthlyInvoiceReportProps) {
+export function MonthlyInvoiceReport({ report, selectedMonth, onExport, onSendEmail }: MonthlyInvoiceReportProps) {
   const { t, i18n } = useTranslation();
   const reportDate = new Date();
   
@@ -94,6 +96,18 @@ export function MonthlyInvoiceReport({ report, selectedMonth, onExport }: Monthl
             <Printer className="h-4 w-4" />
             {t("export.print", "Imprimir")}
           </Button>
+          
+          {onSendEmail && (
+            <Button
+              variant="default"
+              size="sm"
+              className="flex items-center gap-1 bg-primary text-primary-foreground hover:bg-primary/90"
+              onClick={onSendEmail}
+            >
+              <Mail className="h-4 w-4" />
+              {t("reports.sendByEmail", "Enviar por Email")}
+            </Button>
+          )}
         </div>
       </div>
       
