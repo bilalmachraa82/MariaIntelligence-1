@@ -149,7 +149,7 @@ function InsightsSection({ report }: InsightsSectionProps) {
           icon={LineChart}
           color="blue"
         >
-          <p className="text-sm mt-2">
+          <div className="text-sm mt-2">
             {report.totals.totalNetProfit > 0
               ? t(
                   "ownerReport.profitableInsight",
@@ -168,7 +168,7 @@ function InsightsSection({ report }: InsightsSectionProps) {
                   }
                 )
             }
-          </p>
+          </div>
         </Callout>
 
         <Callout
@@ -176,7 +176,7 @@ function InsightsSection({ report }: InsightsSectionProps) {
           icon={BarChart2}
           color="indigo"
         >
-          <p className="text-sm mt-2">
+          <div className="text-sm mt-2">
             {t(
               "ownerReport.occupancyInsightText",
               "A taxa média de ocupação foi de {{rate}}%. {{bestProperty}} teve a melhor performance com {{bestRate}}% de ocupação.",
@@ -190,7 +190,7 @@ function InsightsSection({ report }: InsightsSectionProps) {
                 ).occupancyRate.toFixed(1),
               }
             )}
-          </p>
+          </div>
         </Callout>
       </div>
     );
@@ -206,10 +206,10 @@ function InsightsSection({ report }: InsightsSectionProps) {
           icon={Sparkles}
           color="amber"
         >
-          <p className="text-sm mt-2">
+          <div className="text-sm mt-2">
             {insights.overallSummary || insights.summaryInsight || 
               t("ownerReport.fallbackSummary", "Análise do período mostra uma performance geral estável com oportunidades de melhoria.")}
-          </p>
+          </div>
         </Callout>
       </Col>
 
@@ -221,20 +221,22 @@ function InsightsSection({ report }: InsightsSectionProps) {
             icon={TrendingUp}
             color="emerald"
           >
-            <List className="mt-2">
-              {(insights.propertyInsights?.map((p: any) => p.insight) || []).slice(0, 3).map((insight: string, idx: number) => (
-                <ListItem key={idx}>
-                  <span className="text-sm">{insight}</span>
-                </ListItem>
-              ))}
-              {(!insights.propertyInsights || insights.propertyInsights.length === 0) && (
-                <ListItem>
-                  <span className="text-sm">
-                    {t("ownerReport.noTopPerformers", "Não há propriedades com desempenho excepcional no período.")}
-                  </span>
-                </ListItem>
-              )}
-            </List>
+            <div className="mt-2">
+              <List>
+                {(insights.propertyInsights?.map((p: any) => p.insight) || []).slice(0, 3).map((insight: string, idx: number) => (
+                  <ListItem key={idx}>
+                    <span className="text-sm">{insight}</span>
+                  </ListItem>
+                ))}
+                {(!insights.propertyInsights || insights.propertyInsights.length === 0) && (
+                  <ListItem>
+                    <span className="text-sm">
+                      {t("ownerReport.noTopPerformers", "Não há propriedades com desempenho excepcional no período.")}
+                    </span>
+                  </ListItem>
+                )}
+              </List>
+            </div>
           </Callout>
 
           <Callout
@@ -242,10 +244,10 @@ function InsightsSection({ report }: InsightsSectionProps) {
             icon={Calendar}
             color="indigo"
           >
-            <p className="text-sm mt-2">
+            <div className="text-sm mt-2">
               {insights.seasonalTrends || insights.seasonalTips?.[0] || 
                 t("ownerReport.noSeasonalData", "Dados insuficientes para análise de sazonalidade.")}
-            </p>
+            </div>
           </Callout>
         </div>
       </Col>
@@ -257,20 +259,22 @@ function InsightsSection({ report }: InsightsSectionProps) {
           icon={Lightbulb}
           color="amber"
         >
-          <List className="mt-2">
-            {(insights.recommendations || []).slice(0, 3).map((recommendation: string, idx: number) => (
-              <ListItem key={idx}>
-                <span className="text-sm">{recommendation}</span>
-              </ListItem>
-            ))}
-            {!insights.recommendations?.length && (
-              <ListItem>
-                <span className="text-sm">
-                  {t("ownerReport.noRecommendations", "Não há recomendações específicas para este período.")}
-                </span>
-              </ListItem>
-            )}
-          </List>
+          <div className="mt-2">
+            <List>
+              {(insights.recommendations || []).slice(0, 3).map((recommendation: string, idx: number) => (
+                <ListItem key={idx}>
+                  <span className="text-sm">{recommendation}</span>
+                </ListItem>
+              ))}
+              {!insights.recommendations?.length && (
+                <ListItem>
+                  <span className="text-sm">
+                    {t("ownerReport.noRecommendations", "Não há recomendações específicas para este período.")}
+                  </span>
+                </ListItem>
+              )}
+            </List>
+          </div>
         </Callout>
       </Col>
 

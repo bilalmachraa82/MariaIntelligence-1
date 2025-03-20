@@ -674,6 +674,28 @@ export async function generateReportInsights(report: OwnerReport): Promise<{
   seasonalTips: string[];
 }> {
   try {
+    // Verificar se há insights em cache local
+    const cacheKey = `insights_${report.ownerId}_${report.startDate}_${report.endDate}`;
+    const cachedInsights = localStorage.getItem(cacheKey);
+    
+    if (cachedInsights) {
+      return JSON.parse(cachedInsights);
+    }
+    
+    // Implementar cooldown para evitar múltiplas chamadas seguidas à API 
+    // (isto previne erros de rate limit)
+    const lastApiCallTime = localStorage.getItem('last_mistral_api_call');
+    const now = Date.now();
+    const API_COOLDOWN = 30000; // 30 segundos de espera entre chamadas
+    
+    if (lastApiCallTime && (now - parseInt(lastApiCallTime)) < API_COOLDOWN) {
+      console.log("Limitando chamadas à API do Mistral. Usando insights gerados localmente.");
+      return getLocalInsights(report);
+    }
+    
+    // Atualizar o timestamp da última chamada
+    localStorage.setItem('last_mistral_api_call', now.toString());
+    
     // Preparar dados detalhados para enviar à IA para análise mais completa
     const propertyPerformance = report.propertyReports.map(property => ({
       id: property.propertyId,
