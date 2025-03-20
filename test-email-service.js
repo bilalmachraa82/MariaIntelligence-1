@@ -3,7 +3,11 @@
  * Envia um email de teste para confirmar que as credenciais estão corretas
  */
 
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+
+// Carregar variáveis de ambiente se existirem
+dotenv.config();
 
 async function testEmailService() {
   console.log('Iniciando teste do serviço de email...');
