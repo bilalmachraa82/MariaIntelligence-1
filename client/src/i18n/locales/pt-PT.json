@@ -401,6 +401,8 @@
     "dailyTasks": {
       "title": "Tarefas do Dia",
       "todayDate": "Hoje",
+      "tomorrow": "Amanhã",
+      "viewDetails": "Ver Detalhes",
       "assistant": "Assistente",
       "viewAll": "Ver Dashboard Completo",
       "todayCheckins": "Check-ins Hoje",
