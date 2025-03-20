@@ -384,114 +384,39 @@ export function OwnerReportModern({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.3 }}
-        className="space-y-6"
+        className="space-y-6 p-6"
       >
-        {/* Cabeçalho do relatório */}
-        <div className="mb-6">
+        {/* Título do relatório com destaque visual */}
+        <div className="p-5 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-xl border border-blue-100 dark:border-blue-800">
           <motion.h2 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-xl font-semibold mb-2"
+            className="text-2xl font-bold mb-2 text-blue-800 dark:text-blue-300 flex items-center gap-2"
           >
-            {t("ownerReport.reportForOwner", "Relatório para {{owner}}", { owner: report.ownerName })}
+            <Sparkles className="h-6 w-6 text-amber-500" />
+            {t("ownerReport.reportForOwner", "Panorama de {{owner}}", { owner: report.ownerName })}
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-muted-foreground flex items-center"
+            className="text-blue-600 dark:text-blue-400 flex items-center ml-8"
           >
-            <Calendar className="h-4 w-4 mr-1" />
-            {t("ownerReport.periodDetails", "Período: {{startDate}} a {{endDate}}", {
-              startDate: dateRange.from ? format(new Date(dateRange.from), "dd/MM/yyyy") : "-",
-              endDate: dateRange.to ? format(new Date(dateRange.to), "dd/MM/yyyy") : "-"
+            <Calendar className="h-4 w-4 mr-2" />
+            {t("ownerReport.periodDetails", "Período de inspiração: {{startDate}} a {{endDate}}", {
+              startDate: dateRange.from ? format(new Date(dateRange.from), "dd MMM yyyy") : "-",
+              endDate: dateRange.to ? format(new Date(dateRange.to), "dd MMM yyyy") : "-"
             })}
           </motion.p>
         </div>
 
-        {/* Botões de ação */}
+        {/* Cards KPI principais com design melhorado e tendências */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="flex flex-wrap gap-2 mb-6"
-        >
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="bg-primary text-white hover:bg-primary/90">
-                <Download className="mr-2 h-4 w-4" />
-                {t("reports.export", "Exportar")}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>{t("reports.exportOptions", "Opções de exportação")}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              
-              <DropdownMenuLabel className="text-xs font-medium text-muted-foreground pl-3">CSV</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => onExport('full')}>
-                <FileText className="mr-2 h-4 w-4" />
-                {t("reports.exportFull", "Relatório Completo")}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onExport('summary')}>
-                <FileText className="mr-2 h-4 w-4" />
-                {t("reports.exportSummary", "Apenas Resumo")}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onExport('properties')}>
-                <FileText className="mr-2 h-4 w-4" />
-                {t("reports.exportProperties", "Apenas Propriedades")}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onExport('reservations')}>
-                <FileText className="mr-2 h-4 w-4" />
-                {t("reports.exportReservations", "Apenas Reservas")}
-              </DropdownMenuItem>
-              
-              <DropdownMenuSeparator />
-              
-              <DropdownMenuLabel className="text-xs font-medium text-muted-foreground pl-3">PDF</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => downloadOwnerReportPDF(report, 'full', i18n.language)}>
-                <FileType2 className="mr-2 h-4 w-4 text-rose-600" />
-                {t("reports.exportFullPDF", "PDF Completo")}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => downloadOwnerReportPDF(report, 'summary', i18n.language)}>
-                <FileType2 className="mr-2 h-4 w-4 text-rose-600" />
-                {t("reports.exportSummaryPDF", "PDF Resumo")}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => downloadOwnerReportPDF(report, 'properties', i18n.language)}>
-                <FileType2 className="mr-2 h-4 w-4 text-rose-600" />
-                {t("reports.exportPropertiesPDF", "PDF Propriedades")}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => downloadOwnerReportPDF(report, 'reservations', i18n.language)}>
-                <FileType2 className="mr-2 h-4 w-4 text-rose-600" />
-                {t("reports.exportReservationsPDF", "PDF Reservas")}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          
-          <Button
-            variant="outline"
-            onClick={() => window.print()}
-          >
-            <FileText className="mr-2 h-4 w-4" />
-            {t("reports.print", "Imprimir")}
-          </Button>
-          
-          <Button 
-            variant="default"
-            className="bg-blue-600 hover:bg-blue-700 text-white"
-            onClick={onSendEmail}
-          >
-            <Mail className="mr-2 h-4 w-4" />
-            {t("reports.sendEmail", "Enviar por Email")}
-          </Button>
-        </motion.div>
-
-        {/* Cards KPI principais */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4"
+          className="grid grid-cols-1 md:grid-cols-3 gap-5"
         >
           <Card 
             className={cn(
