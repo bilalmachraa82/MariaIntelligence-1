@@ -4,13 +4,14 @@ import { type Owner } from "@shared/schema";
 
 // Get all owners
 export function useOwners() {
-  const result = useQuery<Owner[]>({
+  const result = useQuery<Owner[], Error>({
     queryKey: ["/api/owners"],
-    onSuccess: (data) => {
-      console.log("🏆 Owners data loaded successfully:", data);
-    },
-    onError: (error) => {
-      console.error("🛑 Error loading owners:", error);
+    queryFn: async () => {
+      const response = await fetch("/api/owners");
+      if (!response.ok) {
+        throw new Error(`API request failed with status: ${response.status}`);
+      }
+      return response.json();
     }
   });
   
@@ -20,6 +21,14 @@ export function useOwners() {
     isError: result.isError,
     error: result.error
   });
+  
+  if (result.isSuccess && result.data) {
+    console.log("🏆 Owners data loaded successfully:", result.data);
+  }
+  
+  if (result.isError && result.error) {
+    console.error("🛑 Error loading owners:", result.error);
+  }
   
   return result;
 }

@@ -1,10 +1,23 @@
 import { QueryClient } from "@tanstack/react-query";
 
+// Função padrão para fazer requisições baseada na chave da query
+const defaultQueryFn = async ({ queryKey }: { queryKey: any }): Promise<any> => {
+  // A primeira posição do queryKey geralmente é a URL da requisição
+  const url = Array.isArray(queryKey) ? queryKey[0] : queryKey;
+  
+  if (typeof url !== 'string') {
+    throw new Error(`Invalid queryKey: ${JSON.stringify(queryKey)}`);
+  }
+  
+  return apiRequest(url);
+};
+
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 1,
       staleTime: 5 * 60 * 1000, // 5 minutes
+      queryFn: defaultQueryFn,
     },
   },
 });
