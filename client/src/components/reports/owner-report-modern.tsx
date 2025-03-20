@@ -45,10 +45,11 @@ import {
   LineChart,
   PieChart,
   Sparkles,
+  Mail,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import { DateRange } from "@/components/ui/date-range-picker";
+import { DateRange as UIDateRange } from "@/components/ui/date-range-picker";
 import { OwnerReport } from "@/hooks/use-owner-report";
 import { downloadOwnerReportCSV } from "@/lib/export-utils";
 import { downloadOwnerReportPDF, generateReportInsights } from "@/lib/pdf-export-utils";
@@ -74,11 +75,12 @@ import { PropertyReservationsTable } from "@/components/reports/property-reserva
 
 interface OwnerReportModernProps {
   report: OwnerReport | null;
-  dateRange: DateRange;
+  dateRange: UIDateRange;
   occupancyData: any[];
   costDistribution: any[];
   isLoading: boolean;
   onExport: (format: 'full' | 'summary' | 'properties' | 'reservations') => void;
+  onSendEmail?: () => void; // Opcional para permitir compatibilidade com componentes existentes
 }
 
 // Componente para exibir insights baseados em AI
@@ -302,7 +304,8 @@ export function OwnerReportModern({
   occupancyData,
   costDistribution,
   isLoading,
-  onExport
+  onExport,
+  onSendEmail
 }: OwnerReportModernProps) {
   const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState<string>("overview");
@@ -401,8 +404,8 @@ export function OwnerReportModern({
           >
             <Calendar className="h-4 w-4 mr-1" />
             {t("ownerReport.periodDetails", "Período: {{startDate}} a {{endDate}}", {
-              startDate: dateRange.startDate ? format(new Date(dateRange.startDate), "dd/MM/yyyy") : "-",
-              endDate: dateRange.endDate ? format(new Date(dateRange.endDate), "dd/MM/yyyy") : "-"
+              startDate: dateRange.from ? format(new Date(dateRange.from), "dd/MM/yyyy") : "-",
+              endDate: dateRange.to ? format(new Date(dateRange.to), "dd/MM/yyyy") : "-"
             })}
           </motion.p>
         </div>
@@ -471,6 +474,15 @@ export function OwnerReportModern({
           >
             <FileText className="mr-2 h-4 w-4" />
             {t("reports.print", "Imprimir")}
+          </Button>
+          
+          <Button 
+            variant="default"
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+            onClick={onSendEmail}
+          >
+            <Mail className="mr-2 h-4 w-4" />
+            {t("reports.sendEmail", "Enviar por Email")}
           </Button>
         </motion.div>
 
