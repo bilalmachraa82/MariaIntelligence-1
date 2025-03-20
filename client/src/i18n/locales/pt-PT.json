@@ -121,6 +121,8 @@
       "noDataAvailable": "Não há dados disponíveis.",
       "dailyTasks": "Tarefas do Dia",
       "financialView": "Visão Financeira",
+      "guestArrival": "Chegada de hóspede",
+      "checkInDescription": "Receber e entregar chaves",
       "maintenanceTask": "Verificar ar-condicionado",
       "maintenanceReported": "Reportado pelo hóspede anterior",
       "plumbingIssue": "Problema no encanamento",
