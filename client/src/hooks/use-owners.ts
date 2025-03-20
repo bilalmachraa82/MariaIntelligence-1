@@ -4,9 +4,24 @@ import { type Owner } from "@shared/schema";
 
 // Get all owners
 export function useOwners() {
-  return useQuery<Owner[]>({
+  const result = useQuery<Owner[]>({
     queryKey: ["/api/owners"],
+    onSuccess: (data) => {
+      console.log("🏆 Owners data loaded successfully:", data);
+    },
+    onError: (error) => {
+      console.error("🛑 Error loading owners:", error);
+    }
   });
+  
+  console.log("🔍 useOwners hook state:", { 
+    data: result.data, 
+    isLoading: result.isLoading, 
+    isError: result.isError,
+    error: result.error
+  });
+  
+  return result;
 }
 
 // Get a specific owner by ID
