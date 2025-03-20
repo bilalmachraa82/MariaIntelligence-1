@@ -2330,12 +2330,112 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Gerar o relatório
       const report = await storage.generateOwnerFinancialReport(Number(ownerId), month, year);
       
-      // Simular envio de email (em produção, usar serviço real como SendGrid, Mailgun, etc)
+      // Formatação da data para exibição adequada em pt-BR
       const reportDate = new Date(parseInt(year), parseInt(month) - 1);
       const monthName = format(reportDate, 'MMMM yyyy', { locale: require('date-fns/locale/pt-BR') });
       
-      // Em produção, aqui integraríamos com um serviço de email real
-      // Por enquanto, apenas simulamos o envio
+      // Importar o serviço de email
+      const { emailService } = await import('./services/email.service');
+      
+      // Verificar se o serviço de email está configurado
+      const emailConfigured = await emailService.isEmailServiceAvailable();
+      
+      let emailSent = false;
+      
+      if (emailConfigured) {
+        try {
+          // Gerar PDF do relatório para anexar ao email
+          const { jsPDF } = await import('jspdf');
+          const { autoTable } = await import('jspdf-autotable');
+          
+          const doc = new jsPDF();
+          
+          // Adicionar cabeçalho
+          doc.setFontSize(20);
+          doc.text('Maria Faz - Gestão de Propriedades', 105, 15, { align: 'center' });
+          doc.setFontSize(16);
+          doc.text(`Relatório Financeiro - ${monthName}`, 105, 25, { align: 'center' });
+          doc.setFontSize(12);
+          doc.text(`Proprietário: ${owner.name}`, 105, 35, { align: 'center' });
+          
+          // Adicionar resumo
+          doc.setFontSize(14);
+          doc.text('Resumo Financeiro', 14, 45);
+          
+          // Dados do relatório
+          const propertyData = report.properties.map((property: any) => [
+            property.name,
+            `${property.occupancyRate}%`,
+            `€${property.revenue.toFixed(2)}`,
+            `€${property.expenses.toFixed(2)}`,
+            `€${property.profit.toFixed(2)}`
+          ]);
+          
+          // Tabela de propriedades
+          autoTable(doc, {
+            startY: 50,
+            head: [['Propriedade', 'Ocupação', 'Receita', 'Despesas', 'Lucro']],
+            body: propertyData,
+            theme: 'striped',
+            headStyles: { fillColor: [79, 70, 229] }
+          });
+          
+          // Adicionar totais
+          const finalY = (doc as any).lastAutoTable.finalY || 120;
+          doc.setFontSize(14);
+          doc.text('Total do Período', 14, finalY + 10);
+          
+          autoTable(doc, {
+            startY: finalY + 15,
+            head: [['Receita Total', 'Despesas Totais', 'Lucro Líquido']],
+            body: [[
+              `€${report.totalRevenue.toFixed(2)}`,
+              `€${report.totalExpenses.toFixed(2)}`,
+              `€${report.netProfit.toFixed(2)}`
+            ]],
+            theme: 'grid',
+            headStyles: { fillColor: [79, 70, 229] }
+          });
+          
+          // Rodapé
+          const pageCount = doc.getNumberOfPages();
+          for (let i = 1; i <= pageCount; i++) {
+            doc.setPage(i);
+            doc.setFontSize(10);
+            doc.text(
+              `Maria Faz - Relatório gerado em ${new Date().toLocaleDateString('pt-BR')}`,
+              105, 
+              doc.internal.pageSize.height - 10, 
+              { align: 'center' }
+            );
+          }
+          
+          // Obter o PDF como buffer
+          const pdfBuffer = Buffer.from(doc.output('arraybuffer'));
+          
+          // Enviar o email com o relatório em anexo
+          emailSent = await emailService.sendMonthlyReport(
+            targetEmail,
+            owner.name,
+            monthName,
+            pdfBuffer
+          );
+        } catch (emailError) {
+          console.error('Erro ao gerar PDF ou enviar email:', emailError);
+          // Fallback para modo de teste se ocorrer erro
+          emailSent = await emailService.sendReportTest(targetEmail, owner.name, monthName);
+        }
+      } else {
+        // Se o serviço não estiver configurado, use o modo de teste
+        emailSent = await emailService.sendReportTest(targetEmail, owner.name, monthName);
+      }
+      
+      if (!emailSent) {
+        return res.status(500).json({
+          success: false,
+          message: "Falha ao enviar email. Verifique as configurações de email."
+        });
+      }
       
       // Registrar atividade
       await storage.createActivity({
