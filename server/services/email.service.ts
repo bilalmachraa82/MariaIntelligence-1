@@ -56,6 +56,10 @@ export class EmailService {
         auth: {
           user: emailUser,
           pass: emailPassword
+        },
+        // Opções extras para o Gmail
+        tls: {
+          rejectUnauthorized: false
         }
       });
 
