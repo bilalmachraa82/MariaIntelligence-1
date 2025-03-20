@@ -47,45 +47,90 @@ import EditDocumentItemPage from "@/pages/financial/documents/items/edit/[id]";
 import NewPaymentPage from "@/pages/financial/documents/payments/new";
 import EditPaymentPage from "@/pages/financial/documents/payments/edit/[id]";
 
-// Inicializa o tema escuro conforme a preferência salva
+// Inicializador de tema com tratamento de erros aprimorado
 const initializeDarkMode = () => {
-  // Verifica se o modo escuro está ativado no localStorage
-  const darkModePreference = localStorage.getItem("darkMode");
-  const isDark = darkModePreference === "true";
+  // Funções auxiliares para aplicar temas
+  const applyDarkTheme = () => document.documentElement.classList.add("dark");
+  const applyLightTheme = () => document.documentElement.classList.remove("dark");
   
-  // Aplica a classe 'dark' no elemento html se o modo escuro estiver ativado
-  if (isDark) {
-    document.documentElement.classList.add("dark");
-  } else {
-    document.documentElement.classList.remove("dark");
+  // Verificar legacy preference (darkMode boolean)
+  const legacyPreference = localStorage.getItem("darkMode");
+  if (legacyPreference === "true") {
+    applyDarkTheme();
+    return;
   }
   
-  // Também verifica a preferência do sistema se estiver no modo 'system'
+  // Buscar tema salvo
   const storedTheme = localStorage.getItem("theme");
-  if (storedTheme) {
-    try {
-      const theme = JSON.parse(storedTheme);
-      if (theme.appearance === "system") {
-        // Verifica preferência do sistema
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        if (prefersDark) {
-          document.documentElement.classList.add("dark");
-        } else {
-          document.documentElement.classList.remove("dark");
-        }
-        
-        // Adiciona listener para mudanças na preferência do sistema
-        window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+  if (!storedTheme) {
+    // Se não existir, criar tema padrão e salvar
+    const defaultTheme = { 
+      appearance: "system", 
+      primary: "blue", 
+      radius: 0.5, 
+      variant: "tint" 
+    };
+    localStorage.setItem("theme", JSON.stringify(defaultTheme));
+    
+    // Verificar preferência do sistema
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      applyDarkTheme();
+    } else {
+      applyLightTheme();
+    }
+    return;
+  }
+  
+  // Processar tema salvo
+  if (storedTheme === "dark") {
+    // Formato simples antigo - dark string
+    applyDarkTheme();
+    return;
+  } else if (storedTheme === "light") {
+    // Formato simples antigo - light string
+    applyLightTheme();
+    return;
+  }
+  
+  // Tentar processar formato JSON
+  try {
+    const themeObject = JSON.parse(storedTheme);
+    
+    // Aplicar configuração baseada no tipo
+    if (themeObject.appearance === "dark") {
+      applyDarkTheme();
+    } else if (themeObject.appearance === "light") {
+      applyLightTheme();
+    } else if (themeObject.appearance === "system") {
+      // Usar preferência do sistema
+      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        applyDarkTheme();
+      } else {
+        applyLightTheme();
+      }
+      
+      // Listener para mudanças na preferência do sistema
+      window.matchMedia("(prefers-color-scheme: dark)")
+        .addEventListener("change", (e) => {
           if (e.matches) {
-            document.documentElement.classList.add("dark");
+            applyDarkTheme();
           } else {
-            document.documentElement.classList.remove("dark");
+            applyLightTheme();
           }
         });
-      }
-    } catch (e) {
-      console.error("Erro ao analisar tema armazenado:", e);
     }
+  } catch (e) {
+    // Em caso de erro de parsing, usar tema claro como fallback
+    console.error("Erro ao processar tema:", e);
+    applyLightTheme();
+    
+    // Salvar tema padrão para corrigir o problema
+    localStorage.setItem("theme", JSON.stringify({ 
+      appearance: "light", 
+      primary: "blue", 
+      radius: 0.5, 
+      variant: "tint" 
+    }));
   }
 };
 
