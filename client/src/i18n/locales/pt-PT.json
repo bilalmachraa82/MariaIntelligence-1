@@ -502,7 +502,20 @@
       "pdf": "Exportar PDF"
     },
     "reports": {
-      "sendEmail": "Enviar Relatório"
+      "sendEmail": "Enviar Relatório",
+      "totalReservations": "Total de reservas",
+      "totalRevenue": "Receita total",
+      "filterBy": "Filtrar por",
+      "allPlatforms": "Todas Plataformas",
+      "noReservations": "Não existem reservas no período selecionado.",
+      "period": "Período",
+      "guest": "Hóspede",
+      "nights": "Noites",
+      "platform": "Plataforma",
+      "amount": "Valor",
+      "netAmount": "Valor Líquido",
+      "total": "Total",
+      "occupancyRate": "Taxa de ocupação"
     }
   }
 }

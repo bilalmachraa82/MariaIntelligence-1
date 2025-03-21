@@ -745,7 +745,7 @@ export function OwnerReportModern({
                                   <div className="w-16 ml-2">
                                     <CategoryBar
                                       values={[property.occupiedDays, property.availableDays - property.occupiedDays]}
-                                      colors={["blue", "slate"]}
+                                      colors={["violet", "slate"]}
                                       showAnimation={true}
                                       className="h-1"
                                     />
