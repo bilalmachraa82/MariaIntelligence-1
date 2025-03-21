@@ -21,12 +21,57 @@ export default function OwnerReportPage() {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const { data: owners, isLoading: isOwnersLoading } = useOwners();
-  const [selectedOwner, setSelectedOwner] = useState<string>("");
+  
+  // Carregar dados do sessionStorage, se disponíveis
+  const loadSavedState = () => {
+    if (typeof window !== 'undefined' && sessionStorage.getItem('ownerReport_shouldReload') === 'true') {
+      const savedOwnerId = sessionStorage.getItem('ownerReport_ownerId');
+      const savedStartDate = sessionStorage.getItem('ownerReport_startDate');
+      const savedEndDate = sessionStorage.getItem('ownerReport_endDate');
+      const savedLabel = sessionStorage.getItem('ownerReport_label');
+      
+      // Limpar após carregar
+      sessionStorage.removeItem('ownerReport_shouldReload');
+      sessionStorage.removeItem('ownerReport_ownerId');
+      sessionStorage.removeItem('ownerReport_startDate');
+      sessionStorage.removeItem('ownerReport_endDate');
+      sessionStorage.removeItem('ownerReport_label');
+      
+      console.log("Restaurando estado após recarregamento:", {
+        ownerId: savedOwnerId,
+        period: `${savedStartDate} - ${savedEndDate} (${savedLabel})`
+      });
+      
+      // Restaurar estado
+      if (savedOwnerId) {
+        return {
+          selectedOwner: savedOwnerId,
+          dateRange: {
+            from: savedStartDate ? new Date(savedStartDate) : startOfMonth(new Date()),
+            to: savedEndDate ? new Date(savedEndDate) : endOfMonth(new Date()),
+            label: savedLabel || "Personalizado"
+          }
+        };
+      }
+    }
+    
+    // Estado padrão se não houver dados salvos
+    return {
+      selectedOwner: "",
+      dateRange: {
+        from: startOfMonth(new Date()),
+        to: endOfMonth(new Date()),
+        label: "Mês Atual"
+      }
+    };
+  };
+  
+  // Inicializar estados com dados salvos ou valores padrão
+  const initialState = loadSavedState();
+  
+  const [selectedOwner, setSelectedOwner] = useState<string>(initialState.selectedOwner);
   const [isSendingEmail, setIsSendingEmail] = useState<boolean>(false);
-  const [uiDateRange, setUiDateRange] = useState<UIDateRange>({
-    from: startOfMonth(new Date()),
-    to: endOfMonth(new Date())
-  });
+  const [uiDateRange, setUiDateRange] = useState<UIDateRange>(initialState.dateRange);
   
   // Converter o UIDateRange para o formato esperado pelo hook useOwnerReport
   const dateRange: ReportDateRange = useMemo(() => ({
@@ -67,31 +112,21 @@ export default function OwnerReportPage() {
     const formattedStartDate = newRange.from ? format(newRange.from, 'yyyy-MM-dd') : startOfMonth(new Date()).toISOString().split('T')[0];
     const formattedEndDate = newRange.to ? format(newRange.to, 'yyyy-MM-dd') : endOfMonth(new Date()).toISOString().split('T')[0];
     
-    // SOLUÇÃO RADICAL: Forçar uma atualização completa definindo o proprietário como null e depois de volta
+    // SOLUÇÃO MUITO RADICAL: Salvar o estado em sessionStorage e forçar uma atualização completa da página
     if (selectedOwner) {
-      const currentOwner = selectedOwner;
-      
-      // Força a limpeza do relatório
-      setSelectedOwner("");
+      // Salva os dados atuais na sessionStorage
+      sessionStorage.setItem('ownerReport_ownerId', selectedOwner);
+      sessionStorage.setItem('ownerReport_startDate', formattedStartDate);
+      sessionStorage.setItem('ownerReport_endDate', formattedEndDate);
+      sessionStorage.setItem('ownerReport_label', newRange.label || "Personalizado");
+      sessionStorage.setItem('ownerReport_shouldReload', 'true');
       
       // Log detalhado para depuração
-      console.log("FORÇANDO ATUALIZAÇÃO COMPLETA DO RELATÓRIO");
+      console.log("FORÇANDO RECARREGAMENTO COMPLETO DA PÁGINA");
       console.log("Intervalo formatado para API:", formattedStartDate, "até", formattedEndDate);
       
-      // Atualizar o estado da UI
-      setUiDateRange(newRange);
-      
-      // Atraso pequeno para garantir que a UI seja atualizada
-      setTimeout(() => {
-        // Redefine o proprietário para forçar um novo carregamento de dados
-        setSelectedOwner(currentOwner);
-        
-        toast({
-          title: t("dateRange.updated", "Intervalo atualizado"),
-          description: t("dateRange.updatedDescription", `Dados atualizados para o período ${formattedStartDate} a ${formattedEndDate}`),
-          duration: 3000
-        });
-      }, 100);
+      // Força atualização da página programaticamente
+      window.location.reload();
     } else {
       // Se não houver proprietário selecionado, apenas atualiza o intervalo
       setUiDateRange(newRange);
