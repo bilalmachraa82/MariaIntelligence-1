@@ -62,15 +62,23 @@ export default function OwnerReportPage() {
   // Função para lidar com a mudança no range de datas
   const handleDateRangeChange = (newRange: UIDateRange) => {
     console.log("Data alterada para:", newRange);
+    
+    // Antes de alterar o estado, criar a versão formatada das datas
+    const formattedStartDate = newRange.from ? format(newRange.from, 'yyyy-MM-dd') : startOfMonth(new Date()).toISOString().split('T')[0];
+    const formattedEndDate = newRange.to ? format(newRange.to, 'yyyy-MM-dd') : endOfMonth(new Date()).toISOString().split('T')[0];
+    
+    // Log detalhado para depuração
+    console.log("Intervalo formatado para API:", formattedStartDate, "até", formattedEndDate);
+    
+    // Atualizar o estado da UI
     setUiDateRange(newRange);
     
     // Força um novo carregamento dos dados com o novo intervalo
     if (selectedOwner) {
-      // Isso é apenas para mostrar que a alteração de data está funcionando
       toast({
         title: t("dateRange.updated", "Intervalo atualizado"),
-        description: t("dateRange.updatedDescription", "Dados atualizados para o novo período"),
-        duration: 2000
+        description: t("dateRange.updatedDescription", `Dados atualizados para o período ${formattedStartDate} a ${formattedEndDate}`),
+        duration: 3000
       });
     }
   };

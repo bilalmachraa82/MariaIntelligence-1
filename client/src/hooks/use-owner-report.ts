@@ -70,6 +70,8 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
   
   // Gera o relatório para um proprietário específico
   const report = useMemo(() => {
+    console.log("OwnerReportModern - dateRange atualizado:", dateRange);
+    
     if (!ownerId || !properties || !allReservations || !owners || isLoading) {
       return null;
     }
@@ -90,6 +92,9 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
     const start = dateRange.startDate ? new Date(dateRange.startDate) : new Date();
     const end = dateRange.endDate ? new Date(dateRange.endDate) : new Date();
     
+    console.log("OwnerReportModern - report dados:", dateRange.startDate, dateRange.endDate);
+    console.log("OwnerReportModern - reservas totais:", allReservations.length);
+    
     // Calcular os dias disponíveis no período
     const availableDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
     
@@ -105,7 +110,7 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
         const checkOutDate = new Date(reservation.checkOutDate);
         
         // Verificar se a reserva está dentro do período ou se sobrepõe
-        return (
+        const isInPeriod = (
           // Começa dentro do período (inclusive)
           (checkInDate >= start && checkInDate <= end) ||
           // Termina dentro do período (inclusive)
@@ -113,7 +118,17 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
           // Cobre todo o período
           (checkInDate <= start && checkOutDate >= end)
         );
+        
+        if (property.id === 28) { // Log apenas para uma propriedade específica para evitar sobrecarga de logs
+          console.log(`Reserva ${reservation.id} (${reservation.propertyId}): ${checkInDate.toISOString().split('T')[0]} - ${checkOutDate.toISOString().split('T')[0]}, Em período: ${isInPeriod}`);
+        }
+        
+        return isInPeriod;
       });
+      
+      if (property.id === 28) {
+        console.log(`Propriedade ${property.name} (${property.id}): ${propertyReservations.length} reservas encontradas no período ${start.toISOString().split('T')[0]} - ${end.toISOString().split('T')[0]}`);
+      }
       
       // Calcular dias ocupados
       let occupiedDays = 0;
