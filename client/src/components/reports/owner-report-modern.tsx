@@ -532,11 +532,11 @@ export function OwnerReportModern({
                           data={occupancyData}
                           index="name"
                           categories={["occupancy"]}
-                          colors={["indigo"]}
+                          colors={["blue"]}
                           valueFormatter={(value) => `${value}%`}
                           yAxisWidth={40}
                           showLegend={false}
-                          showGridLines={false}
+                          showGridLines={true}
                           showAnimation={true}
                           className="h-full"
                         />
@@ -558,8 +558,9 @@ export function OwnerReportModern({
                           index="name"
                           valueFormatter={formatCurrency}
                           showAnimation={true}
-                          colors={["blue", "cyan", "indigo", "violet", "emerald"]}
+                          colors={["sky", "cyan", "blue", "indigo", "emerald"]}
                           className="h-full"
+                          variant="pie"
                         />
                       </div>
                     </Card>
