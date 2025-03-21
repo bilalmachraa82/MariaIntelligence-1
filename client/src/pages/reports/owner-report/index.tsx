@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -45,6 +45,19 @@ export default function OwnerReportPage() {
     selectedOwner ? parseInt(selectedOwner) : null, 
     dateRange
   );
+  
+  // Log para depuração - monitorar alterações nos dados do relatório
+  useEffect(() => {
+    if (ownerReport) {
+      console.log("Relatório atualizado:", {
+        ownerId: ownerReport.ownerId,
+        startDate: ownerReport.startDate,
+        endDate: ownerReport.endDate,
+        totalProperties: ownerReport.propertyReports.length,
+        totalReservations: ownerReport.totals.totalReservations
+      });
+    }
+  }, [ownerReport]);
   
   // Função para lidar com a mudança no range de datas
   const handleDateRangeChange = (newRange: UIDateRange) => {

@@ -812,6 +812,12 @@ export function OwnerReportModern({
                               <div className="text-muted-foreground">
                                 <span className="text-xs">{t("reports.occupancyRate", "Taxa de ocupação")}:</span>
                                 <span className="ml-1 text-lg">{property.occupancyRate.toFixed(1)}%</span>
+                                <div className="text-xs text-muted-foreground mt-1">
+                                  {t("ownerReport.periodDetails", "Período: {{startDate}} a {{endDate}}", {
+                                    startDate: dateRange.from ? format(new Date(dateRange.from), "dd/MM/yyyy") : "-",
+                                    endDate: dateRange.to ? format(new Date(dateRange.to), "dd/MM/yyyy") : "-"
+                                  })}
+                                </div>
                               </div>
                             </div>
                           </Card>
