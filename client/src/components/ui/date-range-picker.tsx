@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 export interface DateRange {
   from: Date | undefined;
   to: Date | undefined;
+  label?: string;
 }
 
 export interface DateRangePreset {

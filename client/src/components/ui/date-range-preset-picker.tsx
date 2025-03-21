@@ -6,15 +6,20 @@ import { Calendar } from "lucide-react";
 import { format, startOfDay, endOfDay, startOfMonth, endOfMonth, subMonths, startOfQuarter, endOfQuarter, startOfYear, endOfYear } from "date-fns";
 import { DateRange, DateRangePicker } from "@/components/ui/date-range-picker";
 
+// Interface estendida do DateRange com uma propriedade label
+export interface UIDateRange extends DateRange {
+  label?: string;
+}
+
 export interface DateRangePreset {
   id: string;
   label: string;
-  getRange: () => DateRange;
+  getRange: () => UIDateRange;
 }
 
 export interface DateRangePresetPickerProps {
-  value: DateRange;
-  onChange: (value: DateRange) => void;
+  value: UIDateRange;
+  onChange: (value: UIDateRange) => void;
   className?: string;
   align?: "start" | "center" | "end";
 }
@@ -40,8 +45,8 @@ export function DateRangePresetPicker({
         const currentMonthStart = startOfMonth(new Date());
         const currentMonthEnd = endOfMonth(new Date());
         return {
-          startDate: formatISODate(currentMonthStart),
-          endDate: formatISODate(currentMonthEnd),
+          from: currentMonthStart,
+          to: currentMonthEnd,
           label: t("dateRanges.currentMonth", "Mês Atual")
         };
       }
@@ -54,8 +59,8 @@ export function DateRangePresetPicker({
         const lastMonthStart = startOfMonth(lastMonth);
         const lastMonthEnd = endOfMonth(lastMonth);
         return {
-          startDate: formatISODate(lastMonthStart),
-          endDate: formatISODate(lastMonthEnd),
+          from: lastMonthStart,
+          to: lastMonthEnd,
           label: t("dateRanges.lastMonth", "Mês Passado")
         };
       }
@@ -67,8 +72,8 @@ export function DateRangePresetPicker({
         const quarterStart = startOfQuarter(new Date());
         const quarterEnd = endOfQuarter(new Date());
         return {
-          startDate: formatISODate(quarterStart),
-          endDate: formatISODate(quarterEnd),
+          from: quarterStart,
+          to: quarterEnd,
           label: t("dateRanges.currentQuarter", "Trimestre Atual")
         };
       }
@@ -80,8 +85,8 @@ export function DateRangePresetPicker({
         const yearStart = startOfYear(new Date());
         const yearEnd = endOfYear(new Date());
         return {
-          startDate: formatISODate(yearStart),
-          endDate: formatISODate(yearEnd),
+          from: yearStart,
+          to: yearEnd,
           label: t("dateRanges.currentYear", "Ano Atual")
         };
       }
@@ -93,8 +98,8 @@ export function DateRangePresetPicker({
         const thirtyDaysAgo = startOfDay(subMonths(new Date(), 1));
         const today = endOfDay(new Date());
         return {
-          startDate: formatISODate(thirtyDaysAgo),
-          endDate: formatISODate(today),
+          from: thirtyDaysAgo,
+          to: today,
           label: t("dateRanges.last30Days", "Últimos 30 Dias")
         };
       }
@@ -102,11 +107,11 @@ export function DateRangePresetPicker({
   ];
 
   const formatSelectedRange = () => {
-    if (!value.startDate || !value.endDate) {
+    if (!value.from || !value.to) {
       return t("dateRanges.selectRange", "Selecionar período");
     }
     
-    return `${format(new Date(value.startDate), "dd/MM/yyyy")} - ${format(new Date(value.endDate), "dd/MM/yyyy")}`;
+    return `${format(value.from, "dd/MM/yyyy")} - ${format(value.to, "dd/MM/yyyy")}`;
   };
 
   const applyPreset = (preset: DateRangePreset) => {

@@ -50,7 +50,7 @@ export default function OwnerReportPage() {
             from: savedStartDate ? new Date(savedStartDate) : startOfMonth(new Date()),
             to: savedEndDate ? new Date(savedEndDate) : endOfMonth(new Date()),
             label: savedLabel || "Personalizado"
-          }
+          } as any
         };
       }
     }
@@ -62,7 +62,7 @@ export default function OwnerReportPage() {
         from: startOfMonth(new Date()),
         to: endOfMonth(new Date()),
         label: "Mês Atual"
-      }
+      } as any
     };
   };
   
@@ -118,7 +118,8 @@ export default function OwnerReportPage() {
       sessionStorage.setItem('ownerReport_ownerId', selectedOwner);
       sessionStorage.setItem('ownerReport_startDate', formattedStartDate);
       sessionStorage.setItem('ownerReport_endDate', formattedEndDate);
-      sessionStorage.setItem('ownerReport_label', newRange.label || "Personalizado");
+      // Usar any para acessar a propriedade label que pode não estar no tipo
+      sessionStorage.setItem('ownerReport_label', (newRange as any).label || "Personalizado");
       sessionStorage.setItem('ownerReport_shouldReload', 'true');
       
       // Log detalhado para depuração
