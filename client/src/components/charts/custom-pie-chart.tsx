@@ -1,112 +1,80 @@
-import React from 'react';
+import React, { useState } from "react";
 import {
   PieChart as RechartsPieChart,
   Pie,
   Cell,
-  Tooltip,
   ResponsiveContainer,
-  Legend,
-  TooltipProps
-} from 'recharts';
+  Tooltip,
+  Legend as RechartsLegend,
+  Sector
+} from "recharts";
+
+interface DataPoint {
+  [key: string]: any;
+}
 
 interface CustomPieChartProps {
-  data: Array<Record<string, any>>;
+  data: DataPoint[];
   category: string;
   index: string;
-  colors?: string[];
   valueFormatter?: (value: number) => string;
-  showLegend?: boolean;
+  colors?: string[];
   showAnimation?: boolean;
   className?: string;
-  variant?: 'pie' | 'donut';
+  donut?: boolean;
 }
+
+// Função para renderizar a forma ativa quando o usuário passa o mouse
+const renderActiveShape = (props: any) => {
+  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
+
+  return (
+    <g>
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius + 6}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={fill}
+        opacity={0.9}
+      />
+    </g>
+  );
+};
 
 export const CustomPieChart: React.FC<CustomPieChartProps> = ({
   data,
   category,
   index,
-  colors = ['#9333ea', '#f43f5e', '#f59e0b', '#10b981', '#3b82f6'],
-  valueFormatter = (value) => value.toString(),
-  showLegend = true,
+  valueFormatter = (value: number) => value.toString(),
+  colors = ["#d946ef", "#ec4899", "#f59e0b", "#10b981", "#6366f1"],
   showAnimation = true,
-  className = '',
-  variant = 'pie',
+  className = "",
+  donut = false
 }) => {
-  // Ensure we have enough colors, repeat if necessary
-  const ensuredColors = [...colors];
-  while (ensuredColors.length < data.length) {
-    ensuredColors.push(...colors.slice(0, data.length - ensuredColors.length));
-  }
+  const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
 
-  const isDarkMode = document.documentElement.classList.contains('dark');
-  
-  const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
-    if (active && payload && payload.length) {
-      const dataPoint = payload[0];
-      return (
-        <div className="bg-card border border-border p-2 rounded shadow-md">
-          <p className="font-bold text-sm">{dataPoint.name}</p>
-          <p style={{ color: dataPoint.color }} className="text-xs">
-            {valueFormatter(dataPoint.value as number)} ({((dataPoint.value / data.reduce((sum, item) => sum + item[category], 0)) * 100).toFixed(1)}%)
-          </p>
-        </div>
-      );
+  const processedData = data.map((dataPoint) => {
+    // Garantir que o objeto tem as propriedades necessárias
+    if (!dataPoint || typeof dataPoint !== 'object') {
+      return { name: 'Desconhecido', value: 0 };
     }
-    return null;
-  };
-
-  const renderCustomizedLabel = ({
-    cx,
-    cy,
-    midAngle,
-    innerRadius,
-    outerRadius,
-    percent,
-    index: idx
-  }: any) => {
-    if (percent < 0.05) return null; // Don't render label for small slices
     
-    const RADIAN = Math.PI / 180;
-    const radius = variant === 'donut' 
-      ? innerRadius + (outerRadius - innerRadius) * 0.5
-      : outerRadius * 0.6;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    return {
+      name: dataPoint[index] || 'Desconhecido',
+      value: typeof dataPoint[category] === 'number' ? dataPoint[category] : 0
+    };
+  });
 
-    return (
-      <text
-        x={x}
-        y={y}
-        fill={isDarkMode ? "white" : "black"}
-        textAnchor="middle"
-        dominantBaseline="central"
-        fontSize={12}
-      >
-        {`${(percent * 100).toFixed(0)}%`}
-      </text>
-    );
+  // Gerenciar o estado ativo quando o mouse passa por cima de uma fatia
+  const onPieEnter = (_: any, index: number) => {
+    setActiveIndex(index);
   };
 
-  const getInnerRadius = () => {
-    return variant === 'donut' ? '50%' : 0;
-  };
-
-  const CustomizedLegend = ({ payload }: any) => {
-    return (
-      <ul className="flex flex-wrap justify-center gap-4 mt-4">
-        {payload.map((entry: any, index: number) => (
-          <li key={`legend-${index}`} className="flex items-center">
-            <div
-              className="h-3 w-3 rounded-full mr-1"
-              style={{ backgroundColor: entry.color }}
-            ></div>
-            <span className="text-xs font-medium">
-              {entry.value}
-            </span>
-          </li>
-        ))}
-      </ul>
-    );
+  const onPieLeave = () => {
+    setActiveIndex(undefined);
   };
 
   return (
@@ -114,36 +82,37 @@ export const CustomPieChart: React.FC<CustomPieChartProps> = ({
       <ResponsiveContainer width="100%" height="100%">
         <RechartsPieChart>
           <Pie
-            data={data}
+            data={processedData}
             cx="50%"
             cy="50%"
+            innerRadius={donut ? 60 : 0}
+            outerRadius={90}
+            activeIndex={activeIndex}
+            activeShape={renderActiveShape}
+            dataKey="value"
+            nameKey="name"
             labelLine={false}
-            label={renderCustomizedLabel}
-            outerRadius="80%"
-            innerRadius={getInnerRadius()}
-            dataKey={category}
-            nameKey={index}
             isAnimationActive={showAnimation}
-            animationDuration={1000}
+            animationDuration={1200}
+            onMouseEnter={onPieEnter}
+            onMouseLeave={onPieLeave}
           >
-            {data.map((entry, index) => (
+            {processedData.map((entry, index) => (
               <Cell 
                 key={`cell-${index}`} 
-                fill={ensuredColors[index % ensuredColors.length]} 
+                fill={colors[index % colors.length]} 
               />
             ))}
           </Pie>
-          <Tooltip content={<CustomTooltip />} />
-          {showLegend && (
-            <Legend 
-              content={<CustomizedLegend />}
-              layout="horizontal" 
-              verticalAlign="bottom"
-              align="center"
-            />
-          )}
+          <Tooltip 
+            formatter={(value: number) => [valueFormatter(value), ""]}
+            contentStyle={{ backgroundColor: "rgba(255, 255, 255, 0.95)", borderRadius: "8px", border: "none", boxShadow: "0 2px 10px rgba(0,0,0,0.1)" }}
+          />
+          <RechartsLegend layout="vertical" align="right" verticalAlign="middle" />
         </RechartsPieChart>
       </ResponsiveContainer>
     </div>
   );
 };
+
+export default CustomPieChart;

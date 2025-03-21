@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   BarChart as RechartsBarChart,
   Bar,
@@ -7,93 +7,67 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  TooltipProps
-} from 'recharts';
+  Legend as RechartsLegend
+} from "recharts";
+
+interface DataPoint {
+  [key: string]: any;
+}
 
 interface CustomBarChartProps {
-  data: Array<Record<string, any>>;
+  data: DataPoint[];
   index: string;
   categories: string[];
-  colors?: string[];
+  colors: string[];
   valueFormatter?: (value: number) => string;
+  yAxisWidth?: number;
   showLegend?: boolean;
   showGridLines?: boolean;
   showAnimation?: boolean;
   className?: string;
-  height?: string | number;
 }
 
 export const CustomBarChart: React.FC<CustomBarChartProps> = ({
   data,
   index,
   categories,
-  colors = ['#9333ea', '#f43f5e', '#f59e0b', '#10b981'],
-  valueFormatter = (value) => value.toString(),
+  colors,
+  valueFormatter = (value: number) => value.toString(),
+  yAxisWidth = 50,
+  showLegend = true,
   showGridLines = true,
-  className = '',
-  height = 300,
+  showAnimation = true,
+  className = ""
 }) => {
-  const isDarkMode = document.documentElement.classList.contains('dark');
-
-  // Ensure colors is always an array with at least as many elements as categories
-  const ensuredColors = colors.length >= categories.length 
-    ? colors 
-    : [...colors, ...Array(categories.length - colors.length).fill('#9333ea')];
-  
-  const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-card border border-border p-2 rounded shadow-md">
-          <p className="font-bold text-sm">{label}</p>
-          {payload.map((entry, index) => (
-            <p key={index} style={{ color: entry.color }} className="text-xs">
-              {entry.name}: {valueFormatter(entry.value as number)}
-            </p>
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
-
   return (
-    <div className={`w-full h-full ${className}`} style={{ height }}>
+    <div className={`w-full h-full ${className}`}>
       <ResponsiveContainer width="100%" height="100%">
         <RechartsBarChart
           data={data}
-          margin={{ top: 10, right: 30, left: 0, bottom: 20 }}
+          margin={{
+            top: 10,
+            right: 30,
+            left: 0,
+            bottom: 5,
+          }}
         >
-          {showGridLines && (
-            <CartesianGrid 
-              strokeDasharray="3 3" 
-              vertical={false} 
-              stroke={isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'} 
-            />
-          )}
-          <XAxis 
-            dataKey={index} 
-            tick={{ fontSize: 12, fill: isDarkMode ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)' }} 
-            tickLine={false}
-            axisLine={{ stroke: isDarkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)' }}
-            stroke={isDarkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)'}
+          {showGridLines && <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.3} />}
+          <XAxis dataKey={index} tick={{ fill: "#666" }} />
+          <YAxis width={yAxisWidth} tick={{ fill: "#666" }} tickFormatter={valueFormatter} />
+          <Tooltip 
+            formatter={(value: number) => [valueFormatter(value), ""]}
+            contentStyle={{ backgroundColor: "rgba(255, 255, 255, 0.95)", borderRadius: "8px", border: "none", boxShadow: "0 2px 10px rgba(0,0,0,0.1)" }}
           />
-          <YAxis 
-            tickFormatter={valueFormatter} 
-            tick={{ fontSize: 12, fill: isDarkMode ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)' }} 
-            tickLine={false}
-            axisLine={{ stroke: isDarkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)' }}
-            stroke={isDarkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)'}
-          />
-          <Tooltip content={<CustomTooltip />} />
+          {showLegend && <RechartsLegend />}
           
-          {categories.map((category, index) => (
-            <Bar
+          {categories.map((category, i) => (
+            <Bar 
               key={category}
               dataKey={category}
-              fill={ensuredColors[index]}
+              fill={colors[i % colors.length]}
               radius={[4, 4, 0, 0]}
-              animationDuration={showGridLines ? 1000 : 0}
-              strokeWidth={0}
+              isAnimationActive={showAnimation}
+              animationDuration={1000}
             />
           ))}
         </RechartsBarChart>
@@ -101,3 +75,5 @@ export const CustomBarChart: React.FC<CustomBarChartProps> = ({
     </div>
   );
 };
+
+export default CustomBarChart;

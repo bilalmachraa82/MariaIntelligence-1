@@ -1,10 +1,10 @@
 {
-  "variant": "professional",
+  "variant": "vibrant",
   "primary": "#E5A4A4",
   "secondary": "#98D8D8",
   "background": "#F8E6E6",
   "text": "#2C2C2C",
   "muted": "#757575",
-  "appearance": "system",
+  "appearance": "light",
   "radius": 0.8
 }

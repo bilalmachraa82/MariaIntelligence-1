@@ -25,6 +25,8 @@ import {
   Divider,
   Badge,
 } from "@tremor/react";
+import CustomBarChart from "@/components/charts/custom-bar-chart";
+import CustomPieChart from "@/components/charts/custom-pie-chart";
 import { 
   Download, 
   Calendar, 
@@ -520,12 +522,14 @@ export function OwnerReportModern({
                         {t("ownerReport.occupancyRateDesc", "Percentual de dias ocupados em relação aos dias disponíveis")}
                       </Text>
                       <div className="h-[300px] mt-4 high-contrast-chart">
-                        <CustomBarChart
+                        <BarChart
                           data={occupancyData}
                           index="name"
                           categories={["occupancy"]}
-                          colors={["#d946ef"]} 
+                          colors={["fuchsia"]}
                           valueFormatter={(value) => `${value}%`}
+                          yAxisWidth={40}
+                          showLegend={false}
                           showGridLines={true}
                           showAnimation={true}
                           className="h-full"
