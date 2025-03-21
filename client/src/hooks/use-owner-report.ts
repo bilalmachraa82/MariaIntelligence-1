@@ -214,7 +214,7 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
       propertyReports,
       totals
     };
-  }, [ownerId, properties, allReservations, owners, dateRange, isLoading]);
+  }, [ownerId, properties, allReservations, owners, dateRange.startDate, dateRange.endDate, isLoading]);
   
   const propertyOccupancyData = useMemo(() => {
     if (!report) return [];

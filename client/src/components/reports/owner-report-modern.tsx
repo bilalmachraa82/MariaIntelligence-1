@@ -541,9 +541,10 @@ export function OwnerReportModern({
                       </Text>
                       <div className="h-[300px] mt-4 high-contrast-chart">
                         <SimplePieChart
-                          data={costDistribution}
-                          valueKey="value"
-                          nameKey="name"
+                          data={costDistribution.map(item => ({
+                            name: item.name,
+                            value: item.value
+                          }))}
                           valueFormatter={formatCurrency}
                           colors={["#d946ef", "#f43f5e", "#f59e0b", "#10b981", "#6366f1"]}
                         />
