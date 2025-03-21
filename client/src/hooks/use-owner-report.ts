@@ -135,7 +135,7 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
       const occupancyRate = availableDays > 0 ? (occupiedDays / availableDays * 100) : 0;
       
       // Cálculos financeiros
-      const revenue = propertyReservations.reduce((sum, res) => sum + parseFloat(res.totalAmount), 0);
+      const revenue = propertyReservations.reduce((sum, res) => sum + parseFloat(res.totalAmount.toString()), 0);
       const cleaningCost = parseFloat(property.cleaningCost || "0");
       const checkInFee = parseFloat(property.checkInFee || "0");
       const commissionRate = parseFloat(property.commission || "0") / 100;
@@ -151,7 +151,7 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
       
       // Resumos de reservas
       const reservationSummaries: ReservationSummary[] = propertyReservations.map(res => {
-        const totalAmount = parseFloat(res.totalAmount);
+        const totalAmount = parseFloat(res.totalAmount.toString());
         const reserveCommission = totalAmount * commissionRate;
         
         // Calcular número de noites
@@ -214,7 +214,7 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
       propertyReports,
       totals
     };
-  }, [ownerId, properties, allReservations, owners, dateRange.startDate, dateRange.endDate, isLoading]);
+  }, [ownerId, properties, allReservations, owners, dateRange, isLoading]);
   
   const propertyOccupancyData = useMemo(() => {
     if (!report) return [];

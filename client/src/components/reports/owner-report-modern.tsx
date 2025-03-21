@@ -306,6 +306,12 @@ export function OwnerReportModern({
   const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState<string>("overview");
   const isMobile = useIsMobile();
+  
+  // Para debug - monitorar mudanças nos dados
+  useEffect(() => {
+    console.log("OwnerReportModern - dateRange atualizado:", dateRange);
+    console.log("OwnerReportModern - report dados:", report?.startDate, report?.endDate);
+  }, [dateRange, report]);
 
   if (!report) {
     return (
