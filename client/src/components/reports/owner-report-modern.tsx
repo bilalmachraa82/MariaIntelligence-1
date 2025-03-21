@@ -135,7 +135,7 @@ function InsightsSection({ report }: InsightsSectionProps) {
         color="rose"
         className="mt-4"
       >
-        <div>{error}</div>
+        {error}
       </Callout>
     );
   }
@@ -149,26 +149,24 @@ function InsightsSection({ report }: InsightsSectionProps) {
           icon={LineChart}
           color="blue"
         >
-          <div className="text-sm mt-2">
-            {report.totals.totalNetProfit > 0
-              ? t(
-                  "ownerReport.profitableInsight",
-                  "Este período foi lucrativo com {{profit}} de lucro líquido, representando {{percentage}}% da receita total.",
-                  {
-                    profit: formatCurrency(report.totals.totalNetProfit),
-                    percentage: ((report.totals.totalNetProfit / report.totals.totalRevenue) * 100).toFixed(1),
-                  }
-                )
-              : t(
-                  "ownerReport.unprofitableInsight",
-                  "Este período apresentou um déficit de {{loss}}, representando uma margem negativa de {{percentage}}%.",
-                  {
-                    loss: formatCurrency(Math.abs(report.totals.totalNetProfit)),
-                    percentage: ((report.totals.totalNetProfit / report.totals.totalRevenue) * 100).toFixed(1),
-                  }
-                )
-            }
-          </div>
+          {report.totals.totalNetProfit > 0
+            ? t(
+                "ownerReport.profitableInsight",
+                "Este período foi lucrativo com {{profit}} de lucro líquido, representando {{percentage}}% da receita total.",
+                {
+                  profit: formatCurrency(report.totals.totalNetProfit),
+                  percentage: ((report.totals.totalNetProfit / report.totals.totalRevenue) * 100).toFixed(1),
+                }
+              )
+            : t(
+                "ownerReport.unprofitableInsight",
+                "Este período apresentou um déficit de {{loss}}, representando uma margem negativa de {{percentage}}%.",
+                {
+                  loss: formatCurrency(Math.abs(report.totals.totalNetProfit)),
+                  percentage: ((report.totals.totalNetProfit / report.totals.totalRevenue) * 100).toFixed(1),
+                }
+              )
+          }
         </Callout>
 
         <Callout
@@ -176,21 +174,19 @@ function InsightsSection({ report }: InsightsSectionProps) {
           icon={BarChart2}
           color="indigo"
         >
-          <div className="text-sm mt-2">
-            {t(
-              "ownerReport.occupancyInsightText",
-              "A taxa média de ocupação foi de {{rate}}%. {{bestProperty}} teve a melhor performance com {{bestRate}}% de ocupação.",
-              {
-                rate: (report.propertyReports.reduce((sum, p) => sum + p.occupancyRate, 0) / report.propertyReports.length).toFixed(1),
-                bestProperty: report.propertyReports.reduce((best, p) => 
-                  best.occupancyRate > p.occupancyRate ? best : p
-                ).propertyName,
-                bestRate: report.propertyReports.reduce((best, p) => 
-                  best.occupancyRate > p.occupancyRate ? best : p
-                ).occupancyRate.toFixed(1),
-              }
-            )}
-          </div>
+          {t(
+            "ownerReport.occupancyInsightText",
+            "A taxa média de ocupação foi de {{rate}}%. {{bestProperty}} teve a melhor performance com {{bestRate}}% de ocupação.",
+            {
+              rate: (report.propertyReports.reduce((sum, p) => sum + p.occupancyRate, 0) / report.propertyReports.length).toFixed(1),
+              bestProperty: report.propertyReports.reduce((best, p) => 
+                best.occupancyRate > p.occupancyRate ? best : p
+              ).propertyName,
+              bestRate: report.propertyReports.reduce((best, p) => 
+                best.occupancyRate > p.occupancyRate ? best : p
+              ).occupancyRate.toFixed(1),
+            }
+          )}
         </Callout>
       </div>
     );
@@ -206,10 +202,8 @@ function InsightsSection({ report }: InsightsSectionProps) {
           icon={Sparkles}
           color="amber"
         >
-          <div className="text-sm mt-2">
-            {insights.overallSummary || insights.summaryInsight || 
-              t("ownerReport.fallbackSummary", "Análise do período mostra uma performance geral estável com oportunidades de melhoria.")}
-          </div>
+          {insights.overallSummary || insights.summaryInsight || 
+            t("ownerReport.fallbackSummary", "Análise do período mostra uma performance geral estável com oportunidades de melhoria.")}
         </Callout>
       </Col>
 
@@ -244,10 +238,8 @@ function InsightsSection({ report }: InsightsSectionProps) {
             icon={Calendar}
             color="indigo"
           >
-            <div className="text-sm mt-2">
-              {insights.seasonalTrends || insights.seasonalTips?.[0] || 
-                t("ownerReport.noSeasonalData", "Dados insuficientes para análise de sazonalidade.")}
-            </div>
+            {insights.seasonalTrends || insights.seasonalTips?.[0] || 
+              t("ownerReport.noSeasonalData", "Dados insuficientes para análise de sazonalidade.")}
           </Callout>
         </div>
       </Col>
@@ -259,22 +251,20 @@ function InsightsSection({ report }: InsightsSectionProps) {
           icon={Lightbulb}
           color="amber"
         >
-          <div className="mt-2">
-            <List>
-              {(insights.recommendations || []).slice(0, 3).map((recommendation: string, idx: number) => (
-                <ListItem key={idx}>
-                  <span className="text-sm">{recommendation}</span>
-                </ListItem>
-              ))}
-              {!insights.recommendations?.length && (
-                <ListItem>
-                  <span className="text-sm">
-                    {t("ownerReport.noRecommendations", "Não há recomendações específicas para este período.")}
-                  </span>
-                </ListItem>
-              )}
-            </List>
-          </div>
+          <List className="mt-2">
+            {(insights.recommendations || []).slice(0, 3).map((recommendation: string, idx: number) => (
+              <ListItem key={idx}>
+                <span className="text-sm">{recommendation}</span>
+              </ListItem>
+            ))}
+            {!insights.recommendations?.length && (
+              <ListItem>
+                <span className="text-sm">
+                  {t("ownerReport.noRecommendations", "Não há recomendações específicas para este período.")}
+                </span>
+              </ListItem>
+            )}
+          </List>
         </Callout>
       </Col>
 

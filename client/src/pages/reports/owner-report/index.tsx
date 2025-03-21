@@ -264,16 +264,17 @@ export default function OwnerReportPage() {
               <div className="prose prose-blue dark:prose-invert max-w-none">
                 <p>{t("emailPreview.greeting", "Olá")} {ownerReport.ownerName},</p>
                 <p>
-                  {t("emailPreview.body1", "Temos o prazer de enviar seu relatório financeiro para o período selecionado. Nele você encontrará:")}
+                  {t("emailPreview.body1", "Temos o prazer de enviar seu relatório financeiro para o período selecionado, anexo a este email em formato PDF. Nele você encontrará:")}
                 </p>
                 <ul>
                   <li>{t("emailPreview.item1", "Resumo detalhado do desempenho de suas propriedades")}</li>
                   <li>{t("emailPreview.item2", "Análise de receitas, despesas e lucro líquido")}</li>
-                  <li>{t("emailPreview.item3", "Detalhes de todas as reservas no período")}</li>
+                  <li>{t("emailPreview.item3", "Lista completa de todas as reservas no período")}</li>
                   <li>{t("emailPreview.item4", "Insights personalizados para otimizar seus resultados")}</li>
+                  <li>{t("emailPreview.item5", "Tabela detalhada com valores recebidos por cada propriedade")}</li>
                 </ul>
                 <p>
-                  {t("emailPreview.body2", "Para mais detalhes, consulte o PDF anexado ou acesse nosso sistema.")}
+                  {t("emailPreview.body2", "Este relatório é enviado automaticamente e contém todos os detalhes necessários no PDF anexo. Não é necessário acessar nenhum sistema adicional.")}
                 </p>
                 <p>
                   {t("emailPreview.closing", "Estamos à disposição para qualquer esclarecimento!")}
