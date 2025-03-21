@@ -520,14 +520,12 @@ export function OwnerReportModern({
                         {t("ownerReport.occupancyRateDesc", "Percentual de dias ocupados em relação aos dias disponíveis")}
                       </Text>
                       <div className="h-[300px] mt-4 high-contrast-chart">
-                        <BarChart
+                        <CustomBarChart
                           data={occupancyData}
                           index="name"
                           categories={["occupancy"]}
-                          colors={["fuchsia"]}
+                          colors={["#d946ef"]} 
                           valueFormatter={(value) => `${value}%`}
-                          yAxisWidth={40}
-                          showLegend={false}
                           showGridLines={true}
                           showAnimation={true}
                           className="h-full"
