@@ -271,6 +271,7 @@ export default function OwnerReportPage() {
       {selectedOwner && ownerReport && (
         <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden">
           <OwnerReportModern
+            key={`report-${selectedOwner}-${dateRange.startDate}-${dateRange.endDate}`}
             report={ownerReport}
             dateRange={uiDateRange}
             occupancyData={occupancyData}

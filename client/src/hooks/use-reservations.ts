@@ -1,11 +1,13 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, UseQueryOptions } from "@tanstack/react-query";
 import { apiRequest } from "../lib/queryClient";
 import type { Reservation, ReservationStatus } from "../lib/types";
 
-export function useReservations() {
+export function useReservations(options?: Partial<UseQueryOptions<Reservation[]>>) {
   return useQuery<Reservation[]>({
-    queryKey: ['/api/reservations'],
-    queryFn: () => apiRequest('/api/reservations')
+    queryKey: options?.queryKey || ['/api/reservations'],
+    queryFn: () => apiRequest('/api/reservations'),
+    refetchOnWindowFocus: options?.refetchOnWindowFocus || false,
+    ...options
   });
 }
 

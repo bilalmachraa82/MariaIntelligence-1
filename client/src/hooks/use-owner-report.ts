@@ -62,8 +62,14 @@ export interface ReportTotals {
 }
 
 export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
+  // Convertemos as datas para uma string única para usar como parte da cache key
+  const dateKey = `${dateRange.startDate}-${dateRange.endDate}`;
+  
+  // Refetch automático quando as datas mudam
   const { data: owners, isLoading: isOwnersLoading } = useOwners();
   const { data: properties, isLoading: isPropertiesLoading } = useProperties();
+  
+  // Usamos o hook normal sem modificações - a key nos componentes principais forçará a atualização
   const { data: allReservations, isLoading: isReservationsLoading } = useReservations();
   
   const isLoading = isOwnersLoading || isPropertiesLoading || isReservationsLoading;
