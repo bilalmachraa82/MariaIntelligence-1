@@ -234,6 +234,18 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
   const propertyOccupancyData = useMemo(() => {
     if (!report) return [];
     
+    // Log para debug de reservas
+    const totalReservations = report.propertyReports.reduce((sum, prop) => sum + prop.reservations.length, 0);
+    console.log(`useOwnerReport - Total de reservas em todas as propriedades: ${totalReservations}`);
+    
+    // Log detalhado para propriedades com reservas
+    report.propertyReports.forEach(prop => {
+      console.log(`Propriedade ${prop.propertyName}: ${prop.reservations.length} reservas`);
+      if (prop.reservations.length > 0) {
+        console.log(`- Primeira reserva: ${prop.reservations[0].checkInDate} a ${prop.reservations[0].checkOutDate}`);
+      }
+    });
+    
     return report.propertyReports.map(p => ({
       name: p.propertyName,
       occupancy: Math.round(p.occupancyRate),

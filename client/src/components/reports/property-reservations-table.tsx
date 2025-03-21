@@ -127,6 +127,12 @@ export function PropertyReservationsTable({
     return reservation.platform.toLowerCase() === platformFilter.toLowerCase();
   });
   
+  // Debug - log das reservas disponíveis
+  console.log(`PropertyReservationsTable - ${propertyName}: ${reservations.length} reservas disponíveis`);
+  reservations.forEach((res, idx) => {
+    console.log(`Reserva ${idx + 1}: ${res.checkInDate} - ${res.checkOutDate}, ${res.guestName}, ${formatCurrency(res.totalAmount)}`);
+  });
+  
   // Ordenar reservas
   const sortedReservations = [...filteredReservations].sort((a, b) => {
     let valueA, valueB;
