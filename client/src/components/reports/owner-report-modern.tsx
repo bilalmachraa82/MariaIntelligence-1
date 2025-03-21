@@ -12,8 +12,6 @@ import {
   Tab,
   TabPanels,
   TabPanel,
-  BarChart,
-  DonutChart,
   Title,
   Legend,
   CategoryBar,
@@ -25,8 +23,8 @@ import {
   Divider,
   Badge,
 } from "@tremor/react";
-import CustomBarChart from "@/components/charts/custom-bar-chart";
-import CustomPieChart from "@/components/charts/custom-pie-chart";
+import SimpleBarChart from "@/components/charts/simple-bar-chart";
+import SimplePieChart from "@/components/charts/simple-pie-chart";
 import { 
   Download, 
   Calendar, 
@@ -522,17 +520,13 @@ export function OwnerReportModern({
                         {t("ownerReport.occupancyRateDesc", "Percentual de dias ocupados em relação aos dias disponíveis")}
                       </Text>
                       <div className="h-[300px] mt-4 high-contrast-chart">
-                        <BarChart
-                          data={occupancyData}
-                          index="name"
-                          categories={["occupancy"]}
-                          colors={["fuchsia"]}
-                          valueFormatter={(value) => `${value}%`}
-                          yAxisWidth={40}
-                          showLegend={false}
-                          showGridLines={true}
-                          showAnimation={true}
-                          className="h-full"
+                        <SimpleBarChart
+                          data={occupancyData.map(item => ({
+                            name: item.name,
+                            value: item.occupancy
+                          }))}
+                          color="#d946ef"
+                          valueFormatter={(value: number) => `${value}%`}
                         />
                       </div>
                     </Card>
@@ -546,15 +540,12 @@ export function OwnerReportModern({
                         {t("ownerReport.distributionDesc", "Proporção de cada componente financeiro")}
                       </Text>
                       <div className="h-[300px] mt-4 high-contrast-chart">
-                        <CustomPieChart
+                        <SimplePieChart
                           data={costDistribution}
-                          category="value"
-                          index="name"
+                          valueKey="value"
+                          nameKey="name"
                           valueFormatter={formatCurrency}
-                          showAnimation={true}
                           colors={["#d946ef", "#f43f5e", "#f59e0b", "#10b981", "#6366f1"]}
-                          className="h-full"
-                          donut={false}
                         />
                       </div>
                     </Card>
