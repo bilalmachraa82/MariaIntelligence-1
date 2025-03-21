@@ -546,15 +546,15 @@ export function OwnerReportModern({
                         {t("ownerReport.distributionDesc", "Proporção de cada componente financeiro")}
                       </Text>
                       <div className="h-[300px] mt-4 high-contrast-chart">
-                        <DonutChart
+                        <CustomPieChart
                           data={costDistribution}
                           category="value"
                           index="name"
                           valueFormatter={formatCurrency}
                           showAnimation={true}
-                          colors={["fuchsia", "rose", "amber", "emerald", "indigo"]}
+                          colors={["#d946ef", "#f43f5e", "#f59e0b", "#10b981", "#6366f1"]}
                           className="h-full"
-                          variant="pie"
+                          donut={false}
                         />
                       </div>
                     </Card>
