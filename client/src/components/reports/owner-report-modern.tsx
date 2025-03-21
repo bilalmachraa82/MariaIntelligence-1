@@ -332,11 +332,12 @@ export function OwnerReportModern({
   // Verificar se há lucro ou prejuízo
   const isProfitable = report.totals.totalNetProfit > 0;
   
-  // Calcular comparação com período anterior (simulado)
+  // Não exibimos mais comparações com períodos anteriores
+  // pois precisaríamos de dados reais para fazer cálculos precisos
   const previousPeriodComparison = {
-    revenue: 5.2, // Aumento de 5.2%
-    profit: isProfitable ? 3.8 : -2.1, // Aumento de 3.8% ou queda de 2.1%
-    occupancy: 1.5 // Aumento de 1.5%
+    revenue: 0, // Zero indica nenhuma mudança
+    profit: 0,
+    occupancy: 0
   };
 
   // Preparar dados para o gráfico de barras categorizadas

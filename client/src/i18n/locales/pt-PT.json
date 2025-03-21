@@ -364,10 +364,12 @@
       "currentQuarter": "Trimestre Atual",
       "currentYear": "Ano Atual",
       "last30Days": "Últimos 30 Dias",
+      "selectRange": "Selecionar período",
       "custom": "Personalizado"
     },
     "ownerReport": {
       "title": "Relatório Financeiro por Proprietário",
+      "subtitle": "Transforme números em histórias de sucesso para os proprietários",
       "generateReport": "Gerar Relatório",
       "selectOwnerAndPeriod": "Seleciona o proprietário e o período para gerar o relatório",
       "owner": "Proprietário",
@@ -382,6 +384,10 @@
       "properties": "Imóveis",
       "reservations": "Reservas",
       "revenue": "Receita",
+      "costs": "Custos",
+      "profit": "Lucro",
+      "reportForOwner": "Panorama de {{owner}}",
+      "periodDetails": "Período de análise: {{startDate}} a {{endDate}}",
       "occupancyRateByProperty": "Taxa de Ocupação por Imóvel",
       "occupancyRateDesc": "Percentagem de dias ocupados em relação aos dias disponíveis",
       "costAndRevenueDistribution": "Distribuição de Custos e Receita",
@@ -403,6 +409,7 @@
     },
     "dailyTasks": {
       "title": "Tarefas do Dia",
+      "today": "Hoje",
       "todayDate": "Hoje",
       "tomorrow": "Amanhã",
       "viewDetails": "Ver Detalhes",
@@ -475,6 +482,27 @@
         "title": "Integrações",
         "description": "Conecta com outras plataformas e serviços"
       }
+    },
+    "emailPreview": {
+      "title": "Prévia do Email",
+      "description": "Assim será o email enviado ao proprietário",
+      "subject": "Seu Relatório Financeiro",
+      "greeting": "Olá",
+      "body1": "Temos o prazer de enviar seu relatório financeiro para o período selecionado. Nele você encontrará:",
+      "item1": "Resumo detalhado do desempenho de suas propriedades",
+      "item2": "Análise de receitas, despesas e lucro líquido",
+      "item3": "Detalhes de todas as reservas no período",
+      "item4": "Insights personalizados para otimizar seus resultados",
+      "body2": "Para mais detalhes, consulte o PDF anexado ou acesse nosso sistema.",
+      "closing": "Estamos à disposição para qualquer esclarecimento!",
+      "signature": "Equipe Maria Faz"
+    },
+    "export": {
+      "csv": "Exportar CSV",
+      "pdf": "Exportar PDF"
+    },
+    "reports": {
+      "sendEmail": "Enviar Relatório"
     }
   }
 }
