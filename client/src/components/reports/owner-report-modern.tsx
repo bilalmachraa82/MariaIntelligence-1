@@ -197,61 +197,63 @@ function InsightsSection({ report }: InsightsSectionProps) {
     <Grid numItemsMd={2} className="gap-4 mt-2">
       {/* Insights gerais */}
       <Col numColSpanMd={2}>
-        <Callout
-          title={t("ownerReport.overallPerformance", "Desempenho Geral")}
-          icon={Sparkles}
-          color="amber"
-        >
-          {insights.overallSummary || insights.summaryInsight || 
-            t("ownerReport.fallbackSummary", "Análise do período mostra uma performance geral estável com oportunidades de melhoria.")}
-        </Callout>
+        <Card className="p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Sparkles className="h-5 w-5 text-amber-500" />
+            <Text className="font-semibold">{t("ownerReport.overallPerformance", "Desempenho Geral")}</Text>
+          </div>
+          <Text className="mt-1">
+            {insights.overallSummary || insights.summaryInsight || 
+              t("ownerReport.fallbackSummary", "Análise do período mostra uma performance geral estável com oportunidades de melhoria.")}
+          </Text>
+        </Card>
       </Col>
 
       {/* Insights de propriedades de destaque */}
       <Col>
         <div className="space-y-4">
-          <Callout
-            title={t("ownerReport.topPerformers", "Propriedades em Destaque")}
-            icon={TrendingUp}
-            color="emerald"
-          >
-            <div className="mt-2">
-              <List>
-                {(insights.propertyInsights?.map((p: any) => p.insight) || []).slice(0, 3).map((insight: string, idx: number) => (
-                  <ListItem key={idx}>
-                    <span className="text-sm">{insight}</span>
-                  </ListItem>
-                ))}
-                {(!insights.propertyInsights || insights.propertyInsights.length === 0) && (
-                  <ListItem>
-                    <span className="text-sm">
-                      {t("ownerReport.noTopPerformers", "Não há propriedades com desempenho excepcional no período.")}
-                    </span>
-                  </ListItem>
-                )}
-              </List>
+          <Card className="p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <TrendingUp className="h-5 w-5 text-emerald-500" />
+              <Text className="font-semibold">{t("ownerReport.topPerformers", "Propriedades em Destaque")}</Text>
             </div>
-          </Callout>
+            <List className="mt-1">
+              {(insights.propertyInsights?.map((p: any) => p.insight) || []).slice(0, 3).map((insight: string, idx: number) => (
+                <ListItem key={idx}>
+                  <span className="text-sm">{insight}</span>
+                </ListItem>
+              ))}
+              {(!insights.propertyInsights || insights.propertyInsights.length === 0) && (
+                <ListItem>
+                  <span className="text-sm">
+                    {t("ownerReport.noTopPerformers", "Não há propriedades com desempenho excepcional no período.")}
+                  </span>
+                </ListItem>
+              )}
+            </List>
+          </Card>
 
-          <Callout
-            title={t("ownerReport.seasonalTrends", "Tendências Sazonais")}
-            icon={Calendar}
-            color="indigo"
-          >
-            {insights.seasonalTrends || insights.seasonalTips?.[0] || 
-              t("ownerReport.noSeasonalData", "Dados insuficientes para análise de sazonalidade.")}
-          </Callout>
+          <Card className="p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Calendar className="h-5 w-5 text-indigo-500" />
+              <Text className="font-semibold">{t("ownerReport.seasonalTrends", "Tendências Sazonais")}</Text>
+            </div>
+            <Text className="mt-1">
+              {insights.seasonalTrends || insights.seasonalTips?.[0] || 
+                t("ownerReport.noSeasonalData", "Dados insuficientes para análise de sazonalidade.")}
+            </Text>
+          </Card>
         </div>
       </Col>
 
       {/* Recomendações baseadas em IA */}
       <Col>
-        <Callout
-          title={t("ownerReport.recommendations", "Recomendações Inteligentes")}
-          icon={Lightbulb}
-          color="amber"
-        >
-          <List className="mt-2">
+        <Card className="p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Lightbulb className="h-5 w-5 text-amber-500" />
+            <Text className="font-semibold">{t("ownerReport.recommendations", "Recomendações Inteligentes")}</Text>
+          </div>
+          <List className="mt-1">
             {(insights.recommendations || []).slice(0, 3).map((recommendation: string, idx: number) => (
               <ListItem key={idx}>
                 <span className="text-sm">{recommendation}</span>
@@ -265,7 +267,7 @@ function InsightsSection({ report }: InsightsSectionProps) {
               </ListItem>
             )}
           </List>
-        </Callout>
+        </Card>
       </Col>
 
       {/* Métricas de negócio */}
@@ -522,7 +524,7 @@ export function OwnerReportModern({
                           data={occupancyData}
                           index="name"
                           categories={["occupancy"]}
-                          colors={["blue"]}
+                          colors={["violet"]}
                           valueFormatter={(value) => `${value}%`}
                           yAxisWidth={40}
                           showLegend={false}
@@ -548,7 +550,7 @@ export function OwnerReportModern({
                           index="name"
                           valueFormatter={formatCurrency}
                           showAnimation={true}
-                          colors={["sky", "cyan", "blue", "indigo", "emerald"]}
+                          colors={["fuchsia", "rose", "amber", "emerald", "indigo"]}
                           className="h-full"
                           variant="pie"
                         />
@@ -655,7 +657,7 @@ export function OwnerReportModern({
                             <div className="mt-1">
                               <CategoryBar
                                 values={[property.occupiedDays, property.availableDays - property.occupiedDays]}
-                                colors={["blue", "slate"]}
+                                colors={["violet", "slate"]}
                                 markerValue={property.occupancyRate}
                                 showAnimation={true}
                                 className="h-2"
