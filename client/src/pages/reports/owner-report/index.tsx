@@ -67,19 +67,34 @@ export default function OwnerReportPage() {
     const formattedStartDate = newRange.from ? format(newRange.from, 'yyyy-MM-dd') : startOfMonth(new Date()).toISOString().split('T')[0];
     const formattedEndDate = newRange.to ? format(newRange.to, 'yyyy-MM-dd') : endOfMonth(new Date()).toISOString().split('T')[0];
     
-    // Log detalhado para depuração
-    console.log("Intervalo formatado para API:", formattedStartDate, "até", formattedEndDate);
-    
-    // Atualizar o estado da UI
-    setUiDateRange(newRange);
-    
-    // Força um novo carregamento dos dados com o novo intervalo
+    // SOLUÇÃO RADICAL: Forçar uma atualização completa definindo o proprietário como null e depois de volta
     if (selectedOwner) {
-      toast({
-        title: t("dateRange.updated", "Intervalo atualizado"),
-        description: t("dateRange.updatedDescription", `Dados atualizados para o período ${formattedStartDate} a ${formattedEndDate}`),
-        duration: 3000
-      });
+      const currentOwner = selectedOwner;
+      
+      // Força a limpeza do relatório
+      setSelectedOwner("");
+      
+      // Log detalhado para depuração
+      console.log("FORÇANDO ATUALIZAÇÃO COMPLETA DO RELATÓRIO");
+      console.log("Intervalo formatado para API:", formattedStartDate, "até", formattedEndDate);
+      
+      // Atualizar o estado da UI
+      setUiDateRange(newRange);
+      
+      // Atraso pequeno para garantir que a UI seja atualizada
+      setTimeout(() => {
+        // Redefine o proprietário para forçar um novo carregamento de dados
+        setSelectedOwner(currentOwner);
+        
+        toast({
+          title: t("dateRange.updated", "Intervalo atualizado"),
+          description: t("dateRange.updatedDescription", `Dados atualizados para o período ${formattedStartDate} a ${formattedEndDate}`),
+          duration: 3000
+        });
+      }, 100);
+    } else {
+      // Se não houver proprietário selecionado, apenas atualiza o intervalo
+      setUiDateRange(newRange);
     }
   };
   
