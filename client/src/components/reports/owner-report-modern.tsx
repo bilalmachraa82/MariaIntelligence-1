@@ -775,6 +775,7 @@ export function OwnerReportModern({
                         <PropertyReservationsTable 
                           propertyName={property.propertyName}
                           reservations={property.reservations}
+                          showMonetary={true}
                         />
                       </motion.div>
                     ))}
@@ -799,6 +800,7 @@ export function OwnerReportModern({
                           <PropertyReservationsTable
                             propertyName={property.propertyName}
                             reservations={property.reservations}
+                            showMonetary={true}
                           />
                         ) : (
                           <Card className="w-full mb-6 p-4">
