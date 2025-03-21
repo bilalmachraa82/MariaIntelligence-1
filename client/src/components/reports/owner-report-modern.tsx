@@ -519,12 +519,12 @@ export function OwnerReportModern({
                       <Text className="mt-1 text-sm">
                         {t("ownerReport.occupancyRateDesc", "Percentual de dias ocupados em relação aos dias disponíveis")}
                       </Text>
-                      <div className="h-[300px] mt-4">
+                      <div className="h-[300px] mt-4 high-contrast-chart">
                         <BarChart
                           data={occupancyData}
                           index="name"
                           categories={["occupancy"]}
-                          colors={["violet"]}
+                          colors={["fuchsia"]}
                           valueFormatter={(value) => `${value}%`}
                           yAxisWidth={40}
                           showLegend={false}
@@ -543,7 +543,7 @@ export function OwnerReportModern({
                       <Text className="mt-1 text-sm">
                         {t("ownerReport.distributionDesc", "Proporção de cada componente financeiro")}
                       </Text>
-                      <div className="h-[300px] mt-4">
+                      <div className="h-[300px] mt-4 high-contrast-chart">
                         <DonutChart
                           data={costDistribution}
                           category="value"
@@ -573,7 +573,7 @@ export function OwnerReportModern({
                           report.totals.totalNetProfit,
                           report.totals.totalRevenue - report.totals.totalNetProfit
                         ]}
-                        colors={["emerald", "red"]}
+                        colors={["emerald", "rose"]}
                         markerValue={report.totals.totalRevenue > 0 ? 
                           (report.totals.totalNetProfit / report.totals.totalRevenue) * 100 : 0}
                         showAnimation={true}
@@ -585,7 +585,7 @@ export function OwnerReportModern({
                           t("ownerReport.profit", "Lucro"), 
                           t("ownerReport.costs", "Custos")
                         ]}
-                        colors={["emerald", "red"]}
+                        colors={["emerald", "rose"]}
                       />
                     </Col>
                     <Col className="space-y-4">

@@ -188,6 +188,24 @@
   .primary-gradient {
     @apply bg-gradient-to-br from-primary to-primary-light dark:from-primary/50 dark:to-primary/20;
   }
+  
+  /* Classe para gráficos de alto contraste */
+  .high-contrast-chart {
+    @apply bg-white/30 p-2 rounded-lg dark:bg-slate-800/20;
+  }
+  
+  .high-contrast-chart svg text {
+    @apply fill-foreground !important;
+  }
+  
+  .high-contrast-chart [data-testid="tremor-chart"] {
+    @apply !text-foreground;
+  }
+  
+  .dark .high-contrast-chart [data-testid="tremor-chart"] path,
+  .dark .high-contrast-chart [data-testid="tremor-chart"] line {
+    @apply !stroke-white/50;
+  }
 
   .glass-effect {
     @apply bg-white/15 backdrop-blur border border-white/20 dark:bg-black/20;
