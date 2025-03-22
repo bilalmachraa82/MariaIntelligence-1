@@ -2524,10 +2524,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Gerar o relatório
       const report = await storage.generateOwnerFinancialReport(ownerId, month, year);
       
+      if (!report) {
+        return res.status(404).json({
+          success: false,
+          message: "Não foi possível gerar o relatório para o proprietário informado."
+        });
+      }
+      
       // Retornar o relatório em formato JSON
       return res.status(200).json({
         success: true,
-        report
+        ownerId: report.ownerId,
+        ownerName: report.ownerName,
+        month: month,
+        year: year,
+        startDate: report.startDate,
+        endDate: report.endDate,
+        properties: report.propertyReports,
+        totals: report.totals,
+        reservations: report.propertyReports.flatMap(p => p.reservations)
       });
     } catch (err) {
       console.error("Erro ao gerar relatório financeiro de proprietário:", err);
