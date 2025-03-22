@@ -1922,6 +1922,300 @@ export class DatabaseStorage implements IStorage {
     }
   }
   
+  /**
+   * Gera relatório financeiro para um proprietário
+   * @param ownerId ID do proprietário
+   * @param month Mês (1-12)
+   * @param year Ano
+   * @returns Relatório financeiro
+   */
+  async generateOwnerFinancialReport(ownerId: number, month: string, year: string): Promise<any> {
+    try {
+      console.log(`============== INÍCIO generateOwnerFinancialReport ==============`);
+      console.log(`Gerando relatório financeiro para proprietário ${ownerId} no mês ${month}/${year}`);
+      
+      // Obter o proprietário
+      const ownerQuery = `SELECT * FROM owners WHERE id = $1`;
+      const ownerResult = await this.poolInstance.query(ownerQuery, [ownerId]);
+      if (!ownerResult.rows || ownerResult.rows.length === 0) {
+        console.log(`Proprietário ${ownerId} não encontrado`);
+        return null;
+      }
+      const owner = ownerResult.rows[0];
+      
+      // Obter o período
+      const startDate = new Date(`${year}-${month}-01`);
+      const endDate = new Date(new Date(startDate).setMonth(startDate.getMonth() + 1));
+      endDate.setDate(endDate.getDate() - 1); // Último dia do mês
+      
+      console.log(`Período do relatório: ${startDate.toISOString()} até ${endDate.toISOString()}`);
+      
+      // Obter propriedades do proprietário
+      const propertiesQuery = `SELECT * FROM properties WHERE owner_id = $1`;
+      const propertiesResult = await this.poolInstance.query(propertiesQuery, [ownerId]);
+      const properties = propertiesResult.rows || [];
+      console.log(`Encontradas ${properties.length} propriedades do proprietário`);
+      
+      if (properties.length === 0) {
+        return {
+          owner,
+          period: {
+            month,
+            year,
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString()
+          },
+          summary: {
+            totalRevenue: 0,
+            totalCosts: 0,
+            netProfit: 0,
+            occupancyRate: 0,
+            reservationsCount: 0
+          },
+          properties: []
+        };
+      }
+      
+      // Para cada propriedade, calcular os ganhos e despesas
+      const propertyReports = await Promise.all(properties.map(async (property) => {
+        // Obter reservas no período
+        const reservationsQuery = `
+          SELECT * FROM reservations 
+          WHERE property_id = $1 
+            AND check_in_date <= $3 
+            AND check_out_date >= $2
+        `;
+        const reservationsResult = await this.poolInstance.query(
+          reservationsQuery, 
+          [property.id, startDate.toISOString(), endDate.toISOString()]
+        );
+        const reservations = reservationsResult.rows || [];
+        
+        // Calcular receita total, custos e lucro
+        const totalRevenue = reservations.reduce((sum, r) => sum + Number(r.total_amount || 0), 0);
+        const cleaningCosts = reservations.reduce((sum, r) => sum + Number(r.cleaning_fee || 0), 0);
+        const checkInFees = reservations.reduce((sum, r) => sum + Number(r.check_in_fee || 0), 0);
+        const commissionFees = reservations.reduce((sum, r) => sum + Number(r.commission_fee || 0), 0);
+        const teamPayments = reservations.reduce((sum, r) => sum + Number(r.team_payment || 0), 0);
+        
+        const totalCosts = cleaningCosts + checkInFees + commissionFees + teamPayments;
+        const netProfit = totalRevenue - totalCosts;
+        
+        // Calcular taxa de ocupação
+        const daysInMonth = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24) + 1;
+        let occupiedDays = 0;
+        
+        for (let day = new Date(startDate); day <= endDate; day.setDate(day.getDate() + 1)) {
+          // Verificar se alguma reserva cobre este dia
+          const isOccupied = reservations.some(res => {
+            const checkIn = new Date(res.check_in_date);
+            const checkOut = new Date(res.check_out_date);
+            return day >= checkIn && day < checkOut;
+          });
+          
+          if (isOccupied) occupiedDays++;
+        }
+        
+        const occupancyRate = daysInMonth > 0 ? (occupiedDays / daysInMonth) : 0;
+        
+        return {
+          propertyId: property.id,
+          propertyName: property.name,
+          stats: {
+            totalRevenue,
+            cleaningCosts,
+            checkInFees,
+            commissionFees,
+            teamPayments,
+            totalCosts,
+            netProfit,
+            occupancyRate,
+            reservationsCount: reservations.length
+          },
+          reservations: reservations.map(r => ({
+            id: r.id,
+            guestName: r.guest_name,
+            checkInDate: r.check_in_date,
+            checkOutDate: r.check_out_date,
+            totalAmount: r.total_amount,
+            status: r.status,
+            platform: r.platform
+          }))
+        };
+      }));
+      
+      // Calcular totais
+      const totalRevenue = propertyReports.reduce((sum, p) => sum + p.stats.totalRevenue, 0);
+      const totalCosts = propertyReports.reduce((sum, p) => sum + p.stats.totalCosts, 0);
+      const netProfit = totalRevenue - totalCosts;
+      const totalReservations = propertyReports.reduce((sum, p) => sum + p.stats.reservationsCount, 0);
+      
+      // Calcular taxa de ocupação média
+      const avgOccupancyRate = propertyReports.length > 0 
+        ? propertyReports.reduce((sum, p) => sum + p.stats.occupancyRate, 0) / propertyReports.length
+        : 0;
+      
+      const report = {
+        owner,
+        period: {
+          month,
+          year,
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString()
+        },
+        summary: {
+          totalRevenue,
+          totalCosts,
+          netProfit,
+          occupancyRate: avgOccupancyRate,
+          reservationsCount: totalReservations
+        },
+        properties: propertyReports
+      };
+      
+      console.log(`Relatório financeiro gerado com sucesso para proprietário ${ownerId}`);
+      return report;
+    } catch (error) {
+      console.error("Erro ao gerar relatório financeiro de proprietário:", error);
+      return null;
+    } finally {
+      console.log(`============== FIM generateOwnerFinancialReport ==============`);
+    }
+  }
+  
+  /**
+   * Gera um resumo financeiro geral do sistema
+   * @param startDate Data de início do período
+   * @param endDate Data de fim do período
+   */
+  async generateFinancialSummary(startDate?: Date, endDate?: Date): Promise<any> {
+    try {
+      console.log(`============== INÍCIO generateFinancialSummary ==============`);
+      
+      // Obter dados financeiros do período
+      const documentsQuery = `
+        SELECT * FROM financial_documents 
+        WHERE 
+          ${startDate ? "date >= $1" : "1=1"} 
+          AND ${endDate ? "date <= $2" : "1=1"}
+      `;
+      
+      const params = [];
+      if (startDate) params.push(startDate.toISOString());
+      if (endDate) params.push(endDate.toISOString());
+      
+      const documentsResult = await this.poolInstance.query(documentsQuery, params);
+      const documents = documentsResult.rows || [];
+      
+      // Separar documentos por tipo
+      const incomingDocs = documents.filter(doc => doc.type === 'incoming');
+      const outgoingDocs = documents.filter(doc => doc.type === 'outgoing');
+      
+      // Calcular valores totais
+      const totalIncoming = incomingDocs.reduce((sum, doc) => sum + Number(doc.total_amount), 0);
+      const totalOutgoing = outgoingDocs.reduce((sum, doc) => sum + Number(doc.total_amount), 0);
+      const netIncome = totalIncoming - totalOutgoing;
+      
+      // Calcular valores pendentes e pagos
+      const pendingIncoming = incomingDocs
+        .filter(doc => doc.status === 'pending' || doc.status === 'invoiced')
+        .reduce((sum, doc) => sum + Number(doc.total_amount), 0);
+        
+      const paidIncoming = incomingDocs
+        .filter(doc => doc.status === 'paid')
+        .reduce((sum, doc) => sum + Number(doc.total_amount), 0);
+        
+      const pendingOutgoing = outgoingDocs
+        .filter(doc => doc.status === 'pending' || doc.status === 'invoiced')
+        .reduce((sum, doc) => sum + Number(doc.total_amount), 0);
+        
+      const paidOutgoing = outgoingDocs
+        .filter(doc => doc.status === 'paid')
+        .reduce((sum, doc) => sum + Number(doc.total_amount), 0);
+      
+      // Calcular por entidade (proprietário/fornecedor)
+      const byOwner = {};
+      const bySupplier = {};
+      
+      // Processar documentos por proprietário
+      for (const doc of documents.filter(d => d.entity_type === 'owner')) {
+        const entityId = doc.entity_id;
+        if (!byOwner[entityId]) {
+          const ownerQuery = `SELECT * FROM owners WHERE id = $1`;
+          const ownerResult = await this.poolInstance.query(ownerQuery, [entityId]);
+          const owner = ownerResult.rows.length > 0 ? ownerResult.rows[0] : null;
+          
+          byOwner[entityId] = {
+            id: entityId,
+            name: owner ? owner.name : `Proprietário #${entityId}`,
+            incoming: 0,
+            outgoing: 0,
+            balance: 0
+          };
+        }
+        
+        if (doc.type === 'incoming') {
+          byOwner[entityId].incoming += Number(doc.total_amount);
+        } else {
+          byOwner[entityId].outgoing += Number(doc.total_amount);
+        }
+        byOwner[entityId].balance = byOwner[entityId].incoming - byOwner[entityId].outgoing;
+      }
+      
+      // Processar documentos por fornecedor
+      for (const doc of documents.filter(d => d.entity_type === 'supplier')) {
+        const entityId = doc.entity_id;
+        const entityName = doc.entity_name || `Fornecedor #${entityId}`;
+        
+        if (!bySupplier[entityId]) {
+          bySupplier[entityId] = {
+            id: entityId,
+            name: entityName,
+            incoming: 0,
+            outgoing: 0,
+            balance: 0
+          };
+        }
+        
+        if (doc.type === 'incoming') {
+          bySupplier[entityId].incoming += Number(doc.total_amount);
+        } else {
+          bySupplier[entityId].outgoing += Number(doc.total_amount);
+        }
+        bySupplier[entityId].balance = bySupplier[entityId].incoming - bySupplier[entityId].outgoing;
+      }
+      
+      return {
+        period: {
+          startDate: startDate ? startDate.toISOString() : null,
+          endDate: endDate ? endDate.toISOString() : null
+        },
+        summary: {
+          totalIncoming,
+          totalOutgoing,
+          netIncome,
+          pendingIncoming,
+          paidIncoming,
+          pendingOutgoing,
+          paidOutgoing,
+          totalDocuments: documents.length,
+          incomingDocuments: incomingDocs.length,
+          outgoingDocuments: outgoingDocs.length
+        },
+        byOwner: Object.values(byOwner),
+        bySupplier: Object.values(bySupplier),
+        recentDocuments: documents
+          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          .slice(0, 10) // Últimos 10 documentos
+      };
+    } catch (error) {
+      console.error("Erro ao gerar resumo financeiro:", error);
+      return null;
+    } finally {
+      console.log(`============== FIM generateFinancialSummary ==============`);
+    }
+  }
+  
   // RAG - Retrieval Augmented Generation
   private knowledgeEmbeddings: Map<number, any> = new Map();
   private conversationHistory: Map<number, any> = new Map();

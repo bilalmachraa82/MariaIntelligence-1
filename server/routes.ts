@@ -2544,15 +2544,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Retornar o relatório em formato JSON
       return res.status(200).json({
         success: true,
-        ownerId: report.ownerId,
-        ownerName: report.ownerName,
+        ownerId: report.owner.id,
+        ownerName: report.owner.name,
         month: month,
         year: year,
-        startDate: report.startDate,
-        endDate: report.endDate,
-        properties: report.propertyReports,
-        totals: report.totals,
-        reservations: report.propertyReports.flatMap(p => p.reservations)
+        startDate: report.period.startDate,
+        endDate: report.period.endDate,
+        properties: report.properties,
+        totals: report.summary,
+        reservations: report.properties.flatMap(p => p.reservations || [])
       });
     } catch (err) {
       console.error("Erro ao gerar relatório financeiro de proprietário:", err);
