@@ -450,4 +450,171 @@ export class PgStorage implements IStorage {
     
     console.log('Data seeding completed!');
   }
+
+  // Método para gerar relatório financeiro de proprietário
+  async generateOwnerFinancialReport(ownerId: number, month: string, year: string): Promise<any> {
+    try {
+      console.log(`Gerando relatório financeiro para proprietário ${ownerId} no mês ${month}/${year}`);
+      
+      // Obter o proprietário
+      const owner = await this.getOwner(ownerId);
+      if (!owner) return null;
+      
+      // Obter o período
+      const startDate = new Date(`${year}-${month}-01`);
+      const endDate = new Date(new Date(startDate).setMonth(startDate.getMonth() + 1));
+      endDate.setDate(endDate.getDate() - 1); // Último dia do mês
+      
+      console.log(`Período do relatório: ${startDate.toISOString()} até ${endDate.toISOString()}`);
+      
+      // Obter propriedades do proprietário
+      const properties = (await this.getProperties()).filter(p => p.ownerId === ownerId);
+      console.log(`Encontradas ${properties.length} propriedades do proprietário`);
+      
+      // Para cada propriedade, calcular os ganhos e despesas
+      const propertyReports = await Promise.all(properties.map(async (property) => {
+        // Obter reservas no período
+        const reservations = (await this.getReservationsByProperty(property.id))
+          .filter(r => {
+            const checkIn = new Date(r.checkInDate);
+            const checkOut = new Date(r.checkOutDate);
+            return (checkIn <= endDate && checkOut >= startDate);
+          });
+        
+        // Calcular receita total, custos e lucro
+        const revenue = reservations.reduce((sum, r) => sum + Number(r.totalAmount), 0);
+        const cleaningCosts = reservations.reduce((sum, r) => sum + Number(r.cleaningFee || 0), 0);
+        const checkInFees = reservations.reduce((sum, r) => sum + Number(r.checkInFee || 0), 0);
+        const commission = reservations.reduce((sum, r) => sum + Number(r.commissionFee || 0), 0);
+        const teamPayments = reservations.reduce((sum, r) => sum + Number(r.teamPayment || 0), 0);
+        const netProfit = revenue - cleaningCosts - checkInFees - commission - teamPayments;
+        
+        // Calcular taxa de ocupação
+        const occupancyRate = await this.getOccupancyRate(property.id, startDate, endDate);
+        
+        // Calcular dias disponíveis e ocupados
+        const totalDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+        const occupiedDays = Math.ceil(totalDays * (occupancyRate / 100));
+        
+        // Resumo de reservas
+        const reservationSummaries = reservations.map(r => ({
+          id: r.id,
+          checkInDate: r.checkInDate,
+          checkOutDate: r.checkOutDate,
+          guestName: r.guestName,
+          totalAmount: Number(r.totalAmount),
+          cleaningFee: Number(r.cleaningFee || 0),
+          checkInFee: Number(r.checkInFee || 0),
+          commission: Number(r.commissionFee || 0),
+          teamPayment: Number(r.teamPayment || 0),
+          netAmount: Number(r.netAmount || 0),
+          platform: r.platform || 'direct'
+        }));
+        
+        return {
+          propertyId: property.id,
+          propertyName: property.name,
+          reservations: reservationSummaries,
+          revenue,
+          cleaningCosts,
+          checkInFees,
+          commission,
+          teamPayments,
+          netProfit,
+          occupancyRate,
+          availableDays: totalDays,
+          occupiedDays
+        };
+      }));
+      
+      // Calcular totais
+      const totalRevenue = propertyReports.reduce((sum, p) => sum + p.revenue, 0);
+      const totalCleaningCosts = propertyReports.reduce((sum, p) => sum + p.cleaningCosts, 0);
+      const totalCheckInFees = propertyReports.reduce((sum, p) => sum + p.checkInFees, 0);
+      const totalCommission = propertyReports.reduce((sum, p) => sum + p.commission, 0);
+      const totalTeamPayments = propertyReports.reduce((sum, p) => sum + p.teamPayments, 0);
+      const totalNetProfit = propertyReports.reduce((sum, p) => sum + p.netProfit, 0);
+      
+      // Calcular média de ocupação
+      const totalOccupancy = propertyReports.reduce((sum, p) => sum + p.occupancyRate, 0);
+      const averageOccupancy = propertyReports.length > 0 ? totalOccupancy / propertyReports.length : 0;
+      
+      return {
+        ownerId,
+        ownerName: owner.name,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        propertyReports,
+        totals: {
+          totalRevenue,
+          totalCleaningCosts,
+          totalCheckInFees,
+          totalCommission,
+          totalTeamPayments,
+          totalNetProfit,
+          averageOccupancy,
+          totalProperties: propertyReports.length,
+          totalReservations: propertyReports.reduce((sum, p) => sum + p.reservations.length, 0)
+        }
+      };
+    } catch (error) {
+      console.error("Erro ao gerar relatório financeiro:", error);
+      throw error;
+    }
+  }
+
+  // Método para gerar resumo financeiro do sistema
+  async generateFinancialSummary(startDate?: Date, endDate?: Date): Promise<any> {
+    // Definir período padrão para o mês atual se não especificado
+    const now = new Date();
+    const start = startDate || new Date(now.getFullYear(), now.getMonth(), 1);
+    const end = endDate || new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    
+    try {
+      // Receita total no período
+      const totalRevenue = await this.getTotalRevenue(start, end);
+      
+      // Lucro líquido no período
+      const netProfit = await this.getNetProfit(start, end);
+      
+      // Taxa de ocupação média
+      const occupancyRate = await this.getOccupancyRate(undefined, start, end);
+      
+      // Top 5 propriedades por receita
+      const properties = await this.getProperties();
+      const propertyStats = await Promise.all(
+        properties.filter(p => p.active).map(async property => {
+          const stats = await this.getPropertyStatistics(property.id);
+          return {
+            id: property.id,
+            name: property.name,
+            revenue: stats.totalRevenue,
+            profit: stats.netProfit,
+            occupancyRate: stats.occupancyRate
+          };
+        })
+      );
+      
+      // Ordenar por receita e pegar as top 5
+      const topProperties = propertyStats
+        .sort((a, b) => b.revenue - a.revenue)
+        .slice(0, 5);
+      
+      return {
+        period: {
+          startDate: start.toISOString(),
+          endDate: end.toISOString()
+        },
+        financialMetrics: {
+          totalRevenue,
+          netProfit,
+          occupancyRate
+        },
+        topProperties
+      };
+    } catch (error) {
+      console.error("Erro ao gerar resumo financeiro:", error);
+      throw error;
+    }
+  }
 }

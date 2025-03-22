@@ -581,9 +581,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .slice(0, 5);
 
       res.json({
+        success: true,
         totalRevenue,
         netProfit,
         occupancyRate,
+        totalProperties: properties.length,
         activeProperties,
         reservationsCount: reservations.length,
         topProperties
@@ -599,10 +601,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const stats = await storage.getPropertyStatistics(id);
 
       if (!stats) {
-        return res.status(404).json({ message: "Property not found" });
+        return res.status(404).json({ 
+          success: false,
+          message: "Property not found" 
+        });
       }
 
-      res.json(stats);
+      res.json({
+        success: true,
+        propertyId: id,
+        ...stats
+      });
     } catch (err) {
       handleError(err, res);
     }
@@ -706,9 +715,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       const response = {
+        success: true,
+        data: revenueData,
         year: startDate.getFullYear(),
-        granularity,
-        revenueByMonth: revenueData
+        granularity
       };
       
       console.log("Resposta completa:", JSON.stringify(response));
