@@ -267,11 +267,11 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
   const costDistributionData = useMemo(() => {
     if (!report) return [];
     
+    // Removemos a entrada de "Pagamentos às Equipas" porque é igual aos custos de limpeza
     return [
       { name: "Custos de Limpeza", value: report.totals.totalCleaningCosts },
       { name: "Taxas de Check-in", value: report.totals.totalCheckInFees },
       { name: "Comissão", value: report.totals.totalCommission },
-      { name: "Pagamentos às Equipas", value: report.totals.totalTeamPayments },
       { name: "Lucro Líquido", value: report.totals.totalNetProfit }
     ];
   }, [report]);

@@ -460,12 +460,12 @@ export function OwnerReportModern({
               {formatCurrency(
                 report.totals.totalCleaningCosts + 
                 report.totals.totalCheckInFees + 
-                report.totals.totalCommission + 
-                report.totals.totalTeamPayments
+                report.totals.totalCommission
+                // Removido totalTeamPayments pois é igual a totalCleaningCosts
               )}
             </Metric>
             <Text className="text-xs text-muted-foreground mt-1">
-              {t("ownerReport.costsInclude", "inclui limpeza, check-in, comissão e equipas")}
+              {t("ownerReport.costsInclude", "inclui limpeza, check-in e comissão")}
             </Text>
           </Card>
           

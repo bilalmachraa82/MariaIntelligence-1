@@ -298,12 +298,12 @@ export function downloadOwnerReportPDF(
     yPos += 10;
     
     // Tabela de resumo
+    // Removemos a entrada de totalTeamPayments porque é igual aos custos de limpeza
     const summaryData = [
       [t.totalRevenue, formatCurrency(report.totals.totalRevenue)],
       [t.totalCleaningCosts, formatCurrency(report.totals.totalCleaningCosts)],
       [t.totalCheckInFees, formatCurrency(report.totals.totalCheckInFees)],
       [t.totalCommission, formatCurrency(report.totals.totalCommission)],
-      [t.totalTeamPayments, formatCurrency(report.totals.totalTeamPayments)],
       [t.totalNetProfit, formatCurrency(report.totals.totalNetProfit)],
       [t.averageOccupancy, `${report.totals.averageOccupancy.toFixed(1)}%`],
       [t.totalProperties, report.totals.totalProperties.toString()],
@@ -724,6 +724,7 @@ export async function generateReportInsights(report: OwnerReport): Promise<any> 
     `A margem de lucro foi de ${profitMargin.toFixed(1)}% no período.`
   );
   
+  // Removemos "Pagamentos às Equipas" porque é o mesmo que "Custos de Limpeza"
   const expensesBreakdown = [
     { 
       name: "Custos de Limpeza", 
@@ -739,11 +740,6 @@ export async function generateReportInsights(report: OwnerReport): Promise<any> 
       name: "Comissão", 
       value: report.totals.totalCommission,
       percentage: (report.totals.totalCommission / totalRevenue) * 100
-    },
-    { 
-      name: "Pagamentos às Equipas", 
-      value: report.totals.totalTeamPayments,
-      percentage: (report.totals.totalTeamPayments / totalRevenue) * 100
     }
   ];
   
