@@ -454,14 +454,19 @@ export function SidebarReorganized({
     return (
       <aside className="fixed top-[57px] left-0 z-30 h-[calc(100vh-57px)] w-[60px] border-r border-border bg-background transition-all duration-300 ease-in-out">
         <div className="flex h-full flex-col">
-          <div className="flex items-center justify-center p-2 border-b border-border">
+          <div className="flex flex-col items-center justify-center py-2 border-b border-border">
+            <img 
+              src="/logo.png" 
+              alt="Maria Faz Logo" 
+              className="h-8 w-auto mb-1" 
+            />
             <Button
               variant="ghost"
               size="icon"
-              className="mx-auto"
+              className="h-6 w-6 mt-1"
               onClick={onToggleCollapse}
             >
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-3 w-3" />
             </Button>
           </div>
           
@@ -573,7 +578,14 @@ export function SidebarReorganized({
       <div className="flex h-full flex-col">
         {!isMobile && (
           <div className="flex items-center justify-between p-2 border-b border-border">
-            <span className="text-sm font-medium ml-2">Maria Faz</span>
+            <div className="flex items-center ml-2">
+              <img 
+                src="/logo.png" 
+                alt="Maria Faz Logo" 
+                className="h-7 w-auto mr-2" 
+              />
+              <span className="text-sm font-medium">Maria Faz</span>
+            </div>
             <Button
               variant="ghost"
               size="icon"

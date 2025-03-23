@@ -61,12 +61,16 @@ export function Layout({ children, className }: LayoutProps) {
             <MobileNav />
             
             {/* Logo */}
-            <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl">
-              M
+            <div className="flex items-center">
+              <img 
+                src="/logo.png" 
+                alt="Maria Faz Logo" 
+                className="h-8 w-auto" 
+              />
+              <span className="font-semibold text-lg hidden sm:inline-block ml-2">
+                Maria Faz
+              </span>
             </div>
-            <span className="font-semibold text-lg hidden sm:inline-block">
-              Maria Faz
-            </span>
           </div>
           
           {/* Espaçador */}
