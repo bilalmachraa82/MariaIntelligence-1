@@ -1115,7 +1115,7 @@ export default function UserManualDownload() {
                         {t("settings.manual.properties.import.desc", "Para importar propriedades em massa, utilize nosso modelo de planilha Excel ou CSV. Acesse 'Importar' no menu de Propriedades.")}
                       </p>
                       <div className="mt-3">
-                        <Button variant="outline" size="sm" className="text-xs">
+                        <Button variant="outline" size="sm" className="text-xs" disabled>
                           {t("settings.manual.properties.import.downloadTemplate", "Baixar modelo de importação")}
                         </Button>
                       </div>
