@@ -651,8 +651,8 @@ export function downloadOwnerReportPDF(
         valign: 'middle'
       },
       headStyles: {
-        fillColor: brandColor,
-        textColor: [255, 255, 255],
+        fillColor: [brandColor[0], brandColor[1], brandColor[2]] as [number, number, number],
+        textColor: [255, 255, 255] as [number, number, number],
         fontStyle: 'bold'
       },
       columnStyles: {
@@ -773,8 +773,8 @@ export function downloadOwnerReportPDF(
           textColor: [50, 50, 50]
         },
         headStyles: {
-          fillColor: brandColor,
-          textColor: [255, 255, 255],
+          fillColor: [brandColor[0], brandColor[1], brandColor[2]] as [number, number, number],
+          textColor: [255, 255, 255] as [number, number, number],
           fontStyle: 'bold'
         },
         columnStyles: {
@@ -1118,14 +1118,14 @@ export function generateOwnerReportPDFBuffer(
     format: 'a4',
   });
   
-  // Esquema de cores moderno (mesmo do download)
-  const brandColor = [64, 81, 181]; // Azul indigo
-  const accentColor = [233, 30, 99]; // Rosa
+  // Esquema de cores alinhado com a identidade do Maria Faz
+  const brandColor = [41, 121, 255]; // Azul Maria Faz
+  const accentColor = [255, 94, 0]; // Laranja Maria Faz
   const textColor = [33, 33, 33]; // Quase preto
   const secondaryTextColor = [117, 117, 117]; // Cinza médio
   const lightGray = [224, 224, 224]; // Cinza claro para bordas e fundos alternados
-  const highlightColor = [139, 195, 74]; // Verde para valores positivos
-  const warningColor = [255, 152, 0]; // Laranja para alertas
+  const highlightColor = [76, 175, 80]; // Verde para valores positivos
+  const warningColor = [255, 94, 0]; // Laranja para alertas (mesmo do accent)
   
   // Medidas e margens
   const margin = 14; // Margem padrão em mm
@@ -1425,6 +1425,23 @@ export function generateOwnerReportPDFBuffer(
   // Rodapé moderno
   // ===============================================
   
+  // Lista de frases inspiradoras para o rodapé (serão escolhidas aleatoriamente)
+  const inspirationalQuotes = [
+    "O sucesso nos negócios requer treinamento, disciplina e trabalho duro.",
+    "Fazer o que amas é o caminho para o sucesso.",
+    "Cada detalhe importa. É com os detalhes que se constrói a excelência.",
+    "A verdadeira hospitalidade é receber com o coração aberto.",
+    "Transformando casas em experiências inesquecíveis.",
+    "O verdadeiro luxo está no cuidado com os detalhes.",
+    "Qualidade não é um ato, é um hábito.",
+    "Grandes resultados vêm de pequenas ações consistentes.",
+    "O que fazemos com paixão, fazemos com excelência.",
+    "O sucesso é a soma de pequenos esforços repetidos dia após dia."
+  ];
+  
+  // Selecionar uma frase aleatória 
+  const randomQuote = inspirationalQuotes[Math.floor(Math.random() * inspirationalQuotes.length)];
+  
   // Função para adicionar rodapé
   const addFooter = (doc: jsPDF) => {
     // Acessar propriedades internas
@@ -1435,6 +1452,36 @@ export function generateOwnerReportPDFBuffer(
       doc.setPage(i);
       const pageHeight = internal.pageSize.height;
       const pageWidth = internal.pageSize.width;
+      
+      // Adicionar frase inspiradora na última página
+      if (i === pageCount) {
+        // Linha divisória para a frase inspiradora
+        doc.setDrawColor(lightGray[0], lightGray[1], lightGray[2]);
+        doc.setLineWidth(0.2);
+        doc.line(margin, pageHeight - 35, pageWidth - margin, pageHeight - 35);
+        
+        // Frase inspiradora
+        doc.setFontSize(9);
+        doc.setTextColor(accentColor[0], accentColor[1], accentColor[2]);
+        doc.setFont('helvetica', 'italic');
+        doc.text(`"${randomQuote}"`, pageWidth / 2, pageHeight - 27, { align: 'center' });
+        
+        // Logo simplificado (círculo com MF)
+        const logoSize = 8;
+        const logoX = pageWidth / 2 - logoSize / 2;
+        const logoY = pageHeight - 22;
+        
+        // Círculo exterior
+        doc.setDrawColor(brandColor[0], brandColor[1], brandColor[2]);
+        doc.setFillColor(255, 255, 255);
+        doc.circle(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2, 'FD');
+        
+        // Texto do logo "MF"
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(6);
+        doc.setTextColor(brandColor[0], brandColor[1], brandColor[2]);
+        doc.text('MF', logoX + logoSize / 2, logoY + logoSize / 2 + 2, { align: 'center' });
+      }
       
       // Linha divisória sutil
       doc.setDrawColor(lightGray[0], lightGray[1], lightGray[2]);
