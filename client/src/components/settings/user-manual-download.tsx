@@ -171,70 +171,65 @@ export default function UserManualDownload() {
           case "properties":
             sectionContent = t("settings.manual.content.properties", 
               "O módulo de Gestão de Imóveis permite cadastrar e gerenciar todas as propriedades: " +
-              "\n\n• Cadastro completo de imóveis com fotos e características " +
+              "\n\n• Cadastro completo de imóveis com nome, endereço e características " +
               "\n• Vinculação com proprietários " +
-              "\n• Definição de regras e taxas específicas " +
-              "\n• Calendário de disponibilidade " +
-              "\n• Histórico de reservas e manutenções");
+              "\n• Definição de custos de limpeza e manutenção " +
+              "\n• Visualização de reservas associadas " +
+              "\n• Ativação/desativação de propriedades");
             break;
           case "reservations":
             sectionContent = t("settings.manual.content.reservations", 
               "O sistema de Reservas facilita o gerenciamento completo dos aluguéis: " +
-              "\n\n• Criação manual de reservas " +
-              "\n• Importação automatizada de PDFs de plataformas (Airbnb, Booking, etc.) " +
-              "\n• Processamento de check-ins e check-outs " +
-              "\n• Gestão de pagamentos " +
-              "\n• Comunicação com hóspedes");
+              "\n\n• Criação manual de novas reservas com todos os detalhes necessários " +
+              "\n• Processamento automático de PDFs de reservas via Mistral AI " +
+              "\n• Visualização de reservas por propriedade e status " +
+              "\n• Rastreamento de valores, taxas e custos associados " +
+              "\n• Gestão de status das reservas (confirmada, em andamento, concluída, cancelada)");
             break;
           case "owners":
             sectionContent = t("settings.manual.content.owners", 
               "O módulo de Proprietários permite gerenciar: " +
-              "\n\n• Cadastro de proprietários e contatos " +
-              "\n• Contratos e acordos financeiros " +
-              "\n• Geração de relatórios financeiros " +
-              "\n• Envio automático de relatórios por email " +
-              "\n• Histórico de comunicações");
+              "\n\n• Cadastro de proprietários com informações de contato " +
+              "\n• Associação de proprietários com suas propriedades " +
+              "\n• Visualização de relatórios financeiros por proprietário " +
+              "\n• Exportação de relatórios em PDF para compartilhamento " +
+              "\n• Envio de relatórios mensais por email quando configurado");
             break;
           case "cleaning":
             sectionContent = t("settings.manual.content.cleaning", 
               "A gestão de Equipas de Limpeza inclui: " +
-              "\n\n• Cadastro de equipas e membros " +
-              "\n• Agendamento automático de limpezas " +
-              "\n• Notificações e lembretes " +
-              "\n• Relatórios de desempenho " +
-              "\n• Gestão de pagamentos");
+              "\n\n• Cadastro de equipas de limpeza e seus membros " +
+              "\n• Visualização de propriedades atribuídas a cada equipa " +
+              "\n• Registro de custos e valores de pagamento " +
+              "\n• Associação de limpezas às reservas " +
+              "\n• Histórico de trabalhos realizados por equipa");
             break;
           case "reports":
             sectionContent = t("settings.manual.content.reports", 
               "O sistema oferece relatórios detalhados para análise do negócio: " +
-              "\n\n• Relatórios financeiros por período: Acompanhe receitas, despesas e lucro líquido em diferentes períodos (diário, semanal, mensal, anual). Inclui gráficos de tendências e comparativos com períodos anteriores." +
-              "\n\n• Relatórios por proprietário: Demonstrativo financeiro detalhado para cada proprietário, incluindo rendimentos brutos, taxas, despesas e rendimento líquido. Pode ser enviado automaticamente por email em base mensal." +
-              "\n\n• Relatório de ocupação: Análise detalhada de taxas de ocupação por propriedade, região e período, permitindo identificar padrões de sazonalidade e oportunidades de precificação dinâmica." +
-              "\n\n• Relatório de desempenho por propriedade: Métricas detalhadas de ROI, receita por noite, taxa de conversão de reservas e avaliações de hóspedes para cada propriedade." +
-              "\n\n• Relatório de canais: Análise comparativa de desempenho entre diferentes plataformas (Airbnb, Booking, etc.) incluindo taxas, volume de reservas e receita média." +
-              "\n\n• Relatório de despesas: Controle detalhado de custos operacionais, manutenções, limpezas e outros gastos com filtros por categoria, propriedade e data." +
-              "\n\n• Dashboard analítico: Painel visual com principais KPIs do negócio, permitindo visualização em tempo real do desempenho geral.");
+              "\n\n• Relatórios financeiros por período: Acompanhe receitas, despesas e lucro líquido com gráficos que se adaptam automaticamente ao período selecionado (semanal, mensal ou anual)." +
+              "\n\n• Relatórios por proprietário: Demonstrativo financeiro detalhado para cada proprietário, incluindo rendimentos brutos, taxas e rendimento líquido, com opção de envio por email." +
+              "\n\n• Análise de ocupação: Visualização gráfica da taxa de ocupação das propriedades, ajudando a identificar padrões de sazonalidade e períodos de alta demanda." +
+              "\n\n• Painel de estatísticas: Visão geral com principais métricas como taxa de ocupação atual, receita total, lucro líquido e número de reservas ativas." +
+              "\n\n• Tendências de receita: Acompanhamento visual da evolução das receitas ao longo do tempo, com comparativos entre períodos similares.");
             break;
           case "documents":
             sectionContent = t("settings.manual.content.documents", 
-              "O Processamento de Documentos automatiza tarefas através de IA (Inteligência Artificial) Mistral: " +
-              "\n\n• Processamento de PDFs de Reservas: Faça upload de confirmações de reservas das principais plataformas (Airbnb, Booking.com, VRBO, Expedia) e o sistema extrairá automaticamente todos os dados relevantes como nome do hóspede, datas, valores, taxas e detalhes da propriedade." +
-              "\n\n• Processamento de Pares de Documentos: O sistema consegue processar simultaneamente documentos de check-in e check-out, combinando as informações para criar um registro completo da reserva, incluindo valores adicionais e alterações." +
-              "\n\n• Reconhecimento Inteligente de Documentos: A IA identifica automaticamente o tipo de documento (confirmação de reserva, check-in, check-out, fatura, recibo) e aplica o processamento adequado para cada um." +
-              "\n\n• Extração de Dados Estruturados: Todos os dados são extraídos em formato estruturado e organizados no sistema, prontos para serem usados em relatórios e análises." +
-              "\n\n• Validação Contextual: O sistema valida os dados extraídos em relação à base de dados existente, identificando possíveis inconsistências ou duplicidades." +
-              "\n\n• Processamento em Lote: Suporte para processamento de múltiplos documentos em sequência, ideal para importação inicial de dados ou atualizações periódicas." +
-              "\n\n• Interface de Verificação e Edição: Após a extração automática, você pode revisar e editar os dados antes de confirmar a inclusão no sistema." +
-              "\n\n• Suporte para Documentos Financeiros: Processa faturas, recibos e comprovantes de pagamento, extraindo valores, datas, categorias e fornecedores.");
+              "O Processamento de Documentos automatiza tarefas através da IA Mistral: " +
+              "\n\n• Processamento de PDFs de Reservas: Faça upload de confirmações de reservas das plataformas principais e o sistema extrairá automaticamente todos os dados relevantes como nome do hóspede, datas, valores e detalhes da propriedade." +
+              "\n\n• Processamento de Check-ins e Check-outs: O sistema pode processar documentos de entrada e saída, extraindo as informações específicas de cada tipo." +
+              "\n\n• Extração Inteligente: A IA identifica automaticamente as informações importantes no documento, mesmo quando o formato varia entre diferentes plataformas." +
+              "\n\n• Revisão de Dados: Após a extração automática, você pode revisar e ajustar qualquer informação antes de confirmar a criação da reserva." +
+              "\n\n• Validação de Dados: O sistema verifica a consistência das informações extraídas, alertando sobre possíveis erros ou inconsistências.");
             break;
           case "settings":
             sectionContent = t("settings.manual.content.settings", 
-              "Nas Configurações do sistema você pode personalizar: " +
-              "\n\n• Preferências gerais e idioma " +
-              "\n• Configurações de notificações " +
-              "\n• Integração com serviços externos " +
-              "\n• Gestão de usuários e permissões " +
-              "\n• Backup e recuperação de dados");
+              "Nas Configurações do sistema você pode: " +
+              "\n\n• Alterar o idioma da interface (Português, Inglês) " +
+              "\n• Gerenciar propriedades e seus detalhes " +
+              "\n• Configurar equipas de limpeza e seus membros " +
+              "\n• Acessar o manual do usuário e guias de uso " +
+              "\n• Visualizar e baixar o manual em PDF para referência offline");
             break;
         }
         
