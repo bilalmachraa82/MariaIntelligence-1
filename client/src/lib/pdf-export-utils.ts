@@ -872,8 +872,8 @@ export function downloadOwnerReportPDF(
               textColor: [50, 50, 50]
             },
             headStyles: {
-              fillColor: brandColor,
-              textColor: [255, 255, 255],
+              fillColor: [brandColor[0], brandColor[1], brandColor[2]] as [number, number, number],
+              textColor: [255, 255, 255] as [number, number, number],
               fontStyle: 'bold'
             },
             columnStyles: {
@@ -1393,8 +1393,8 @@ export function generateOwnerReportPDFBuffer(
       valign: 'middle'
     },
     headStyles: {
-      fillColor: brandColor,
-      textColor: [255, 255, 255],
+      fillColor: [brandColor[0], brandColor[1], brandColor[2]] as [number, number, number],
+      textColor: [255, 255, 255] as [number, number, number],
       fontStyle: 'bold'
     },
     columnStyles: {
