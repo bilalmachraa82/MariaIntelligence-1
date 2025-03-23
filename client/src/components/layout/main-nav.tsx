@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { SidebarReorganized } from "./sidebar-reorganized";
 import { MobileNav } from "./mobile-nav";
-import { Logo } from "@/components/ui/logo";
 
 interface MainNavProps {
   className?: string;
@@ -35,7 +34,12 @@ export function MainNav({ className }: MainNavProps) {
             {/* Logo e nome da aplicação */}
             <Link href={isPortuguese ? "/painel" : "/dashboard"}>
               <a className="flex items-center gap-2">
-                <Logo size="md" showText={true} />
+                <div className="w-9 h-9 rounded-md bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-white font-bold text-xl shadow-sm">
+                  MF
+                </div>
+                <span className="font-semibold text-lg hidden sm:inline-block ml-1 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">
+                  Maria Faz
+                </span>
               </a>
             </Link>
           </div>
