@@ -10,6 +10,7 @@ import { useOwners } from "@/hooks/use-owners";
 import { useOwnerReport, DateRange as ReportDateRange } from "@/hooks/use-owner-report";
 import { downloadOwnerReportCSV } from "@/lib/export-utils";
 import { downloadOwnerReportPDF } from "@/lib/pdf-export-utils";
+import { exportOwnerReportPDFWithLogo } from "@/lib/pdf-logo-exporter";
 import { OwnerReportModern } from "@/components/reports/owner-report-modern";
 import { Button } from "@/components/ui/button";
 import { FileText, Download, Mail, Users } from "lucide-react";
