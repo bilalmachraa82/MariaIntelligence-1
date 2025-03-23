@@ -211,10 +211,10 @@ export default function OwnerReportPage() {
                 variant="outline"
                 size="sm"
                 className="bg-white/20 text-white border-white/40 hover:bg-white/30 flex items-center gap-2"
-                onClick={() => downloadOwnerReportPDF(ownerReport, 'full', i18n.language)}
+                onClick={() => exportOwnerReportPDFWithLogo(ownerReport, 'full', i18n.language)}
               >
                 <FileText className="h-4 w-4" />
-                {t("export.pdf", "Exportar PDF")}
+                {t("export.pdf", "Exportar PDF com Logo")}
               </Button>
               
               <Button
