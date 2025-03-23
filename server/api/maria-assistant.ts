@@ -410,17 +410,134 @@ export async function mariaAssistant(req: Request, res: Response) {
     try {
       console.log(`Utilizando modelo ${modelToUse} para resposta ao usuário`);
       
+      // Detectar na mensagem do usuário se é um pedido para criar uma reserva
+      const isReservationCreationIntent = lowerMessage.includes("criar reserva") || 
+                                        lowerMessage.includes("nova reserva") ||
+                                        lowerMessage.includes("agendar") ||
+                                        lowerMessage.includes("marcar") ||
+                                        (lowerMessage.includes("reserva") && 
+                                         (lowerMessage.includes("fazer") || 
+                                          lowerMessage.includes("criar") || 
+                                          lowerMessage.includes("nova")));
+      
+      // Definir ferramentas de criação de reserva
+      const tools = isReservationCreationIntent ? [
+        {
+          type: "function" as const,
+          function: {
+            name: "criar_reserva",
+            description: "Criar uma nova reserva no sistema a partir de dados fornecidos pelo usuário",
+            parameters: {
+              type: "object",
+              properties: {
+                propertyId: {
+                  type: "integer", 
+                  description: "ID da propriedade para a reserva (obrigatório, a menos que propertyName seja fornecido)"
+                },
+                propertyName: {
+                  type: "string", 
+                  description: "Nome da propriedade para buscar o ID automaticamente"
+                },
+                guestName: {
+                  type: "string", 
+                  description: "Nome completo do hóspede (obrigatório)"
+                },
+                guestEmail: {
+                  type: "string", 
+                  description: "Email do hóspede"
+                },
+                guestPhone: {
+                  type: "string", 
+                  description: "Telefone/WhatsApp do hóspede"
+                },
+                checkInDate: {
+                  type: "string", 
+                  description: "Data de check-in no formato YYYY-MM-DD ou DD/MM/YYYY (obrigatório)"
+                },
+                checkOutDate: {
+                  type: "string", 
+                  description: "Data de check-out no formato YYYY-MM-DD ou DD/MM/YYYY (obrigatório)"
+                },
+                numGuests: {
+                  type: "integer", 
+                  description: "Número de hóspedes"
+                },
+                totalAmount: {
+                  type: "number", 
+                  description: "Valor total da reserva"
+                },
+                platform: {
+                  type: "string", 
+                  description: "Plataforma de reserva (airbnb, booking, direct, etc)"
+                },
+                platformFee: {
+                  type: "number", 
+                  description: "Taxa cobrada pela plataforma"
+                },
+                status: {
+                  type: "string", 
+                  description: "Status da reserva (pending, confirmed, completed, cancelled)",
+                  enum: ["pending", "confirmed", "completed", "cancelled"]
+                },
+                notes: {
+                  type: "string", 
+                  description: "Observações adicionais sobre a reserva"
+                }
+              },
+              required: ["guestName", "checkInDate", "checkOutDate"]
+            }
+          }
+        }
+      ] : undefined;
+      
+      // Fazer a chamada à API com ou sem função de reserva com base na intenção do usuário
       const response = await mistral.chat.complete({
         model: modelToUse,
         messages: messages,
         temperature: 0.7, // Equilibrio entre criatividade e consistência
         maxTokens: 1200, // Aumentando para respostas mais detalhadas
-        safePrompt: false // Permitir personalidade definida no prompt
+        safePrompt: false, // Permitir personalidade definida no prompt
+        tools: isReservationCreationIntent ? tools : undefined,
+        toolChoice: isReservationCreationIntent ? "auto" : "none"
       });
       
-      // Extrair a resposta com verificação de tipos
-      const content = response.choices && response.choices[0]?.message?.content;
-      reply = typeof content === 'string' ? content : "Não foi possível gerar uma resposta.";
+      // Verificar se o modelo fez uma chamada de função
+      const toolCalls = response.choices && response.choices[0]?.message?.toolCalls;
+      
+      if (toolCalls && toolCalls.length > 0 && toolCalls[0].function?.name === 'criar_reserva') {
+        try {
+          // Extrair os argumentos da função (garantindo que é uma string)
+          const argsString = typeof toolCalls[0].function.arguments === 'string' 
+            ? toolCalls[0].function.arguments 
+            : JSON.stringify(toolCalls[0].function.arguments);
+          
+          const args = JSON.parse(argsString);
+          console.log("Chamada de função 'criar_reserva' detectada com argumentos:", args);
+          
+          // Chamar a função de criação de reserva
+          const reservationResult = await createReservationFromAssistant(args);
+          
+          if (reservationResult.success && reservationResult.reservation) {
+            reply = `✅ Reserva criada com sucesso para ${args.guestName}!\n\n` +
+                    `📆 Check-in: ${args.checkInDate}\n` +
+                    `📆 Check-out: ${args.checkOutDate}\n` +
+                    `🏠 Propriedade: ${args.propertyName || `ID ${args.propertyId}`}\n` +
+                    `💰 Valor total: ${args.totalAmount || 'Não informado'}\n\n` +
+                    `A reserva foi registrada no sistema com o ID ${reservationResult.reservation.id}. ` +
+                    `Posso ajudar com mais alguma coisa?`;
+          } else {
+            reply = `❌ Não foi possível criar a reserva: ${reservationResult.message}\n\n` +
+                    `Por favor, verifique os dados e tente novamente.`;
+          }
+        } catch (functionError) {
+          console.error("Erro ao processar chamada de função:", functionError);
+          reply = "Ocorreu um erro ao processar a criação da reserva. Por favor, tente novamente mais tarde.";
+        }
+      } else {
+        // Extrair a resposta normal com verificação de tipos
+        const content = response.choices && response.choices[0]?.message?.content;
+        reply = typeof content === 'string' ? content : "Não foi possível gerar uma resposta.";
+      }
       
     } catch (mistralError: any) {
       console.error("Erro na API Mistral:", mistralError);
@@ -429,6 +546,63 @@ export async function mariaAssistant(req: Request, res: Response) {
       if (mistralError.message?.includes("model") && modelToUse !== "mistral-small-latest") {
         try {
           console.log("Tentando modelo alternativo após falha...");
+          
+          // Detectar novamente se precisa de criação de reserva para o fallback
+          const fallbackReservationIntent = lowerMessage.includes("criar reserva") || 
+                                        lowerMessage.includes("nova reserva") ||
+                                        lowerMessage.includes("agendar") ||
+                                        lowerMessage.includes("marcar") ||
+                                        (lowerMessage.includes("reserva") && 
+                                         (lowerMessage.includes("fazer") || 
+                                          lowerMessage.includes("criar") || 
+                                          lowerMessage.includes("nova")));
+          
+          // Definir ferramentas de criação de reserva para o fallback (deve ser definido localmente)
+          const fallbackTools = fallbackReservationIntent ? [
+            {
+              type: "function" as const,
+              function: {
+                name: "criar_reserva",
+                description: "Criar uma nova reserva no sistema a partir de dados fornecidos pelo usuário",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    propertyId: {
+                      type: "integer", 
+                      description: "ID da propriedade para a reserva (obrigatório, a menos que propertyName seja fornecido)"
+                    },
+                    propertyName: {
+                      type: "string", 
+                      description: "Nome da propriedade para buscar o ID automaticamente"
+                    },
+                    guestName: {
+                      type: "string", 
+                      description: "Nome completo do hóspede (obrigatório)"
+                    },
+                    checkInDate: {
+                      type: "string", 
+                      description: "Data de check-in no formato YYYY-MM-DD ou DD/MM/YYYY (obrigatório)"
+                    },
+                    checkOutDate: {
+                      type: "string", 
+                      description: "Data de check-out no formato YYYY-MM-DD ou DD/MM/YYYY (obrigatório)"
+                    },
+                    numGuests: {
+                      type: "integer", 
+                      description: "Número de hóspedes"
+                    },
+                    totalAmount: {
+                      type: "number", 
+                      description: "Valor total da reserva"
+                    }
+                  },
+                  required: ["guestName", "checkInDate", "checkOutDate"]
+                }
+              }
+            }
+          ] : undefined;
+          
+          // No fallback, simplificamos a chamada mas ainda mantemos função de reserva se necessário
           const fallbackResponse = await mistral.chat.complete({
             model: "mistral-small-latest", // Modelo de fallback
             messages: [
@@ -436,12 +610,49 @@ export async function mariaAssistant(req: Request, res: Response) {
               { role: "user", content: message }
             ],
             temperature: 0.5,
-            maxTokens: 600
+            maxTokens: 600,
+            tools: fallbackTools,
+            toolChoice: fallbackReservationIntent ? "auto" : "none"
           });
           
-          const fallbackContent = fallbackResponse.choices && fallbackResponse.choices[0]?.message?.content;
-          reply = typeof fallbackContent === 'string' ? fallbackContent : 
-                 "Desculpe, estou com dificuldades técnicas. Por favor, tente novamente em breve.";
+          // Verificar se há tool calls mesmo no fallback
+          const fallbackToolCalls = fallbackResponse.choices && fallbackResponse.choices[0]?.message?.toolCalls;
+          
+          if (fallbackToolCalls && fallbackToolCalls.length > 0 && fallbackToolCalls[0].function?.name === 'criar_reserva') {
+            try {
+              // Extrair os argumentos da função (garantindo que é uma string)
+              const argsString = typeof fallbackToolCalls[0].function.arguments === 'string' 
+                ? fallbackToolCalls[0].function.arguments 
+                : JSON.stringify(fallbackToolCalls[0].function.arguments);
+                
+              const args = JSON.parse(argsString);
+              console.log("Chamada de função 'criar_reserva' detectada no fallback com argumentos:", args);
+              
+              // Chamar a função de criação de reserva
+              const reservationResult = await createReservationFromAssistant(args);
+              
+              if (reservationResult.success && reservationResult.reservation) {
+                reply = `✅ Reserva criada com sucesso para ${args.guestName}!\n\n` +
+                        `📆 Check-in: ${args.checkInDate}\n` +
+                        `📆 Check-out: ${args.checkOutDate}\n` +
+                        `🏠 Propriedade: ${args.propertyName || `ID ${args.propertyId}`}\n` +
+                        `💰 Valor total: ${args.totalAmount || 'Não informado'}\n\n` +
+                        `A reserva foi registrada no sistema com o ID ${reservationResult.reservation.id}. ` +
+                        `Posso ajudar com mais alguma coisa?`;
+              } else {
+                reply = `❌ Não foi possível criar a reserva: ${reservationResult.message}\n\n` +
+                        `Por favor, verifique os dados e tente novamente.`;
+              }
+            } catch (functionError) {
+              console.error("Erro ao processar chamada de função no fallback:", functionError);
+              reply = "Ocorreu um erro ao processar a criação da reserva. Por favor, tente novamente mais tarde.";
+            }
+          } else {
+            // Resposta normal do fallback
+            const fallbackContent = fallbackResponse.choices && fallbackResponse.choices[0]?.message?.content;
+            reply = typeof fallbackContent === 'string' ? fallbackContent : 
+                   "Desculpe, estou com dificuldades técnicas. Por favor, tente novamente em breve.";
+          }
         } catch (fallbackError) {
           console.error("Erro também no modelo de fallback:", fallbackError);
           throw mistralError; // Re-lançar o erro original
