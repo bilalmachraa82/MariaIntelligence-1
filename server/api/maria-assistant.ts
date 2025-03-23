@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { Mistral } from "@mistralai/mistralai";
 import { storage } from '../storage';
 import { ragService } from '../services/rag-service';
+import { insertReservationSchema } from '../../shared/schema';
+import { format } from 'date-fns';
 
 // Configurações do assistente da Maria Faz com personalidade definida
 const MARIA_SYSTEM_PROMPT = `
@@ -44,6 +46,106 @@ IMPORTANTE: O teu objetivo é criar uma experiência de assistente virtual posit
  * Função para construir o contexto RAG (Retrieval-Augmented Generation) com dados do sistema
  * Recolhe informações atualizadas da base de dados para fornecer ao modelo
  */
+/**
+ * Função auxiliar para criar uma nova reserva a partir dos dados fornecidos
+ * @param reservationData Dados da reserva fornecidos pelo LLM
+ * @returns Objeto com o resultado da criação
+ */
+export async function createReservationFromAssistant(reservationData: any) {
+  try {
+    console.log("Tentando criar reserva a partir do assistente:", reservationData);
+    
+    // Validar propriedade
+    if (!reservationData.propertyId && reservationData.propertyName) {
+      // Tentar encontrar a propriedade por nome
+      const properties = await storage.getProperties();
+      const property = properties.find(p => 
+        p.name.toLowerCase() === reservationData.propertyName.toLowerCase()
+      );
+      
+      if (property) {
+        reservationData.propertyId = property.id;
+      } else {
+        throw new Error(`Propriedade não encontrada: ${reservationData.propertyName}`);
+      }
+    }
+
+    // Converter datas do formato possivelmente DD/MM/YYYY para YYYY-MM-DD
+    if (reservationData.checkInDate && typeof reservationData.checkInDate === 'string') {
+      if (reservationData.checkInDate.includes('/')) {
+        const parts = reservationData.checkInDate.split('/');
+        if (parts.length === 3) {
+          // Assumindo formato DD/MM/YYYY
+          reservationData.checkInDate = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+        }
+      }
+    }
+
+    if (reservationData.checkOutDate && typeof reservationData.checkOutDate === 'string') {
+      if (reservationData.checkOutDate.includes('/')) {
+        const parts = reservationData.checkOutDate.split('/');
+        if (parts.length === 3) {
+          // Assumindo formato DD/MM/YYYY
+          reservationData.checkOutDate = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+        }
+      }
+    }
+    
+    // Garantir que os valores numéricos sejam do tipo correto
+    if (reservationData.numGuests && typeof reservationData.numGuests === 'string') {
+      reservationData.numGuests = parseInt(reservationData.numGuests, 10);
+    }
+    
+    if (reservationData.totalAmount && typeof reservationData.totalAmount !== 'string') {
+      reservationData.totalAmount = reservationData.totalAmount.toString();
+    }
+    
+    // Se a plataforma não for fornecida, define como 'direct'
+    if (!reservationData.platform) {
+      reservationData.platform = 'direct';
+    }
+    
+    // Se o status não for fornecido, define como 'confirmed'
+    if (!reservationData.status) {
+      reservationData.status = 'confirmed';
+    }
+
+    // Propriedade para os campos monetários, garantindo que sejam strings
+    const moneyFields = ['platformFee', 'cleaningFee', 'checkInFee', 'commissionFee', 'teamPayment', 'netAmount'];
+    moneyFields.forEach(field => {
+      if (reservationData[field] === undefined || reservationData[field] === null) {
+        reservationData[field] = '0';
+      } else if (typeof reservationData[field] !== 'string') {
+        reservationData[field] = reservationData[field].toString();
+      }
+    });
+    
+    // Cria a reserva usando o storage
+    const createdReservation = await storage.createReservation(reservationData);
+    
+    // Registrar atividade de criação
+    await storage.createActivity({
+      type: 'reservation_created',
+      description: `Reserva criada via assistente: ${reservationData.propertyId} - ${reservationData.guestName}`,
+      entityId: createdReservation.id,
+      entityType: 'reservation'
+    });
+    
+    return {
+      success: true,
+      reservation: createdReservation,
+      message: `Reserva criada com sucesso para ${reservationData.guestName} na propriedade ID ${reservationData.propertyId}`
+    };
+  } catch (error: any) {
+    console.error("Erro ao criar reserva via assistente:", error);
+    return {
+      success: false,
+      message: `Erro ao criar reserva: ${error.message}`,
+      error
+    };
+  }
+}
+
 export async function buildRagContext(userQuery: string) {
   try {
     // Recolher dados das entidades principais
