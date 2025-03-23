@@ -514,10 +514,10 @@ export default function UserManualDownload() {
               </p>
             </CardContent>
             <CardFooter>
-              <Button variant="ghost" size="sm" className="w-full">
+              <Button variant="ghost" size="sm" className="w-full" disabled>
                 <span className="flex items-center gap-1 text-xs">
-                  <Play className="h-3 w-3" />
-                  {t("settings.manual.recommendation.cta", "Ver tutorial")}
+                  <FileText className="h-3 w-3" />
+                  {t("settings.manual.recommendation.cta", "Consultar documentação")}
                 </span>
               </Button>
             </CardFooter>
@@ -939,22 +939,7 @@ export default function UserManualDownload() {
                       </ul>
                     </div>
                     
-                    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 flex gap-3 items-center mt-4">
-                      <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-full">
-                        <Lock className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-medium">
-                          {t("settings.manual.intro.premium", "Recursos Premium")}
-                        </h4>
-                        <p className="text-xs text-muted-foreground">
-                          {t("settings.manual.intro.premium.desc", "Desbloqueie recursos avançados como API, integração com canais e muito mais.")}
-                        </p>
-                      </div>
-                      <Button variant="outline" size="sm" className="ml-auto text-xs">
-                        {t("settings.manual.intro.premium.cta", "Saiba mais")}
-                      </Button>
-                    </div>
+
                   </CardContent>
                 </Card>
               </motion.div>
