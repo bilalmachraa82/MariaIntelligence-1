@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings, ArrowLeft, HelpCircle, BellRing, User, Globe, Key, AlertCircle, CheckCircle, Activity } from "lucide-react";
+import { Settings, ArrowLeft, HelpCircle, BellRing, User, Globe, Key, AlertCircle, CheckCircle, Activity, Building2, Users, PaintBucket, BarChart3, CalendarDays } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -227,7 +227,7 @@ export default function SettingsPage() {
       </div>
 
       <Tabs defaultValue="general" className="space-y-4">
-        <TabsList>
+        <TabsList className="flex flex-wrap">
           <TabsTrigger value="general">
             <Settings className="h-4 w-4 mr-1" />
             {t("settings.tabs.general")}
@@ -247,6 +247,14 @@ export default function SettingsPage() {
           <TabsTrigger value="api">
             <Key className="h-4 w-4 mr-1" />
             {t("settings.tabs.integrations")}
+          </TabsTrigger>
+          <TabsTrigger value="properties">
+            <Building2 className="h-4 w-4 mr-1" />
+            {t("navigation.properties", "Imóveis")}
+          </TabsTrigger>
+          <TabsTrigger value="cleaning-teams">
+            <Users className="h-4 w-4 mr-1" />
+            {t("navigation.cleaning.teams", "Equipas de Limpeza")}
           </TabsTrigger>
         </TabsList>
 
@@ -573,6 +581,90 @@ export default function SettingsPage() {
                   </div>
                 </div>
               )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="properties" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("navigation.properties", "Imóveis")}</CardTitle>
+              <CardDescription>
+                Gerenciamento de propriedades e imóveis
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex justify-between items-center pb-4">
+                <h3 className="text-lg font-medium">Lista de Imóveis</h3>
+                <Button 
+                  onClick={() => navigate("/propriedades/novo")}
+                  variant="default"
+                  size="sm"
+                >
+                  Adicionar Novo Imóvel
+                </Button>
+              </div>
+              
+              <div className="space-y-2">
+                <Button 
+                  onClick={() => navigate("/propriedades")}
+                  variant="outline" 
+                  className="w-full justify-start"
+                >
+                  <Building2 className="h-4 w-4 mr-2" />
+                  Ver Todos os Imóveis
+                </Button>
+                <Button 
+                  onClick={() => navigate("/propriedades/estatisticas")}
+                  variant="outline" 
+                  className="w-full justify-start"
+                >
+                  <Activity className="h-4 w-4 mr-2" />
+                  Estatísticas de Imóveis
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="cleaning-teams" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("navigation.cleaning.teams", "Equipas de Limpeza")}</CardTitle>
+              <CardDescription>
+                Gestão de equipas e agendamentos de limpeza
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex justify-between items-center pb-4">
+                <h3 className="text-lg font-medium">Equipas de Limpeza</h3>
+                <Button 
+                  onClick={() => navigate("/equipas-limpeza/nova")}
+                  variant="default"
+                  size="sm"
+                >
+                  Adicionar Nova Equipa
+                </Button>
+              </div>
+              
+              <div className="space-y-2">
+                <Button 
+                  onClick={() => navigate("/equipas-limpeza")}
+                  variant="outline" 
+                  className="w-full justify-start"
+                >
+                  <Users className="h-4 w-4 mr-2" />
+                  Ver Todas as Equipas
+                </Button>
+                <Button 
+                  onClick={() => navigate("/equipas-limpeza/agendamentos")}
+                  variant="outline" 
+                  className="w-full justify-start"
+                >
+                  <BellRing className="h-4 w-4 mr-2" />
+                  Agendamentos de Limpeza
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
