@@ -99,7 +99,8 @@ export function SidebarReorganized({
   // Estado para controle dos menus expansíveis
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     finances: true,
-    operations: false
+    operations: false,
+    settings: false
   });
 
   // Auto-expand section if a child is active
@@ -114,6 +115,11 @@ export function SidebarReorganized({
         location.includes('maintenance') || location.includes('manutencao') || 
         location.includes('owner') || location.includes('proprietario')) {
       setOpenSections(prev => ({ ...prev, operations: true }));
+    }
+    
+    // Expandir configurações quando na página de propriedades
+    if (location.includes('propriedades') || location.includes('properties')) {
+      setOpenSections(prev => ({ ...prev, settings: true }));
     }
   }, [location]);
 
@@ -303,13 +309,6 @@ export function SidebarReorganized({
       iconColor: "text-blue-500"
     },
     {
-      name: t("navigation.properties", "Imóveis"),
-      href: "/propriedades",
-      altHref: "/properties",
-      icon: Building2,
-      iconColor: "text-indigo-500"
-    },
-    {
       name: t("navigation.bookings", "Reservas"),
       href: "/reservas",
       altHref: "/reservations",
@@ -374,12 +373,27 @@ export function SidebarReorganized({
 
   // Operações
   const operationsNavItems = [
+    // Reorganizado para colocar Limpeza primeiro com submenu
     {
       name: t("navigation.cleaning", "Limpeza"),
       href: "/equipas-limpeza",
       altHref: "/cleaning-teams",
       icon: PaintBucket,
-      iconColor: "text-cyan-500"
+      iconColor: "text-cyan-500",
+      submenu: [
+        {
+          name: t("navigation.cleaning.teams", "Equipes"),
+          href: "/equipas-limpeza/equipas",
+          altHref: "/cleaning-teams/teams",
+          icon: PaintBucket,
+        },
+        {
+          name: t("navigation.cleaning.schedule", "Agenda"),
+          href: "/equipas-limpeza/agenda",
+          altHref: "/cleaning-teams/schedule",
+          icon: PaintBucket,
+        }
+      ]
     },
     {
       name: t("navigation.maintenance", "Manutenção"),
@@ -422,7 +436,16 @@ export function SidebarReorganized({
       href: "/configuracoes",
       altHref: "/settings",
       icon: Settings,
-      iconColor: "text-gray-500"
+      iconColor: "text-gray-500",
+      submenu: [
+        {
+          name: t("navigation.properties", "Imóveis"),
+          href: "/propriedades",
+          altHref: "/properties",
+          icon: Building2,
+          iconColor: "text-indigo-500"
+        },
+      ]
     },
     {
       name: t("navigation.demoData", "Dados Demo"),
@@ -714,17 +737,69 @@ export function SidebarReorganized({
             
             <SidebarSection title={t("navigation.categories.utilities", "Utilidades")}>
               <div className="space-y-1">
-                {otherNavItems.map((item) => (
-                  <SidebarItem
-                    key={item.href}
-                    icon={item.icon}
-                    label={item.name}
-                    href={item.href}
-                    isActive={checkIfActive(item.href)}
-                    onClick={() => navigate(item.href)}
-                    iconColor={item.iconColor}
-                  />
-                ))}
+                {/* Para o item Configurações, usamos o Collapsible para suportar submenus */}
+                {otherNavItems.map((item) => 
+                  item.submenu ? (
+                    <Collapsible 
+                      key={item.href}
+                      open={openSections.settings}
+                      onOpenChange={() => toggleSection('settings')}
+                      className="space-y-1"
+                    >
+                      <CollapsibleTrigger asChild>
+                        <div className="flex items-center">
+                          <button 
+                            className={cn(
+                              "flex-grow flex items-center w-full gap-3 px-3 rounded-md transition-colors",
+                              isMobile ? "py-3 text-base" : "py-2 text-sm",
+                              "text-foreground hover:bg-accent hover:text-accent-foreground",
+                              isMobile && "font-medium",
+                              checkIfActive(item.href) && "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-foreground font-semibold"
+                            )}
+                          >
+                            <item.icon className={cn(
+                              isMobile ? "h-6 w-6" : "h-5 w-5", 
+                              checkIfActive(item.href) ? "text-primary dark:text-primary-foreground" : item.iconColor
+                            )} />
+                            <span className="flex-1 truncate">{item.name}</span>
+                            <ChevronRight className={cn(
+                              "transition-transform", 
+                              openSections.settings ? "rotate-90" : "",
+                              isMobile ? "h-5 w-5" : "h-4 w-4"
+                            )} />
+                          </button>
+                        </div>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="pt-1">
+                        <div className="space-y-1">
+                          {item.submenu.map((subItem) => (
+                            <SidebarItem
+                              key={subItem.href}
+                              icon={subItem.icon}
+                              label={subItem.name}
+                              href={subItem.href}
+                              altHref={subItem.altHref}
+                              isActive={checkIfActive(subItem.href, subItem.altHref)}
+                              onClick={() => navigate(subItem.href)}
+                              iconColor={subItem.iconColor || item.iconColor}
+                              isSubItem
+                            />
+                          ))}
+                        </div>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  ) : (
+                    <SidebarItem
+                      key={item.href}
+                      icon={item.icon}
+                      label={item.name}
+                      href={item.href}
+                      isActive={checkIfActive(item.href)}
+                      onClick={() => navigate(item.href)}
+                      iconColor={item.iconColor}
+                    />
+                  )
+                )}
               </div>
             </SidebarSection>
           </div>
