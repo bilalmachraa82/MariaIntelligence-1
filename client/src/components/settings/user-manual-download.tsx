@@ -28,6 +28,7 @@ export default function UserManualDownload() {
   const [progress, setProgress] = useState(0);
   const [activeTab, setActiveTab] = useState("intro");
   const [showTip, setShowTip] = useState(false);
+  const [viewingOnline, setViewingOnline] = useState(false);
   const currentLanguage = i18n.language;
 
   // Simula progresso durante a geração do PDF
@@ -343,18 +344,47 @@ export default function UserManualDownload() {
               )}
             </Button>
             
-            <Button variant="outline" size="lg" className="group">
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="group"
+              onClick={() => setViewingOnline(!viewingOnline)}
+            >
               <span className="flex items-center gap-2">
                 <Eye className="h-4 w-4 group-hover:text-primary transition-colors" />
-                {t("settings.manual.view", "Visualizar Online")}
+                {viewingOnline 
+                  ? t("settings.manual.hideOnline", "Ocultar Visualização") 
+                  : t("settings.manual.view", "Visualizar Online")}
               </span>
             </Button>
           </div>
         </div>
       </motion.div>
       
+      {/* Mensagem quando a visualização online está ativa */}
+      {viewingOnline && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/30 rounded-lg p-4 flex items-start gap-3"
+        >
+          <div className="p-2 bg-blue-100 dark:bg-blue-800/30 rounded-full flex-shrink-0">
+            <Info className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+          </div>
+          <div>
+            <h3 className="font-medium text-blue-800 dark:text-blue-200 mb-1">
+              {t("settings.manual.onlineView.title", "Visualização Online Ativada")}
+            </h3>
+            <p className="text-sm text-blue-700/80 dark:text-blue-300/80">
+              {t("settings.manual.onlineView.description", "Você está visualizando o manual completo diretamente no navegador. Navegue pelas seções usando os botões abaixo.")}
+            </p>
+          </div>
+        </motion.div>
+      )}
+      
       {/* Tabs de navegação do manual com design moderno */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+      <div className={`grid grid-cols-1 md:grid-cols-12 gap-6 ${!viewingOnline && "hidden"}`}>
         {/* Sidebar com índice */}
         <div className="md:col-span-3 space-y-4">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border p-4">
