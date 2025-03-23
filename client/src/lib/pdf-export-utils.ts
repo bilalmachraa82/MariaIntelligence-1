@@ -3,6 +3,7 @@ import autoTable from 'jspdf-autotable';
 import { formatCurrency, formatDate } from "./utils";
 import { OwnerReport, PropertyReportItem, ReservationSummary } from "@/hooks/use-owner-report";
 import { renderLogoHeader, renderLogoFooter } from './pdf-logo-utils';
+import { addMariaFazHeader, addMariaFazFooter } from '@/pages/reports/owner-report/generate-pdf-header';
 
 // Interface para o objeto lastAutoTable
 interface LastAutoTable {
