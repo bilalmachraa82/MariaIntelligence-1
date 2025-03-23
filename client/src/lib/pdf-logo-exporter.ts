@@ -339,6 +339,183 @@ export function exportOwnerReportPDFWithLogo(
   
   yPos = getTableEndPosition(doc, yPos) + 15;
   
+  // Se o tipo de relatório incluir propriedades, mostrar detalhes por propriedade
+  if (reportType === 'properties' || reportType === 'full') {
+    // Título da seção de propriedades
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.setTextColor(brandColor[0], brandColor[1], brandColor[2]);
+    doc.text(`✦ ${t.propertiesTitle}`, margin, yPos);
+    yPos += 10;
+    
+    // Cabeçalhos para tabela de propriedades
+    const propertyTableHead = [
+      [
+        t.propertyName, 
+        t.revenue, 
+        t.cleaningCosts, 
+        t.checkInFees, 
+        t.commission,
+        t.netProfit, 
+        t.occupancyRate
+      ]
+    ];
+    
+    // Dados para tabela de propriedades
+    const propertyTableData = report.properties.map(property => [
+      property.name,
+      formatCurrency(property.revenue),
+      formatCurrency(property.cleaningCosts),
+      formatCurrency(property.checkInFees),
+      formatCurrency(property.commission),
+      formatCurrency(property.netProfit),
+      `${property.occupancyRate.toFixed(1)}%`
+    ]);
+    
+    // Renderizar tabela de propriedades
+    autoTable(doc, {
+      head: propertyTableHead,
+      body: propertyTableData,
+      startY: yPos,
+      headStyles: {
+        fillColor: [brandColor[0], brandColor[1], brandColor[2]],
+        textColor: [255, 255, 255],
+        fontStyle: 'bold'
+      },
+      alternateRowStyles: {
+        fillColor: [249, 250, 251]
+      },
+      columnStyles: {
+        0: { cellWidth: 50 },
+        1: { halign: 'right' },
+        2: { halign: 'right' },
+        3: { halign: 'right' },
+        4: { halign: 'right' },
+        5: { halign: 'right', fontStyle: 'bold' },
+        6: { halign: 'right' }
+      },
+      didDrawCell: (data) => {
+        // Colorir as células de lucro líquido com base no valor (verde = positivo, vermelho = negativo)
+        if (data.section === 'body' && data.column.index === 5 && data.cell.raw !== undefined) {
+          // Remover formatação para obter o valor numérico
+          const value = parseFloat(data.cell.raw.toString().replace(/[^\d,-]/g, '').replace(',', '.'));
+          if (!isNaN(value)) {
+            // Ajustar a cor do texto com base no valor
+            doc.setTextColor(
+              value >= 0 ? highlightColor[0] : warningColor[0],
+              value >= 0 ? highlightColor[1] : warningColor[1],
+              value >= 0 ? highlightColor[2] : warningColor[2]
+            );
+          }
+        }
+      },
+      margin: { left: margin, right: margin },
+    });
+    
+    // Atualizar a posição Y
+    yPos = getTableEndPosition(doc, yPos) + 15;
+  }
+
+  // Se o tipo de relatório incluir reservas, mostrar detalhes por reserva
+  if (reportType === 'reservations' || reportType === 'full') {
+    // Título da seção de reservas
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.setTextColor(brandColor[0], brandColor[1], brandColor[2]);
+    doc.text(`✦ ${t.reservationsTitle}`, margin, yPos);
+    yPos += 5;
+    
+    // Subtítulo explicativo
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(secondaryTextColor[0], secondaryTextColor[1], secondaryTextColor[2]);
+    doc.text(t.reservationsExplanation, margin, yPos + 5);
+    yPos += 10;
+    
+    // Verificar se existem reservas
+    if (report.reservations.length === 0) {
+      // Mensagem de nenhuma reserva
+      doc.setFont('helvetica', 'italic');
+      doc.setFontSize(11);
+      doc.setTextColor(secondaryTextColor[0], secondaryTextColor[1], secondaryTextColor[2]);
+      doc.text(t.noReservations, margin, yPos + 5);
+      yPos += 15;
+    } else {
+      // Cabeçalhos para tabela de reservas
+      const reservationTableHead = [
+        [
+          t.propertyName,
+          t.checkInDate, 
+          t.checkOutDate, 
+          t.guestName, 
+          t.platform,
+          t.totalAmount, 
+          t.netAmount
+        ]
+      ];
+      
+      // Dados para tabela de reservas
+      const reservationTableData = report.reservations.map(reservation => [
+        reservation.propertyName,
+        formatDate(reservation.checkInDate),
+        formatDate(reservation.checkOutDate),
+        reservation.guestName,
+        reservation.platform || '-',
+        formatCurrency(reservation.totalAmount),
+        formatCurrency(reservation.netAmount)
+      ]);
+      
+      // Renderizar tabela de reservas
+      autoTable(doc, {
+        head: reservationTableHead,
+        body: reservationTableData,
+        startY: yPos,
+        headStyles: {
+          fillColor: [brandColor[0], brandColor[1], brandColor[2]],
+          textColor: [255, 255, 255],
+          fontStyle: 'bold'
+        },
+        alternateRowStyles: {
+          fillColor: [249, 250, 251]
+        },
+        styles: {
+          fontSize: 8,
+          cellPadding: 2
+        },
+        columnStyles: {
+          0: { cellWidth: 'auto' },
+          1: { cellWidth: 'auto' },
+          2: { cellWidth: 'auto' },
+          3: { cellWidth: 'auto' },
+          4: { cellWidth: 'auto' },
+          5: { halign: 'right', cellWidth: 'auto' },
+          6: { halign: 'right', fontStyle: 'bold', cellWidth: 'auto' }
+        },
+        margin: { left: margin, right: margin },
+      });
+      
+      // Atualizar a posição Y
+      yPos = getTableEndPosition(doc, yPos) + 15;
+    }
+  }
+  
+  // Lista de frases inspiradoras para o rodapé (serão escolhidas aleatoriamente)
+  const inspirationalQuotes = [
+    "O sucesso nos negócios requer treinamento, disciplina e trabalho duro.",
+    "Fazer o que amas é o caminho para o sucesso.",
+    "Cada detalhe importa. É com os detalhes que se constrói a excelência.",
+    "A verdadeira hospitalidade é receber com o coração aberto.",
+    "Transformando casas em experiências inesquecíveis.",
+    "O verdadeiro luxo está no cuidado com os detalhes.",
+    "Qualidade não é um ato, é um hábito.",
+    "Grandes resultados vêm de pequenas ações consistentes.",
+    "O que fazemos com paixão, fazemos com excelência.",
+    "O sucesso é a soma de pequenos esforços repetidos dia após dia."
+  ];
+  
+  // Selecionar uma frase aleatória 
+  const randomQuote = inspirationalQuotes[Math.floor(Math.random() * inspirationalQuotes.length)];
+  
   // Adicionar rodapé para cada página
   // ===============================================
   const internal = doc.internal as unknown as JsPDFInternal;
@@ -351,6 +528,22 @@ export function exportOwnerReportPDFWithLogo(
     // Adicionar rodapé padronizado com logo
     addMariaFazFooter(doc, pageWidth, (doc.internal as any).pageSize.height, 
                       t.confidential, i, pageCount, t.poweredBy);
+    
+    // Adicionar frase inspiradora na última página
+    if (i === pageCount) {
+      const pageHeight = (doc.internal as any).pageSize.height;
+      
+      // Linha divisória para a frase inspiradora
+      doc.setDrawColor(lightGray[0], lightGray[1], lightGray[2]);
+      doc.setLineWidth(0.2);
+      doc.line(margin, pageHeight - 35, pageWidth - margin, pageHeight - 35);
+      
+      // Frase inspiradora
+      doc.setFontSize(9);
+      doc.setTextColor(accentColor[0], accentColor[1], accentColor[2]);
+      doc.setFont('helvetica', 'italic');
+      doc.text(`"${randomQuote}"`, pageWidth / 2, pageHeight - 27, { align: 'center' });
+    }
   }
   
   // Nome do arquivo
