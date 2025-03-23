@@ -1092,18 +1092,60 @@ export default function UserManualDownload() {
                     </p>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      {[1, 2, 3, 4, 5].map((item) => (
-                        <div key={item} className="relative overflow-hidden group rounded-lg border p-4 hover:border-primary/50 transition-colors">
+                        <div className="relative overflow-hidden group rounded-lg border p-4 hover:border-primary/50 transition-colors">
                           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                           <h3 className="font-medium text-sm mb-2 flex items-center gap-2">
                             <CheckCircle className="h-4 w-4 text-green-500" />
-                            {t(`settings.manual.content.propertiesBullet${item}`, `Característica ${item}`)}
+                            {t("settings.manual.content.propertiesBullet1", "Cadastro completo")}
                           </h3>
                           <p className="text-xs text-muted-foreground">
-                            {t(`settings.manual.properties.bullet${item}.desc`, `Descrição detalhada da característica ${item} do sistema.`)}
+                            {t("settings.manual.properties.bullet1.desc", "Registre todos os detalhes das propriedades incluindo fotos e informações de localização.")}
                           </p>
                         </div>
-                      ))}
+                        
+                        <div className="relative overflow-hidden group rounded-lg border p-4 hover:border-primary/50 transition-colors">
+                          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          <h3 className="font-medium text-sm mb-2 flex items-center gap-2">
+                            <CheckCircle className="h-4 w-4 text-green-500" />
+                            {t("settings.manual.content.propertiesBullet2", "Gestão de proprietários")}
+                          </h3>
+                          <p className="text-xs text-muted-foreground">
+                            {t("settings.manual.properties.bullet2.desc", "Associe propriedades aos seus respectivos proprietários para relatórios financeiros.")}
+                          </p>
+                        </div>
+                        
+                        <div className="relative overflow-hidden group rounded-lg border p-4 hover:border-primary/50 transition-colors">
+                          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          <h3 className="font-medium text-sm mb-2 flex items-center gap-2">
+                            <CheckCircle className="h-4 w-4 text-green-500" />
+                            {t("settings.manual.content.propertiesBullet3", "Custos operacionais")}
+                          </h3>
+                          <p className="text-xs text-muted-foreground">
+                            {t("settings.manual.properties.bullet3.desc", "Configure custos de limpeza, check-in e outras taxas específicas para cada imóvel.")}
+                          </p>
+                        </div>
+                        
+                        <div className="relative overflow-hidden group rounded-lg border p-4 hover:border-primary/50 transition-colors">
+                          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          <h3 className="font-medium text-sm mb-2 flex items-center gap-2">
+                            <CheckCircle className="h-4 w-4 text-green-500" />
+                            {t("settings.manual.content.propertiesBullet4", "Estatísticas detalhadas")}
+                          </h3>
+                          <p className="text-xs text-muted-foreground">
+                            {t("settings.manual.properties.bullet4.desc", "Acompanhe a taxa de ocupação, receita média e lucro para cada propriedade.")}
+                          </p>
+                        </div>
+                        
+                        <div className="relative overflow-hidden group rounded-lg border p-4 hover:border-primary/50 transition-colors">
+                          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          <h3 className="font-medium text-sm mb-2 flex items-center gap-2">
+                            <CheckCircle className="h-4 w-4 text-green-500" />
+                            {t("settings.manual.content.propertiesBullet5", "Associação a plataformas")}
+                          </h3>
+                          <p className="text-xs text-muted-foreground">
+                            {t("settings.manual.properties.bullet5.desc", "Vincule suas propriedades a plataformas como Airbnb e Booking para facilitar o gerenciamento.")}
+                          </p>
+                        </div>
                     </div>
                     
                     <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 mt-4">
@@ -1163,16 +1205,50 @@ export default function UserManualDownload() {
                         </p>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          {[1, 2, 3, 4, 5].map((item) => (
-                            <div key={item} className="flex items-start gap-2">
+                            <div className="flex items-start gap-2">
                               <div className="mt-0.5 h-5 w-5 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
-                                <span className="text-xs font-medium text-blue-700 dark:text-blue-300">{item}</span>
+                                <span className="text-xs font-medium text-blue-700 dark:text-blue-300">1</span>
                               </div>
                               <p className="text-sm">
-                                {t(`settings.manual.content.reservationsBullet${item}`, `Característica ${item}`)}
+                                {t("settings.manual.content.reservationsBullet1", "Processamento automático de PDFs de reservas")}
                               </p>
                             </div>
-                          ))}
+                            
+                            <div className="flex items-start gap-2">
+                              <div className="mt-0.5 h-5 w-5 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
+                                <span className="text-xs font-medium text-blue-700 dark:text-blue-300">2</span>
+                              </div>
+                              <p className="text-sm">
+                                {t("settings.manual.content.reservationsBullet2", "Controle financeiro com receitas e despesas")}
+                              </p>
+                            </div>
+                            
+                            <div className="flex items-start gap-2">
+                              <div className="mt-0.5 h-5 w-5 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
+                                <span className="text-xs font-medium text-blue-700 dark:text-blue-300">3</span>
+                              </div>
+                              <p className="text-sm">
+                                {t("settings.manual.content.reservationsBullet3", "Gestão de check-in e check-out")}
+                              </p>
+                            </div>
+                            
+                            <div className="flex items-start gap-2">
+                              <div className="mt-0.5 h-5 w-5 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
+                                <span className="text-xs font-medium text-blue-700 dark:text-blue-300">4</span>
+                              </div>
+                              <p className="text-sm">
+                                {t("settings.manual.content.reservationsBullet4", "Calendário integrado com visão mensal")}
+                              </p>
+                            </div>
+                            
+                            <div className="flex items-start gap-2">
+                              <div className="mt-0.5 h-5 w-5 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
+                                <span className="text-xs font-medium text-blue-700 dark:text-blue-300">5</span>
+                              </div>
+                              <p className="text-sm">
+                                {t("settings.manual.content.reservationsBullet5", "Relatórios detalhados por período")}
+                              </p>
+                            </div>
                         </div>
                       </div>
                     </div>
