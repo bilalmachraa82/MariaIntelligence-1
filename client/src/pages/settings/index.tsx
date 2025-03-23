@@ -19,6 +19,8 @@ export default function SettingsPage() {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const [emailNotifications, setEmailNotifications] = useState(true);
+  const [browserNotifications, setBrowserNotifications] = useState(false);
+  const [browserNotificationsSupported, setBrowserNotificationsSupported] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language || "pt-PT");
   const [isDarkMode, setIsDarkMode] = useState(false);
   
@@ -50,7 +52,65 @@ export default function SettingsPage() {
     } else {
       document.documentElement.classList.remove("dark");
     }
+    
+    // Verifica se as notificações do navegador são suportadas
+    const notificationsSupported = 'Notification' in window;
+    setBrowserNotificationsSupported(notificationsSupported);
+    
+    // Verifica se as notificações já foram permitidas
+    if (notificationsSupported && Notification.permission === 'granted') {
+      setBrowserNotifications(true);
+    }
   }, []);
+  
+  // Função para lidar com a alteração no toggle de notificações do navegador
+  const handleBrowserNotificationToggle = async (checked: boolean) => {
+    if (checked) {
+      try {
+        // Solicita permissão para notificações
+        const permission = await Notification.requestPermission();
+        
+        if (permission === 'granted') {
+          setBrowserNotifications(true);
+          
+          // Envia uma notificação de teste
+          new Notification('Notificações ativadas', {
+            body: 'Você receberá notificações de novas reservas e cancelamentos.',
+            icon: '/logo.png'
+          });
+          
+          localStorage.setItem('browserNotifications', 'true');
+          
+          toast({
+            title: "Notificações ativadas",
+            description: "Você receberá notificações no navegador.",
+          });
+        } else {
+          setBrowserNotifications(false);
+          toast({
+            title: "Permissão negada",
+            description: "Você precisa permitir notificações nas configurações do navegador.",
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+        console.error('Erro ao solicitar permissão para notificações:', error);
+        setBrowserNotifications(false);
+        toast({
+          title: "Erro",
+          description: "Não foi possível ativar as notificações.",
+          variant: "destructive",
+        });
+      }
+    } else {
+      setBrowserNotifications(false);
+      localStorage.setItem('browserNotifications', 'false');
+      toast({
+        title: "Notificações desativadas",
+        description: "Você não receberá mais notificações no navegador.",
+      });
+    }
+  };
 
   const handleDarkModeToggle = (checked: boolean) => {
     setIsDarkMode(checked);
@@ -331,6 +391,39 @@ export default function SettingsPage() {
                     <div className="flex items-center space-x-2">
                       <input type="checkbox" id="email-reports" defaultChecked className="rounded" />
                       <Label htmlFor="email-reports">{t("settings.notifications.weeklyReports")}</Label>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">{t("settings.notifications.browser", "Notificações do Navegador")}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {t("settings.notifications.browserDescription", "Receba notificações no navegador mesmo quando a aplicação não estiver aberta")}
+                    </p>
+                    {!browserNotificationsSupported && (
+                      <Badge variant="outline" className="mt-1 bg-yellow-50 text-yellow-700 border-yellow-300">
+                        Não suportado neste navegador
+                      </Badge>
+                    )}
+                  </div>
+                  <Switch 
+                    id="browser-notifications"
+                    checked={browserNotifications} 
+                    onCheckedChange={handleBrowserNotificationToggle}
+                    disabled={!browserNotificationsSupported}
+                  />
+                </div>
+
+                {browserNotifications && browserNotificationsSupported && (
+                  <div className="ml-6 space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <input type="checkbox" id="browser-reservations" defaultChecked className="rounded" />
+                      <Label htmlFor="browser-reservations">{t("settings.notifications.newReservation")}</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input type="checkbox" id="browser-cancellations" defaultChecked className="rounded" />
+                      <Label htmlFor="browser-cancellations">{t("settings.notifications.cancelledReservation")}</Label>
                     </div>
                   </div>
                 )}
