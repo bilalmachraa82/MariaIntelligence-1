@@ -7,7 +7,7 @@ import {
   Layout, Home, Building2, Calendar, Users, 
   Settings, ClipboardCheck, BarChart2, 
   FileSearch, ChevronRight, Eye, CheckCircle,
-  Layers, Play, Lock
+  Layers, Play, Lock, Activity
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
