@@ -22,7 +22,7 @@ export function addMariaFazHeader(
   // Adicionar o logo Maria Faz ao cabeçalho
   doc.addImage(
     LOGO_BASE64,
-    'SVG',
+    'PNG',
     logoPosX,
     logoPosY,
     logoWidth,
