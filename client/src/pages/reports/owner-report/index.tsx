@@ -13,7 +13,7 @@ import { downloadOwnerReportPDF } from "@/lib/pdf-export-utils";
 import { exportOwnerReportPDFWithLogo } from "@/lib/pdf-logo-exporter";
 import { OwnerReportModern } from "@/components/reports/owner-report-modern";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, Mail, Users } from "lucide-react";
+import { FileText, Download, Mail, Users, Image } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 
