@@ -226,15 +226,23 @@ export default function SettingsPage() {
         </Button>
       </div>
 
-      <Tabs defaultValue="general" className="space-y-4">
+      <Tabs defaultValue="properties" className="space-y-4">
         <TabsList className="flex flex-wrap">
-          <TabsTrigger value="general">
-            <Settings className="h-4 w-4 mr-1" />
-            {t("settings.tabs.general")}
+          <TabsTrigger value="properties">
+            <Building2 className="h-4 w-4 mr-1" />
+            {t("navigation.properties", "Imóveis")}
+          </TabsTrigger>
+          <TabsTrigger value="cleaning-teams">
+            <Users className="h-4 w-4 mr-1" />
+            {t("navigation.cleaning.teams", "Equipas de Limpeza")}
           </TabsTrigger>
           <TabsTrigger value="notifications">
             <BellRing className="h-4 w-4 mr-1" />
             {t("settings.tabs.notifications")}
+          </TabsTrigger>
+          <TabsTrigger value="general">
+            <Settings className="h-4 w-4 mr-1" />
+            {t("settings.tabs.general")}
           </TabsTrigger>
           <TabsTrigger value="account">
             <User className="h-4 w-4 mr-1" />
@@ -247,14 +255,6 @@ export default function SettingsPage() {
           <TabsTrigger value="api">
             <Key className="h-4 w-4 mr-1" />
             {t("settings.tabs.integrations")}
-          </TabsTrigger>
-          <TabsTrigger value="properties">
-            <Building2 className="h-4 w-4 mr-1" />
-            {t("navigation.properties", "Imóveis")}
-          </TabsTrigger>
-          <TabsTrigger value="cleaning-teams">
-            <Users className="h-4 w-4 mr-1" />
-            {t("navigation.cleaning.teams", "Equipas de Limpeza")}
           </TabsTrigger>
         </TabsList>
 
