@@ -7,7 +7,8 @@ import {
   Layout, Home, Building2, Calendar, Users, 
   Settings, ClipboardCheck, BarChart2, 
   FileSearch, ChevronRight, Eye, CheckCircle,
-  Layers, Play, Lock, Activity
+  Layers, Play, Lock, Activity, PieChart,
+  TrendingUp, DollarSign, FileSpreadsheet
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -206,20 +207,25 @@ export default function UserManualDownload() {
           case "reports":
             sectionContent = t("settings.manual.content.reports", 
               "O sistema oferece relatórios detalhados para análise do negócio: " +
-              "\n\n• Relatórios financeiros por período " +
-              "\n• Relatórios por proprietário " +
-              "\n• Análise de ocupação e sazonalidade " +
-              "\n• Desempenho por propriedade " +
-              "\n• Exportação em PDF e envio por email");
+              "\n\n• Relatórios financeiros por período: Acompanhe receitas, despesas e lucro líquido em diferentes períodos (diário, semanal, mensal, anual). Inclui gráficos de tendências e comparativos com períodos anteriores." +
+              "\n\n• Relatórios por proprietário: Demonstrativo financeiro detalhado para cada proprietário, incluindo rendimentos brutos, taxas, despesas e rendimento líquido. Pode ser enviado automaticamente por email em base mensal." +
+              "\n\n• Relatório de ocupação: Análise detalhada de taxas de ocupação por propriedade, região e período, permitindo identificar padrões de sazonalidade e oportunidades de precificação dinâmica." +
+              "\n\n• Relatório de desempenho por propriedade: Métricas detalhadas de ROI, receita por noite, taxa de conversão de reservas e avaliações de hóspedes para cada propriedade." +
+              "\n\n• Relatório de canais: Análise comparativa de desempenho entre diferentes plataformas (Airbnb, Booking, etc.) incluindo taxas, volume de reservas e receita média." +
+              "\n\n• Relatório de despesas: Controle detalhado de custos operacionais, manutenções, limpezas e outros gastos com filtros por categoria, propriedade e data." +
+              "\n\n• Dashboard analítico: Painel visual com principais KPIs do negócio, permitindo visualização em tempo real do desempenho geral.");
             break;
           case "documents":
             sectionContent = t("settings.manual.content.documents", 
-              "O Processamento de Documentos automatiza tarefas através de IA: " +
-              "\n\n• Upload de PDFs de reservas " +
-              "\n• Extração automática de dados com IA " +
-              "\n• Reconhecimento de documentos de check-in e check-out " +
-              "\n• Processamento de comprovantes e faturas " +
-              "\n• Validação inteligente de dados");
+              "O Processamento de Documentos automatiza tarefas através de IA (Inteligência Artificial) Mistral: " +
+              "\n\n• Processamento de PDFs de Reservas: Faça upload de confirmações de reservas das principais plataformas (Airbnb, Booking.com, VRBO, Expedia) e o sistema extrairá automaticamente todos os dados relevantes como nome do hóspede, datas, valores, taxas e detalhes da propriedade." +
+              "\n\n• Processamento de Pares de Documentos: O sistema consegue processar simultaneamente documentos de check-in e check-out, combinando as informações para criar um registro completo da reserva, incluindo valores adicionais e alterações." +
+              "\n\n• Reconhecimento Inteligente de Documentos: A IA identifica automaticamente o tipo de documento (confirmação de reserva, check-in, check-out, fatura, recibo) e aplica o processamento adequado para cada um." +
+              "\n\n• Extração de Dados Estruturados: Todos os dados são extraídos em formato estruturado e organizados no sistema, prontos para serem usados em relatórios e análises." +
+              "\n\n• Validação Contextual: O sistema valida os dados extraídos em relação à base de dados existente, identificando possíveis inconsistências ou duplicidades." +
+              "\n\n• Processamento em Lote: Suporte para processamento de múltiplos documentos em sequência, ideal para importação inicial de dados ou atualizações periódicas." +
+              "\n\n• Interface de Verificação e Edição: Após a extração automática, você pode revisar e editar os dados antes de confirmar a inclusão no sistema." +
+              "\n\n• Suporte para Documentos Financeiros: Processa faturas, recibos e comprovantes de pagamento, extraindo valores, datas, categorias e fornecedores.");
             break;
           case "settings":
             sectionContent = t("settings.manual.content.settings", 
@@ -235,6 +241,116 @@ export default function UserManualDownload() {
         // Quebrar texto em múltiplas linhas
         const splitText = doc.splitTextToSize(sectionContent, contentWidth);
         doc.text(splitText, margin, 30);
+        
+        // Adicionar captura de tela ilustrativa (mockup) para cada seção
+        try {
+          let y = 30 + splitText.length * 5;
+          
+          // Verifica se ainda há espaço suficiente na página atual
+          const remainingSpace = doc.internal.pageSize.getHeight() - y - 20;
+          if (remainingSpace < 60) {
+            doc.addPage();
+            y = 20;
+          }
+          
+          // Adiciona título para a captura de tela
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(11);
+          doc.setTextColor(primaryColor);
+          doc.text(t("settings.manual.screenshot.title", "Captura de Tela Ilustrativa"), margin, y);
+          
+          // Adiciona um retângulo representando uma captura de tela
+          y += 10;
+          const imageWidth = contentWidth;
+          const imageHeight = 60;
+          
+          // Retângulo decorativo representando a captura de tela
+          doc.setDrawColor(200, 200, 200);
+          doc.setFillColor(245, 245, 245);
+          doc.roundedRect(margin, y, imageWidth, imageHeight, 3, 3, 'FD');
+          
+          // Adiciona elementos gráficos representando a interface
+          doc.setFillColor(primaryColor);
+          
+          // Cabeçalho simulado
+          doc.rect(margin + 5, y + 5, imageWidth - 10, 10, 'F');
+          
+          // Elementos de interface simulados
+          if (section.id === "dashboard") {
+            // Cards de estatísticas
+            doc.setFillColor(220, 220, 220);
+            doc.rect(margin + 5, y + 20, 40, 30, 'F');
+            doc.rect(margin + 50, y + 20, 40, 30, 'F');
+            doc.rect(margin + 95, y + 20, 40, 30, 'F');
+            
+            // Gráfico simulado
+            doc.setFillColor(230, 230, 230);
+            doc.rect(margin + 5, y + 20, imageWidth - 10, 30, 'F');
+            doc.setDrawColor(primaryColor);
+            
+            // Linhas do gráfico
+            doc.setLineWidth(0.5);
+            for (let i = 0; i < 5; i++) {
+              const startX = margin + 10 + (i * 30);
+              const startY = y + 45 - (Math.random() * 20);
+              const endX = margin + 40 + (i * 30);
+              const endY = y + 45 - (Math.random() * 20);
+              doc.line(startX, startY, endX, endY);
+            }
+          } else if (section.id === "reports") {
+            // Tabela com dados financeiros
+            doc.setFillColor(240, 240, 240);
+            doc.rect(margin + 5, y + 20, imageWidth - 10, 30, 'F');
+            
+            // Linhas da tabela
+            doc.setDrawColor(200, 200, 200);
+            doc.setLineWidth(0.3);
+            for (let i = 1; i < 4; i++) {
+              const lineY = y + 20 + (i * 7.5);
+              doc.line(margin + 5, lineY, margin + imageWidth - 5, lineY);
+            }
+            
+            // Colunas da tabela
+            for (let i = 1; i < 4; i++) {
+              const lineX = margin + 5 + (i * (imageWidth - 10) / 4);
+              doc.line(lineX, y + 20, lineX, y + 50);
+            }
+          } else if (section.id === "documents") {
+            // Interface de processamento de PDFs
+            doc.setFillColor(240, 240, 240);
+            doc.rect(margin + 5, y + 20, imageWidth / 2 - 10, 30, 'F');
+            
+            // PDF processado
+            doc.setFillColor(230, 230, 230);
+            doc.rect(margin + imageWidth / 2 + 5, y + 20, imageWidth / 2 - 10, 30, 'F');
+            
+            // Ícone de documento
+            doc.setFillColor(primaryColor);
+            doc.rect(margin + 15, y + 25, 15, 20, 'F');
+            
+            // Setas de processamento
+            doc.setDrawColor(100, 100, 100);
+            doc.setLineWidth(1);
+            const arrowX1 = margin + imageWidth / 2 - 15;
+            const arrowX2 = margin + imageWidth / 2 + 5;
+            const arrowY = y + 35;
+            doc.line(arrowX1, arrowY, arrowX2, arrowY);
+            doc.line(arrowX2 - 5, arrowY - 3, arrowX2, arrowY);
+            doc.line(arrowX2 - 5, arrowY + 3, arrowX2, arrowY);
+          }
+          
+          // Legenda da captura de tela
+          doc.setFont("helvetica", "italic");
+          doc.setFontSize(9);
+          doc.setTextColor(100, 100, 100);
+          doc.text(
+            t("settings.manual.screenshot." + section.id, `Interface do módulo de ${section.title}`), 
+            margin, 
+            y + imageHeight + 7
+          );
+        } catch (error) {
+          console.error("Erro ao adicionar captura de tela:", error);
+        }
       });
       
       // Adicionar rodapé
