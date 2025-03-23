@@ -19,7 +19,6 @@ export default function SettingsPage() {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const [emailNotifications, setEmailNotifications] = useState(true);
-  const [smsNotifications, setSmsNotifications] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language || "pt-PT");
   const [isDarkMode, setIsDarkMode] = useState(false);
   
@@ -336,32 +335,7 @@ export default function SettingsPage() {
                   </div>
                 )}
 
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium">{t("settings.notifications.sms")}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {t("settings.notifications.smsDescription")}
-                    </p>
-                  </div>
-                  <Switch 
-                    id="sms-notifications"
-                    checked={smsNotifications} 
-                    onCheckedChange={setSmsNotifications} 
-                  />
-                </div>
 
-                {smsNotifications && (
-                  <div className="ml-6 space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <input type="checkbox" id="sms-reservations" defaultChecked className="rounded" />
-                      <Label htmlFor="sms-reservations">{t("settings.notifications.newReservation")}</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <input type="checkbox" id="sms-cancellations" defaultChecked className="rounded" />
-                      <Label htmlFor="sms-cancellations">{t("settings.notifications.cancelledReservation")}</Label>
-                    </div>
-                  </div>
-                )}
               </div>
               
               <Button onClick={handleSaveNotifications}>{t("common.save")}</Button>
