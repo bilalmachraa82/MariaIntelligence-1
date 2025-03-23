@@ -25,17 +25,15 @@ export function Logo({ className, size = "md", showText = true }: LogoProps) {
     lg: "text-xl"
   };
 
-  // Importar o logo diretamente como recurso estático
-  // Isso garante que o logo será incluído no bundle final
-  const logoUrl = new URL('/src/assets/logo.png', import.meta.url).href;
-
   return (
     <div className={cn("flex items-center gap-2", className)}>
-      <img 
-        src={logoUrl} 
-        alt="Maria Faz Logo" 
-        className={cn("object-contain", sizes[size])}
-      />
+      {/* Temporariamente usando um placeholder de logo enquanto resolvemos o problema de importação */}
+      <div 
+        className={cn("bg-primary rounded-md flex items-center justify-center text-primary-foreground font-bold", sizes[size])}
+        style={{ aspectRatio: "1/1", width: "auto" }}
+      >
+        M
+      </div>
       {showText && (
         <span className={cn("font-semibold hidden sm:inline-block", textSizes[size])}>
           Maria Faz
