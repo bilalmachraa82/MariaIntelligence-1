@@ -160,15 +160,19 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
       const cleaningCost = parseFloat(property.cleaningCost || "0");
       const checkInFee = parseFloat(property.checkInFee || "0");
       const commissionRate = parseFloat(property.commission || "0") / 100;
-      const teamPayment = parseFloat(property.teamPayment || "0");
+      // O valor do teamPayment é igual ao cleaningCost (esclarecido pelo cliente)
+      // São a mesma coisa vista de diferentes perspectivas
       
       const cleaningCosts = propertyReservations.length * cleaningCost;
       const checkInFees = propertyReservations.length * checkInFee;
       const commission = revenue * commissionRate;
-      const teamPayments = propertyReservations.length * teamPayment;
+      // Usamos o mesmo valor para teamPayments e cleaningCosts
+      const teamPayments = cleaningCosts;
       
-      // Lucro líquido
-      const netProfit = revenue - cleaningCosts - checkInFees - commission - teamPayments;
+      // Lucro líquido (corrigido para não contar o mesmo custo duas vezes)
+      // Não incluímos teamPayments aqui porque já consideramos o cleaningCosts
+      // que é o mesmo valor (conforme esclarecido pelo cliente)
+      const netProfit = revenue - cleaningCosts - checkInFees - commission;
       
       // Resumos de reservas
       const reservationSummaries: ReservationSummary[] = propertyReservations.map(res => {
@@ -189,8 +193,8 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
           cleaningFee: cleaningCost,
           checkInFee,
           commission: reserveCommission,
-          teamPayment,
-          netAmount: totalAmount - cleaningCost - checkInFee - reserveCommission - teamPayment,
+          teamPayment: cleaningCost, // Usando o mesmo valor do cleaningCost
+          netAmount: totalAmount - cleaningCost - checkInFee - reserveCommission, // Corrigido para não subtrair o mesmo custo duas vezes
           platform: res.platform || "other",
           nights
         };
