@@ -308,14 +308,6 @@ export function SidebarReorganized({
       icon: Home,
       iconColor: "text-blue-500"
     },
-    // Adicionado Imóveis ao menu principal para fácil acesso
-    {
-      name: t("navigation.properties", "Imóveis"),
-      href: "/propriedades",
-      altHref: "/properties",
-      icon: Building2,
-      iconColor: "text-indigo-500"
-    },
     {
       name: t("navigation.bookings", "Reservas"),
       href: "/reservas",
@@ -389,14 +381,6 @@ export function SidebarReorganized({
       icon: PaintBucket,
       iconColor: "text-cyan-500",
     },
-    // Item separado para equipes de limpeza para maior visibilidade
-    {
-      name: t("navigation.cleaning.teams", "Equipas de Limpeza"),
-      href: "/equipas-limpeza/equipas",
-      altHref: "/cleaning-teams/teams",
-      icon: Users,
-      iconColor: "text-cyan-500",
-    },
     {
       name: t("navigation.maintenance", "Manutenção"),
       href: "/manutencao/pendentes",
@@ -446,6 +430,13 @@ export function SidebarReorganized({
           altHref: "/properties",
           icon: Building2,
           iconColor: "text-indigo-500"
+        },
+        {
+          name: t("navigation.cleaning.teams", "Equipas de Limpeza"),
+          href: "/equipas-limpeza/equipas",
+          altHref: "/cleaning-teams/teams",
+          icon: Users,
+          iconColor: "text-cyan-500"
         },
       ]
     },
