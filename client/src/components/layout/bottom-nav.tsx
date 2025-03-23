@@ -10,7 +10,8 @@ import {
   Bot,
   Search,
   FileText,
-  ScanSearch
+  ScanSearch,
+  Settings
 } from "lucide-react";
 
 export function BottomNav() {
@@ -43,9 +44,9 @@ export function BottomNav() {
       icon: BadgeDollarSign
     },
     {
-      name: t("navigation.assistant", "Maria IA"),
-      href: isPortuguese ? "/assistente" : "/assistant",
-      icon: Bot
+      name: t("navigation.settings", "Config."),
+      href: isPortuguese ? "/configuracoes" : "/settings",
+      icon: Settings
     }
   ];
 

@@ -387,6 +387,7 @@ export function SidebarReorganized({
       icon: Users,
       iconColor: "text-orange-500"
     }
+    // Propriedades e Equipes de Limpeza movidas para submenu de Configurações
   ];
 
   // Ferramentas

@@ -28,12 +28,6 @@ export function MobileNavReorganized() {
       color: "text-blue-500"
     },
     {
-      name: t("navigation.properties", "Imóveis"),
-      href: isPortuguese ? "/propriedades" : "/properties",
-      icon: Building2,
-      color: "text-indigo-500"
-    },
-    {
       name: t("navigation.bookings", "Reservas"),
       href: isPortuguese ? "/reservas" : "/reservations",
       icon: CalendarDays,
@@ -47,9 +41,15 @@ export function MobileNavReorganized() {
     },
     {
       name: t("navigation.operations", "Operações"),
-      href: isPortuguese ? "/equipas-limpeza" : "/cleaning-teams",
+      href: isPortuguese ? "/manutencao/pendentes" : "/maintenance/pending", 
       icon: HardHat,
       color: "text-amber-500"
+    },
+    {
+      name: t("navigation.settings", "Config."),
+      href: isPortuguese ? "/configuracoes" : "/settings",
+      icon: Settings,
+      color: "text-gray-500"
     }
   ];
 
