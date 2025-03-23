@@ -308,6 +308,14 @@ export function SidebarReorganized({
       icon: Home,
       iconColor: "text-blue-500"
     },
+    // Adicionado Imóveis ao menu principal para fácil acesso
+    {
+      name: t("navigation.properties", "Imóveis"),
+      href: "/propriedades",
+      altHref: "/properties",
+      icon: Building2,
+      iconColor: "text-indigo-500"
+    },
     {
       name: t("navigation.bookings", "Reservas"),
       href: "/reservas",
@@ -373,27 +381,21 @@ export function SidebarReorganized({
 
   // Operações
   const operationsNavItems = [
-    // Reorganizado para colocar Limpeza primeiro com submenu
+    // Limpeza como item principal sem submenu (versão completa será com submenu)
     {
       name: t("navigation.cleaning.title", "Limpeza"),
       href: "/equipas-limpeza",
       altHref: "/cleaning-teams",
       icon: PaintBucket,
       iconColor: "text-cyan-500",
-      submenu: [
-        {
-          name: t("navigation.cleaning.teams", "Equipas"),
-          href: "/equipas-limpeza/equipas",
-          altHref: "/cleaning-teams/teams",
-          icon: PaintBucket,
-        },
-        {
-          name: t("navigation.cleaning.schedule", "Agenda"),
-          href: "/equipas-limpeza/agenda",
-          altHref: "/cleaning-teams/schedule",
-          icon: PaintBucket,
-        }
-      ]
+    },
+    // Item separado para equipes de limpeza para maior visibilidade
+    {
+      name: t("navigation.cleaning.teams", "Equipas de Limpeza"),
+      href: "/equipas-limpeza/equipas",
+      altHref: "/cleaning-teams/teams",
+      icon: Users,
+      iconColor: "text-cyan-500",
     },
     {
       name: t("navigation.maintenance", "Manutenção"),
