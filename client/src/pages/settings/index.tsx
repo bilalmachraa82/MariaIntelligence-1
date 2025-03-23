@@ -208,53 +208,54 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:justify-between mb-2 sm:mb-0 gap-3">
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
             size="sm"
+            className="flex-shrink-0"
             onClick={() => navigate("/")}
           >
             <ArrowLeft className="h-4 w-4 mr-1" />
             {t("common.back")}
           </Button>
-          <h2 className="text-2xl font-bold">{t("settings.title")}</h2>
+          <h2 className="text-xl sm:text-2xl font-bold truncate">{t("settings.title")}</h2>
         </div>
-        <Button variant="outline" size="sm" onClick={() => window.open("https://mariatoolbox.com/docs", "_blank")}>
+        <Button variant="outline" size="sm" className="self-start sm:self-auto w-full sm:w-auto" onClick={() => window.open("https://mariatoolbox.com/docs", "_blank")}>
           <HelpCircle className="h-4 w-4 mr-1" />
-          {t("common.help")}
+          <span className="whitespace-nowrap">{t("common.help")}</span>
         </Button>
       </div>
 
       <Tabs defaultValue="properties" className="space-y-4">
-        <TabsList className="flex flex-wrap">
-          <TabsTrigger value="properties">
+        <TabsList className="flex flex-wrap overflow-x-auto pb-1 md:pb-0 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+          <TabsTrigger value="properties" className="min-w-fit">
             <Building2 className="h-4 w-4 mr-1" />
-            {t("navigation.properties", "Imóveis")}
+            <span className="whitespace-nowrap">{t("navigation.properties", "Imóveis")}</span>
           </TabsTrigger>
-          <TabsTrigger value="cleaning-teams">
+          <TabsTrigger value="cleaning-teams" className="min-w-fit">
             <Users className="h-4 w-4 mr-1" />
-            {t("navigation.cleaning.teams", "Equipas de Limpeza")}
+            <span className="whitespace-nowrap">{t("navigation.cleaning.teams", "Equipas de Limpeza")}</span>
           </TabsTrigger>
-          <TabsTrigger value="notifications">
+          <TabsTrigger value="notifications" className="min-w-fit">
             <BellRing className="h-4 w-4 mr-1" />
-            {t("settings.tabs.notifications")}
+            <span className="whitespace-nowrap">{t("settings.tabs.notifications")}</span>
           </TabsTrigger>
-          <TabsTrigger value="general">
+          <TabsTrigger value="general" className="min-w-fit">
             <Settings className="h-4 w-4 mr-1" />
-            {t("settings.tabs.general")}
+            <span className="whitespace-nowrap">{t("settings.tabs.general")}</span>
           </TabsTrigger>
-          <TabsTrigger value="account">
+          <TabsTrigger value="account" className="min-w-fit">
             <User className="h-4 w-4 mr-1" />
-            {t("settings.tabs.account")}
+            <span className="whitespace-nowrap">{t("settings.tabs.account")}</span>
           </TabsTrigger>
-          <TabsTrigger value="language">
+          <TabsTrigger value="language" className="min-w-fit">
             <Globe className="h-4 w-4 mr-1" />
-            {t("settings.tabs.language")}
+            <span className="whitespace-nowrap">{t("settings.tabs.language")}</span>
           </TabsTrigger>
-          <TabsTrigger value="api">
+          <TabsTrigger value="api" className="min-w-fit">
             <Key className="h-4 w-4 mr-1" />
-            {t("settings.tabs.integrations")}
+            <span className="whitespace-nowrap">{t("settings.tabs.integrations")}</span>
           </TabsTrigger>
         </TabsList>
 
@@ -416,32 +417,32 @@ export default function SettingsPage() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Card 
-                  className={`cursor-pointer hover:border-primary ${currentLanguage === 'pt-PT' || currentLanguage === 'pt' ? 'border-primary bg-primary-50' : ''}`}
+                  className={`cursor-pointer hover:border-primary transition-colors ${currentLanguage === 'pt-PT' || currentLanguage === 'pt' ? 'border-primary bg-primary-50/30' : ''}`}
                   onClick={() => changeLanguage('pt-PT')}
                 >
-                  <CardContent className="pt-6 flex items-center">
-                    <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 mr-4 bg-gray-100 flex items-center justify-center">
+                  <CardContent className="pt-4 sm:pt-6 flex items-center">
+                    <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 mr-3 sm:mr-4 bg-gray-100 flex items-center justify-center text-xl">
                       🇵🇹
                     </div>
-                    <div>
-                      <h3 className="font-medium">Português (Portugal)</h3>
-                      <p className="text-sm text-muted-foreground">Idioma padrão do sistema</p>
+                    <div className="min-w-0">
+                      <h3 className="font-medium text-base sm:text-lg truncate">Português (Portugal)</h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground truncate">Idioma padrão do sistema</p>
                       <Badge className="mt-1" variant="outline">Recomendado</Badge>
                     </div>
                   </CardContent>
                 </Card>
                 
                 <Card 
-                  className={`cursor-pointer hover:border-primary ${currentLanguage === 'en-GB' || currentLanguage === 'en' ? 'border-primary bg-primary-50' : ''}`}
+                  className={`cursor-pointer hover:border-primary transition-colors ${currentLanguage === 'en-GB' || currentLanguage === 'en' ? 'border-primary bg-primary-50/30' : ''}`}
                   onClick={() => changeLanguage('en-GB')}
                 >
-                  <CardContent className="pt-6 flex items-center">
-                    <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 mr-4 bg-gray-100 flex items-center justify-center">
+                  <CardContent className="pt-4 sm:pt-6 flex items-center">
+                    <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 mr-3 sm:mr-4 bg-gray-100 flex items-center justify-center text-xl">
                       🇬🇧
                     </div>
-                    <div>
-                      <h3 className="font-medium">English (UK)</h3>
-                      <p className="text-sm text-muted-foreground">Alternativa em inglês</p>
+                    <div className="min-w-0">
+                      <h3 className="font-medium text-base sm:text-lg truncate">English (UK)</h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground truncate">Alternativa em inglês</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -474,10 +475,10 @@ export default function SettingsPage() {
                   onClick={handleTestIntegrations} 
                   variant="default" 
                   disabled={isTestingIntegrations}
-                  className="flex items-center gap-1"
+                  className="flex items-center gap-1 w-full sm:w-auto"
                 >
                   <Activity className="h-4 w-4" />
-                  {isTestingIntegrations ? "Testando..." : "Testar Integrações"}
+                  <span className="whitespace-nowrap">{isTestingIntegrations ? "Testando..." : "Testar Integrações"}</span>
                 </Button>
               </div>
               
@@ -497,7 +498,7 @@ export default function SettingsPage() {
                       </Alert>
                     )}
                     
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       <div className="p-3 rounded-md border">
                         <div className="flex items-center gap-2 mb-1">
                           {testResults.mistral === true ? (
@@ -594,14 +595,15 @@ export default function SettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex justify-between items-center pb-4">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-4">
                 <h3 className="text-lg font-medium">Lista de Imóveis</h3>
                 <Button 
                   onClick={() => navigate("/propriedades/novo")}
                   variant="default"
                   size="sm"
+                  className="w-full sm:w-auto whitespace-nowrap"
                 >
-                  Adicionar Novo Imóvel
+                  <span className="mr-1">+</span> Adicionar Novo Imóvel
                 </Button>
               </div>
               
@@ -636,14 +638,15 @@ export default function SettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex justify-between items-center pb-4">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-4">
                 <h3 className="text-lg font-medium">Equipas de Limpeza</h3>
                 <Button 
                   onClick={() => navigate("/equipas-limpeza/nova")}
                   variant="default"
                   size="sm"
+                  className="w-full sm:w-auto whitespace-nowrap"
                 >
-                  Adicionar Nova Equipa
+                  <span className="mr-1">+</span> Adicionar Nova Equipa
                 </Button>
               </div>
               
