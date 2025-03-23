@@ -373,14 +373,6 @@ export function SidebarReorganized({
 
   // Operações
   const operationsNavItems = [
-    // Limpeza como item principal sem submenu (versão completa será com submenu)
-    {
-      name: t("navigation.cleaning.title", "Limpeza"),
-      href: "/equipas-limpeza",
-      altHref: "/cleaning-teams",
-      icon: PaintBucket,
-      iconColor: "text-cyan-500",
-    },
     {
       name: t("navigation.maintenance", "Manutenção"),
       href: "/manutencao/pendentes",
@@ -430,6 +422,13 @@ export function SidebarReorganized({
           altHref: "/properties",
           icon: Building2,
           iconColor: "text-indigo-500"
+        },
+        {
+          name: t("navigation.cleaning.title", "Limpeza"),
+          href: "/equipas-limpeza",
+          altHref: "/cleaning-teams",
+          icon: PaintBucket,
+          iconColor: "text-cyan-500",
         },
         {
           name: t("navigation.cleaning.teams", "Equipas de Limpeza"),
