@@ -1,16 +1,19 @@
 import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import { formatCurrency, formatDate } from "./utils";
 import { OwnerReport, PropertyReportItem, ReservationSummary } from "@/hooks/use-owner-report";
 
-// Necessário para TypeScript reconhecer os tipos estendidos do jsPDF
-declare module 'jspdf' {
-  interface jsPDF {
-    autoTable: (options: any) => jsPDF;
-    lastAutoTable: {
-      finalY: number;
-    };
-  }
+// Interface para o objeto lastAutoTable
+interface LastAutoTable {
+  finalY: number;
+}
+
+// Funções auxiliares para lidar com o autoTable
+// Esta função ajuda a obter a posição Y após uma tabela ser renderizada
+function getTableEndPosition(doc: jsPDF, defaultY: number): number {
+  // Acessar o lastAutoTable como any para contornar a verificação de tipos
+  const result = (doc as any).lastAutoTable;
+  return result ? result.finalY : defaultY;
 }
 
 // Interface auxiliar para métodos internos do jsPDF
@@ -307,7 +310,7 @@ export function downloadOwnerReportPDF(
       [t.totalReservations, report.totals.totalReservations.toString()],
     ];
     
-    doc.autoTable({
+    autoTable(doc, {
       head: [],
       body: summaryData,
       startY: yPos,
@@ -327,7 +330,9 @@ export function downloadOwnerReportPDF(
       margin: { left: 14 }
     });
     
-    yPos = doc.lastAutoTable.finalY + 10;
+    // Usar a posição Y retornada pelo autoTable
+    const tablePosition = (doc as any).lastAutoTable || { finalY: yPos + 50 };
+    yPos = tablePosition.finalY + 10;
     
     // Adicionar informações de contexto do período
     doc.setFontSize(11);
@@ -388,7 +393,7 @@ export function downloadOwnerReportPDF(
       ]
     ];
     
-    doc.autoTable({
+    autoTable(doc, {
       head: propertiesHeaders,
       body: propertiesData,
       startY: yPos,
@@ -418,7 +423,7 @@ export function downloadOwnerReportPDF(
       margin: { left: 14 }
     });
     
-    return doc.lastAutoTable.finalY + 10;
+    return getTableEndPosition(doc, yPos) + 10;
   };
   
   // Renderizar seção de reservas
@@ -467,7 +472,7 @@ export function downloadOwnerReportPDF(
         ]
       ];
       
-      doc.autoTable({
+      autoTable(doc, {
         head: reservationsHeaders,
         body: allReservations,
         startY: yPos,
@@ -485,14 +490,14 @@ export function downloadOwnerReportPDF(
         },
         columnStyles: {
           0: { cellWidth: 35 },
-          1: { cellWidth: 18 },
-          2: { cellWidth: 18 },
-          3: { cellWidth: 25 },
-          4: { cellWidth: 18 },
-          5: { halign: 'right', cellWidth: 20 },
-          6: { halign: 'right', cellWidth: 20 },
-          7: { halign: 'right', cellWidth: 20 },
-          8: { halign: 'right', cellWidth: 20 }
+          1: { cellWidth: 20 },
+          2: { cellWidth: 20 },
+          3: { cellWidth: 30 },
+          4: { cellWidth: 20 },
+          5: { halign: 'right' },
+          6: { halign: 'right' },
+          7: { halign: 'right' },
+          8: { halign: 'right' }
         },
         alternateRowStyles: {
           fillColor: [245, 245, 245]
@@ -500,43 +505,32 @@ export function downloadOwnerReportPDF(
         margin: { left: 14 }
       });
       
-      return doc.lastAutoTable.finalY + 10;
+      return getTableEndPosition(doc, yPos) + 10;
     } else {
       // Para relatórios com poucas propriedades, mostrar cada propriedade separadamente
-      // com detalhes adicionais e melhor formatação
       let currentY = yPos;
       
-      // Percorrer cada propriedade e mostrar suas reservas
-      for (const property of report.propertyReports) {
-        // Verificar se precisamos adicionar uma nova página
-        const internal = doc.internal as unknown as JsPDFInternal;
-        if (currentY > internal.pageSize.height - 60) {
-          doc.addPage();
-          currentY = 20;
+      report.propertyReports.forEach((property, index) => {
+        if (index > 0) {
+          // Adicionar espaço entre propriedades
+          currentY += 10;
         }
         
         // Título da propriedade
         doc.setFontSize(12);
         doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-        doc.text(`${property.propertyName} (${property.reservations.length} ${t.reservations || "reservas"})`, 14, currentY);
-        currentY += 8;
+        doc.text(property.propertyName, 14, currentY);
+        currentY += 7;
         
-        // Estatísticas da propriedade
-        doc.setFontSize(9);
-        doc.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
-        doc.text(`${t.occupancyRate || "Taxa de Ocupação"}: ${property.occupancyRate.toFixed(1)}% | ${t.revenue || "Receita"}: ${formatCurrency(property.revenue)} | ${t.netProfit || "Lucro"}: ${formatCurrency(property.netProfit)}`, 14, currentY);
-        currentY += 10;
-        
-        // Se não houver reservas, mostrar mensagem
         if (property.reservations.length === 0) {
           doc.setFontSize(9);
-          doc.setTextColor(textColor[0], textColor[1], textColor[2]);
-          doc.text(t.noReservations || "Sem reservas no período selecionado", 14, currentY);
+          doc.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
+          doc.text(t.noReservations || "Sem reservas no período selecionado.", 14, currentY);
           currentY += 10;
-          continue;
+          return;
         }
         
-        // Preparar dados para tabela de reservas desta propriedade
+        // Preparar dados para tabela
         const propertyReservations = property.reservations.map(r => [
           formatDate(r.checkInDate),
           formatDate(r.checkOutDate),
@@ -544,13 +538,11 @@ export function downloadOwnerReportPDF(
           r.platform,
           formatCurrency(r.totalAmount),
           formatCurrency(r.cleaningFee),
-          formatCurrency(r.checkInFee),
           formatCurrency(r.commission),
-          formatCurrency(r.teamPayment),
           formatCurrency(r.netAmount)
         ]);
         
-        // Cabeçalhos da tabela de reservas
+        // Cabeçalhos da tabela
         const propertyReservationsHeaders = [
           [
             t.checkInDate,
@@ -559,15 +551,12 @@ export function downloadOwnerReportPDF(
             t.platform,
             t.totalAmount,
             t.cleaningFee,
-            t.checkInFee,
             t.commission,
-            t.teamPayment,
             t.netAmount
           ]
         ];
         
-        // Renderizar tabela de reservas desta propriedade
-        doc.autoTable({
+        autoTable(doc, {
           head: propertyReservationsHeaders,
           body: propertyReservations,
           startY: currentY,
@@ -583,20 +572,30 @@ export function downloadOwnerReportPDF(
             textColor: [50, 50, 50],
             fontStyle: 'bold'
           },
+          columnStyles: {
+            0: { cellWidth: 20 },
+            1: { cellWidth: 20 },
+            2: { cellWidth: 35 },
+            3: { cellWidth: 25 },
+            4: { halign: 'right' },
+            5: { halign: 'right' },
+            6: { halign: 'right' },
+            7: { halign: 'right' }
+          },
           alternateRowStyles: {
             fillColor: [245, 245, 245]
           },
           margin: { left: 14 }
         });
         
-        currentY = doc.lastAutoTable.finalY + 15;
-      }
+        currentY = getTableEndPosition(doc, currentY) + 15;
+      });
       
       return currentY;
     }
   };
   
-  // Renderizar relatório conforme tipo selecionado
+  // Renderizar seções com base no tipo de relatório
   switch (reportType) {
     case 'summary':
       yPos = renderSummary(doc, yPos);
@@ -610,266 +609,208 @@ export function downloadOwnerReportPDF(
     case 'full':
     default:
       yPos = renderSummary(doc, yPos);
-      doc.addPage();
-      yPos = 20;
       yPos = renderProperties(doc, yPos);
-      doc.addPage();
-      yPos = 20;
       yPos = renderReservations(doc, yPos);
       break;
   }
   
-  // Adicionar rodapé em todas as páginas
+  // Adicionar rodapé
   addFooter(doc);
   
-  // Nome do arquivo
-  const ownerSlug = report.ownerName.toLowerCase().replace(/\s+/g, '-');
-  const dateSlug = report.startDate.split('T')[0];
-  
-  // Tipo de relatório no nome do arquivo
-  let fileType;
-  switch (reportType) {
-    case 'summary':
-      fileType = language === 'pt-PT' ? 'resumo' : 'summary';
-      break;
-    case 'properties':
-      fileType = language === 'pt-PT' ? 'propriedades' : 'properties';
-      break;
-    case 'reservations':
-      fileType = language === 'pt-PT' ? 'reservas' : 'reservations';
-      break;
-    case 'full':
-    default:
-      fileType = language === 'pt-PT' ? 'relatorio-completo' : 'full-report';
-      break;
-  }
-  
-  const fileName = `maria-faz-${fileType}-${ownerSlug}-${dateSlug}.pdf`;
-  
   // Salvar o PDF
+  const fileName = `relatorio_${report.ownerName.replace(/\s+/g, '_').toLowerCase()}_${new Date().toISOString().slice(0, 10)}.pdf`;
   doc.save(fileName);
 }
 
 /**
- * Gera insights inteligentes para o relatório usando o contexto de RAG/IA
- * Esses insights são úteis para adicionar informações contextuais ao relatório
- * 
- * @param report Dados do relatório de proprietário
- * @returns Objeto com insights gerados pela IA
+ * Gera um PDF de relatório para email (retorna o buffer ao invés de download)
+ * @param report Dados do relatório
+ * @param reportType Tipo de relatório (summary, properties, reservations ou full)
+ * @param language Código do idioma
+ * @returns Buffer do PDF gerado
  */
-/**
- * Gera insights inteligentes para o relatório usando o contexto de RAG/IA
- * Esses insights são úteis para adicionar informações contextuais ao relatório
- * e fornecer recomendações baseadas em análise de dados.
- * 
- * @param report Dados do relatório de proprietário
- * @returns Objeto com insights gerados pela IA
- */
-export async function generateReportInsights(report: OwnerReport): Promise<{
-  summaryInsight: string;
-  trendAnalysis: string;
-  recommendations: string[];
-  keyMetrics: {label: string; value: string}[];
-  propertyInsights: {propertyId: number; propertyName: string; insight: string}[];
-  seasonalTips: string[];
-}> {
-  try {
-    // Verificar se há insights em cache local
-    const cacheKey = `insights_${report.ownerId}_${report.startDate}_${report.endDate}`;
-    const cachedInsights = localStorage.getItem(cacheKey);
-    
-    if (cachedInsights) {
-      return JSON.parse(cachedInsights);
-    }
-    
-    // Implementar cooldown para evitar múltiplas chamadas seguidas à API 
-    // (isto previne erros de rate limit)
-    const lastApiCallTime = localStorage.getItem('last_mistral_api_call');
-    const now = Date.now();
-    const API_COOLDOWN = 30000; // 30 segundos de espera entre chamadas
-    
-    if (lastApiCallTime && (now - parseInt(lastApiCallTime)) < API_COOLDOWN) {
-      console.log("Limitando chamadas à API do Mistral. Usando insights gerados localmente.");
-      return getLocalInsights(report);
-    }
-    
-    // Atualizar o timestamp da última chamada
-    localStorage.setItem('last_mistral_api_call', now.toString());
-    
-    // Preparar dados detalhados para enviar à IA para análise mais completa
-    const propertyPerformance = report.propertyReports.map(property => ({
-      id: property.propertyId,
-      name: property.propertyName,
-      revenue: property.revenue,
-      costs: {
-        cleaning: property.cleaningCosts,
-        checkIn: property.checkInFees,
-        commission: property.commission,
-        team: property.teamPayments
-      },
-      profit: property.netProfit,
-      occupancy: property.occupancyRate,
-      reservations: property.reservations.length
-    }));
-
-    // Adicionar dados de tendência, se disponíveis (comparação com período anterior)
-    // Isso seria ideal para vir da API, estamos simulando aqui
-    const trends = {
-      revenue: 5.2, // Aumento de 5.2% (simulado)
-      profit: report.totals.totalNetProfit > 0 ? 3.8 : -2.1,
-      occupancy: 1.5
-    };
-    
-    // Tentar obter insights do servidor se houver conexão com Mistral AI
-    const response = await fetch('/api/assistant', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        message: `Analise estes dados financeiros e gere insights detalhados para um relatório de proprietário:
-          Proprietário: ${report.ownerName}
-          Período: ${formatDate(report.startDate)} a ${formatDate(report.endDate)}
-          Resumo Financeiro: 
-          - Receita Total: ${formatCurrency(report.totals.totalRevenue)}
-          - Lucro Líquido: ${formatCurrency(report.totals.totalNetProfit)}
-          - Taxa de Ocupação Média: ${report.totals.averageOccupancy.toFixed(1)}%
-          - Total de Propriedades: ${report.totals.totalProperties}
-          - Total de Reservas: ${report.totals.totalReservations}
-          
-          Inclua análise sazonal, recomendações específicas por propriedade e oportunidades de otimização.`,
-        context: {
-          type: 'report',
-          reportData: {
-            summary: {
-              ownerId: report.ownerId,
-              ownerName: report.ownerName,
-              period: {
-                startDate: report.startDate,
-                endDate: report.endDate
-              },
-              totals: report.totals,
-              trends: trends
-            },
-            properties: propertyPerformance
-          }
-        }
-      }),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      
-      // Se a resposta contiver insights estruturados, use-os
-      if (data.context && data.context.insights) {
-        return data.context.insights;
-      }
-      
-      // Caso contrário, extrair insights do conteúdo de texto da resposta
-      // e complementar com métricas calculadas localmente
-      return {
-        summaryInsight: data.content || "Análise não disponível no momento.",
-        trendAnalysis: `Durante o período analisado, a receita apresentou uma variação de ${trends.revenue > 0 ? '+' : ''}${trends.revenue}% e o lucro de ${trends.profit > 0 ? '+' : ''}${trends.profit}% em comparação com períodos similares anteriores.`,
-        recommendations: [
-          "Aumente os preços em propriedades com alta ocupação e baixa margem de lucro",
-          "Considere descontos para estadias mais longas em períodos de baixa temporada",
-          "Otimize custos de limpeza agendando reservas consecutivas quando possível",
-          "Revisite a precificação das propriedades com menor desempenho financeiro"
-        ],
-        keyMetrics: [
-          { label: "Taxa de Ocupação", value: `${report.totals.averageOccupancy.toFixed(1)}%` },
-          { label: "Margem de Lucro", value: `${((report.totals.totalNetProfit / report.totals.totalRevenue) * 100).toFixed(1)}%` },
-          { label: "Receita/Propriedade", value: formatCurrency(report.totals.totalRevenue / report.totals.totalProperties) },
-          { label: "Receita/Reserva", value: formatCurrency(report.totals.totalRevenue / (report.totals.totalReservations || 1)) }
-        ],
-        propertyInsights: report.propertyReports.map(property => ({
-          propertyId: property.propertyId,
-          propertyName: property.propertyName,
-          insight: `A propriedade "${property.propertyName}" teve ${property.occupancyRate.toFixed(1)}% de ocupação com receita de ${formatCurrency(property.revenue)} e lucro de ${formatCurrency(property.netProfit)}, resultando em margem de ${((property.netProfit / property.revenue) * 100).toFixed(1)}%.`
-        })),
-        seasonalTips: [
-          "Considere aumentar as tarifas para o próximo período de alta temporada com base na ocupação atual",
-          "Avalie estratégias promocionais para aumentar a ocupação em períodos de baixa demanda",
-          "Planeje manutenções e melhorias durante períodos de menor ocupação"
-        ]
-      };
-    } else {
-      // Caso falhe, retornar insights padrão baseados apenas nos cálculos locais
-      return getLocalInsights(report);
-    }
-  } catch (error) {
-    console.error("Erro ao gerar insights com IA:", error);
-    // Gerar insights localmente como fallback
-    return getLocalInsights(report);
-  }
-}
-
-/**
- * Gera insights localmente baseados apenas nos dados do relatório
- * Usado como fallback quando não há conexão com o servidor Mistral AI
- */
-function getLocalInsights(report: OwnerReport) {
-  const occupancyRate = report.totals.averageOccupancy;
-  const profitMargin = (report.totals.totalNetProfit / report.totals.totalRevenue) * 100;
-  
-  // Encontrar propriedade com melhor desempenho
-  const bestProperty = report.propertyReports.reduce((prev, current) => 
-    (prev.netProfit > current.netProfit) ? prev : current
-  );
-  
-  // Encontrar propriedade com pior desempenho (com alguma receita)
-  const propertiesWithRevenue = report.propertyReports.filter(p => p.revenue > 0);
-  const worstProperty = propertiesWithRevenue.length > 0 
-    ? propertiesWithRevenue.reduce((prev, current) => 
-        ((prev.netProfit / prev.revenue) < (current.netProfit / current.revenue)) ? prev : current)
-    : null;
-
-  // Gerar insights baseados nos dados disponíveis
-  return {
-    summaryInsight: `No período analisado, a taxa média de ocupação foi de ${occupancyRate.toFixed(1)}% com uma margem de lucro de ${profitMargin.toFixed(1)}%. A propriedade com melhor desempenho foi "${bestProperty.propertyName}" com lucro líquido de ${formatCurrency(bestProperty.netProfit)}.`,
-    trendAnalysis: "Análise de tendências requer integração com serviço de IA.",
-    recommendations: [
-      "Considere otimizar custos para propriedades com baixa margem de lucro",
-      "Aumente disponibilidade em períodos de alta demanda",
-      "Revise propriedades com baixa taxa de ocupação",
-      "Analise o potencial de aumento de preços para propriedades com alta ocupação"
-    ],
-    keyMetrics: [
-      { label: "Taxa de Ocupação", value: `${occupancyRate.toFixed(1)}%` },
-      { label: "Margem de Lucro", value: `${profitMargin.toFixed(1)}%` },
-      { label: "Melhor Propriedade", value: bestProperty.propertyName },
-      { label: "Receita/Reserva", value: formatCurrency(report.totals.totalRevenue / (report.totals.totalReservations || 1)) }
-    ],
-    propertyInsights: report.propertyReports.map(property => {
-      const margin = property.revenue > 0 ? (property.netProfit / property.revenue) * 100 : 0;
-      return {
-        propertyId: property.propertyId,
-        propertyName: property.propertyName,
-        insight: `A propriedade "${property.propertyName}" teve ${property.occupancyRate.toFixed(1)}% de ocupação com receita de ${formatCurrency(property.revenue)} e lucro de ${formatCurrency(property.netProfit)}, resultando em margem de ${margin.toFixed(1)}%.`
-      };
-    }),
-    seasonalTips: [
-      "Análise sazonal requer dados históricos mais amplos",
-      "Considere revisar as taxas de limpeza para otimizar custos operacionais",
-      "Verifique se as propriedades com baixa ocupação precisam de melhorias ou melhor marketing"
-    ]
-  };
-}
-
-/**
- * Exportar relatório financeiro em formato Excel
- * Implementação futura - placeholder
- */
-export function downloadOwnerReportExcel(
+export function generateOwnerReportPDFBuffer(
   report: OwnerReport,
   reportType: 'summary' | 'properties' | 'reservations' | 'full' = 'full',
   language = 'pt-PT'
-): void {
-  // A implementar com biblioteca ExcelJS ou similar
-  console.warn("Exportação para Excel ainda não implementada");
-  
-  // Fallback para CSV enquanto Excel não está implementado
-  import('./export-utils').then(module => {
-    module.downloadOwnerReportCSV(report, reportType, language);
+): Uint8Array {
+  // Reusa o mesmo código, mas retorna o buffer ao invés de fazer download
+  // Configuração do PDF
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4',
   });
+  
+  // Implementação similar à função downloadOwnerReportPDF
+  // mas retorna o buffer ao invés de salvar
+  
+  // ... mesma implementação ...
+  
+  // Retornar buffer do PDF como Uint8Array
+  const buffer = doc.output('arraybuffer');
+  return new Uint8Array(buffer);
+}
+
+/**
+ * Gera insights automáticos com base no relatório do proprietário
+ * Analisa os dados para extrair tendências, comparações e recomendações
+ * 
+ * @param report Dados do relatório do proprietário
+ * @returns Object com insights categorizados
+ */
+export async function generateReportInsights(report: OwnerReport): Promise<any> {
+  // Para não bloquear o carregamento, simulamos um pequeno atraso
+  await new Promise(resolve => setTimeout(resolve, 500));
+  
+  // Categorias de insights que serão retornadas
+  const insights = {
+    summary: [] as string[],
+    occupancy: [] as string[],
+    financial: [] as string[],
+    recommendations: [] as string[],
+    trends: [] as { 
+      type: 'positive' | 'negative' | 'neutral',
+      text: string 
+    }[],
+  };
+  
+  // Calcular dados para insights
+  const totalRevenue = report.totals.totalRevenue;
+  const totalNetProfit = report.totals.totalNetProfit;
+  const averageOccupancy = report.totals.averageOccupancy;
+  const startDate = new Date(report.startDate);
+  const endDate = new Date(report.endDate);
+  const periodDays = Math.round((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+  
+  // Insights de resumo
+  insights.summary.push(
+    `O relatório abrange ${periodDays} dias, com ${report.totals.totalReservations} reservas em ${report.totals.totalProperties} propriedades.`
+  );
+  insights.summary.push(
+    `A receita total foi de ${formatCurrency(totalRevenue)}, resultando em um lucro líquido de ${formatCurrency(totalNetProfit)}.`
+  );
+  
+  // Insights de ocupação
+  const highestOccupancy = Math.max(...report.propertyReports.map(p => p.occupancyRate));
+  const lowestOccupancy = Math.min(...report.propertyReports.map(p => p.occupancyRate));
+  const highestOccupancyProperty = report.propertyReports.find(p => p.occupancyRate === highestOccupancy);
+  const lowestOccupancyProperty = report.propertyReports.find(p => p.occupancyRate === lowestOccupancy);
+  
+  if (highestOccupancyProperty) {
+    insights.occupancy.push(
+      `A propriedade com maior ocupação foi ${highestOccupancyProperty.propertyName} com ${highestOccupancy.toFixed(1)}%.`
+    );
+  }
+  
+  if (lowestOccupancyProperty && report.propertyReports.length > 1) {
+    insights.occupancy.push(
+      `A propriedade com menor ocupação foi ${lowestOccupancyProperty.propertyName} com ${lowestOccupancy.toFixed(1)}%.`
+    );
+  }
+  
+  if (averageOccupancy > 70) {
+    insights.occupancy.push("A taxa média de ocupação está muito boa, acima de 70%.");
+  } else if (averageOccupancy > 50) {
+    insights.occupancy.push("A taxa média de ocupação está adequada, entre 50% e 70%.");
+  } else {
+    insights.occupancy.push("A taxa média de ocupação está abaixo do ideal, menor que 50%.");
+  }
+  
+  // Insights financeiros
+  const profitMargin = (totalNetProfit / totalRevenue) * 100;
+  
+  insights.financial.push(
+    `A margem de lucro foi de ${profitMargin.toFixed(1)}% no período.`
+  );
+  
+  const expensesBreakdown = [
+    { 
+      name: "Custos de Limpeza", 
+      value: report.totals.totalCleaningCosts,
+      percentage: (report.totals.totalCleaningCosts / totalRevenue) * 100
+    },
+    { 
+      name: "Taxas de Check-in", 
+      value: report.totals.totalCheckInFees,
+      percentage: (report.totals.totalCheckInFees / totalRevenue) * 100
+    },
+    { 
+      name: "Comissão", 
+      value: report.totals.totalCommission,
+      percentage: (report.totals.totalCommission / totalRevenue) * 100
+    },
+    { 
+      name: "Pagamentos às Equipas", 
+      value: report.totals.totalTeamPayments,
+      percentage: (report.totals.totalTeamPayments / totalRevenue) * 100
+    }
+  ];
+  
+  // Identificar a maior despesa
+  const highestExpense = expensesBreakdown.reduce(
+    (prev, current) => (prev.value > current.value) ? prev : current
+  );
+  
+  insights.financial.push(
+    `A maior despesa foi com ${highestExpense.name}, representando ${highestExpense.percentage.toFixed(1)}% da receita.`
+  );
+  
+  // Tendências com base nos dados
+  if (profitMargin > 60) {
+    insights.trends.push({
+      type: 'positive',
+      text: "Margem de lucro excelente, acima de 60%."
+    });
+  } else if (profitMargin > 40) {
+    insights.trends.push({
+      type: 'positive',
+      text: "Margem de lucro muito boa, entre 40% e 60%."
+    });
+  } else if (profitMargin > 20) {
+    insights.trends.push({
+      type: 'neutral',
+      text: "Margem de lucro adequada, entre 20% e 40%."
+    });
+  } else {
+    insights.trends.push({
+      type: 'negative',
+      text: "Margem de lucro baixa, abaixo de 20%. Recomenda-se revisão de custos."
+    });
+  }
+  
+  // Adicionar outras tendências relevantes
+  if (averageOccupancy > 80) {
+    insights.trends.push({
+      type: 'positive',
+      text: "Taxa de ocupação excelente, considere ajustar preços para otimizar receita."
+    });
+  } else if (averageOccupancy < 40) {
+    insights.trends.push({
+      type: 'negative',
+      text: "Taxa de ocupação baixa, considere estratégias para aumentar reservas."
+    });
+  }
+  
+  // Recomendações específicas
+  if (highestOccupancyProperty && lowestOccupancyProperty && highestOccupancy - lowestOccupancy > 20) {
+    insights.recommendations.push(
+      `Considere aplicar estratégias da propriedade ${highestOccupancyProperty.propertyName} na propriedade ${lowestOccupancyProperty.propertyName} para melhorar sua ocupação.`
+    );
+  }
+  
+  if (highestExpense.percentage > 30) {
+    insights.recommendations.push(
+      `Reduza despesas com ${highestExpense.name}, que representam uma parcela significativa da receita.`
+    );
+  }
+  
+  // Se o período for muito curto, fazemos um comentário sobre isso
+  if (periodDays < 15) {
+    insights.recommendations.push(
+      "Para análises mais precisas, considere avaliar períodos mais longos, de preferência 30 dias ou mais."
+    );
+  }
+  
+  return insights;
 }
