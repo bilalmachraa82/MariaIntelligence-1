@@ -375,14 +375,14 @@ export function SidebarReorganized({
   const operationsNavItems = [
     // Reorganizado para colocar Limpeza primeiro com submenu
     {
-      name: t("navigation.cleaning", "Limpeza"),
+      name: t("navigation.cleaning.title", "Limpeza"),
       href: "/equipas-limpeza",
       altHref: "/cleaning-teams",
       icon: PaintBucket,
       iconColor: "text-cyan-500",
       submenu: [
         {
-          name: t("navigation.cleaning.teams", "Equipes"),
+          name: t("navigation.cleaning.teams", "Equipas"),
           href: "/equipas-limpeza/equipas",
           altHref: "/cleaning-teams/teams",
           icon: PaintBucket,

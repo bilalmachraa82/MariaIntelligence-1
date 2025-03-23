@@ -18,7 +18,11 @@
         "expenses": "Despesas"
       },
       "documents": "Documentos",
-      "cleaning": "Limpeza",
+      "cleaning": {
+        "title": "Limpeza",
+        "teams": "Equipas",
+        "schedule": "Agenda"
+      },
       "maintenance": "Manutenção",
       "owners": "Proprietários",
       "assistant": "Maria IA",
