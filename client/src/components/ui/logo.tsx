@@ -27,13 +27,11 @@ export function Logo({ className, size = "md", showText = true }: LogoProps) {
 
   return (
     <div className={cn("flex items-center gap-2", className)}>
-      {/* Temporariamente usando um placeholder de logo enquanto resolvemos o problema de importação */}
-      <div 
-        className={cn("bg-primary rounded-md flex items-center justify-center text-primary-foreground font-bold", sizes[size])}
-        style={{ aspectRatio: "1/1", width: "auto" }}
-      >
-        M
-      </div>
+      <img 
+        src="/logo.png" 
+        alt="Maria Faz Logo" 
+        className={cn("object-contain", sizes[size])}
+      />
       {showText && (
         <span className={cn("font-semibold hidden sm:inline-block", textSizes[size])}>
           Maria Faz
