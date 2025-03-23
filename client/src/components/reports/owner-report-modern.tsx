@@ -46,6 +46,7 @@ import {
   PieChart,
   Sparkles,
   Mail,
+  Image,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatCurrency, formatDate } from "@/lib/utils";
@@ -53,6 +54,7 @@ import { DateRange as UIDateRange } from "@/components/ui/date-range-picker";
 import { OwnerReport } from "@/hooks/use-owner-report";
 import { downloadOwnerReportCSV } from "@/lib/export-utils";
 import { downloadOwnerReportPDF, generateReportInsights } from "@/lib/pdf-export-utils";
+import { exportOwnerReportPDFWithLogo } from "@/lib/pdf-logo-exporter";
 import {
   DropdownMenu,
   DropdownMenuContent,
