@@ -340,7 +340,7 @@ export function exportOwnerReportPDFWithLogo(
   yPos = getTableEndPosition(doc, yPos) + 15;
   
   // Se o tipo de relatório incluir propriedades, mostrar detalhes por propriedade
-  if (reportType === 'properties' || reportType === 'full') {
+  if ((reportType === 'properties' || reportType === 'full') && report.propertyReports && report.propertyReports.length > 0) {
     // Título da seção de propriedades
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(14);
@@ -362,8 +362,8 @@ export function exportOwnerReportPDFWithLogo(
     ];
     
     // Dados para tabela de propriedades
-    const propertyTableData = report.properties.map(property => [
-      property.name,
+    const propertyTableData = report.propertyReports.map(property => [
+      property.propertyName,
       formatCurrency(property.revenue),
       formatCurrency(property.cleaningCosts),
       formatCurrency(property.checkInFees),
@@ -432,8 +432,26 @@ export function exportOwnerReportPDFWithLogo(
     doc.text(t.reservationsExplanation, margin, yPos + 5);
     yPos += 10;
     
+    // Extrair todas as reservas de todas as propriedades
+    const allReservations: any[] = [];
+    
+    // Verificar se temos propertyReports e adicionar todas as reservas à lista
+    if (report.propertyReports && report.propertyReports.length > 0) {
+      report.propertyReports.forEach(property => {
+        if (property.reservations && property.reservations.length > 0) {
+          property.reservations.forEach(reservation => {
+            // Adicionar o nome da propriedade ao objeto de reserva
+            allReservations.push({
+              ...reservation,
+              propertyName: property.propertyName
+            });
+          });
+        }
+      });
+    }
+    
     // Verificar se existem reservas
-    if (report.reservations.length === 0) {
+    if (allReservations.length === 0) {
       // Mensagem de nenhuma reserva
       doc.setFont('helvetica', 'italic');
       doc.setFontSize(11);
@@ -455,7 +473,7 @@ export function exportOwnerReportPDFWithLogo(
       ];
       
       // Dados para tabela de reservas
-      const reservationTableData = report.reservations.map(reservation => [
+      const reservationTableData = allReservations.map(reservation => [
         reservation.propertyName,
         formatDate(reservation.checkInDate),
         formatDate(reservation.checkOutDate),
