@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from "@/components/ui/button";
 import { jsPDF } from "jspdf";
 import { 
-  Download, FileText, Info, BookOpen, 
+  Check, Download, FileText, Info, BookOpen, 
   Layout, Home, Building2, Calendar, Users, 
   Settings, ClipboardCheck, BarChart2, 
   FileSearch, ChevronRight, Eye, CheckCircle,
@@ -242,13 +242,13 @@ export default function UserManualDownload() {
         const splitText = doc.splitTextToSize(sectionContent, contentWidth);
         doc.text(splitText, margin, 30);
         
-        // Adicionar captura de tela ilustrativa (mockup) para cada seção
+        // Adicionar informação sobre capturas de tela ilustrativas
         try {
           let y = 30 + splitText.length * 5;
           
           // Verifica se ainda há espaço suficiente na página atual
           const remainingSpace = doc.internal.pageSize.getHeight() - y - 20;
-          if (remainingSpace < 60) {
+          if (remainingSpace < 40) {
             doc.addPage();
             y = 20;
           }
@@ -257,99 +257,56 @@ export default function UserManualDownload() {
           doc.setFont("helvetica", "bold");
           doc.setFontSize(11);
           doc.setTextColor(primaryColor);
-          doc.text(t("settings.manual.screenshot.title", "Captura de Tela Ilustrativa"), margin, y);
+          doc.text(t("settings.manual.screenshot.title", "Informação Visual"), margin, y);
+          y += 8;
           
-          // Adiciona um retângulo representando uma captura de tela
-          y += 10;
-          const imageWidth = contentWidth;
-          const imageHeight = 60;
+          // Texto informativo sobre capturas de tela
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(10);
+          doc.setTextColor(80, 80, 80);
+          const hintText = t(
+            "settings.manual.screenshot.hint", 
+            "Para visualizar capturas de tela detalhadas de cada módulo, acesse a visualização online do manual ou utilize o sistema diretamente. A interface apresenta um design moderno, responsivo e adaptado para uso em dispositivos móveis e desktop."
+          );
           
-          // Retângulo decorativo representando a captura de tela
+          const hintSplitText = doc.splitTextToSize(hintText, contentWidth);
+          doc.text(hintSplitText, margin, y);
+          
+          y += hintSplitText.length * 5 + 10;
+          
+          // Caixa com dicas para o módulo específico
           doc.setDrawColor(200, 200, 200);
-          doc.setFillColor(245, 245, 245);
-          doc.roundedRect(margin, y, imageWidth, imageHeight, 3, 3, 'FD');
+          doc.setFillColor(250, 250, 250);
+          doc.roundedRect(margin, y, contentWidth, 30, 3, 3, 'FD');
           
-          // Adiciona elementos gráficos representando a interface
-          doc.setFillColor(primaryColor);
+          // Título da dica
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(10);
+          doc.setTextColor(primaryColor);
+          doc.text(t("settings.manual.screenshot.tips", "Dicas de Uso:"), margin + 5, y + 10);
           
-          // Cabeçalho simulado
-          doc.rect(margin + 5, y + 5, imageWidth - 10, 10, 'F');
-          
-          // Elementos de interface simulados
+          // Conteúdo da dica específica para este módulo
+          let tipText = "";
           if (section.id === "dashboard") {
-            // Cards de estatísticas
-            doc.setFillColor(220, 220, 220);
-            doc.rect(margin + 5, y + 20, 40, 30, 'F');
-            doc.rect(margin + 50, y + 20, 40, 30, 'F');
-            doc.rect(margin + 95, y + 20, 40, 30, 'F');
-            
-            // Gráfico simulado
-            doc.setFillColor(230, 230, 230);
-            doc.rect(margin + 5, y + 20, imageWidth - 10, 30, 'F');
-            doc.setDrawColor(primaryColor);
-            
-            // Linhas do gráfico
-            doc.setLineWidth(0.5);
-            for (let i = 0; i < 5; i++) {
-              const startX = margin + 10 + (i * 30);
-              const startY = y + 45 - (Math.random() * 20);
-              const endX = margin + 40 + (i * 30);
-              const endY = y + 45 - (Math.random() * 20);
-              doc.line(startX, startY, endX, endY);
-            }
+            tipText = t("settings.manual.tips.dashboard", "O dashboard principal oferece uma visão completa da ocupação, receitas e próximos check-ins. Utilize os filtros de período para refinar a análise.");
           } else if (section.id === "reports") {
-            // Tabela com dados financeiros
-            doc.setFillColor(240, 240, 240);
-            doc.rect(margin + 5, y + 20, imageWidth - 10, 30, 'F');
-            
-            // Linhas da tabela
-            doc.setDrawColor(200, 200, 200);
-            doc.setLineWidth(0.3);
-            for (let i = 1; i < 4; i++) {
-              const lineY = y + 20 + (i * 7.5);
-              doc.line(margin + 5, lineY, margin + imageWidth - 5, lineY);
-            }
-            
-            // Colunas da tabela
-            for (let i = 1; i < 4; i++) {
-              const lineX = margin + 5 + (i * (imageWidth - 10) / 4);
-              doc.line(lineX, y + 20, lineX, y + 50);
-            }
+            tipText = t("settings.manual.tips.reports", "Os relatórios financeiros podem ser exportados em PDF ou enviados por email diretamente para proprietários. Use os filtros de data para análises específicas.");
           } else if (section.id === "documents") {
-            // Interface de processamento de PDFs
-            doc.setFillColor(240, 240, 240);
-            doc.rect(margin + 5, y + 20, imageWidth / 2 - 10, 30, 'F');
-            
-            // PDF processado
-            doc.setFillColor(230, 230, 230);
-            doc.rect(margin + imageWidth / 2 + 5, y + 20, imageWidth / 2 - 10, 30, 'F');
-            
-            // Ícone de documento
-            doc.setFillColor(primaryColor);
-            doc.rect(margin + 15, y + 25, 15, 20, 'F');
-            
-            // Setas de processamento
-            doc.setDrawColor(100, 100, 100);
-            doc.setLineWidth(1);
-            const arrowX1 = margin + imageWidth / 2 - 15;
-            const arrowX2 = margin + imageWidth / 2 + 5;
-            const arrowY = y + 35;
-            doc.line(arrowX1, arrowY, arrowX2, arrowY);
-            doc.line(arrowX2 - 5, arrowY - 3, arrowX2, arrowY);
-            doc.line(arrowX2 - 5, arrowY + 3, arrowX2, arrowY);
+            tipText = t("settings.manual.tips.documents", "Para processar documentos em lote, utilize a opção 'Upload Múltiplo'. O sistema identificará automaticamente quais são check-ins e check-outs.");
+          } else if (section.id === "reservations") {
+            tipText = t("settings.manual.tips.reservations", "Você pode criar reservas manualmente ou processá-las automaticamente através de PDFs. Todas as plataformas principais são suportadas.");
+          } else if (section.id === "properties") {
+            tipText = t("settings.manual.tips.properties", "Mantenha as informações das propriedades atualizadas para cálculos precisos de rentabilidade e relatórios de proprietários.");
           }
           
-          // Legenda da captura de tela
-          doc.setFont("helvetica", "italic");
+          doc.setFont("helvetica", "normal");
           doc.setFontSize(9);
-          doc.setTextColor(100, 100, 100);
-          doc.text(
-            t("settings.manual.screenshot." + section.id, `Interface do módulo de ${section.title}`), 
-            margin, 
-            y + imageHeight + 7
-          );
+          doc.setTextColor(80, 80, 80);
+          const tipSplitText = doc.splitTextToSize(tipText, contentWidth - 10);
+          doc.text(tipSplitText, margin + 5, y + 15);
+          
         } catch (error) {
-          console.error("Erro ao adicionar captura de tela:", error);
+          console.error("Erro ao adicionar informações visuais:", error);
         }
       });
       
@@ -390,7 +347,11 @@ export default function UserManualDownload() {
     dashboard: <Layout className="h-5 w-5 text-primary" />,
     properties: <Building2 className="h-5 w-5 text-primary" />,
     reservations: <Calendar className="h-5 w-5 text-primary" />,
-    documents: <FileSearch className="h-5 w-5 text-primary" />
+    documents: <FileSearch className="h-5 w-5 text-primary" />,
+    reports: <BarChart2 className="h-5 w-5 text-primary" />,
+    owners: <Users className="h-5 w-5 text-primary" />,
+    cleaning: <ClipboardCheck className="h-5 w-5 text-primary" />,
+    settings: <Settings className="h-5 w-5 text-primary" />
   };
 
   return (
@@ -592,7 +553,290 @@ export default function UserManualDownload() {
                 <FileSearch className="h-4 w-4" />
                 {t("settings.manual.sections.documents", "Documentos")}
               </TabsTrigger>
+              <TabsTrigger value="reports" className="gap-1">
+                <BarChart2 className="h-4 w-4" />
+                {t("settings.manual.sections.reports", "Relatórios")}
+              </TabsTrigger>
             </TabsList>
+            
+            <TabsContent value="reports" className="pt-4 space-y-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Card>
+                  <CardHeader className="pb-2">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <Badge variant="outline" className="mb-2 bg-primary/10 text-primary border-primary/20">
+                          {t("settings.manual.badges.reports", "Análise de Dados")}
+                        </Badge>
+                        <CardTitle className="text-xl">
+                          {t("settings.manual.sections.reports", "Relatórios Detalhados")}
+                        </CardTitle>
+                        <CardDescription>
+                          {t("settings.manual.reports.description", "Análises financeiras e operacionais para tomada de decisões")}
+                        </CardDescription>
+                      </div>
+                      <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
+                        <BarChart2 className="h-7 w-7 text-primary" />
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <p className="text-muted-foreground">
+                      {t("settings.manual.content.reportsIntro", "O sistema oferece relatórios detalhados para análise do negócio:")}
+                    </p>
+                    
+                    <div className="space-y-4">
+                      {/* Relatório financeiro */}
+                      <Card className="overflow-hidden border-primary/10">
+                        <div className="bg-primary/5 px-4 py-2 border-b">
+                          <div className="flex items-center gap-2">
+                            <DollarSign className="h-5 w-5 text-primary" />
+                            <h3 className="font-medium">Relatórios financeiros por período</h3>
+                          </div>
+                        </div>
+                        <CardContent className="pt-4">
+                          <p className="text-sm text-muted-foreground mb-3">
+                            Acompanhe receitas, despesas e lucro líquido em diferentes períodos (diário, semanal, mensal, anual). Inclui gráficos de tendências e comparativos com períodos anteriores.
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            <Badge variant="outline">Receita</Badge>
+                            <Badge variant="outline">Despesas</Badge>
+                            <Badge variant="outline">Lucro</Badge>
+                            <Badge variant="outline">Exportação</Badge>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      
+                      {/* Relatório proprietário */}
+                      <Card className="overflow-hidden border-primary/10">
+                        <div className="bg-primary/5 px-4 py-2 border-b">
+                          <div className="flex items-center gap-2">
+                            <Users className="h-5 w-5 text-primary" />
+                            <h3 className="font-medium">Relatórios por proprietário</h3>
+                          </div>
+                        </div>
+                        <CardContent className="pt-4">
+                          <p className="text-sm text-muted-foreground mb-3">
+                            Demonstrativo financeiro detalhado para cada proprietário, incluindo rendimentos brutos, taxas, despesas e rendimento líquido. Pode ser enviado automaticamente por email em base mensal.
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            <Badge variant="outline">Email</Badge>
+                            <Badge variant="outline">PDF</Badge>
+                            <Badge variant="outline">Mensal</Badge>
+                            <Badge variant="outline">Personalizado</Badge>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      
+                      {/* Relatório ocupação */}
+                      <Card className="overflow-hidden border-primary/10">
+                        <div className="bg-primary/5 px-4 py-2 border-b">
+                          <div className="flex items-center gap-2">
+                            <PieChart className="h-5 w-5 text-primary" />
+                            <h3 className="font-medium">Relatório de ocupação</h3>
+                          </div>
+                        </div>
+                        <CardContent className="pt-4">
+                          <p className="text-sm text-muted-foreground mb-3">
+                            Análise detalhada de taxas de ocupação por propriedade, região e período, permitindo identificar padrões de sazonalidade e oportunidades de precificação dinâmica.
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            <Badge variant="outline">Sazonalidade</Badge>
+                            <Badge variant="outline">Taxa de ocupação</Badge>
+                            <Badge variant="outline">Previsões</Badge>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      
+                      {/* Relatório desempenho */}
+                      <Card className="overflow-hidden border-primary/10">
+                        <div className="bg-primary/5 px-4 py-2 border-b">
+                          <div className="flex items-center gap-2">
+                            <TrendingUp className="h-5 w-5 text-primary" />
+                            <h3 className="font-medium">Relatório de desempenho por propriedade</h3>
+                          </div>
+                        </div>
+                        <CardContent className="pt-4">
+                          <p className="text-sm text-muted-foreground mb-3">
+                            Métricas detalhadas de ROI, receita por noite, taxa de conversão de reservas e avaliações de hóspedes para cada propriedade.
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            <Badge variant="outline">ROI</Badge>
+                            <Badge variant="outline">Comparativo</Badge>
+                            <Badge variant="outline">Avaliações</Badge>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </TabsContent>
+            
+            <TabsContent value="documents" className="pt-4 space-y-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Card>
+                  <CardHeader className="pb-2">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <Badge variant="outline" className="mb-2 bg-primary/10 text-primary border-primary/20">
+                          {t("settings.manual.badges.ai", "Inteligência Artificial")}
+                        </Badge>
+                        <CardTitle className="text-xl">
+                          {t("settings.manual.sections.documents", "Processamento de Documentos")}
+                        </CardTitle>
+                        <CardDescription>
+                          {t("settings.manual.documents.description", "Extração automática de dados de documentos através de IA")}
+                        </CardDescription>
+                      </div>
+                      <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
+                        <FileSearch className="h-7 w-7 text-primary" />
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <p className="text-muted-foreground">
+                      {t("settings.manual.content.documentsIntro", "O Processamento de Documentos automatiza tarefas através de IA:")}
+                    </p>
+                    
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {/* Tipos de documentos suportados */}
+                      <Card className="border-primary/10">
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-base flex items-center gap-2">
+                            <FileText className="h-5 w-5 text-primary" />
+                            {t("settings.manual.documents.types.title", "Documentos suportados")}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-2 text-sm">
+                          <div className="flex items-start gap-2">
+                            <Check className="h-4 w-4 text-green-500 mt-0.5" />
+                            <span>{t("settings.manual.documents.types.pdfs", "PDFs de reservas")}</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <Check className="h-4 w-4 text-green-500 mt-0.5" />
+                            <span>{t("settings.manual.documents.types.checkin", "Formulários de check-in")}</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <Check className="h-4 w-4 text-green-500 mt-0.5" />
+                            <span>{t("settings.manual.documents.types.checkout", "Relatórios de check-out")}</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <Check className="h-4 w-4 text-green-500 mt-0.5" />
+                            <span>{t("settings.manual.documents.types.invoices", "Faturas e recibos")}</span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      
+                      {/* Dados extraídos */}
+                      <Card className="border-primary/10">
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-base flex items-center gap-2">
+                            <FileText className="h-5 w-5 text-primary" />
+                            {t("settings.manual.documents.data.title", "Dados extraídos")}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-2 text-sm">
+                          <div className="flex items-start gap-2">
+                            <Check className="h-4 w-4 text-green-500 mt-0.5" />
+                            <span>{t("settings.manual.documents.data.guest", "Dados do hóspede")}</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <Check className="h-4 w-4 text-green-500 mt-0.5" />
+                            <span>{t("settings.manual.documents.data.dates", "Datas de check-in/check-out")}</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <Check className="h-4 w-4 text-green-500 mt-0.5" />
+                            <span>{t("settings.manual.documents.data.amounts", "Valores e taxas")}</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <Check className="h-4 w-4 text-green-500 mt-0.5" />
+                            <span>{t("settings.manual.documents.data.property", "Propriedade e plataforma")}</span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                    
+                    {/* Processo de processamento */}
+                    <div className="mt-6">
+                      <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
+                        <Activity className="h-5 w-5 text-primary" />
+                        {t("settings.manual.documents.process.title", "Processo de Processamento")}
+                      </h3>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <Card className="border-primary/10">
+                          <CardHeader className="pb-2">
+                            <CardTitle className="text-base flex items-center gap-2">
+                              <span className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">1</span>
+                              {t("settings.manual.documents.process.upload", "Upload de Documento")}
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="text-sm text-muted-foreground">
+                            {t("settings.manual.documents.process.upload.desc", "Faça upload do PDF ou imagem através do sistema")}
+                          </CardContent>
+                        </Card>
+                        
+                        <Card className="border-primary/10">
+                          <CardHeader className="pb-2">
+                            <CardTitle className="text-base flex items-center gap-2">
+                              <span className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">2</span>
+                              {t("settings.manual.documents.process.extraction", "Extração com IA")}
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="text-sm text-muted-foreground">
+                            {t("settings.manual.documents.process.extraction.desc", "A IA processa e extrai todos os dados relevantes")}
+                          </CardContent>
+                        </Card>
+                        
+                        <Card className="border-primary/10">
+                          <CardHeader className="pb-2">
+                            <CardTitle className="text-base flex items-center gap-2">
+                              <span className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">3</span>
+                              {t("settings.manual.documents.process.validation", "Validação e Finalização")}
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="text-sm text-muted-foreground">
+                            {t("settings.manual.documents.process.validation.desc", "Verifique e ajuste os dados antes de confirmar")}
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
+                    
+                    {/* AI Feature Box */}
+                    <div className="bg-gradient-to-r from-primary/20 to-primary/5 rounded-lg p-6 mt-6">
+                      <div className="flex items-start gap-4">
+                        <div className="bg-primary/20 rounded-full p-3">
+                          <FileSearch className="h-6 w-6 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-medium mb-2">
+                            {t("settings.manual.ai.title", "Tecnologia Avançada de IA")}
+                          </h3>
+                          <p className="text-sm text-muted-foreground mb-4">
+                            O Maria Faz utiliza o modelo Mistral AI para extrair dados de documentos de forma inteligente e precisa, com reconhecimento automático e validação contextual.
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            <Badge variant="secondary">Extração OCR</Badge>
+                            <Badge variant="secondary">Reconhecimento Semântico</Badge>
+                            <Badge variant="secondary">Validação Inteligente</Badge>
+                            <Badge variant="secondary">Processamento em Lote</Badge>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </TabsContent>
             
             <TabsContent value="intro" className="pt-4 space-y-4">
               <motion.div
