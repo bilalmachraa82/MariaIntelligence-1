@@ -2,9 +2,7 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { formatCurrency, formatDate } from "./utils";
 import { OwnerReport, PropertyReportItem, ReservationSummary } from "@/hooks/use-owner-report";
-
-// Logo SVG embutido como string base64 para evitar problemas de carregamento
-const LOGO_MF_BASE64 = "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8IS0tIENpcmN1bG8gZXh0ZXJpb3IgLS0+CiAgPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iMzgiIGZpbGw9IndoaXRlIiBzdHJva2U9IiMyOTc5RkYiIHN0cm9rZS13aWR0aD0iMyIvPgogIAogIDwhLS0gVGV4dG8gIk1GIiAtLT4KICA8cGF0aCBkPSJNMjQuNSA1OFYyMkgzMC41TDM5IDQ0LjVMNDcuNSAyMkg1My41VjU4SDQ3LjVWMzJMNDAgNTEuNUgzOEwzMC41IDMyVjU4SDI0LjVaIiBmaWxsPSIjMjk3OUZGIi8+Cjwvc3ZnPg==";
+import { renderLogoHeader, renderLogoFooter } from './pdf-logo-utils';
 
 // Interface para o objeto lastAutoTable
 interface LastAutoTable {
