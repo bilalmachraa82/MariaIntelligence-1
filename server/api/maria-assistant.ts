@@ -411,14 +411,30 @@ export async function mariaAssistant(req: Request, res: Response) {
       console.log(`Utilizando modelo ${modelToUse} para resposta ao usuário`);
       
       // Detectar na mensagem do usuário se é um pedido para criar uma reserva
-      const isReservationCreationIntent = lowerMessage.includes("criar reserva") || 
-                                        lowerMessage.includes("nova reserva") ||
-                                        lowerMessage.includes("agendar") ||
-                                        lowerMessage.includes("marcar") ||
-                                        (lowerMessage.includes("reserva") && 
-                                         (lowerMessage.includes("fazer") || 
-                                          lowerMessage.includes("criar") || 
-                                          lowerMessage.includes("nova")));
+      // Melhorada a detecção de intenção para capturar mais padrões
+      const isReservationCreationIntent = 
+        // Incluindo padrões de frase completa
+        lowerMessage.includes("criar reserva") || 
+        lowerMessage.includes("nova reserva") ||
+        lowerMessage.includes("fazer reserva") ||
+        lowerMessage.includes("agendar reserva") ||
+        lowerMessage.includes("marcar reserva") ||
+        // Detectando variações mais específicas
+        (lowerMessage.includes("reserva") && 
+          (lowerMessage.includes("fazer") || 
+           lowerMessage.includes("criar") || 
+           lowerMessage.includes("nova") ||
+           lowerMessage.includes("agendar") ||
+           lowerMessage.includes("marcar") ||
+           lowerMessage.includes("para") ||
+           lowerMessage.includes("quero"))) ||
+        // Detectando padrões de datas/hospedagem
+        (lowerMessage.includes("para") && lowerMessage.includes("dias") && 
+          (lowerMessage.includes("casa") || lowerMessage.includes("propriedade") || lowerMessage.includes("apartamento")));
+        
+      // Log para debug da detecção de intenção
+      console.log(`Detecção de intenção de reserva: ${isReservationCreationIntent}`);
+      
       
       // Definir ferramentas de criação de reserva
       const tools = isReservationCreationIntent ? [
@@ -547,15 +563,8 @@ export async function mariaAssistant(req: Request, res: Response) {
         try {
           console.log("Tentando modelo alternativo após falha...");
           
-          // Detectar novamente se precisa de criação de reserva para o fallback
-          const fallbackReservationIntent = lowerMessage.includes("criar reserva") || 
-                                        lowerMessage.includes("nova reserva") ||
-                                        lowerMessage.includes("agendar") ||
-                                        lowerMessage.includes("marcar") ||
-                                        (lowerMessage.includes("reserva") && 
-                                         (lowerMessage.includes("fazer") || 
-                                          lowerMessage.includes("criar") || 
-                                          lowerMessage.includes("nova")));
+          // Reutilizar a mesma lógica de detecção melhorada para o fallback
+          const fallbackReservationIntent = isReservationCreationIntent;
           
           // Definir ferramentas de criação de reserva para o fallback (deve ser definido localmente)
           const fallbackTools = fallbackReservationIntent ? [
