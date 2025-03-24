@@ -255,7 +255,7 @@ export default function PropertyStatisticsPage() {
                       showLegend={true}
                       showGridLines={true}
                       showAnimation={true}
-                      className="h-full"
+                      className="h-full property-chart revenue-chart"
                       yAxisWidth={80}
                     />
                   </div>
@@ -287,7 +287,7 @@ export default function PropertyStatisticsPage() {
                         valueFormatter={formatPercentage}
                         showLegend={false}
                         showGridLines={true}
-                        className="h-full"
+                        className="h-full property-chart occupancy-chart"
                         yAxisWidth={70}
                       />
                     </div>
@@ -311,7 +311,7 @@ export default function PropertyStatisticsPage() {
                         index="name"
                         colors={["#FF6B6B", "#4ECDC4", "#FFE66D", "#6A0572"]}
                         valueFormatter={(value) => `${value}%`}
-                        className="h-full"
+                        className="h-full property-chart distribution-chart"
                         showAnimation={true}
                       />
                     </div>
