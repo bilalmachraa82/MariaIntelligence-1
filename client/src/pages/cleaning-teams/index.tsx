@@ -11,15 +11,14 @@ import { Input } from "@/components/ui/input";
 import { useProperties } from "@/hooks/use-properties";
 import { Property } from "@shared/schema";
 
-// Interface para as equipes de limpeza
-interface CleaningTeam {
+// Interface para os prestadores de serviço de limpeza
+interface CleaningServiceProvider {
   id: number;
   name: string;
-  manager: string;
-  members: number;
-  phone: string;
-  email: string;
-  rating: number;
+  nif: string;
+  address?: string;
+  email?: string;
+  phone?: string;
   status: "active" | "inactive";
   completedCleanings: number;
   propertiesCount: number;

@@ -13,25 +13,56 @@ import { Calendar } from '@/components/ui/calendar';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 
+// Interface para dados de prestadores de serviço
+interface CleaningServiceProvider {
+  id: number;
+  name: string;
+  nif: string;
+  email?: string;
+  address?: string;
+}
+
 // Interface para dados de agendamento
 interface ScheduleItem {
   id: number;
-  teamId: number;
-  teamName: string;
+  providerId: number;
+  providerName: string;
   propertyId: number;
   propertyName: string;
   date: Date;
-  status: 'scheduled' | 'completed' | 'cancelled';
-  type: 'check-in' | 'check-out' | 'maintenance';
+  status: 'scheduled' | 'completed';
+  type: 'check-in' | 'check-out';
   notes?: string;
 }
+
+// Dados reais dos prestadores de serviço
+const serviceProviders: CleaningServiceProvider[] = [
+  {
+    id: 1,
+    name: 'ANA CRISTINA PARADA DE ALMEIDA TEIXEIRA',
+    nif: '208914560',
+    address: 'R FILIPE FOLQUE Nº 12 - 5º ESQº 2810-215 ALMADA'
+  },
+  {
+    id: 2,
+    name: 'MELANIE NEVES CARVALHO PEREIRA',
+    nif: '245862021',
+    address: 'R MESTRE JOSÉ AGOSTINHO LOTE 16 2450-502 NAZARÉ'
+  },
+  {
+    id: 3,
+    name: 'VERA LUCIA BOTELHO RODRIGUES',
+    nif: '214791904',
+    address: '8100-118 QUERENÇA'
+  }
+];
 
 // Dados de exemplo para demonstração
 const demoSchedules: ScheduleItem[] = [
   {
     id: 1,
-    teamId: 1,
-    teamName: 'Equipa Lisboa Centro',
+    providerId: 1,
+    providerName: 'ANA CRISTINA PARADA DE ALMEIDA TEIXEIRA',
     propertyId: 7,
     propertyName: 'Alfama Charme',
     date: new Date(2025, 2, 25, 10, 0), // 25 de Março de 2025, 10:00
@@ -41,8 +72,8 @@ const demoSchedules: ScheduleItem[] = [
   },
   {
     id: 2,
-    teamId: 2,
-    teamName: 'Equipa Cascais',
+    providerId: 2,
+    providerName: 'MELANIE NEVES CARVALHO PEREIRA',
     propertyId: 13,
     propertyName: 'Vila Verde',
     date: new Date(2025, 2, 26, 14, 0), // 26 de Março de 2025, 14:00
@@ -52,14 +83,14 @@ const demoSchedules: ScheduleItem[] = [
   },
   {
     id: 3,
-    teamId: 1,
-    teamName: 'Equipa Lisboa Centro',
+    providerId: 3,
+    providerName: 'VERA LUCIA BOTELHO RODRIGUES',
     propertyId: 9,
     propertyName: 'Graça Elegante',
     date: new Date(2025, 2, 24, 12, 0), // 24 de Março de 2025, 12:00
     status: 'completed',
-    type: 'maintenance',
-    notes: 'Manutenção preventiva e limpeza profunda'
+    type: 'check-in',
+    notes: 'Limpeza completa para entrada de hóspedes'
   }
 ];
 
@@ -77,7 +108,7 @@ export default function CleaningSchedulesPage() {
   // Funções para filtragem dos agendamentos
   const getFilteredSchedules = () => {
     return demoSchedules.filter(schedule => {
-      const teamMatch = !selectedTeam || selectedTeam === 'all' || schedule.teamId.toString() === selectedTeam;
+      const teamMatch = !selectedTeam || selectedTeam === 'all' || schedule.providerId.toString() === selectedTeam;
       const statusMatch = !statusFilter || statusFilter === 'all' || schedule.status === statusFilter;
       const typeMatch = !typeFilter || typeFilter === 'all' || schedule.type === typeFilter;
       
@@ -151,18 +182,21 @@ export default function CleaningSchedulesPage() {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <Label htmlFor="team">{t('cleaningTeams.select', 'Selecionar Equipa')}</Label>
+              <Label htmlFor="team">{t('cleaningTeams.select', 'Selecionar Prestador')}</Label>
               <Select
                 value={selectedTeam}
                 onValueChange={setSelectedTeam}
               >
                 <SelectTrigger className="w-full mt-1">
-                  <SelectValue placeholder={t('cleaningTeams.selectTeam', 'Todas as equipas')} />
+                  <SelectValue placeholder={t('cleaningTeams.selectTeam', 'Todos os prestadores')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Todas as equipas</SelectItem>
-                  <SelectItem value="1">Equipa Lisboa Centro</SelectItem>
-                  <SelectItem value="2">Equipa Cascais</SelectItem>
+                  <SelectItem value="all">Todos os prestadores</SelectItem>
+                  {serviceProviders.map(provider => (
+                    <SelectItem key={provider.id} value={provider.id.toString()}>
+                      {provider.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -180,7 +214,6 @@ export default function CleaningSchedulesPage() {
                   <SelectItem value="all">Todos os status</SelectItem>
                   <SelectItem value="scheduled">Agendados</SelectItem>
                   <SelectItem value="completed">Concluídos</SelectItem>
-                  <SelectItem value="cancelled">Cancelados</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -198,7 +231,6 @@ export default function CleaningSchedulesPage() {
                   <SelectItem value="all">Todos os tipos</SelectItem>
                   <SelectItem value="check-in">Check-in</SelectItem>
                   <SelectItem value="check-out">Check-out</SelectItem>
-                  <SelectItem value="maintenance">Manutenção</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -247,7 +279,7 @@ export default function CleaningSchedulesPage() {
                             <div className="flex items-start justify-between mb-2">
                               <div>
                                 <h4 className="text-base font-semibold">{schedule.propertyName}</h4>
-                                <p className="text-sm text-muted-foreground">{schedule.teamName}</p>
+                                <p className="text-sm text-muted-foreground">{schedule.providerName}</p>
                               </div>
                               <div className="flex space-x-2">
                                 {renderStatusBadge(schedule.status)}
@@ -294,7 +326,7 @@ export default function CleaningSchedulesPage() {
                         <div className="flex items-start justify-between mb-2">
                           <div>
                             <h4 className="text-base font-semibold">{schedule.propertyName}</h4>
-                            <p className="text-sm text-muted-foreground">{schedule.teamName}</p>
+                            <p className="text-sm text-muted-foreground">{schedule.providerName}</p>
                           </div>
                           <div className="flex space-x-2">
                             {renderStatusBadge(schedule.status)}
