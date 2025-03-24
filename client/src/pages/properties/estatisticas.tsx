@@ -26,6 +26,7 @@ interface PropertyStatistics {
 
 interface MonthlyRevenueData {
   date: string;
+  month: string;
   revenue: number;
   profit: number;
 }
@@ -64,12 +65,19 @@ export default function PropertyStatisticsPage() {
           const startDate = format(dateRange.from, 'yyyy-MM-dd');
           const endDate = format(dateRange.to, 'yyyy-MM-dd');
           
-          const monthlyRevenue = await apiRequest<{ data: MonthlyRevenueData[] }>(
+          const monthlyRevenue = await apiRequest<{ data: any[], granularity: string }>(
             `/api/statistics/monthly-revenue?propertyId=${selectedPropertyId}&startDate=${startDate}&endDate=${endDate}`
           );
           
           if (monthlyRevenue && monthlyRevenue.data) {
-            setMonthlyData(monthlyRevenue.data);
+            // Garante que cada item tem as propriedades que precisamos
+            const formattedData: MonthlyRevenueData[] = monthlyRevenue.data.map(item => ({
+              date: item.date || '',
+              month: item.month || '',
+              revenue: item.revenue || 0,
+              profit: item.profit || 0
+            }));
+            setMonthlyData(formattedData);
           }
         }
       } catch (error) {
@@ -248,7 +256,7 @@ export default function PropertyStatisticsPage() {
                   <div className="h-[300px]">
                     <LineChart
                       data={monthlyData}
-                      index="date"
+                      index="month"
                       categories={["revenue", "profit"]}
                       colors={["#FF6B6B", "#4ECDC4"]} 
                       valueFormatter={formatCurrency}
@@ -278,10 +286,10 @@ export default function PropertyStatisticsPage() {
                     <div className="h-[300px]">
                       <BarChart
                         data={monthlyData.map(item => ({
-                          date: item.date,
+                          month: item.month, // Usar apenas o campo 'month' que já temos certeza que existe
                           Ocupação: Math.random() * 100, // Dados simulados, substituir por dados reais
                         }))}
-                        index="date"
+                        index="month"
                         categories={["Ocupação"]}
                         colors={["#34D399"]} 
                         valueFormatter={formatPercentage}
