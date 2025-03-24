@@ -68,9 +68,15 @@ export function BottomNav() {
     }
     
     // Caso específico para scanner
-    if ((href === "/digitalizar" || href === "/scan" || href === "/pdf-upload") &&
+    if ((href === "/digitalizar" || href === "/scan" || href === "/pdf-upload" || href === "/upload-pdf") &&
         (location.includes("/digitalizar") || location.includes("/scan") || 
-         location.includes("/pdf-upload"))) {
+         location.includes("/pdf-upload") || location.includes("/upload-pdf"))) {
+      return true;
+    }
+    
+    // Caso específico para limpeza
+    if ((href.includes("/equipas-limpeza") || href.includes("/cleaning-teams")) &&
+        (location.includes("/equipas-limpeza") || location.includes("/cleaning-teams"))) {
       return true;
     }
     

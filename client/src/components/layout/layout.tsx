@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { SidebarReorganized } from "./sidebar-reorganized";
 import { MobileNav } from "./mobile-nav";
-import { BottomNav } from "./bottom-nav";
+import { BottomNav } from "./bottom-nav-fixed";
 
 interface LayoutProps {
   children: React.ReactNode;
