@@ -41,19 +41,22 @@ const serviceProviders: CleaningServiceProvider[] = [
     id: 1,
     name: 'ANA CRISTINA PARADA DE ALMEIDA TEIXEIRA',
     nif: '208914560',
-    address: 'R FILIPE FOLQUE Nº 12 - 5º ESQº 2810-215 ALMADA'
+    address: 'R FILIPE FOLQUE Nº 12 - 5º ESQº 2810-215 ALMADA',
+    email: 'cristinateixeira.fotos@gmail.com'
   },
   {
     id: 2,
     name: 'MELANIE NEVES CARVALHO PEREIRA',
     nif: '245862021',
-    address: 'R MESTRE JOSÉ AGOSTINHO LOTE 16 2450-502 NAZARÉ'
+    address: 'R MESTRE JOSÉ AGOSTINHO LOTE 16 2450-502 NAZARÉ',
+    email: 'homedeluxe.limpezas@gmail.com'
   },
   {
     id: 3,
     name: 'VERA LUCIA BOTELHO RODRIGUES',
     nif: '214791904',
-    address: '8100-118 QUERENÇA'
+    address: '8100-118 QUERENÇA',
+    email: 'veratiago04082010@gmail.com'
   }
 ];
 
