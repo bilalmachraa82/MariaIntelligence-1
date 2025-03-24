@@ -6,6 +6,7 @@ import {
   financialDocuments,
   financialDocumentItems,
   paymentRecords,
+  quotations,
   type Property,
   type InsertProperty,
   type Owner,
@@ -19,7 +20,9 @@ import {
   type FinancialDocumentItem,
   type InsertFinancialDocumentItem,
   type PaymentRecord,
-  type InsertPaymentRecord
+  type InsertPaymentRecord,
+  type Quotation,
+  type InsertQuotation
 } from "@shared/schema";
 import { db, pool } from './db';
 
@@ -93,6 +96,18 @@ export interface IStorage {
   generateOwnerFinancialReport(ownerId: number, month: string, year: string): Promise<any>;
   generateFinancialSummary(startDate?: Date, endDate?: Date): Promise<any>;
   
+  // Sistema de Orçamentos
+  getQuotations(options?: {
+    status?: 'draft' | 'sent' | 'accepted' | 'rejected' | 'expired';
+    startDate?: Date;
+    endDate?: Date;
+  }): Promise<Quotation[]>;
+  getQuotation(id: number): Promise<Quotation | undefined>;
+  createQuotation(quotation: InsertQuotation): Promise<Quotation>;
+  updateQuotation(id: number, quotation: Partial<InsertQuotation>): Promise<Quotation | undefined>;
+  deleteQuotation(id: number): Promise<boolean>;
+  generateQuotationPdf(id: number): Promise<string>; // Retorna o caminho do PDF gerado
+  
   // RAG - Retrieval Augmented Generation
   createKnowledgeEmbedding(data: any): Promise<any>;
   getKnowledgeEmbeddings(): Promise<any[]>;
@@ -111,6 +126,7 @@ export class MemStorage implements IStorage {
   private financialDocumentsMap: Map<number, FinancialDocument>;
   private financialDocumentItemsMap: Map<number, FinancialDocumentItem>;
   private paymentRecordsMap: Map<number, PaymentRecord>;
+  private quotationsMap: Map<number, Quotation>;
   
   currentUserId: number;
   currentPropertyId: number;
@@ -120,6 +136,7 @@ export class MemStorage implements IStorage {
   currentFinancialDocumentId: number;
   currentFinancialDocumentItemId: number;
   currentPaymentRecordId: number;
+  currentQuotationId: number;
 
   constructor() {
     this.users = new Map();
@@ -130,6 +147,7 @@ export class MemStorage implements IStorage {
     this.financialDocumentsMap = new Map();
     this.financialDocumentItemsMap = new Map();
     this.paymentRecordsMap = new Map();
+    this.quotationsMap = new Map();
     
     this.currentUserId = 1;
     this.currentPropertyId = 1;
@@ -139,6 +157,7 @@ export class MemStorage implements IStorage {
     this.currentFinancialDocumentId = 1;
     this.currentFinancialDocumentItemId = 1;
     this.currentPaymentRecordId = 1;
+    this.currentQuotationId = 1;
     
     // Seed data for properties, owners, financial documents, etc.
     this.seedData();
