@@ -24,6 +24,7 @@ import { useEffect } from 'react';
 
 // Imports das páginas de equipes de limpeza
 import CleaningTeamsPage from "@/pages/cleaning-teams";
+import CleaningSchedulesPage from "@/pages/cleaning-teams/schedules";
 import CleaningReportsPage from "@/pages/cleaning-reports";
 import OwnerReportPage from "@/pages/reports/owner-report";
 import TrendsReportPage from "@/pages/reports/trends";
@@ -162,6 +163,7 @@ function Router() {
       <Route path="/pdf-upload" component={DocumentScanPage} />
       <Route path="/cleaning-teams" component={CleaningTeamsPage} />
       <Route path="/cleaning-teams/new" component={() => <div>New Cleaning Team (Coming Soon)</div>} />
+      <Route path="/cleaning-teams/schedules" component={CleaningSchedulesPage} />
       <Route path="/cleaning-teams/:id" component={() => <div>Cleaning Team Details (Coming Soon)</div>} />
       <Route path="/cleaning-reports" component={CleaningReportsPage} />
       <Route path="/reports" component={ReportsPage} />
@@ -205,6 +207,7 @@ function Router() {
       <Route path="/digitalizar" component={DocumentScanPage} />
       <Route path="/equipas-limpeza" component={CleaningTeamsPage} />
       <Route path="/equipas-limpeza/nova" component={() => <div>Nova Equipa de Limpeza (Em breve)</div>} />
+      <Route path="/equipas-limpeza/agendamentos" component={CleaningSchedulesPage} />
       <Route path="/equipas-limpeza/:id" component={() => <div>Detalhes da Equipa de Limpeza (Em breve)</div>} />
       <Route path="/relatorios-limpeza" component={CleaningReportsPage} />
       <Route path="/relatorios" component={ReportsPage} />
