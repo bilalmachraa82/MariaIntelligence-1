@@ -1,0 +1,8 @@
+{
+  "timezone": "Europe/Lisbon",
+  "language": "pt-PT",
+  "notifications": {
+    "email": true,
+    "browser": false
+  }
+}
