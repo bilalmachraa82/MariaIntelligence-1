@@ -193,6 +193,27 @@ export const reservationPlatformEnum = z.enum([
   "other",
 ]);
 
+export const propertyTypeEnum = z.enum([
+  "apartment_t0t1",  // T0/T1
+  "apartment_t2",    // T2
+  "apartment_t3",    // T3
+  "apartment_t4",    // T4
+  "apartment_t5",    // T5
+  "house_v1",        // V1
+  "house_v2",        // V2
+  "house_v3",        // V3
+  "house_v4",        // V4
+  "house_v5"         // V5
+]);
+
+export const quotationStatusEnum = z.enum([
+  "draft",
+  "sent",
+  "accepted",
+  "rejected",
+  "expired"
+]);
+
 // Extended validation schemas
 export const extendedReservationSchema = insertReservationSchema.extend({
   checkInDate: z.string().or(z.coerce.date()).transform(val => 
@@ -486,6 +507,98 @@ export const extendedPaymentRecordSchema = insertPaymentRecordSchema.extend({
     typeof val === 'string' ? val : val.toISOString().split('T')[0]),
   method: paymentMethodEnum,
   amount: z.union([
+    z.coerce.string(),
+    z.coerce.number().transform(val => val.toString())
+  ]),
+});
+
+// Sistema de Orçamentos
+export const quotations = pgTable("quotations", {
+  id: serial("id").primaryKey(),
+  
+  // Informações do cliente
+  clientName: text("client_name").notNull(),
+  clientEmail: text("client_email"),
+  clientPhone: text("client_phone"),
+  
+  // Informações da propriedade
+  propertyType: text("property_type").notNull(), // T0/T1, T2, T3, etc.
+  propertyAddress: text("property_address"),
+  propertyArea: integer("property_area").default(0), // Área em m²
+  exteriorArea: integer("exterior_area").default(0), // Área exterior em m²
+  
+  // Características especiais da propriedade (afetam o preço)
+  isDuplex: boolean("is_duplex").default(false),
+  hasBBQ: boolean("has_bbq").default(false),
+  hasGlassGarden: boolean("has_glass_garden").default(false),
+  
+  // Informações de preços
+  basePrice: decimal("base_price", { precision: 10, scale: 2 }).notNull().default("0"),
+  duplexSurcharge: decimal("duplex_surcharge", { precision: 10, scale: 2 }).default("0"),
+  bbqSurcharge: decimal("bbq_surcharge", { precision: 10, scale: 2 }).default("0"),
+  exteriorSurcharge: decimal("exterior_surcharge", { precision: 10, scale: 2 }).default("0"),
+  glassGardenSurcharge: decimal("glass_garden_surcharge", { precision: 10, scale: 2 }).default("0"),
+  additionalSurcharges: decimal("additional_surcharges", { precision: 10, scale: 2 }).default("0"),
+  totalPrice: decimal("total_price", { precision: 10, scale: 2 }).notNull().default("0"),
+  
+  // Status do orçamento
+  status: text("status").notNull().default("draft"), // draft, sent, accepted, rejected, expired
+  
+  // Observações e notas adicionais
+  notes: text("notes").default(""),
+  internalNotes: text("internal_notes").default(""),
+  
+  // Datas importantes
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+  validUntil: date("valid_until"), // Data de validade do orçamento
+  
+  // Referência ao PDF gerado
+  pdfPath: text("pdf_path").default(""),
+});
+
+// Schema para inserção de orçamentos
+export const insertQuotationSchema = createInsertSchema(quotations).pick({
+  clientName: true,
+  clientEmail: true,
+  clientPhone: true,
+  propertyType: true,
+  propertyAddress: true,
+  propertyArea: true,
+  exteriorArea: true,
+  isDuplex: true,
+  hasBBQ: true,
+  hasGlassGarden: true,
+  basePrice: true,
+  duplexSurcharge: true,
+  bbqSurcharge: true,
+  exteriorSurcharge: true,
+  glassGardenSurcharge: true,
+  additionalSurcharges: true,
+  totalPrice: true,
+  status: true,
+  notes: true,
+  internalNotes: true,
+  validUntil: true,
+  pdfPath: true,
+});
+
+// Tipos para orçamentos
+export type Quotation = typeof quotations.$inferSelect;
+export type InsertQuotation = z.infer<typeof insertQuotationSchema>;
+
+// Schema estendido com validação para orçamentos
+export const extendedQuotationSchema = insertQuotationSchema.extend({
+  propertyType: propertyTypeEnum,
+  status: quotationStatusEnum,
+  clientEmail: z.string().email().optional().or(z.literal("")),
+  validUntil: z.string().or(z.coerce.date()).transform(val => 
+    typeof val === 'string' ? val : val.toISOString().split('T')[0]).optional(),
+  basePrice: z.union([
+    z.coerce.string(),
+    z.coerce.number().transform(val => val.toString())
+  ]),
+  totalPrice: z.union([
     z.coerce.string(),
     z.coerce.number().transform(val => val.toString())
   ]),
