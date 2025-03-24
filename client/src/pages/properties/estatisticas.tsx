@@ -250,7 +250,7 @@ export default function PropertyStatisticsPage() {
                       data={monthlyData}
                       index="date"
                       categories={["revenue", "profit"]}
-                      colors={["#3b82f6", "#10b981"]} 
+                      colors={["#FF6B6B", "#4ECDC4"]} 
                       valueFormatter={formatCurrency}
                       showLegend={true}
                       showGridLines={true}
@@ -283,7 +283,7 @@ export default function PropertyStatisticsPage() {
                         }))}
                         index="date"
                         categories={["Ocupação"]}
-                        colors={["#6366f1"]} 
+                        colors={["#34D399"]} 
                         valueFormatter={formatPercentage}
                         showLegend={false}
                         showGridLines={true}
@@ -309,7 +309,7 @@ export default function PropertyStatisticsPage() {
                         ]}
                         category="value"
                         index="name"
-                        colors={["#4f46e5", "#10b981", "#f59e0b", "#f43f5e"]}
+                        colors={["#FF6B6B", "#4ECDC4", "#FFE66D", "#6A0572"]}
                         valueFormatter={(value) => `${value}%`}
                         className="h-full"
                         showAnimation={true}
