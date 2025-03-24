@@ -362,10 +362,10 @@ export default function DailyTasksDashboard() {
             <Button 
               variant="default"
               className="whitespace-nowrap"
-              onClick={() => setLocation("/dashboard")}
+              onClick={() => setLocation("/statistics")}
             >
               <ArrowRight className="mr-2 h-4 w-4" />
-              {t("dailyTasks.viewAll", "Ver Dashboard Completo")}
+              {t("dailyTasks.viewAll", "Ver Estatísticas")}
             </Button>
           </motion.div>
         </div>

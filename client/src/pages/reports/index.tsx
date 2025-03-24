@@ -200,7 +200,7 @@ export default function ReportsPage() {
       </div>
       
       <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
-        <TabsList className="grid grid-cols-2 md:grid-cols-5 mb-6">
+        <TabsList className="grid grid-cols-2 md:grid-cols-4 mb-6">
           <TabsTrigger value="general" className="flex items-center">
             <Briefcase className="w-4 h-4 mr-2" />
             <span className="whitespace-nowrap">{t("reports.general", "Geral")}</span>
@@ -216,10 +216,6 @@ export default function ReportsPage() {
           <TabsTrigger value="operational" className="flex items-center">
             <ClipboardCheck className="w-4 h-4 mr-2" />
             <span className="whitespace-nowrap">{t("reports.operational", "Operacional")}</span>
-          </TabsTrigger>
-          <TabsTrigger value="cleaningTeams" className="flex items-center">
-            <Home className="w-4 h-4 mr-2" />
-            <span className="whitespace-nowrap">{t("reports.cleaningTeams", "Equipas de Limpeza")}</span>
           </TabsTrigger>
         </TabsList>
         
