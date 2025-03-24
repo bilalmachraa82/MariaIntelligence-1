@@ -28,6 +28,14 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { addDays, format } from "date-fns";
+import { 
+  Building2, 
+  Home, 
+  Castle, 
+  Hotel, 
+  Euro, 
+  CalendarRange
+} from "lucide-react";
 
 // Quotation form schema using zod
 const formSchema = z.object({
@@ -152,15 +160,13 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
       
       if (isEditing && defaultValues?.id) {
         // Update existing quotation
-        await apiRequest({
-          url: `/api/quotations/${defaultValues.id}`,
+        await apiRequest(`/api/quotations/${defaultValues.id}`, {
           method: "PATCH",
           data: submissionData,
         });
       } else {
         // Create new quotation
-        await apiRequest({
-          url: "/api/quotations",
+        await apiRequest("/api/quotations", {
           method: "POST",
           data: submissionData,
         });
@@ -264,14 +270,44 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder={t("quotation.selectPropertyType")} />
+                            <SelectValue placeholder={t("quotation.selectPropertyType")}>
+                              {watchedValues.propertyType && (
+                                <div className="flex items-center gap-2">
+                                  {watchedValues.propertyType === "apartment" && <Building2 className="h-4 w-4 text-blue-500" />}
+                                  {watchedValues.propertyType === "house" && <Home className="h-4 w-4 text-green-500" />}
+                                  {watchedValues.propertyType === "villa" && <Castle className="h-4 w-4 text-amber-500" />}
+                                  {watchedValues.propertyType === "studio" && <Hotel className="h-4 w-4 text-purple-500" />}
+                                  <span>{t(`quotation.propertyType${watchedValues.propertyType.charAt(0).toUpperCase() + watchedValues.propertyType.slice(1)}`)}</span>
+                                </div>
+                              )}
+                            </SelectValue>
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="apartment">{t("quotation.propertyTypeApartment")}</SelectItem>
-                          <SelectItem value="house">{t("quotation.propertyTypeHouse")}</SelectItem>
-                          <SelectItem value="villa">{t("quotation.propertyTypeVilla")}</SelectItem>
-                          <SelectItem value="studio">{t("quotation.propertyTypeStudio")}</SelectItem>
+                          <SelectItem value="apartment">
+                            <div className="flex items-center gap-2">
+                              <Building2 className="h-4 w-4 text-blue-500" />
+                              <span>{t("quotation.propertyTypeApartment")}</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="house">
+                            <div className="flex items-center gap-2">
+                              <Home className="h-4 w-4 text-green-500" />
+                              <span>{t("quotation.propertyTypeHouse")}</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="villa">
+                            <div className="flex items-center gap-2">
+                              <Castle className="h-4 w-4 text-amber-500" />
+                              <span>{t("quotation.propertyTypeVilla")}</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="studio">
+                            <div className="flex items-center gap-2">
+                              <Hotel className="h-4 w-4 text-purple-500" />
+                              <span>{t("quotation.propertyTypeStudio")}</span>
+                            </div>
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
