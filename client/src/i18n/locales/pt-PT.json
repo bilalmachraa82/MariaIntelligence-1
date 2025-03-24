@@ -494,6 +494,27 @@
       "integrations": {
         "title": "Integrações",
         "description": "Conecta com outras plataformas e serviços"
+      },
+      "tabs": {
+        "manual": "Manual"
+      },
+      "notifications": {
+        "browser": "Notificações do Navegador",
+        "browserDescription": "Receba notificações no navegador mesmo quando a aplicação não estiver aberta"
+      },
+      "manual": {
+        "title": "Manual do Usuário",
+        "description": "Baixe o manual completo para referência offline",
+        "hero": {
+          "title": "Manual Interativo Maria Faz",
+          "subtitle": "Aprenda como maximizar o uso do sistema com nosso guia completo",
+          "tip": "Dica: Você pode imprimir o manual ou salvá-lo em PDF para consulta offline a qualquer momento."
+        },
+        "footer": "Maria Faz - Sistema de Gestão de Propriedades - Página {{page}} de {{total}}"
+      },
+      "general": {
+        "saveSuccess": "Configurações salvas com sucesso",
+        "saveSuccessDesc": "As alterações foram aplicadas com sucesso."
       }
     },
     "emailPreview": {
