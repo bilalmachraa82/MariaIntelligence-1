@@ -832,7 +832,7 @@ export default function SettingsPage() {
                   Ver Todos os Imóveis
                 </Button>
                 <Button 
-                  onClick={() => navigate("/propriedades/estatisticas")}
+                  onClick={() => navigate("/properties/estatisticas")}
                   variant="outline" 
                   className="w-full justify-start"
                 >
