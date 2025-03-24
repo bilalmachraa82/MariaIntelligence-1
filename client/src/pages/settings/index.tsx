@@ -442,6 +442,10 @@ export default function SettingsPage() {
             <BellRing className="h-4 w-4 mr-1" />
             <span className="whitespace-nowrap">{t("settings.tabs.notifications")}</span>
           </TabsTrigger>
+          <TabsTrigger value="language" className="min-w-fit">
+            <Globe className="h-4 w-4 mr-1" />
+            <span className="whitespace-nowrap">{t("settings.tabs.language")}</span>
+          </TabsTrigger>
           <TabsTrigger value="general" className="min-w-fit">
             <Settings className="h-4 w-4 mr-1" />
             <span className="whitespace-nowrap">{t("settings.tabs.general")}</span>
@@ -449,10 +453,6 @@ export default function SettingsPage() {
           <TabsTrigger value="account" className="min-w-fit">
             <User className="h-4 w-4 mr-1" />
             <span className="whitespace-nowrap">{t("settings.tabs.account")}</span>
-          </TabsTrigger>
-          <TabsTrigger value="language" className="min-w-fit">
-            <Globe className="h-4 w-4 mr-1" />
-            <span className="whitespace-nowrap">{t("settings.tabs.language")}</span>
           </TabsTrigger>
           <TabsTrigger value="api" className="min-w-fit">
             <Key className="h-4 w-4 mr-1" />

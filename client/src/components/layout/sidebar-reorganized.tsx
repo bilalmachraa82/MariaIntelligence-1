@@ -23,7 +23,10 @@ import {
   HardHat,
   ChevronLeft,
   Menu,
-  X
+  X,
+  BellRing,
+  Globe,
+  Key
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { usePendingApprovals } from "@/hooks/use-pending-approvals";
@@ -380,6 +383,13 @@ export function SidebarReorganized({
   // Operações
   const operationsNavItems = [
     {
+      name: t("navigation.cleaning.title", "Limpeza"),
+      href: "/equipas-limpeza",
+      altHref: "/cleaning-teams",
+      icon: PaintBucket,
+      iconColor: "text-cyan-500"
+    },
+    {
       name: t("navigation.maintenance", "Manutenção"),
       href: "/manutencao/pendentes",
       altHref: "/maintenance/pending",
@@ -393,7 +403,7 @@ export function SidebarReorganized({
       icon: Users,
       iconColor: "text-orange-500"
     }
-    // Propriedades e Equipes de Limpeza movidas para submenu de Configurações
+    // Propriedades movidas para submenu de Configurações
   ];
 
   // Ferramentas
@@ -431,18 +441,25 @@ export function SidebarReorganized({
           iconColor: "text-indigo-500"
         },
         {
-          name: t("navigation.cleaning.title", "Limpeza"),
-          href: "/equipas-limpeza",
-          altHref: "/cleaning-teams",
-          icon: PaintBucket,
-          iconColor: "text-cyan-500",
+          name: t("settings.tabs.notifications", "Notificações"),
+          href: "/configuracoes?tab=notifications",
+          altHref: "/settings?tab=notifications",
+          icon: BellRing,
+          iconColor: "text-amber-400"
         },
         {
-          name: t("navigation.cleaning.teams", "Equipas de Limpeza"),
-          href: "/equipas-limpeza/equipas",
-          altHref: "/cleaning-teams/teams",
-          icon: Users,
-          iconColor: "text-cyan-500"
+          name: t("settings.tabs.language", "Idioma"),
+          href: "/configuracoes?tab=language",
+          altHref: "/settings?tab=language",
+          icon: Globe,
+          iconColor: "text-blue-500"
+        },
+        {
+          name: t("settings.tabs.integrations", "Integrações"),
+          href: "/configuracoes?tab=api",
+          altHref: "/settings?tab=api",
+          icon: Key,
+          iconColor: "text-teal-500"
         },
       ]
     },
