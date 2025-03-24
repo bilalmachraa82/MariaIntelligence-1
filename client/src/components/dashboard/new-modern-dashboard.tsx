@@ -22,7 +22,8 @@ import {
   ProgressBar,
   BadgeDelta,
   Icon,
-  BarList
+  BarList,
+  BarChart
 } from "@tremor/react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -35,7 +36,8 @@ import {
   UserCheck,
   BarChart3,
   PieChart,
-  Users
+  Users,
+  Loader2
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -109,7 +111,7 @@ const fadeIn = {
   })
 };
 
-export default function NewModernDashboard() {
+export default function NewModernDashboard({ minimal = false }: { minimal?: boolean }) {
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange>(dateRanges[0]);
   const [location, setLocation] = useLocation();
   const { t } = useTranslation();
@@ -271,6 +273,72 @@ export default function NewModernDashboard() {
     'violet',
   ];
 
+  // Se for modo minimal, renderiza uma versão simplificada adequada para o card na página principal
+  if (minimal) {
+    return (
+      <div className="w-full space-y-4">
+        {/* KPI Cards simplificados em linha horizontal */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-blue-50 dark:bg-blue-950/30 p-3 rounded-lg border border-blue-100 dark:border-blue-800/40">
+            <div className="flex items-center justify-between">
+              <p className="text-muted-foreground text-xs font-medium">{t("dashboard.totalRevenue", "Receita Total")}</p>
+              <DollarSign className="h-4 w-4 text-blue-500" />
+            </div>
+            <p className="text-lg font-bold text-primary mt-1">
+              {isLoadingStats ? "..." : formatCurrency(statistics?.totalRevenue || 0)}
+            </p>
+          </div>
+          
+          <div className="bg-emerald-50 dark:bg-emerald-950/30 p-3 rounded-lg border border-emerald-100 dark:border-emerald-800/40">
+            <div className="flex items-center justify-between">
+              <p className="text-muted-foreground text-xs font-medium">{t("dashboard.netProfit", "Lucro Líquido")}</p>
+              <TrendingUp className="h-4 w-4 text-emerald-500" />
+            </div>
+            <p className="text-lg font-bold text-primary mt-1">
+              {isLoadingStats ? "..." : formatCurrency(statistics?.netProfit || 0)}
+            </p>
+          </div>
+        </div>
+        
+        {/* Gráfico de receita simplificado */}
+        <div className="bg-gradient-to-r from-blue-50/80 to-emerald-50/80 dark:from-blue-950/10 dark:to-emerald-950/10 p-3 rounded-lg border border-blue-100/50 dark:border-blue-800/20">
+          <div className="flex justify-between items-center mb-2">
+            <p className="text-xs font-medium text-muted-foreground">{getGranularityLabel()}</p>
+            <Badge variant="outline" className="text-xs bg-background/50 backdrop-blur-sm">
+              {selectedDateRange.label}
+            </Badge>
+          </div>
+          
+          {isLoadingMonthly ? (
+            <div className="h-24 w-full flex items-center justify-center">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            </div>
+          ) : revenueData.length > 0 ? (
+            <div className="h-24">
+              <BarChart
+                data={revenueData}
+                index="name"
+                categories={["Receita"]}
+                colors={["blue"]}
+                showLegend={false}
+                showYAxis={false}
+                showXAxis={true}
+                showGridLines={false}
+                showAnimation={true}
+                className="h-24 -mx-1 text-xs font-medium"
+              />
+            </div>
+          ) : (
+            <div className="h-24 w-full flex items-center justify-center">
+              <p className="text-xs text-muted-foreground">{t("dashboard.noData", "Sem dados para este período")}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Versão completa do dashboard
   return (
     <div className="mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8 max-w-[1600px]">
       {/* Decorative background elements */}
