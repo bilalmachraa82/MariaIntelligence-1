@@ -510,7 +510,40 @@
           "subtitle": "Aprenda como maximizar o uso do sistema com nosso guia completo",
           "tip": "Dica: Você pode imprimir o manual ou salvá-lo em PDF para consulta offline a qualquer momento."
         },
-        "footer": "Maria Faz - Sistema de Gestão de Propriedades - Página {{page}} de {{total}}"
+        "footer": "Maria Faz - Sistema de Gestão de Propriedades - Página {{page}} de {{total}}",
+        "pdfTitle": "Manual do Usuário",
+        "pdfSubtitle": "Sistema de Gestão de Propriedades Maria Faz",
+        "pdfDate": "Última atualização: Março 2025",
+        "generateButton": "Gerar Manual em PDF",
+        "viewOnlineButton": "Ver Manual Online",
+        "onlySelectedSections": "Apenas seções selecionadas",
+        "allSections": "Manual completo",
+        "loading": "A gerar o manual...",
+        "downloadReady": "Download pronto",
+        "downloadNow": "Fazer Download Agora",
+        "screenshot": {
+          "title": "Informação Visual",
+          "hint": "Para visualizar capturas de tela detalhadas de cada módulo, acesse a visualização online do manual ou utilize o sistema diretamente. A interface apresenta um design moderno, responsivo e adaptado para uso em dispositivos móveis e desktop.",
+          "tips": "Dicas de Uso:"
+        },
+        "sections": {
+          "intro": "Introdução",
+          "dashboard": "Painel Inicial",
+          "reservations": "Reservas",
+          "properties": "Imóveis",
+          "owners": "Proprietários",
+          "cleaning": "Limpeza",
+          "reports": "Relatórios",
+          "documents": "Documentos",
+          "assistant": "Assistente Maria"
+        },
+        "tips": {
+          "dashboard": "O dashboard principal oferece uma visão completa da ocupação, receitas e próximos check-ins. Utilize os filtros de período para refinar a análise.",
+          "reports": "Os relatórios financeiros podem ser exportados em PDF ou enviados por email diretamente para proprietários. Use os filtros de data para análises específicas.",
+          "documents": "Para processar documentos em lote, utilize a opção 'Upload Múltiplo'. O sistema identificará automaticamente quais são check-ins e check-outs.",
+          "reservations": "Você pode criar reservas manualmente ou processá-las automaticamente através de PDFs. Todas as plataformas principais são suportadas.",
+          "properties": "Mantenha as informações das propriedades atualizadas para cálculos precisos de rentabilidade e relatórios de proprietários."
+        }
       },
       "general": {
         "saveSuccess": "Configurações salvas com sucesso",
