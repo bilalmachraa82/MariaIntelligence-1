@@ -163,6 +163,11 @@ export function SidebarReorganized({
       return true;
     }
     
+    if ((href.includes('quotations') || href.includes('orcamentos')) &&
+        (location.includes('quotations') || location.includes('orcamentos'))) {
+      return true;
+    }
+    
     // Verifica padrões específicos para operações
     if ((href.includes('equipas-limpeza') || href.includes('cleaning-teams')) &&
         (location.includes('equipas-limpeza') || location.includes('cleaning-teams'))) {
@@ -355,6 +360,14 @@ export function SidebarReorganized({
           icon: FileSpreadsheet,
         }
       ]
+    },
+    // Orçamentos
+    {
+      name: t("navigation.quotations", "Orçamentos"),
+      href: "/quotations",
+      altHref: "/orcamentos",
+      icon: FileText,
+      iconColor: "text-blue-500"
     },
     // Pagamentos
     {
