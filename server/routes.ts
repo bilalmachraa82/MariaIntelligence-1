@@ -2763,6 +2763,137 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  /**
+   * Endpoint para atualizar o arquivo theme.json
+   * Permite alterar as configurações de tema da aplicação
+   */
+  app.post("/theme.json", async (req: Request, res: Response) => {
+    try {
+      // Esquema para validar o objeto de tema
+      const themeSchema = z.object({
+        appearance: z.enum(["light", "dark", "system"]),
+        primary: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+        variant: z.enum(["professional", "tint", "vibrant"]),
+        radius: z.number().min(0).max(2)
+      });
+      
+      // Validar o corpo da requisição
+      const validatedTheme = themeSchema.parse(req.body);
+      
+      // Caminho para o arquivo theme.json
+      const themePath = path.join(process.cwd(), 'theme.json');
+      
+      // Salvar no arquivo theme.json
+      fs.writeFileSync(themePath, JSON.stringify(validatedTheme, null, 2));
+      
+      // Retornar sucesso
+      res.json({
+        success: true,
+        message: "Tema atualizado com sucesso"
+      });
+    } catch (error) {
+      // Se for um erro de validação, retornar mensagem amigável
+      if (error instanceof ZodError) {
+        return res.status(400).json({
+          success: false,
+          message: "Dados de tema inválidos",
+          errors: error.errors
+        });
+      }
+      
+      // Caso contrário, tratar como erro interno
+      console.error("Erro ao atualizar theme.json:", error);
+      res.status(500).json({
+        success: false,
+        message: "Erro ao atualizar configurações de tema"
+      });
+    }
+  });
+
+  // Endpoint para obter as configurações de usuário (timezone, etc)
+  app.get("/api/user-settings", (_req: Request, res: Response) => {
+    try {
+      // Caminho para o arquivo de configurações
+      const settingsPath = path.join(process.cwd(), 'user-settings.json');
+      
+      // Verificar se o arquivo existe
+      if (fs.existsSync(settingsPath)) {
+        // Ler e retornar as configurações
+        const settingsJson = fs.readFileSync(settingsPath, 'utf8');
+        const settings = JSON.parse(settingsJson);
+        res.json({
+          success: true,
+          settings
+        });
+      } else {
+        // Retornar configurações padrão
+        const defaultSettings = {
+          timezone: "Europe/Lisbon",
+          language: "pt-PT",
+          notifications: {
+            email: true,
+            browser: false
+          }
+        };
+        res.json({
+          success: true,
+          settings: defaultSettings
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao obter configurações de usuário:", error);
+      res.status(500).json({
+        success: false,
+        message: "Erro ao obter configurações de usuário"
+      });
+    }
+  });
+  
+  // Endpoint para salvar configurações de usuário
+  app.post("/api/user-settings", (req: Request, res: Response) => {
+    try {
+      // Validar o corpo da requisição
+      const settingsSchema = z.object({
+        timezone: z.string(),
+        language: z.string(),
+        notifications: z.object({
+          email: z.boolean(),
+          browser: z.boolean()
+        })
+      });
+      
+      const validatedSettings = settingsSchema.parse(req.body);
+      
+      // Caminho para o arquivo de configurações
+      const settingsPath = path.join(process.cwd(), 'user-settings.json');
+      
+      // Salvar no arquivo de configurações
+      fs.writeFileSync(settingsPath, JSON.stringify(validatedSettings, null, 2));
+      
+      // Retornar sucesso
+      res.json({
+        success: true,
+        message: "Configurações salvas com sucesso"
+      });
+    } catch (error) {
+      // Se for um erro de validação, retornar mensagem amigável
+      if (error instanceof ZodError) {
+        return res.status(400).json({
+          success: false,
+          message: "Dados de configuração inválidos",
+          errors: error.errors
+        });
+      }
+      
+      // Caso contrário, tratar como erro interno
+      console.error("Erro ao salvar configurações de usuário:", error);
+      res.status(500).json({
+        success: false,
+        message: "Erro ao salvar configurações de usuário"
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

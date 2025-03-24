@@ -41,28 +41,83 @@ export default function SettingsPage() {
     message: "",
   });
 
+  // Estado para timezone
+  const [timezone, setTimezone] = useState("Europe/Lisbon");
+  
+  // Carrega as configurações do usuário
   useEffect(() => {
-    // Verifica se o modo escuro está ativado
-    const darkModePreference = localStorage.getItem("darkMode");
-    const isDark = darkModePreference === "true";
-    setIsDarkMode(isDark);
+    // Função para carregar as configurações do usuário
+    const loadUserSettings = async () => {
+      try {
+        const response = await fetch('/api/user-settings');
+        const data = await response.json();
+        
+        if (data.success && data.settings) {
+          // Atualizar timezone
+          setTimezone(data.settings.timezone || "Europe/Lisbon");
+          
+          // Atualizar configurações de notificações
+          if (data.settings.notifications) {
+            setEmailNotifications(data.settings.notifications.email);
+            // Só atualiza notificações do navegador se forem suportadas
+            if (browserNotificationsSupported && data.settings.notifications.browser) {
+              // Verifica permissão atual antes de ativar
+              if (Notification.permission === 'granted') {
+                setBrowserNotifications(true);
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Erro ao carregar configurações do usuário:", error);
+      }
+    };
     
-    // Aplica o modo escuro se estiver ativado
+    // Verifica tema atual
+    let isDark = false;
+    
+    // Verifica preferência no localStorage (legacy)
+    const darkModePreference = localStorage.getItem("darkMode");
+    if (darkModePreference === "true") {
+      isDark = true;
+    } else {
+      // Verifica no objeto de tema
+      try {
+        const themeStr = localStorage.getItem("theme");
+        if (themeStr) {
+          const theme = JSON.parse(themeStr);
+          if (theme.appearance === "dark") {
+            isDark = true;
+          } else if (theme.appearance === "system") {
+            // Se for "system", verifica a preferência do sistema
+            isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          }
+        }
+      } catch (e) {
+        console.error("Erro ao processar tema:", e);
+      }
+    }
+    
+    // Atualiza o estado e aplica o tema
+    setIsDarkMode(isDark);
     if (isDark) {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
     }
     
-    // Verifica se as notificações do navegador são suportadas
+    // Verifica suporte a notificações
     const notificationsSupported = 'Notification' in window;
     setBrowserNotificationsSupported(notificationsSupported);
     
-    // Verifica se as notificações já foram permitidas
+    // Verifica permissão de notificações
     if (notificationsSupported && Notification.permission === 'granted') {
       setBrowserNotifications(true);
     }
-  }, []);
+    
+    // Carrega configurações do usuário
+    loadUserSettings();
+  }, [browserNotificationsSupported]);
   
   // Função para lidar com a alteração no toggle de notificações do navegador
   const handleBrowserNotificationToggle = async (checked: boolean) => {
@@ -116,7 +171,7 @@ export default function SettingsPage() {
   const handleDarkModeToggle = (checked: boolean) => {
     setIsDarkMode(checked);
     
-    // Atualiza o localStorage
+    // Atualiza o localStorage para compatibilidade com código legado
     localStorage.setItem("darkMode", checked.toString());
     
     // Atualiza a classe no elemento html
@@ -126,27 +181,113 @@ export default function SettingsPage() {
       document.documentElement.classList.remove("dark");
     }
     
-    // Atualiza o arquivo theme.json (simulado via localStorage)
-    localStorage.setItem("theme", JSON.stringify({
+    // Cria o objeto do tema
+    const themeObject = {
       appearance: checked ? "dark" : "light",
       primary: "#E5A4A4",
       variant: "professional",
       radius: 0.8
-    }));
+    };
+    
+    // Atualiza o localStorage
+    localStorage.setItem("theme", JSON.stringify(themeObject));
+    
+    // Atualiza também o arquivo theme.json via requisição ao servidor
+    fetch('/theme.json', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(themeObject)
+    }).catch(error => {
+      console.error('Erro ao atualizar theme.json:', error);
+      // Fallback silencioso - continuará usando o localStorage
+    });
+    
+    // Força atualização da página para aplicar o tema corretamente
+    setTimeout(() => {
+      window.location.reload();
+    }, 200);
   };
 
-  const handleSaveGeneral = () => {
-    toast({
-      title: t("settings.general.saveSuccess"),
-      description: t("settings.general.saveSuccessDesc"),
-    });
+  const handleSaveGeneral = async () => {
+    try {
+      // Seleciona o timezone do select
+      const timezoneSelect = document.getElementById('timezone') as HTMLSelectElement;
+      const selectedTimezone = timezoneSelect?.value || 'Europe/Lisbon';
+      
+      // Salva as configurações no servidor
+      const response = await fetch('/api/user-settings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          timezone: selectedTimezone,
+          language: currentLanguage,
+          notifications: {
+            email: emailNotifications,
+            browser: browserNotifications
+          }
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        toast({
+          title: t("settings.general.saveSuccess"),
+          description: t("settings.general.saveSuccessDesc"),
+        });
+      } else {
+        throw new Error(data.message || 'Erro ao salvar configurações');
+      }
+    } catch (error) {
+      console.error("Erro ao salvar configurações:", error);
+      toast({
+        title: t("common.error"),
+        description: t("settings.general.saveError"),
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleSaveNotifications = () => {
-    toast({
-      title: t("settings.notifications.saveSuccess"),
-      description: t("settings.notifications.saveSuccessDesc"),
-    });
+  const handleSaveNotifications = async () => {
+    try {
+      // Salva as configurações no servidor
+      const response = await fetch('/api/user-settings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          timezone: timezone,
+          language: currentLanguage,
+          notifications: {
+            email: emailNotifications,
+            browser: browserNotifications
+          }
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        toast({
+          title: t("settings.notifications.saveSuccess"),
+          description: t("settings.notifications.saveSuccessDesc"),
+        });
+      } else {
+        throw new Error(data.message || 'Erro ao salvar notificações');
+      }
+    } catch (error) {
+      console.error("Erro ao salvar notificações:", error);
+      toast({
+        title: t("common.error"),
+        description: t("settings.notifications.saveError", "Erro ao salvar configurações de notificações"),
+        variant: "destructive",
+      });
+    }
   };
 
   // Função de configuração de API removida - agora a chave é gerenciada internamente
@@ -336,6 +477,8 @@ export default function SettingsPage() {
                 <Label htmlFor="timezone">{t("settings.general.timezone")}</Label>
                 <select
                   id="timezone"
+                  value={timezone}
+                  onChange={(e) => setTimezone(e.target.value)}
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <option value="America/Sao_Paulo">América/São Paulo (GMT-3)</option>
