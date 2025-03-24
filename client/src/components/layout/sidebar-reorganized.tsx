@@ -328,6 +328,12 @@ export function SidebarReorganized({
       iconColor: "text-emerald-500",
       submenu: [
         {
+          name: t("navigation.reports.management", "Gestão Maria Faz"),
+          href: "/relatorios/gestao",
+          altHref: "/reports/management",
+          icon: FileSpreadsheet,
+        },
+        {
           name: t("navigation.reports.owner", "Proprietários"),
           href: "/relatorios/proprietario",
           altHref: "/reports/owner-report",
