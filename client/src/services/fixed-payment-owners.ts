@@ -25,7 +25,7 @@ export const fixedPaymentOwners: FixedPaymentOwner[] = [
       "Filipe da mata",
       "05-Oct"
     ],
-    deductions: 50  // Valor fixo a deduzir (exemplo: 50€)
+    deductions: 0  // Não há deduções para Ana Tomaz
   }
 ];
 

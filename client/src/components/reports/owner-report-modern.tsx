@@ -626,18 +626,10 @@ export function OwnerReportModern({
                       <Title>{t("ownerReport.fixedPayment", "Pagamento Fixo Mensal")}</Title>
                     </div>
                     <div className="p-4 rounded-lg bg-white dark:bg-gray-900 shadow-sm">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
                         <div>
                           <Text className="text-muted-foreground text-sm">{t("ownerReport.fixedAmount", "Valor Fixo Mensal")}</Text>
-                          <p className="text-lg font-semibold text-amber-600">{formatCurrency(fixedPaymentInfo.monthlyAmount)}</p>
-                        </div>
-                        <div>
-                          <Text className="text-muted-foreground text-sm">{t("ownerReport.fixedDeductions", "Deduções")}</Text>
-                          <p className="text-lg font-semibold text-red-600">{formatCurrency(fixedPaymentInfo.deductions)}</p>
-                        </div>
-                        <div>
-                          <Text className="text-muted-foreground text-sm">{t("ownerReport.fixedNetAmount", "Valor Líquido")}</Text>
-                          <p className="text-lg font-semibold text-green-600">{formatCurrency(fixedPaymentInfo.netAmount)}</p>
+                          <p className="text-lg font-semibold text-green-600">{formatCurrency(fixedPaymentInfo.monthlyAmount)}</p>
                         </div>
                       </div>
                       <div className="mt-4 p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
@@ -648,12 +640,7 @@ export function OwnerReportModern({
                           </Text>
                         </div>
                         <Text className="text-sm text-amber-800/80 dark:text-amber-300/80 mt-1 ml-6">
-                          {t("ownerReport.fixedPaymentDescription", "O valor de {{amount}} é pago mensalmente, independentemente da ocupação das propriedades. Após as deduções, o valor líquido é de {{netAmount}}.", 
-                            { 
-                              amount: formatCurrency(fixedPaymentInfo.monthlyAmount),
-                              netAmount: formatCurrency(fixedPaymentInfo.netAmount)
-                            }
-                          )}
+                          O valor de {formatCurrency(fixedPaymentInfo.monthlyAmount)} é pago mensalmente, independentemente da ocupação das propriedades.
                         </Text>
                       </div>
                     </div>
