@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { DateRangePicker } from '@/components/ui/date-range-picker';
+import { DateRangePicker, DateRange } from '@/components/ui/date-range-picker';
 import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
 import { BarChart, LineChart, DonutChart } from '@tremor/react';
@@ -36,7 +36,7 @@ export default function PropertyStatisticsPage() {
   const { data: properties } = useProperties();
   
   const [selectedPropertyId, setSelectedPropertyId] = useState<string>('');
-  const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
+  const [dateRange, setDateRange] = useState<DateRange>({
     from: subMonths(new Date(), 3),
     to: new Date(),
   });
