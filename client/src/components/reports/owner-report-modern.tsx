@@ -51,7 +51,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { DateRange as UIDateRange } from "@/components/ui/date-range-picker";
-import { OwnerReport } from "@/hooks/use-owner-report";
+import { OwnerReport, FixedPaymentInfo } from "@/hooks/use-owner-report";
 import { downloadOwnerReportCSV } from "@/lib/export-utils";
 import { downloadOwnerReportPDF, generateReportInsights } from "@/lib/pdf-export-utils";
 import { exportOwnerReportPDFWithLogo } from "@/lib/pdf-logo-exporter";
@@ -332,6 +332,11 @@ export function OwnerReportModern({
   // Verificar se há lucro ou prejuízo
   const isProfitable = report.totals.totalNetProfit > 0;
   
+  // Verificar se é um proprietário com pagamento fixo
+  const hasFixedPayment = 'fixedPaymentInfo' in report;
+  // Caso seja um proprietário com pagamento fixo, extrair os valores
+  const fixedPaymentInfo = hasFixedPayment ? (report as any).fixedPaymentInfo as FixedPaymentInfo : null;
+  
   // Não exibimos mais comparações com períodos anteriores
   // pois precisaríamos de dados reais para fazer cálculos precisos
   const previousPeriodComparison = {
@@ -611,6 +616,48 @@ export function OwnerReportModern({
                   </Grid>
                 </Card>
 
+                {/* Proprietário com Pagamento Fixo */}
+                {hasFixedPayment && fixedPaymentInfo && (
+                  <Card className="mt-6 bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Wallet className="h-5 w-5 text-amber-600" />
+                      <Title>{t("ownerReport.fixedPayment", "Pagamento Fixo Mensal")}</Title>
+                    </div>
+                    <div className="p-4 rounded-lg bg-white dark:bg-gray-900 shadow-sm">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <Text className="text-muted-foreground text-sm">{t("ownerReport.fixedAmount", "Valor Fixo Mensal")}</Text>
+                          <p className="text-lg font-semibold text-amber-600">{formatCurrency(fixedPaymentInfo.monthlyAmount)}</p>
+                        </div>
+                        <div>
+                          <Text className="text-muted-foreground text-sm">{t("ownerReport.fixedDeductions", "Deduções")}</Text>
+                          <p className="text-lg font-semibold text-red-600">{formatCurrency(fixedPaymentInfo.deductions)}</p>
+                        </div>
+                        <div>
+                          <Text className="text-muted-foreground text-sm">{t("ownerReport.fixedNetAmount", "Valor Líquido")}</Text>
+                          <p className="text-lg font-semibold text-green-600">{formatCurrency(fixedPaymentInfo.netAmount)}</p>
+                        </div>
+                      </div>
+                      <div className="mt-4 p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
+                        <div className="flex items-center">
+                          <AlertCircle className="h-4 w-4 text-amber-600 mr-2" />
+                          <Text className="text-sm font-medium text-amber-800 dark:text-amber-300">
+                            {t("ownerReport.fixedPaymentNote", "Este proprietário possui um acordo de renda fixa mensal")}
+                          </Text>
+                        </div>
+                        <Text className="text-sm text-amber-800/80 dark:text-amber-300/80 mt-1 ml-6">
+                          {t("ownerReport.fixedPaymentDescription", "O valor de {{amount}} é pago mensalmente, independentemente da ocupação das propriedades. Após as deduções, o valor líquido é de {{netAmount}}.", 
+                            { 
+                              amount: formatCurrency(fixedPaymentInfo.monthlyAmount),
+                              netAmount: formatCurrency(fixedPaymentInfo.netAmount)
+                            }
+                          )}
+                        </Text>
+                      </div>
+                    </div>
+                  </Card>
+                )}
+                
                 {/* Seção de Insights com IA */}
                 <Card className="mt-6">
                   <div className="flex items-center gap-2 mb-4">
