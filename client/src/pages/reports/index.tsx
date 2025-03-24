@@ -22,6 +22,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
   BarChart,
   Bar,
@@ -199,10 +200,14 @@ export default function ReportsPage() {
       </div>
       
       <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
-        <TabsList className="grid grid-cols-2 md:grid-cols-4 mb-6">
+        <TabsList className="grid grid-cols-2 md:grid-cols-5 mb-6">
           <TabsTrigger value="general" className="flex items-center">
             <Briefcase className="w-4 h-4 mr-2" />
             <span className="whitespace-nowrap">{t("reports.general", "Geral")}</span>
+          </TabsTrigger>
+          <TabsTrigger value="mariaManagement" className="flex items-center">
+            <Briefcase className="w-4 h-4 mr-2" />
+            <span className="whitespace-nowrap">{t("reports.mariaManagement", "Gestão Maria Faz")}</span>
           </TabsTrigger>
           <TabsTrigger value="owner" className="flex items-center">
             <Users className="w-4 h-4 mr-2" />
@@ -452,6 +457,164 @@ export default function ReportsPage() {
               </CardContent>
             </Card>
           )}
+        </TabsContent>
+        
+        {/* Relatório de Gestão Maria Faz */}
+        <TabsContent value="mariaManagement" className="space-y-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-medium">{t("mariaManagementReport.title", "Relatório de Gestão Maria Faz")}</h3>
+            <Button variant="outline">
+              <Download className="mr-2 h-4 w-4" />
+              {t("reports.exportReport", "Exportar Relatório")}
+            </Button>
+          </div>
+          
+          {/* Cards de estatísticas */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <StatsCardWithQuote
+              title={t("mariaManagementReport.totalRevenue", "Receita Total")}
+              quoteContext="finance"
+            >
+              {isLoadingStats ? (
+                <Skeleton className="h-10 w-full" />
+              ) : (
+                <div className="text-3xl font-bold">
+                  {formatCurrency(statistics?.totalRevenue || 0)}
+                </div>
+              )}
+            </StatsCardWithQuote>
+            
+            <StatsCardWithQuote
+              title={t("mariaManagementReport.totalExpenses", "Despesas Totais")}
+              quoteContext="finance"
+            >
+              {isLoadingStats ? (
+                <Skeleton className="h-10 w-full" />
+              ) : (
+                <div className="text-3xl font-bold text-red-600">
+                  {formatCurrency(statistics?.totalRevenue ? statistics.totalRevenue - statistics.netProfit : 0)}
+                </div>
+              )}
+            </StatsCardWithQuote>
+            
+            <StatsCardWithQuote
+              title={t("mariaManagementReport.netProfit", "Lucro Líquido")}
+              quoteContext="finance"
+            >
+              {isLoadingStats ? (
+                <Skeleton className="h-10 w-full" />
+              ) : (
+                <div className="text-3xl font-bold text-green-600">
+                  {formatCurrency(statistics?.netProfit || 0)}
+                </div>
+              )}
+            </StatsCardWithQuote>
+          </div>
+          
+          {/* Gráficos de receitas e despesas */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("mariaManagementReport.revenueBreakdown", "Detalhamento de Receitas")}</CardTitle>
+                <CardDescription>Distribuição das fontes de receita da Maria Faz</CardDescription>
+              </CardHeader>
+              <CardContent className="h-80">
+                {isLoadingStats ? (
+                  <div className="h-full flex items-center justify-center">
+                    <Skeleton className="h-full w-full" />
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: t("mariaManagementReport.fixedPaymentIncome", "Pagamentos Fixos"), value: 450 },
+                          { name: t("mariaManagementReport.commissionIncome", "Comissões"), value: 430 },
+                          { name: t("mariaManagementReport.checkInFeesIncome", "Taxas de Check-in"), value: 160 }
+                        ]}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      >
+                        <Cell fill="#4ade80" /> {/* Verde para pagamentos fixos */}
+                        <Cell fill="#60a5fa" /> {/* Azul para comissões */}
+                        <Cell fill="#f97316" /> {/* Laranja para taxas de check-in */}
+                      </Pie>
+                      <Tooltip formatter={(value: ValueType) => formatCurrency(Number(value))} />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                )}
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("mariaManagementReport.expensesBreakdown", "Detalhamento de Despesas")}</CardTitle>
+                <CardDescription>Distribuição dos custos operacionais</CardDescription>
+              </CardHeader>
+              <CardContent className="h-80">
+                {isLoadingStats ? (
+                  <div className="h-full flex items-center justify-center">
+                    <Skeleton className="h-full w-full" />
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: t("mariaManagementReport.cleaningExpenses", "Limpeza"), value: 280 }
+                        ]}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      >
+                        <Cell fill="#f43f5e" /> {/* Vermelho para despesas de limpeza */}
+                      </Pie>
+                      <Tooltip formatter={(value: ValueType) => formatCurrency(Number(value))} />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+          
+          {/* Proprietários com Pagamento Fixo */}
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("mariaManagementReport.fixedPaymentOwners", "Proprietários com Pagamento Fixo")}</CardTitle>
+              <CardDescription>Receitas mensais de pagamentos fixos</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Proprietário</TableHead>
+                      <TableHead>Propriedades</TableHead>
+                      <TableHead className="text-right">Valor Mensal</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell className="font-medium">Ana Tomaz</TableCell>
+                      <TableCell>6</TableCell>
+                      <TableCell className="text-right">{formatCurrency(450)}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
         
         {/* Relatório de Proprietário */}

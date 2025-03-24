@@ -321,6 +321,7 @@
       "owner": "Proprietário",
       "operational": "Operacional",
       "cleaningTeams": "Equipas de Limpeza",
+      "mariaManagement": "Gestão Maria Faz",
       "ownerReport": "Relatório de Proprietário",
       "viewFullReport": "Ver relatório completo",
       "operationalReport": "Relatório Operacional",
@@ -591,6 +592,24 @@
       "netAmount": "Valor Líquido",
       "total": "Total",
       "occupancyRate": "Taxa de ocupação"
+    },
+    "mariaManagementReport": {
+      "title": "Relatório de Gestão Maria Faz",
+      "subtitle": "Visão geral do desempenho financeiro da gestão",
+      "revenueBreakdown": "Detalhamento de Receitas",
+      "fixedPaymentIncome": "Receitas de Pagamentos Fixos",
+      "commissionIncome": "Receitas de Comissões",
+      "checkInFeesIncome": "Receitas de Taxas de Check-in",
+      "expensesBreakdown": "Detalhamento de Despesas",
+      "cleaningExpenses": "Despesas com Limpeza",
+      "totalRevenue": "Receita Total",
+      "totalExpenses": "Despesas Totais",
+      "netProfit": "Lucro Líquido",
+      "fixedPaymentOwners": "Proprietários com Pagamento Fixo",
+      "commissionOwners": "Proprietários com Comissão",
+      "propertyPerformance": "Desempenho por Propriedade",
+      "ownerPerformance": "Desempenho por Proprietário",
+      "managementInsights": "Insights de Gestão"
     }
   }
 }
