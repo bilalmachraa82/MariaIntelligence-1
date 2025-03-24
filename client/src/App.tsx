@@ -47,6 +47,9 @@ import EditDocumentItemPage from "@/pages/financial/documents/items/edit/[id]";
 import NewPaymentPage from "@/pages/financial/documents/payments/new";
 import EditPaymentPage from "@/pages/financial/documents/payments/edit/[id]";
 
+// Import da página de estatísticas de propriedades
+import PropertyStatisticsPage from "@/pages/properties/estatisticas";
+
 // Inicializador de tema com tratamento de erros aprimorado
 const initializeDarkMode = () => {
   // Funções auxiliares para aplicar temas
@@ -145,6 +148,7 @@ function Router() {
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/properties" component={PropertiesPage} />
       <Route path="/properties/edit/:id?" component={PropertyEditPage} />
+      <Route path="/properties/estatisticas" component={PropertyStatisticsPage} />
       <Route path="/properties/:id" component={PropertyDetailPage} />
       <Route path="/owners" component={OwnersPage} />
       <Route path="/owners/edit/:id?" component={OwnerEditPage} />
@@ -187,6 +191,7 @@ function Router() {
       <Route path="/painel" component={Dashboard} />
       <Route path="/propriedades" component={PropertiesPage} />
       <Route path="/propriedades/editar/:id?" component={PropertyEditPage} />
+      <Route path="/propriedades/estatisticas" component={PropertyStatisticsPage} />
       <Route path="/propriedades/:id" component={PropertyDetailPage} />
       <Route path="/proprietarios" component={OwnersPage} />
       <Route path="/proprietarios/editar/:id?" component={OwnerEditPage} />
