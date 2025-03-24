@@ -51,6 +51,12 @@ import EditPaymentPage from "@/pages/financial/documents/payments/edit/[id]";
 // Import da página de estatísticas de propriedades
 import PropertyStatisticsPage from "@/pages/properties/estatisticas";
 
+// Imports das páginas de orçamentos
+import QuotationsPage from "@/pages/quotations";
+import QuotationNewPage from "@/pages/quotations/new";
+import QuotationDetailPage from "@/pages/quotations/[id]";
+import QuotationEditPage from "@/pages/quotations/[id]/edit";
+
 // Inicializador de tema com tratamento de erros aprimorado
 const initializeDarkMode = () => {
   // Funções auxiliares para aplicar temas
@@ -189,6 +195,12 @@ function Router() {
       <Route path="/financial/documents/payments/edit/:id" component={EditPaymentPage} />
       <Route path="/financial/documents/:id" component={DocumentDetailPage} />
       
+      {/* Rotas de orçamentos */}
+      <Route path="/quotations" component={QuotationsPage} />
+      <Route path="/quotations/new" component={QuotationNewPage} />
+      <Route path="/quotations/:id/edit" component={QuotationEditPage} />
+      <Route path="/quotations/:id" component={QuotationDetailPage} />
+      
       {/* Rotas em português */}
       <Route path="/painel" component={Dashboard} />
       <Route path="/propriedades" component={PropertiesPage} />
@@ -232,6 +244,12 @@ function Router() {
       <Route path="/financeiro/documentos/pagamentos/novo" component={NewPaymentPage} />
       <Route path="/financeiro/documentos/pagamentos/editar/:id" component={EditPaymentPage} />
       <Route path="/financeiro/documentos/:id" component={DocumentDetailPage} />
+      
+      {/* Rotas de orçamentos em português */}
+      <Route path="/orcamentos" component={QuotationsPage} />
+      <Route path="/orcamentos/novo" component={QuotationNewPage} />
+      <Route path="/orcamentos/:id/editar" component={QuotationEditPage} />
+      <Route path="/orcamentos/:id" component={QuotationDetailPage} />
       
       {/* Página não encontrada */}
       <Route component={NotFound} />

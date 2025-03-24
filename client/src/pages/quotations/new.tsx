@@ -5,13 +5,20 @@ import { PageHeader } from "@/components/layout/page-header";
 import { QuotationForm } from "@/components/quotations/quotation-form";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function NewQuotationPage() {
   const { t } = useTranslation();
+  const { toast } = useToast();
   const [, navigate] = useLocation();
   
   const handleSuccess = () => {
-    // Redirecionar para a lista após criar com sucesso
+    toast({
+      title: t("quotation.created"),
+      description: t("quotation.createSuccess"),
+      variant: "default"
+    });
+    
     navigate("/quotations");
   };
   
@@ -29,8 +36,8 @@ export default function NewQuotationPage() {
       </div>
       
       <PageHeader
-        title={t('quotation.newTitle')}
-        subtitle={t('quotation.newDescription')}
+        title={t("quotation.newTitle")}
+        subtitle={t("quotation.newDescription")}
       />
       
       <QuotationForm onSuccess={handleSuccess} />
