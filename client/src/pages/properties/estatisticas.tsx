@@ -250,10 +250,10 @@ export default function PropertyStatisticsPage() {
                       data={monthlyData}
                       index="date"
                       categories={["revenue", "profit"]}
-                      colors={["blue", "emerald"]}
+                      colors={["#3b82f6", "#10b981"]} 
                       valueFormatter={formatCurrency}
                       showLegend={true}
-                      showGridLines={false}
+                      showGridLines={true}
                       showAnimation={true}
                       className="h-full"
                       yAxisWidth={80}
@@ -283,10 +283,10 @@ export default function PropertyStatisticsPage() {
                         }))}
                         index="date"
                         categories={["Ocupação"]}
-                        colors={["indigo"]}
+                        colors={["#6366f1"]} 
                         valueFormatter={formatPercentage}
                         showLegend={false}
-                        showGridLines={false}
+                        showGridLines={true}
                         className="h-full"
                         yAxisWidth={70}
                       />
@@ -309,9 +309,10 @@ export default function PropertyStatisticsPage() {
                         ]}
                         category="value"
                         index="name"
-                        colors={["indigo", "emerald", "amber", "rose"]}
+                        colors={["#4f46e5", "#10b981", "#f59e0b", "#f43f5e"]}
                         valueFormatter={(value) => `${value}%`}
                         className="h-full"
+                        showAnimation={true}
                       />
                     </div>
                   </CardContent>
