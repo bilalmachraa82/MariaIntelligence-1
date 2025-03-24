@@ -57,6 +57,13 @@ const serviceProviders: CleaningServiceProvider[] = [
     nif: '214791904',
     address: '8100-118 QUERENÇA',
     email: 'veratiago04082010@gmail.com'
+  },
+  {
+    id: 4,
+    name: 'MARIA FAZ (EQUIPA INTERNA)',
+    nif: '999999990',
+    address: 'Lisboa',
+    email: 'info@mariafaz.pt'
   }
 ];
 
@@ -94,6 +101,28 @@ const demoSchedules: ScheduleItem[] = [
     status: 'completed',
     type: 'check-in',
     notes: 'Limpeza completa para entrada de hóspedes'
+  },
+  {
+    id: 4,
+    providerId: 4,
+    providerName: 'MARIA FAZ (EQUIPA INTERNA)',
+    propertyId: 15,
+    propertyName: 'Belém Riverside',
+    date: new Date(2025, 2, 24, 15, 30), // 24 de Março de 2025, 15:30
+    status: 'scheduled',
+    type: 'check-out',
+    notes: 'Limpeza prioritária para novo hóspede no mesmo dia'
+  },
+  {
+    id: 5,
+    providerId: 4,
+    providerName: 'MARIA FAZ (EQUIPA INTERNA)',
+    propertyId: 21,
+    propertyName: 'Castelo View',
+    date: new Date(2025, 2, 25, 8, 0), // 25 de Março de 2025, 8:00
+    status: 'scheduled',
+    type: 'check-in',
+    notes: 'Preparação antecipada para chegada do hóspede VIP'
   }
 ];
 

@@ -57,6 +57,17 @@ const serviceProviders: CleaningServiceProvider[] = [
     status: 'active',
     completedCleanings: 28,
     propertiesCount: 7
+  },
+  {
+    id: 4,
+    name: 'MARIA FAZ (EQUIPA INTERNA)',
+    nif: '999999990',
+    address: 'Lisboa',
+    email: 'info@mariafaz.pt',
+    phone: '+351 910 000 000',
+    status: 'active',
+    completedCleanings: 153,
+    propertiesCount: 18
   }
 ];
 
