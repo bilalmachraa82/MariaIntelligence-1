@@ -59,14 +59,27 @@ export async function createReservationFromAssistant(reservationData: any) {
     if (!reservationData.propertyId && reservationData.propertyName) {
       // Tentar encontrar a propriedade por nome
       const properties = await storage.getProperties();
-      const property = properties.find(p => 
+      
+      // Primeiro, tenta correspondência exata (ignorando maiúsculas/minúsculas)
+      let property = properties.find(p => 
         p.name.toLowerCase() === reservationData.propertyName.toLowerCase()
       );
       
+      // Se não encontrar, tenta correspondência parcial
+      if (!property) {
+        property = properties.find(p => 
+          p.name.toLowerCase().includes(reservationData.propertyName.toLowerCase()) ||
+          reservationData.propertyName.toLowerCase().includes(p.name.toLowerCase())
+        );
+      }
+      
       if (property) {
         reservationData.propertyId = property.id;
+        console.log(`Propriedade encontrada: ${property.name} (ID: ${property.id})`);
       } else {
-        throw new Error(`Propriedade não encontrada: ${reservationData.propertyName}`);
+        // Listar propriedades disponíveis no erro para auxiliar na depuração
+        const availableProperties = properties.map(p => p.name).join(", ");
+        throw new Error(`Propriedade não encontrada: "${reservationData.propertyName}". Propriedades disponíveis: ${availableProperties}`);
       }
     }
 
@@ -563,8 +576,28 @@ export async function mariaAssistant(req: Request, res: Response) {
         try {
           console.log("Tentando modelo alternativo após falha...");
           
-          // Reutilizar a mesma lógica de detecção melhorada para o fallback
-          const fallbackReservationIntent = isReservationCreationIntent;
+          // Repetir a mesma lógica de detecção de intenção para o fallback
+          const fallbackReservationIntent = 
+            // Incluindo padrões de frase completa
+            lowerMessage.includes("criar reserva") || 
+            lowerMessage.includes("nova reserva") ||
+            lowerMessage.includes("fazer reserva") ||
+            lowerMessage.includes("agendar reserva") ||
+            lowerMessage.includes("marcar reserva") ||
+            // Detectando variações mais específicas
+            (lowerMessage.includes("reserva") && 
+              (lowerMessage.includes("fazer") || 
+               lowerMessage.includes("criar") || 
+               lowerMessage.includes("nova") ||
+               lowerMessage.includes("agendar") ||
+               lowerMessage.includes("marcar") ||
+               lowerMessage.includes("para") ||
+               lowerMessage.includes("quero"))) ||
+            // Detectando padrões de datas/hospedagem
+            (lowerMessage.includes("para") && lowerMessage.includes("dias") && 
+              (lowerMessage.includes("casa") || lowerMessage.includes("propriedade") || lowerMessage.includes("apartamento")));
+          
+          console.log(`Detecção de intenção de reserva (fallback): ${fallbackReservationIntent}`);
           
           // Definir ferramentas de criação de reserva para o fallback (deve ser definido localmente)
           const fallbackTools = fallbackReservationIntent ? [
