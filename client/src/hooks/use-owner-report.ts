@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import { useProperties } from "@/hooks/use-properties";
 import { useReservations } from "@/hooks/use-reservations";
 import { useOwners } from "@/hooks/use-owners";
+import { getFixedPaymentOwner } from "@/services/fixed-payment-owners";
 
 export interface DateRange {
   startDate: string;
@@ -61,6 +62,14 @@ export interface ReportTotals {
   totalReservations: number;
 }
 
+// Interface para proprietários com pagamento fixo no relatório
+export interface FixedPaymentInfo {
+  isFixedPayment: boolean;
+  monthlyAmount: number;
+  deductions: number;
+  netAmount: number;
+}
+
 export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
   // Convertemos as datas para uma string única para usar como parte da cache key
   const dateKey = `${dateRange.startDate}-${dateRange.endDate}`;
@@ -88,10 +97,63 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
       return null;
     }
     
+    // Verificar se é um proprietário com pagamento fixo
+    const fixedPaymentOwner = getFixedPaymentOwner(owner.name);
+    
     // Filtrar as propriedades deste proprietário
     const ownerProperties = properties.filter(p => p.ownerId === ownerId);
     if (!ownerProperties.length) {
       return null;
+    }
+    
+    // Se for um proprietário com pagamento fixo, definir valores especiais
+    if (fixedPaymentOwner) {
+      console.log(`Proprietário ${owner.name} tem pagamento fixo de ${fixedPaymentOwner.monthlyPayment}€`);
+      
+      // Extrair o mês e ano do período do relatório
+      const start = dateRange.startDate ? new Date(dateRange.startDate) : new Date();
+      const end = dateRange.endDate ? new Date(dateRange.endDate) : new Date();
+      const month = start.getMonth() + 1; // JavaScript meses são 0-11
+      const year = start.getFullYear();
+      
+      // Criar um relatório simplificado com o valor fixo
+      return {
+        ownerId,
+        ownerName: owner.name,
+        startDate: format(start, "yyyy-MM-dd"),
+        endDate: format(end, "yyyy-MM-dd"),
+        propertyReports: ownerProperties.map(property => ({
+          propertyId: property.id,
+          propertyName: property.name,
+          reservations: [],
+          revenue: 0,
+          cleaningCosts: 0,
+          checkInFees: 0,
+          commission: 0,
+          teamPayments: 0,
+          netProfit: 0,
+          occupancyRate: 0,
+          availableDays: 0,
+          occupiedDays: 0
+        })),
+        totals: {
+          totalRevenue: fixedPaymentOwner.monthlyPayment,
+          totalCleaningCosts: 0,
+          totalCheckInFees: 0,
+          totalCommission: 0,
+          totalTeamPayments: 0,
+          totalNetProfit: fixedPaymentOwner.monthlyPayment - fixedPaymentOwner.deductions,
+          averageOccupancy: 0,
+          totalProperties: ownerProperties.length,
+          totalReservations: 0
+        },
+        fixedPaymentInfo: {
+          isFixedPayment: true,
+          monthlyAmount: fixedPaymentOwner.monthlyPayment,
+          deductions: fixedPaymentOwner.deductions,
+          netAmount: fixedPaymentOwner.monthlyPayment - fixedPaymentOwner.deductions
+        }
+      };
     }
     
     // Filtrar as reservas do período para cada propriedade
