@@ -75,17 +75,7 @@ import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PropertyReservationsTable } from "@/components/reports/property-reservations-table";
 
-/**
- * Interface para informações de pagamento fixo a proprietários
- * Usada para exibir dados específicos de proprietários que recebem 
- * um valor mensal fixo independente da ocupação
- */
-export interface FixedPaymentInfo {
-  monthlyAmount: number;      // Valor mensal fixo
-  deductions: number;         // Deduções (se houver)
-  netAmount: number;          // Valor líquido após deduções
-  properties: string[];       // Lista de propriedades incluídas no acordo de pagamento fixo
-}
+// A interface FixedPaymentInfo é importada de use-owner-report.ts
 
 interface OwnerReportModernProps {
   report: OwnerReport | null;
