@@ -15,12 +15,6 @@ export default function QuotationsPage() {
       <PageHeader
         title={t("quotation.title")} 
         subtitle={t("quotations.title", "Gerencie orçamentos para serviços de limpeza")}
-        actions={
-          <Button onClick={() => navigate("/quotations/new")}>
-            <Plus className="mr-2 h-4 w-4" />
-            {t("quotation.create")}
-          </Button>
-        }
       />
       
       <QuotationList />
