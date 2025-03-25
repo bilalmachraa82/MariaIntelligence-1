@@ -200,14 +200,10 @@ export default function ReportsPage() {
       </div>
       
       <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
-        <TabsList className="grid grid-cols-2 md:grid-cols-4 mb-6">
+        <TabsList className="grid grid-cols-3 mb-6">
           <TabsTrigger value="general" className="flex items-center">
             <Briefcase className="w-4 h-4 mr-2" />
-            <span className="whitespace-nowrap">{t("reports.general", "Geral")}</span>
-          </TabsTrigger>
-          <TabsTrigger value="mariaManagement" className="flex items-center">
-            <Briefcase className="w-4 h-4 mr-2" />
-            <span className="whitespace-nowrap">{t("reports.mariaManagement", "Gestão Maria Faz")}</span>
+            <span className="whitespace-nowrap">{t("reports.overview", "Visão Geral")}</span>
           </TabsTrigger>
           <TabsTrigger value="owner" className="flex items-center">
             <Users className="w-4 h-4 mr-2" />
@@ -219,10 +215,17 @@ export default function ReportsPage() {
           </TabsTrigger>
         </TabsList>
         
-        {/* Conteúdo de Relatório Geral */}
+        {/* Conteúdo de Visão Geral */}
         <TabsContent value="general" className="space-y-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-medium">{t("reports.overviewReport", "Relatório Geral")}</h3>
+            <Button variant="outline">
+              <Download className="mr-2 h-4 w-4" />
+              {t("reports.exportReport", "Exportar Relatório")}
+            </Button>
+          </div>
           {/* Statistics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <StatsCardWithQuote
               title={t("reports.totalRevenue", "Receita Total")}
               quoteContext="finance"
@@ -232,6 +235,19 @@ export default function ReportsPage() {
               ) : (
                 <div className="text-3xl font-bold">
                   {formatCurrency(statistics?.totalRevenue || 0)}
+                </div>
+              )}
+            </StatsCardWithQuote>
+            
+            <StatsCardWithQuote
+              title={t("reports.totalExpenses", "Despesas Totais")}
+              quoteContext="finance"
+            >
+              {isLoadingStats ? (
+                <Skeleton className="h-10 w-full" />
+              ) : (
+                <div className="text-3xl font-bold text-red-600">
+                  {formatCurrency(statistics?.totalRevenue ? statistics.totalRevenue - statistics.netProfit : 0)}
                 </div>
               )}
             </StatsCardWithQuote>
@@ -280,7 +296,7 @@ export default function ReportsPage() {
             </Card>
           </div>
 
-          {/* Charts */}
+          {/* Charts - Primary Insights */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Revenue vs Profit */}
             <Card>
@@ -318,6 +334,89 @@ export default function ReportsPage() {
               </CardContent>
             </Card>
 
+            {/* Detalhamento de Receitas */}
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("reports.revenueBreakdown", "Detalhamento de Receitas")}</CardTitle>
+                <CardDescription>Distribuição das fontes de receita</CardDescription>
+              </CardHeader>
+              <CardContent className="h-80">
+                {isLoadingStats ? (
+                  <div className="h-full flex items-center justify-center">
+                    <Skeleton className="h-full w-full" />
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: t("reports.fixedPaymentIncome", "Pagamentos Fixos"), value: 450 },
+                          { name: t("reports.commissionIncome", "Comissões"), value: 430 },
+                          { name: t("reports.checkInFeesIncome", "Taxas de Check-in"), value: 160 }
+                        ]}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      >
+                        <Cell fill="#4ade80" /> {/* Verde para pagamentos fixos */}
+                        <Cell fill="#60a5fa" /> {/* Azul para comissões */}
+                        <Cell fill="#f97316" /> {/* Laranja para taxas de check-in */}
+                      </Pie>
+                      <Tooltip formatter={(value: ValueType) => formatCurrency(Number(value))} />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Charts - Secondary Insights */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Detalhamento de Despesas */}
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("reports.expensesBreakdown", "Detalhamento de Despesas")}</CardTitle>
+                <CardDescription>Distribuição dos custos operacionais</CardDescription>
+              </CardHeader>
+              <CardContent className="h-80">
+                {isLoadingStats ? (
+                  <div className="h-full flex items-center justify-center">
+                    <Skeleton className="h-full w-full" />
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: t("reports.cleaningExpenses", "Limpeza"), value: 280 },
+                          { name: t("reports.maintenanceExpenses", "Manutenção"), value: 120 },
+                          { name: t("reports.suppliesExpenses", "Suprimentos"), value: 80 }
+                        ]}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      >
+                        <Cell fill="#f43f5e" /> {/* Vermelho para despesas de limpeza */}
+                        <Cell fill="#a78bfa" /> {/* Roxo para manutenção */}
+                        <Cell fill="#fbbf24" /> {/* Amarelo para suprimentos */}
+                      </Pie>
+                      <Tooltip formatter={(value: ValueType) => formatCurrency(Number(value))} />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                )}
+              </CardContent>
+            </Card>
+            
             {/* Top Properties */}
             <Card>
               <CardHeader>
