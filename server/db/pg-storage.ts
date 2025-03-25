@@ -669,10 +669,26 @@ export class PgStorage implements IStorage {
       return {
         id,
         clientName: "Cliente Teste",
+        clientEmail: "cliente@exemplo.com",
+        clientPhone: "+351 912 345 678",
         propertyType: "apartment",
+        propertyAddress: "Av. da República, Lisboa",
+        propertyArea: 80,
+        exteriorArea: 15,
+        isDuplex: true,
+        hasBBQ: true,
+        hasGlassGarden: false,
+        basePrice: 200.00,
+        duplexSurcharge: 25.00,
+        bbqSurcharge: 25.00,
+        exteriorSurcharge: 0.00,
+        glassGardenSurcharge: 0.00,
+        additionalSurcharges: 0.00,
         totalPrice: 250.00,
         status: "draft",
-        validUntil: new Date().toISOString(),
+        notes: "Orçamento para limpeza completa do apartamento incluindo áreas exteriores e churrasqueira.",
+        internalNotes: "Cliente pediu desconto, mas mantivemos preço padrão.",
+        validUntil: new Date(new Date().setDate(new Date().getDate() + 30)).toISOString(),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
@@ -689,19 +705,30 @@ export class PgStorage implements IStorage {
    */
   async generateQuotationPdf(id: number): Promise<string> {
     try {
-      // Importar as bibliotecas necessárias
-      const jsPDF = require('jspdf').default;
-      const autoTable = require('jspdf-autotable').default;
+      // Importamos os módulos necessários
       const fs = require('fs');
+      const path = require('path');
+      const { jsPDF } = require('jspdf');
+      const autoTable = require('jspdf-autotable');
+      
+      console.log("Iniciando geração de PDF para orçamento...");
       
       // Buscar o orçamento pelo ID
       const quotation = await this.getQuotation(id);
       if (!quotation) throw new Error("Orçamento não encontrado");
       
+      console.log("Orçamento encontrado, dados:", JSON.stringify(quotation, null, 2));
+      
+      // Criar diretório de uploads se não existir
+      const uploadDir = './uploads';
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      
       // Gerar nome de arquivo baseado no ID e data de criação
-      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-      const fileName = `quotation_${id}_${timestamp}.pdf`;
-      const filePath = `./uploads/${fileName}`;
+      const timestamp = Date.now();
+      const fileName = `orcamento_${id}_${timestamp}.pdf`;
+      const filePath = path.join(uploadDir, fileName);
       
       console.log(`Gerando PDF para orçamento #${id} em ${filePath}`);
       
@@ -740,7 +767,8 @@ export class PgStorage implements IStorage {
         return date.toLocaleDateString('pt-PT');
       };
       
-      doc.text(`Data: ${formatDate(quotation.createdAt)}`, 20, 42);
+      const createdDate = quotation.createdAt ? formatDate(quotation.createdAt) : formatDate(new Date().toISOString());
+      doc.text(`Data: ${createdDate}`, 20, 42);
       doc.text(`Válido até: ${formatDate(quotation.validUntil)}`, 20, 49);
       
       // Informações do cliente
@@ -770,15 +798,11 @@ export class PgStorage implements IStorage {
       
       // Tabela com os detalhes da propriedade
       const propertyDetails = [
-        ['Tipo', quotation.propertyType === 'apartment' ? 'Apartamento' : 
-                 quotation.propertyType === 'house' ? 'Casa' : 
-                 quotation.propertyType === 'villa' ? 'Vila' : 'Outro'],
-        ['Área Total', `${quotation.totalArea} m²`],
-        ['Quartos', quotation.bedrooms.toString()],
-        ['Banheiros', quotation.bathrooms.toString()]
+        ['Tipo', quotation.propertyType || 'Não especificado'],
+        ['Área Total', `${quotation.propertyArea || 0} m²`]
       ];
       
-      if (quotation.hasExteriorSpace && quotation.exteriorArea) {
+      if (quotation.exteriorArea > 0) {
         propertyDetails.push(['Área Exterior', `${quotation.exteriorArea} m²`]);
       }
       
@@ -791,11 +815,12 @@ export class PgStorage implements IStorage {
         margin: { top: 20, left: 20, right: 20 }
       });
       
-      currentY = (doc as any).lastAutoTable.finalY + 10;
+      // @ts-ignore - Acessando propriedade dinâmica
+      currentY = doc.lastAutoTable.finalY + 10;
       
       // Características adicionais
-      if (quotation.isDuplex || quotation.hasExteriorSpace || quotation.hasBBQ || 
-          quotation.hasGarden || quotation.hasGlassSurfaces) {
+      if (quotation.isDuplex || quotation.exteriorArea > 0 || quotation.hasBBQ || 
+          quotation.hasGlassGarden) {
             
         doc.setFontSize(12);
         doc.setFont('helvetica', 'bold');
@@ -806,10 +831,9 @@ export class PgStorage implements IStorage {
         const features = [];
         
         if (quotation.isDuplex) features.push('Duplex');
-        if (quotation.hasExteriorSpace) features.push('Espaço Exterior');
+        if (quotation.exteriorArea > 0) features.push('Espaço Exterior');
         if (quotation.hasBBQ) features.push('Churrasqueira');
-        if (quotation.hasGarden) features.push('Jardim');
-        if (quotation.hasGlassSurfaces) features.push('Superfícies de Vidro');
+        if (quotation.hasGlassGarden) features.push('Jardim com Superfícies de Vidro');
         
         doc.setFontSize(10);
         features.forEach((feature, index) => {
@@ -835,13 +859,30 @@ export class PgStorage implements IStorage {
       };
       
       // Tabela com os valores
+      const basePrice = parseFloat(quotation.basePrice?.toString() || "0");
+      const duplexSurcharge = parseFloat(quotation.duplexSurcharge?.toString() || "0");
+      const bbqSurcharge = parseFloat(quotation.bbqSurcharge?.toString() || "0");
+      const exteriorSurcharge = parseFloat(quotation.exteriorSurcharge?.toString() || "0");
+      const glassGardenSurcharge = parseFloat(quotation.glassGardenSurcharge?.toString() || "0");
+      const additionalSurcharges = parseFloat(quotation.additionalSurcharges?.toString() || "0");
+      
+      const additionalTotal = (
+        duplexSurcharge + 
+        bbqSurcharge + 
+        exteriorSurcharge + 
+        glassGardenSurcharge + 
+        additionalSurcharges
+      );
+      
+      const totalPrice = parseFloat(quotation.totalPrice?.toString() || "0");
+      
       autoTable(doc, {
         startY: currentY,
         head: [['Item', 'Valor']],
         body: [
-          ['Preço Base', formatCurrency(quotation.basePrice)],
-          ['Preço Adicional', formatCurrency(quotation.additionalPrice)],
-          ['Preço Total', formatCurrency(quotation.totalPrice)]
+          ['Preço Base', formatCurrency(basePrice)],
+          ['Adicionais', formatCurrency(additionalTotal)],
+          ['Preço Total', formatCurrency(totalPrice)]
         ],
         theme: 'grid',
         headStyles: { fillColor: [0, 51, 102], textColor: [255, 255, 255] },
@@ -852,7 +893,8 @@ export class PgStorage implements IStorage {
         footStyles: { fillColor: [240, 240, 240] }
       });
       
-      currentY = (doc as any).lastAutoTable.finalY + 15;
+      // @ts-ignore - Acessando propriedade dinâmica
+      currentY = doc.lastAutoTable.finalY + 15;
       
       // Observações
       if (quotation.notes) {
@@ -878,8 +920,7 @@ export class PgStorage implements IStorage {
       doc.text('Este documento é gerado automaticamente e não necessita de assinatura.', 105, 285, { align: 'center' });
       
       // Salvar o PDF no sistema de arquivos
-      const pdfBuffer = Buffer.from(doc.output('arraybuffer'));
-      fs.writeFileSync(filePath, pdfBuffer);
+      fs.writeFileSync(filePath, doc.output());
       
       console.log(`PDF gerado com sucesso em ${filePath}`);
       
@@ -894,6 +935,7 @@ export class PgStorage implements IStorage {
       return filePath;
     } catch (error) {
       console.error(`Erro ao gerar PDF para orçamento #${id}:`, error);
+      console.error("Stack trace:", error instanceof Error ? error.stack : "Erro sem stack trace");
       throw error;
     }
   }

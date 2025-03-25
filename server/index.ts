@@ -63,10 +63,9 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // Servindo a aplicação na porta 3000
+  // Servindo a aplicação na porta 5000 para compatibilidade com o workflow
   // esta porta serve tanto a API quanto o cliente
-  // e não está sendo usada por outros processos
-  const port = 3000;
+  const port = 5000;
   server.listen({
     port,
     host: "0.0.0.0",
