@@ -88,8 +88,11 @@ export function SidebarReorganized({
   const [location, useNavigate] = useLocation();
   
   // Função de navegação personalizada que também fecha o drawer quando necessário
+  // Normaliza URLs para evitar barras duplicadas
   const navigate = (href: string) => {
-    useNavigate(href);
+    // Remove barras duplicadas, garantindo apenas uma barra entre segmentos
+    const normalizedHref = href.replace(/\/+/g, '/');
+    useNavigate(normalizedHref);
     // Fecha o drawer se estiver em modo mobile e a função closeDrawer estiver disponível
     if (isMobile && closeDrawer) {
       closeDrawer();
