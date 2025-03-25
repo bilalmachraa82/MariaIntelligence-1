@@ -543,9 +543,9 @@ export function exportOwnerReportPDFWithLogo(
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
     
-    // Adicionar rodapé padronizado com logo e informações bancárias
+    // Adicionar rodapé padronizado com logo
     addMariaFazFooter(doc, pageWidth, (doc.internal as any).pageSize.height, 
-                      t.confidential, i, pageCount, t.poweredBy, true);
+                      t.confidential, i, pageCount, t.poweredBy);
     
     // Adicionar frase inspiradora na última página
     if (i === pageCount) {
