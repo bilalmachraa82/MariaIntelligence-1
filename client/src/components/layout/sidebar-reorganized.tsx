@@ -406,11 +406,11 @@ export function SidebarReorganized({
         }
       ]
     },
-    // Orçamentos - usando paths estáticos sem barras iniciais para evitar dupla barra
+    // Orçamentos - usando paths absolutos com tratamento correto
     {
       name: t("navigation.quotations", "Orçamentos"),
-      href: "quotations", // Removido a barra inicial para evitar dupla barra
-      altHref: "orcamentos", // Removido a barra inicial para evitar dupla barra
+      href: "/quotations", // Usando path absoluto corretamente com barra inicial
+      altHref: "/orcamentos", // Usando path absoluto corretamente com barra inicial
       icon: FileText,
       iconColor: "text-blue-500"
     },
