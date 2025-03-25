@@ -149,33 +149,39 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
     
+    // Ensure boolean values have defaults
+    const duplexValue = data.isDuplex || false;
+    const bbqValue = data.hasBBQ || false;
+    const exteriorValue = data.hasExteriorSpace || false;
+    const glassGardenValue = data.hasGlassSurfaces || false;
+    
+    // Map form fields to match the database schema fields
+    // and add pricing data to the submission
+    const submissionData = {
+      clientName: data.clientName,
+      clientEmail: data.clientEmail || "",
+      clientPhone: data.clientPhone || "",
+      propertyType: data.propertyType,
+      propertyAddress: "", // Campo não presente no formulário, mas esperado pelo schema
+      propertyArea: data.totalArea || 0, // Mapeia totalArea para propertyArea
+      exteriorArea: data.exteriorArea || 0,
+      isDuplex: duplexValue,
+      hasBBQ: bbqValue,
+      hasGlassGarden: glassGardenValue, // Mapeia hasGlassSurfaces para hasGlassGarden
+      basePrice: basePrice.toString(),
+      duplexSurcharge: duplexValue ? "50" : "0",
+      bbqSurcharge: bbqValue ? "30" : "0",
+      exteriorSurcharge: exteriorValue ? "40" : "0", // Calcula com base no hasExteriorSpace
+      glassGardenSurcharge: glassGardenValue ? "60" : "0",
+      additionalSurcharges: additionalPrice.toString(),
+      totalPrice: totalPrice.toString(),
+      status: data.status || "draft",
+      notes: data.notes || "",
+      internalNotes: "", // Campo não presente no formulário, mas esperado pelo schema
+      validUntil: data.validUntil || format(addDays(new Date(), 30), "yyyy-MM-dd"),
+    };
+    
     try {
-      // Map form fields to match the database schema fields
-      // and add pricing data to the submission
-      const submissionData = {
-        clientName: data.clientName,
-        clientEmail: data.clientEmail,
-        clientPhone: data.clientPhone,
-        propertyType: data.propertyType,
-        propertyAddress: "", // Campo não presente no formulário, mas esperado pelo schema
-        propertyArea: data.totalArea, // Mapeia totalArea para propertyArea
-        exteriorArea: data.exteriorArea,
-        isDuplex: data.isDuplex,
-        hasBBQ: data.hasBBQ,
-        hasGlassGarden: data.hasGlassSurfaces, // Mapeia hasGlassSurfaces para hasGlassGarden
-        basePrice: basePrice.toString(),
-        duplexSurcharge: data.isDuplex ? "50" : "0",
-        bbqSurcharge: data.hasBBQ ? "30" : "0",
-        exteriorSurcharge: data.hasExteriorSpace ? "40" : "0",
-        glassGardenSurcharge: data.hasGlassSurfaces ? "60" : "0",
-        additionalSurcharges: additionalPrice.toString(),
-        totalPrice: totalPrice.toString(),
-        status: data.status,
-        notes: data.notes || "",
-        internalNotes: "", // Campo não presente no formulário, mas esperado pelo schema
-        validUntil: data.validUntil,
-      };
-      
       if (isEditing && defaultValues?.id) {
         // Update existing quotation
         await apiRequest(`/api/quotations/${defaultValues.id}`, {
@@ -190,12 +196,35 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
         });
       }
       
+      // Show success message
+      toast({
+        title: isEditing ? t("quotation.saved") : t("quotation.created"),
+        description: isEditing ? t("quotation.saved") : t("quotation.createSuccess"),
+        variant: "default",
+      });
+      
       // Call success callback if provided
       if (onSuccess) {
         onSuccess();
       }
     } catch (error) {
       console.error("Error submitting quotation:", error);
+      
+      // Enhanced error logging
+      if (typeof error === 'object' && error !== null) {
+        try {
+          console.error("Error details:", JSON.stringify(error, null, 2));
+        } catch (jsonError) {
+          console.error("Error details (non-stringifiable):", error);
+        }
+      } else {
+        console.error("Error details:", error);
+      }
+      
+      // Log submission data for debugging
+      console.error("Submission data:", submissionData);
+      
+      // Show error message
       toast({
         title: t("common.error"),
         description: t("quotation.saveError"),

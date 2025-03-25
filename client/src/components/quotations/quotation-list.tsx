@@ -68,29 +68,22 @@ export function QuotationList() {
   const [showDeleteDialog, setShowDeleteDialog] = useState<number | null>(null);
   const [showStatusDialog, setShowStatusDialog] = useState<{ id: number, status: string } | null>(null);
   
-  // Fetch quotations
-  const { data: quotations, isLoading, refetch } = useQuery({
+  // Fetch quotations - usando a instância padrão de queryClient com defaultQueryFn 
+  const { data: quotations, isLoading, refetch } = useQuery<any[]>({
     queryKey: ['/api/quotations'],
-    queryFn: async () => {
-      const response = await apiRequest({
-        url: '/api/quotations'
-      });
-      return response.data;
-    },
+    select: (response: any) => response.data || []
   });
   
   // Generate PDF for a quotation
   const handleGeneratePdf = async (quotationId: number) => {
     try {
-      await apiRequest({
-        url: `/api/quotations/${quotationId}/pdf`,
+      await apiRequest(`/api/quotations/${quotationId}/pdf`, {
         method: 'POST',
       });
       
       toast({
         title: t('quotation.pdfGenerated'),
         description: t('quotation.pdfSuccess'),
-        variant: "success",
       });
     } catch (error) {
       toast({
@@ -104,8 +97,7 @@ export function QuotationList() {
   // Handle deletion of a quotation
   const handleDelete = async (id: number) => {
     try {
-      await apiRequest({
-        url: `/api/quotations/${id}`,
+      await apiRequest(`/api/quotations/${id}`, {
         method: 'DELETE',
       });
       
@@ -115,7 +107,6 @@ export function QuotationList() {
       toast({
         title: t('quotation.deleted'),
         description: t('quotation.deleteSuccess'),
-        variant: "default",
       });
     } catch (error) {
       toast({
@@ -131,8 +122,7 @@ export function QuotationList() {
   // Handle status change
   const handleStatusChange = async (id: number, newStatus: string) => {
     try {
-      await apiRequest({
-        url: `/api/quotations/${id}`,
+      await apiRequest(`/api/quotations/${id}`, {
         method: 'PATCH',
         data: { status: newStatus },
       });
@@ -143,7 +133,6 @@ export function QuotationList() {
       toast({
         title: t('quotation.statusUpdated'),
         description: t(`quotation.statusChangedTo${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}`),
-        variant: "default",
       });
     } catch (error) {
       toast({
@@ -157,7 +146,7 @@ export function QuotationList() {
   };
   
   // Filter quotations based on search query and status filter
-  const filteredQuotations = quotations
+  const filteredQuotations = Array.isArray(quotations)
     ? quotations.filter((quotation: any) => {
         const matchesSearch = searchQuery === "" || 
           quotation.clientName.toLowerCase().includes(searchQuery.toLowerCase());
@@ -402,10 +391,10 @@ export function QuotationList() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {showStatusDialog && t(`quotation.confirmStatusChange${showStatusDialog.status.charAt(0).toUpperCase() + showStatusDialog.status.slice(1)}`)}
+              {showStatusDialog?.status && t(`quotation.confirmStatusChange${showStatusDialog.status.charAt(0).toUpperCase() + showStatusDialog.status.slice(1)}`)}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {showStatusDialog && t(`quotation.statusChangeWarning${showStatusDialog.status.charAt(0).toUpperCase() + showStatusDialog.status.slice(1)}`)}
+              {showStatusDialog?.status && t(`quotation.statusChangeWarning${showStatusDialog.status.charAt(0).toUpperCase() + showStatusDialog.status.slice(1)}`)}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
