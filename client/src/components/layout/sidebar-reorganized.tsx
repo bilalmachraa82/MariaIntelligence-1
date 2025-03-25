@@ -93,8 +93,8 @@ export function SidebarReorganized({
     // Se não inicia com barra, adiciona uma no início
     let normalizedHref = href.startsWith('/') ? href : '/' + href;
     
-    // Remove barras duplicadas, garantindo apenas uma barra entre segmentos
-    normalizedHref = normalizedHref.replace(/\/+/g, '/');
+    // Remove barras duplicadas, exceto em protocolos (http://, https://)
+    normalizedHref = normalizedHref.replace(/([^:]\/)\/+/g, "$1");
     
     // Navega para a URL normalizada
     useNavigate(normalizedHref);
@@ -193,6 +193,12 @@ export function SidebarReorganized({
     return false;
   };
 
+  // Função para normalizar URLs e evitar barras duplicadas
+  const normalizeUrl = (url: string): string => {
+    // Remover barras duplicadas, exceto em protocolos (http://, https://)
+    return url.replace(/([^:]\/)\/+/g, "$1");
+  };
+  
   // Componente para cada item da barra lateral
   const SidebarItem = ({ 
     icon: Icon, 
