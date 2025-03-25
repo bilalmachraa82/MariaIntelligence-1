@@ -293,7 +293,7 @@ export class PDFService {
       doc.setFontSize(8);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(100, 100, 100);
-      doc.text('Maria Faz - Gestão de Propriedades', 105, 280, { align: 'center' });
+      doc.text('Maria Faz - Gestão de Propriedades | NIF: 517445271', 105, 280, { align: 'center' });
       doc.text('Este orçamento é válido por 30 dias. Contacte-nos para mais informações.', 105, 285, { align: 'center' });
       
       // Verificar se o diretório existe antes de salvar
