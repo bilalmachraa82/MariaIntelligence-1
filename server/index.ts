@@ -63,10 +63,10 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // Servindo a aplicação na porta 2349
+  // Servindo a aplicação na porta 3000
   // esta porta serve tanto a API quanto o cliente
   // e não está sendo usada por outros processos
-  const port = 2349;
+  const port = 3000;
   server.listen({
     port,
     host: "0.0.0.0",
