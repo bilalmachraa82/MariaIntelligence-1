@@ -124,6 +124,35 @@ export function registerQuotationRoutes(app: any) {
       });
     } catch (error: any) {
       console.error("Erro ao criar orçamento:", error);
+      
+      // Log detalhado para diagnóstico
+      if (error.name === 'ZodError') {
+        console.error("Erro de validação ZodError:", JSON.stringify(error.format(), null, 2));
+        return res.status(400).json({
+          success: false,
+          message: "Dados de orçamento inválidos",
+          errors: error.format()
+        });
+      }
+      
+      // Erro detalhado de DB
+      if (error.code) {
+        console.error(`Erro de banco de dados: [${error.code}] ${error.message}`);
+        
+        // Verificar se é erro de tipo/formato em algum campo
+        if (error.code === '22P02') { // invalid_text_representation ou invalid_numeric_value
+          return res.status(400).json({
+            success: false,
+            message: "Erro de formato nos dados do orçamento",
+            detail: error.detail || error.message,
+            errors: {
+              '_errors': ['Formato de dados inválido em um ou mais campos']
+            }
+          });
+        }
+      }
+      
+      // Erro genérico
       return res.status(500).json({
         success: false,
         message: "Erro ao criar orçamento",

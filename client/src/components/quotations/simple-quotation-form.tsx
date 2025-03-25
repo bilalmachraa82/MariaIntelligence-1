@@ -103,6 +103,9 @@ export function SimpleQuotationForm({ defaultValues, onSuccess, isEditing = fals
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
     
+    // Inicializar variável fora do try/catch para poder acessá-la no bloco catch
+    let submissionData: Record<string, any> = {};
+    
     try {
       // Calcular preços fixos
       const duplexSurcharge = data.isDuplex ? "50" : "0";
@@ -126,8 +129,22 @@ export function SimpleQuotationForm({ defaultValues, onSuccess, isEditing = fals
       ).toString();
       
       // Objeto completo para envio ao servidor
-      const submissionData = {
-        ...data,
+      submissionData = {
+        // Cópias explícitas de todos os campos para garantir formatação correta
+        clientName: data.clientName,
+        clientEmail: data.clientEmail || "",
+        clientPhone: data.clientPhone || "",
+        propertyType: data.propertyType,
+        propertyAddress: data.propertyAddress || "",
+        propertyArea: data.propertyArea,
+        exteriorArea: data.exteriorArea,
+        
+        // Características booleanas
+        isDuplex: Boolean(data.isDuplex),
+        hasBBQ: Boolean(data.hasBBQ),
+        hasGlassGarden: Boolean(data.hasGlassGarden),
+        
+        // Campos de preço (garantindo que sejam strings)
         basePrice,
         duplexSurcharge,
         bbqSurcharge,
@@ -135,8 +152,15 @@ export function SimpleQuotationForm({ defaultValues, onSuccess, isEditing = fals
         glassGardenSurcharge,
         additionalSurcharges: additionalPrice,
         totalPrice,
+        
+        // Campos opcionais
+        notes: data.notes || "",
         internalNotes: "",
+        validUntil: data.validUntil,
+        status: data.status || "draft",
       };
+      
+      console.log("Enviando dados de orçamento:", JSON.stringify(submissionData, null, 2));
       
       // Enviar ao servidor
       if (isEditing && defaultValues?.id) {
@@ -162,15 +186,42 @@ export function SimpleQuotationForm({ defaultValues, onSuccess, isEditing = fals
         onSuccess();
       }
     } catch (error) {
+      // Verificar se temos dados básicos para diagnóstico
+      if (Object.keys(submissionData).length === 0) {
+        // Se não temos dados de envio, criamos um objeto de diagnóstico com dados básicos
+        submissionData = {
+          ...data,
+          basePrice: (Math.ceil(data.propertyArea / 50) * 20).toString(),
+          totalPrice: (
+            (Math.ceil(data.propertyArea / 50) * 20) + 
+            ((data.isDuplex ? 50 : 0) + (data.hasBBQ ? 30 : 0) + (data.hasGlassGarden ? 60 : 0))
+          ).toString()
+        };
+      }
+      
       console.error("Erro ao enviar orçamento:", error);
-      console.error("Dados enviados:", data);
+      console.error("Dados de formulário:", JSON.stringify(submissionData, null, 2));
       
       // Extrair detalhes do erro para diagnóstico
-      let errorMessage = t("quotation.saveError");
+      let errorMessage = t("quotation.errorCreate");
       const err = error as any; // Type assertion para evitar erros de tipagem
+      
       if (err.response?.data?.message) {
-        errorMessage = `${err.response.data.message}: ${JSON.stringify(err.response.data.errors || {})}`;
         console.error("Detalhes do erro:", err.response.data);
+        
+        // Mensagem de erro amigável para o usuário
+        errorMessage = t("quotation.errorCreate");
+        
+        // Caso tenha erros de validação, exibir listagem simples
+        if (err.response?.data?.errors) {
+          const errorFields = Object.keys(err.response.data.errors)
+            .filter(k => k !== '_errors')
+            .join(', ');
+            
+          if (errorFields) {
+            errorMessage += ` ${t("quotation.fieldsWithErrors")}: ${errorFields}`;
+          }
+        }
       }
 
       // Mostrar mensagem de erro detalhada
