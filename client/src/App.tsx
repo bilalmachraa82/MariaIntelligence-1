@@ -151,8 +151,8 @@ function Router() {
   return (
     <Switch>
       {/* Rotas em inglês */}
-      <Route path="/" component={Dashboard} />
-      <Route path="/dashboard" component={Dashboard} />
+      <Route path="" component={Dashboard} />
+      <Route path="dashboard" component={Dashboard} />
       <Route path="/properties" component={PropertiesPage} />
       <Route path="/properties/edit/:id?" component={PropertyEditPage} />
       <Route path="/properties/estatisticas" component={PropertyStatisticsPage} />
