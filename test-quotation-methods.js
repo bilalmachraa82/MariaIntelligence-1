@@ -3,10 +3,8 @@
  * Este script verifica se todos os métodos CRUD para orçamentos estão funcionando corretamente
  */
 
-// Usar CommonJS para compatibilidade
-const { storage } = require('./server/storage');
-
-// Não são necessárias funções de fallback com CommonJS
+// Usar ESM (ES Modules)
+import { storage } from './server/storage.ts';
 
 // Função principal
 async function testQuotationMethods() {

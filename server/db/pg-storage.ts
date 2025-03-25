@@ -720,6 +720,13 @@ export class PgStorage implements IStorage {
       console.log(`Delegando geração de PDF para serviço especializado`);
       const filePath = await pdfService.generateQuotationPdf(quotation, id);
       
+      // Atualizar o caminho do PDF no banco de dados
+      console.log(`Atualizando o campo pdfPath do orçamento #${id} para: ${filePath}`);
+      await this.updateQuotation(id, {
+        pdfPath: filePath,
+        updatedAt: new Date()
+      });
+      
       // Criar um registro de atividade para rastreamento
       await this.createActivity({
         type: "quotation_pdf_generated",
@@ -767,22 +774,35 @@ export class PgStorage implements IStorage {
    */
   async updateQuotation(id: number, quotation: any): Promise<any> {
     try {
-      console.log(`Simulando atualização do orçamento #${id}:`, quotation);
+      console.log(`Atualizando orçamento #${id} no banco de dados:`, quotation);
       
-      // Em uma implementação real, faríamos um update no banco de dados
-      // Buscar o orçamento atual para referência
+      // Verificar se o orçamento existe
       const existing = await this.getQuotation(id);
-      if (!existing) throw new Error("Orçamento não encontrado");
+      if (!existing) {
+        console.error(`Orçamento #${id} não encontrado para atualização`);
+        throw new Error("Orçamento não encontrado");
+      }
       
-      // Retornar o objeto "atualizado"
-      return {
-        ...existing,
+      // Atualizar o timestamp de modificação
+      const updatedData = {
         ...quotation,
-        id,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date()
       };
+      
+      // Executar atualização no banco de dados
+      const result = await this.db
+        .update(quotations)
+        .set(updatedData)
+        .where(eq(quotations.id, id))
+        .returning();
+      
+      console.log(`Orçamento #${id} atualizado com sucesso:`, result[0]);
+      
+      // Retornar o objeto atualizado
+      return result[0];
     } catch (error) {
       console.error(`Erro ao atualizar orçamento #${id}:`, error);
+      console.error("Stack trace:", error instanceof Error ? error.stack : "Erro sem stack trace");
       throw error;
     }
   }
