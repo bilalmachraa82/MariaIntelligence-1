@@ -87,10 +87,14 @@ export function registerQuotationRoutes(app: any) {
    */
   app.post("/api/quotations", async (req: Request, res: Response) => {
     try {
+      // Log para diagnóstico
+      console.log("Recebendo dados de orçamento:", JSON.stringify(req.body, null, 2));
+      
       // Validar dados do orçamento
       const validationResult = extendedQuotationSchema.safeParse(req.body);
       
       if (!validationResult.success) {
+        console.log("Erro de validação:", JSON.stringify(validationResult.error.format(), null, 2));
         return res.status(400).json({
           success: false,
           message: "Dados de orçamento inválidos",
@@ -99,6 +103,7 @@ export function registerQuotationRoutes(app: any) {
       }
       
       const quotationData = validationResult.data;
+      console.log("Dados validados:", JSON.stringify(quotationData, null, 2));
       
       // Criar orçamento
       const newQuotation = await storage.createQuotation(quotationData);
