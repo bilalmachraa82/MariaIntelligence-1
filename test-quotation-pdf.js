@@ -3,10 +3,14 @@
  * Este script tenta criar um orçamento e gerar um PDF a partir dele
  */
 
-const fs = require('fs');
-const path = require('path');
-const { jsPDF } = require('jspdf');
-const { autoTable } = require('jspdf-autotable');
+import fs from 'fs';
+import path from 'path';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { fileURLToPath } from 'url';
+
+// Obter o diretório atual (necessário em ES modules)
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Função que simula a geração de um PDF de orçamento
