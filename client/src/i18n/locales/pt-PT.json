@@ -695,7 +695,16 @@
       "propertyTypeHouseV5": "Moradia V5",
       "quotationFor": "Orçamento para",
       "createdOn": "Criado em",
-      "notFound": "Orçamento não encontrado"
+      "notFound": "Orçamento não encontrado",
+      "apartmentT0T1": "Apartamento T0/T1",
+      "apartmentT2": "Apartamento T2",
+      "apartmentT3": "Apartamento T3",
+      "apartmentT4": "Apartamento T4",
+      "houseV1": "Moradia V1",
+      "houseV2": "Moradia V2",
+      "houseV3": "Moradia V3",
+      "houseV4": "Moradia V4",
+      "houseV5": "Moradia V5"
     },
     "settings": {
       "title": "Configurações",

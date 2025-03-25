@@ -280,7 +280,9 @@ export function QuotationList() {
                     <TableRow key={quotation.id}>
                       <TableCell>{quotation.clientName}</TableCell>
                       <TableCell>
-                        {t(`quotation.propertyType${quotation.propertyType.charAt(0).toUpperCase() + quotation.propertyType.slice(1)}`)}
+                        {t(`quotation.${quotation.propertyType}`, {
+                          fallbackValue: quotation.propertyType
+                        })}
                       </TableCell>
                       <TableCell className="text-right">{formatPrice(quotation.totalPrice)}</TableCell>
                       <TableCell>{getStatusBadge(quotation.status)}</TableCell>

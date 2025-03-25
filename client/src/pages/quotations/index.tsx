@@ -13,8 +13,8 @@ export default function QuotationsPage() {
   return (
     <div className="container mx-auto py-6 space-y-6">
       <PageHeader
-        title={t("quotation.pageTitle")}
-        subtitle={t("quotation.pageDescription")}
+        title={t("quotation.title")} 
+        subtitle={t("quotations.title", "Gerencie orçamentos para serviços de limpeza")}
         actions={
           <Button onClick={() => navigate("/quotations/new")}>
             <Plus className="mr-2 h-4 w-4" />
