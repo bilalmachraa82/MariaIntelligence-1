@@ -244,6 +244,7 @@ function Router() {
       <Route path="/financeiro/documentos/pagamentos/novo" component={NewPaymentPage} />
       <Route path="/financeiro/documentos/pagamentos/editar/:id" component={EditPaymentPage} />
       <Route path="/financeiro/documentos/:id" component={DocumentDetailPage} />
+      <Route path="/documentos" component={FinancialDocumentsPage} />
       
       {/* Rotas de orçamentos em português */}
       <Route path="/orcamentos" component={QuotationsPage} />
