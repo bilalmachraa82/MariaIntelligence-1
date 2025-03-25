@@ -90,14 +90,39 @@ export function SidebarReorganized({
   // Função de navegação personalizada que também fecha o drawer quando necessário
   // Normaliza URLs para evitar barras duplicadas
   const navigate = (href: string) => {
-    // Se não inicia com barra, adiciona uma no início
-    let normalizedHref = href.startsWith('/') ? href : '/' + href;
-    
-    // Remove barras duplicadas, exceto em protocolos (http://, https://)
-    normalizedHref = normalizedHref.replace(/([^:]\/)\/+/g, "$1");
-    
-    // Navega para a URL normalizada
-    useNavigate(normalizedHref);
+    try {
+      // Verificar se é uma URL completa (com protocolo)
+      const isCompleteUrl = href.includes('://');
+      
+      // URL relativa ou absoluta
+      if (!isCompleteUrl) {
+        // Adicionar barra inicial se não existir
+        let normalizedHref = href.startsWith('/') ? href : '/' + href;
+        
+        // Remover barras duplas em URLs relativas (sem protocolo)
+        while (normalizedHref.includes('//')) {
+          normalizedHref = normalizedHref.replace('//', '/');
+        }
+        
+        // Navega para a URL normalizada
+        useNavigate(normalizedHref);
+      } else {
+        // Para URLs completas, usar uma expressão regular mais específica
+        // que preserva o protocolo (http:// ou https://)
+        let normalizedHref = href.replace(/(https?:\/\/)|(\/)+/g, (match, protocol) => {
+          if (protocol) return protocol; // Preserva o protocolo
+          return '/'; // Substitui sequências de barras por uma única barra
+        });
+        
+        // Usar window.location para URLs completas
+        window.location.href = normalizedHref;
+        return; // Interrompe a execução para evitar o useNavigate
+      }
+    } catch (error) {
+      console.error("Erro ao normalizar URL:", error);
+      // Em caso de erro, tentar a navegação normal
+      useNavigate(href);
+    }
     
     // Fecha o drawer se estiver em modo mobile e a função closeDrawer estiver disponível
     if (isMobile && closeDrawer) {
