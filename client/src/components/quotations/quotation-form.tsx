@@ -178,39 +178,46 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);
     
-    // Criamos um objeto simples com dados básicos do orçamento
+    // Log do objeto recebido do formulário para diagnóstico
+    console.log("Dados do formulário:", data);
+    
+    // Criamos um objeto completo para corresponder exatamente ao schema
     const submissionData = {
-      // Dados do cliente
+      // Campos obrigatórios
       clientName: data.clientName,
+      status: data.status || "draft",
+      propertyType: data.propertyType || "apartment_t0t1",
+      totalPrice: totalPrice.toString(),
+      basePrice: (basePrice || 20).toString(),
+      
+      // Campos com valores padrão
       clientEmail: data.clientEmail || "",
       clientPhone: data.clientPhone || "",
-      
-      // Dados da propriedade
-      propertyType: data.propertyType || "apartment_t0t1",
       propertyAddress: data.propertyAddress || "",
       propertyArea: data.propertyArea || 50,
       exteriorArea: data.exteriorArea || 0,
       
-      // Características
+      // Características boolean
       isDuplex: Boolean(data.isDuplex),
       hasBBQ: Boolean(data.hasBBQ),
       hasGlassGarden: Boolean(data.hasGlassGarden),
       
-      // Preços - sempre usando string conforme esperado pelo schema
-      basePrice: (basePrice || 20).toString(),
+      // Campos de preço
       duplexSurcharge: data.isDuplex ? "50" : "0",
       bbqSurcharge: data.hasBBQ ? "30" : "0",
-      exteriorSurcharge: "0",
+      exteriorSurcharge: data.exteriorArea > 15 ? "10" : "0",
       glassGardenSurcharge: data.hasGlassGarden ? "60" : "0",
       additionalSurcharges: additionalPrice.toString(),
-      totalPrice: totalPrice.toString(),
       
-      // Detalhes adicionais
-      status: data.status || "draft",
+      // Campos opcionais
       notes: data.notes || "",
       internalNotes: data.internalNotes || "",
       validUntil: data.validUntil || format(addDays(new Date(), 30), "yyyy-MM-dd"),
+      pdfPath: "",
     };
+    
+    // Log do objeto que será enviado para a API para diagnóstico
+    console.log("Objeto de submissão:", submissionData);
     
     try {
       if (isEditing && defaultValues?.id) {

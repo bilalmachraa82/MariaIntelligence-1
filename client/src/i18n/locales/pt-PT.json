@@ -1,8 +1,28 @@
 {
   "translation": {
+    "common": {
+      "saving": "A guardar...",
+      "save": "Guardar",
+      "update": "Atualizar",
+      "error": "Erro",
+      "success": "Sucesso",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar"
+    },
     "quotation": {
       "pageTitle": "Orçamentos",
       "pageDescription": "Gerir orçamentos para clientes e propriedades",
+      "additionalFeatures": "Características Adicionais",
+      "additionalDetails": "Detalhes Adicionais",
+      "selectPropertyType": "Selecione o tipo de imóvel",
+      "propertyTypeApartmentT0T1": "Apartamento T0/T1",
+      "propertyTypeApartmentT2": "Apartamento T2",
+      "propertyTypeApartmentT3": "Apartamento T3",
+      "propertyTypeApartmentT4": "Apartamento T4",
+      "propertyTypeHouseV1": "Casa V1",
+      "propertyTypeHouseV2": "Casa V2", 
+      "propertyTypeHouseV3": "Casa V3",
+      "validUntilDescription": "Data até quando o orçamento é válido",
       "create": "Criar Orçamento",
       "edit": "Editar Orçamento",
       "delete": "Eliminar Orçamento",
