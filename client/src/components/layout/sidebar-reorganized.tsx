@@ -238,6 +238,9 @@ export function SidebarReorganized({
     submenu,
     showPendingBadge = false
   }: SidebarItemProps) => {
+    // Normalizar href para evitar problemas com barras duplas
+    const normalizedHref = href.startsWith('/') ? href : `/${href}`;
+    const normalizedAltHref = altHref?.startsWith('/') ? altHref : altHref ? `/${altHref}` : undefined;
     const { count } = showPendingBadge ? usePendingApprovals() : { count: 0 };
     const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
     
@@ -392,11 +395,11 @@ export function SidebarReorganized({
         }
       ]
     },
-    // Orçamentos
+    // Orçamentos - usando paths estáticos sem barras iniciais para evitar dupla barra
     {
       name: t("navigation.quotations", "Orçamentos"),
-      href: "/quotations",
-      altHref: "/orcamentos",
+      href: "quotations", // Removido a barra inicial para evitar dupla barra
+      altHref: "orcamentos", // Removido a barra inicial para evitar dupla barra
       icon: FileText,
       iconColor: "text-blue-500"
     },
