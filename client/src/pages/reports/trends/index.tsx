@@ -153,7 +153,7 @@ export default function TrendsReportPage() {
                   <SelectValue placeholder={t("trendsReport.allOwners", "Todos os proprietários")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">
+                  <SelectItem value="all">
                     {t("trendsReport.allOwners", "Todos os proprietários")}
                   </SelectItem>
                   {(owners as any[]).map((owner: any) => (
@@ -182,7 +182,7 @@ export default function TrendsReportPage() {
                   <SelectValue placeholder={t("trendsReport.allProperties", "Todas as propriedades")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">
+                  <SelectItem value="all">
                     {t("trendsReport.allProperties", "Todas as propriedades")}
                   </SelectItem>
                   {(filteredProperties as any[]).map((property: any) => (
