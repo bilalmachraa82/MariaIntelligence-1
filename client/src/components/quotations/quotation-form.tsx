@@ -142,30 +142,31 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
   useEffect(() => {
     // Base price calculation (€20 per 50m²)
     const basePriceRate = 20;
-    const calculatedBasePrice = Math.ceil(watchedValues.totalArea / 50) * basePriceRate;
+    // Usar propertyArea para cálculo de preço base
+    const calculatedBasePrice = Math.ceil(watchedValues.propertyArea / 50) * basePriceRate;
     setBasePrice(calculatedBasePrice);
     
     // Additional price calculation
     let calculatedAdditionalPrice = 0;
     
-    // Exterior space > 15m²: +€10
-    if (watchedValues.hasExteriorSpace && watchedValues.exteriorArea > 15) {
+    // Exterior area > 15m²: +€10
+    if (watchedValues.exteriorArea > 15) {
       calculatedAdditionalPrice += 10;
     }
     
-    // Duplex: +€10
+    // Duplex: +€50
     if (watchedValues.isDuplex) {
-      calculatedAdditionalPrice += 10;
+      calculatedAdditionalPrice += 50;
     }
     
-    // Apartment with BBQ: +€10
-    if (watchedValues.propertyType.startsWith("apartment_") && watchedValues.hasBBQ) {
-      calculatedAdditionalPrice += 10;
+    // BBQ: +€30
+    if (watchedValues.hasBBQ) {
+      calculatedAdditionalPrice += 30;
     }
     
-    // Garden with glass to clean: +€10
-    if (watchedValues.hasGarden && watchedValues.hasGlassSurfaces) {
-      calculatedAdditionalPrice += 10;
+    // Glass garden: +€60
+    if (watchedValues.hasGlassGarden) {
+      calculatedAdditionalPrice += 60;
     }
     
     setAdditionalPrice(calculatedAdditionalPrice);
@@ -187,20 +188,20 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
       // Dados da propriedade
       propertyType: data.propertyType || "apartment_t0t1",
       propertyAddress: data.propertyAddress || "",
-      propertyArea: data.propertyArea || data.totalArea || 50,
+      propertyArea: data.propertyArea || 50,
       exteriorArea: data.exteriorArea || 0,
       
       // Características
       isDuplex: Boolean(data.isDuplex),
       hasBBQ: Boolean(data.hasBBQ),
-      hasGlassGarden: Boolean(data.hasGlassGarden || data.hasGlassSurfaces),
+      hasGlassGarden: Boolean(data.hasGlassGarden),
       
       // Preços - sempre usando string conforme esperado pelo schema
       basePrice: (basePrice || 20).toString(),
       duplexSurcharge: data.isDuplex ? "50" : "0",
       bbqSurcharge: data.hasBBQ ? "30" : "0",
       exteriorSurcharge: "0",
-      glassGardenSurcharge: (data.hasGlassGarden || data.hasGlassSurfaces) ? "60" : "0",
+      glassGardenSurcharge: data.hasGlassGarden ? "60" : "0",
       additionalSurcharges: additionalPrice.toString(),
       totalPrice: totalPrice.toString(),
       
@@ -417,7 +418,7 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="totalArea"
+                    name="propertyArea"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>{t("quotation.totalArea")} (m²)</FormLabel>
@@ -444,35 +445,7 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
                   />
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="bedrooms"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t("quotation.bedrooms")}</FormLabel>
-                        <FormControl>
-                          <Input type="number" min="0" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="bathrooms"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t("quotation.bathrooms")}</FormLabel>
-                        <FormControl>
-                          <Input type="number" min="0" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                {/* Campos extra de quartos/banheiros removidos pois não existem no schema de orçamentos */}
               </div>
             </CardContent>
           </Card>
@@ -506,65 +479,25 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
                   )}
                 />
                 
-                <FormField
-                  control={form.control}
-                  name="hasGarden"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel>{t("quotation.hasGarden")}</FormLabel>
-                        <FormDescription>
-                          {t("quotation.hasGardenDescription")}
-                        </FormDescription>
-                      </div>
-                    </FormItem>
-                  )}
-                />
+                {/* Campo hasGarden removido pois não existe no schema de orçamentos */}
               </div>
               
               <div className="space-y-4">
+                {/* Campo hasExteriorSpace removido pois não existe no schema de orçamentos */}
+                
                 <FormField
                   control={form.control}
-                  name="hasExteriorSpace"
+                  name="exteriorArea"
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                    <FormItem>
+                      <FormLabel>{t("quotation.exteriorArea")} (m²)</FormLabel>
                       <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
+                        <Input type="number" min="0" {...field} />
                       </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel>{t("quotation.hasExteriorSpace")}</FormLabel>
-                        <FormDescription>
-                          {t("quotation.hasExteriorSpaceDescription")}
-                        </FormDescription>
-                      </div>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
-                
-                {watchedValues.hasExteriorSpace && (
-                  <FormField
-                    control={form.control}
-                    name="exteriorArea"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t("quotation.exteriorArea")} (m²)</FormLabel>
-                        <FormControl>
-                          <Input type="number" min="0" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
                 
                 <FormField
                   control={form.control}
@@ -589,7 +522,7 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
                 
                 <FormField
                   control={form.control}
-                  name="hasGlassSurfaces"
+                  name="hasGlassGarden"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                       <FormControl>
@@ -599,9 +532,9 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">
-                        <FormLabel>{t("quotation.hasGlassSurfaces")}</FormLabel>
+                        <FormLabel>{t("quotation.hasGlassGarden")}</FormLabel>
                         <FormDescription>
-                          {t("quotation.hasGlassSurfacesDescription")}
+                          {t("quotation.hasGlassGardenDescription")}
                         </FormDescription>
                       </div>
                     </FormItem>

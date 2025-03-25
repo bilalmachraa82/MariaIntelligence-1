@@ -165,10 +165,18 @@ export function SimpleQuotationForm({ defaultValues, onSuccess, isEditing = fals
       console.error("Erro ao enviar orçamento:", error);
       console.error("Dados enviados:", data);
       
-      // Mostrar mensagem de erro
+      // Extrair detalhes do erro para diagnóstico
+      let errorMessage = t("quotation.saveError");
+      const err = error as any; // Type assertion para evitar erros de tipagem
+      if (err.response?.data?.message) {
+        errorMessage = `${err.response.data.message}: ${JSON.stringify(err.response.data.errors || {})}`;
+        console.error("Detalhes do erro:", err.response.data);
+      }
+
+      // Mostrar mensagem de erro detalhada
       toast({
         title: t("common.error"),
-        description: t("quotation.saveError"),
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
