@@ -274,7 +274,7 @@ export function SidebarReorganized({
               // Fonte mais forte em mobile
               isMobile && "font-medium"
             )}
-            onClick={hasSubmenu ? () => setIsSubmenuOpen(!isSubmenuOpen) : onClick}
+            onClick={hasSubmenu ? () => setIsSubmenuOpen(!isSubmenuOpen) : () => onClick ? onClick() : navigate(normalizedHref)}
           >
             {!isSubItem && (
               <Icon className={cn(
@@ -313,7 +313,18 @@ export function SidebarReorganized({
                   label={subItem.name}
                   href={subItem.href}
                   isActive={checkIfActive(subItem.href, subItem.altHref)}
-                  onClick={() => navigate(subItem.href)}
+                  onClick={() => {
+                    // Aplicar a mesma lógica de normalização aqui
+                    const href = subItem.href;
+                    try {
+                      // Normalizar URLs antes de navegar
+                      let normalizedHref = normalizeUrl(href);
+                      navigate(normalizedHref);
+                    } catch (error) {
+                      console.error("Erro ao normalizar URL de submenu:", error);
+                      navigate(subItem.href);
+                    }
+                  }}
                   iconColor={subItem.iconColor || iconColor}
                   isSubItem
                 />
@@ -848,7 +859,18 @@ export function SidebarReorganized({
                               href={subItem.href}
                               altHref={subItem.altHref}
                               isActive={checkIfActive(subItem.href, subItem.altHref)}
-                              onClick={() => navigate(subItem.href)}
+                              onClick={() => {
+                                // Aplicar a mesma lógica de normalização aqui
+                                const href = subItem.href;
+                                try {
+                                  // Normalizar URLs antes de navegar
+                                  let normalizedHref = normalizeUrl(href);
+                                  navigate(normalizedHref);
+                                } catch (error) {
+                                  console.error("Erro ao normalizar URL de submenu:", error);
+                                  navigate(subItem.href);
+                                }
+                              }}
                               iconColor={subItem.iconColor || item.iconColor}
                               isSubItem
                             />
@@ -863,7 +885,18 @@ export function SidebarReorganized({
                       label={item.name}
                       href={item.href}
                       isActive={checkIfActive(item.href)}
-                      onClick={() => navigate(item.href)}
+                      onClick={() => {
+                        // Aplicar a mesma lógica de normalização aqui
+                        const href = item.href;
+                        try {
+                          // Normalizar URLs antes de navegar
+                          let normalizedHref = normalizeUrl(href);
+                          navigate(normalizedHref);
+                        } catch (error) {
+                          console.error("Erro ao normalizar URL:", error);
+                          navigate(item.href);
+                        }
+                      }}
                       iconColor={item.iconColor}
                     />
                   )
