@@ -161,10 +161,7 @@ export function SidebarReorganized({
       return true;
     }
     
-    if ((href.includes('documentos') || href.includes('documents')) &&
-        (location.includes('documentos') || location.includes('financial/documents'))) {
-      return true;
-    }
+    // Menu "Documentos" removido pois era redundante com outros menus
     
     if ((href.includes('quotations') || href.includes('orcamentos')) &&
         (location.includes('quotations') || location.includes('orcamentos'))) {
@@ -380,13 +377,6 @@ export function SidebarReorganized({
       altHref: "/payments/outgoing",
       icon: CreditCard,
       iconColor: "text-red-500"
-    },
-    {
-      name: t("navigation.documents", "Documentos"),
-      href: "/documentos",
-      altHref: "/financial/documents",
-      icon: FileText,
-      iconColor: "text-yellow-500"
     }
   ];
 
