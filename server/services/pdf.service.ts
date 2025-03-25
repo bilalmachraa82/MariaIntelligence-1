@@ -1,0 +1,273 @@
+/**
+ * Serviço dedicado para geração de PDFs no sistema Maria Faz
+ * Fornece funcionalidades para criar PDFs para orçamentos, relatórios e outros documentos
+ */
+
+import fs from 'fs';
+import path from 'path';
+import { Quotation } from '@shared/schema';
+
+// Definição de tipos para TypeScript
+interface PDFDocument {
+  text(text: string | string[], x: number, y: number, options?: any): PDFDocument;
+  setFont(fontName: string, fontStyle: string): PDFDocument;
+  setFontSize(size: number): PDFDocument;
+  setTextColor(r: number, g: number, b: number): PDFDocument;
+  setProperties(properties: Record<string, string>): PDFDocument;
+  splitTextToSize(text: string, maxWidth: number): string[];
+  output(type?: string): any;
+  lastAutoTable?: { finalY: number };
+  internal: {
+    pageSize: { width: number; height: number };
+  };
+}
+
+/**
+ * Serviço para geração de PDF
+ * Utiliza jsPDF e jspdf-autotable para criar documentos PDF bem formatados
+ */
+export class PDFService {
+  /**
+   * Gera um PDF de orçamento
+   * @param quotation Dados do orçamento
+   * @param id ID do orçamento
+   * @returns Caminho para o arquivo PDF gerado
+   */
+  async generateQuotationPdf(quotation: any, id: number): Promise<string> {
+    try {
+      console.log("Iniciando geração de PDF para orçamento...");
+      
+      // Importação dinâmica para evitar problemas com o servidor
+      const jsPDF = await import('jspdf').then(module => module.jsPDF);
+      const autoTable = await import('jspdf-autotable').then(module => module.default);
+      
+      // Verificar se temos dados do orçamento
+      if (!quotation) {
+        console.error("Dados do orçamento não fornecidos");
+        throw new Error("Dados do orçamento não fornecidos");
+      }
+      
+      console.log("Orçamento encontrado, dados:", JSON.stringify(quotation, null, 2));
+      
+      // Criar diretório de uploads se não existir
+      const uploadDir = './uploads';
+      if (!fs.existsSync(uploadDir)) {
+        console.log("Criando diretório de uploads:", uploadDir);
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      
+      // Gerar nome de arquivo baseado no ID e data de criação
+      const timestamp = Date.now();
+      const fileName = `orcamento_${id}_${timestamp}.pdf`;
+      const filePath = path.join(uploadDir, fileName);
+      
+      console.log(`Gerando PDF para orçamento #${id} em ${filePath}`);
+      
+      // Criar uma nova instância de PDF (formato A4)
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      }) as PDFDocument;
+      
+      // Adicionar metadados ao documento
+      doc.setProperties({
+        title: `Orçamento Nº ${id}`,
+        subject: `Orçamento para ${quotation.clientName}`,
+        author: 'Maria Faz',
+        creator: 'Sistema Maria Faz'
+      });
+      
+      // Estilo do documento
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(20);
+      
+      // Título
+      doc.setTextColor(0, 51, 102); // Azul escuro
+      doc.text('ORÇAMENTO', 105, 20, { align: 'center' });
+      doc.setTextColor(0, 0, 0); // Voltar para preto
+      
+      // Informações do orçamento
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`Orçamento Nº: ${id}`, 20, 35);
+      
+      // Data do orçamento e validade
+      const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('pt-PT');
+      };
+      
+      const createdDate = quotation.createdAt ? formatDate(quotation.createdAt) : formatDate(new Date().toISOString());
+      doc.text(`Data: ${createdDate}`, 20, 42);
+      doc.text(`Válido até: ${formatDate(quotation.validUntil)}`, 20, 49);
+      
+      // Informações do cliente
+      doc.setFontSize(14);
+      doc.text('Dados do Cliente', 20, 60);
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Nome: ${quotation.clientName}`, 20, 68);
+      
+      if (quotation.clientEmail) {
+        doc.text(`Email: ${quotation.clientEmail}`, 20, 75);
+      }
+      
+      if (quotation.clientPhone) {
+        doc.text(`Telefone: ${quotation.clientPhone}`, 20, 82);
+      }
+      
+      // Informações da propriedade
+      let currentY = 95;
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Detalhes da Propriedade', 20, currentY);
+      currentY += 8;
+      
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'normal');
+      
+      // Tabela com os detalhes da propriedade
+      const propertyDetails = [
+        ['Tipo', quotation.propertyType || 'Não especificado'],
+        ['Área Total', `${quotation.propertyArea || 0} m²`]
+      ];
+      
+      if (quotation.exteriorArea > 0) {
+        propertyDetails.push(['Área Exterior', `${quotation.exteriorArea} m²`]);
+      }
+      
+      autoTable(doc, {
+        startY: currentY,
+        head: [['Característica', 'Detalhe']],
+        body: propertyDetails,
+        theme: 'striped',
+        headStyles: { fillColor: [0, 51, 102], textColor: [255, 255, 255] },
+        margin: { top: 20, left: 20, right: 20 }
+      });
+      
+      currentY = doc.lastAutoTable?.finalY ? doc.lastAutoTable.finalY + 10 : currentY + 30;
+      
+      // Características adicionais
+      if (quotation.isDuplex || quotation.exteriorArea > 0 || quotation.hasBBQ || 
+          quotation.hasGlassGarden) {
+            
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Características Adicionais:', 20, currentY);
+        currentY += 7;
+        
+        doc.setFont('helvetica', 'normal');
+        const features = [];
+        
+        if (quotation.isDuplex) features.push('Duplex');
+        if (quotation.exteriorArea > 0) features.push('Espaço Exterior');
+        if (quotation.hasBBQ) features.push('Churrasqueira');
+        if (quotation.hasGlassGarden) features.push('Jardim com Superfícies de Vidro');
+        
+        doc.setFontSize(10);
+        features.forEach((feature, index) => {
+          doc.text(`• ${feature}`, 25, currentY + (index * 6));
+        });
+        
+        currentY += (features.length * 6) + 10;
+      }
+      
+      // Valores do orçamento
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Resumo do Orçamento', 105, currentY, { align: 'center' });
+      currentY += 10;
+      
+      // Formatar valor monetário
+      const formatCurrency = (value: number) => {
+        return value.toLocaleString('pt-PT', { 
+          style: 'currency', 
+          currency: 'EUR',
+          minimumFractionDigits: 2
+        });
+      };
+      
+      // Tabela com os valores
+      const basePrice = parseFloat(quotation.basePrice?.toString() || "0");
+      const duplexSurcharge = parseFloat(quotation.duplexSurcharge?.toString() || "0");
+      const bbqSurcharge = parseFloat(quotation.bbqSurcharge?.toString() || "0");
+      const exteriorSurcharge = parseFloat(quotation.exteriorSurcharge?.toString() || "0");
+      const glassGardenSurcharge = parseFloat(quotation.glassGardenSurcharge?.toString() || "0");
+      const additionalSurcharges = parseFloat(quotation.additionalSurcharges?.toString() || "0");
+      
+      const additionalTotal = (
+        duplexSurcharge + 
+        bbqSurcharge + 
+        exteriorSurcharge + 
+        glassGardenSurcharge + 
+        additionalSurcharges
+      );
+      
+      const totalPrice = parseFloat(quotation.totalPrice?.toString() || "0");
+      
+      autoTable(doc, {
+        startY: currentY,
+        head: [['Item', 'Valor']],
+        body: [
+          ['Preço Base', formatCurrency(basePrice)],
+          ['Adicionais', formatCurrency(additionalTotal)],
+          ['Preço Total', formatCurrency(totalPrice)]
+        ],
+        theme: 'grid',
+        headStyles: { fillColor: [0, 51, 102], textColor: [255, 255, 255] },
+        bodyStyles: { fontSize: 12 },
+        columnStyles: { 1: { halign: 'right' } },
+        margin: { top: 20, left: 40, right: 40 },
+        foot: [['', '']],
+        footStyles: { fillColor: [240, 240, 240] }
+      });
+      
+      currentY = doc.lastAutoTable?.finalY ? doc.lastAutoTable.finalY + 15 : currentY + 50;
+      
+      // Observações
+      if (quotation.notes) {
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Observações:', 20, currentY);
+        currentY += 7;
+        
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        
+        // Dividir o texto em linhas para evitar que ultrapasse a largura da página
+        const textLines = doc.splitTextToSize(quotation.notes, 170);
+        doc.text(textLines as string[], 20, currentY);
+        
+        currentY += (textLines.length * 5) + 10;
+      }
+      
+      // Rodapé com informações da empresa
+      doc.setFontSize(8);
+      doc.setTextColor(100, 100, 100);
+      doc.text('Maria Faz - Gestão de Propriedades', 105, 280, { align: 'center' });
+      doc.text('Este documento é gerado automaticamente e não necessita de assinatura.', 105, 285, { align: 'center' });
+      
+      // Verificar se o diretório existe antes de salvar
+      try {
+        // Salvar o PDF no sistema de arquivos
+        const pdfOutput = doc.output();
+        fs.writeFileSync(filePath, pdfOutput, 'binary');
+        console.log(`PDF gerado com sucesso em ${filePath}`);
+      } catch (error) {
+        console.error("Erro ao salvar o arquivo PDF:", error);
+        const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+        throw new Error(`Erro ao salvar o arquivo PDF: ${errorMessage}`);
+      }
+      
+      return filePath;
+    } catch (error) {
+      console.error(`Erro ao gerar PDF para orçamento #${id}:`, error);
+      console.error("Stack trace:", error instanceof Error ? error.stack : "Erro sem stack trace");
+      throw error;
+    }
+  }
+}
+
+// Exportar uma instância única do serviço
+export const pdfService = new PDFService();
