@@ -78,12 +78,17 @@ export class PDFService {
         creator: 'Sistema Maria Faz'
       });
       
-      // Estilo do documento
+      // Estilo do documento - usando fontes e cores alinhadas com o logo Maria Faz
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(20);
+      doc.setFontSize(24);
       
-      // Título
-      doc.setTextColor(0, 51, 102); // Azul escuro
+      // Cores do logo: 
+      // Rosa: rgb(231, 144, 144) - #E79090
+      // Rosa claro: rgb(245, 213, 213) - #F5D5D5
+      // Turquesa: rgb(142, 209, 210) - #8ED1D2
+      
+      // Título - usando a cor turquesa do logo
+      doc.setTextColor(142, 209, 210); // Turquesa
       doc.text('ORÇAMENTO', 105, 20, { align: 'center' });
       doc.setTextColor(0, 0, 0); // Voltar para preto
       
@@ -104,7 +109,11 @@ export class PDFService {
       
       // Informações do cliente
       doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      // Título de seção em rosa
+      doc.setTextColor(231, 144, 144); // Rosa
       doc.text('Dados do Cliente', 20, 60);
+      doc.setTextColor(0, 0, 0); // Voltar para preto
       doc.setFontSize(11);
       doc.setFont('helvetica', 'normal');
       doc.text(`Nome: ${quotation.clientName}`, 20, 68);
@@ -121,7 +130,10 @@ export class PDFService {
       let currentY = 95;
       doc.setFontSize(14);
       doc.setFont('helvetica', 'bold');
+      // Título de seção em rosa claro
+      doc.setTextColor(245, 213, 213); // Rosa claro
       doc.text('Detalhes da Propriedade', 20, currentY);
+      doc.setTextColor(0, 0, 0); // Voltar para preto
       currentY += 8;
       
       doc.setFontSize(11);
@@ -176,7 +188,10 @@ export class PDFService {
       // Valores do orçamento
       doc.setFontSize(14);
       doc.setFont('helvetica', 'bold');
+      // Título em turquesa
+      doc.setTextColor(142, 209, 210); // Turquesa
       doc.text('Resumo do Orçamento', 105, currentY, { align: 'center' });
+      doc.setTextColor(0, 0, 0); // Voltar para preto
       currentY += 10;
       
       // Formatar valor monetário
@@ -215,12 +230,12 @@ export class PDFService {
           ['Preço Total', formatCurrency(totalPrice)]
         ],
         theme: 'grid',
-        headStyles: { fillColor: [0, 51, 102], textColor: [255, 255, 255] },
+        headStyles: { fillColor: [231, 144, 144], textColor: [255, 255, 255] }, // Rosa para o cabeçalho
         bodyStyles: { fontSize: 12 },
         columnStyles: { 1: { halign: 'right' } },
         margin: { top: 20, left: 40, right: 40 },
         foot: [['', '']],
-        footStyles: { fillColor: [240, 240, 240] }
+        footStyles: { fillColor: [245, 213, 213] } // Rosa claro para o rodapé
       });
       
       currentY = doc.lastAutoTable?.finalY ? doc.lastAutoTable.finalY + 15 : currentY + 50;
@@ -229,7 +244,9 @@ export class PDFService {
       if (quotation.notes) {
         doc.setFontSize(12);
         doc.setFont('helvetica', 'bold');
+        doc.setTextColor(245, 213, 213); // Rosa claro
         doc.text('Observações:', 20, currentY);
+        doc.setTextColor(0, 0, 0); // Voltar para preto
         currentY += 7;
         
         doc.setFont('helvetica', 'normal');
