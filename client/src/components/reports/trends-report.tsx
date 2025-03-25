@@ -20,8 +20,8 @@ import {
   Col,
   Badge,
   Flex,
-  Select,
-  SelectItem,
+  Select as TremorSelect,
+  SelectItem as TremorSelectItem,
   Subtitle,
   Callout,
   Metric,
@@ -590,17 +590,17 @@ export function TrendsReport({
               <Label htmlFor="granularity" className="mb-2 block">
                 {t("trendsReport.granularity", "Granularidade")}
               </Label>
-              <Select
+              <TremorSelect
                 id="granularity"
                 value={granularity}
                 onValueChange={setGranularity}
               >
                 {granularityOptions.map(option => (
-                  <SelectItem key={option.value} value={option.value}>
+                  <TremorSelectItem key={option.value} value={option.value}>
                     {option.label}
-                  </SelectItem>
+                  </TremorSelectItem>
                 ))}
-              </Select>
+              </TremorSelect>
             </div>
             
             {!propertyId && (
@@ -608,18 +608,18 @@ export function TrendsReport({
                 <Label htmlFor="sortBy" className="mb-2 block">
                   {t("trendsReport.sortBy", "Ordenar por")}
                 </Label>
-                <Select
+                <TremorSelect
                   id="sortBy"
                   value={sortOption}
                   onValueChange={setSortOption}
                   icon={ArrowUpDown}
                 >
                   {sortOptions.map(option => (
-                    <SelectItem key={option.value} value={option.value}>
+                    <TremorSelectItem key={option.value} value={option.value}>
                       {option.label}
-                    </SelectItem>
+                    </TremorSelectItem>
                   ))}
-                </Select>
+                </TremorSelect>
               </div>
             )}
             
