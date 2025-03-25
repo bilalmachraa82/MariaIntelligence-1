@@ -16,6 +16,8 @@ async function testQuotationRoutes() {
     const listResponse = await fetch(`${API_BASE_URL}/quotations`);
     
     if (!listResponse.ok) {
+      const errorText = await listResponse.text();
+      console.error("Resposta completa do erro:", errorText);
       throw new Error(`Erro ao listar orçamentos: ${listResponse.status} ${listResponse.statusText}`);
     }
     
