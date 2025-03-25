@@ -138,9 +138,9 @@ export default function TrendsReportPage() {
                 {t("trendsReport.owner", "Proprietário")}
               </Label>
               <Select
-                value={ownerId?.toString() || ""}
+                value={ownerId?.toString() || "_all"}
                 onValueChange={(value) => {
-                  setOwnerId(value ? parseInt(value) : undefined);
+                  setOwnerId(value === "_all" ? undefined : parseInt(value));
                   // Limpar a propriedade se estiver mudando o proprietário
                   setPropertyId(undefined);
                 }}
@@ -153,7 +153,7 @@ export default function TrendsReportPage() {
                   <SelectValue placeholder={t("trendsReport.allOwners", "Todos os proprietários")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">
+                  <SelectItem value="_all">
                     {t("trendsReport.allOwners", "Todos os proprietários")}
                   </SelectItem>
                   {(owners as any[]).map((owner: any) => (
@@ -171,8 +171,8 @@ export default function TrendsReportPage() {
                 {t("trendsReport.property", "Propriedade")}
               </Label>
               <Select
-                value={propertyId?.toString() || ""}
-                onValueChange={(value) => setPropertyId(value ? parseInt(value) : undefined)}
+                value={propertyId?.toString() || "_all"}
+                onValueChange={(value) => setPropertyId(value === "_all" ? undefined : parseInt(value))}
               >
                 <SelectTrigger
                   id="property"
@@ -182,7 +182,7 @@ export default function TrendsReportPage() {
                   <SelectValue placeholder={t("trendsReport.allProperties", "Todas as propriedades")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">
+                  <SelectItem value="_all">
                     {t("trendsReport.allProperties", "Todas as propriedades")}
                   </SelectItem>
                   {(filteredProperties as any[]).map((property: any) => (
