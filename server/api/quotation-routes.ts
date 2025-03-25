@@ -253,10 +253,14 @@ export function registerQuotationRoutes(app: any) {
 
   /**
    * Endpoint para gerar PDF do orçamento
+   * Suporta dois modos:
+   * 1. ?mode=json - Retorna apenas o caminho do arquivo (padrão antigo)
+   * 2. ?mode=download ou sem parâmetro - Permite download direto do arquivo
    */
   app.get("/api/quotations/:id/pdf", async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
+      const mode = req.query.mode as string || 'download';
       
       if (isNaN(id)) {
         return res.status(400).json({
@@ -268,11 +272,34 @@ export function registerQuotationRoutes(app: any) {
       // Gerar o PDF e obter o caminho
       const pdfPath = await storage.generateQuotationPdf(id);
       
-      return res.json({
-        success: true,
-        message: "PDF gerado com sucesso",
-        pdfPath: pdfPath
-      });
+      // Verificar o modo solicitado
+      if (mode === 'json') {
+        return res.json({
+          success: true,
+          message: "PDF gerado com sucesso",
+          pdfPath: pdfPath
+        });
+      } else {
+        // Modo download - Enviar o arquivo diretamente
+        const fs = require('fs');
+        const path = require('path');
+        
+        // Verificar se o arquivo existe
+        if (!fs.existsSync(pdfPath)) {
+          throw new Error("Arquivo PDF não encontrado");
+        }
+        
+        // Obter o nome do arquivo a partir do caminho
+        const fileName = path.basename(pdfPath);
+        
+        // Configurar cabeçalhos para download
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+        
+        // Enviar o arquivo
+        const fileStream = fs.createReadStream(pdfPath);
+        fileStream.pipe(res);
+      }
     } catch (error: any) {
       console.error("Erro ao gerar PDF:", error);
       return res.status(500).json({

@@ -107,26 +107,26 @@ export function SimpleQuotationForm({ defaultValues, onSuccess, isEditing = fals
     let submissionData: Record<string, any> = {};
     
     try {
-      // Calcular preços fixos
-      const duplexSurcharge = data.isDuplex ? "50" : "0";
-      const bbqSurcharge = data.hasBBQ ? "30" : "0";
-      const glassGardenSurcharge = data.hasGlassGarden ? "60" : "0";
+      // Calcular preços fixos com 2 casas decimais para compatibilidade com schema decimal
+      const duplexSurcharge = data.isDuplex ? "50.00" : "0.00";
+      const bbqSurcharge = data.hasBBQ ? "30.00" : "0.00";
+      const glassGardenSurcharge = data.hasGlassGarden ? "60.00" : "0.00";
       
-      // Calcular preço base (€20 por 50m²)
-      const basePrice = (Math.ceil(data.propertyArea / 50) * 20).toString();
+      // Calcular preço base (€20 por 50m²) com formato decimal
+      const basePriceValue = Math.ceil(data.propertyArea / 50) * 20;
+      const basePrice = basePriceValue.toFixed(2);
       
       // Calcular preço adicional total
-      const additionalPrice = (
+      const additionalValue = (
         (data.isDuplex ? 50 : 0) +
         (data.hasBBQ ? 30 : 0) + 
         (data.hasGlassGarden ? 60 : 0)
-      ).toString();
+      );
+      const additionalPrice = additionalValue.toFixed(2);
       
       // Calcular preço total
-      const totalPrice = (
-        parseInt(basePrice) + 
-        parseInt(additionalPrice || "0")
-      ).toString();
+      const totalValue = basePriceValue + additionalValue;
+      const totalPrice = totalValue.toFixed(2);
       
       // Objeto completo para envio ao servidor
       submissionData = {
@@ -144,11 +144,11 @@ export function SimpleQuotationForm({ defaultValues, onSuccess, isEditing = fals
         hasBBQ: Boolean(data.hasBBQ),
         hasGlassGarden: Boolean(data.hasGlassGarden),
         
-        // Campos de preço (garantindo que sejam strings)
+        // Campos de preço (garantindo que sejam strings com formato decimal)
         basePrice,
         duplexSurcharge,
         bbqSurcharge,
-        exteriorSurcharge: "0",
+        exteriorSurcharge: "0.00",
         glassGardenSurcharge,
         additionalSurcharges: additionalPrice,
         totalPrice,
