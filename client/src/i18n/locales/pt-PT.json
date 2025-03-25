@@ -10,6 +10,9 @@
       "newDescription": "Criar um novo orçamento para um cliente",
       "listTitle": "Lista de Orçamentos",
       "noQuotations": "Não existem orçamentos",
+      "searchPlaceholder": "Pesquisar orçamentos...",
+      "filterByStatus": "Filtrar por estado",
+      "statusAll": "Todos os estados",
       "clientInfo": "Informações do Cliente",
       "propertyDetails": "Detalhes da Propriedade",
       "additionalFeatures": "Características Adicionais",
@@ -64,7 +67,11 @@
       "generatePdf": "Gerar PDF",
       "pdfGenerated": "PDF gerado",
       "pdfSuccess": "O PDF do orçamento foi gerado com sucesso",
-      "pdfError": "Erro ao gerar o PDF do orçamento"
+      "pdfError": "Erro ao gerar o PDF do orçamento",
+      "status": "Estado",
+      "changeStatus": "Alterar Estado",
+      "confirmStatusChange": "Confirmar alteração de estado",
+      "statusChangeWarning": "Tem certeza que deseja alterar o estado deste orçamento?"
     },
     "navigation": {
       "mainMenu": "Menu",
