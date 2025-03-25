@@ -45,6 +45,7 @@ export function addMariaFazHeader(
  * @param currentPage Número da página atual
  * @param totalPages Total de páginas
  * @param poweredByText Texto "Powered by..."
+ * @param showBankInfo Mostra informações bancárias (para PDFs de pagamento)
  */
 export function addMariaFazFooter(
   doc: jsPDF,
@@ -53,13 +54,30 @@ export function addMariaFazFooter(
   confidentialText: string = 'Documento Confidencial',
   currentPage: number = 1,
   totalPages: number = 1,
-  poweredByText: string = 'Powered by Maria Faz'
+  poweredByText: string = 'Powered by Maria Faz',
+  showBankInfo: boolean = true
 ): void {
   // Configurações do rodapé
   const footerY = pageHeight - 10;
   const margin = 14;
   
-  // Linha divisória acima do rodapé
+  // Adicionar informações bancárias se necessário (em documentos relacionados a pagamentos)
+  if (showBankInfo) {
+    // Linha adicional para as informações bancárias
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.3);
+    doc.line(margin, footerY - 18, pageWidth - margin, footerY - 18);
+    
+    // Informações bancárias
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(80, 80, 80);
+    doc.text('A MARIA FAZ, UNIPESSOAL, LDA | NIF: 517445271', pageWidth / 2, footerY - 15, { align: 'center' });
+    doc.text('Conta: 4-6175941.000.001 | IBAN: PT50 0010 0000 61759410001 68', pageWidth / 2, footerY - 12, { align: 'center' });
+    doc.text('BIC: BBPIPTPL | BANCO BPI', pageWidth / 2, footerY - 9, { align: 'center' });
+  }
+  
+  // Linha divisória acima do rodapé principal
   doc.setDrawColor(200, 200, 200);
   doc.setLineWidth(0.3);
   doc.line(margin, footerY - 4, pageWidth - margin, footerY - 4);

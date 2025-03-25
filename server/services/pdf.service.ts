@@ -293,7 +293,9 @@ export class PDFService {
       doc.setFontSize(8);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(100, 100, 100);
-      doc.text('Maria Faz - Gestão de Propriedades | NIF: 517445271', 105, 280, { align: 'center' });
+      doc.text('A MARIA FAZ, UNIPESSOAL, LDA | NIF: 517445271', 105, 270, { align: 'center' });
+      doc.text('Conta: 4-6175941.000.001 | IBAN: PT50 0010 0000 61759410001 68', 105, 275, { align: 'center' });
+      doc.text('BIC: BBPIPTPL | BANCO BPI', 105, 280, { align: 'center' });
       doc.text('Este orçamento é válido por 30 dias. Contacte-nos para mais informações.', 105, 285, { align: 'center' });
       
       // Verificar se o diretório existe antes de salvar
