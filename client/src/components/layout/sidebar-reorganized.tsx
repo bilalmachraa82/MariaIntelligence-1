@@ -96,30 +96,14 @@ export function SidebarReorganized({
       
       // URL relativa ou absoluta
       if (!isCompleteUrl) {
-        // Adicionar barra inicial se não existir
-        let normalizedHref = href.startsWith('/') ? href : '/' + href;
-        
-        // Remover barras duplas em URLs relativas (sem protocolo)
-        while (normalizedHref.includes('//')) {
-          normalizedHref = normalizedHref.replace('//', '/');
-        }
-        
-        // Navega para a URL normalizada
-        useNavigate(normalizedHref);
+        // Usar diretamente o método de navegação de wouter sem normalizar
+        useNavigate(href);
       } else {
-        // Para URLs completas, usar uma expressão regular mais específica
-        // que preserva o protocolo (http:// ou https://)
-        let normalizedHref = href.replace(/(https?:\/\/)|(\/)+/g, (match, protocol) => {
-          if (protocol) return protocol; // Preserva o protocolo
-          return '/'; // Substitui sequências de barras por uma única barra
-        });
-        
-        // Usar window.location para URLs completas
-        window.location.href = normalizedHref;
-        return; // Interrompe a execução para evitar o useNavigate
+        // Para URLs externas, abrir em nova aba
+        window.open(href, '_blank');
       }
     } catch (error) {
-      console.error("Erro ao normalizar URL:", error);
+      console.error("Erro ao navegar:", error);
       // Em caso de erro, tentar a navegação normal
       useNavigate(href);
     }
@@ -406,11 +390,11 @@ export function SidebarReorganized({
         }
       ]
     },
-    // Orçamentos - usando paths absolutos com tratamento correto
+    // Orçamentos
     {
       name: t("navigation.quotations", "Orçamentos"),
-      href: "/quotations", // Usando path absoluto corretamente com barra inicial
-      altHref: "/orcamentos", // Usando path absoluto corretamente com barra inicial
+      href: "/quotations",
+      altHref: "/orcamentos",
       icon: FileText,
       iconColor: "text-blue-500"
     },
