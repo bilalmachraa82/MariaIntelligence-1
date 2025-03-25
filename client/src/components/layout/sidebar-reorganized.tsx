@@ -90,28 +90,21 @@ export function SidebarReorganized({
   // Função de navegação personalizada que também fecha o drawer quando necessário
   // Normaliza URLs para evitar barras duplicadas
   const navigate = (href: string) => {
-    try {
-      // Verificar se é uma URL completa (com protocolo)
-      const isCompleteUrl = href.includes('://');
-      
-      // URL relativa ou absoluta
-      if (!isCompleteUrl) {
-        // Usar diretamente o método de navegação de wouter sem normalizar
-        useNavigate(href);
-      } else {
-        // Para URLs externas, abrir em nova aba
-        window.open(href, '_blank');
-      }
-    } catch (error) {
-      console.error("Erro ao navegar:", error);
-      // Em caso de erro, tentar a navegação normal
-      useNavigate(href);
-    }
+    console.log("Tentando navegar para:", href);
     
-    // Fecha o drawer se estiver em modo mobile e a função closeDrawer estiver disponível
+    // Fechar drawer (se existir e estiver em modo mobile)
     if (isMobile && closeDrawer) {
       closeDrawer();
     }
+    
+    // Se for uma URL com protocolo, tratar como externa
+    if (href.includes('://')) {
+      window.open(href, '_blank');
+      return;
+    }
+    
+    // Usar window.location diretamente para navegação mais robusta
+    window.location.href = href;
   };
   const { t, i18n } = useTranslation();
   const isPortuguese = i18n.language?.startsWith("pt");
