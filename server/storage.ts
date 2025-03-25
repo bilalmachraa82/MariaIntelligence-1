@@ -25,6 +25,7 @@ import {
   type InsertQuotation
 } from "@shared/schema";
 import { db, pool } from './db';
+import { eq, desc, sql } from 'drizzle-orm';
 
 export interface IStorage {
   // User methods (from original template)
@@ -2334,101 +2335,152 @@ export class DatabaseStorage implements IStorage {
     startDate?: Date;
     endDate?: Date;
   }): Promise<Quotation[]> {
-    let quotations = Array.from(this.quotationsMap.values());
+    if (!db) return [];
     
-    // Aplicar filtros se houver opções
-    if (options) {
-      if (options.status) {
-        quotations = quotations.filter(q => q.status === options.status);
+    try {
+      let query = db.select().from(quotations);
+      
+      // Aplicar filtros se houver opções
+      if (options) {
+        if (options.status) {
+          query = query.where(sql`${quotations.status} = ${options.status}`);
+        }
+        if (options.startDate) {
+          query = query.where(sql`${quotations.createdAt} >= ${options.startDate}`);
+        }
+        if (options.endDate) {
+          query = query.where(sql`${quotations.createdAt} <= ${options.endDate}`);
+        }
       }
-      if (options.startDate) {
-        quotations = quotations.filter(q => new Date(q.createdAt) >= options.startDate!);
-      }
-      if (options.endDate) {
-        quotations = quotations.filter(q => new Date(q.createdAt) <= options.endDate!);
-      }
+      
+      // Ordenar por data decrescente (mais recente primeiro)
+      query = query.orderBy(desc(quotations.createdAt));
+      
+      const result = await query;
+      return result;
+    } catch (error) {
+      console.error("Erro ao buscar orçamentos:", error);
+      return [];
     }
-    
-    // Ordenar por data decrescente (mais recente primeiro)
-    quotations.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    
-    return quotations;
   }
 
   async getQuotation(id: number): Promise<Quotation | undefined> {
-    return this.quotationsMap.get(id);
+    if (!db) return undefined;
+    
+    try {
+      const result = await db.select().from(quotations).where(eq(quotations.id, id)).limit(1);
+      return result[0];
+    } catch (error) {
+      console.error(`Erro ao buscar orçamento ${id}:`, error);
+      return undefined;
+    }
   }
 
   async createQuotation(quotation: InsertQuotation): Promise<Quotation> {
-    const id = this.currentQuotationId++;
-    const now = new Date();
+    if (!db) throw new Error("Database not available");
     
-    // Criar o orçamento com valores padrão para campos opcionais
-    const newQuotation: Quotation = {
-      ...quotation,
-      id,
-      createdAt: now,
-      updatedAt: now
-    };
-    
-    this.quotationsMap.set(id, newQuotation);
-    
-    // Registrar atividade
-    this.createActivity({
-      type: "quotation_created",
-      description: `Orçamento para ${quotation.customerName || "cliente"} foi criado`,
-      entityId: id,
-      entityType: "quotation"
-    });
-    
-    return newQuotation;
+    try {
+      const now = new Date();
+      
+      // Criar o orçamento com valores padrão para campos opcionais
+      const newQuotation = {
+        ...quotation,
+        createdAt: now,
+        updatedAt: now
+      };
+      
+      const result = await db.insert(quotations).values(newQuotation).returning();
+      
+      if (result && result.length > 0) {
+        // Registrar atividade
+        this.createActivity({
+          type: "quotation_created",
+          description: `Orçamento para ${quotation.customerName || "cliente"} foi criado`,
+          entityId: result[0].id,
+          entityType: "quotation"
+        }).catch(err => console.error("Erro ao registrar atividade:", err));
+        
+        return result[0];
+      } else {
+        throw new Error("Failed to create quotation");
+      }
+    } catch (error) {
+      console.error("Erro ao criar orçamento:", error);
+      throw error;
+    }
   }
 
   async updateQuotation(id: number, quotation: Partial<InsertQuotation>): Promise<Quotation | undefined> {
-    const existingQuotation = this.quotationsMap.get(id);
-    if (!existingQuotation) return undefined;
+    if (!db) return undefined;
     
-    // Atualizar o orçamento
-    const updatedQuotation = {
-      ...existingQuotation,
-      ...quotation,
-      updatedAt: new Date()
-    };
-    
-    this.quotationsMap.set(id, updatedQuotation);
-    
-    // Registrar atividade
-    this.createActivity({
-      type: "quotation_updated",
-      description: `Orçamento para ${updatedQuotation.customerName || "cliente"} foi atualizado`,
-      entityId: id,
-      entityType: "quotation"
-    });
-    
-    return updatedQuotation;
+    try {
+      // Buscar orçamento existente
+      const existingQuotation = await this.getQuotation(id);
+      if (!existingQuotation) return undefined;
+      
+      // Preparar dados para atualização
+      const updatedData = {
+        ...quotation,
+        updatedAt: new Date()
+      };
+      
+      // Atualizar no banco de dados
+      const result = await db.update(quotations)
+        .set(updatedData)
+        .where(eq(quotations.id, id))
+        .returning();
+      
+      if (result && result.length > 0) {
+        // Registrar atividade
+        this.createActivity({
+          type: "quotation_updated",
+          description: `Orçamento para ${result[0].customerName || "cliente"} foi atualizado`,
+          entityId: id,
+          entityType: "quotation"
+        }).catch(err => console.error("Erro ao registrar atividade:", err));
+        
+        return result[0];
+      } else {
+        return undefined;
+      }
+    } catch (error) {
+      console.error(`Erro ao atualizar orçamento ${id}:`, error);
+      return undefined;
+    }
   }
 
   async deleteQuotation(id: number): Promise<boolean> {
-    const quotation = this.quotationsMap.get(id);
-    if (!quotation) return false;
+    if (!db) return false;
     
-    // Excluir o orçamento
-    const result = this.quotationsMap.delete(id);
-    
-    // Registrar atividade
-    if (result) {
-      this.createActivity({
-        type: "quotation_deleted",
-        description: `Orçamento para ${quotation.customerName || "cliente"} foi excluído`,
-        entityId: id,
-        entityType: "quotation"
-      });
+    try {
+      // Buscar orçamento antes de excluir para ter informações para o log
+      const quotation = await this.getQuotation(id);
+      if (!quotation) return false;
+      
+      // Excluir do banco de dados
+      const result = await db.delete(quotations).where(eq(quotations.id, id)).returning();
+      
+      // Registrar atividade se a exclusão for bem-sucedida
+      if (result && result.length > 0) {
+        this.createActivity({
+          type: "quotation_deleted",
+          description: `Orçamento para ${quotation.customerName || "cliente"} foi excluído`,
+          entityId: id,
+          entityType: "quotation"
+        }).catch(err => console.error("Erro ao registrar atividade:", err));
+        
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.error(`Erro ao excluir orçamento ${id}:`, error);
+      return false;
     }
-    
-    return result;
   }
 
   async generateQuotationPdf(id: number): Promise<string> {
+    // Buscar o orçamento no banco de dados
     const quotation = await this.getQuotation(id);
     if (!quotation) throw new Error("Orçamento não encontrado");
     
@@ -2436,10 +2488,14 @@ export class DatabaseStorage implements IStorage {
     const fileName = `quotation_${id}_${new Date().toISOString().split('T')[0]}.pdf`;
     const filePath = `./uploads/${fileName}`;
     
-    // Simulação: em ambiente real, aqui seria gerado o PDF
-    // utilizando uma biblioteca como jsPDF ou PDF-lib
-    
-    return filePath;
+    try {
+      // Importar o serviço de PDF para gerar o documento
+      const { pdfService } = await import('./services/pdf.service');
+      return await pdfService.generateQuotationPdf(quotation, id);
+    } catch (error) {
+      console.error(`Erro ao gerar PDF para orçamento ${id}:`, error);
+      throw new Error(`Falha ao gerar PDF: ${error.message}`);
+    }
   }
 }
 
