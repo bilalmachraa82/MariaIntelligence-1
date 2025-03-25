@@ -428,7 +428,7 @@ export default function SettingsPage() {
         </Button>
       </div>
 
-      <Tabs defaultValue="properties" className="space-y-4">
+      <Tabs defaultValue="general" className="space-y-4">
         <TabsList className="flex flex-wrap overflow-x-auto pb-1 md:pb-0 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
           <TabsTrigger value="properties" className="min-w-fit">
             <Building2 className="h-4 w-4 mr-1" />

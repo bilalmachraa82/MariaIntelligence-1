@@ -99,16 +99,18 @@ export default function QuotationDetailPage() {
   // Generate PDF
   const handleGeneratePdf = async () => {
     try {
-      await apiRequest({
-        url: `/api/quotations/${quotationId}/pdf`,
-        method: 'POST',
-      });
+      const response = await apiRequest<{success: boolean, pdfPath: string}>(`/api/quotations/${quotationId}/pdf`);
       
-      toast({
-        title: t('quotation.pdfGenerated'),
-        description: t('quotation.pdfSuccess'),
-        variant: "default",
-      });
+      if (response && response.success) {
+        // Em ambiente de produção, seria necessário incluir lógica para download do arquivo
+        toast({
+          title: t('quotation.pdfGenerated'),
+          description: t('quotation.pdfSuccess'),
+          variant: "default",
+        });
+      } else {
+        throw new Error("Falha ao gerar PDF");
+      }
     } catch (error) {
       toast({
         title: t('common.error'),
