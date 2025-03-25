@@ -72,7 +72,7 @@ export class PDFService {
       
       // Adicionar metadados ao documento
       doc.setProperties({
-        title: `Orçamento Nº ${id}`,
+        title: `Orçamento Maria Faz Nº ${id}`,
         subject: `Orçamento para ${quotation.clientName}`,
         author: 'Maria Faz',
         creator: 'Sistema Maria Faz'
@@ -80,22 +80,37 @@ export class PDFService {
       
       // Estilo do documento - usando fontes e cores alinhadas com o logo Maria Faz
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(24);
       
       // Cores do logo: 
       // Rosa: rgb(231, 144, 144) - #E79090
       // Rosa claro: rgb(245, 213, 213) - #F5D5D5
       // Turquesa: rgb(142, 209, 210) - #8ED1D2
       
+      // Carregar o logo a partir do arquivo
+      try {
+        const logoData = fs.readFileSync('./attached_assets/logo.png');
+        const base64Logo = 'data:image/png;base64,' + logoData.toString('base64');
+        
+        // Adicionar o logo
+        doc.addImage(base64Logo, 'PNG', 70, 10, 70, 20);
+      } catch (error) {
+        console.error("Erro ao carregar o logo:", error);
+        // Em caso de erro ao carregar o logo, apenas usar texto como fallback
+        doc.setFontSize(24);
+        doc.setTextColor(0, 0, 0);
+        doc.text('Maria Faz', 105, 20, { align: 'center' });
+      }
+      
       // Título - usando a cor turquesa do logo
+      doc.setFontSize(20);
       doc.setTextColor(142, 209, 210); // Turquesa
-      doc.text('ORÇAMENTO', 105, 20, { align: 'center' });
+      doc.text('ORÇAMENTO DE SERVIÇOS', 105, 40, { align: 'center' });
       doc.setTextColor(0, 0, 0); // Voltar para preto
       
       // Informações do orçamento
       doc.setFontSize(12);
       doc.setFont('helvetica', 'bold');
-      doc.text(`Orçamento Nº: ${id}`, 20, 35);
+      doc.text(`Orçamento Nº: ${id}`, 20, 50);
       
       // Data do orçamento e validade
       const formatDate = (dateString: string) => {
@@ -104,30 +119,30 @@ export class PDFService {
       };
       
       const createdDate = quotation.createdAt ? formatDate(quotation.createdAt) : formatDate(new Date().toISOString());
-      doc.text(`Data: ${createdDate}`, 20, 42);
-      doc.text(`Válido até: ${formatDate(quotation.validUntil)}`, 20, 49);
+      doc.text(`Data: ${createdDate}`, 20, 57);
+      doc.text(`Válido até: ${formatDate(quotation.validUntil)}`, 20, 64);
       
       // Informações do cliente
       doc.setFontSize(14);
       doc.setFont('helvetica', 'bold');
       // Título de seção em rosa
       doc.setTextColor(231, 144, 144); // Rosa
-      doc.text('Dados do Cliente', 20, 60);
+      doc.text('Dados do Cliente', 20, 75);
       doc.setTextColor(0, 0, 0); // Voltar para preto
       doc.setFontSize(11);
       doc.setFont('helvetica', 'normal');
-      doc.text(`Nome: ${quotation.clientName}`, 20, 68);
+      doc.text(`Nome: ${quotation.clientName}`, 20, 83);
       
       if (quotation.clientEmail) {
-        doc.text(`Email: ${quotation.clientEmail}`, 20, 75);
+        doc.text(`Email: ${quotation.clientEmail}`, 20, 90);
       }
       
       if (quotation.clientPhone) {
-        doc.text(`Telefone: ${quotation.clientPhone}`, 20, 82);
+        doc.text(`Telefone: ${quotation.clientPhone}`, 20, 97);
       }
       
       // Informações da propriedade
-      let currentY = 95;
+      let currentY = 110;
       doc.setFontSize(14);
       doc.setFont('helvetica', 'bold');
       // Título de seção em rosa claro
@@ -154,7 +169,7 @@ export class PDFService {
         head: [['Característica', 'Detalhe']],
         body: propertyDetails,
         theme: 'striped',
-        headStyles: { fillColor: [0, 51, 102], textColor: [255, 255, 255] },
+        headStyles: { fillColor: [231, 144, 144], textColor: [255, 255, 255] }, // Rosa para o cabeçalho
         margin: { top: 20, left: 20, right: 20 }
       });
       
@@ -166,7 +181,9 @@ export class PDFService {
             
         doc.setFontSize(12);
         doc.setFont('helvetica', 'bold');
+        doc.setTextColor(231, 144, 144); // Rosa
         doc.text('Características Adicionais:', 20, currentY);
+        doc.setTextColor(0, 0, 0); // Voltar para preto
         currentY += 7;
         
         doc.setFont('helvetica', 'normal');
@@ -203,7 +220,7 @@ export class PDFService {
         });
       };
       
-      // Tabela com os valores
+      // Calcular os valores corretamente
       const basePrice = parseFloat(quotation.basePrice?.toString() || "0");
       const duplexSurcharge = parseFloat(quotation.duplexSurcharge?.toString() || "0");
       const bbqSurcharge = parseFloat(quotation.bbqSurcharge?.toString() || "0");
@@ -219,7 +236,8 @@ export class PDFService {
         additionalSurcharges
       );
       
-      const totalPrice = parseFloat(quotation.totalPrice?.toString() || "0");
+      // Garantir que o total é a soma do preço base + adicionais
+      const calculatedTotalPrice = basePrice + additionalTotal;
       
       autoTable(doc, {
         startY: currentY,
@@ -227,7 +245,7 @@ export class PDFService {
         body: [
           ['Preço Base', formatCurrency(basePrice)],
           ['Adicionais', formatCurrency(additionalTotal)],
-          ['Preço Total', formatCurrency(totalPrice)]
+          ['Preço Total', formatCurrency(calculatedTotalPrice)]
         ],
         theme: 'grid',
         headStyles: { fillColor: [231, 144, 144], textColor: [255, 255, 255] }, // Rosa para o cabeçalho
@@ -259,11 +277,24 @@ export class PDFService {
         currentY += (textLines.length * 5) + 10;
       }
       
+      // Frase inspiradora/call-to-action
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'italic');
+      doc.setTextColor(142, 209, 210); // Turquesa
+      const inspPhrase = "A Maria Faz tudo para tornar o seu espaço mais especial e valorizado!";
+      doc.text(inspPhrase, 105, currentY + 5, { align: 'center' });
+      
+      doc.setFont('helvetica', 'bold');
+      const callToAction = "Reserve já o seu serviço e beneficie desta proposta especial!";
+      doc.text(callToAction, 105, currentY + 12, { align: 'center' });
+      doc.setTextColor(0, 0, 0); // Voltar para preto
+      
       // Rodapé com informações da empresa
       doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
       doc.setTextColor(100, 100, 100);
       doc.text('Maria Faz - Gestão de Propriedades', 105, 280, { align: 'center' });
-      doc.text('Este documento é gerado automaticamente e não necessita de assinatura.', 105, 285, { align: 'center' });
+      doc.text('Este orçamento é válido por 30 dias. Contacte-nos para mais informações.', 105, 285, { align: 'center' });
       
       // Verificar se o diretório existe antes de salvar
       try {
