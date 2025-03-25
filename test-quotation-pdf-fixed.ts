@@ -6,14 +6,12 @@
 // Importando os módulos necessários
 import fs from 'fs';
 import path from 'path';
+import { pdfService } from './server/services/pdf.service';
 
 async function testQuotationPdfGeneration() {
   console.log("Iniciando teste de geração de PDF com novo serviço");
   
   try {
-    // Usar importação dinâmica para carregar o serviço de PDF
-    const { pdfService } = await import('./server/services/pdf.service.js');
-    
     // Verificar se o serviço foi importado corretamente
     if (!pdfService) {
       throw new Error("Falha ao importar o serviço PDF. O objeto pdfService é undefined.");
@@ -67,7 +65,7 @@ async function testQuotationPdfGeneration() {
         message: "Arquivo PDF não encontrado após geração"
       };
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Erro durante teste de geração de PDF:", error);
     return {
       success: false,

@@ -1,57 +1,51 @@
-import fetch from 'node-fetch';
-
 /**
  * Teste aprimorado para diagnosticar o problema de envio de orçamentos
  * Este script tenta enviar um orçamento com dados completos e validação detalhada
  */
+
+import fetch from 'node-fetch';
+import util from 'util';
+
 async function testQuotationSubmit() {
-  console.log('=== TESTE DE ENVIO DE ORÇAMENTO SIMPLIFICADO ===');
-  
-  // Dados simplificados mas completos para o orçamento
-  const quotationData = {
-    // Informações do cliente (obrigatórias)
-    clientName: "João Silva Teste",
-    clientEmail: "joao.silva@teste.com",
-    clientPhone: "912345678",
-    
-    // Propriedade (obrigatórias)
-    propertyType: "apartment_t2",
-    propertyAddress: "Rua Exemplo, 123, Lisboa",
-    propertyArea: 75,
-    exteriorArea: 10,
-    
-    // Características (opcionais, mas com valores explícitos)
-    isDuplex: false,
-    hasBBQ: true,
-    hasGlassGarden: false,
-    
-    // Preços (obrigatórios)
-    basePrice: "30",
-    duplexSurcharge: "0",
-    bbqSurcharge: "30",
-    exteriorSurcharge: "0",
-    glassGardenSurcharge: "0",
-    additionalSurcharges: "30",
-    totalPrice: "60",
-    
-    // Detalhes adicionais (opcionais)
-    validUntil: "2025-05-25",
-    notes: "Teste de envio de orçamento via script de diagnóstico",
-    internalNotes: "Teste automático",
-    
-    // Status (obrigatório)
-    status: "draft"
-  };
-  
-  console.log('Dados a serem enviados:', JSON.stringify(quotationData, null, 2));
+  console.log("=== TESTE DE ENVIO DE ORÇAMENTO ===");
+  console.log("Criando dados de teste para orçamento...");
   
   try {
-    // URL do serviço - usando o domínio real do Replit
-    const apiUrl = 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/api/quotations';
-    console.log('Enviando para:', apiUrl);
+    // Dados de orçamento baseados no formulário - note as strings para valores numéricos
+    const quotationData = {
+      clientName: "João Silva",
+      clientEmail: "joao.silva@exemplo.pt",
+      clientPhone: "+351 912 345 678",
+      propertyType: "apartment_t2",
+      propertyAddress: "Av. da República, 123, Lisboa",
+      propertyArea: 85,
+      exteriorArea: 12,
+      isDuplex: true,
+      hasBBQ: true,
+      hasGlassGarden: false,
+      basePrice: "40.00",     // Valores formatados como string com 2 casas decimais
+      duplexSurcharge: "50.00",
+      bbqSurcharge: "30.00",
+      exteriorSurcharge: "10.00",
+      glassGardenSurcharge: "0.00",
+      additionalSurcharges: "90.00", // Soma dos adicionais
+      totalPrice: "130.00",    // Soma do base price + adicionais
+      notes: "Orçamento para limpeza completa do apartamento incluindo áreas exteriores e churrasqueira.",
+      internalNotes: "",
+      validUntil: new Date(new Date().setDate(new Date().getDate() + 30)).toISOString().split('T')[0], // Formato YYYY-MM-DD
+      status: "draft"
+    };
     
-    // Tentativa de envio
-    const response = await fetch(apiUrl, {
+    console.log("Dados de orçamento preparados:");
+    console.log(util.inspect(quotationData, { colors: true, depth: null }));
+    
+    console.log("\nEnviando requisição POST para /api/quotations...");
+    
+    // Enviar requisição para API - usando localhost diretamente no Replit
+    const baseUrl = 'http://localhost:5000';
+    console.log(`Usando URL base: ${baseUrl}`);
+    
+    const response = await fetch(`${baseUrl}/api/quotations`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -59,59 +53,62 @@ async function testQuotationSubmit() {
       body: JSON.stringify(quotationData),
     });
     
-    // Verificar o tipo de conteúdo da resposta
-    const contentType = response.headers.get('content-type');
-    console.log('Tipo de conteúdo da resposta:', contentType);
+    // Parse resposta como JSON
+    const responseData = await response.json();
     
-    // Primeiro, vamos clonar a resposta antes de extrair o corpo (para evitar o erro 'body used already')
-    const responseClone = response.clone();
+    console.log(`\nResposta da API (Status ${response.status}):`);
+    console.log(util.inspect(responseData, { colors: true, depth: null }));
     
-    // Analisar resposta
     if (response.ok) {
-      try {
-        // Tentar converter para JSON
-        const responseData = await response.json();
-        console.log('✅ SUCESSO: Orçamento enviado com sucesso');
-        console.log('Resposta:', JSON.stringify(responseData, null, 2));
-      } catch (jsonError) {
-        // Se não for JSON, mostrar o texto
-        const responseText = await responseClone.text();
-        console.log('✅ SUCESSO com resposta não-JSON:');
-        console.log('Texto de resposta (primeiros 500 caracteres):', responseText.substring(0, 500));
+      console.log("\n✅ SUCESSO! Orçamento criado com sucesso.");
+      
+      // Se tivemos sucesso, testar a geração de PDF
+      if (responseData.data && responseData.data.id) {
+        console.log(`\nTentando gerar PDF para o orçamento #${responseData.data.id}...`);
+        
+        const pdfResponse = await fetch(`http://localhost:5000/api/quotations/${responseData.data.id}/pdf?mode=json`, {
+          method: 'GET',
+        });
+        
+        const pdfResponseData = await pdfResponse.json();
+        
+        console.log(`Resposta da API de PDF (Status ${pdfResponse.status}):`);
+        console.log(util.inspect(pdfResponseData, { colors: true, depth: null }));
+        
+        if (pdfResponse.ok) {
+          console.log(`\n✅ SUCESSO! PDF gerado em: ${pdfResponseData.pdfPath}`);
+        } else {
+          console.log("\n❌ FALHA ao gerar PDF.");
+        }
       }
     } else {
-      console.error('❌ ERRO: Falha ao enviar orçamento');
-      console.error('Status:', response.status);
+      console.log("\n❌ FALHA ao criar orçamento.");
       
-      try {
-        // Tentar converter para JSON
-        const responseData = await response.json();
-        console.error('Resposta:', JSON.stringify(responseData, null, 2));
+      // Diagnóstico detalhado do erro
+      if (responseData.errors) {
+        console.log("\nErros de validação encontrados:");
         
-        // Análise detalhada de erros de validação
-        if (responseData.errors) {
-          console.error('=== ANÁLISE DE ERROS DE VALIDAÇÃO ===');
-          const errorFields = Object.keys(responseData.errors).filter(k => k !== '_errors');
-          console.error('Campos com erro:', errorFields);
-          
-          errorFields.forEach(field => {
-            console.error(`Campo '${field}':`, responseData.errors[field]._errors);
-          });
-        }
-      } catch (jsonError) {
-        // Se não for JSON, mostrar o texto
-        try {
-          const responseText = await responseClone.text();
-          console.error('Texto de resposta (primeiros 500 caracteres):', responseText.substring(0, 500));
-        } catch (textError) {
-          console.error('Não foi possível ler o corpo da resposta:', textError.message);
-        }
+        // Percorrer e exibir erros de forma estruturada
+        Object.entries(responseData.errors).forEach(([field, error]) => {
+          if (field === '_errors') return;
+          console.log(`Campo '${field}': ${JSON.stringify(error)}`);
+        });
       }
     }
+    
+    return responseData;
   } catch (error) {
-    console.error('❌ ERRO DE EXECUÇÃO:', error.message);
+    console.error("\n❌ ERRO durante o teste:", error);
+    return { error: error.message };
   }
 }
 
-// Executar o teste
-testQuotationSubmit();
+// Executar teste de forma independente
+testQuotationSubmit()
+  .then(result => {
+    console.log("\n=== TESTE CONCLUÍDO ===");
+  })
+  .catch(err => {
+    console.error("Erro fatal:", err);
+    process.exit(1);
+  });
