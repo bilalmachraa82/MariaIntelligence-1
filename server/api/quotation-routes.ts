@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { extendedQuotationSchema, insertQuotationSchema } from "@shared/schema";
 import { storage } from "../storage";
 import { z } from "zod";
+import * as fs from 'fs';
+import * as path from 'path';
 
 /**
  * Registra as rotas de orçamentos na aplicação Express
@@ -281,8 +283,6 @@ export function registerQuotationRoutes(app: any) {
         });
       } else {
         // Modo download - Enviar o arquivo diretamente
-        const fs = require('fs');
-        const path = require('path');
         
         // Verificar se o arquivo existe
         if (!fs.existsSync(pdfPath)) {

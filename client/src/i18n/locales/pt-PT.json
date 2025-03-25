@@ -12,6 +12,9 @@
     "quotation": {
       "pageTitle": "Orçamentos",
       "pageDescription": "Gerir orçamentos para clientes e propriedades",
+      "house_v1": "Casa V1",
+      "apartment_t0t1": "Apartamento T0/T1",
+      "apartment_t2": "Apartamento T2",
       "additionalFeatures": "Características Adicionais",
       "additionalDetails": "Detalhes Adicionais",
       "selectPropertyType": "Selecione o tipo de imóvel",
