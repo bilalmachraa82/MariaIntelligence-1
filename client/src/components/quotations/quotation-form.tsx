@@ -37,8 +37,9 @@ import {
   CalendarRange
 } from "lucide-react";
 
-// Quotation form schema using zod
+// Quotation form schema using zod - alinhado com o schema do servidor
 const formSchema = z.object({
+  // Informações do cliente
   clientName: z.string().min(2, {
     message: "Client name must be at least 2 characters."
   }),
@@ -46,20 +47,33 @@ const formSchema = z.object({
     message: "Please enter a valid email address."
   }).optional().or(z.literal('')),
   clientPhone: z.string().optional(),
-  propertyType: z.enum(["apartment_t0t1", "apartment_t2", "apartment_t3", "apartment_t4", "house_v1", "house_v2", "house_v3"]),
-  totalArea: z.coerce.number().min(1, {
+  
+  // Informações da propriedade - usando os mesmos valores do enum do banco de dados
+  propertyType: z.enum(["apartment_t0t1", "apartment_t2", "apartment_t3", "apartment_t4", "apartment_t5", "house_v1", "house_v2", "house_v3", "house_v4", "house_v5"]),
+  propertyAddress: z.string().default(""),
+  propertyArea: z.coerce.number().min(1, {
     message: "Total area must be at least 1 square meter."
   }),
-  bedrooms: z.coerce.number().min(0),
-  bathrooms: z.coerce.number().min(0),
-  isDuplex: z.boolean().default(false),
-  hasExteriorSpace: z.boolean().default(false),
   exteriorArea: z.coerce.number().min(0).default(0),
+  
+  // Características da propriedade
+  isDuplex: z.boolean().default(false),
   hasBBQ: z.boolean().default(false),
-  hasGarden: z.boolean().default(false),
-  hasGlassSurfaces: z.boolean().default(false),
+  hasGlassGarden: z.boolean().default(false), // No banco é hasGlassGarden, não hasGlassSurfaces
+  
+  // Preços - coercing para garantir compatibilidade com o schema no servidor
+  basePrice: z.union([z.string(), z.number()]).transform(val => val.toString()),
+  duplexSurcharge: z.union([z.string(), z.number()]).transform(val => val.toString()).optional(),
+  bbqSurcharge: z.union([z.string(), z.number()]).transform(val => val.toString()).optional(),
+  exteriorSurcharge: z.union([z.string(), z.number()]).transform(val => val.toString()).optional(),
+  glassGardenSurcharge: z.union([z.string(), z.number()]).transform(val => val.toString()).optional(),
+  additionalSurcharges: z.union([z.string(), z.number()]).transform(val => val.toString()).optional(),
+  totalPrice: z.union([z.string(), z.number()]).transform(val => val.toString()),
+  
+  // Detalhes do orçamento
   validUntil: z.string(),
-  notes: z.string().optional(),
+  notes: z.string().optional().or(z.literal('')),
+  internalNotes: z.string().optional().or(z.literal('')),
   status: z.enum(["draft", "sent", "accepted", "rejected", "expired"]).default("draft"),
 });
 
@@ -84,25 +98,39 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
   // Default expiration date (30 days from now)
   const defaultExpirationDate = format(addDays(new Date(), 30), "yyyy-MM-dd");
   
-  // Initialize form
+  // Initialize form com valores compatíveis com o schema do servidor
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues || {
+      // Informações do cliente
       clientName: "",
       clientEmail: "",
       clientPhone: "",
+      
+      // Informações da propriedade
       propertyType: "apartment_t0t1",
-      totalArea: 50,
-      bedrooms: 1,
-      bathrooms: 1,
-      isDuplex: false,
-      hasExteriorSpace: false,
+      propertyAddress: "",
+      propertyArea: 50, // Antes era totalArea
       exteriorArea: 0,
+      
+      // Características
+      isDuplex: false,
       hasBBQ: false,
-      hasGarden: false,
-      hasGlassSurfaces: false,
+      hasGlassGarden: false, // Antes era hasGlassSurfaces
+      
+      // Preços
+      basePrice: "20",
+      duplexSurcharge: "0",
+      bbqSurcharge: "0",
+      exteriorSurcharge: "0",
+      glassGardenSurcharge: "0",
+      additionalSurcharges: "0",
+      totalPrice: "20",
+      
+      // Detalhes do orçamento
       validUntil: defaultExpirationDate,
       notes: "",
+      internalNotes: "",
       status: "draft",
     },
   });
@@ -145,39 +173,41 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
     
   }, [watchedValues]);
   
-  // Handle form submission
-  const onSubmit = async (data: FormValues) => {
+  // Handle form submission - método simplificado
+  const onSubmit = async (data: any) => {
     setIsSubmitting(true);
     
-    // Ensure boolean values have defaults
-    const duplexValue = data.isDuplex || false;
-    const bbqValue = data.hasBBQ || false;
-    const exteriorValue = data.hasExteriorSpace || false;
-    const glassGardenValue = data.hasGlassSurfaces || false;
-    
-    // Map form fields to match the database schema fields
-    // and add pricing data to the submission
+    // Criamos um objeto simples com dados básicos do orçamento
     const submissionData = {
+      // Dados do cliente
       clientName: data.clientName,
       clientEmail: data.clientEmail || "",
       clientPhone: data.clientPhone || "",
-      propertyType: data.propertyType,
-      propertyAddress: "", // Campo não presente no formulário, mas esperado pelo schema
-      propertyArea: data.totalArea || 0, // Mapeia totalArea para propertyArea
+      
+      // Dados da propriedade
+      propertyType: data.propertyType || "apartment_t0t1",
+      propertyAddress: data.propertyAddress || "",
+      propertyArea: data.propertyArea || data.totalArea || 50,
       exteriorArea: data.exteriorArea || 0,
-      isDuplex: duplexValue,
-      hasBBQ: bbqValue,
-      hasGlassGarden: glassGardenValue, // Mapeia hasGlassSurfaces para hasGlassGarden
-      basePrice: basePrice.toString(),
-      duplexSurcharge: duplexValue ? "50" : "0",
-      bbqSurcharge: bbqValue ? "30" : "0",
-      exteriorSurcharge: exteriorValue ? "40" : "0", // Calcula com base no hasExteriorSpace
-      glassGardenSurcharge: glassGardenValue ? "60" : "0",
+      
+      // Características
+      isDuplex: Boolean(data.isDuplex),
+      hasBBQ: Boolean(data.hasBBQ),
+      hasGlassGarden: Boolean(data.hasGlassGarden || data.hasGlassSurfaces),
+      
+      // Preços - sempre usando string conforme esperado pelo schema
+      basePrice: (basePrice || 20).toString(),
+      duplexSurcharge: data.isDuplex ? "50" : "0",
+      bbqSurcharge: data.hasBBQ ? "30" : "0",
+      exteriorSurcharge: "0",
+      glassGardenSurcharge: (data.hasGlassGarden || data.hasGlassSurfaces) ? "60" : "0",
       additionalSurcharges: additionalPrice.toString(),
       totalPrice: totalPrice.toString(),
+      
+      // Detalhes adicionais
       status: data.status || "draft",
       notes: data.notes || "",
-      internalNotes: "", // Campo não presente no formulário, mas esperado pelo schema
+      internalNotes: data.internalNotes || "",
       validUntil: data.validUntil || format(addDays(new Date(), 30), "yyyy-MM-dd"),
     };
     

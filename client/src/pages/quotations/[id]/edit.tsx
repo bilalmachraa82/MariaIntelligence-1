@@ -7,7 +7,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
-import { QuotationForm } from "@/components/quotations/quotation-form";
+import { SimpleQuotationForm } from "@/components/quotations/simple-quotation-form";
 
 export default function EditQuotationPage() {
   const { t } = useTranslation();
@@ -95,7 +95,7 @@ export default function EditQuotationPage() {
         subtitle={t('quotation.editDescription')}
       />
       
-      <QuotationForm 
+      <SimpleQuotationForm 
         defaultValues={quotation} 
         onSuccess={handleSuccess} 
         isEditing={true}

@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import { PageHeader } from "@/components/layout/page-header";
-import { QuotationForm } from "@/components/quotations/quotation-form";
+import { SimpleQuotationForm } from "@/components/quotations/simple-quotation-form";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -13,12 +13,6 @@ export default function NewQuotationPage() {
   const [, navigate] = useLocation();
   
   const handleSuccess = () => {
-    toast({
-      title: t("quotation.created"),
-      description: t("quotation.createSuccess"),
-      variant: "default"
-    });
-    
     navigate("/quotations");
   };
   
@@ -40,7 +34,8 @@ export default function NewQuotationPage() {
         subtitle={t("quotation.newDescription")}
       />
       
-      <QuotationForm onSuccess={handleSuccess} />
+      {/* Usando o formulário simplificado alinhado com o banco de dados */}
+      <SimpleQuotationForm onSuccess={handleSuccess} />
     </div>
   );
 }
