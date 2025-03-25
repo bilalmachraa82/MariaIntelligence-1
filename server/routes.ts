@@ -12,6 +12,7 @@ import {
   processFileAndCreateReservation,
   processPdfAndCreateReservation 
 } from "./services/reservation-creator";
+import { registerQuotationRoutes } from "./api/quotation-routes";
 import { 
   extendedPropertySchema, 
   extendedOwnerSchema,
@@ -2893,6 +2894,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+
+  // Registrar as rotas de orçamentos
+  registerQuotationRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;
