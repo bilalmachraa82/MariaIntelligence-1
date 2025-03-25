@@ -46,7 +46,7 @@ const formSchema = z.object({
     message: "Please enter a valid email address."
   }).optional().or(z.literal('')),
   clientPhone: z.string().optional(),
-  propertyType: z.enum(["apartment", "house", "villa", "studio"]),
+  propertyType: z.enum(["apartment_t0t1", "apartment_t2", "apartment_t3", "apartment_t4", "house_v1", "house_v2", "house_v3"]),
   totalArea: z.coerce.number().min(1, {
     message: "Total area must be at least 1 square meter."
   }),
@@ -91,7 +91,7 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
       clientName: "",
       clientEmail: "",
       clientPhone: "",
-      propertyType: "apartment",
+      propertyType: "apartment_t0t1",
       totalArea: 50,
       bedrooms: 1,
       bathrooms: 1,
@@ -131,7 +131,7 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
     }
     
     // Apartment with BBQ: +€10
-    if (watchedValues.propertyType === "apartment" && watchedValues.hasBBQ) {
+    if (watchedValues.propertyType.startsWith("apartment_") && watchedValues.hasBBQ) {
       calculatedAdditionalPrice += 10;
     }
     
@@ -150,12 +150,30 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
     setIsSubmitting(true);
     
     try {
-      // Add pricing data to the submission
+      // Map form fields to match the database schema fields
+      // and add pricing data to the submission
       const submissionData = {
-        ...data,
-        basePrice,
-        additionalPrice,
-        totalPrice,
+        clientName: data.clientName,
+        clientEmail: data.clientEmail,
+        clientPhone: data.clientPhone,
+        propertyType: data.propertyType,
+        propertyAddress: "", // Campo não presente no formulário, mas esperado pelo schema
+        propertyArea: data.totalArea, // Mapeia totalArea para propertyArea
+        exteriorArea: data.exteriorArea,
+        isDuplex: data.isDuplex,
+        hasBBQ: data.hasBBQ,
+        hasGlassGarden: data.hasGlassSurfaces, // Mapeia hasGlassSurfaces para hasGlassGarden
+        basePrice: basePrice.toString(),
+        duplexSurcharge: data.isDuplex ? "50" : "0",
+        bbqSurcharge: data.hasBBQ ? "30" : "0",
+        exteriorSurcharge: data.hasExteriorSpace ? "40" : "0",
+        glassGardenSurcharge: data.hasGlassSurfaces ? "60" : "0",
+        additionalSurcharges: additionalPrice.toString(),
+        totalPrice: totalPrice.toString(),
+        status: data.status,
+        notes: data.notes || "",
+        internalNotes: "", // Campo não presente no formulário, mas esperado pelo schema
+        validUntil: data.validUntil,
       };
       
       if (isEditing && defaultValues?.id) {
@@ -273,39 +291,61 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
                             <SelectValue placeholder={t("quotation.selectPropertyType")}>
                               {watchedValues.propertyType && (
                                 <div className="flex items-center gap-2">
-                                  {watchedValues.propertyType === "apartment" && <Building2 className="h-4 w-4 text-blue-500" />}
-                                  {watchedValues.propertyType === "house" && <Home className="h-4 w-4 text-green-500" />}
-                                  {watchedValues.propertyType === "villa" && <Castle className="h-4 w-4 text-amber-500" />}
-                                  {watchedValues.propertyType === "studio" && <Hotel className="h-4 w-4 text-purple-500" />}
-                                  <span>{t(`quotation.propertyType${watchedValues.propertyType.charAt(0).toUpperCase() + watchedValues.propertyType.slice(1)}`)}</span>
+                                  {watchedValues.propertyType.startsWith("apartment_") && <Building2 className="h-4 w-4 text-blue-500" />}
+                                  {watchedValues.propertyType.startsWith("house_") && <Home className="h-4 w-4 text-green-500" />}
+                                  {watchedValues.propertyType === "apartment_t0t1" && <span>{t("quotation.propertyTypeApartmentT0T1")}</span>}
+                                  {watchedValues.propertyType === "apartment_t2" && <span>{t("quotation.propertyTypeApartmentT2")}</span>}
+                                  {watchedValues.propertyType === "apartment_t3" && <span>{t("quotation.propertyTypeApartmentT3")}</span>}
+                                  {watchedValues.propertyType === "apartment_t4" && <span>{t("quotation.propertyTypeApartmentT4")}</span>}
+                                  {watchedValues.propertyType === "house_v1" && <span>{t("quotation.propertyTypeHouseV1")}</span>}
+                                  {watchedValues.propertyType === "house_v2" && <span>{t("quotation.propertyTypeHouseV2")}</span>}
+                                  {watchedValues.propertyType === "house_v3" && <span>{t("quotation.propertyTypeHouseV3")}</span>}
                                 </div>
                               )}
                             </SelectValue>
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="apartment">
+                          <SelectItem value="apartment_t0t1">
                             <div className="flex items-center gap-2">
                               <Building2 className="h-4 w-4 text-blue-500" />
-                              <span>{t("quotation.propertyTypeApartment")}</span>
+                              <span>{t("quotation.propertyTypeApartmentT0T1")}</span>
                             </div>
                           </SelectItem>
-                          <SelectItem value="house">
+                          <SelectItem value="apartment_t2">
+                            <div className="flex items-center gap-2">
+                              <Building2 className="h-4 w-4 text-blue-500" />
+                              <span>{t("quotation.propertyTypeApartmentT2")}</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="apartment_t3">
+                            <div className="flex items-center gap-2">
+                              <Building2 className="h-4 w-4 text-blue-500" />
+                              <span>{t("quotation.propertyTypeApartmentT3")}</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="apartment_t4">
+                            <div className="flex items-center gap-2">
+                              <Building2 className="h-4 w-4 text-blue-500" />
+                              <span>{t("quotation.propertyTypeApartmentT4")}</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="house_v1">
                             <div className="flex items-center gap-2">
                               <Home className="h-4 w-4 text-green-500" />
-                              <span>{t("quotation.propertyTypeHouse")}</span>
+                              <span>{t("quotation.propertyTypeHouseV1")}</span>
                             </div>
                           </SelectItem>
-                          <SelectItem value="villa">
+                          <SelectItem value="house_v2">
                             <div className="flex items-center gap-2">
-                              <Castle className="h-4 w-4 text-amber-500" />
-                              <span>{t("quotation.propertyTypeVilla")}</span>
+                              <Home className="h-4 w-4 text-green-500" />
+                              <span>{t("quotation.propertyTypeHouseV2")}</span>
                             </div>
                           </SelectItem>
-                          <SelectItem value="studio">
+                          <SelectItem value="house_v3">
                             <div className="flex items-center gap-2">
-                              <Hotel className="h-4 w-4 text-purple-500" />
-                              <span>{t("quotation.propertyTypeStudio")}</span>
+                              <Home className="h-4 w-4 text-green-500" />
+                              <span>{t("quotation.propertyTypeHouseV3")}</span>
                             </div>
                           </SelectItem>
                         </SelectContent>
