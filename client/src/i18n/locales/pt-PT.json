@@ -7,7 +7,9 @@
       "error": "Erro",
       "success": "Sucesso",
       "cancel": "Cancelar",
-      "confirm": "Confirmar"
+      "confirm": "Confirmar",
+      "view": "Ver",
+      "actions": "Ações"
     },
     "quotation": {
       "pageTitle": "Orçamentos",

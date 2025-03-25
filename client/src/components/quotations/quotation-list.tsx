@@ -77,17 +77,13 @@ export function QuotationList() {
   // Generate PDF for a quotation
   const handleGeneratePdf = async (quotationId: number) => {
     try {
-      const response = await apiRequest<{success: boolean, pdfPath: string}>(`/api/quotations/${quotationId}/pdf`);
+      // Usando janela aberta para download direto em vez de apiRequest
+      window.open(`/api/quotations/${quotationId}/pdf`, '_blank');
       
-      if (response && response.success) {
-        // Em ambiente de produção, seria necessário incluir lógica para download do arquivo
-        toast({
-          title: t('quotation.pdfGenerated'),
-          description: t('quotation.pdfSuccess'),
-        });
-      } else {
-        throw new Error("Falha ao gerar PDF");
-      }
+      toast({
+        title: t('quotation.pdfGenerated'),
+        description: t('quotation.pdfSuccess'),
+      });
     } catch (error) {
       toast({
         title: t('common.error'),
