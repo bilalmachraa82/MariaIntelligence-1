@@ -1,49 +1,31 @@
 /**
  * Serviço adaptador para APIs de IA
- * Fornece uma camada de abstração sobre diferentes serviços de IA
- * permitindo trocar entre Mistral e Gemini facilmente
+ * Fornece uma camada de abstração para acessar o serviço Gemini
  */
 
-import { MistralService } from './mistral.service';
 import { GeminiService } from './gemini.service';
 import { ragService } from './rag-enhanced.service';
 
-// Enum para definir qual serviço de IA usar
+// Enum para definir qual serviço de IA usar (apenas Gemini é suportado agora)
 export enum AIServiceType {
-  MISTRAL = 'mistral',
   GEMINI = 'gemini',
-  AUTO = 'auto' // Seleciona automaticamente com base nas chaves disponíveis
+  AUTO = 'auto' // Mantido por compatibilidade
 }
 
 // Singleton para garantir que usamos a mesma instância em toda a aplicação
 export class AIAdapter {
   private static instance: AIAdapter;
-  private mistralService: MistralService;
-  private geminiService: GeminiService;
-  private currentService: AIServiceType = AIServiceType.AUTO;
+  public geminiService: GeminiService;
+  private currentService: AIServiceType = AIServiceType.GEMINI;
   
   private constructor() {
-    this.mistralService = new MistralService();
     this.geminiService = new GeminiService();
     
-    // Detectar automaticamente qual serviço usar com base nas chaves disponíveis
+    // Verificar se temos chave do Gemini configurada
     if (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY) {
-      this.currentService = AIServiceType.GEMINI;
-      console.log("✅ Usando Gemini como serviço de IA principal");
-    } else if (process.env.MISTRAL_API_KEY) {
-      this.currentService = AIServiceType.MISTRAL;
-      console.log("✅ Usando Mistral como serviço de IA principal");
+      console.log("✅ Gemini API configurada corretamente");
     } else {
-      console.warn("⚠️ Nenhuma chave de API de IA configurada. Funcionalidades de IA estarão limitadas.");
-      this.currentService = AIServiceType.MISTRAL; // Fallback para Mistral
-    }
-    
-    // Verificar se métodos existem antes de extendê-los
-    if (this.geminiService && this.geminiService.generateText) {
-      this.geminiService.chatCompletion = this.geminiService.generateText.bind(this.geminiService);
-    }
-    if (this.mistralService && this.mistralService.generateText) {
-      this.mistralService.chatCompletion = this.mistralService.generateText.bind(this.mistralService);
+      console.warn("⚠️ Nenhuma chave de API do Gemini configurada. Funcionalidades de IA estarão limitadas.");
     }
   }
 
@@ -63,27 +45,18 @@ export class AIAdapter {
    * @param serviceType Tipo de serviço de IA a ser usado
    */
   public setService(serviceType: AIServiceType): void {
-    if (serviceType === AIServiceType.AUTO) {
-      // Auto-detectar o melhor serviço disponível
-      if (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY) {
-        this.currentService = AIServiceType.GEMINI;
-      } else if (process.env.MISTRAL_API_KEY) {
-        this.currentService = AIServiceType.MISTRAL;
-      } else {
-        throw new Error("Nenhuma chave de API de IA configurada.");
-      }
-    } else {
-      // Verificar se o serviço requisitado tem chave API configurada
-      if (serviceType === AIServiceType.GEMINI && !(process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
-        throw new Error("GOOGLE_GEMINI_API_KEY não configurada. Não é possível usar o Gemini.");
-      } else if (serviceType === AIServiceType.MISTRAL && !process.env.MISTRAL_API_KEY) {
-        throw new Error("MISTRAL_API_KEY não configurada. Não é possível usar o Mistral.");
-      }
-      
-      this.currentService = serviceType;
+    // Apenas Gemini é suportado agora
+    if (serviceType !== AIServiceType.GEMINI && serviceType !== AIServiceType.AUTO) {
+      console.warn("Apenas o serviço Gemini é suportado. Usando Gemini automaticamente.");
     }
     
-    console.log(`Serviço de IA alterado para: ${this.currentService}`);
+    // Verificar se temos chave API configurada
+    if (!(process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
+      throw new Error("GOOGLE_GEMINI_API_KEY não configurada. Não é possível usar o Gemini.");
+    }
+    
+    this.currentService = AIServiceType.GEMINI;
+    console.log(`Serviço de IA configurado para: ${this.currentService}`);
   }
   
   /**
@@ -101,8 +74,7 @@ export class AIAdapter {
   public isServiceAvailable(): boolean {
     return (
       (process.env.GOOGLE_GEMINI_API_KEY !== undefined && process.env.GOOGLE_GEMINI_API_KEY !== '') ||
-      (process.env.GOOGLE_API_KEY !== undefined && process.env.GOOGLE_API_KEY !== '') ||
-      (process.env.MISTRAL_API_KEY !== undefined && process.env.MISTRAL_API_KEY !== '')
+      (process.env.GOOGLE_API_KEY !== undefined && process.env.GOOGLE_API_KEY !== '')
     );
   }
   
@@ -115,22 +87,10 @@ export class AIAdapter {
    */
   public async extractTextFromPDF(pdfBase64: string): Promise<string> {
     try {
-      if (this.currentService === AIServiceType.GEMINI) {
-        return await this.geminiService.extractTextFromPDF(pdfBase64);
-      } else {
-        return await this.mistralService.extractTextFromPDF(pdfBase64);
-      }
+      return await this.geminiService.extractTextFromPDF(pdfBase64);
     } catch (error: any) {
-      // Em caso de erro, tentar com o outro serviço se disponível
-      console.warn(`Erro no serviço ${this.currentService}, tentando alternativa...`);
-      
-      if (this.currentService === AIServiceType.GEMINI && process.env.MISTRAL_API_KEY) {
-        return await this.mistralService.extractTextFromPDF(pdfBase64);
-      } else if (this.currentService === AIServiceType.MISTRAL && (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
-        return await this.geminiService.extractTextFromPDF(pdfBase64);
-      } else {
-        throw error; // Repassar o erro se não houver alternativa
-      }
+      console.error(`Erro ao extrair texto do PDF com Gemini:`, error);
+      throw new Error(`Falha ao extrair texto do PDF: ${error.message || 'Erro desconhecido'}`);
     }
   }
   
@@ -142,22 +102,10 @@ export class AIAdapter {
    */
   public async extractTextFromImage(imageBase64: string, mimeType: string): Promise<string> {
     try {
-      if (this.currentService === AIServiceType.GEMINI) {
-        return await this.geminiService.extractTextFromImage(imageBase64, mimeType);
-      } else {
-        return await this.mistralService.extractTextFromImage(imageBase64, mimeType);
-      }
+      return await this.geminiService.extractTextFromImage(imageBase64, mimeType);
     } catch (error: any) {
-      // Em caso de erro, tentar com o outro serviço se disponível
-      console.warn(`Erro no serviço ${this.currentService}, tentando alternativa...`);
-      
-      if (this.currentService === AIServiceType.GEMINI && process.env.MISTRAL_API_KEY) {
-        return await this.mistralService.extractTextFromImage(imageBase64, mimeType);
-      } else if (this.currentService === AIServiceType.MISTRAL && (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
-        return await this.geminiService.extractTextFromImage(imageBase64, mimeType);
-      } else {
-        throw error; // Repassar o erro se não houver alternativa
-      }
+      console.error(`Erro ao extrair texto da imagem com Gemini:`, error);
+      throw new Error(`Falha ao extrair texto da imagem: ${error.message || 'Erro desconhecido'}`);
     }
   }
   
@@ -168,22 +116,10 @@ export class AIAdapter {
    */
   public async parseReservationData(text: string): Promise<any> {
     try {
-      if (this.currentService === AIServiceType.GEMINI) {
-        return await this.geminiService.parseReservationData(text);
-      } else {
-        return await this.mistralService.parseReservationData(text);
-      }
+      return await this.geminiService.parseReservationData(text);
     } catch (error: any) {
-      // Em caso de erro, tentar com o outro serviço se disponível
-      console.warn(`Erro no serviço ${this.currentService}, tentando alternativa...`);
-      
-      if (this.currentService === AIServiceType.GEMINI && process.env.MISTRAL_API_KEY) {
-        return await this.mistralService.parseReservationData(text);
-      } else if (this.currentService === AIServiceType.MISTRAL && (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
-        return await this.geminiService.parseReservationData(text);
-      } else {
-        throw error; // Repassar o erro se não houver alternativa
-      }
+      console.error(`Erro ao extrair dados de reserva com Gemini:`, error);
+      throw new Error(`Falha ao extrair dados de reserva: ${error.message || 'Erro desconhecido'}`);
     }
   }
   
@@ -195,22 +131,10 @@ export class AIAdapter {
    */
   public async validateReservationData(data: any, propertyRules: any): Promise<any> {
     try {
-      if (this.currentService === AIServiceType.GEMINI) {
-        return await this.geminiService.validateReservationData(data, propertyRules);
-      } else {
-        return await this.mistralService.validateReservationData(data, propertyRules);
-      }
+      return await this.geminiService.validateReservationData(data, propertyRules);
     } catch (error: any) {
-      // Em caso de erro, tentar com o outro serviço se disponível
-      console.warn(`Erro no serviço ${this.currentService}, tentando alternativa...`);
-      
-      if (this.currentService === AIServiceType.GEMINI && process.env.MISTRAL_API_KEY) {
-        return await this.mistralService.validateReservationData(data, propertyRules);
-      } else if (this.currentService === AIServiceType.MISTRAL && (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
-        return await this.geminiService.validateReservationData(data, propertyRules);
-      } else {
-        throw error; // Repassar o erro se não houver alternativa
-      }
+      console.error(`Erro ao validar dados de reserva com Gemini:`, error);
+      throw new Error(`Falha ao validar dados de reserva: ${error.message || 'Erro desconhecido'}`);
     }
   }
   
@@ -221,22 +145,10 @@ export class AIAdapter {
    */
   public async classifyDocument(text: string): Promise<any> {
     try {
-      if (this.currentService === AIServiceType.GEMINI) {
-        return await this.geminiService.classifyDocument(text);
-      } else {
-        return await this.mistralService.classifyDocument(text);
-      }
+      return await this.geminiService.classifyDocument(text);
     } catch (error: any) {
-      // Em caso de erro, tentar com o outro serviço se disponível
-      console.warn(`Erro no serviço ${this.currentService}, tentando alternativa...`);
-      
-      if (this.currentService === AIServiceType.GEMINI && process.env.MISTRAL_API_KEY) {
-        return await this.mistralService.classifyDocument(text);
-      } else if (this.currentService === AIServiceType.MISTRAL && (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
-        return await this.geminiService.classifyDocument(text);
-      } else {
-        throw error; // Repassar o erro se não houver alternativa
-      }
+      console.error(`Erro ao classificar documento com Gemini:`, error);
+      throw new Error(`Falha ao classificar documento: ${error.message || 'Erro desconhecido'}`);
     }
   }
   
@@ -248,22 +160,10 @@ export class AIAdapter {
    */
   public async analyzeDocumentVisually(fileBase64: string, mimeType: string): Promise<any> {
     try {
-      if (this.currentService === AIServiceType.GEMINI) {
-        return await this.geminiService.analyzeDocumentVisually(fileBase64, mimeType);
-      } else {
-        return await this.mistralService.analyzeDocumentVisually(fileBase64, mimeType);
-      }
+      return await this.geminiService.analyzeDocumentVisually(fileBase64, mimeType);
     } catch (error: any) {
-      // Em caso de erro, tentar com o outro serviço se disponível
-      console.warn(`Erro no serviço ${this.currentService}, tentando alternativa...`);
-      
-      if (this.currentService === AIServiceType.GEMINI && process.env.MISTRAL_API_KEY) {
-        return await this.mistralService.analyzeDocumentVisually(fileBase64, mimeType);
-      } else if (this.currentService === AIServiceType.MISTRAL && (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
-        return await this.geminiService.analyzeDocumentVisually(fileBase64, mimeType);
-      } else {
-        throw error; // Repassar o erro se não houver alternativa
-      }
+      console.error(`Erro ao analisar documento visualmente com Gemini:`, error);
+      throw new Error(`Falha na análise visual do documento: ${error.message || 'Erro desconhecido'}`);
     }
   }
   
@@ -275,7 +175,7 @@ export class AIAdapter {
    */
   public async processReservationDocument(fileBase64: string, mimeType: string): Promise<any> {
     try {
-      console.log(`📄 Processando documento ${mimeType} usando serviço: ${this.currentService}`);
+      console.log(`📄 Processando documento ${mimeType} usando serviço: Gemini`);
       
       // Implementação unificada para processamento de documentos
       const isPDF = mimeType.includes('pdf');
@@ -303,14 +203,10 @@ export class AIAdapter {
         };
       }
       
-      // Analisar o documento visualmente (em paralelo) - apenas se estiver disponível no serviço atual
+      // Analisar o documento visualmente (em paralelo)
       let visualAnalysisPromise;
       try {
-        if (this.currentService === AIServiceType.GEMINI) {
-          visualAnalysisPromise = this.geminiService.analyzeDocumentVisually(fileBase64, mimeType);
-        } else {
-          visualAnalysisPromise = Promise.resolve({ type: 'unknown', confidence: 0 });
-        }
+        visualAnalysisPromise = this.geminiService.analyzeDocumentVisually(fileBase64, mimeType);
       } catch (error) {
         // Se falhar, continuar com análise visual padrão
         visualAnalysisPromise = Promise.resolve({ type: 'unknown', confidence: 0 });
@@ -422,60 +318,23 @@ export class AIAdapter {
         enhancedPrompt += `\n\nO texto é proveniente de um documento do tipo: ${options.documentType}`;
       }
       
-      if (this.currentService === AIServiceType.GEMINI) {
-        // Usar Gemini para extrair dados do texto
-        return await this.geminiService.generateText({
-          contents: [
-            { role: 'system', parts: [{ text: enhancedPrompt }] },
-            { role: 'user', parts: [{ text }] }
-          ],
-          generationConfig: {
-            temperature: options.temperature || 0.2,
-            maxOutputTokens: options.maxTokens || 2048,
-            responseFormat: options.responseFormat || undefined
-          }
-        });
-      } else {
-        // Usar Mistral para extrair dados do texto
-        return await this.mistralService.chatCompletion({
-          messages: [
-            { role: 'system', content: options.systemPrompt || 'Extraia dados do seguinte texto' },
-            { role: 'user', content: text }
-          ],
+      // Usar Gemini para extrair dados do texto
+      const result = await this.geminiService.generateText({
+        contents: [
+          { role: 'system', parts: [{ text: enhancedPrompt }] },
+          { role: 'user', parts: [{ text }] }
+        ],
+        generationConfig: {
           temperature: options.temperature || 0.2,
-          maxTokens: options.maxTokens || 2048,
-          responseFormat: options.responseFormat ? options.responseFormat.type : undefined
-        });
-      }
-    } catch (error: any) {
-      // Em caso de erro, tentar com o outro serviço se disponível
-      console.warn(`Erro no serviço ${this.currentService} ao extrair dados, tentando alternativa...`);
+          maxOutputTokens: options.maxTokens || 2048,
+          responseFormat: options.responseFormat || undefined
+        }
+      });
       
-      if (this.currentService === AIServiceType.GEMINI && process.env.MISTRAL_API_KEY) {
-        return await this.mistralService.chatCompletion({
-          messages: [
-            { role: 'system', content: options.systemPrompt || 'Extraia dados do seguinte texto' },
-            { role: 'user', content: text }
-          ],
-          temperature: options.temperature || 0.2,
-          maxTokens: options.maxTokens || 2048,
-          responseFormat: options.responseFormat ? options.responseFormat.type : undefined
-        });
-      } else if (this.currentService === AIServiceType.MISTRAL && (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
-        return await this.geminiService.generateText({
-          contents: [
-            { role: 'system', parts: [{ text: options.systemPrompt || 'Extraia dados do seguinte texto' }] },
-            { role: 'user', parts: [{ text }] }
-          ],
-          generationConfig: {
-            temperature: options.temperature || 0.2,
-            maxOutputTokens: options.maxTokens || 2048,
-            responseFormat: options.responseFormat || undefined
-          }
-        });
-      } else {
-        throw error; // Repassar o erro se não houver alternativa
-      }
+      return result;
+    } catch (error: any) {
+      console.error(`Erro ao extrair dados com Gemini:`, error);
+      throw new Error(`Falha ao extrair dados: ${error.message || 'Erro desconhecido'}`);
     }
   }
   
@@ -483,9 +342,11 @@ export class AIAdapter {
    * Acesso ao cliente Mistral para casos específicos
    * (isto permite compatibilidade com código existente)
    * @returns Cliente Mistral
+   * @deprecated Substituído pelo Gemini
    */
   public getMistralClient() {
-    return this.mistralService.getMistralClient();
+    console.warn('getMistralClient foi descontinuado - usando Gemini em vez disso');
+    throw new Error('Método não suportado: getMistralClient foi deprecado e removido');
   }
   
   /**
@@ -504,8 +365,7 @@ export class AIAdapter {
     fields: string[]
   ): Promise<any> {
     // Esta funcionalidade usa recursos avançados disponíveis apenas no Gemini
-    if (this.currentService !== AIServiceType.GEMINI && 
-        !this.geminiService.isConfigured()) {
+    if (!this.geminiService.isConfigured()) {
       throw new Error("Aprendizado de novos formatos de documento requer o serviço Gemini");
     }
     
