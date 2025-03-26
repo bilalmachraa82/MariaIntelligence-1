@@ -807,7 +807,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log('Processando PDF sem criação automática de reserva');
           
           // Usar o serviço de extração e validação
-          const validationResult = await processPdf(req.file.path, process.env.MISTRAL_API_KEY);
+          const validationResult = await processPdf(req.file.path, process.env.MISTRAL_API_KEY, { 
+            skipQualityCheck, 
+            useCache 
+          });
           console.log('Validação concluída:', validationResult.status);
           
           // Extrair os dados validados com valores padrão
@@ -970,11 +973,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         console.log(`Processando imagem: ${req.file.path}`);
         
-        // Parâmetro para controlar se uma reserva deve ser criada automaticamente
+        // Parâmetros de controle
         const autoCreateReservation = req.query.autoCreate === 'true';
+        const skipQualityCheck = req.query.skipQualityCheck === 'true';
+        const useCache = req.query.useCache === 'true';
         
         // Usar o novo serviço de processamento que pode criar reservas a partir de imagens
-        const result = await processFileAndCreateReservation(req.file.path, process.env.MISTRAL_API_KEY);
+        const result = await processFileAndCreateReservation(
+          req.file.path, 
+          process.env.MISTRAL_API_KEY,
+          { skipQualityCheck, useCache }
+        );
         console.log('Processamento OCR e criação de reserva concluídos:', result.success);
         
         // Adicionar atividade ao sistema se a reserva foi criada

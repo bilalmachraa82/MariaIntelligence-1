@@ -195,13 +195,15 @@ export async function createReservationFromExtractedData(
  */
 export async function processPdfAndCreateReservation(
   pdfPath: string, 
-  apiKey: string
+  apiKey: string,
+  options: { skipQualityCheck?: boolean; useCache?: boolean } = {}
 ): Promise<ReservationCreationResult> {
   try {
-    console.log(`Processando PDF para criar reserva: ${pdfPath}`);
+    const { skipQualityCheck = false, useCache = false } = options;
+    console.log(`Processando PDF para criar reserva: ${pdfPath} (skipQualityCheck: ${skipQualityCheck}, useCache: ${useCache})`);
 
     // Extrair e validar dados do PDF
-    const validationResult = await processPdf(pdfPath, apiKey);
+    const validationResult = await processPdf(pdfPath, apiKey, { skipQualityCheck, useCache });
     
     // Se a validação falhou completamente, abortar
     if (validationResult.status === ValidationStatus.FAILED) {
@@ -312,14 +314,15 @@ export async function processImageAndCreateReservation(
  */
 export async function processFileAndCreateReservation(
   filePath: string,
-  apiKey: string
+  apiKey: string,
+  options: { skipQualityCheck?: boolean; useCache?: boolean } = {}
 ): Promise<ReservationCreationResult> {
   // Determinar o tipo de arquivo pela extensão
   const fileExtension = path.extname(filePath).toLowerCase();
   
   // Se for PDF, processar como PDF
   if (fileExtension === '.pdf') {
-    return processPdfAndCreateReservation(filePath, apiKey);
+    return processPdfAndCreateReservation(filePath, apiKey, options);
   }
   
   // Se for imagem (jpg, jpeg, png), processar com OCR
