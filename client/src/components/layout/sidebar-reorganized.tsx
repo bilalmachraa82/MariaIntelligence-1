@@ -93,8 +93,22 @@ export function SidebarReorganized({
     // Se não inicia com barra, adiciona uma no início
     let normalizedHref = href.startsWith('/') ? href : '/' + href;
     
-    // Remove barras duplicadas, garantindo apenas uma barra entre segmentos
-    normalizedHref = normalizedHref.replace(/\/+/g, '/');
+    // Separa a URL em protocolo e caminho (se for uma URL completa)
+    const hasProtocol = normalizedHref.includes('://');
+    let protocol = '';
+    let path = normalizedHref;
+    
+    if (hasProtocol) {
+      const parts = normalizedHref.split('://');
+      protocol = parts[0] + '://';
+      path = parts[1];
+    }
+    
+    // Remove barras duplicadas apenas na parte do caminho, preservando o protocolo
+    path = path.replace(/\/+/g, '/');
+    
+    // Reconstrói a URL normalizada
+    normalizedHref = hasProtocol ? protocol + path : path;
     
     // Navega para a URL normalizada
     useNavigate(normalizedHref);

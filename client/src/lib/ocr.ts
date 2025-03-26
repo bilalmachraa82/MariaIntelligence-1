@@ -395,6 +395,7 @@ export async function processReservationFile(
                 filename: file.name,
                 path: URL.createObjectURL(file)
               },
+              rawText: parsedResult.rawText || "",  // Incluir o texto bruto do cache
               fromCache: true
             };
           }
@@ -454,8 +455,11 @@ export async function processReservationFile(
         const cacheKey = `ocr_cache_${file.name}_${file.size}_${file.lastModified}`;
         localStorage.setItem(cacheKey, JSON.stringify({
           extractedData: result.extractedData,
+          validation: response.validation,  // Armazenar também os resultados da validação
+          rawText: result.rawText || "",    // Armazenar o texto bruto extraído
           timestamp: new Date().toISOString()
         }));
+        console.log("Dados salvos em cache com sucesso:", cacheKey);
       } catch (cacheError) {
         console.warn("Erro ao armazenar em cache:", cacheError);
         // Continuar mesmo sem poder armazenar cache
