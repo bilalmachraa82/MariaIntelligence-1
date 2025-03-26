@@ -43,7 +43,7 @@ export function UploadPDF() {
   const [isMultiUploadMode, setIsMultiUploadMode] = useState(true); // Agora o modo múltiplo é o padrão
   const [showRawText, setShowRawText] = useState(false);
   
-  // Estado de disponibilidade da API Mistral
+  // Estado de disponibilidade da API Gemini
   const [mistralAvailable, setMistralAvailable] = useState<boolean | null>(null);
   
   // Estado para feedback visual do processamento
@@ -74,32 +74,32 @@ export function UploadPDF() {
     clearExtractedData
   } = usePdfUpload();
 
-  // Verificar se a chave da API Mistral está configurada
+  // Verificar se a chave da API Gemini está configurada
   useEffect(() => {
-    async function checkMistralApiKey() {
+    async function checkGeminiApiKey() {
       try {
-        const response = await fetch('/api/check-mistral-key', {
+        const response = await fetch('/api/check-ai-services', {
           method: 'GET'
         });
         if (response.ok) {
           const data = await response.json();
-          setMistralAvailable(data.available);
+          setMistralAvailable(data.anyServiceAvailable);
           
-          if (!data.available) {
+          if (!data.anyServiceAvailable) {
             toast({
-              title: "API Mistral não configurada",
-              description: "O processamento de PDF será limitado. Contate o administrador para configurar a API Mistral.",
+              title: "API Gemini não configurada",
+              description: "O processamento de PDF será limitado. Contate o administrador para configurar a API Gemini.",
               variant: "destructive",
             });
           }
         }
       } catch (error) {
-        console.error("Erro ao verificar chave da API Mistral:", error);
+        console.error("Erro ao verificar chave da API Gemini:", error);
         setMistralAvailable(false);
       }
     }
     
-    checkMistralApiKey();
+    checkGeminiApiKey();
   }, [toast]);
   
   // Ouvir eventos de progresso do processamento
@@ -471,12 +471,12 @@ export function UploadPDF() {
                       {mistralAvailable ? (
                         <>
                           <CheckCircle2 className="mr-1 h-3 w-3" />
-                          API Mistral Ativa
+                          API Gemini Ativa
                         </>
                       ) : (
                         <>
                           <AlertCircle className="mr-1 h-3 w-3" />
-                          API Mistral Inativa
+                          API Gemini Inativa
                         </>
                       )}
                     </Badge>
@@ -490,7 +490,7 @@ export function UploadPDF() {
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs">
                         <p>
-                          O sistema utiliza a API Mistral AI para processar o PDF em duas etapas:
+                          O sistema utiliza a API Gemini AI para processar o PDF em duas etapas:
                           1. OCR (Optical Character Recognition) para extrair o texto
                           2. RAG (Retrieval-Augmented Generation) para estruturar os dados
                         </p>
@@ -500,7 +500,7 @@ export function UploadPDF() {
                 </div>
                 <div className="mt-2 text-sm text-blue-700">
                   <p>
-                    O sistema analisará automaticamente o PDF da reserva usando tecnologia Mistral AI para extrair toda a informação relevante.
+                    O sistema analisará automaticamente o PDF da reserva usando tecnologia Gemini AI para extrair toda a informação relevante.
                   </p>
                   <div className="mt-2 flex flex-wrap gap-2">
                     <Badge variant="outline" className="bg-blue-100 text-blue-800">
@@ -560,7 +560,7 @@ export function UploadPDF() {
                 Dados Extraídos com IA
               </DialogTitle>
               <p className="text-sm text-secondary-500 mt-1">
-                A tecnologia Mistral AI extraiu e estruturou os seguintes dados da reserva:
+                A tecnologia Gemini AI extraiu e estruturou os seguintes dados da reserva:
               </p>
             </DialogHeader>
             <div className="mt-4">
@@ -766,7 +766,7 @@ export function UploadPDF() {
                 Processamento Múltiplo Concluído
               </DialogTitle>
               <p className="text-sm text-secondary-500 mt-1">
-                A tecnologia Mistral AI processou {multipleResults.length} arquivos PDF e extraiu os seguintes dados:
+                A tecnologia Gemini AI processou {multipleResults.length} arquivos PDF e extraiu os seguintes dados:
               </p>
             </DialogHeader>
             

@@ -28,13 +28,13 @@ export default function SettingsPage() {
   // Estado para testes de integração
   const [isTestingIntegrations, setIsTestingIntegrations] = useState(false);
   const [testResults, setTestResults] = useState<{
-    mistral: boolean | null;
+    gemini: boolean | null;
     database: boolean | null;
     ocr: boolean | null;
     rag: boolean | null;
     message: string;
   }>({
-    mistral: null,
+    gemini: null,
     database: null,
     ocr: null,
     rag: null,
@@ -323,7 +323,7 @@ export default function SettingsPage() {
   const handleTestIntegrations = async () => {
     setIsTestingIntegrations(true);
     setTestResults({
-      mistral: null,
+      gemini: null,
       database: null,
       ocr: null,
       rag: null,
@@ -338,13 +338,15 @@ export default function SettingsPage() {
       
       if (data && data.tests && Array.isArray(data.tests)) {
         // Extrai os resultados de cada teste pelo nome
-        const mistralTest = data.tests.find((test: TestResult) => test.name === "Mistral AI");
+        const aiTest = data.tests.find((test: TestResult) => 
+          test.name === "Google Gemini" || test.name === "Mistral AI"
+        );
         const dbTest = data.tests.find((test: TestResult) => test.name === "Base de Dados");
         const ocrTest = data.tests.find((test: TestResult) => test.name === "OCR (Processamento de PDFs)");
         const ragTest = data.tests.find((test: TestResult) => test.name === "RAG (Retrieval Augmented Generation)");
         
         console.log("Testes individuais:", {
-          mistralTest,
+          aiTest,
           dbTest,
           ocrTest,
           ragTest
@@ -358,7 +360,7 @@ export default function SettingsPage() {
         
         // Atualiza o estado com os resultados dos testes
         setTestResults({
-          mistral: mistralTest?.success || false,
+          gemini: aiTest?.success || false,
           database: dbTest?.success || false,
           ocr: ocrTest?.success || false,
           rag: ragTest?.success || false,
@@ -366,7 +368,7 @@ export default function SettingsPage() {
         });
         
         // Se todos os testes foram bem-sucedidos
-        const allTestsSuccessful = mistralTest?.success && dbTest?.success && ocrTest?.success && ragTest?.success;
+        const allTestsSuccessful = aiTest?.success && dbTest?.success && ocrTest?.success && ragTest?.success;
         
         if (allTestsSuccessful) {
           toast({
@@ -390,7 +392,7 @@ export default function SettingsPage() {
       console.error("Erro ao processar resposta:", error);
       
       setTestResults({
-        mistral: false,
+        gemini: false,
         database: false,
         ocr: false,
         rag: false,
@@ -678,9 +680,9 @@ export default function SettingsPage() {
               <div className="space-y-2">
                 <Alert className="mb-4">
                   <AlertCircle className="h-4 w-4" />
-                  <AlertTitle>API Mistral configurada internamente</AlertTitle>
+                  <AlertTitle>API Gemini configurada internamente</AlertTitle>
                   <AlertDescription>
-                    A chave da API Mistral está configurada internamente no sistema por razões de segurança e não pode ser modificada através da interface. Esta abordagem garante maior segurança no acesso à API e consistência na integração. Se você precisar atualizar a chave ou tiver problemas com a integração, entre em contato com o suporte técnico.
+                    A chave da API Gemini está configurada internamente no sistema por razões de segurança e não pode ser modificada através da interface. Esta abordagem garante maior segurança no acesso à API e consistência na integração. Se você precisar atualizar a chave ou tiver problemas com a integração, entre em contato com o suporte técnico.
                   </AlertDescription>
                 </Alert>
               </div>
@@ -698,7 +700,7 @@ export default function SettingsPage() {
               </div>
               
               {/* Resultados do teste de integrações */}
-              {(testResults.mistral !== null || testResults.message) && (
+              {(testResults.gemini !== null || testResults.message) && (
                 <div className="mt-4 space-y-4">
                   <Separator />
                   <div>
@@ -723,13 +725,13 @@ export default function SettingsPage() {
                           ) : (
                             <Activity className="h-5 w-5 text-gray-500" />
                           )}
-                          <h4 className="font-medium">Mistral AI</h4>
+                          <h4 className="font-medium">Gemini AI</h4>
                         </div>
                         <p className="text-sm text-muted-foreground">
                           {testResults.mistral === true 
-                            ? "API do Mistral conectada corretamente." 
+                            ? "API do Gemini conectada corretamente." 
                             : testResults.mistral === false 
-                              ? "Falha na conexão com a API do Mistral." 
+                              ? "Falha na conexão com a API do Gemini." 
                               : "Teste pendente."}
                         </p>
                       </div>
