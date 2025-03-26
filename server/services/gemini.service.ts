@@ -56,6 +56,20 @@ export class GeminiService {
       this.isInitialized = true;
     }
   }
+  
+  /**
+   * Inicializa os modelos com uma chave API fornecida externamente
+   * @param apiKey Chave API do Google Gemini
+   */
+  public initializeWithKey(apiKey: string): void {
+    if (!apiKey) {
+      throw new Error("Chave API inválida");
+    }
+    
+    this.initialize(apiKey);
+    this.isInitialized = true;
+    console.log("Gemini Service: Initialized with provided API key");
+  }
 
   /**
    * Inicializa os modelos com a API key
@@ -567,7 +581,7 @@ export class GeminiService {
       } else {
         extractedText = await this.extractTextFromImage(fileBase64, mimeType);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro na extração de texto:", error);
       return {
         success: false,
@@ -583,7 +597,7 @@ export class GeminiService {
     let structuredData;
     try {
       structuredData = await this.parseReservationData(extractedText);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro na extração de dados estruturados:", error);
       return {
         success: false,
@@ -607,5 +621,36 @@ export class GeminiService {
         isPDF
       }
     };
+  }
+  
+  /**
+   * Gera texto a partir de um prompt
+   * Método utilizado principalmente para testes
+   * @param prompt Texto do prompt 
+   * @param temperature Temperatura para controlar aleatoriedade (0.0 a 1.0)
+   * @returns Texto gerado
+   */
+  async generateText(prompt: string, temperature: number = 0.3): Promise<string> {
+    this.checkInitialization();
+    
+    try {
+      const result = await this.defaultModel.generateContent({
+        contents: [
+          {
+            role: 'user',
+            parts: [{ text: prompt }]
+          }
+        ],
+        generationConfig: { 
+          temperature,
+          maxOutputTokens: 2048
+        }
+      });
+      
+      return result.response.text();
+    } catch (error: any) {
+      console.error("Erro ao gerar texto com Gemini:", error);
+      throw new Error(`Falha na geração de texto: ${error.message}`);
+    }
   }
 }

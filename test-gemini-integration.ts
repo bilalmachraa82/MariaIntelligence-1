@@ -104,7 +104,7 @@ async function runTests() {
   console.log('✅ Serviço Gemini inicializado');
   
   // Testar funcionalidades
-  const testResults = [];
+  const testResults: boolean[] = [];
   
   // Teste 1: Geração de texto simples
   testResults.push(await testTextGeneration(geminiService));
