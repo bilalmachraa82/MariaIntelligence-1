@@ -45,7 +45,7 @@ export class GeminiService {
   private isInitialized: boolean = false;
 
   constructor() {
-    const apiKey = process.env.GOOGLE_API_KEY;
+    const apiKey = process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
     
     if (!apiKey) {
       console.warn("GOOGLE_API_KEY não configurada. Algumas funcionalidades estarão indisponíveis.");
