@@ -58,8 +58,9 @@ export function usePdfUpload() {
   /**
    * Processa um único arquivo PDF ou imagem com o sistema avançado
    * @param file Arquivo (PDF ou imagem) a ser processado
+   * @param options Opções de processamento (useCache, skipQualityCheck, etc)
    */
-  const handleFileUpload = async (file: File) => {
+  const handleFileUpload = async (file: File, options?: ProcessingOptions) => {
     if (!file) {
       setError("Nenhum arquivo selecionado");
       return;
@@ -79,16 +80,16 @@ export function usePdfUpload() {
       // Usar o novo sistema avançado de processamento
       try {
         // Configurar opções de processamento
-        const options = {
-          useCache: processingOptions.useCache,
-          skipQualityCheck: processingOptions.skipQualityCheck,
+        const processOptions = {
+          useCache: options?.useCache !== undefined ? options.useCache : processingOptions.useCache,
+          skipQualityCheck: options?.skipQualityCheck !== undefined ? options.skipQualityCheck : processingOptions.skipQualityCheck,
           onProgress: (progress: number) => {
             dispatchProgressEvent(progress, 1, file.name, progress === 100 ? 1 : 0);
           }
         };
         
         // Usar a nova função aprimorada que processa PDFs e imagens
-        const result = await processReservationFile(file, options);
+        const result = await processReservationFile(file, processOptions);
         
         // Definir dados extraídos e texto bruto
         setExtractedData(result.extractedData);
@@ -180,8 +181,9 @@ export function usePdfUpload() {
   /**
    * Processa múltiplos arquivos PDF ao mesmo tempo
    * @param files Array de arquivos PDF
+   * @param options Opções de processamento (useCache, skipQualityCheck, etc)
    */
-  const handleMultipleFilesUpload = async (files: File[]) => {
+  const handleMultipleFilesUpload = async (files: File[], options?: ProcessingOptions) => {
     if (!files || files.length === 0) {
       setError("Nenhum arquivo selecionado");
       return;

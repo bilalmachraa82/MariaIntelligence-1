@@ -142,7 +142,7 @@ export function UploadPDF() {
       }
       
       setSelectedFile(file);
-      handleFileUpload(file);
+      handleFileUpload(file, { useCache });
     }
   };
 
@@ -208,7 +208,7 @@ export function UploadPDF() {
         }
         
         setSelectedFile(file);
-        handleFileUpload(file);
+        handleFileUpload(file, { useCache });
       }
     }
   };
@@ -515,6 +515,45 @@ export function UploadPDF() {
                     </Badge>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Opções Avançadas de Processamento */}
+          <div className="rounded-md border border-blue-100 p-4 bg-blue-50/50">
+            <div className="flex items-center mb-2">
+              <h3 className="text-sm font-medium text-blue-800">
+                Opções Avançadas de Processamento
+              </h3>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0 ml-1">
+                      <Info className="h-4 w-4 text-blue-500" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs">
+                    <p>
+                      Configure opções avançadas para controlar como os PDFs são processados.
+                      O uso do cache pode tornar o processamento muito mais rápido para arquivos já analisados anteriormente.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex items-center">
+                <input
+                  id="use-cache"
+                  type="checkbox"
+                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                  checked={useCache}
+                  onChange={(e) => setUseCache(e.target.checked)}
+                />
+                <label htmlFor="use-cache" className="ml-2 text-sm text-blue-700">
+                  Usar cache (mais rápido para arquivos já processados)
+                </label>
               </div>
             </div>
           </div>
