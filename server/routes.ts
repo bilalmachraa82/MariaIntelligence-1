@@ -757,8 +757,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Parâmetros de controle
         const autoCreateReservation = req.query.autoCreate === 'true';
-        const skipQualityCheck = req.query.skipQualityCheck === 'true';
-        const useCache = req.query.useCache === 'true';
+        
+        // Obter parâmetros do corpo da requisição (FormData)
+        const skipQualityCheck = req.body.skipQualityCheck === 'true';
+        const useCache = req.body.useCache === 'true';
         
         console.log(`Opções de processamento: skipQualityCheck=${skipQualityCheck}, useCache=${useCache}`);
         
