@@ -125,6 +125,31 @@ export async function parseReservationFromText(
   options: { skipQualityCheck?: boolean; useCache?: boolean } = {}
 ): Promise<ExtractedReservationData> {
   const { skipQualityCheck = false, useCache = false } = options;
+  
+  // Criar um identificador único para este texto (hash)
+  const createCacheKey = (text: string): string => {
+    const crypto = require('crypto');
+    return crypto.createHash('md5').update(text).digest('hex');
+  };
+  
+  // Verificar cache, se habilitado
+  if (useCache) {
+    const cacheKey = createCacheKey(text);
+    const cachePath = path.join(os.tmpdir(), `pdf-extract-${cacheKey}.json`);
+    
+    // Verificar se existe cache para este texto
+    if (fs.existsSync(cachePath)) {
+      try {
+        log(`Cache encontrado para este PDF, usando dados em cache`, 'pdf-extract');
+        const cachedData = JSON.parse(fs.readFileSync(cachePath, 'utf-8'));
+        return cachedData;
+      } catch (error) {
+        log(`Erro ao ler cache: ${error.message}`, 'pdf-extract');
+        // Continuar com processamento normal se falhar a leitura do cache
+      }
+    }
+  }
+  
   // Criar uma promessa com timeout
   const timeoutPromise = new Promise<never>((_, reject) => {
     setTimeout(() => reject(new Error('Tempo limite excedido ao processar texto')), timeout);
@@ -287,6 +312,19 @@ export async function parseReservationFromText(
             }
             
             log('Dados extraídos com sucesso', 'pdf-extract');
+            
+            // Salvar em cache se a opção estiver habilitada
+            if (useCache) {
+              try {
+                const cacheKey = createCacheKey(text);
+                const cachePath = path.join(os.tmpdir(), `pdf-extract-${cacheKey}.json`);
+                fs.writeFileSync(cachePath, JSON.stringify(extractedData));
+                log(`Dados salvos em cache: ${cachePath}`, 'pdf-extract');
+              } catch (cacheError) {
+                log(`Erro ao salvar cache: ${cacheError.message}`, 'pdf-extract');
+                // Continuar mesmo se falhar ao salvar cache
+              }
+            }
             
             return extractedData as ExtractedReservationData;
           } else {

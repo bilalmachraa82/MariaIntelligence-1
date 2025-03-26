@@ -1064,11 +1064,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         console.log(`Processando arquivo: ${req.file.path} (${req.file.mimetype})`);
         
-        // Parâmetro para controlar se uma reserva deve ser criada automaticamente
+        // Parâmetros de controle
         const autoCreateReservation = req.query.autoCreate === 'true';
+        const skipQualityCheck = req.query.skipQualityCheck === 'true';
+        const useCache = req.query.useCache === 'true';
         
         // Usar o serviço que processa qualquer tipo de arquivo e cria reserva
-        const result = await processFileAndCreateReservation(req.file.path, process.env.MISTRAL_API_KEY);
+        const result = await processFileAndCreateReservation(
+          req.file.path, 
+          process.env.MISTRAL_API_KEY,
+          { skipQualityCheck, useCache }
+        );
         console.log('Processamento e criação de reserva concluídos:', result.success);
         
         // Adicionar atividade ao sistema se a reserva foi criada
