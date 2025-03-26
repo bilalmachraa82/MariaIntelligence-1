@@ -231,11 +231,23 @@ export function usePdfUpload() {
             failureCount
           );
           
+          // Configurar opções de processamento para múltiplos arquivos
+          const multiProcessOptions = {
+            useCache: options?.useCache !== undefined ? options.useCache : processingOptions.useCache,
+            skipQualityCheck: options?.skipQualityCheck !== undefined ? options.skipQualityCheck : processingOptions.skipQualityCheck,
+            onProgress: (progress: number) => {
+              dispatchProgressEvent(
+                Math.round((i / files.length) * 100) + (progress / files.length),
+                files.length,
+                file.name,
+                successCount,
+                failureCount
+              );
+            }
+          };
+          
           // Usar a função aprimorada com cache e verificação de qualidade
-          const result = await processReservationFile(file, {
-            useCache: processingOptions.useCache,
-            skipQualityCheck: processingOptions.skipQualityCheck
-          });
+          const result = await processReservationFile(file, multiProcessOptions);
           
           // Adicionar ao array de resultados
           results.push({

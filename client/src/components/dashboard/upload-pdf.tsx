@@ -183,7 +183,10 @@ export function UploadPDF() {
         }
         
         setSelectedFiles(filesArray);
-        handleMultipleFilesUpload(filesArray);
+        handleMultipleFilesUpload(filesArray, { 
+          useCache, 
+          skipQualityCheck 
+        });
       } 
       // Modo de upload único
       else {
@@ -264,7 +267,10 @@ export function UploadPDF() {
       }
       
       setSelectedFiles(filesArray);
-      handleMultipleFilesUpload(filesArray);
+      handleMultipleFilesUpload(filesArray, { 
+        useCache, 
+        skipQualityCheck 
+      });
     }
   };
 
@@ -534,8 +540,11 @@ export function UploadPDF() {
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
                     <p>
-                      Configure opções avançadas para controlar como os PDFs são processados.
-                      O uso do cache pode tornar o processamento muito mais rápido para arquivos já analisados anteriormente.
+                      Configure opções avançadas para controlar como os PDFs são processados:
+                      <ul className="list-disc pl-5 mt-1 space-y-1">
+                        <li>Usar cache: torna o processamento muito mais rápido para arquivos já analisados anteriormente.</li>
+                        <li>Ignorar verificação de qualidade: acelera o processamento ao pular verificações adicionais, mas pode reduzir a precisão dos dados extraídos.</li>
+                      </ul>
                     </p>
                   </TooltipContent>
                 </Tooltip>
@@ -553,6 +562,19 @@ export function UploadPDF() {
                 />
                 <label htmlFor="use-cache" className="ml-2 text-sm text-blue-700">
                   Usar cache (mais rápido para arquivos já processados)
+                </label>
+              </div>
+              
+              <div className="flex items-center">
+                <input
+                  id="skip-quality-check"
+                  type="checkbox"
+                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                  checked={skipQualityCheck}
+                  onChange={(e) => setSkipQualityCheck(e.target.checked)}
+                />
+                <label htmlFor="skip-quality-check" className="ml-2 text-sm text-blue-700">
+                  Ignorar verificação de qualidade (mais rápido, mas pode ter resultados menos precisos)
                 </label>
               </div>
             </div>
