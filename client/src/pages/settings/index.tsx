@@ -718,9 +718,9 @@ export default function SettingsPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       <div className="p-3 rounded-md border">
                         <div className="flex items-center gap-2 mb-1">
-                          {testResults.mistral === true ? (
+                          {testResults.gemini === true ? (
                             <CheckCircle className="h-5 w-5 text-green-500" />
-                          ) : testResults.mistral === false ? (
+                          ) : testResults.gemini === false ? (
                             <AlertCircle className="h-5 w-5 text-red-500" />
                           ) : (
                             <Activity className="h-5 w-5 text-gray-500" />
@@ -728,9 +728,9 @@ export default function SettingsPage() {
                           <h4 className="font-medium">Gemini AI</h4>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {testResults.mistral === true 
+                          {testResults.gemini === true 
                             ? "API do Gemini conectada corretamente." 
-                            : testResults.mistral === false 
+                            : testResults.gemini === false 
                               ? "Falha na conexão com a API do Gemini." 
                               : "Teste pendente."}
                         </p>
