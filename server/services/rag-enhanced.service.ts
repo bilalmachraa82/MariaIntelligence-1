@@ -359,9 +359,19 @@ export class RagEnhancedService {
    * @returns Contexto RAG formatado
    */
   public async buildRagContext(query: string, maxItems: number = 5): Promise<string> {
+    return this.buildConversationContext(query, maxItems);
+  }
+  
+  /**
+   * Constrói um contexto de conversação baseado em uma consulta (compatível com API antiga)
+   * @param query Consulta para construir contexto
+   * @param maxConversations Número máximo de itens a incluir no contexto
+   * @returns Contexto de conversação formatado
+   */
+  public async buildConversationContext(query: string, maxConversations: number = 10): Promise<string> {
     // Primeiro, fazer a busca por itens similares
     const similarItems = await this.querySimilarItems(query, {
-      maxResults: maxItems
+      maxResults: maxConversations
     });
     
     // Construir um contexto estruturado

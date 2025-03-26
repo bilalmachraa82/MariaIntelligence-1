@@ -37,6 +37,14 @@ export class AIAdapter {
       console.warn("⚠️ Nenhuma chave de API de IA configurada. Funcionalidades de IA estarão limitadas.");
       this.currentService = AIServiceType.MISTRAL; // Fallback para Mistral
     }
+    
+    // Verificar se métodos existem antes de extendê-los
+    if (this.geminiService && this.geminiService.generateText) {
+      this.geminiService.chatCompletion = this.geminiService.generateText.bind(this.geminiService);
+    }
+    if (this.mistralService && this.mistralService.generateText) {
+      this.mistralService.chatCompletion = this.mistralService.generateText.bind(this.mistralService);
+    }
   }
 
   /**
@@ -84,6 +92,18 @@ export class AIAdapter {
    */
   public getCurrentService(): AIServiceType {
     return this.currentService;
+  }
+  
+  /**
+   * Verifica se algum serviço de IA está disponível
+   * @returns True se tiver ao menos um serviço disponível
+   */
+  public isServiceAvailable(): boolean {
+    return (
+      (process.env.GOOGLE_GEMINI_API_KEY !== undefined && process.env.GOOGLE_GEMINI_API_KEY !== '') ||
+      (process.env.GOOGLE_API_KEY !== undefined && process.env.GOOGLE_API_KEY !== '') ||
+      (process.env.MISTRAL_API_KEY !== undefined && process.env.MISTRAL_API_KEY !== '')
+    );
   }
   
   // Métodos que encaminham as chamadas para o serviço apropriado
