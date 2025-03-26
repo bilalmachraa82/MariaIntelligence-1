@@ -278,6 +278,14 @@ export class GeminiService {
   }
 
   /**
+   * Verifica se o serviço está configurado com uma chave API válida
+   * @returns Verdadeiro se o serviço estiver configurado
+   */
+  public isConfigured(): boolean {
+    return this.isInitialized;
+  }
+
+  /**
    * Verifica se o serviço está inicializado com uma chave API válida
    */
   private checkInitialization(): void {
@@ -849,6 +857,116 @@ export class GeminiService {
     } catch (error: any) {
       console.error("Erro ao gerar texto com Gemini:", error);
       throw new Error(`Falha na geração de texto: ${error.message}`);
+    }
+  }
+  
+  /**
+   * Analisa um documento em formato desconhecido e aprende seu layout
+   * @param fileBase64 Arquivo em base64
+   * @param mimeType Tipo MIME do arquivo
+   * @param fields Campos a serem extraídos
+   * @returns Dados extraídos e informações sobre o formato
+   */
+  async learnDocumentFormat(
+    fileBase64: string,
+    mimeType: string,
+    fields: string[]
+  ): Promise<any> {
+    this.checkInitialization();
+    
+    try {
+      console.log(`🧠 GeminiService: Aprendendo formato de documento...`);
+      
+      // Determinar o tipo de arquivo e técnica de extração apropriada
+      const isPDF = mimeType.includes('pdf');
+      
+      // Extrair texto do documento
+      let extractedText = '';
+      try {
+        if (isPDF) {
+          extractedText = await this.extractTextFromPDF(fileBase64);
+        } else if (mimeType.includes('image')) {
+          extractedText = await this.extractTextFromImage(fileBase64, mimeType);
+        } else {
+          throw new Error(`Tipo de documento não suportado: ${mimeType}`);
+        }
+      } catch (extractionError) {
+        console.warn(`Aviso: Erro na extração de texto, usando análise visual apenas`, extractionError);
+      }
+      
+      // Construir prompt especializado para reconhecimento de documentos
+      const prompt = `
+        Você é um especialista em reconhecimento de documentos.
+        Este é um novo formato de documento que precisamos aprender a interpretar.
+        
+        Analise cuidadosamente o documento e extraia os seguintes campos:
+        ${fields.map(field => `- ${field}`).join('\n')}
+        
+        Além de extrair os dados, forneça:
+        1. Uma descrição do tipo/formato do documento
+        2. Identificadores visuais e textuais que permitem reconhecer este formato no futuro
+        3. Um nível de confiança para cada campo extraído (0-100%)
+        
+        Responda em formato JSON com as propriedades:
+        - data: objeto com os campos extraídos
+        - formatInfo: objeto com detalhes do formato (type, identifiers, description)
+        - confidence: número de 0 a 1 indicando a confiança geral da extração
+      `;
+      
+      // Usar o modelo de visão para análise completa (visual + texto)
+      const result = await this.visionModel.generateContent({
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              { text: prompt },
+              { 
+                inlineData: { 
+                  mimeType: mimeType, 
+                  data: fileBase64.length > 1000000 ? fileBase64.substring(0, 1000000) : fileBase64 
+                } 
+              }
+            ]
+          }
+        ],
+        generationConfig: {
+          temperature: 0.2,
+          maxOutputTokens: 4096,
+        }
+      });
+      
+      const content = result.response.text();
+      
+      // Processar a resposta JSON
+      try {
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        const jsonString = jsonMatch ? jsonMatch[0] : content;
+        const parsedResult = JSON.parse(jsonString);
+        
+        console.log(`✅ GeminiService: Formato de documento aprendido com sucesso`);
+        
+        // Adicionar o texto extraído ao resultado
+        return {
+          ...parsedResult,
+          rawText: extractedText
+        };
+      } catch (jsonError) {
+        console.error("Erro ao analisar resposta JSON:", jsonError);
+        return {
+          data: {},
+          formatInfo: {
+            type: "unknown",
+            description: "Formato desconhecido - erro na análise",
+            identifiers: []
+          },
+          confidence: 0,
+          rawText: extractedText,
+          error: "Falha ao analisar resposta"
+        };
+      }
+    } catch (error: any) {
+      console.error("Erro ao aprender formato de documento:", error);
+      throw new Error(`Falha ao aprender formato: ${error.message}`);
     }
   }
 }

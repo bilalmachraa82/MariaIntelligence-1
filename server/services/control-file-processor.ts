@@ -250,7 +250,7 @@ export async function createReservationsFromControlFile(controlResult: ControlFi
           status: 'confirmed',
           notes: reservation.notes || '',
           platform: platform,
-          numGuests: String(reservation.numGuests || 1),
+          numGuests: Number(reservation.numGuests || 1),
           platformFee: platformFee,
           cleaningFee: cleaningFee,
           checkInFee: property?.checkInFee || '0',

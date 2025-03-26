@@ -365,13 +365,28 @@ export class AIAdapter {
     responseFormat?: { type: string };
     temperature?: number;
     maxTokens?: number;
+    extractFields?: string[]; // Campos específicos a serem extraídos
+    documentType?: string; // Tipo de documento para contextualização
   }): Promise<any> {
     try {
+      // Construir um prompt mais específico baseado nos campos solicitados e tipo de documento
+      let enhancedPrompt = options.systemPrompt || 'Extraia dados do seguinte texto';
+      
+      // Se houver campos específicos, adicionar ao prompt
+      if (options.extractFields && options.extractFields.length > 0) {
+        enhancedPrompt += `\n\nExtraia especificamente os seguintes campos: ${options.extractFields.join(', ')}`;
+      }
+      
+      // Se houver tipo de documento, adicionar contexto
+      if (options.documentType) {
+        enhancedPrompt += `\n\nO texto é proveniente de um documento do tipo: ${options.documentType}`;
+      }
+      
       if (this.currentService === AIServiceType.GEMINI) {
         // Usar Gemini para extrair dados do texto
         return await this.geminiService.generateText({
           contents: [
-            { role: 'system', parts: [{ text: options.systemPrompt || 'Extraia dados do seguinte texto' }] },
+            { role: 'system', parts: [{ text: enhancedPrompt }] },
             { role: 'user', parts: [{ text }] }
           ],
           generationConfig: {
@@ -431,6 +446,86 @@ export class AIAdapter {
    */
   public getMistralClient() {
     return this.mistralService.getMistralClient();
+  }
+  
+  /**
+   * Reconhece e aprende um novo formato de documento
+   * Esta função usa o Gemini para analisar documentos em formatos desconhecidos
+   * e extrair informações relevantes mesmo quando o layout não é familiar
+   * 
+   * @param fileBase64 Arquivo em base64
+   * @param mimeType Tipo MIME do arquivo
+   * @param fields Lista de campos a serem extraídos
+   * @returns Dados extraídos do documento
+   */
+  public async learnNewDocumentFormat(
+    fileBase64: string, 
+    mimeType: string, 
+    fields: string[]
+  ): Promise<any> {
+    // Esta funcionalidade usa recursos avançados disponíveis apenas no Gemini
+    if (this.currentService !== AIServiceType.GEMINI && 
+        !this.geminiService.isConfigured()) {
+      throw new Error("Aprendizado de novos formatos de documento requer o serviço Gemini");
+    }
+    
+    console.log(`🧠 Iniciando análise e aprendizado de novo formato de documento...`);
+    
+    try {
+      // Primeiro extrair texto do documento
+      let extractedText = "";
+      
+      if (mimeType.includes('pdf')) {
+        extractedText = await this.extractTextFromPDF(fileBase64);
+      } else if (mimeType.includes('image')) {
+        extractedText = await this.extractTextFromImage(fileBase64, mimeType);
+      } else {
+        throw new Error(`Tipo de documento não suportado: ${mimeType}`);
+      }
+      
+      // Construir um prompt especializado para extração inteligente de dados
+      const systemPrompt = `
+        Você é um especialista em reconhecimento de documentos e extração de dados.
+        Este é um novo formato de documento que você precisa analisar e extrair informações.
+        
+        Por favor, examine cuidadosamente o documento e extraia os seguintes campos:
+        ${fields.map(field => `- ${field}`).join('\n')}
+        
+        Retorne o resultado como um JSON válido onde cada campo acima é uma chave.
+        Se um campo não puder ser encontrado, use null como valor.
+        
+        Além disso, inclua uma seção "formatInfo" com:
+        - Uma descrição do tipo de documento
+        - Qualquer elemento distintivo que permita identificar este formato
+        - Um nível de confiança (0-100) para cada campo extraído
+      `;
+      
+      // Usar o Gemini para análise inteligente do documento
+      const result = await this.extractDataFromText(extractedText, {
+        systemPrompt,
+        responseFormat: { type: "json_object" },
+        temperature: 0.2,
+        extractFields: fields,
+        documentType: "unknown_format"
+      });
+      
+      console.log(`✅ Novo formato de documento analisado com sucesso`);
+      
+      // Retornar os dados extraídos e metadados sobre o formato do documento
+      return {
+        success: true,
+        extractedData: result.data || result,
+        rawText: extractedText,
+        fields: fields
+      };
+    } catch (error: any) {
+      console.error(`❌ Erro no aprendizado de novo formato:`, error);
+      return {
+        success: false,
+        error: "Falha na análise do novo formato de documento",
+        details: error.message || "Erro desconhecido"
+      };
+    }
   }
 }
 

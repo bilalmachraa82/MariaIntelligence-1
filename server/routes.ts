@@ -1251,7 +1251,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log(`Processando ${pdfPaths.length} arquivos: ${pdfPaths.join(', ')}`);
         
         // Processar o par de PDFs
-        const pairResult = await processPdfPair(pdfPaths, process.env.MISTRAL_API_KEY);
+        const pairResult = await processPdfPair(pdfPaths, process.env.MISTRAL_API_KEY || process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "");
         
         // Se não há dados de reserva extraídos, retorna erro
         if (!pairResult.reservationData) {
@@ -1652,6 +1652,88 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  /**
+   * Endpoint para analisar um documento em formato desconhecido
+   * Usa recursos avançados do Gemini para reconhecer novos layouts
+   */
+  app.post("/api/learn-document-format", anyFileUpload.single('file'), async (req: Request, res: Response) => {
+    try {
+      console.log('Iniciando aprendizado de novo formato de documento...');
+      
+      if (!req.file) {
+        return res.status(400).json({ 
+          success: false,
+          message: "Nenhum arquivo enviado" 
+        });
+      }
+      
+      // Verificar se temos a chave API do Gemini
+      if (!process.env.GOOGLE_GEMINI_API_KEY && !process.env.GOOGLE_API_KEY) {
+        return res.status(500).json({ 
+          success: false,
+          message: "Esta funcionalidade requer a API Gemini configurada" 
+        });
+      }
+      
+      // Extrair campos a serem analisados do corpo da requisição
+      const { fields } = req.body;
+      
+      if (!fields || !Array.isArray(fields) || fields.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: "É necessário especificar pelo menos um campo para extrair"
+        });
+      }
+      
+      try {
+        // Importar o adaptador de IA
+        const { aiService } = await import('./services/ai-adapter.service');
+        
+        // Ler o arquivo
+        const fileBuffer = fs.readFileSync(req.file.path);
+        const fileBase64 = fileBuffer.toString('base64');
+        
+        // Usar a função de aprendizado de novos formatos
+        const result = await aiService.learnNewDocumentFormat(
+          fileBase64,
+          req.file.mimetype,
+          fields
+        );
+        
+        // Adicionar atividade ao sistema
+        await storage.createActivity({
+          type: 'document_format_learned',
+          description: `Novo formato de documento analisado: ${req.file.originalname} (${fields.length} campos)`,
+          entityId: null,
+          entityType: 'system'
+        });
+        
+        return res.json({
+          success: result.success,
+          data: result.extractedData,
+          message: result.success ? 
+            "Documento analisado com sucesso" : 
+            "Falha ao analisar o documento",
+          fields: fields,
+          file: {
+            filename: req.file.filename,
+            path: req.file.path,
+            mimetype: req.file.mimetype
+          }
+        });
+      } catch (error: any) {
+        console.error('Erro no aprendizado de formato:', error);
+        return res.status(500).json({
+          success: false,
+          message: "Falha ao processar novo formato de documento",
+          error: error.message
+        });
+      }
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+  
   /**
    * Endpoint para testar o adaptador de IA
    * Permite avaliar qual serviço está em uso e testar sua funcionalidade básica
