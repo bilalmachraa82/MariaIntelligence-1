@@ -565,6 +565,33 @@ export async function processMultiplePDFs(files: File[]): Promise<any[]> {
           continue;
         }
         
+        // Verificar cache para este arquivo antes de processar
+        try {
+          const cacheKey = `ocr_cache_${file.name}_${file.size}_${file.lastModified}`;
+          const cachedResult = localStorage.getItem(cacheKey);
+          
+          if (cachedResult) {
+            console.log(`Usando cache para o arquivo: ${file.name}`);
+            const parsedResult = JSON.parse(cachedResult);
+            
+            // Verificar se o cache tem dados válidos
+            if (parsedResult.extractedData && Object.keys(parsedResult.extractedData).length > 5) {
+              results.push({
+                filename: file.name,
+                success: true,
+                extractedData: parsedResult.extractedData,
+                rawText: parsedResult.rawText || "",
+                error: null,
+                fromCache: true
+              });
+              continue; // Continuar para o próximo arquivo
+            }
+          }
+        } catch (cacheError) {
+          console.warn(`Erro ao verificar cache para arquivo ${file.name}:`, cacheError);
+          // Continuar com processamento normal
+        }
+        
         // Processar o PDF usando a API do servidor
         // Esta chamada usa o endpoint que executa pdf-parse + processamento Mistral
         const formData = new FormData();
@@ -590,6 +617,26 @@ export async function processMultiplePDFs(files: File[]): Promise<any[]> {
         const validationErrors = validateExtractedData(result.extractedData);
         if (validationErrors.length > 0) {
           throw new Error(`Dados extraídos inválidos ou incompletos: ${validationErrors.join(", ")}`);
+        }
+        
+        // Salvar no cache para uso futuro
+        try {
+          const cacheKey = `ocr_cache_${file.name}_${file.size}_${file.lastModified}`;
+          localStorage.setItem(cacheKey, JSON.stringify({
+            extractedData: result.extractedData,
+            validation: result.validation || {
+              status: ValidationStatus.NEEDS_REVIEW,
+              isValid: true,
+              errors: [],
+              missingFields: [],
+              warningFields: []
+            },
+            rawText: result.rawText || "",
+            timestamp: new Date().toISOString()
+          }));
+          console.log(`Dados do arquivo ${file.name} salvos em cache com sucesso`);
+        } catch (cacheError) {
+          console.warn(`Erro ao armazenar ${file.name} em cache:`, cacheError);
         }
         
         // Adicionar ao array de resultados

@@ -54,6 +54,7 @@ export function UploadPDF() {
     failure: number;
     currentFile: string;
     percentage: number;
+    fromCache?: boolean;
   } | null>(null);
   
   // Estados para controle de qualidade e cache
@@ -385,9 +386,17 @@ export function UploadPDF() {
                           )}
                         </span>
                       </div>
-                      <p className="text-xs text-secondary-500 text-center">
-                        Arquivo atual: {processingProgress.currentFile}
-                      </p>
+                      <div className="flex justify-between items-center text-xs">
+                        <p className="text-secondary-500">
+                          Arquivo atual: {processingProgress.currentFile}
+                        </p>
+                        {processingProgress.fromCache && (
+                          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                            <Info className="h-3 w-3 mr-1" />
+                            Usando cache
+                          </Badge>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
