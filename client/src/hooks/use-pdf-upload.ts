@@ -118,7 +118,8 @@ export function usePdfUpload() {
           
           // Método legado para PDFs
           if (file.type.includes('pdf')) {
-            const result = await processPDFWithMistralOCR(file);
+            const skipQualityCheck = options?.skipQualityCheck !== undefined ? options.skipQualityCheck : processingOptions.skipQualityCheck;
+            const result = await processPDFWithMistralOCR(file, { skipQualityCheck });
             setExtractedData(result.extractedData);
           } 
           // Método alternativo como último recurso

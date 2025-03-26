@@ -280,8 +280,13 @@ export async function fileToBase64(file: File): Promise<string> {
  * Processar PDF com o Mistral AI usando a SDK oficial
  * @param file Arquivo PDF
  */
-export async function processPDFWithMistralOCR(file: File): Promise<any> {
+export async function processPDFWithMistralOCR(
+  file: File, 
+  options: { skipQualityCheck?: boolean } = {}
+): Promise<any> {
   try {
+    const { skipQualityCheck = false } = options;
+    
     // Validar tipo de arquivo
     if (!file.type.includes('pdf')) {
       throw new Error("O arquivo deve ser um PDF");
@@ -293,6 +298,9 @@ export async function processPDFWithMistralOCR(file: File): Promise<any> {
     // que utiliza pdf-parse + análise de texto Mistral
     const formData = new FormData();
     formData.append("pdf", file);
+    
+    // Adicionar opção skipQualityCheck ao formulário
+    formData.append("skipQualityCheck", skipQualityCheck ? "true" : "false");
     
     // Enviar para o endpoint de processamento de PDF no servidor
     const response = await fetch('/api/upload-pdf', {
@@ -350,7 +358,7 @@ export async function processReservationFile(
   } = {}
 ): Promise<UploadResponse> {
   try {
-    const { useCache = true, onProgress } = options;
+    const { useCache = true, skipQualityCheck = false, onProgress } = options;
     
     // Verificar se é PDF
     if (!file.type.includes('pdf')) {
@@ -411,7 +419,7 @@ export async function processReservationFile(
     
     // Processar o PDF usando a implementação otimizada
     onProgress && onProgress(30);
-    const result = await processPDFWithMistralOCR(file);
+    const result = await processPDFWithMistralOCR(file, { skipQualityCheck });
     onProgress && onProgress(80);
     
     // Verificar se temos dados extraídos válidos
@@ -524,10 +532,19 @@ function validateExtractedData(data: any): string[] {
  * Processa múltiplos PDFs usando o endpoint do servidor
  * 
  * @param files Array de arquivos PDF a serem processados
+ * @param options Opções adicionais para o processamento
  * @returns Array de resultados processados
  */
-export async function processMultiplePDFs(files: File[]): Promise<any[]> {
+export async function processMultiplePDFs(
+  files: File[], 
+  options: { 
+    useCache?: boolean, 
+    skipQualityCheck?: boolean 
+  } = {}
+): Promise<any[]> {
   try {
+    const { useCache = true, skipQualityCheck = false } = options;
+    
     // Validar número de arquivos
     if (!files.length) {
       throw new Error("Nenhum arquivo fornecido para processamento");
@@ -596,6 +613,7 @@ export async function processMultiplePDFs(files: File[]): Promise<any[]> {
         // Esta chamada usa o endpoint que executa pdf-parse + processamento Mistral
         const formData = new FormData();
         formData.append("pdf", file);
+        formData.append("skipQualityCheck", skipQualityCheck ? "true" : "false");
         
         const response = await fetch('/api/upload-pdf', {
           method: 'POST',
