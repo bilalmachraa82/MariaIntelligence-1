@@ -4,8 +4,7 @@
  */
 
 // Importações necessárias
-const dotenv = require('dotenv');
-dotenv.config();  // Carrega variáveis de ambiente
+import 'dotenv/config';
 
 // Verifica a presença da API KEY do Gemini
 function checkGeminiApiKey() {

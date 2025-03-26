@@ -1508,13 +1508,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
    * Endpoint para verificar as chaves de API de IA disponíveis
    * Retorna informações sobre os serviços disponíveis (Mistral e Gemini)
    */
-  app.get("/api/check-ai-services", (_req: Request, res: Response) => {
+  app.get("/api/check-ai-services", async (_req: Request, res: Response) => {
     try {
       // Importar o adaptador de IA para verificar o serviço atual
       let currentService = "unavailable";
       
       try {
-        const { aiService } = require('./services/ai-adapter.service');
+        // Usar import dinâmico para evitar problemas de require
+        const { aiService } = await import('./services/ai-adapter.service');
         currentService = aiService.getCurrentService();
       } catch (error) {
         console.error("Erro ao carregar o adaptador de IA:", error);
@@ -1553,7 +1554,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
    * Endpoint para definir qual serviço de IA usar
    * Permite alternar entre Mistral, Gemini ou auto-detecção
    */
-  app.post("/api/set-ai-service", (req: Request, res: Response) => {
+  app.post("/api/set-ai-service", async (req: Request, res: Response) => {
     try {
       const { service } = req.body;
       
@@ -1565,7 +1566,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       try {
-        const { aiService, AIServiceType } = require('./services/ai-adapter.service');
+        const { aiService, AIServiceType } = await import('./services/ai-adapter.service');
         
         // Mapear string para enum
         const serviceTypeMap: Record<string, any> = {
@@ -1685,7 +1686,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         let servicesAvailable = [];
         
         try {
-          const { aiService } = require('./services/ai-adapter.service');
+          const { aiService } = await import('./services/ai-adapter.service');
           currentService = aiService.getCurrentService();
           
           // Verificar quais serviços estão disponíveis
