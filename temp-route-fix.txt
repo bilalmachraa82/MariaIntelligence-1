@@ -1,0 +1,13 @@
+// Parâmetros de controle para upload-image
+const autoCreateReservation = req.query.autoCreate === 'true';
+
+// Obter parâmetros do corpo da requisição (FormData)
+const skipQualityCheck = req.body.skipQualityCheck === 'true';
+const useCache = req.body.useCache === 'true';
+
+// Parâmetros de controle para upload-file
+const autoCreateReservation = req.query.autoCreate === 'true';
+
+// Obter parâmetros do corpo da requisição (FormData)
+const skipQualityCheck = req.body.skipQualityCheck === 'true';
+const useCache = req.body.useCache === 'true';
