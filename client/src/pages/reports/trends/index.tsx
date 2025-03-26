@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label"; 
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { apiRequest } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
 import { getQueryFn } from "@/lib/queryClient";
 import { DateRange, DateRangePicker } from "@/components/ui/date-range-picker";
@@ -52,13 +53,13 @@ export default function TrendsReportPage() {
   // Buscar proprietários
   const { data: owners = [], isLoading: isLoadingOwners } = useQuery({
     queryKey: ["/api/owners"],
-    queryFn: getQueryFn({ on401: "returnNull" }),
+    select: (response: any) => response.data || []
   });
   
   // Buscar propriedades
   const { data: properties = [], isLoading: isLoadingProperties } = useQuery({
     queryKey: ["/api/properties"],
-    queryFn: getQueryFn({ on401: "returnNull" }),
+    select: (response: any) => response.data || []
   });
   
   // Filtrar propriedades por proprietário
@@ -156,9 +157,9 @@ export default function TrendsReportPage() {
                   <SelectItem value="_all">
                     {t("trendsReport.allOwners", "Todos os proprietários")}
                   </SelectItem>
-                  {(owners as any[]).map((owner: any) => (
+                  {(owners as any[]).filter(owner => owner && owner.id !== undefined && owner.id !== null).map((owner: any) => (
                     <SelectItem key={owner.id} value={owner.id.toString()}>
-                      {owner.name}
+                      {owner.name || "Proprietário " + owner.id}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -185,9 +186,9 @@ export default function TrendsReportPage() {
                   <SelectItem value="_all">
                     {t("trendsReport.allProperties", "Todas as propriedades")}
                   </SelectItem>
-                  {(filteredProperties as any[]).map((property: any) => (
+                  {(filteredProperties as any[]).filter(property => property && property.id !== undefined && property.id !== null).map((property: any) => (
                     <SelectItem key={property.id} value={property.id.toString()}>
-                      {property.name}
+                      {property.name || "Propriedade " + property.id}
                     </SelectItem>
                   ))}
                 </SelectContent>
