@@ -61,10 +61,6 @@ export function UploadPDF() {
     fromCache?: boolean;
   } | null>(null);
   
-  // Estados para controle de qualidade e cache
-  const [useCache, setUseCache] = useState(true);
-  const [skipQualityCheck, setSkipQualityCheck] = useState(false);
-  
   // Hooks
   const { toast } = useToast();
   const [_, setLocation] = useLocation();
@@ -146,7 +142,7 @@ export function UploadPDF() {
       }
       
       setSelectedFile(file);
-      handleFileUpload(file, { useCache, skipQualityCheck });
+      handleFileUpload(file, { useCache: false, skipQualityCheck: false });
     }
   };
 
@@ -188,8 +184,8 @@ export function UploadPDF() {
         
         setSelectedFiles(filesArray);
         handleMultipleFilesUpload(filesArray, { 
-          useCache, 
-          skipQualityCheck 
+          useCache: false, 
+          skipQualityCheck: false 
         });
       } 
       // Modo de upload único
@@ -215,7 +211,7 @@ export function UploadPDF() {
         }
         
         setSelectedFile(file);
-        handleFileUpload(file, { useCache, skipQualityCheck });
+        handleFileUpload(file, { useCache: false, skipQualityCheck: false });
       }
     }
   };
@@ -272,8 +268,8 @@ export function UploadPDF() {
       
       setSelectedFiles(filesArray);
       handleMultipleFilesUpload(filesArray, { 
-        useCache, 
-        skipQualityCheck 
+        useCache: false, 
+        skipQualityCheck: false 
       });
     }
   };
@@ -308,51 +304,6 @@ export function UploadPDF() {
           </Button>
         </CardHeader>
         <CardContent className="px-4 py-5 sm:px-6 space-y-6">
-          {/* Opções de processamento */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <div className="flex items-center space-x-3 rounded-lg border p-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-50">
-                <Save className="h-5 w-5 text-blue-500" />
-              </div>
-              <div className="flex-1">
-                <div className="flex justify-between items-center">
-                  <Label htmlFor="use-cache" className="text-sm font-medium">
-                    Usar cache
-                  </Label>
-                  <Switch 
-                    id="use-cache" 
-                    checked={useCache} 
-                    onCheckedChange={setUseCache}
-                  />
-                </div>
-                <p className="text-xs text-secondary-500 mt-1">
-                  Reutiliza dados extraídos anteriormente para PDFs idênticos
-                </p>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-3 rounded-lg border p-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-50">
-                <Zap className="h-5 w-5 text-amber-500" />
-              </div>
-              <div className="flex-1">
-                <div className="flex justify-between items-center">
-                  <Label htmlFor="skip-quality" className="text-sm font-medium">
-                    Ignorar verificação
-                  </Label>
-                  <Switch 
-                    id="skip-quality" 
-                    checked={skipQualityCheck} 
-                    onCheckedChange={setSkipQualityCheck}
-                  />
-                </div>
-                <p className="text-xs text-secondary-500 mt-1">
-                  Pular verificação de qualidade para processamento mais rápido
-                </p>
-              </div>
-            </div>
-          </div>
-          
           <div 
             className="border-2 border-dashed border-secondary-300 rounded-lg p-6 text-center cursor-pointer"
             onDragOver={handleDragOver}
