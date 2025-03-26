@@ -110,15 +110,132 @@ export class GeminiService {
   
   /**
    * Cria implementações mock para desenvolvimento sem a biblioteca
+   * Implementa mocks mais avançados que podem retornar dados úteis
    */
   private mockInitialization(): void {
-    // Criar implementações mock para desenvolvimento
+    console.log("🔧 Inicializando GeminiService em modo mock (biblioteca não instalada)");
+    
+    // Criar implementações mock mais avançadas para desenvolvimento
     this.genAI = {
       getGenerativeModel: () => ({
-        generateContent: async () => ({
-          response: { text: () => "Modelo mock - biblioteca não instalada" }
-        }),
-        startChat: () => ({})
+        generateContent: async (params: any) => {
+          // Examinar a entrada para determinar o tipo de resposta
+          const inputContent = params?.contents?.[0]?.parts;
+          const userPrompt = inputContent?.find((part: any) => part.text)?.text || "";
+          
+          if (userPrompt.includes("Extraia todo o texto visível deste documento PDF")) {
+            // Mock para extração de texto de PDF
+            return {
+              response: { 
+                text: () => `
+                  DOCUMENTO PROCESSADO POR GEMINI MOCK
+                  
+                  EXCITING LISBON SETE RIOS
+                  Data entrada: 21/03/2025
+                  Data saída: 23/03/2025
+                  N.º noites: 2
+                  Nome: Camila
+                  N.º hóspedes: 4
+                  País: Portugal
+                  Site: Airbnb
+                  Telefone: 351 925 073 494
+                  
+                  Data entrada: 16/04/2025
+                  Data saída: 18/04/2025
+                  N.º noites: 2
+                  Nome: Laura
+                  N.º hóspedes: 3
+                  País: Espanha
+                  Site: Airbnb
+                  Telefone: +34 676 74 26 81
+                  
+                  Data entrada: 22/05/2025
+                  Data saída: 25/05/2025
+                  N.º noites: 3
+                  Nome: Sarina
+                  N.º hóspedes: 3
+                  País: Suiça
+                  Site: Airbnb
+                  Telefone: +41 76 324 01 02
+                `
+              }
+            };
+          } else if (userPrompt.includes("Extraia todo o texto visível nesta imagem")) {
+            // Mock para extração de texto de imagem
+            return {
+              response: { 
+                text: () => `
+                  DOCUMENTO PROCESSADO POR GEMINI MOCK (IMAGEM)
+                  
+                  Reserva Confirmada
+                  Propriedade: Apartamento Graça
+                  Hóspede: João Silva
+                  Check-in: 15/04/2025
+                  Check-out: 20/04/2025
+                  Valor: €450,00
+                `
+              }
+            };
+          } else if (userPrompt.includes("Classifique o tipo deste documento")) {
+            // Mock para classificação de documento
+            return {
+              response: { 
+                text: () => JSON.stringify({
+                  type: "reserva_airbnb",
+                  confidence: 0.95,
+                  details: "Documento de reserva do Airbnb com detalhes de hospedagem"
+                })
+              }
+            };
+          } else if (userPrompt.includes("Analise este texto de reserva e extraia as informações")) {
+            // Mock para extração de dados estruturados
+            return {
+              response: { 
+                text: () => JSON.stringify({
+                  propertyName: "Sete Rios",
+                  guestName: "Camila",
+                  guestEmail: "camila@example.com",
+                  guestPhone: "351 925 073 494",
+                  checkInDate: "2025-03-21",
+                  checkOutDate: "2025-03-23",
+                  numGuests: 4,
+                  totalAmount: 250,
+                  platform: "airbnb",
+                  platformFee: 25,
+                  cleaningFee: 30,
+                  checkInFee: 15,
+                  commissionFee: 20,
+                  teamPayment: 50,
+                  documentType: "reserva"
+                })
+              }
+            };
+          } else if (userPrompt.includes("Verifique inconsistências")) {
+            // Mock para validação de dados
+            return {
+              response: { 
+                text: () => JSON.stringify({
+                  valid: true,
+                  data: params.contents[0].parts.find((p: any) => p.text?.includes('Dados:'))?.text || {},
+                  issues: [],
+                  corrections: []
+                })
+              }
+            };
+          } else {
+            // Mock padrão para outras solicitações
+            return {
+              response: { 
+                text: () => "Resposta simulada do Gemini (modo mock ativado)"
+              }
+            };
+          }
+        },
+        startChat: () => ({
+          sendMessage: async () => ({
+            response: { text: () => "Resposta de chat simulada do Gemini (modo mock)" }
+          })
+        })
       })
     } as GoogleGenerativeAIMock;
     
