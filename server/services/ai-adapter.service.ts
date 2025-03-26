@@ -26,7 +26,7 @@ export class AIAdapter {
     this.geminiService = new GeminiService();
     
     // Detectar automaticamente qual serviço usar com base nas chaves disponíveis
-    if (process.env.GOOGLE_API_KEY) {
+    if (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY) {
       this.currentService = AIServiceType.GEMINI;
       console.log("✅ Usando Gemini como serviço de IA principal");
     } else if (process.env.MISTRAL_API_KEY) {
@@ -56,7 +56,7 @@ export class AIAdapter {
   public setService(serviceType: AIServiceType): void {
     if (serviceType === AIServiceType.AUTO) {
       // Auto-detectar o melhor serviço disponível
-      if (process.env.GOOGLE_API_KEY) {
+      if (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY) {
         this.currentService = AIServiceType.GEMINI;
       } else if (process.env.MISTRAL_API_KEY) {
         this.currentService = AIServiceType.MISTRAL;
@@ -65,8 +65,8 @@ export class AIAdapter {
       }
     } else {
       // Verificar se o serviço requisitado tem chave API configurada
-      if (serviceType === AIServiceType.GEMINI && !process.env.GOOGLE_API_KEY) {
-        throw new Error("GOOGLE_API_KEY não configurada. Não é possível usar o Gemini.");
+      if (serviceType === AIServiceType.GEMINI && !(process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
+        throw new Error("GOOGLE_GEMINI_API_KEY não configurada. Não é possível usar o Gemini.");
       } else if (serviceType === AIServiceType.MISTRAL && !process.env.MISTRAL_API_KEY) {
         throw new Error("MISTRAL_API_KEY não configurada. Não é possível usar o Mistral.");
       }
@@ -105,7 +105,7 @@ export class AIAdapter {
       
       if (this.currentService === AIServiceType.GEMINI && process.env.MISTRAL_API_KEY) {
         return await this.mistralService.extractTextFromPDF(pdfBase64);
-      } else if (this.currentService === AIServiceType.MISTRAL && process.env.GOOGLE_API_KEY) {
+      } else if (this.currentService === AIServiceType.MISTRAL && (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
         return await this.geminiService.extractTextFromPDF(pdfBase64);
       } else {
         throw error; // Repassar o erro se não houver alternativa
@@ -132,7 +132,7 @@ export class AIAdapter {
       
       if (this.currentService === AIServiceType.GEMINI && process.env.MISTRAL_API_KEY) {
         return await this.mistralService.extractTextFromImage(imageBase64, mimeType);
-      } else if (this.currentService === AIServiceType.MISTRAL && process.env.GOOGLE_API_KEY) {
+      } else if (this.currentService === AIServiceType.MISTRAL && (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
         return await this.geminiService.extractTextFromImage(imageBase64, mimeType);
       } else {
         throw error; // Repassar o erro se não houver alternativa
@@ -158,7 +158,7 @@ export class AIAdapter {
       
       if (this.currentService === AIServiceType.GEMINI && process.env.MISTRAL_API_KEY) {
         return await this.mistralService.parseReservationData(text);
-      } else if (this.currentService === AIServiceType.MISTRAL && process.env.GOOGLE_API_KEY) {
+      } else if (this.currentService === AIServiceType.MISTRAL && (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
         return await this.geminiService.parseReservationData(text);
       } else {
         throw error; // Repassar o erro se não houver alternativa
@@ -185,7 +185,7 @@ export class AIAdapter {
       
       if (this.currentService === AIServiceType.GEMINI && process.env.MISTRAL_API_KEY) {
         return await this.mistralService.validateReservationData(data, propertyRules);
-      } else if (this.currentService === AIServiceType.MISTRAL && process.env.GOOGLE_API_KEY) {
+      } else if (this.currentService === AIServiceType.MISTRAL && (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
         return await this.geminiService.validateReservationData(data, propertyRules);
       } else {
         throw error; // Repassar o erro se não houver alternativa
@@ -211,7 +211,7 @@ export class AIAdapter {
       
       if (this.currentService === AIServiceType.GEMINI && process.env.MISTRAL_API_KEY) {
         return await this.mistralService.classifyDocument(text);
-      } else if (this.currentService === AIServiceType.MISTRAL && process.env.GOOGLE_API_KEY) {
+      } else if (this.currentService === AIServiceType.MISTRAL && (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
         return await this.geminiService.classifyDocument(text);
       } else {
         throw error; // Repassar o erro se não houver alternativa
@@ -238,7 +238,7 @@ export class AIAdapter {
       
       if (this.currentService === AIServiceType.GEMINI && process.env.MISTRAL_API_KEY) {
         return await this.mistralService.analyzeDocumentVisually(fileBase64, mimeType);
-      } else if (this.currentService === AIServiceType.MISTRAL && process.env.GOOGLE_API_KEY) {
+      } else if (this.currentService === AIServiceType.MISTRAL && (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
         return await this.geminiService.analyzeDocumentVisually(fileBase64, mimeType);
       } else {
         throw error; // Repassar o erro se não houver alternativa
