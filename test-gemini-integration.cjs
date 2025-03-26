@@ -1,13 +1,19 @@
 /**
  * Script simples para testar a integração com o Google Gemini
  * Testa a conexão básica e a capacidade de gerar texto
+ * 
+ * Este arquivo usa CommonJS (cjs) para evitar problemas com ESM
  */
 
+const fs = require('fs');
+const path = require('path');
+
+// Função de teste principal
 async function testGeminiIntegration() {
   try {
     console.log('🧪 Iniciando teste do adaptador de IA com Gemini...');
     
-    // Importar o adaptador de IA diretamente (usando require para evitar problemas de ES modules)
+    // Importar o adaptador de IA
     const { aiService, AIServiceType } = require('./server/services/ai-adapter.service');
     
     // Definir o serviço como Gemini para testes
@@ -46,11 +52,9 @@ async function testGeminiIntegration() {
     
     // Testar processamento de PDF (usando o adaptador)
     console.log('\n🔍 Testando processamento de PDF...');
-    const fs = require('fs');
-    const path = require('path');
     
     // Verificar se temos um PDF de exemplo
-    const pdfPath = './Check-in Maria faz.pdf';
+    const pdfPath = path.join(__dirname, 'Check-in Maria faz.pdf');
     if (fs.existsSync(pdfPath)) {
       try {
         // Carregar o PDF em base64
@@ -83,6 +87,36 @@ async function testGeminiIntegration() {
       }
     } else {
       console.log('⚠️ Arquivo PDF de exemplo não encontrado:', pdfPath);
+    }
+    
+    // Testar o processamento de quotations com Gemini
+    console.log('\n🔍 Testando processamento de quotations...');
+    
+    // Simular um texto de quotation
+    const quotationText = `
+      Orçamento - Maria Faz
+      
+      Cliente: Ana Silva
+      Email: ana.silva@email.com
+      Telefone: +351 912 345 678
+      Serviço: Limpeza completa - Apartamento T2
+      Data: 10-05-2025
+      Valor: 120,00 €
+      Extras: Lavagem de cortinas (+25,00 €)
+      Total: 145,00 €
+      Validade: 15 dias
+    `;
+    
+    try {
+      console.log('🔍 Extraindo dados do orçamento...');
+      const quotationData = await aiService.parseReservationData(quotationText);
+      
+      console.log('📊 Dados do orçamento:');
+      console.log(JSON.stringify(quotationData, null, 2));
+      
+      console.log('✅ Processamento de orçamentos com Gemini testado');
+    } catch (error) {
+      console.error('❌ Erro ao processar orçamento:', error);
     }
     
     console.log('\n🏁 Teste de integração com Gemini concluído');
