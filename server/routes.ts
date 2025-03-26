@@ -1057,7 +1057,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Verificamos se temos alguma das chaves de API disponíveis (Mistral ou Gemini)
-      if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY) {
+      if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) {
         return res.status(500).json({ 
           success: false,
           message: "Nenhuma chave de API de IA configurada (Mistral ou Google)" 
@@ -1077,7 +1077,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Passamos a chave Mistral por compatibilidade, mas o adaptador usará Gemini se disponível
         const result = await processFileAndCreateReservation(
           req.file.path, 
-          process.env.MISTRAL_API_KEY || process.env.GOOGLE_API_KEY || "",
+          process.env.MISTRAL_API_KEY || process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "",
           { skipQualityCheck, useCache }
         );
         console.log('Processamento e criação de reserva concluídos:', result.success);
@@ -1523,8 +1523,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const hasMistralKey = process.env.MISTRAL_API_KEY !== undefined && 
                           process.env.MISTRAL_API_KEY !== '';
       
-      const hasGeminiKey = process.env.GOOGLE_API_KEY !== undefined && 
-                          process.env.GOOGLE_API_KEY !== '';
+      // Verificar ambas as variáveis de ambiente possíveis para a API do Gemini
+      const hasGeminiKey = (process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
+                           process.env.GOOGLE_GEMINI_API_KEY !== '') || 
+                          (process.env.GOOGLE_API_KEY !== undefined && 
+                           process.env.GOOGLE_API_KEY !== '');
       
       return res.json({
         success: true,
@@ -1625,8 +1628,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const hasMistralKey = process.env.MISTRAL_API_KEY !== undefined && 
                             process.env.MISTRAL_API_KEY !== '';
       
-      const hasGeminiKey = process.env.GOOGLE_API_KEY !== undefined && 
-                          process.env.GOOGLE_API_KEY !== '';
+      const hasGeminiKey = (process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
+                            process.env.GOOGLE_GEMINI_API_KEY !== '') || 
+                           (process.env.GOOGLE_API_KEY !== undefined && 
+                            process.env.GOOGLE_API_KEY !== '');
       
       return res.json({
         success: true,
@@ -1687,8 +1692,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const hasMistralKey = process.env.MISTRAL_API_KEY !== undefined && 
                               process.env.MISTRAL_API_KEY !== '';
                               
-          const hasGeminiKey = process.env.GOOGLE_API_KEY !== undefined && 
-                             process.env.GOOGLE_API_KEY !== '';
+          const hasGeminiKey = (process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
+                              process.env.GOOGLE_GEMINI_API_KEY !== '') || 
+                             (process.env.GOOGLE_API_KEY !== undefined && 
+                              process.env.GOOGLE_API_KEY !== '');
           
           if (hasMistralKey) servicesAvailable.push("mistral");
           if (hasGeminiKey) servicesAvailable.push("gemini");
@@ -1762,8 +1769,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Teste 4: Verificar API Gemini (Google)
       try {
-        const hasGeminiKey = process.env.GOOGLE_API_KEY !== undefined && 
-                           process.env.GOOGLE_API_KEY !== '';
+        const hasGeminiKey = (process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
+                             process.env.GOOGLE_GEMINI_API_KEY !== '') || 
+                            (process.env.GOOGLE_API_KEY !== undefined && 
+                             process.env.GOOGLE_API_KEY !== '');
 
         if (!hasGeminiKey) {
           tests.push({

@@ -48,7 +48,7 @@ export class GeminiService {
     const apiKey = process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
     
     if (!apiKey) {
-      console.warn("GOOGLE_API_KEY não configurada. Algumas funcionalidades estarão indisponíveis.");
+      console.warn("Nenhuma chave Gemini configurada (GOOGLE_GEMINI_API_KEY ou GOOGLE_API_KEY). Algumas funcionalidades estarão indisponíveis.");
       // Criar mock para evitar erros
       this.mockInitialization();
     } else {
@@ -263,7 +263,7 @@ export class GeminiService {
    */
   private checkInitialization(): void {
     if (!this.isInitialized) {
-      throw new Error('GOOGLE_API_KEY não configurada. Configure a chave API nas configurações.');
+      throw new Error('Chave Gemini não configurada. Configure GOOGLE_GEMINI_API_KEY ou GOOGLE_API_KEY nas configurações.');
     }
   }
 
