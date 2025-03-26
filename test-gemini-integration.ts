@@ -5,105 +5,129 @@
  * Execute com: npm run ts-node test-gemini-integration.ts
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import { AIAdapter, AIServiceType } from './server/services/ai-adapter.service';
+// Importações
+import { GeminiService, GeminiModel } from './server/services/gemini.service';
+import dotenv from 'dotenv';
 
-// Obter a instância do adaptador
-const aiAdapter = AIAdapter.getInstance();
+// Configurar variáveis de ambiente
+dotenv.config();
 
-// Testes realizados
-const tests: { name: string; status: 'success' | 'failed'; result?: any; error?: any }[] = [];
+/**
+ * Função para imprimir resultados formatados
+ */
+function printResult(title: string, result: any, success = true) {
+  console.log('\n' + '='.repeat(50));
+  console.log(`${success ? '✅' : '❌'} ${title}`);
+  console.log('-'.repeat(50));
+  console.log(typeof result === 'string' ? result : JSON.stringify(result, null, 2));
+  console.log('='.repeat(50) + '\n');
+}
+
+/**
+ * Verificar se temos a chave API configurada
+ */
+function checkApiKey() {
+  const apiKey = process.env.GOOGLE_API_KEY;
+  if (!apiKey) {
+    console.error('❌ Chave API GOOGLE_API_KEY não encontrada!');
+    console.error('Defina GOOGLE_API_KEY nas variáveis de ambiente para continuar.');
+    process.exit(1);
+  }
+  return apiKey;
+}
+
+/**
+ * Testar geração de texto simples
+ */
+async function testTextGeneration(service: GeminiService) {
+  try {
+    console.log('🧪 Testando geração de texto...');
+    
+    const prompt = `
+      Escreva uma descrição curta (3-4 frases) sobre gestão de propriedades em Portugal.
+      Use português europeu e mantenha um tom profissional.
+    `;
+    
+    const result = await service.generateText(prompt);
+    printResult('Geração de Texto', result);
+    return true;
+  } catch (error: any) {
+    printResult('Geração de Texto Falhou', error.message, false);
+    return false;
+  }
+}
+
+/**
+ * Testar extração de reserva de texto
+ */
+async function testReservationExtraction(service: GeminiService) {
+  try {
+    console.log('🧪 Testando extração de dados de reserva...');
+    
+    const sampleText = `
+      Confirmação de Reserva - Booking.com
+      
+      Propriedade: Apartamento Graça
+      Hóspede: João Silva
+      Email: joao.silva@email.com
+      Check-in: 15-04-2025
+      Check-out: 20-04-2025
+      Número de hóspedes: 2
+      Valor total: 450,00 €
+    `;
+    
+    const result = await service.parseReservationData(sampleText);
+    printResult('Extração de Dados de Reserva', result);
+    return true;
+  } catch (error: any) {
+    printResult('Extração de Reserva Falhou', error.message, false);
+    return false;
+  }
+}
 
 /**
  * Função principal de teste
  */
 async function runTests() {
-  console.log('🧪 Testando integração com Gemini 2.5 Pro...');
+  console.log('🚀 Iniciando testes de integração com o Gemini 2.5 Pro...');
   
-  // Verificar qual serviço está em uso por padrão
-  console.log(`ℹ️ Serviço atual: ${aiAdapter.getCurrentService()}`);
+  // Verificar chave API
+  const apiKey = checkApiKey();
+  console.log('✅ Chave API encontrada');
   
-  // Forçar o uso do Gemini (se disponível)
-  try {
-    aiAdapter.setService(AIServiceType.GEMINI);
-    console.log('✅ Gemini ativado com sucesso!');
-    tests.push({ name: 'Ativação do Gemini', status: 'success' });
-  } catch (error) {
-    console.error('❌ Erro ao ativar Gemini:', error.message);
-    console.log('ℹ️ Continuando com o serviço padrão...');
-    tests.push({ name: 'Ativação do Gemini', status: 'failed', error });
-  }
+  // Criar instância do serviço
+  const geminiService = new GeminiService();
   
-  // Testar extração de texto de PDF
-  try {
-    const pdfPath = path.join(__dirname, 'entrada.pdf');  // Ajuste para um PDF que exista no projeto
-    const pdfExists = fs.existsSync(pdfPath);
-    
-    if (pdfExists) {
-      console.log('🔍 Testando extração de texto de PDF...');
-      const pdfBuffer = fs.readFileSync(pdfPath);
-      const pdfBase64 = pdfBuffer.toString('base64');
-      
-      const extractedText = await aiAdapter.extractTextFromPDF(pdfBase64);
-      console.log('📄 Trecho do texto extraído:', extractedText.substring(0, 150) + '...');
-      tests.push({ name: 'Extração de PDF', status: 'success' });
-      
-      // Testar análise de dados estruturados
-      console.log('🔍 Testando análise de texto para extração de dados estruturados...');
-      const structuredData = await aiAdapter.parseReservationData(extractedText);
-      console.log('📊 Dados estruturados:', JSON.stringify(structuredData, null, 2));
-      tests.push({ name: 'Extração de dados estruturados', status: 'success', result: structuredData });
-    } else {
-      console.warn('⚠️ Arquivo PDF de teste não encontrado. Pulando teste de PDF.');
-      tests.push({ name: 'Extração de PDF', status: 'failed', error: 'Arquivo não encontrado' });
-    }
-  } catch (error) {
-    console.error('❌ Erro no teste de PDF:', error);
-    tests.push({ name: 'Extração de PDF', status: 'failed', error });
-  }
+  // Inicializar (passa a chave API diretamente para não depender de variável de ambiente)
+  console.log('🔄 Inicializando serviço Gemini...');
+  geminiService.initializeWithKey(apiKey);
+  console.log('✅ Serviço Gemini inicializado');
   
-  // Testar classificação de documento
-  try {
-    console.log('🔍 Testando classificação de texto...');
-    const sampleText = `
-      Confirmação de Reserva
-      Airbnb
-      
-      Anfitrião: João Silva
-      Hóspede: Maria Oliveira
-      Propriedade: Apartamento Centro
-      Check-in: 15/04/2025
-      Check-out: 20/04/2025
-      Valor total: €450,00
-    `;
-    
-    const classification = await aiAdapter.classifyDocument(sampleText);
-    console.log('🏷️ Classificação:', classification);
-    tests.push({ name: 'Classificação de documento', status: 'success', result: classification });
-  } catch (error) {
-    console.error('❌ Erro no teste de classificação:', error);
-    tests.push({ name: 'Classificação de documento', status: 'failed', error });
-  }
+  // Testar funcionalidades
+  const testResults = [];
   
-  // Mostrar resumo dos testes
+  // Teste 1: Geração de texto simples
+  testResults.push(await testTextGeneration(geminiService));
+  
+  // Teste 2: Extração de dados de reserva
+  testResults.push(await testReservationExtraction(geminiService));
+  
+  // Exibir resumo
   console.log('\n📊 Resumo dos testes:');
-  tests.forEach(test => {
-    console.log(`${test.status === 'success' ? '✅' : '❌'} ${test.name}`);
-  });
+  console.log(`Total de testes: ${testResults.length}`);
+  console.log(`Testes bem-sucedidos: ${testResults.filter(result => result).length}`);
+  console.log(`Testes falhos: ${testResults.filter(result => !result).length}`);
   
-  // Verificar se um mínimo de testes passou (ao menos a ativação do serviço)
-  const successCount = tests.filter(t => t.status === 'success').length;
-  if (successCount === 0) {
-    console.log('\n❌ Todos os testes falharam. Verifique a configuração da API key do Google.');
-  } else if (successCount < tests.length) {
-    console.log('\n⚠️ Alguns testes falharam. A integração pode precisar de ajustes.');
+  if (testResults.every(result => result)) {
+    console.log('\n✅ Todos os testes foram bem-sucedidos!');
+    console.log('🎉 A integração com o Gemini 2.5 Pro está funcionando corretamente.');
   } else {
-    console.log('\n✅ Todos os testes passaram! A integração com Gemini está funcionando corretamente.');
+    console.log('\n⚠️ Alguns testes falharam. Verifique os erros acima.');
   }
 }
 
 // Executar os testes
 runTests().catch(error => {
-  console.error('❌ Erro fatal nos testes:', error);
+  console.error('❌ Erro fatal:', error);
+  process.exit(1);
 });

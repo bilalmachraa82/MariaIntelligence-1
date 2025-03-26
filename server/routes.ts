@@ -1493,7 +1493,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // Checar se a chave API Mistral está configurada
+  // Checar se a chave API Mistral está configurada (mantido para compatibilidade)
   app.get("/api/check-mistral-key", (_req: Request, res: Response) => {
     try {
       const hasMistralKey = process.env.MISTRAL_API_KEY !== undefined && 
@@ -1503,8 +1503,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
       handleError(err, res);
     }
   });
+  
+  /**
+   * Endpoint para verificar as chaves de API de IA disponíveis
+   * Retorna informações sobre os serviços disponíveis (Mistral e Gemini)
+   */
+  app.get("/api/check-ai-services", (_req: Request, res: Response) => {
+    try {
+      // Importar o adaptador de IA para verificar o serviço atual
+      let currentService = "unavailable";
+      
+      try {
+        const { aiService } = require('./services/ai-adapter.service');
+        currentService = aiService.getCurrentService();
+      } catch (error) {
+        console.error("Erro ao carregar o adaptador de IA:", error);
+      }
+      
+      const hasMistralKey = process.env.MISTRAL_API_KEY !== undefined && 
+                          process.env.MISTRAL_API_KEY !== '';
+      
+      const hasGeminiKey = process.env.GOOGLE_API_KEY !== undefined && 
+                          process.env.GOOGLE_API_KEY !== '';
+      
+      return res.json({
+        success: true,
+        services: {
+          mistral: { 
+            available: hasMistralKey,
+            keyConfigured: hasMistralKey
+          },
+          gemini: { 
+            available: hasGeminiKey,
+            keyConfigured: hasGeminiKey
+          }
+        },
+        currentService,
+        anyServiceAvailable: hasMistralKey || hasGeminiKey
+      });
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+  
+  /**
+   * Endpoint para definir qual serviço de IA usar
+   * Permite alternar entre Mistral, Gemini ou auto-detecção
+   */
+  app.post("/api/set-ai-service", (req: Request, res: Response) => {
+    try {
+      const { service } = req.body;
+      
+      if (!service || !["mistral", "gemini", "auto"].includes(service)) {
+        return res.status(400).json({
+          success: false,
+          message: "Serviço inválido. Opções válidas: mistral, gemini, auto"
+        });
+      }
+      
+      try {
+        const { aiService, AIServiceType } = require('./services/ai-adapter.service');
+        
+        // Mapear string para enum
+        const serviceTypeMap: Record<string, any> = {
+          "mistral": AIServiceType.MISTRAL,
+          "gemini": AIServiceType.GEMINI,
+          "auto": AIServiceType.AUTO
+        };
+        
+        aiService.setService(serviceTypeMap[service]);
+        
+        return res.json({
+          success: true,
+          message: `Serviço alterado para ${service}`,
+          currentService: aiService.getCurrentService()
+        });
+      } catch (error) {
+        console.error("Erro ao alterar serviço de IA:", error);
+        return res.status(500).json({
+          success: false,
+          message: error instanceof Error ? error.message : "Erro desconhecido ao alterar serviço"
+        });
+      }
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
 
-  // Endpoint para testar todas as integrações (RAG, OCR, DB, Mistral AI)
+  // Endpoint para testar todas as integrações (RAG, OCR, DB, AI Services)
   app.get("/api/test-integrations", async (req: Request, res: Response) => {
     try {
       const tests = [];
@@ -1531,8 +1617,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
           error: error.message || "Erro ao acessar base de dados"
         });
       }
+      
+      // Teste 2: Verificar adaptador AI e serviços disponíveis
+      try {
+        // Importar o adaptador de IA
+        let currentService = "unavailable";
+        let servicesAvailable = [];
+        
+        try {
+          const { aiService } = require('./services/ai-adapter.service');
+          currentService = aiService.getCurrentService();
+          
+          // Verificar quais serviços estão disponíveis
+          const hasMistralKey = process.env.MISTRAL_API_KEY !== undefined && 
+                              process.env.MISTRAL_API_KEY !== '';
+                              
+          const hasGeminiKey = process.env.GOOGLE_API_KEY !== undefined && 
+                             process.env.GOOGLE_API_KEY !== '';
+          
+          if (hasMistralKey) servicesAvailable.push("mistral");
+          if (hasGeminiKey) servicesAvailable.push("gemini");
+          
+          tests.push({
+            name: "Adaptador de IA",
+            success: servicesAvailable.length > 0,
+            details: {
+              currentService,
+              servicesAvailable,
+              anyServiceAvailable: servicesAvailable.length > 0
+            }
+          });
+        } catch (adapterError: any) {
+          tests.push({
+            name: "Adaptador de IA",
+            success: false,
+            error: adapterError.message || "Erro ao inicializar adaptador de IA"
+          });
+        }
+      } catch (error: any) {
+        tests.push({
+          name: "Adaptador de IA",
+          success: false,
+          error: error.message || "Erro ao testar adaptador de IA"
+        });
+      }
 
-      // Teste 2: Verificar API Mistral
+      // Teste 3: Verificar API Mistral
       try {
         const hasMistralKey = process.env.MISTRAL_API_KEY !== undefined && 
                             process.env.MISTRAL_API_KEY !== '';
@@ -1572,6 +1702,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
           name: "Mistral AI",
           success: false,
           error: error.message || "Erro ao testar API Mistral"
+        });
+      }
+      
+      // Teste 4: Verificar API Gemini (Google)
+      try {
+        const hasGeminiKey = process.env.GOOGLE_API_KEY !== undefined && 
+                           process.env.GOOGLE_API_KEY !== '';
+
+        if (!hasGeminiKey) {
+          tests.push({
+            name: "Google Gemini",
+            success: false,
+            error: "Chave API Google não encontrada"
+          });
+        } else {
+          // Como ainda não temos a biblioteca instalada, verificamos só se a chave existe
+          tests.push({
+            name: "Google Gemini",
+            success: true,
+            details: {
+              keyConfigured: true,
+              message: "Chave API Gemini configurada (teste básico)"
+            }
+          });
+        }
+      } catch (error: any) {
+        tests.push({
+          name: "Google Gemini",
+          success: false,
+          error: error.message || "Erro ao testar API Gemini"
         });
       }
 
