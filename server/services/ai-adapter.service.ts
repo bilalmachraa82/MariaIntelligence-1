@@ -6,6 +6,7 @@
 
 import { MistralService } from './mistral.service';
 import { GeminiService } from './gemini.service';
+import { ragService } from './rag-enhanced.service';
 
 // Enum para definir qual serviço de IA usar
 export enum AIServiceType {
@@ -333,6 +334,25 @@ export class AIAdapter {
         structuredData.documentType = 'reserva';
       }
       
+      // Armazenar o documento processado no RAG para aprendizado contínuo
+      try {
+        await ragService.integrateProcessedDocument(
+          extractedText,
+          structuredData,
+          structuredData.documentType || 'reservation',
+          {
+            mimeType,
+            isPDF,
+            visualAnalysis,
+            processingDate: new Date().toISOString()
+          }
+        );
+        console.log('✅ Documento integrado ao RAG para aprendizado contínuo');
+      } catch (ragError) {
+        console.error('⚠️ Erro ao integrar documento ao RAG:', ragError);
+        // Continuar mesmo em caso de erro no RAG
+      }
+      
       // Combinar resultados
       return {
         success: true,
@@ -511,10 +531,32 @@ export class AIAdapter {
       
       console.log(`✅ Novo formato de documento analisado com sucesso`);
       
+      const extractedData = result.data || result;
+      
+      // Armazenar o conhecimento sobre este formato no RAG
+      try {
+        const formatInfo = extractedData.formatInfo || {
+          type: "unknown_format",
+          confidence: 70
+        };
+        
+        await ragService.learnDocumentFormat(
+          fileBase64,
+          mimeType,
+          extractedData,
+          formatInfo
+        );
+        
+        console.log('✅ Novo formato de documento armazenado no RAG');
+      } catch (ragError) {
+        console.error('⚠️ Erro ao armazenar formato no RAG:', ragError);
+        // Continuar mesmo em caso de erro no RAG
+      }
+      
       // Retornar os dados extraídos e metadados sobre o formato do documento
       return {
         success: true,
-        extractedData: result.data || result,
+        extractedData: extractedData,
         rawText: extractedText,
         fields: fields
       };

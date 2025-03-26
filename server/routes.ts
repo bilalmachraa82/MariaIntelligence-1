@@ -6,8 +6,10 @@ import bodyParser from "body-parser";
 import { ZodError, z } from "zod";
 import { Mistral } from "@mistralai/mistralai";
 import { MistralService } from "./services/mistral.service";
+import { aiService } from "./services/ai-adapter.service";
 import { RAGService } from "./services/rag.service";
 import { RagService } from "./services/rag-service";
+import { ragService as enhancedRagService } from "./services/rag-enhanced.service";
 import { processControlFile, createReservationsFromControlFile } from "./services/control-file-processor";
 import { processPdf } from "./services/pdf-extract";
 import { 
@@ -743,6 +745,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   const mistralService = new MistralService();
   const ragService = new RAGService();
+  // Use the enhanced RAG service for additional capabilities
 
   // PDF Upload e Processamento
   app.post("/api/upload-pdf", pdfUpload.single('pdf'), async (req: Request, res: Response) => {
@@ -2894,7 +2897,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         year = String(startDate.getFullYear());
         
         // Registrar atividade
-        await storage.createActivity({
+        // Registrar atividade e armazenar no RAG para aprendizado contínuo
+        const activity = await storage.createActivity({
           type: 'report_generation',
           description: `Relatório financeiro para proprietário ${owner.name} (ID: ${ownerId}) para o período de ${req.query.startDate} a ${req.query.endDate}`,
           entityType: 'owner',
@@ -3100,7 +3104,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       // Buscar conhecimento similar do RAG para contextualizar a validação
-      const similarContentPromise = ragService.findSimilarContent(
+      const similarContentPromise = enhancedRagService.findSimilarContent(
         JSON.stringify({
           propertyName: property.name,
           ...reservationData
@@ -3122,8 +3126,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         recentReservationsPromise
       ]);
       
-      // Validar dados com contexto usando o Mistral
-      const validationResult = await mistralService.validateReservationData(
+      // Validar dados com contexto usando o adaptador de IA (e armazenar no RAG)
+      const validationResult = await aiService.validateReservationData(
         reservationData,
         {
           property,

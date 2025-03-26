@@ -8,6 +8,7 @@ import pdf from 'pdf-parse';
 import { storage } from '../storage';
 import { InsertReservation } from '../../shared/schema';
 import { AIAdapter } from './ai-adapter.service';
+import { ragService } from './rag-enhanced.service';
 
 // Interface para o resultado do processamento do arquivo de controle
 export interface ControlFileResult {
@@ -118,7 +119,20 @@ export async function processControlFile(filePath: string): Promise<ControlFileR
         systemPrompt,
         responseFormat: { type: 'json' },
         temperature: 0.1,
-        maxTokens: 4096
+        maxTokens: 4096,
+        documentType: 'control_file'
+      }
+    );
+    
+    // Adicionar o conteúdo à base de conhecimento RAG
+    await ragService.addToKnowledgeBase(
+      rawText,
+      'control_file',
+      {
+        fileName: filePath.split('/').pop(),
+        propertyName,
+        isControlFile: true,
+        extractionDate: new Date().toISOString()
       }
     );
     
@@ -273,6 +287,20 @@ export async function createReservationsFromControlFile(controlResult: ControlFi
           entityId: createdReservation.id,
           entityType: 'reservation'
         });
+        
+        // Armazenar no RAG para aprendizado contínuo
+        await ragService.addToKnowledgeBase(
+          `Reserva criada a partir de arquivo de controle:\nPropriedade: ${property?.name || 'Desconhecida'}\nHóspede: ${reservation.guestName}\nCheck-in: ${checkInDate}\nCheck-out: ${checkOutDate}\nHóspedes: ${reservation.numGuests}\nPlataforma: ${platform}\nValor: ${totalAmount}`,
+          'reservation_created',
+          {
+            reservationId: createdReservation.id,
+            propertyId: propertyId,
+            guestName: reservation.guestName,
+            checkInDate: checkInDate,
+            checkOutDate: checkOutDate,
+            importSource: 'control_file'
+          }
+        );
         
         createdReservations.push(createdReservation);
       } catch (error) {
