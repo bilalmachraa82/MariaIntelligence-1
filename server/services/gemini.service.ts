@@ -36,8 +36,37 @@ export class GeminiService {
     }
   }
 
-  async analyzeImage(imageBytes: Buffer, prompt: string) {
-    const model = this.genAI.getGenerativeModel({ model: "gemini-pro-vision" });
+  async analyzeAudio(audioBytes: Buffer, prompt: string) {
+    const model = this.genAI.getGenerativeModel({ model: "gemini-pro" });
+    try {
+      const result = await model.generateContent({
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              { text: prompt },
+              { inlineData: { mimeType: 'audio/wav', data: audioBytes.toString('base64') } }
+            ]
+          }
+        ]
+      });
+      return result.response.text();
+    } catch (error) {
+      console.error('Gemini Audio API error:', error);
+      throw error;
+    }
+}
+
+async analyzeImage(imageBytes: Buffer, prompt: string) {
+    const model = this.genAI.getGenerativeModel({ 
+      model: "gemini-pro-vision",
+      generationConfig: {
+        temperature: 0.1,
+        topK: 1,
+        topP: 1,
+        maxOutputTokens: 4096,
+      }
+    });
     
     try {
       const result = await model.generateContent({
