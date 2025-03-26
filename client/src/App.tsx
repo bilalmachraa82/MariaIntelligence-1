@@ -181,6 +181,7 @@ function Router() {
       <Route path="/demo-data" component={DemoDataPage} />
       <Route path="/maintenance/pending" component={MaintenancePending} />
       <Route path="/maintenance/request" component={MaintenanceRequest} />
+      <Route path="/payments" component={PaymentsIncoming} /> {/* Página principal de pagamentos por padrão mostra recebimentos */}
       <Route path="/payments/outgoing" component={PaymentsOutgoing} />
       <Route path="/payments/incoming" component={PaymentsIncoming} />
       <Route path="/payments/new" component={PaymentNewPage} />
@@ -231,6 +232,7 @@ function Router() {
       <Route path="/dados-demo" component={DemoDataPage} />
       <Route path="/manutencao/pendentes" component={MaintenancePending} />
       <Route path="/manutencao/solicitacao" component={MaintenanceRequest} />
+      <Route path="/pagamentos" component={PaymentsIncoming} /> {/* Página principal de pagamentos por padrão mostra recebimentos */}
       <Route path="/pagamentos/saida" component={PaymentsOutgoing} />
       <Route path="/pagamentos/entrada" component={PaymentsIncoming} />
       <Route path="/pagamentos/novo" component={PaymentNewPage} />

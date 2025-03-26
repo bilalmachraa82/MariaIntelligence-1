@@ -327,7 +327,7 @@ export function SidebarReorganized({
     );
   };
 
-  // Itens principais da navegação
+  // Itens principais da navegação - Foco nas tarefas diárias mais comuns
   const mainNavItems = [
     {
       name: t("navigation.home", "Início"),
@@ -342,11 +342,55 @@ export function SidebarReorganized({
       altHref: "/reservations",
       icon: CalendarDays,
       iconColor: "text-purple-500"
+    },
+    // Propriedades movidas para o menu principal por ser uma funcionalidade central
+    {
+      name: t("navigation.properties", "Imóveis"),
+      href: "/propriedades",
+      altHref: "/properties",
+      icon: Building2,
+      iconColor: "text-indigo-500"
+    },
+    // Proprietários movidos para o menu principal por ser uma entidade principal
+    {
+      name: t("navigation.owners", "Proprietários"),
+      href: "/proprietarios",
+      altHref: "/owners",
+      icon: Users,
+      iconColor: "text-orange-500"
     }
   ];
 
-  // Finanças
+  // Ferramentas e Scanner - Acesso rápido às ferramentas de trabalho diário
+  const toolsNavItems = [
+    {
+      name: t("navigation.documentScan", "Scanner"),
+      href: "/upload-pdf",
+      altHref: "/pdf-upload",
+      icon: FileUp,
+      iconColor: "text-rose-500",
+      description: t("navigation.documentScan.description", "Digitalizar e processar documentos")
+    },
+    {
+      name: t("navigation.assistant", "Maria IA"),
+      href: "/assistente",
+      altHref: "/assistant",
+      icon: Bot,
+      iconColor: "text-violet-500",
+      description: t("navigation.assistant.description", "Assistente inteligente")
+    }
+  ];
+
+  // Finanças - Agrupadas todas as operações financeiras
   const financeNavItems = [
+    // Orçamentos no topo por ser uma funcionalidade comercial prioritária
+    {
+      name: t("navigation.quotations", "Orçamentos"),
+      href: "/quotations",
+      altHref: "/orcamentos",
+      icon: FileText,
+      iconColor: "text-blue-500"
+    },
     // Relatórios financeiros
     {
       name: t("navigation.reports.financial", "Relatórios"),
@@ -371,80 +415,91 @@ export function SidebarReorganized({
           name: t("navigation.reports.trends", "Tendências"),
           href: "/relatorios/tendencias",
           altHref: "/reports/trends",
-          icon: FileSpreadsheet,
+          icon: BarChart3,
         }
       ]
     },
-    // Orçamentos
+    // Pagamentos - Agrupados como um submenu
     {
-      name: t("navigation.quotations", "Orçamentos"),
-      href: "/quotations",
-      altHref: "/orcamentos",
-      icon: FileText,
-      iconColor: "text-blue-500"
+      name: t("navigation.payments.title", "Pagamentos"),
+      href: "/pagamentos",
+      altHref: "/payments",
+      icon: BadgeDollarSign,
+      iconColor: "text-green-500",
+      submenu: [
+        {
+          name: t("navigation.payments.income", "Recebimentos"),
+          href: "/pagamentos/entrada",
+          altHref: "/payments/incoming",
+          icon: PiggyBank,
+          iconColor: "text-green-500"
+        },
+        {
+          name: t("navigation.payments.expenses", "Despesas"),
+          href: "/pagamentos/saida",
+          altHref: "/payments/outgoing",
+          icon: CreditCard,
+          iconColor: "text-red-500"
+        }
+      ]
     },
-    // Pagamentos
+    // Documentos financeiros unificados em um item
     {
-      name: t("navigation.payments.income", "Recebimentos"),
-      href: "/pagamentos/entrada",
-      altHref: "/payments/incoming",
-      icon: PiggyBank,
-      iconColor: "text-green-500"
-    },
-    {
-      name: t("navigation.payments.expenses", "Despesas"),
-      href: "/pagamentos/saida",
-      altHref: "/payments/outgoing",
-      icon: CreditCard,
-      iconColor: "text-red-500"
+      name: t("navigation.financialDocuments", "Documentos"),
+      href: "/financeiro/documentos",
+      altHref: "/financial/documents",
+      icon: FileSpreadsheet,
+      iconColor: "text-blue-400"
     }
   ];
 
-  // Operações
+  // Operações - Serviços e manutenção
   const operationsNavItems = [
     {
       name: t("navigation.cleaning.title", "Limpeza"),
       href: "/equipas-limpeza",
       altHref: "/cleaning-teams",
       icon: PaintBucket,
-      iconColor: "text-cyan-500"
+      iconColor: "text-cyan-500",
+      submenu: [
+        {
+          name: t("navigation.cleaning.teams", "Equipes"),
+          href: "/equipas-limpeza",
+          altHref: "/cleaning-teams",
+          icon: PaintBucket,
+        },
+        {
+          name: t("navigation.cleaning.schedules", "Agendamentos"),
+          href: "/equipas-limpeza/agendamentos",
+          altHref: "/cleaning-teams/schedules",
+          icon: CalendarDays,
+        }
+      ]
     },
     {
       name: t("navigation.maintenance", "Manutenção"),
       href: "/manutencao/pendentes",
       altHref: "/maintenance/pending",
       icon: Wrench,
-      iconColor: "text-amber-500"
-    },
-    {
-      name: t("navigation.owners", "Proprietários"),
-      href: "/proprietarios",
-      altHref: "/owners",
-      icon: Users,
-      iconColor: "text-orange-500"
-    }
-    // Propriedades movidas para submenu de Configurações
-  ];
-
-  // Ferramentas
-  const toolsNavItems = [
-    {
-      name: t("navigation.assistant", "Maria IA"),
-      href: "/assistente",
-      altHref: "/assistant",
-      icon: Bot,
-      iconColor: "text-violet-500"
-    },
-    {
-      name: t("navigation.documentScan", "Scanner"),
-      href: "/upload-pdf", // Caminho consistente com o App.tsx
-      altHref: "/pdf-upload",
-      icon: FileUp,
-      iconColor: "text-rose-500"
+      iconColor: "text-amber-500",
+      submenu: [
+        {
+          name: t("navigation.maintenance.pending", "Pendentes"),
+          href: "/manutencao/pendentes",
+          altHref: "/maintenance/pending",
+          icon: Wrench,
+        },
+        {
+          name: t("navigation.maintenance.request", "Solicitar"),
+          href: "/manutencao/solicitacao",
+          altHref: "/maintenance/request",
+          icon: FileText,
+        }
+      ]
     }
   ];
 
-  // Outros
+  // Configurações - Apenas as configurações de sistema
   const otherNavItems = [
     {
       name: t("navigation.settings", "Configurações"),
@@ -453,13 +508,6 @@ export function SidebarReorganized({
       icon: Settings,
       iconColor: "text-gray-500",
       submenu: [
-        {
-          name: t("navigation.properties", "Imóveis"),
-          href: "/propriedades",
-          altHref: "/properties",
-          icon: Building2,
-          iconColor: "text-indigo-500"
-        },
         {
           name: t("settings.tabs.notifications", "Notificações"),
           href: "/configuracoes?tab=notifications",

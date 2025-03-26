@@ -152,19 +152,28 @@
         "trends": "Tendências"
       },
       "payments": {
+        "title": "Pagamentos",
         "income": "Recebimentos",
         "expenses": "Despesas"
       },
+      "financialDocuments": "Documentos",
       "documents": "Documentos",
       "cleaning": {
         "title": "Limpeza",
         "teams": "Equipas",
-        "schedule": "Agenda"
+        "schedule": "Agenda",
+        "schedules": "Agendamentos"
       },
-      "maintenance": "Manutenção",
+      "maintenance": {
+        "title": "Manutenção",
+        "pending": "Pendentes",
+        "request": "Solicitar"
+      },
       "owners": "Proprietários",
       "assistant": "Maria IA",
+      "assistant.description": "Assistente inteligente",
       "documentScan": "Scanner",
+      "documentScan.description": "Digitalizar e processar documentos",
       "settings": "Configurações",
       "demoData": "Dados Demo",
       "mobileOptimized": "Mobile Otimizado",
@@ -870,6 +879,7 @@
       "clientInfo": "Informações do Cliente",
       "propertyDetails": "Detalhes da Propriedade",
       "additionalFeatures": "Características Adicionais",
+      "additionalDetails": "Detalhes Adicionais",
       "pricingDetails": "Detalhes de Preço",
       "quotationSummary": "Resumo do Orçamento",
       "saveSuccess": "Orçamento guardado com sucesso",
@@ -881,6 +891,7 @@
       "updateError": "Erro ao atualizar orçamento",
       "deleteError": "Erro ao excluir orçamento",
       "confirmDelete": "Tem certeza que deseja excluir este orçamento?",
+      "validUntilDescription": "Este orçamento é válido até a data indicada. Após este período, os valores podem sofrer alterações.",
       "totalArea": "Área Total",
       "addFeature": "Adicionar Característica",
       "status": {
