@@ -299,8 +299,9 @@ export async function processPDFWithMistralOCR(
     const formData = new FormData();
     formData.append("pdf", file);
     
-    // Adicionar opção skipQualityCheck ao formulário
+    // Adicionar opções de processamento ao formulário
     formData.append("skipQualityCheck", skipQualityCheck ? "true" : "false");
+    formData.append("useCache", useCache ? "true" : "false");
     
     // Enviar para o endpoint de processamento de PDF no servidor
     const response = await fetch('/api/upload-pdf', {
@@ -614,6 +615,7 @@ export async function processMultiplePDFs(
         const formData = new FormData();
         formData.append("pdf", file);
         formData.append("skipQualityCheck", skipQualityCheck ? "true" : "false");
+        formData.append("useCache", useCache ? "true" : "false");
         
         const response = await fetch('/api/upload-pdf', {
           method: 'POST',
