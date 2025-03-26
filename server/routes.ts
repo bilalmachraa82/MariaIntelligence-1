@@ -1590,6 +1590,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  /**
+   * Endpoint para testar o adaptador de IA
+   * Permite avaliar qual serviço está em uso e testar sua funcionalidade básica
+   */
+  app.get("/api/test-ai-adapter", async (_req: Request, res: Response) => {
+    try {
+      const { aiService, AIServiceType } = await import('./services/ai-adapter.service');
+      
+      // Verificar qual serviço está sendo usado atualmente
+      const currentService = aiService.getCurrentService();
+      
+      // Testar a capacidade de análise de texto simples
+      const sampleText = `
+        Confirmação de Reserva - Booking.com
+        
+        Propriedade: Apartamento Graça
+        Hóspede: João Silva
+        Email: joao.silva@email.com
+        Check-in: 15-04-2025
+        Check-out: 20-04-2025
+        Número de hóspedes: 2
+        Valor total: 450,00 €
+      `;
+      
+      let parseResult;
+      try {
+        parseResult = await aiService.parseReservationData(sampleText);
+      } catch (error: any) {
+        parseResult = { error: error.message || "Erro desconhecido" };
+      }
+      
+      // Verificar disponibilidade de chaves
+      const hasMistralKey = process.env.MISTRAL_API_KEY !== undefined && 
+                            process.env.MISTRAL_API_KEY !== '';
+      
+      const hasGeminiKey = process.env.GOOGLE_API_KEY !== undefined && 
+                          process.env.GOOGLE_API_KEY !== '';
+      
+      return res.json({
+        success: true,
+        currentService,
+        serviceAvailability: {
+          mistral: hasMistralKey,
+          gemini: hasGeminiKey
+        },
+        parseResult
+      });
+    } catch (error: any) {
+      return res.status(500).json({
+        success: false,
+        message: error.message || "Erro ao testar adaptador de IA"
+      });
+    }
+  });
+
   // Endpoint para testar todas as integrações (RAG, OCR, DB, AI Services)
   app.get("/api/test-integrations", async (req: Request, res: Response) => {
     try {

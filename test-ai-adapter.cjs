@@ -2,16 +2,20 @@
  * Script para testar o adaptador de IA (Mistral ou Gemini)
  * Este teste verifica se o adaptador está selecionando corretamente o serviço disponível
  * 
- * Execute com: node test-ai-adapter.js
+ * Execute com: node test-ai-adapter.cjs
  */
 
-// Importar o adaptador IA
-import { aiService, AIServiceType } from './server/services/ai-adapter.service';
+// Carregar variáveis de ambiente
+require('dotenv').config();
 
-async function testAIAdapter() {
-  console.log('🧪 Testando o adaptador de IA...');
-  
+// Simular require do adaptador
+(async () => {
   try {
+    console.log('🧪 Testando o adaptador de IA...');
+    
+    // Usar import() dinâmico para carregar o módulo ES
+    const { aiService, AIServiceType } = await import('./server/services/ai-adapter.service.js');
+    
     // Verificar qual serviço está sendo usado atualmente
     const currentService = aiService.getCurrentService();
     console.log(`✅ Serviço atual: ${currentService}`);
@@ -69,14 +73,9 @@ async function testAIAdapter() {
       }
     }
     
+    console.log('🏁 Teste concluído');
+    
   } catch (error) {
     console.error('❌ Erro ao testar o adaptador:', error);
   }
-}
-
-// Executar o teste
-testAIAdapter().then(() => {
-  console.log('🏁 Teste concluído');
-}).catch((error) => {
-  console.error('❌ Falha no teste:', error);
-});
+})();
