@@ -99,7 +99,7 @@ export class AIAdapter {
       } else {
         return await this.mistralService.extractTextFromPDF(pdfBase64);
       }
-    } catch (error) {
+    } catch (error: any) {
       // Em caso de erro, tentar com o outro serviço se disponível
       console.warn(`Erro no serviço ${this.currentService}, tentando alternativa...`);
       
@@ -126,7 +126,7 @@ export class AIAdapter {
       } else {
         return await this.mistralService.extractTextFromImage(imageBase64, mimeType);
       }
-    } catch (error) {
+    } catch (error: any) {
       // Em caso de erro, tentar com o outro serviço se disponível
       console.warn(`Erro no serviço ${this.currentService}, tentando alternativa...`);
       
@@ -152,7 +152,7 @@ export class AIAdapter {
       } else {
         return await this.mistralService.parseReservationData(text);
       }
-    } catch (error) {
+    } catch (error: any) {
       // Em caso de erro, tentar com o outro serviço se disponível
       console.warn(`Erro no serviço ${this.currentService}, tentando alternativa...`);
       
@@ -179,7 +179,7 @@ export class AIAdapter {
       } else {
         return await this.mistralService.validateReservationData(data, propertyRules);
       }
-    } catch (error) {
+    } catch (error: any) {
       // Em caso de erro, tentar com o outro serviço se disponível
       console.warn(`Erro no serviço ${this.currentService}, tentando alternativa...`);
       
@@ -205,7 +205,7 @@ export class AIAdapter {
       } else {
         return await this.mistralService.classifyDocument(text);
       }
-    } catch (error) {
+    } catch (error: any) {
       // Em caso de erro, tentar com o outro serviço se disponível
       console.warn(`Erro no serviço ${this.currentService}, tentando alternativa...`);
       
@@ -232,7 +232,7 @@ export class AIAdapter {
       } else {
         return await this.mistralService.analyzeDocumentVisually(fileBase64, mimeType);
       }
-    } catch (error) {
+    } catch (error: any) {
       // Em caso de erro, tentar com o outro serviço se disponível
       console.warn(`Erro no serviço ${this.currentService}, tentando alternativa...`);
       
@@ -268,7 +268,7 @@ export class AIAdapter {
           } else {
             extractedText = await this.mistralService.extractTextFromImage(fileBase64, mimeType);
           }
-        } catch (error) {
+        } catch (error: any) {
           return {
             success: false,
             error: "Falha na extração de texto",
@@ -283,7 +283,7 @@ export class AIAdapter {
         let structuredData;
         try {
           structuredData = await this.mistralService.parseReservationData(extractedText);
-        } catch (error) {
+        } catch (error: any) {
           return {
             success: false,
             error: "Falha na extração de dados estruturados",
@@ -307,7 +307,7 @@ export class AIAdapter {
           }
         };
       }
-    } catch (error) {
+    } catch (error: any) {
       // Em caso de erro, tentar com o outro serviço se disponível
       console.warn(`Erro no serviço ${this.currentService}, tentando alternativa...`);
       
