@@ -470,12 +470,13 @@ export function SidebarReorganized({
       ]
     },
     {
-      name: t("navigation.maintenance", "Manutenção"),
+      name: t("navigation.maintenance.title", "Manutenção"),
       href: "/manutencao/pendentes",
       altHref: "/maintenance/pending",
       icon: Wrench,
       iconColor: "text-amber-500",
       submenu: [
+
         {
           name: t("navigation.maintenance.pending", "Pendentes"),
           href: "/manutencao/pendentes",
