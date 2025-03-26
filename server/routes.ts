@@ -977,9 +977,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Parâmetros de controle
         const autoCreateReservation = req.query.autoCreate === 'true';
-        const skipQualityCheck = req.query.skipQualityCheck === 'true';
-        const useCache = req.query.useCache === 'true';
         
+        // Obter parâmetros do corpo da requisição (FormData)
+        const skipQualityCheck = req.body.skipQualityCheck === 'true';
+        const useCache = req.body.useCache === 'true';
         // Usar o novo serviço de processamento que pode criar reservas a partir de imagens
         const result = await processFileAndCreateReservation(
           req.file.path, 
@@ -1065,11 +1066,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       try {
         console.log(`Processando arquivo: ${req.file.path} (${req.file.mimetype})`);
-        
         // Parâmetros de controle
         const autoCreateReservation = req.query.autoCreate === 'true';
-        const skipQualityCheck = req.query.skipQualityCheck === 'true';
-        const useCache = req.query.useCache === 'true';
+        
+        // Obter parâmetros do corpo da requisição (FormData)
+        const skipQualityCheck = req.body.skipQualityCheck === 'true';
+        const useCache = req.body.useCache === 'true';
         
         // Usar o serviço que processa qualquer tipo de arquivo e cria reserva
         const result = await processFileAndCreateReservation(
