@@ -147,9 +147,12 @@ function extractTextContent(content: any): string {
  * Upload e processamento de PDF
  * @param file Arquivo PDF a ser processado
  */
-export async function uploadAndProcessPDF(file: File): Promise<UploadResponse> {
+export async function uploadAndProcessPDF(file: File, options: { useCache?: boolean, skipQualityCheck?: boolean } = {}): Promise<UploadResponse> {
+  const { useCache = true, skipQualityCheck = false } = options;
   const formData = new FormData();
   formData.append("pdf", file);
+  formData.append("useCache", useCache ? "true" : "false");
+  formData.append("skipQualityCheck", skipQualityCheck ? "true" : "false");
 
   console.log(`Enviando PDF para servidor: ${file.name} (${file.size} bytes)`);
   
@@ -282,10 +285,10 @@ export async function fileToBase64(file: File): Promise<string> {
  */
 export async function processPDFWithMistralOCR(
   file: File, 
-  options: { skipQualityCheck?: boolean } = {}
+  options: { skipQualityCheck?: boolean, useCache?: boolean } = {}
 ): Promise<any> {
   try {
-    const { skipQualityCheck = false } = options;
+    const { skipQualityCheck = false, useCache = true } = options;
     
     // Validar tipo de arquivo
     if (!file.type.includes('pdf')) {
@@ -420,7 +423,7 @@ export async function processReservationFile(
     
     // Processar o PDF usando a implementação otimizada
     onProgress && onProgress(30);
-    const result = await processPDFWithMistralOCR(file, { skipQualityCheck });
+    const result = await processPDFWithMistralOCR(file, { skipQualityCheck, useCache });
     onProgress && onProgress(80);
     
     // Verificar se temos dados extraídos válidos
