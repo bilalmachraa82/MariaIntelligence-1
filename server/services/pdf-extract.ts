@@ -121,8 +121,10 @@ export async function extractTextWithPdfParse(pdfBuffer: Buffer): Promise<string
 export async function parseReservationFromText(
   text: string, 
   apiKey: string, 
-  timeout: number = 25000
+  timeout: number = 25000,
+  options: { skipQualityCheck?: boolean; useCache?: boolean } = {}
 ): Promise<ExtractedReservationData> {
+  const { skipQualityCheck = false, useCache = false } = options;
   // Criar uma promessa com timeout
   const timeoutPromise = new Promise<never>((_, reject) => {
     setTimeout(() => reject(new Error('Tempo limite excedido ao processar texto')), timeout);
@@ -144,16 +146,26 @@ export async function parseReservationFromText(
         const client = new Mistral({ apiKey });
         
         // Preparar a requisição para o modelo Mistral (tiny é o mais confiável para function calling)
-        log('Usando modelo mistral-tiny para processamento', 'pdf-extract');
+        log(`Usando modelo mistral-tiny para processamento (skipQualityCheck: ${skipQualityCheck})`, 'pdf-extract');
+        
+        // Adicionar instruções específicas se skipQualityCheck estiver ativado
+        const systemContent = skipQualityCheck 
+          ? `Você é um assistente especializado em extrair informações estruturadas de documentos de reservas de alojamento local.
+             Sua tarefa é analisar o texto extraído de um PDF e identificar as informações relevantes da reserva.
+             Extraia todos os dados solicitados quando disponíveis. Se um dado não estiver explícito no texto, faça uma suposição razoável.
+             Priorize velocidade e preenchimento de todos os campos solicitados, mesmo que com aproximações ou suposições razoáveis.
+             Retorne os valores nos formatos especificados.`
+          : `Você é um assistente especializado em extrair informações estruturadas de documentos de reservas de alojamento local.
+             Sua tarefa é analisar o texto extraído de um PDF e identificar as informações relevantes da reserva.
+             Extraia todos os dados solicitados quando disponíveis. Se um dado não estiver explícito no texto, não invente.
+             Use apenas o que está claramente indicado no documento. Retorne os valores nos formatos especificados.`;
+        
         const response = await client.chat.complete({
           model: "mistral-tiny",
           messages: [
             {
               role: "system",
-              content: `Você é um assistente especializado em extrair informações estruturadas de documentos de reservas de alojamento local.
-              Sua tarefa é analisar o texto extraído de um PDF e identificar as informações relevantes da reserva.
-              Extraia todos os dados solicitados quando disponíveis. Se um dado não estiver explícito no texto, não invente.
-              Use apenas o que está claramente indicado no documento. Retorne os valores nos formatos especificados.`
+              content: systemContent
             },
             {
               role: "user",
@@ -501,10 +513,16 @@ export function validateReservationData(data: ExtractedReservationData): Validat
  * Utiliza pdf-parse para extração de texto e Mistral AI para a análise estruturada
  * @param pdfPath Caminho do arquivo PDF
  * @param apiKey Chave API do Mistral
+ * @param options Opções de processamento (skipQualityCheck, useCache)
  */
-export async function processPdf(pdfPath: string, apiKey: string): Promise<ValidationResult> {
+export async function processPdf(
+  pdfPath: string, 
+  apiKey: string,
+  options: { skipQualityCheck?: boolean; useCache?: boolean } = {}
+): Promise<ValidationResult> {
   try {
-    log(`Processando PDF: ${pdfPath}`, 'pdf-extract');
+    const { skipQualityCheck = false, useCache = false } = options;
+    log(`Processando PDF: ${pdfPath} (skipQualityCheck: ${skipQualityCheck}, useCache: ${useCache})`, 'pdf-extract');
     
     // Verificar se arquivo existe
     if (!fs.existsSync(pdfPath)) {
@@ -523,7 +541,7 @@ export async function processPdf(pdfPath: string, apiKey: string): Promise<Valid
     log('Texto limpo e normalizado para processamento', 'pdf-extract');
     
     // Processar o texto extraído para obter dados estruturados
-    const reservationData = await parseReservationFromText(cleanedText, apiKey);
+    const reservationData = await parseReservationFromText(cleanedText, apiKey, undefined, { skipQualityCheck, useCache });
     
     // Validar os dados extraídos
     const validationResult = validateReservationData(reservationData);
