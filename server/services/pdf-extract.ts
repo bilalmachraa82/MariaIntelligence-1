@@ -6,9 +6,21 @@
  */
 
 import fs from 'fs';
+import path from 'path';
+import os from 'os';
+import crypto from 'crypto';
 import { Mistral } from '@mistralai/mistralai';
 import { log } from '../vite';
 import pdfParse from 'pdf-parse';
+
+/**
+ * Cria um identificador único para o conteúdo usando MD5
+ * @param text Texto para gerar o hash
+ * @returns Hash MD5 do texto
+ */
+function createCacheKey(text: string): string {
+  return crypto.createHash('md5').update(text).digest('hex');
+}
 
 /**
  * Interface para dados extraídos
@@ -126,12 +138,6 @@ export async function parseReservationFromText(
 ): Promise<ExtractedReservationData> {
   const { skipQualityCheck = false, useCache = false } = options;
   
-  // Criar um identificador único para este texto (hash)
-  const createCacheKey = (text: string): string => {
-    const crypto = require('crypto');
-    return crypto.createHash('md5').update(text).digest('hex');
-  };
-  
   // Verificar cache, se habilitado
   if (useCache) {
     const cacheKey = createCacheKey(text);
@@ -143,7 +149,7 @@ export async function parseReservationFromText(
         log(`Cache encontrado para este PDF, usando dados em cache`, 'pdf-extract');
         const cachedData = JSON.parse(fs.readFileSync(cachePath, 'utf-8'));
         return cachedData;
-      } catch (error) {
+      } catch (error: any) {
         log(`Erro ao ler cache: ${error.message}`, 'pdf-extract');
         // Continuar com processamento normal se falhar a leitura do cache
       }
@@ -320,7 +326,7 @@ export async function parseReservationFromText(
                 const cachePath = path.join(os.tmpdir(), `pdf-extract-${cacheKey}.json`);
                 fs.writeFileSync(cachePath, JSON.stringify(extractedData));
                 log(`Dados salvos em cache: ${cachePath}`, 'pdf-extract');
-              } catch (cacheError) {
+              } catch (cacheError: any) {
                 log(`Erro ao salvar cache: ${cacheError.message}`, 'pdf-extract');
                 // Continuar mesmo se falhar ao salvar cache
               }
