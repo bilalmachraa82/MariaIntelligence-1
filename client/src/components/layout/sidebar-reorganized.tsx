@@ -443,14 +443,7 @@ export function SidebarReorganized({
         }
       ]
     },
-    // Documentos financeiros unificados em um item
-    {
-      name: t("navigation.financialDocuments", "Documentos"),
-      href: "/financeiro/documentos",
-      altHref: "/financial/documents",
-      icon: FileSpreadsheet,
-      iconColor: "text-blue-400"
-    }
+    // Item "Documentos" removido por ser redundante com outros menus financeiros
   ];
 
   // Operações - Serviços e manutenção
