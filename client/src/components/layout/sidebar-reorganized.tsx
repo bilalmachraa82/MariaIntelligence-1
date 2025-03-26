@@ -456,7 +456,7 @@ export function SidebarReorganized({
       iconColor: "text-cyan-500",
       submenu: [
         {
-          name: t("navigation.cleaning.teams", "Equipes"),
+          name: t("navigation.cleaning.teams", "Equipas"),
           href: "/equipas-limpeza",
           altHref: "/cleaning-teams",
           icon: PaintBucket,
