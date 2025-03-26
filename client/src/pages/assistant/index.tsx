@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReactMarkdown from "react-markdown";
 import { ChatBubble, Message } from "@/components/chat/chat-bubble";
+import { VoiceRecorderButton } from "@/components/chat/voice-recorder-button";
 import { 
   Send, 
   Bot, 
@@ -712,6 +713,16 @@ export default function AssistantPage() {
                     placeholder={t("aiAssistant.placeholder", "Escreve a tua mensagem aqui...")}
                     disabled={isLoading}
                     className="flex-1"
+                  />
+                  
+                  <VoiceRecorderButton 
+                    onMessageReceived={(text) => {
+                      setMessage(text);
+                      // Pequeno delay para garantir que o estado foi atualizado antes de enviar
+                      setTimeout(() => sendMessage(text), 100);
+                    }}
+                    disabled={isLoading}
+                    className="mr-1"
                   />
                   
                   <Button 

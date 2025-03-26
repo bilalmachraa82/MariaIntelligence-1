@@ -15,6 +15,7 @@ export enum GeminiModel {
   TEXT = 'gemini-1.5-pro',          // Para processamento de texto
   VISION = 'gemini-1.5-pro-vision', // Para processamento de imagens
   FLASH = 'gemini-1.5-flash',       // Versão mais rápida e mais barata
+  AUDIO = 'gemini-2.5-pro-exp-03-25' // Experimental - Para processamento de áudio (inclui voz)
 }
 
 // Interface para configuração de geração
@@ -42,6 +43,7 @@ export class GeminiService {
   private defaultModel: any; // GenerativeModel
   private visionModel: any; // GenerativeModel
   private flashModel: any; // GenerativeModel
+  private audioModel: any; // GenerativeModel para processamento de áudio
   private isInitialized: boolean = false;
 
   constructor() {
@@ -98,6 +100,12 @@ export class GeminiService {
         model: GeminiModel.FLASH,
         generationConfig: this.getGenerationConfig(0.3)
       });
+      
+      // Modelo experimental para processamento de áudio
+      this.audioModel = this.genAI.getGenerativeModel({ 
+        model: GeminiModel.AUDIO,
+        generationConfig: this.getGenerationConfig(0.4)
+      });
       */
       
       // Mock temporário até a biblioteca ser instalada
@@ -123,7 +131,17 @@ export class GeminiService {
           const inputContent = params?.contents?.[0]?.parts;
           const userPrompt = inputContent?.find((part: any) => part.text)?.text || "";
           
-          if (userPrompt.includes("Extraia todo o texto visível deste documento PDF")) {
+          // Verificar se há áudio na mensagem
+          const hasAudio = inputContent?.some((part: any) => part.inlineData?.mimeType?.startsWith('audio/'));
+          
+          if (hasAudio) {
+            // Mock para processamento de áudio
+            return {
+              response: { 
+                text: () => "Transcrição de áudio (modo mock): Olá, gostaria de marcar uma reserva no apartamento Graça para o próximo fim de semana. Somos duas pessoas e ficaríamos de sexta a domingo. Meu nome é Carlos Silva e meu telefone é 919 876 543."
+              }
+            };
+          } else if (userPrompt.includes("Extraia todo o texto visível deste documento PDF")) {
             // Mock para extração de texto de PDF
             return {
               response: { 
@@ -242,6 +260,7 @@ export class GeminiService {
     this.defaultModel = this.genAI.getGenerativeModel({});
     this.visionModel = this.genAI.getGenerativeModel({});
     this.flashModel = this.genAI.getGenerativeModel({});
+    this.audioModel = this.genAI.getGenerativeModel({});
   }
   
   /**

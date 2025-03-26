@@ -13,6 +13,7 @@ import {
   processPdfAndCreateReservation 
 } from "./services/reservation-creator";
 import { registerQuotationRoutes } from "./api/quotation-routes";
+import { registerSpeechRoutes } from "./api/speech-routes";
 import { 
   extendedPropertySchema, 
   extendedOwnerSchema,
@@ -3149,6 +3150,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Registrar as rotas de orçamentos
   registerQuotationRoutes(app);
+  
+  // Registrar as rotas de processamento de voz e áudio
+  registerSpeechRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;
