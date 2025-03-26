@@ -8,6 +8,7 @@ import { Mistral } from "@mistralai/mistralai";
 import { MistralService } from "./services/mistral.service";
 import { RAGService } from "./services/rag.service";
 import { RagService } from "./services/rag-service";
+import { processControlFile, createReservationsFromControlFile } from "./services/control-file-processor";
 import { processPdf } from "./services/pdf-extract";
 import { 
   processFileAndCreateReservation,
@@ -755,11 +756,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Verifica se a chave da API Mistral está disponível
-      if (!process.env.MISTRAL_API_KEY) {
+      // Verificar se temos alguma das chaves de API disponíveis (Mistral ou Gemini)
+      if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) {
         return res.status(500).json({ 
           success: false,
-          message: "Chave da API Mistral não configurada" 
+          message: "Nenhuma chave de API de IA configurada (Mistral ou Google)" 
         });
       }
 
@@ -774,6 +775,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const useCache = false;
         
         console.log(`Processando PDF com máxima qualidade (skipQualityCheck=${skipQualityCheck}, useCache=${useCache})`);
+        
+        // Primeiro, verificar se o arquivo é um PDF de controle (com múltiplas reservas)
+        const controlResult = await processControlFile(req.file.path);
+        
+        // Se for um arquivo de controle, processar de forma especializada
+        if (controlResult.success && controlResult.isControlFile) {
+          console.log('Arquivo identificado como PDF de controle de reservas');
+          
+          let reservationsCreated = [];
+          
+          // Se usuário solicitou criação automática, criar as reservas
+          if (autoCreateReservation) {
+            console.log('Criando reservas automaticamente a partir do arquivo de controle');
+            reservationsCreated = await createReservationsFromControlFile(controlResult);
+          }
+          
+          // Adicionar o texto extraído à base de conhecimento RAG
+          await ragService.addToKnowledgeBase(controlResult.rawText, 'control_file_pdf', {
+            filename: req.file.filename,
+            uploadDate: new Date(),
+            isControlFile: true,
+            reservationsCount: controlResult.reservations.length
+          });
+          
+          // Criar atividade no sistema
+          await storage.createActivity({
+            type: 'pdf_processed',
+            description: `PDF de controle processado: ${controlResult.propertyName} - ${controlResult.reservations.length} reservas`,
+            entityId: null,
+            entityType: 'property'
+          });
+          
+          // Retornar resultado específico para arquivos de controle
+          return res.json({
+            success: true,
+            isControlFile: true,
+            message: `Arquivo de controle processado: ${controlResult.reservations.length} reservas encontradas`,
+            reservations: controlResult.reservations,
+            reservationsCreated: reservationsCreated,
+            propertyName: controlResult.propertyName,
+            file: {
+              filename: req.file.filename,
+              path: req.file.path
+            }
+          });
+        }
         
         // Usar o novo serviço de processamento que pode criar reservas
         let result;
@@ -975,11 +1022,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Verifica se a chave da API Mistral está disponível
-      if (!process.env.MISTRAL_API_KEY) {
+      // Verificar se temos alguma das chaves de API disponíveis (Mistral ou Gemini)
+      if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) {
         return res.status(500).json({ 
           success: false,
-          message: "Chave da API Mistral não configurada" 
+          message: "Nenhuma chave de API de IA configurada (Mistral ou Google)" 
         });
       }
 
@@ -995,7 +1042,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Usar o novo serviço de processamento que pode criar reservas a partir de imagens
         const result = await processFileAndCreateReservation(
           req.file.path, 
-          process.env.MISTRAL_API_KEY,
+          process.env.MISTRAL_API_KEY || process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "",
           { skipQualityCheck, useCache }
         );
         console.log('Processamento OCR e criação de reserva concluídos:', result.success);
@@ -1181,11 +1228,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Nota: o sistema funciona melhor com 2 arquivos (check-in e check-out),
       // mas pode processar individualmente quando necessário
 
-      // Verifica se a chave da API Mistral está disponível
-      if (!process.env.MISTRAL_API_KEY) {
+      // Verificar se temos alguma das chaves de API disponíveis (Mistral ou Gemini)
+      if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) {
         return res.status(500).json({ 
           success: false,
-          message: "Chave da API Mistral não configurada" 
+          message: "Nenhuma chave de API de IA configurada (Mistral ou Google)" 
         });
       }
 

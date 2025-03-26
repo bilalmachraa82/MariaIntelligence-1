@@ -355,6 +355,76 @@ export class AIAdapter {
   }
   
   /**
+   * Extrai dados estruturados a partir de texto
+   * @param text Texto para análise
+   * @param options Opções de configuração (prompt do sistema, formato de resposta, etc.)
+   * @returns Dados extraídos no formato solicitado
+   */
+  public async extractDataFromText(text: string, options: {
+    systemPrompt?: string;
+    responseFormat?: { type: string };
+    temperature?: number;
+    maxTokens?: number;
+  }): Promise<any> {
+    try {
+      if (this.currentService === AIServiceType.GEMINI) {
+        // Usar Gemini para extrair dados do texto
+        return await this.geminiService.generateText({
+          contents: [
+            { role: 'system', parts: [{ text: options.systemPrompt || 'Extraia dados do seguinte texto' }] },
+            { role: 'user', parts: [{ text }] }
+          ],
+          generationConfig: {
+            temperature: options.temperature || 0.2,
+            maxOutputTokens: options.maxTokens || 2048,
+            responseFormat: options.responseFormat || undefined
+          }
+        });
+      } else {
+        // Usar Mistral para extrair dados do texto
+        return await this.mistralService.chatCompletion({
+          messages: [
+            { role: 'system', content: options.systemPrompt || 'Extraia dados do seguinte texto' },
+            { role: 'user', content: text }
+          ],
+          temperature: options.temperature || 0.2,
+          maxTokens: options.maxTokens || 2048,
+          responseFormat: options.responseFormat ? options.responseFormat.type : undefined
+        });
+      }
+    } catch (error: any) {
+      // Em caso de erro, tentar com o outro serviço se disponível
+      console.warn(`Erro no serviço ${this.currentService} ao extrair dados, tentando alternativa...`);
+      
+      if (this.currentService === AIServiceType.GEMINI && process.env.MISTRAL_API_KEY) {
+        return await this.mistralService.chatCompletion({
+          messages: [
+            { role: 'system', content: options.systemPrompt || 'Extraia dados do seguinte texto' },
+            { role: 'user', content: text }
+          ],
+          temperature: options.temperature || 0.2,
+          maxTokens: options.maxTokens || 2048,
+          responseFormat: options.responseFormat ? options.responseFormat.type : undefined
+        });
+      } else if (this.currentService === AIServiceType.MISTRAL && (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
+        return await this.geminiService.generateText({
+          contents: [
+            { role: 'system', parts: [{ text: options.systemPrompt || 'Extraia dados do seguinte texto' }] },
+            { role: 'user', parts: [{ text }] }
+          ],
+          generationConfig: {
+            temperature: options.temperature || 0.2,
+            maxOutputTokens: options.maxTokens || 2048,
+            responseFormat: options.responseFormat || undefined
+          }
+        });
+      } else {
+        throw error; // Repassar o erro se não houver alternativa
+      }
+    }
+  }
+  
+  /**
    * Acesso ao cliente Mistral para casos específicos
    * (isto permite compatibilidade com código existente)
    * @returns Cliente Mistral
