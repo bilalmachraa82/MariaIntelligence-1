@@ -758,11 +758,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Parâmetros de controle
         const autoCreateReservation = req.query.autoCreate === 'true';
         
-        // Obter parâmetros do corpo da requisição (FormData)
-        const skipQualityCheck = req.body.skipQualityCheck === 'true';
-        const useCache = req.body.useCache === 'true';
+        // Sempre usar alta qualidade para processamento
+        const skipQualityCheck = false;
+        const useCache = false;
         
-        console.log(`Opções de processamento: skipQualityCheck=${skipQualityCheck}, useCache=${useCache}`);
+        console.log(`Processando PDF com máxima qualidade (skipQualityCheck=${skipQualityCheck}, useCache=${useCache})`);
         
         // Usar o novo serviço de processamento que pode criar reservas
         let result;
@@ -978,9 +978,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Parâmetros de controle
         const autoCreateReservation = req.query.autoCreate === 'true';
         
-        // Obter parâmetros do corpo da requisição (FormData)
-        const skipQualityCheck = req.body.skipQualityCheck === 'true';
-        const useCache = req.body.useCache === 'true';
+        // Sempre usar alta qualidade para processamento
+        const skipQualityCheck = false;
+        const useCache = false;
         // Usar o novo serviço de processamento que pode criar reservas a partir de imagens
         const result = await processFileAndCreateReservation(
           req.file.path, 
@@ -1069,9 +1069,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Parâmetros de controle
         const autoCreateReservation = req.query.autoCreate === 'true';
         
-        // Obter parâmetros do corpo da requisição (FormData)
-        const skipQualityCheck = req.body.skipQualityCheck === 'true';
-        const useCache = req.body.useCache === 'true';
+        // Sempre usar alta qualidade para processamento
+        const skipQualityCheck = false;
+        const useCache = false;
         
         // Usar o serviço que processa qualquer tipo de arquivo e cria reserva
         const result = await processFileAndCreateReservation(
