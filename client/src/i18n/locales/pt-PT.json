@@ -11,12 +11,28 @@
       "view": "Ver",
       "actions": "Ações"
     },
+    "dashboard": {
+      "welcome": "Olá Maria!",
+      "checkins": "Check-ins de Hoje",
+      "viewCheckins": "Ver Check-ins",
+      "checkouts": "Check-outs de Hoje",
+      "viewCheckouts": "Ver Check-outs",
+      "cleanings": "Limpezas Agendadas",
+      "viewCleanings": "Ver Limpezas",
+      "financialSummary": "Resumo Financeiro",
+      "viewDetails": "Ver Detalhes",
+      "noData": "Sem dados para este período"
+    },
     "quotation": {
       "pageTitle": "Orçamentos",
       "pageDescription": "Gerir orçamentos para clientes e propriedades",
       "house_v1": "Casa V1",
+      "house_v2": "Casa V2",
+      "house_v3": "Casa V3",
       "apartment_t0t1": "Apartamento T0/T1",
       "apartment_t2": "Apartamento T2",
+      "apartment_t3": "Apartamento T3",
+      "apartment_t4": "Apartamento T4",
       "additionalFeatures": "Características Adicionais",
       "additionalDetails": "Detalhes Adicionais",
       "selectPropertyType": "Selecione o tipo de imóvel",
@@ -687,7 +703,7 @@
       "statusUpdateError": "Erro ao atualizar estado",
       "noQuotations": "Nenhum orçamento encontrado",
       "markAsSent": "Marcar como Enviado",
-      "markAsAccepted": "Marcar como Aceito",
+      "markAsAccepted": "Marcar como Aceite",
       "markAsRejected": "Marcar como Rejeitado",
       "markAsExpired": "Marcar como Expirado",
       "confirmStatusChangeSent": "Confirmar Envio",
@@ -851,6 +867,29 @@
       "total": "Total",
       "occupancyRate": "Taxa de ocupação"
     },
+    "monthlyInvoice": {
+      "title": "Relatório Mensal para Faturação",
+      "generate": "Gerar Fatura Mensal",
+      "selectOwnerAndMonth": "Selecione o proprietário e o mês para gerar o relatório para faturação",
+      "month": "Mês",
+      "noOwnerSelected": "Nenhum proprietário selecionado",
+      "selectOwnerToGenerate": "Selecione um proprietário para gerar o relatório mensal para faturação."
+    },
+    "financialDocuments": {
+      "title": "Documentos Financeiros",
+      "newDocument": "Novo Documento",
+      "type": "Tipo",
+      "status": "Status",
+      "entity": "Entidade",
+      "referenceMonth": "Mês Ref.",
+      "issueDate": "Data Emissão",
+      "dueDate": "Data Vencimento",
+      "totalAmount": "Valor Total",
+      "paidAmount": "Valor Pago",
+      "actions": "Ações",
+      "noDocuments": "Nenhum documento financeiro encontrado.",
+      "paid": "Pago"
+    },
     "mariaManagementReport": {
       "title": "Relatório de Gestão Maria Faz",
       "subtitle": "Visão geral do desempenho financeiro da gestão",
@@ -897,7 +936,7 @@
       "status": {
         "draft": "Rascunho",
         "sent": "Enviado",
-        "accepted": "Aceito",
+        "accepted": "Aceite",
         "rejected": "Rejeitado",
         "expired": "Expirado"
       },
