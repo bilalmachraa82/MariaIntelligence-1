@@ -1,5 +1,14 @@
 {
   "translation": {
+    "voiceInput": {
+      "startRecording": "Iniciar gravação de voz",
+      "stopRecording": "Parar gravação",
+      "recording": "A gravar...",
+      "processingAudio": "A processar áudio...",
+      "browserNotSupported": "O seu navegador não suporta gravação de áudio",
+      "permissionDenied": "Permissão para aceder ao microfone negada",
+      "errorProcessing": "Erro ao processar áudio"
+    },
     "common": {
       "saving": "A guardar...",
       "save": "Guardar",

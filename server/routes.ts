@@ -2,6 +2,7 @@ import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import multer from "multer";
+import bodyParser from "body-parser";
 import { ZodError, z } from "zod";
 import { Mistral } from "@mistralai/mistralai";
 import { MistralService } from "./services/mistral.service";
@@ -167,6 +168,15 @@ const handleError = (err: any, res: Response) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Configurar o tamanho máximo dos payloads para suportar áudios maiores
+  app.use(bodyParser.json({
+    limit: '50mb' // Aumentar para 50MB
+  }));
+  app.use(bodyParser.urlencoded({
+    limit: '50mb',
+    extended: true,
+    parameterLimit: 50000
+  }));
   // Properties routes
   app.get("/api/properties", async (req: Request, res: Response) => {
     try {

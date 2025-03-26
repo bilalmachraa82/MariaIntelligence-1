@@ -6,12 +6,18 @@
 import { Request, Response } from 'express';
 import { speechService } from '../services/speech-service';
 import { aiService } from '../services/ai-adapter.service';
+import bodyParser from 'body-parser';
 
 /**
  * Registra as rotas relacionadas ao processamento de voz
  * @param app Instância do Express
  */
 export function registerSpeechRoutes(app: any) {
+  // Configurar o body parser especificamente para as rotas de voz
+  // Aumentar limite de tamanho para requests de áudio
+  app.use('/api/speech/*', bodyParser.json({
+    limit: '50mb' // Aumentar para 50MB
+  }));
   
   /**
    * Endpoint para processar áudio e retornar o texto transcrito
