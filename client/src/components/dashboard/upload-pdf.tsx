@@ -142,7 +142,7 @@ export function UploadPDF() {
       }
       
       setSelectedFile(file);
-      handleFileUpload(file, { useCache });
+      handleFileUpload(file, { useCache, skipQualityCheck });
     }
   };
 
@@ -211,7 +211,7 @@ export function UploadPDF() {
         }
         
         setSelectedFile(file);
-        handleFileUpload(file, { useCache });
+        handleFileUpload(file, { useCache, skipQualityCheck });
       }
     }
   };

@@ -755,15 +755,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         console.log(`Processando PDF: ${req.file.path}`);
         
-        // Parâmetro para controlar se uma reserva deve ser criada automaticamente
+        // Parâmetros de controle
         const autoCreateReservation = req.query.autoCreate === 'true';
+        const skipQualityCheck = req.query.skipQualityCheck === 'true';
+        const useCache = req.query.useCache === 'true';
+        
+        console.log(`Opções de processamento: skipQualityCheck=${skipQualityCheck}, useCache=${useCache}`);
         
         // Usar o novo serviço de processamento que pode criar reservas
         let result;
         
         if (autoCreateReservation) {
           // Usar o serviço completo que processa o PDF e cria uma reserva
-          result = await processPdfAndCreateReservation(req.file.path, process.env.MISTRAL_API_KEY);
+          result = await processPdfAndCreateReservation(req.file.path, process.env.MISTRAL_API_KEY, { skipQualityCheck, useCache });
           console.log('Processamento e criação de reserva concluídos:', result.success);
           
           // Adicionar atividade ao sistema se a reserva foi criada
