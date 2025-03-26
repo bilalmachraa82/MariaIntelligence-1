@@ -13,9 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label"; 
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { apiRequest } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
-import { getQueryFn } from "@/lib/queryClient";
 import { DateRange, DateRangePicker } from "@/components/ui/date-range-picker";
 
 // Função para obter parâmetros da URL
