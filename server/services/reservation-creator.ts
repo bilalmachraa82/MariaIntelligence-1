@@ -15,7 +15,7 @@ import {
   parseReservationFromText, 
   validateReservationData 
 } from './pdf-extract';
-import { MistralService } from './mistral.service';
+import { aiService } from './ai-adapter.service';
 import * as fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
@@ -258,11 +258,10 @@ export async function processImageAndCreateReservation(
       ? 'image/png' 
       : 'image/jpeg';
     
-    // Usar o serviço Mistral para OCR
-    const mistralService = new MistralService();
+    // Usar o serviço de IA para OCR (Mistral ou Gemini, conforme disponibilidade)
     
-    // Extrair texto da imagem
-    const extractedText = await mistralService.extractTextFromImage(base64Image, mimeType);
+    // Extrair texto da imagem usando o adaptador de IA
+    const extractedText = await aiService.extractTextFromImage(base64Image, mimeType);
     
     if (!extractedText || extractedText.trim().length === 0) {
       return {
@@ -272,8 +271,8 @@ export async function processImageAndCreateReservation(
       };
     }
     
-    // Analisar o texto extraído para obter dados estruturados
-    const extractedData = await parseReservationFromText(extractedText, apiKey);
+    // Analisar o texto extraído para obter dados estruturados usando o adaptador de IA
+    const extractedData = await aiService.parseReservationData(extractedText);
     
     // Validar os dados extraídos
     const validationResult = validateReservationData(extractedData);

@@ -1056,11 +1056,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Verifica se a chave da API Mistral está disponível
-      if (!process.env.MISTRAL_API_KEY) {
+      // Verificamos se temos alguma das chaves de API disponíveis (Mistral ou Gemini)
+      if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY) {
         return res.status(500).json({ 
           success: false,
-          message: "Chave da API Mistral não configurada" 
+          message: "Nenhuma chave de API de IA configurada (Mistral ou Google)" 
         });
       }
 
@@ -1074,9 +1074,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const useCache = false;
         
         // Usar o serviço que processa qualquer tipo de arquivo e cria reserva
+        // Passamos a chave Mistral por compatibilidade, mas o adaptador usará Gemini se disponível
         const result = await processFileAndCreateReservation(
           req.file.path, 
-          process.env.MISTRAL_API_KEY,
+          process.env.MISTRAL_API_KEY || process.env.GOOGLE_API_KEY || "",
           { skipQualityCheck, useCache }
         );
         console.log('Processamento e criação de reserva concluídos:', result.success);
