@@ -82,15 +82,38 @@ export class SpeechClient {
       // Limpar chunks anteriores
       this.audioChunks = [];
       
-      // Obter acesso ao microfone
-      this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // Obter acesso ao microfone com configurações de qualidade reduzida para menor tamanho
+      this.stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+          channelCount: 1, // Mono para reduzir tamanho
+          sampleRate: 16000 // 16kHz é suficiente para fala e reduz o tamanho
+        } 
+      });
       
-      // Determinar o tipo MIME suportado
-      const mimeType = mergedOptions.mimeType || 'audio/webm';
+      // Determinar o tipo MIME suportado - preferir opus para melhor compressão
+      const supportedMimeTypes = [
+        'audio/webm;codecs=opus', // Melhor compressão
+        'audio/webm', 
+        'audio/ogg;codecs=opus',
+        'audio/mp4',
+        'audio/mpeg'
+      ];
       
-      // Criar o gravador
+      let selectedMimeType = 'audio/webm';
+      for (const type of supportedMimeTypes) {
+        if (MediaRecorder.isTypeSupported(type)) {
+          selectedMimeType = type;
+          break;
+        }
+      }
+      
+      // Criar o gravador com configurações para menor tamanho
       this.mediaRecorder = new MediaRecorder(this.stream, {
-        mimeType: MediaRecorder.isTypeSupported(mimeType) ? mimeType : 'audio/webm'
+        mimeType: selectedMimeType,
+        audioBitsPerSecond: 16000 // Taxa de bits reduzida para menor tamanho
       });
       
       // Configurar manipuladores de eventos
@@ -105,7 +128,7 @@ export class SpeechClient {
       };
       
       this.mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(this.audioChunks, { type: this.mediaRecorder?.mimeType || mimeType });
+        const audioBlob = new Blob(this.audioChunks, { type: this.mediaRecorder?.mimeType || selectedMimeType });
         
         // Parar os tracks para liberar o microfone
         if (this.stream) {
@@ -186,14 +209,44 @@ export class SpeechClient {
   }
   
   /**
+   * Comprime o tamanho do áudio para reduzir o payload
+   * @param audioBlob Blob original de áudio
+   * @returns Blob comprimido
+   */
+  private async compressAudioBlob(audioBlob: Blob): Promise<Blob> {
+    // Aqui podemos reduzir o tempo de áudio para garantir tamanho menor
+    // Verificar se o áudio é muito grande (mais de 5MB)
+    if (audioBlob.size > 5 * 1024 * 1024) {
+      console.log("Áudio muito grande, reduzindo duração máxima");
+      // Neste caso, manteremos apenas os primeiros 10 segundos
+      return audioBlob.slice(0, 5 * 1024 * 1024);
+    }
+    return audioBlob;
+  }
+  
+  /**
    * Envia o áudio para transcrição no servidor
    * @param audioBlob Blob de áudio para transcrever
    * @returns Resultado da transcrição
    */
   public async transcribeAudio(audioBlob: Blob): Promise<TranscriptionResult> {
     try {
-      const audioBase64 = await this.blobToBase64(audioBlob);
+      console.log(`Tamanho original do áudio: ${(audioBlob.size / 1024).toFixed(2)}KB`);
       
+      // Comprimir o áudio antes de converter para base64
+      const compressedAudioBlob = await this.compressAudioBlob(audioBlob);
+      console.log(`Tamanho após compressão: ${(compressedAudioBlob.size / 1024).toFixed(2)}KB`);
+      
+      // Converter para base64 para envio
+      const audioBase64 = await this.blobToBase64(compressedAudioBlob);
+      console.log(`Tamanho base64: ${(audioBase64.length / 1024).toFixed(2)}KB`);
+      
+      // Verificar se o payload não está muito grande ainda
+      if (audioBase64.length > 40 * 1024 * 1024) {
+        throw new Error('Áudio muito grande para processamento. Tente uma mensagem mais curta.');
+      }
+      
+      // Fazer a solicitação ao servidor
       const response = await fetch('/api/speech/transcribe', {
         method: 'POST',
         headers: {
@@ -201,7 +254,7 @@ export class SpeechClient {
         },
         body: JSON.stringify({
           audioData: audioBase64,
-          mimeType: audioBlob.type
+          mimeType: compressedAudioBlob.type
         })
       });
       

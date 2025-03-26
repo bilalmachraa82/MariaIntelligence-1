@@ -78,27 +78,20 @@ export function registerSpeechRoutes(app: any) {
         });
       }
       
-      // Obter uma resposta através do Gemini usando o aiService
-      // A implementação evita acesso direto ao modelo usando o adaptador
-      const result = await aiService.getMistralClient().chat({
-        model: "mistral-large-latest",
-        messages: [
-          {
-            role: "user",
-            content: `Você é o assistente virtual Maria da plataforma Maria Faz de gestão de propriedades.
-              Responda à seguinte mensagem do usuário de forma clara e concisa, apropriada para resposta por voz.
-              Mantenha a resposta curta, direta e fácil de entender ao ouvir.
-              Evite usar tabelas, listas complexas ou estruturas difíceis de compreender em áudio.
-              Se precisar listar itens, use frases curtas e pausas naturais.
-              
-              Mensagem do usuário: ${message}`
-          }
-        ],
-        temperature: 0.3,
-        maxTokens: 800
-      });
+      // Usar o serviço Gemini para gerar a resposta (via adaptador)
+      const prompt = `Você é o assistente virtual Maria da plataforma Maria Faz de gestão de propriedades.
+        Responda à seguinte mensagem do usuário de forma clara e concisa, apropriada para resposta por voz.
+        Mantenha a resposta curta, direta e fácil de entender ao ouvir.
+        Evite usar tabelas, listas complexas ou estruturas difíceis de compreender em áudio.
+        Se precisar listar itens, use frases curtas e pausas naturais.
+        
+        Mensagem do usuário: ${message}`;
       
-      const reply = result.choices[0].message.content;
+      // Obter uma resposta usando o GeminiService diretamente para evitar o erro do mistralClient
+      const geminiService = new (await import('../services/gemini.service')).GeminiService();
+      const result = await geminiService.generateText(prompt, 0.3);
+      
+      const reply = result;
       
       return res.json({
         success: true,

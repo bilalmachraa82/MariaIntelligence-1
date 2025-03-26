@@ -126,7 +126,7 @@ export function VoiceRecorderButton({
             variant: "destructive"
           });
         },
-        maxDuration: 30000 // 30 segundos
+        maxDuration: 15000 // 15 segundos - reduzindo para evitar payloads muito grandes
       });
     } catch (error: any) {
       console.error("Erro ao iniciar gravação:", error);
