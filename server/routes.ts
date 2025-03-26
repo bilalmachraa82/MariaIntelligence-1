@@ -4,9 +4,8 @@ import { storage } from "./storage";
 import multer from "multer";
 import bodyParser from "body-parser";
 import { ZodError, z } from "zod";
-import { Mistral } from "@mistralai/mistralai";
-import { MistralService } from "./services/mistral.service";
-import { aiService } from "./services/ai-adapter.service";
+// Removemos o Mistral e usamos apenas o Gemini agora
+import { aiService, AIServiceType } from "./services/ai-adapter.service";
 import { RAGService } from "./services/rag.service";
 import { RagService } from "./services/rag-service";
 import { ragService as enhancedRagService } from "./services/rag-enhanced.service";
@@ -743,7 +742,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  const mistralService = new MistralService();
+  // Usamos apenas o aiService instanciado no início
   const ragService = new RAGService();
   // Use the enhanced RAG service for additional capabilities
 
@@ -1595,8 +1594,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         success: true,
         services: {
           mistral: { 
-            available: hasMistralKey,
-            keyConfigured: hasMistralKey
+            available: false,
+            keyConfigured: false,
+            deprecated: true
           },
           gemini: { 
             available: hasGeminiKey,
@@ -1604,7 +1604,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         },
         currentService,
-        anyServiceAvailable: hasMistralKey || hasGeminiKey
+        anyServiceAvailable: hasGeminiKey
       });
     } catch (err) {
       handleError(err, res);
@@ -1629,12 +1629,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         const { aiService, AIServiceType } = await import('./services/ai-adapter.service');
         
-        // Mapear string para enum
+        // Mapear string para enum (apenas Gemini é suportado agora)
         const serviceTypeMap: Record<string, any> = {
-          "mistral": AIServiceType.MISTRAL,
           "gemini": AIServiceType.GEMINI,
           "auto": AIServiceType.AUTO
         };
+        
+        // Se for mistral, redirecionar para gemini
+        if (service === "mistral") {
+          console.log("Serviço Mistral não é mais suportado, usando Gemini no lugar");
+          service = "gemini";
+        }
         
         aiService.setService(serviceTypeMap[service]);
         
