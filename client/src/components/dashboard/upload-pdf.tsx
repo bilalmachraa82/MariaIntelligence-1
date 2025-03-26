@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PDFViewer } from "@/components/ui/pdf-viewer";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { usePdfUpload } from "@/hooks/use-pdf-upload";
 import { 
   CloudUpload, 
@@ -11,9 +9,7 @@ import {
   AlertCircle, 
   Info,
   BrainCircuit,
-  CheckCircle2,
-  Save,
-  Zap
+  CheckCircle2
 } from "lucide-react";
 import { 
   Dialog, 

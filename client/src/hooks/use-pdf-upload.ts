@@ -47,10 +47,11 @@ export function usePdfUpload() {
   const [error, setError] = useState<string | null>(null);
   const [isMultiMode, setIsMultiMode] = useState(false);
   const [rawText, setRawText] = useState<string | null>(null);
-  const [processingOptions, setProcessingOptions] = useState<ProcessingOptions>({
-    useCache: true,
+  // Valores fixos de processamento: sempre máxima qualidade
+  const processingOptions: ProcessingOptions = {
+    useCache: false,
     skipQualityCheck: false
-  });
+  };
   
   const { toast } = useToast();
   const queryClient = useQueryClient();
