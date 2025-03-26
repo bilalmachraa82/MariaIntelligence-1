@@ -254,72 +254,103 @@ export class AIAdapter {
    */
   public async processReservationDocument(fileBase64: string, mimeType: string): Promise<any> {
     try {
-      if (this.currentService === AIServiceType.GEMINI) {
-        return await this.geminiService.processReservationDocument(fileBase64, mimeType);
-      } else {
-        // O Mistral pode não ter este método, então implementamos a lógica aqui
-        const isPDF = mimeType.includes('pdf');
+      console.log(`📄 Processando documento ${mimeType} usando serviço: ${this.currentService}`);
+      
+      // Implementação unificada para processamento de documentos
+      const isPDF = mimeType.includes('pdf');
+      
+      // Extrair texto do documento
+      let extractedText;
+      try {
+        console.log(`🔍 Extraindo texto do ${isPDF ? 'PDF' : 'imagem'}...`);
         
-        // Extrair texto do documento
-        let extractedText;
-        try {
-          if (isPDF) {
-            extractedText = await this.mistralService.extractTextFromPDF(fileBase64);
-          } else {
-            extractedText = await this.mistralService.extractTextFromImage(fileBase64, mimeType);
-          }
-        } catch (error: any) {
-          return {
-            success: false,
-            error: "Falha na extração de texto",
-            details: error.message
-          };
+        if (isPDF) {
+          // Extrair texto do PDF usando o serviço atual
+          extractedText = await this.extractTextFromPDF(fileBase64);
+        } else {
+          // Extrair texto da imagem usando o serviço atual
+          extractedText = await this.extractTextFromImage(fileBase64, mimeType);
         }
         
-        // Analisar o documento visualmente (em paralelo)
-        const visualAnalysisPromise = this.mistralService.analyzeDocumentVisually(fileBase64, mimeType);
-        
-        // Extrair dados estruturados
-        let structuredData;
-        try {
-          structuredData = await this.mistralService.parseReservationData(extractedText);
-        } catch (error: any) {
-          return {
-            success: false,
-            error: "Falha na extração de dados estruturados",
-            details: error.message,
-            rawText: extractedText
-          };
-        }
-        
-        // Obter resultado da análise visual
-        const visualAnalysis = await visualAnalysisPromise;
-        
-        // Combinar resultados
+        console.log(`✅ Extração de texto concluída: ${extractedText.length} caracteres`);
+      } catch (error: any) {
+        console.error(`❌ Erro na extração de texto:`, error);
         return {
-          success: true,
-          rawText: extractedText,
-          data: structuredData,
-          documentInfo: {
-            ...visualAnalysis,
-            mimeType,
-            isPDF
-          }
+          success: false,
+          error: "Falha na extração de texto",
+          details: error.message || "Erro desconhecido na extração de texto"
         };
       }
-    } catch (error: any) {
-      // Em caso de erro, tentar com o outro serviço se disponível
-      console.warn(`Erro no serviço ${this.currentService}, tentando alternativa...`);
       
-      if (this.currentService === AIServiceType.GEMINI && process.env.MISTRAL_API_KEY) {
-        this.setService(AIServiceType.MISTRAL);
-        return await this.processReservationDocument(fileBase64, mimeType);
-      } else if (this.currentService === AIServiceType.MISTRAL && process.env.GOOGLE_API_KEY) {
-        this.setService(AIServiceType.GEMINI);
-        return await this.processReservationDocument(fileBase64, mimeType);
-      } else {
-        throw error; // Repassar o erro se não houver alternativa
+      // Analisar o documento visualmente (em paralelo) - apenas se estiver disponível no serviço atual
+      let visualAnalysisPromise;
+      try {
+        if (this.currentService === AIServiceType.GEMINI) {
+          visualAnalysisPromise = this.geminiService.analyzeDocumentVisually(fileBase64, mimeType);
+        } else {
+          visualAnalysisPromise = Promise.resolve({ type: 'unknown', confidence: 0 });
+        }
+      } catch (error) {
+        // Se falhar, continuar com análise visual padrão
+        visualAnalysisPromise = Promise.resolve({ type: 'unknown', confidence: 0 });
       }
+      
+      // Extrair dados estruturados
+      let structuredData;
+      try {
+        console.log(`🔍 Extraindo dados estruturados do texto...`);
+        structuredData = await this.parseReservationData(extractedText);
+        console.log(`✅ Dados estruturados extraídos com sucesso`);
+      } catch (error: any) {
+        console.error(`❌ Erro na extração de dados estruturados:`, error);
+        return {
+          success: false,
+          error: "Falha na extração de dados estruturados",
+          details: error.message || "Erro desconhecido na extração de dados estruturados",
+          rawText: extractedText
+        };
+      }
+      
+      // Obter resultado da análise visual
+      let visualAnalysis;
+      try {
+        visualAnalysis = await visualAnalysisPromise;
+      } catch (error) {
+        // Se falhar, usar um resultado padrão
+        visualAnalysis = { type: 'unknown', confidence: 0 };
+      }
+      
+      // Garantir que todos os campos requeridos estejam presentes
+      const requiredFields = ['propertyName', 'guestName', 'checkInDate', 'checkOutDate'];
+      const missingFields = requiredFields.filter(field => !structuredData[field]);
+      
+      if (missingFields.length > 0) {
+        console.log(`⚠️ Dados estruturados incompletos. Campos ausentes: ${missingFields.join(', ')}`);
+      }
+      
+      // Adicionar documentType se não estiver presente
+      if (!structuredData.documentType) {
+        structuredData.documentType = 'reserva';
+      }
+      
+      // Combinar resultados
+      return {
+        success: true,
+        rawText: extractedText,
+        data: structuredData,
+        documentInfo: {
+          ...visualAnalysis,
+          mimeType,
+          isPDF
+        }
+      };
+    } catch (error: any) {
+      console.error(`❌ Erro no processamento do documento:`, error);
+      return {
+        success: false,
+        error: "Falha no processamento do documento",
+        details: error.message || "Erro desconhecido no processamento"
+      };
     }
   }
   

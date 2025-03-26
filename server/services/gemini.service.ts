@@ -681,63 +681,125 @@ export class GeminiService {
   
   /**
    * Processa um documento (PDF ou imagem) para extrair informações de reserva
-   * Compatível com a interface do MistralService
+   * Versão melhorada compatível com a interface do AIAdapter
    * @param fileBase64 Arquivo em base64
    * @param mimeType Tipo MIME do arquivo
    * @returns Objeto com todos os dados extraídos
    */
   async processReservationDocument(fileBase64: string, mimeType: string): Promise<any> {
+    this.checkInitialization();
+    
+    console.log(`🔍 GeminiService: Processando documento ${mimeType}`);
+    
     // Determinar o tipo de arquivo
     const isPDF = mimeType.includes('pdf');
     
     // Extrair texto do documento
     let extractedText;
     try {
+      console.log(`📄 Extraindo texto do ${isPDF ? 'PDF' : 'imagem'}...`);
+      
       if (isPDF) {
         extractedText = await this.extractTextFromPDF(fileBase64);
       } else {
         extractedText = await this.extractTextFromImage(fileBase64, mimeType);
       }
+      
+      console.log(`✅ Texto extraído: ${extractedText.length} caracteres`);
+      
+      if (extractedText.length < 50) {
+        console.warn("⚠️ Texto extraído muito curto, possível falha na extração");
+        // Fallback quando o texto extraído é muito curto
+        if (isPDF) {
+          // Criar mensagem de erro mais detalhada para o usuário
+          return {
+            success: false,
+            error: "Texto extraído do PDF muito curto ou vazio",
+            details: "Verifique se o PDF contém texto selecionável ou use uma imagem do documento",
+            extractedLength: extractedText.length
+          };
+        }
+      }
     } catch (error: any) {
-      console.error("Erro na extração de texto:", error);
+      console.error("❌ Erro na extração de texto:", error);
       return {
         success: false,
         error: "Falha na extração de texto",
-        details: error.message
+        details: error.message || "Erro desconhecido na extração",
+        service: "gemini"
       };
     }
     
-    // Analisar o documento visualmente (em paralelo)
-    const visualAnalysisPromise = this.analyzeDocumentVisually(fileBase64, mimeType);
-    
-    // Extrair dados estruturados
-    let structuredData;
     try {
-      structuredData = await this.parseReservationData(extractedText);
+      // Analisar o documento visualmente (em paralelo)
+      console.log(`🔍 Analisando documento visualmente...`);
+      const visualAnalysisPromise = this.analyzeDocumentVisually(fileBase64, mimeType);
+      
+      // Extrair dados estruturados
+      console.log(`🔍 Extraindo dados estruturados do texto...`);
+      let structuredData;
+      try {
+        structuredData = await this.parseReservationData(extractedText);
+        console.log(`✅ Dados estruturados extraídos com sucesso`);
+      } catch (structuredError: any) {
+        console.error("❌ Erro na extração de dados estruturados:", structuredError);
+        return {
+          success: false,
+          error: "Falha na extração de dados estruturados",
+          details: structuredError.message || "Erro desconhecido",
+          rawText: extractedText,
+          service: "gemini"
+        };
+      }
+      
+      // Obter resultado da análise visual
+      let visualAnalysis;
+      try {
+        visualAnalysis = await visualAnalysisPromise;
+      } catch (visualError) {
+        console.warn("⚠️ Erro na análise visual, usando resultado padrão");
+        visualAnalysis = { 
+          type: isPDF ? "reserva_pdf" : "reserva_imagem", 
+          confidence: 0.5,
+          details: "Análise visual falhou, usando tipo padrão"
+        };
+      }
+      
+      // Garantir que todos os campos requeridos estejam presentes
+      const requiredFields = ['propertyName', 'guestName', 'checkInDate', 'checkOutDate'];
+      const missingFields = requiredFields.filter(field => !structuredData[field]);
+      
+      if (missingFields.length > 0) {
+        console.warn(`⚠️ Dados incompletos. Campos ausentes: ${missingFields.join(', ')}`);
+      }
+      
+      // Adicionar documentType se não estiver presente
+      if (!structuredData.documentType) {
+        structuredData.documentType = 'reserva';
+      }
+      
+      // Combinar resultados
+      return {
+        success: true,
+        rawText: extractedText,
+        data: structuredData,
+        documentInfo: {
+          ...visualAnalysis,
+          mimeType,
+          isPDF,
+          service: "gemini"
+        }
+      };
     } catch (error: any) {
-      console.error("Erro na extração de dados estruturados:", error);
+      console.error("❌ Erro geral no processamento:", error);
       return {
         success: false,
-        error: "Falha na extração de dados estruturados",
-        details: error.message,
-        rawText: extractedText
+        error: "Falha no processamento do documento",
+        details: error.message || "Erro desconhecido",
+        rawText: extractedText,
+        service: "gemini"
       };
     }
-    
-    // Obter resultado da análise visual
-    const visualAnalysis = await visualAnalysisPromise;
-    
-    // Combinar resultados
-    return {
-      success: true,
-      rawText: extractedText,
-      data: structuredData,
-      documentInfo: {
-        ...visualAnalysis,
-        mimeType,
-        isPDF
-      }
-    };
   }
   
   /**
