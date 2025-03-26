@@ -136,7 +136,9 @@ export async function parseReservationFromText(
   timeout: number = 25000,
   options: { skipQualityCheck?: boolean; useCache?: boolean } = {}
 ): Promise<ExtractedReservationData> {
-  const { skipQualityCheck = false, useCache = false } = options;
+  // Sempre usar configurações de alta qualidade, ignorando as opções passadas
+  const skipQualityCheck = false;
+  const useCache = false;
   
   // Verificar cache, se habilitado
   if (useCache) {

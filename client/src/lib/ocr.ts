@@ -148,7 +148,7 @@ function extractTextContent(content: any): string {
  * @param file Arquivo PDF a ser processado
  */
 export async function uploadAndProcessPDF(file: File, options: { useCache?: boolean, skipQualityCheck?: boolean } = {}): Promise<UploadResponse> {
-  const { useCache = true, skipQualityCheck = false } = options;
+  const { useCache = false, skipQualityCheck = false } = options;
   const formData = new FormData();
   formData.append("pdf", file);
   formData.append("useCache", useCache ? "true" : "false");
@@ -288,7 +288,7 @@ export async function processPDFWithMistralOCR(
   options: { skipQualityCheck?: boolean, useCache?: boolean } = {}
 ): Promise<any> {
   try {
-    const { skipQualityCheck = false, useCache = true } = options;
+    const { skipQualityCheck = false, useCache = false } = options;
     
     // Validar tipo de arquivo
     if (!file.type.includes('pdf')) {
@@ -362,7 +362,7 @@ export async function processReservationFile(
   } = {}
 ): Promise<UploadResponse> {
   try {
-    const { useCache = true, skipQualityCheck = false, onProgress } = options;
+    const { useCache = false, skipQualityCheck = false, onProgress } = options;
     
     // Verificar se é PDF
     if (!file.type.includes('pdf')) {
@@ -547,7 +547,7 @@ export async function processMultiplePDFs(
   } = {}
 ): Promise<any[]> {
   try {
-    const { useCache = true, skipQualityCheck = false } = options;
+    const { useCache = false, skipQualityCheck = false } = options;
     
     // Validar número de arquivos
     if (!files.length) {
