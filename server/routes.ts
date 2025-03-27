@@ -3316,6 +3316,207 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Registrar as rotas de processamento de voz e áudio
   registerSpeechRoutes(app);
 
+  // Rotas de teste para desenvolvimento
+  
+  // Endpoint para teste do rate limiter com função limitada
+  app.post("/api/test/rate-limited-function", async (req: Request, res: Response) => {
+    const { id, forceDelay = 500, skipCache = false } = req.body;
+    
+    try {
+      // Importar o serviço de rate limiter
+      const { rateLimiter } = await import('./services/rate-limiter.service');
+      
+      // Horário de início da requisição
+      const requestStart = Date.now();
+      console.log(`🔄 Processando requisição rate-limited ${id}...`);
+      
+      // Função a ser limitada por taxa
+      const limitedFunction = async (args: any): Promise<any> => {
+        // Simular processamento
+        console.log(`⏳ Função limitada ${id} iniciando processamento...`);
+        
+        // Simular atraso da API
+        await new Promise(resolve => setTimeout(resolve, forceDelay));
+        
+        console.log(`✅ Função limitada ${id} concluída após ${forceDelay}ms`);
+        
+        // Retornar resultado simulado
+        return {
+          result: `Resultado da requisição ${id}`,
+          processingTime: forceDelay,
+          timestamp: new Date().toISOString(),
+          args
+        };
+      };
+      
+      // Aplicar rate limiting à função
+      const rateLimitedFunc = rateLimiter.rateLimitedFunction(
+        limitedFunction,
+        `testRateLimited-${skipCache ? 'noCache' : 'withCache'}`, 
+        60000 // 1 minuto de TTL para o cache
+      );
+      
+      // Invocar a função com rate limiting
+      const cacheKey = `test-key-${id}`;
+      const result = await rateLimitedFunc({ id, cacheKey });
+      
+      // Calcular tempo total
+      const totalTime = Date.now() - requestStart;
+      
+      // Determinar se foi cache hit baseado no tempo
+      const isCacheHit = totalTime < forceDelay * 0.5;
+      
+      console.log(`✅ Requisição ${id} completada em ${totalTime}ms (${isCacheHit ? 'cache hit' : 'sem cache'})`);
+      
+      return res.json({
+        success: true,
+        id,
+        processingTime: totalTime,
+        actualDelay: forceDelay,
+        result,
+        cacheHit: isCacheHit
+      });
+    } catch (error: any) {
+      console.error(`❌ Erro na requisição rate-limited ${id}:`, error);
+      return res.status(500).json({
+        success: false,
+        id,
+        error: error.message
+      });
+    }
+  });
+  
+  // Endpoint para teste do rate limiter com atraso explícito
+  app.post("/api/test/delayed-request", async (req: Request, res: Response) => {
+    const { id, delayMs = 500 } = req.body;
+    
+    try {
+      console.log(`📝 Requisição ${id} recebida. Aguardando ${delayMs}ms...`);
+      
+      // Simular uma chamada de API que leva tempo para responder
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+      
+      const timestamp = new Date().toISOString();
+      console.log(`✅ Requisição ${id} concluída após ${delayMs}ms`);
+      
+      return res.json({
+        success: true,
+        id,
+        message: `Requisição ${id} processada com sucesso`,
+        timestamp,
+        delayMs
+      });
+    } catch (error: any) {
+      console.error(`❌ Erro na requisição ${id}:`, error);
+      return res.status(500).json({
+        success: false,
+        id,
+        error: error.message
+      });
+    }
+  });
+  
+  // Endpoint para limpar o cache do rate limiter
+  app.post("/api/test/clear-cache", async (req: Request, res: Response) => {
+    const { methodPattern } = req.body;
+    
+    try {
+      // Importar o serviço de rate limiter
+      const { rateLimiter } = await import('./services/rate-limiter.service');
+      
+      if (methodPattern) {
+        rateLimiter.clearCacheByMethod(methodPattern);
+        return res.json({
+          success: true,
+          message: `Cache limpo para método: ${methodPattern}`
+        });
+      } else {
+        rateLimiter.clearCache();
+        return res.json({
+          success: true,
+          message: 'Cache limpo completamente'
+        });
+      }
+    } catch (error: any) {
+      console.error('Erro ao limpar cache:', error);
+      return res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+  });
+  
+  app.post("/api/test/gemini/generate-text", async (req: Request, res: Response) => {
+    const { prompt, temperature = 0.3, maxTokens } = req.body;
+    
+    if (!prompt) {
+      return res.status(400).json({ success: false, error: 'Prompt é obrigatório' });
+    }
+    
+    try {
+      // Registrar timestamp inicial
+      const startTime = Date.now();
+      
+      // Usar o aiService diretamente
+      // O aiService já encapsula o GeminiService internamente
+      const text = await aiService.generateText({
+        prompt,
+        temperature,
+        maxTokens
+      });
+      
+      // Calcular tempo de execução
+      const executionTime = Date.now() - startTime;
+      
+      // Determinar se foi um cache hit baseado no tempo de execução
+      const cacheHit = executionTime < 100;
+      
+      return res.json({
+        success: true,
+        text,
+        executionTime,
+        cacheHit
+      });
+    } catch (error: any) {
+      console.error('Erro ao gerar texto:', error);
+      return res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+  });
+
+  // Endpoint para testar processamento de PDF
+  app.post("/api/test/process-pdf", pdfUpload.single('file'), async (req: Request, res: Response) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ success: false, error: 'Arquivo PDF é obrigatório' });
+      }
+      
+      console.log(`Processando arquivo: ${req.file.path}`);
+      
+      // Ler arquivo do disco
+      const pdfBuffer = fs.readFileSync(req.file.path);
+      const pdfBase64 = pdfBuffer.toString('base64');
+      
+      // Usar o aiService diretamente para extrair texto
+      const text = await aiService.extractTextFromPDF(pdfBase64);
+      
+      return res.json({
+        success: true,
+        text,
+        fileName: req.file.originalname,
+        fileSize: req.file.size
+      });
+    } catch (error: any) {
+      console.error('Erro ao processar PDF:', error);
+      return res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

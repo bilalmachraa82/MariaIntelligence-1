@@ -10,6 +10,8 @@
 // Importações necessárias
 // Descomentar quando a biblioteca @google/generative-ai estiver disponível
 // import { GoogleGenerativeAI, GenerativeModel, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
+import { rateLimiter } from './rate-limiter.service';
+import crypto from 'crypto';
 
 // Interface para tipos de modelos disponíveis
 export enum GeminiModel {
@@ -424,68 +426,89 @@ export class GeminiService {
   async extractTextFromPDF(pdfBase64: string): Promise<string> {
     this.checkInitialization();
     
-    try {
-      // Truncar o PDF se for muito grande para evitar limites de token
-      const truncatedPdfBase64 = pdfBase64.length > 500000 
-        ? pdfBase64.substring(0, 500000) + "..." 
-        : pdfBase64;
-      
-      // Use o modelo padrão para documentos extensos com retry
-      const result = await this.withRetry(async () => {
-        return await this.defaultModel.generateContent({
-          contents: [
-            {
-              role: 'user',
-              parts: [
-                { 
-                  text: `Você é um especialista em OCR. Extraia todo o texto visível deste documento PDF em base64, 
-                  organizando o texto por seções. Preserve tabelas e formatação estruturada.
-                  Preste atenção especial em datas, valores monetários e informações de contato.`
-                },
-                { 
-                  inlineData: { 
-                    mimeType: 'application/pdf', 
-                    data: truncatedPdfBase64 
-                  } 
-                }
-              ]
-            }
-          ]
-        });
-      });
-      
-      return result.response.text();
-    } catch (error: any) {
-      console.error("Erro ao extrair texto do PDF com Gemini:", error);
-      
-      // Tentar extrair parte do PDF se o erro for relacionado ao tamanho
-      if (error.message?.includes("content too long")) {
-        try {
-          const result = await this.flashModel.generateContent({
+    // Criar a função que fará a chamada à API
+    const extractTextFn = async (): Promise<string> => {
+      try {
+        // Truncar o PDF se for muito grande para evitar limites de token
+        const truncatedPdfBase64 = pdfBase64.length > 500000 
+          ? pdfBase64.substring(0, 500000) + "..." 
+          : pdfBase64;
+        
+        // Use o modelo padrão para documentos extensos com retry
+        const result = await this.withRetry(async () => {
+          return await this.defaultModel.generateContent({
             contents: [
               {
                 role: 'user',
                 parts: [
-                  { text: 'Extraia o texto das primeiras páginas deste PDF:' },
+                  { 
+                    text: `Você é um especialista em OCR. Extraia todo o texto visível deste documento PDF em base64, 
+                    organizando o texto por seções. Preserve tabelas e formatação estruturada.
+                    Preste atenção especial em datas, valores monetários e informações de contato.`
+                  },
                   { 
                     inlineData: { 
                       mimeType: 'application/pdf', 
-                      data: pdfBase64.substring(0, 100000) 
+                      data: truncatedPdfBase64 
                     } 
                   }
                 ]
               }
             ]
           });
-          
-          return result.response.text() + "\n[NOTA: Documento truncado devido ao tamanho]";
-        } catch (fallbackError) {
-          console.error("Erro também na extração reduzida:", fallbackError);
+        });
+        
+        return result.response.text();
+      } catch (error: any) {
+        console.error("Erro ao extrair texto do PDF com Gemini:", error);
+        
+        // Tentar extrair parte do PDF se o erro for relacionado ao tamanho
+        if (error.message?.includes("content too long")) {
+          try {
+            const result = await this.flashModel.generateContent({
+              contents: [
+                {
+                  role: 'user',
+                  parts: [
+                    { text: 'Extraia o texto das primeiras páginas deste PDF:' },
+                    { 
+                      inlineData: { 
+                        mimeType: 'application/pdf', 
+                        data: pdfBase64.substring(0, 100000) 
+                      } 
+                    }
+                  ]
+                }
+              ]
+            });
+            
+            return result.response.text() + "\n[NOTA: Documento truncado devido ao tamanho]";
+          } catch (fallbackError) {
+            console.error("Erro também na extração reduzida:", fallbackError);
+          }
         }
+        
+        throw new Error(`Falha na extração de texto: ${error.message}`);
       }
-      
-      throw new Error(`Falha na extração de texto: ${error.message}`);
-    }
+    };
+    
+    // Calcular hash MD5 do PDF para usar como parte da chave de cache
+    // Isso permite identificar PDFs idênticos mesmo se o nome for diferente
+    const pdfHash = crypto
+      .createHash('md5')
+      .update(pdfBase64.substring(0, 10000)) // Usar apenas os primeiros 10KB para o hash
+      .digest('hex');
+    
+    // Usar o rate limiter para controlar as chamadas à API
+    // Usar um TTL de cache mais longo para PDFs (30 minutos) já que o conteúdo não muda
+    const rateLimitedExtract = rateLimiter.rateLimitedFunction(
+      extractTextFn,
+      `extractTextFromPDF-${pdfHash}`,
+      30 * 60 * 1000 // 30 minutos de TTL no cache
+    );
+    
+    // Executar a função com controle de taxa
+    return rateLimitedExtract();
   }
 
   /**
@@ -498,70 +521,91 @@ export class GeminiService {
   async extractTextFromImage(imageBase64: string, mimeType: string = "image/jpeg"): Promise<string> {
     this.checkInitialization();
     
-    try {
-      // Verificar tamanho da imagem para evitar problemas com limites da API
-      if (imageBase64.length > 1000000) {
-        console.warn("Imagem muito grande, truncando para evitar limites de token");
-        imageBase64 = imageBase64.substring(0, 1000000);
-      }
-      
-      // Usar o modelo de visão para extrair texto da imagem com retry
-      const result = await this.withRetry(async () => {
-        return await this.visionModel.generateContent({
-          contents: [
-            {
-              role: 'user',
-              parts: [
-                { 
-                  text: `Extraia todo o texto visível nesta imagem, incluindo números, datas, nomes e valores monetários. 
-                  Preste atenção especial a detalhes como informações de check-in/check-out, valor total e nome do hóspede. 
-                  Preserve a estrutura do documento na sua resposta.` 
-                },
-                { 
-                  inlineData: { 
-                    mimeType: mimeType, 
-                    data: imageBase64 
-                  } 
-                }
-              ]
-            }
-          ]
-        });
-      });
-      
-      return result.response.text();
-    } catch (error: any) {
-      console.error("Erro ao extrair texto da imagem com Gemini:", error);
-      
-      // Tentar com configurações reduzidas em caso de erro
+    // Criar a função que fará a chamada à API
+    const extractImageTextFn = async (): Promise<string> => {
       try {
-        const result = await this.visionModel.generateContent({
-          contents: [
-            {
-              role: 'user',
-              parts: [
-                { text: 'Extraia o texto principal desta imagem.' },
-                { 
-                  inlineData: { 
-                    mimeType: mimeType, 
-                    data: imageBase64.substring(0, 500000)
-                  } 
-                }
-              ]
-            }
-          ],
-          generationConfig: {
-            temperature: 0.1,
-            maxOutputTokens: 1000
-          }
+        // Verificar tamanho da imagem para evitar problemas com limites da API
+        if (imageBase64.length > 1000000) {
+          console.warn("Imagem muito grande, truncando para evitar limites de token");
+          imageBase64 = imageBase64.substring(0, 1000000);
+        }
+        
+        // Usar o modelo de visão para extrair texto da imagem com retry
+        const result = await this.withRetry(async () => {
+          return await this.visionModel.generateContent({
+            contents: [
+              {
+                role: 'user',
+                parts: [
+                  { 
+                    text: `Extraia todo o texto visível nesta imagem, incluindo números, datas, nomes e valores monetários. 
+                    Preste atenção especial a detalhes como informações de check-in/check-out, valor total e nome do hóspede. 
+                    Preserve a estrutura do documento na sua resposta.` 
+                  },
+                  { 
+                    inlineData: { 
+                      mimeType: mimeType, 
+                      data: imageBase64 
+                    } 
+                  }
+                ]
+              }
+            ]
+          });
         });
         
-        return result.response.text() + "\n[NOTA: Processamento com qualidade reduzida]";
-      } catch (fallbackError) {
-        console.error("Erro também no processamento de fallback:", fallbackError);
-        throw new Error(`Falha na extração de texto da imagem: ${error.message}`);
+        return result.response.text();
+      } catch (error: any) {
+        console.error("Erro ao extrair texto da imagem com Gemini:", error);
+        
+        // Tentar com configurações reduzidas em caso de erro
+        try {
+          const result = await this.visionModel.generateContent({
+            contents: [
+              {
+                role: 'user',
+                parts: [
+                  { text: 'Extraia o texto principal desta imagem.' },
+                  { 
+                    inlineData: { 
+                      mimeType: mimeType, 
+                      data: imageBase64.substring(0, 500000)
+                    } 
+                  }
+                ]
+              }
+            ],
+            generationConfig: {
+              temperature: 0.1,
+              maxOutputTokens: 1000
+            }
+          });
+          
+          return result.response.text() + "\n[NOTA: Processamento com qualidade reduzida]";
+        } catch (fallbackError) {
+          console.error("Erro também no processamento de fallback:", fallbackError);
+          throw new Error(`Falha na extração de texto da imagem: ${error.message}`);
+        }
       }
-    }
+    };
+    
+    // Calcular hash MD5 da imagem para usar como parte da chave de cache
+    // Isso permite identificar imagens idênticas mesmo se o nome for diferente
+    const imageHash = crypto
+      .createHash('md5')
+      .update(imageBase64.substring(0, 5000)) // Usar apenas os primeiros 5KB para o hash
+      .digest('hex');
+    
+    // Usar o rate limiter para controlar as chamadas à API
+    // Usar um TTL de cache mais longo para imagens (20 minutos) já que o conteúdo não muda
+    const rateLimitedExtract = rateLimiter.rateLimitedFunction(
+      extractImageTextFn,
+      `extractTextFromImage-${imageHash}`,
+      20 * 60 * 1000 // 20 minutos de TTL no cache
+    );
+    
+    // Executar a função com controle de taxa
+    return rateLimitedExtract();
   }
 
   /**
@@ -573,68 +617,89 @@ export class GeminiService {
   async parseReservationData(text: string): Promise<any> {
     this.checkInitialization();
     
-    try {
-      const result = await this.withRetry(async () => {
-        const response = await this.defaultModel.generateContent({
-          contents: [
-            {
-              role: 'user',
-              parts: [{ 
-                text: `Você é um especialista em extrair dados estruturados de textos de reservas.
-                Use o formato de data ISO (YYYY-MM-DD) para todas as datas.
-                Converta valores monetários para números decimais sem símbolos de moeda.
-                Se algum campo estiver ausente no texto, deixe-o como null ou string vazia.
-                Atribua a plataforma correta (airbnb/booking/direct/expedia/other) com base no contexto.
-                
-                Analise este texto de reserva e extraia as informações em formato JSON com os campos: 
-                propertyName, guestName, guestEmail, guestPhone, checkInDate (YYYY-MM-DD), checkOutDate (YYYY-MM-DD), 
-                numGuests, totalAmount, platform (airbnb/booking/direct/expedia/other), platformFee, cleaningFee, 
-                checkInFee, commissionFee, teamPayment.
-                
-                Se o texto contiver informação sobre várias propriedades, identifique corretamente qual é a propriedade 
-                que está sendo reservada.
-                
-                Texto da reserva:
-                ${text}`
-              }]
+    // Criar a função que fará a chamada à API
+    const parseDataFn = async (): Promise<any> => {
+      try {
+        const result = await this.withRetry(async () => {
+          const response = await this.defaultModel.generateContent({
+            contents: [
+              {
+                role: 'user',
+                parts: [{ 
+                  text: `Você é um especialista em extrair dados estruturados de textos de reservas.
+                  Use o formato de data ISO (YYYY-MM-DD) para todas as datas.
+                  Converta valores monetários para números decimais sem símbolos de moeda.
+                  Se algum campo estiver ausente no texto, deixe-o como null ou string vazia.
+                  Atribua a plataforma correta (airbnb/booking/direct/expedia/other) com base no contexto.
+                  
+                  Analise este texto de reserva e extraia as informações em formato JSON com os campos: 
+                  propertyName, guestName, guestEmail, guestPhone, checkInDate (YYYY-MM-DD), checkOutDate (YYYY-MM-DD), 
+                  numGuests, totalAmount, platform (airbnb/booking/direct/expedia/other), platformFee, cleaningFee, 
+                  checkInFee, commissionFee, teamPayment.
+                  
+                  Se o texto contiver informação sobre várias propriedades, identifique corretamente qual é a propriedade 
+                  que está sendo reservada.
+                  
+                  Texto da reserva:
+                  ${text}`
+                }]
+              }
+            ],
+            generationConfig: {
+              temperature: 0.1,
             }
-          ],
-          generationConfig: {
-            temperature: 0.1,
+          });
+          return response;
+        });
+        
+        const content = result.response.text();
+        
+        // Tentar analisar o JSON com tratamento de erros
+        let parsedData;
+        try {
+          // Extrair apenas a parte JSON da resposta
+          const jsonMatch = content.match(/\{[\s\S]*\}/);
+          const jsonString = jsonMatch ? jsonMatch[0] : content;
+          parsedData = JSON.parse(jsonString);
+        } catch (jsonError) {
+          console.error("Erro ao analisar JSON da resposta:", jsonError);
+          return {}; // Retornar objeto vazio em caso de erro no parsing
+        }
+        
+        // Garantir que os campos numéricos sejam processados corretamente
+        const numericFields = ['totalAmount', 'platformFee', 'cleaningFee', 'checkInFee', 'commissionFee', 'teamPayment', 'numGuests'];
+        numericFields.forEach(field => {
+          if (parsedData[field]) {
+            // Remover símbolos de moeda e converter para string
+            const value = String(parsedData[field]).replace(/[€$£,]/g, '');
+            parsedData[field] = value;
           }
         });
-        return response;
-      });
-      
-      const content = result.response.text();
-      
-      // Tentar analisar o JSON com tratamento de erros
-      let parsedData;
-      try {
-        // Extrair apenas a parte JSON da resposta
-        const jsonMatch = content.match(/\{[\s\S]*\}/);
-        const jsonString = jsonMatch ? jsonMatch[0] : content;
-        parsedData = JSON.parse(jsonString);
-      } catch (jsonError) {
-        console.error("Erro ao analisar JSON da resposta:", jsonError);
-        return {}; // Retornar objeto vazio em caso de erro no parsing
+        
+        return parsedData;
+      } catch (error: any) {
+        console.error("Erro ao extrair dados da reserva com Gemini:", error);
+        throw new Error(`Falha na extração de dados: ${error.message}`);
       }
-      
-      // Garantir que os campos numéricos sejam processados corretamente
-      const numericFields = ['totalAmount', 'platformFee', 'cleaningFee', 'checkInFee', 'commissionFee', 'teamPayment', 'numGuests'];
-      numericFields.forEach(field => {
-        if (parsedData[field]) {
-          // Remover símbolos de moeda e converter para string
-          const value = String(parsedData[field]).replace(/[€$£,]/g, '');
-          parsedData[field] = value;
-        }
-      });
-      
-      return parsedData;
-    } catch (error: any) {
-      console.error("Erro ao extrair dados da reserva com Gemini:", error);
-      throw new Error(`Falha na extração de dados: ${error.message}`);
-    }
+    };
+    
+    // Calcular hash MD5 do texto para usar como parte da chave de cache
+    // Usar uma versão mais curta do texto para o hash, pois o texto completo pode ser muito longo
+    // Isso permite identificar textos semelhantes para o cache
+    const textHash = crypto
+      .createHash('md5')
+      .update(text.substring(0, 2000)) // Usar apenas os primeiros 2000 caracteres para o hash
+      .digest('hex');
+    
+    // Usar o rate limiter para controlar as chamadas à API
+    const rateLimitedParse = rateLimiter.rateLimitedFunction(
+      parseDataFn,
+      `parseReservationData-${textHash}`,
+      15 * 60 * 1000 // 15 minutos de TTL no cache
+    );
+    
+    // Executar a função com controle de taxa
+    return rateLimitedParse();
   }
 
   /**
@@ -647,58 +712,83 @@ export class GeminiService {
   async validateReservationData(data: any, propertyRules: any): Promise<any> {
     this.checkInitialization();
     
-    try {
-      const result = await this.withRetry(async () => {
-        return await this.defaultModel.generateContent({
-          contents: [
-            {
-              role: 'user',
-              parts: [{ 
-                text: `Você é um especialista em validação de dados de reservas.
-                Verifique inconsistências, valores faltantes e problemas potenciais.
-                Sugira correções quando necessário, mantendo os dados originais quando possível.
-                Verifique especialmente as datas (formato YYYY-MM-DD) e valores monetários.
-                
-                Valide estes dados de reserva contra as regras da propriedade e sugira correções se necessário:
-                
-                Dados: ${JSON.stringify(data)}
-                
-                Regras: ${JSON.stringify(propertyRules)}
-                
-                Retorne um objeto JSON com:
-                - valid: booleano indicando se os dados são válidos
-                - data: objeto com os dados corrigidos
-                - issues: array de strings descrevendo problemas encontrados
-                - corrections: array de strings descrevendo correções aplicadas`
-              }]
-            }
-          ],
-          generationConfig: {
-            temperature: 0.1,
-          }
-        });
-      });
-      
-      const content = result.response.text();
-      
-      // Tentar analisar o JSON com tratamento de erros
+    // Criar a função que fará a chamada à API
+    const validateDataFn = async (): Promise<any> => {
       try {
-        const jsonMatch = content.match(/\{[\s\S]*\}/);
-        const jsonString = jsonMatch ? jsonMatch[0] : content;
-        return JSON.parse(jsonString);
-      } catch (jsonError) {
-        console.error("Erro ao analisar JSON da validação:", jsonError);
-        return {
-          valid: false,
-          data: data,
-          issues: ["Erro ao analisar resposta de validação"],
-          corrections: []
-        };
+        const result = await this.withRetry(async () => {
+          return await this.defaultModel.generateContent({
+            contents: [
+              {
+                role: 'user',
+                parts: [{ 
+                  text: `Você é um especialista em validação de dados de reservas.
+                  Verifique inconsistências, valores faltantes e problemas potenciais.
+                  Sugira correções quando necessário, mantendo os dados originais quando possível.
+                  Verifique especialmente as datas (formato YYYY-MM-DD) e valores monetários.
+                  
+                  Valide estes dados de reserva contra as regras da propriedade e sugira correções se necessário:
+                  
+                  Dados: ${JSON.stringify(data)}
+                  
+                  Regras: ${JSON.stringify(propertyRules)}
+                  
+                  Retorne um objeto JSON com:
+                  - valid: booleano indicando se os dados são válidos
+                  - data: objeto com os dados corrigidos
+                  - issues: array de strings descrevendo problemas encontrados
+                  - corrections: array de strings descrevendo correções aplicadas`
+                }]
+              }
+            ],
+            generationConfig: {
+              temperature: 0.1,
+            }
+          });
+        });
+        
+        const content = result.response.text();
+        
+        // Tentar analisar o JSON com tratamento de erros
+        try {
+          const jsonMatch = content.match(/\{[\s\S]*\}/);
+          const jsonString = jsonMatch ? jsonMatch[0] : content;
+          return JSON.parse(jsonString);
+        } catch (jsonError) {
+          console.error("Erro ao analisar JSON da validação:", jsonError);
+          return {
+            valid: false,
+            data: data,
+            issues: ["Erro ao analisar resposta de validação"],
+            corrections: []
+          };
+        }
+      } catch (error: any) {
+        console.error("Erro ao validar dados da reserva com Gemini:", error);
+        throw new Error(`Falha na validação: ${error.message}`);
       }
-    } catch (error: any) {
-      console.error("Erro ao validar dados da reserva com Gemini:", error);
-      throw new Error(`Falha na validação: ${error.message}`);
-    }
+    };
+    
+    // Calcular hash para usar como parte da chave de cache
+    // Usando tanto os dados quanto as regras para garantir unicidade
+    const dataHash = crypto
+      .createHash('md5')
+      .update(JSON.stringify(data))
+      .digest('hex');
+      
+    const rulesHash = crypto
+      .createHash('md5')
+      .update(JSON.stringify(propertyRules))
+      .digest('hex');
+    
+    // Usar o rate limiter para controlar as chamadas à API
+    const rateLimitedValidate = rateLimiter.rateLimitedFunction(
+      validateDataFn,
+      `validateReservationData-${dataHash.substring(0, 8)}-${rulesHash.substring(0, 8)}`,
+      10 * 60 * 1000 // 10 minutos de TTL no cache
+    );
+    
+    // Executar a função com controle de taxa
+    return rateLimitedValidate();
   }
   
   /**
@@ -710,57 +800,77 @@ export class GeminiService {
   async classifyDocument(text: string): Promise<any> {
     this.checkInitialization();
     
-    try {
-      // Usar o modelo mais rápido para classificação
-      const result = await this.withRetry(async () => {
-        return await this.flashModel.generateContent({
-          contents: [
-            {
-              role: 'user',
-              parts: [{ 
-                text: `Classifique o tipo deste documento com base no texto extraído. 
-                Possíveis categorias: reserva_airbnb, reserva_booking, reserva_expedia, reserva_direta, 
-                contrato_aluguel, fatura, recibo, documento_identificacao, outro.
-                
-                Retorne apenas um objeto JSON com: 
-                - type: string (o tipo de documento)
-                - confidence: number (confiança de 0 a 1)
-                - details: string (detalhes adicionais sobre o documento)
-                
-                Texto do documento:
-                ${text.substring(0, 3000)}` // Limitar tamanho para classificação
-              }]
-            }
-          ],
-          generationConfig: {
-            temperature: 0.1,
-          }
-        });
-      });
-      
-      const content = result.response.text();
-      
-      // Tentar analisar o JSON com tratamento de erros
+    // Criar a função que fará a chamada à API
+    const classifyDocumentFn = async (): Promise<any> => {
       try {
-        const jsonMatch = content.match(/\{[\s\S]*\}/);
-        const jsonString = jsonMatch ? jsonMatch[0] : content;
-        return JSON.parse(jsonString);
-      } catch (jsonError) {
-        console.error("Erro ao analisar JSON da classificação:", jsonError);
+        // Usar o modelo mais rápido para classificação
+        const result = await this.withRetry(async () => {
+          return await this.flashModel.generateContent({
+            contents: [
+              {
+                role: 'user',
+                parts: [{ 
+                  text: `Classifique o tipo deste documento com base no texto extraído. 
+                  Possíveis categorias: reserva_airbnb, reserva_booking, reserva_expedia, reserva_direta, 
+                  contrato_aluguel, fatura, recibo, documento_identificacao, outro.
+                  
+                  Retorne apenas um objeto JSON com: 
+                  - type: string (o tipo de documento)
+                  - confidence: number (confiança de 0 a 1)
+                  - details: string (detalhes adicionais sobre o documento)
+                  
+                  Texto do documento:
+                  ${text.substring(0, 3000)}` // Limitar tamanho para classificação
+                }]
+              }
+            ],
+            generationConfig: {
+              temperature: 0.1,
+            }
+          });
+        });
+        
+        const content = result.response.text();
+        
+        // Tentar analisar o JSON com tratamento de erros
+        try {
+          const jsonMatch = content.match(/\{[\s\S]*\}/);
+          const jsonString = jsonMatch ? jsonMatch[0] : content;
+          return JSON.parse(jsonString);
+        } catch (jsonError) {
+          console.error("Erro ao analisar JSON da classificação:", jsonError);
+          return { 
+            type: "desconhecido", 
+            confidence: 0, 
+            details: "Erro ao analisar resposta de classificação" 
+          };
+        }
+      } catch (error: any) {
+        console.error("Erro na classificação do documento com Gemini:", error);
         return { 
           type: "desconhecido", 
           confidence: 0, 
-          details: "Erro ao analisar resposta de classificação" 
+          details: `Erro na classificação: ${error.message}` 
         };
       }
-    } catch (error: any) {
-      console.error("Erro na classificação do documento com Gemini:", error);
-      return { 
-        type: "desconhecido", 
-        confidence: 0, 
-        details: `Erro na classificação: ${error.message}` 
-      };
-    }
+    };
+    
+    // Calcular hash MD5 do texto para usar como parte da chave de cache
+    // Isso permite identificar textos semelhantes para o cache
+    const textHash = crypto
+      .createHash('md5')
+      .update(text.substring(0, 1000)) // Usar apenas os primeiros 1000 caracteres para o hash
+      .digest('hex');
+    
+    // Usar o rate limiter para controlar as chamadas à API
+    const rateLimitedClassify = rateLimiter.rateLimitedFunction(
+      classifyDocumentFn,
+      `classifyDocument-${textHash}`,
+      10 * 60 * 1000 // 10 minutos de TTL no cache
+    );
+    
+    // Executar a função com controle de taxa
+    return rateLimitedClassify();
   }
   
   /**
@@ -773,71 +883,90 @@ export class GeminiService {
   async analyzeDocumentVisually(fileBase64: string, mimeType: string): Promise<any> {
     this.checkInitialization();
     
-    try {
-      // Truncar dados se muito grandes
-      const truncatedBase64 = fileBase64.length > 500000 
-        ? fileBase64.substring(0, 500000) 
-        : fileBase64;
-      
-      const result = await this.withRetry(async () => {
-        return await this.visionModel.generateContent({
-          contents: [
-            { 
-              role: 'user', 
-              parts: [
-                { 
-                  text: `Analise visualmente este documento e identifique:
-                  1. Qual plataforma emitiu este documento? (Airbnb, Booking.com, Expedia, outro?)
-                  2. Existe algum logo ou marca d'água identificável?
-                  3. Qual é o formato/layout geral do documento?
-                  4. É uma reserva, fatura, recibo ou outro tipo de documento?
-                  
-                  Responda em formato JSON com: platform, hasLogo, documentType, layout, confidence (de 0 a 1).`
-                },
-                { 
-                  inlineData: { 
-                    mimeType: mimeType, 
-                    data: truncatedBase64
-                  } 
-                }
-              ]
-            }
-          ],
-          generationConfig: {
-            temperature: 0.1,
-            maxOutputTokens: 600,
-          }
-        });
-      });
-      
-      const content = result.response.text();
-      
-      // Tentar analisar o JSON com tratamento de erros
+    // Criar a função que fará a chamada à API
+    const analyzeVisuallyFn = async (): Promise<any> => {
       try {
-        const jsonMatch = content.match(/\{[\s\S]*\}/);
-        const jsonString = jsonMatch ? jsonMatch[0] : content;
-        return JSON.parse(jsonString);
-      } catch (jsonError) {
-        console.error("Erro ao analisar JSON da análise visual:", jsonError);
+        // Truncar dados se muito grandes
+        const truncatedBase64 = fileBase64.length > 500000 
+          ? fileBase64.substring(0, 500000) 
+          : fileBase64;
+        
+        const result = await this.withRetry(async () => {
+          return await this.visionModel.generateContent({
+            contents: [
+              { 
+                role: 'user', 
+                parts: [
+                  { 
+                    text: `Analise visualmente este documento e identifique:
+                    1. Qual plataforma emitiu este documento? (Airbnb, Booking.com, Expedia, outro?)
+                    2. Existe algum logo ou marca d'água identificável?
+                    3. Qual é o formato/layout geral do documento?
+                    4. É uma reserva, fatura, recibo ou outro tipo de documento?
+                    
+                    Responda em formato JSON com: platform, hasLogo, documentType, layout, confidence (de 0 a 1).`
+                  },
+                  { 
+                    inlineData: { 
+                      mimeType: mimeType, 
+                      data: truncatedBase64
+                    } 
+                  }
+                ]
+              }
+            ],
+            generationConfig: {
+              temperature: 0.1,
+              maxOutputTokens: 600,
+            }
+          });
+        });
+        
+        const content = result.response.text();
+        
+        // Tentar analisar o JSON com tratamento de erros
+        try {
+          const jsonMatch = content.match(/\{[\s\S]*\}/);
+          const jsonString = jsonMatch ? jsonMatch[0] : content;
+          return JSON.parse(jsonString);
+        } catch (jsonError) {
+          console.error("Erro ao analisar JSON da análise visual:", jsonError);
+          return { 
+            platform: "unknown", 
+            hasLogo: false, 
+            documentType: "unknown",
+            layout: "unknown",
+            confidence: 0
+          };
+        }
+      } catch (error: any) {
+        console.error("Erro na análise visual com Gemini:", error);
         return { 
-          platform: "unknown", 
+          platform: "error", 
           hasLogo: false, 
-          documentType: "unknown",
-          layout: "unknown",
-          confidence: 0
+          documentType: "error",
+          layout: "error",
+          confidence: 0,
+          error: error.message
         };
       }
-    } catch (error: any) {
-      console.error("Erro na análise visual com Gemini:", error);
-      return { 
-        platform: "error", 
-        hasLogo: false, 
-        documentType: "error",
-        layout: "error",
-        confidence: 0,
-        error: error.message
-      };
-    }
+    };
+    
+    // Calcular hash MD5 do documento para usar como parte da chave de cache
+    const docHash = crypto
+      .createHash('md5')
+      .update(fileBase64.substring(0, 5000)) // Usar apenas os primeiros 5KB para o hash
+      .digest('hex');
+    
+    // Usar o rate limiter para controlar as chamadas à API
+    const rateLimitedAnalyze = rateLimiter.rateLimitedFunction(
+      analyzeVisuallyFn,
+      `analyzeDocumentVisually-${docHash}`,
+      15 * 60 * 1000 // 15 minutos de TTL no cache
+    );
+    
+    // Executar a função com controle de taxa
+    return rateLimitedAnalyze();
   }
   
   /**
@@ -973,27 +1102,41 @@ export class GeminiService {
   async generateText(prompt: string, temperature: number = 0.3, maxTokens?: number): Promise<string> {
     this.checkInitialization();
     
-    try {
-      const result = await this.withRetry(async () => {
-        return await this.defaultModel.generateContent({
-          contents: [
-            {
-              role: 'user',
-              parts: [{ text: prompt }]
+    // Criar a função que fará a chamada à API
+    const generateTextFn = async (): Promise<string> => {
+      try {
+        const result = await this.withRetry(async () => {
+          return await this.defaultModel.generateContent({
+            contents: [
+              {
+                role: 'user',
+                parts: [{ text: prompt }]
+              }
+            ],
+            generationConfig: { 
+              temperature,
+              maxOutputTokens: maxTokens || 2048
             }
-          ],
-          generationConfig: { 
-            temperature,
-            maxOutputTokens: maxTokens || 2048
-          }
+          });
         });
-      });
-      
-      return result.response.text();
-    } catch (error: any) {
-      console.error("Erro ao gerar texto com Gemini:", error);
-      throw new Error(`Falha na geração de texto: ${error.message}`);
-    }
+        
+        return result.response.text();
+      } catch (error: any) {
+        console.error("Erro ao gerar texto com Gemini:", error);
+        throw new Error(`Falha na geração de texto: ${error.message}`);
+      }
+    };
+    
+    // Usar o rate limiter para controlar as chamadas à API
+    // O Gemini permite 5 chamadas por minuto para contas gratuitas
+    const rateLimitedGenerate = rateLimiter.rateLimitedFunction(
+      generateTextFn,
+      'generateText',
+      5 * 60 * 1000 // 5 minutos de TTL no cache
+    );
+    
+    // Executar a função com controle de taxa
+    return rateLimitedGenerate();
   }
   
   /**
@@ -1010,101 +1153,126 @@ export class GeminiService {
   ): Promise<any> {
     this.checkInitialization();
     
-    try {
-      console.log(`🧠 GeminiService: Aprendendo formato de documento...`);
-      
-      // Determinar o tipo de arquivo e técnica de extração apropriada
-      const isPDF = mimeType.includes('pdf');
-      
-      // Extrair texto do documento
-      let extractedText = '';
+    // Criar a função que fará a chamada à API
+    const learnFormatFn = async (): Promise<any> => {
       try {
-        if (isPDF) {
-          extractedText = await this.extractTextFromPDF(fileBase64);
-        } else if (mimeType.includes('image')) {
-          extractedText = await this.extractTextFromImage(fileBase64, mimeType);
-        } else {
-          throw new Error(`Tipo de documento não suportado: ${mimeType}`);
-        }
-      } catch (extractionError) {
-        console.warn(`Aviso: Erro na extração de texto, usando análise visual apenas`, extractionError);
-      }
-      
-      // Construir prompt especializado para reconhecimento de documentos
-      const prompt = `
-        Você é um especialista em reconhecimento de documentos.
-        Este é um novo formato de documento que precisamos aprender a interpretar.
+        console.log(`🧠 GeminiService: Aprendendo formato de documento...`);
         
-        Analise cuidadosamente o documento e extraia os seguintes campos:
-        ${fields.map(field => `- ${field}`).join('\n')}
+        // Determinar o tipo de arquivo e técnica de extração apropriada
+        const isPDF = mimeType.includes('pdf');
         
-        Além de extrair os dados, forneça:
-        1. Uma descrição do tipo/formato do documento
-        2. Identificadores visuais e textuais que permitem reconhecer este formato no futuro
-        3. Um nível de confiança para cada campo extraído (0-100%)
-        
-        Responda em formato JSON com as propriedades:
-        - data: objeto com os campos extraídos
-        - formatInfo: objeto com detalhes do formato (type, identifiers, description)
-        - confidence: número de 0 a 1 indicando a confiança geral da extração
-      `;
-      
-      // Usar o modelo de visão para análise completa (visual + texto)
-      const result = await this.withRetry(async () => {
-        return await this.visionModel.generateContent({
-          contents: [
-            {
-              role: 'user',
-              parts: [
-                { text: prompt },
-                { 
-                  inlineData: { 
-                    mimeType: mimeType, 
-                    data: fileBase64.length > 1000000 ? fileBase64.substring(0, 1000000) : fileBase64 
-                  } 
-                }
-              ]
-            }
-          ],
-          generationConfig: {
-            temperature: 0.2,
-            maxOutputTokens: 4096,
+        // Extrair texto do documento
+        let extractedText = '';
+        try {
+          if (isPDF) {
+            extractedText = await this.extractTextFromPDF(fileBase64);
+          } else if (mimeType.includes('image')) {
+            extractedText = await this.extractTextFromImage(fileBase64, mimeType);
+          } else {
+            throw new Error(`Tipo de documento não suportado: ${mimeType}`);
           }
+        } catch (extractionError) {
+          console.warn(`Aviso: Erro na extração de texto, usando análise visual apenas`, extractionError);
+        }
+        
+        // Construir prompt especializado para reconhecimento de documentos
+        const prompt = `
+          Você é um especialista em reconhecimento de documentos.
+          Este é um novo formato de documento que precisamos aprender a interpretar.
+          
+          Analise cuidadosamente o documento e extraia os seguintes campos:
+          ${fields.map(field => `- ${field}`).join('\n')}
+          
+          Além de extrair os dados, forneça:
+          1. Uma descrição do tipo/formato do documento
+          2. Identificadores visuais e textuais que permitem reconhecer este formato no futuro
+          3. Um nível de confiança para cada campo extraído (0-100%)
+          
+          Responda em formato JSON com as propriedades:
+          - data: objeto com os campos extraídos
+          - formatInfo: objeto com detalhes do formato (type, identifiers, description)
+          - confidence: número de 0 a 1 indicando a confiança geral da extração
+        `;
+        
+        // Usar o modelo de visão para análise completa (visual + texto)
+        const result = await this.withRetry(async () => {
+          return await this.visionModel.generateContent({
+            contents: [
+              {
+                role: 'user',
+                parts: [
+                  { text: prompt },
+                  { 
+                    inlineData: { 
+                      mimeType: mimeType, 
+                      data: fileBase64.length > 1000000 ? fileBase64.substring(0, 1000000) : fileBase64 
+                    } 
+                  }
+                ]
+              }
+            ],
+            generationConfig: {
+              temperature: 0.2,
+              maxOutputTokens: 4096,
+            }
+          });
         });
-      });
-      
-      const content = result.response.text();
-      
-      // Processar a resposta JSON
-      try {
-        const jsonMatch = content.match(/\{[\s\S]*\}/);
-        const jsonString = jsonMatch ? jsonMatch[0] : content;
-        const parsedResult = JSON.parse(jsonString);
         
-        console.log(`✅ GeminiService: Formato de documento aprendido com sucesso`);
+        const content = result.response.text();
         
-        // Adicionar o texto extraído ao resultado
-        return {
-          ...parsedResult,
-          rawText: extractedText
-        };
-      } catch (jsonError) {
-        console.error("Erro ao analisar resposta JSON:", jsonError);
-        return {
-          data: {},
-          formatInfo: {
-            type: "unknown",
-            description: "Formato desconhecido - erro na análise",
-            identifiers: []
-          },
-          confidence: 0,
-          rawText: extractedText,
-          error: "Falha ao analisar resposta"
-        };
+        // Processar a resposta JSON
+        try {
+          const jsonMatch = content.match(/\{[\s\S]*\}/);
+          const jsonString = jsonMatch ? jsonMatch[0] : content;
+          const parsedResult = JSON.parse(jsonString);
+          
+          console.log(`✅ GeminiService: Formato de documento aprendido com sucesso`);
+          
+          // Adicionar o texto extraído ao resultado
+          return {
+            ...parsedResult,
+            rawText: extractedText
+          };
+        } catch (jsonError) {
+          console.error("Erro ao analisar resposta JSON:", jsonError);
+          return {
+            data: {},
+            formatInfo: {
+              type: "unknown",
+              description: "Formato desconhecido - erro na análise",
+              identifiers: []
+            },
+            confidence: 0,
+            rawText: extractedText,
+            error: "Falha ao analisar resposta"
+          };
+        }
+      } catch (error: any) {
+        console.error("Erro ao aprender formato de documento:", error);
+        throw new Error(`Falha ao aprender formato: ${error.message}`);
       }
-    } catch (error: any) {
-      console.error("Erro ao aprender formato de documento:", error);
-      throw new Error(`Falha ao aprender formato: ${error.message}`);
-    }
+    };
+    
+    // Calcular hash MD5 dos campos e do documento para usar como parte da chave de cache
+    const fieldsHash = crypto
+      .createHash('md5')
+      .update(fields.join(','))
+      .digest('hex');
+      
+    const docHash = crypto
+      .createHash('md5')
+      .update(fileBase64.substring(0, 5000)) // Usar apenas os primeiros 5KB para o hash
+      .digest('hex');
+    
+    // Usar o rate limiter para controlar as chamadas à API
+    // Os dados de aprendizado são importantes e menos frequentes, então usamos um TTL mais longo
+    const rateLimitedLearn = rateLimiter.rateLimitedFunction(
+      learnFormatFn,
+      `learnDocumentFormat-${fieldsHash}-${docHash}`,
+      60 * 60 * 1000 // 60 minutos de TTL no cache
+    );
+    
+    // Executar a função com controle de taxa
+    return rateLimitedLearn();
   }
 }
