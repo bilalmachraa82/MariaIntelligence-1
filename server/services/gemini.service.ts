@@ -7,7 +7,8 @@
  * mantendo compatibilidade de interfaces para facilitar a migração
  */
 
-// Importações necessárias - comentadas para evitar erros até o pacote ser instalado
+// Importações necessárias
+// Descomentar quando a biblioteca @google/generative-ai estiver disponível
 // import { GoogleGenerativeAI, GenerativeModel, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
 
 // Interface para tipos de modelos disponíveis
@@ -122,7 +123,7 @@ export class GeminiService {
    * Implementa mocks mais avançados que podem retornar dados úteis
    */
   private mockInitialization(): void {
-    console.log("🔧 Inicializando GeminiService em modo mock (biblioteca não instalada)");
+    console.log("🔧 Inicializando GeminiService em modo mock (aguardando a instalação da biblioteca @google/generative-ai)");
     
     // Criar implementações mock mais avançadas para desenvolvimento
     this.genAI = {

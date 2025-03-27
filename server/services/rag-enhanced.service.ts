@@ -336,8 +336,16 @@ export class RagEnhancedService {
       
       // Salvar na base de dados
       if (db) {
+        // Garantir que a mensagem não seja nula
+        if (!conversationEntry.content) {
+          conversationEntry.content = ""; // Fornecer valor padrão para evitar violação de not-null
+        }
         await db.insert(conversationHistory).values(conversationEntry);
       } else {
+        // Garantir que a mensagem não seja nula
+        if (!conversationEntry.content) {
+          conversationEntry.content = ""; // Fornecer valor padrão para evitar violação de not-null
+        }
         await storage.saveConversationHistory(conversationEntry);
       }
       

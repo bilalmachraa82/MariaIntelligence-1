@@ -628,7 +628,12 @@ export async function mariaAssistant(req: Request, res: Response) {
     
     // Salvar a resposta do assistente no histórico de conversas
     try {
-      await ragService.saveConversationMessage(reply, "assistant");
+      // Verificar se a resposta não é nula antes de salvar
+      if (reply) {
+        await ragService.saveConversationMessage(reply, "assistant");
+      } else {
+        console.warn("Aviso: Tentativa de salvar resposta nula no histórico");
+      }
     } catch (saveError) {
       console.warn("Aviso: Não foi possível salvar resposta no histórico:", saveError);
       // Continuamos mesmo se falhar
