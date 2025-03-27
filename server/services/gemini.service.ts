@@ -1155,12 +1155,15 @@ export class GeminiService {
     // Criar a função que fará a chamada à API
     const generateTextFn = async (): Promise<string> => {
       try {
+        // Remover qualquer timestamp existente para evitar conflitos
+        const cleanPrompt = prompt.replace(/\nTimestamp: \d+$/g, '');
+        
         const result = await this.withRetry(async () => {
           return await this.defaultModel.generateContent({
             contents: [
               {
                 role: 'user',
-                parts: [{ text: prompt }]
+                parts: [{ text: cleanPrompt }]
               }
             ],
             generationConfig: { 
@@ -1177,11 +1180,19 @@ export class GeminiService {
       }
     };
     
+    // Gerar um identificador único baseado nos detalhes da solicitação, mas com o prompt limpo de timestamps
+    // Este identificador será usado como parte da chave de cache
+    const querySignature = crypto
+      .createHash('md5')
+      .update(prompt.replace(/\nTimestamp: \d+$/g, '') + temperature + (maxTokens || 2048))
+      .digest('hex')
+      .substring(0, 8);
+    
     // Usar o rate limiter para controlar as chamadas à API
     // O Gemini permite 5 chamadas por minuto para contas gratuitas
     const rateLimitedGenerate = rateLimiter.rateLimitedFunction(
       generateTextFn,
-      'generateText',
+      `generateText-${querySignature}`,
       5 * 60 * 1000 // 5 minutos de TTL no cache
     );
     

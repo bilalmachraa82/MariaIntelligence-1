@@ -578,23 +578,37 @@ export async function mariaAssistant(req: Request, res: Response) {
       // com ou sem função de reserva com base na intenção do usuário
       let response;
       
-      // Usar um método simples que funciona com Gemini
-      const simpleResponse = await aiService.extractDataFromText(
-        `${message}\n\nHistórico: ${JSON.stringify(formattedHistory)}`, 
-        {
-          systemPrompt: MARIA_SYSTEM_PROMPT,
-          temperature: 0.7,
-          maxTokens: 1200
-        }
-      );
+      // Utilizar um prompt completo para o Gemini
+      const completePrompt = `${MARIA_SYSTEM_PROMPT}
+
+INFORMAÇÕES ATUALIZADAS DO SISTEMA:
+${systemContext}
+
+Histórico de Conversa:
+${formattedHistory.join('\n')}
+
+Mensagem atual do Usuário: "${message}"
+
+INSTRUÇÕES DE RESPOSTA:
+- Responda APENAS à mensagem atual do usuário
+- Lembre-se que o utilizador já conhece o seu papel como assistente
+- Se a pergunta for sobre propriedades, inclua estatísticas e detalhes específicos
+- Seja concisa mas informativa
+- Use um tom conversacional e amigável
+- Responda em português europeu`;
+
+      // Utilizar modelo Gemini diretamente para melhor processamento
+      console.log("Utilizando modelo Gemini: gemini-1.5-pro para resposta ao usuário");
       
-      // Format como resposta padrão
+      // Adicionar um timestamp para evitar colisões de cache
+      const uniquePrompt = `${completePrompt}\n\nTimestamp: ${Date.now()}`;
+      const responseText = await aiService.geminiService.generateText(uniquePrompt, 0.7, 1500);
+      
+      // Format como resposta padrão para compatibilidade
       response = {
         choices: [{
           message: {
-            content: typeof simpleResponse === 'string' ? simpleResponse : 
-                     typeof simpleResponse === 'object' ? JSON.stringify(simpleResponse) : 
-                     "Não foi possível gerar uma resposta válida."
+            content: responseText
           }
         }]
       };
@@ -645,11 +659,18 @@ export async function mariaAssistant(req: Request, res: Response) {
         console.log("Tentando modelo alternativo após falha...");
         
         // Usar um modelo mais simples para casos de erro
-        const fallbackResponse = await aiService.generateText({
-          prompt: `${MARIA_SYSTEM_PROMPT}\n\nPergunta do usuário: ${message}`,
-          temperature: 0.5,
-          maxTokens: 600
-        });
+        console.log("Utilizando modelo gemini-1.5-pro para resposta ao usuário");
+        const fallbackPrompt = `${MARIA_SYSTEM_PROMPT}
+        
+INSTRUÇÕES DE RESPOSTA:
+- Responda APENAS à mensagem atual do usuário abaixo
+- Seja concisa mas informativa
+- Use um tom conversacional e amigável
+- Responda em português europeu
+
+Mensagem do usuário: "${message}"
+Timestamp: ${Date.now()}`;
+        const fallbackResponse = await aiService.geminiService.generateText(fallbackPrompt, 0.5, 600);
         
         // Resposta simplificada para o fallback
         reply = fallbackResponse && typeof fallbackResponse === 'string' 

@@ -376,16 +376,27 @@ export class RateLimiterService {
    * @returns Chave de cache
    */
   private generateCacheKey(methodName: string, args: any[]): string {
+    // Verificar se há timestamps no conteúdo e removê-los para o cache
+    // Isso evita que o timestamp adicionado para evitar colisões de cache
+    // afete a geração da chave de cache
+    const processedArgs = args.map(arg => {
+      if (typeof arg === 'string') {
+        // Remove linhas contendo "Timestamp:" seguido de números
+        return arg.replace(/Timestamp: \d+/g, '');
+      }
+      return arg;
+    });
+    
     // Converter argumentos para string JSON e fazer hash
     try {
-      const argsJson = JSON.stringify(args);
+      const argsJson = JSON.stringify(processedArgs);
       return `${methodName}:${crypto
         .createHash('md5')
         .update(argsJson)
         .digest('hex')}`;
     } catch (error) {
       // Se não for possível converter para JSON, usar string simples dos argumentos
-      return `${methodName}:${args.map(arg => String(arg)).join('|')}`;
+      return `${methodName}:${processedArgs.map(arg => String(arg)).join('|')}`;
     }
   }
 
