@@ -758,11 +758,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Verificar se temos a chave de API do Google Gemini disponível
-      if (!process.env.GOOGLE_API_KEY if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY)if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) !process.env.GOOGLE_GEMINI_API_KEY) {
+      // Verificar se temos alguma das chaves de API disponíveis (Mistral ou Gemini)
+      if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) {
         return res.status(500).json({ 
           success: false,
-          message: "Nenhuma chave de API do Google Gemini configurada" 
+          message: "Nenhuma chave de API de IA configurada (Mistral ou Google)" 
         });
       }
 
@@ -829,7 +829,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         if (autoCreateReservation) {
           // Usar o serviço completo que processa o PDF e cria uma reserva
-          result = await processPdfAndCreateReservation(req.file.path, process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY, { skipQualityCheck, useCache });
+          result = await processPdfAndCreateReservation(req.file.path, process.env.MISTRAL_API_KEY, { skipQualityCheck, useCache });
           console.log('Processamento e criação de reserva concluídos:', result.success);
           
           // Adicionar atividade ao sistema se a reserva foi criada
@@ -869,7 +869,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log('Processando PDF sem criação automática de reserva');
           
           // Usar o serviço de extração e validação
-          const validationResult = await processPdf(req.file.path, process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY, { 
+          const validationResult = await processPdf(req.file.path, process.env.MISTRAL_API_KEY, { 
             skipQualityCheck, 
             useCache 
           });
@@ -1024,11 +1024,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Verificar se temos a chave de API do Google Gemini disponível
-      if (!process.env.GOOGLE_API_KEY if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY)if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) !process.env.GOOGLE_GEMINI_API_KEY) {
+      // Verificar se temos alguma das chaves de API disponíveis (Mistral ou Gemini)
+      if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) {
         return res.status(500).json({ 
           success: false,
-          message: "Nenhuma chave de API do Google Gemini configurada" 
+          message: "Nenhuma chave de API de IA configurada (Mistral ou Google)" 
         });
       }
 
@@ -1044,7 +1044,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Usar o novo serviço de processamento que pode criar reservas a partir de imagens
         const result = await processFileAndCreateReservation(
           req.file.path, 
-          process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "",
+          process.env.MISTRAL_API_KEY || process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "",
           { skipQualityCheck, useCache }
         );
         console.log('Processamento OCR e criação de reserva concluídos:', result.success);
@@ -1117,10 +1117,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Verificamos se temos alguma das chaves de API disponíveis (Mistral ou Gemini)
-      if (!process.env.GOOGLE_API_KEY if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY)if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) !process.env.GOOGLE_GEMINI_API_KEY) {
+      if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) {
         return res.status(500).json({ 
           success: false,
-          message: "Nenhuma chave de API do Google Gemini configurada" 
+          message: "Nenhuma chave de API de IA configurada (Mistral ou Google)" 
         });
       }
 
@@ -1137,7 +1137,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Passamos a chave Mistral por compatibilidade, mas o adaptador usará Gemini se disponível
         const result = await processFileAndCreateReservation(
           req.file.path, 
-          process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "",
+          process.env.MISTRAL_API_KEY || process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "",
           { skipQualityCheck, useCache }
         );
         console.log('Processamento e criação de reserva concluídos:', result.success);
@@ -1230,11 +1230,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Nota: o sistema funciona melhor com 2 arquivos (check-in e check-out),
       // mas pode processar individualmente quando necessário
 
-      // Verificar se temos a chave de API do Google Gemini disponível
-      if (!process.env.GOOGLE_API_KEY if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY)if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) !process.env.GOOGLE_GEMINI_API_KEY) {
+      // Verificar se temos alguma das chaves de API disponíveis (Mistral ou Gemini)
+      if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) {
         return res.status(500).json({ 
           success: false,
-          message: "Nenhuma chave de API do Google Gemini configurada" 
+          message: "Nenhuma chave de API de IA configurada (Mistral ou Google)" 
         });
       }
 
@@ -1253,7 +1253,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log(`Processando ${pdfPaths.length} arquivos: ${pdfPaths.join(', ')}`);
         
         // Processar o par de PDFs
-        const pairResult = await processPdfPair(pdfPaths, process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "");
+        const pairResult = await processPdfPair(pdfPaths, process.env.MISTRAL_API_KEY || process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "");
         
         // Se não há dados de reserva extraídos, retorna erro
         if (!pairResult.reservationData) {
@@ -1462,7 +1462,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY}`
+        'Authorization': `Bearer ${process.env.MISTRAL_API_KEY}`
       },
       body: JSON.stringify({
         model: 'mistral-large-latest',
@@ -1515,7 +1515,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY}`
+        'Authorization': `Bearer ${process.env.MISTRAL_API_KEY}`
       },
       body: JSON.stringify({
         model: 'mistral-large-latest',
@@ -1556,9 +1556,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Checar se a chave API Mistral está configurada (mantido para compatibilidade)
   app.get("/api/check-mistral-key", (_req: Request, res: Response) => {
     try {
-      const hasGeminiKey = process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
+      const hasMistralKey = process.env.MISTRAL_API_KEY !== undefined && 
                           process.env.MISTRAL_API_KEY !== '';
-      res.json({ available: hasGeminiKey });
+      res.json({ available: hasMistralKey });
     } catch (err) {
       handleError(err, res);
     }
@@ -1581,7 +1581,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.error("Erro ao carregar o adaptador de IA:", error);
       }
       
-      const hasGeminiKey = process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
+      const hasMistralKey = process.env.MISTRAL_API_KEY !== undefined && 
                           process.env.MISTRAL_API_KEY !== '';
       
       // Verificar ambas as variáveis de ambiente possíveis para a API do Gemini
@@ -1780,7 +1780,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Verificar disponibilidade de chaves
-      const hasGeminiKey = process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
+      const hasMistralKey = process.env.MISTRAL_API_KEY !== undefined && 
                             process.env.MISTRAL_API_KEY !== '';
       
       const hasGeminiKey = (process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
@@ -1792,7 +1792,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         success: true,
         currentService,
         serviceAvailability: {
-          mistral: hasGeminiKey,
+          mistral: hasMistralKey,
           gemini: hasGeminiKey
         },
         parseResult
@@ -1844,7 +1844,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           currentService = aiService.getCurrentService();
           
           // Verificar quais serviços estão disponíveis
-          const hasGeminiKey = process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
+          const hasMistralKey = process.env.MISTRAL_API_KEY !== undefined && 
                               process.env.MISTRAL_API_KEY !== '';
                               
           const hasGeminiKey = (process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
@@ -1852,7 +1852,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                              (process.env.GOOGLE_API_KEY !== undefined && 
                               process.env.GOOGLE_API_KEY !== '');
           
-          if (hasGeminiKey) servicesAvailable.push("mistral");
+          if (hasMistralKey) servicesAvailable.push("mistral");
           if (hasGeminiKey) servicesAvailable.push("gemini");
           
           tests.push({
@@ -2219,7 +2219,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Verificar se a chave da API Mistral está disponível
-      if (!process.env.GOOGLE_GEMINI_API_KEY && !process.env.GOOGLE_API_KEY) {
+      if (!process.env.MISTRAL_API_KEY) {
         return res.status(400).json({ 
           success: false,
           message: "Chave da API Mistral não configurada. Configure a chave nas definições." 
@@ -3072,7 +3072,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Verificar se a chave da API Mistral está disponível
-      if (!process.env.GOOGLE_GEMINI_API_KEY && !process.env.GOOGLE_API_KEY) {
+      if (!process.env.MISTRAL_API_KEY) {
         return res.status(400).json({ 
           success: false,
           message: "Chave da API Mistral não configurada. Configure a chave nas definições." 
