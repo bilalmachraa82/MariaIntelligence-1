@@ -319,17 +319,11 @@ export class AIAdapter {
       }
       
       // Usar Gemini para extrair dados do texto
-      const result = await this.geminiService.generateText({
-        contents: [
-          { role: 'system', parts: [{ text: enhancedPrompt }] },
-          { role: 'user', parts: [{ text }] }
-        ],
-        generationConfig: {
-          temperature: options.temperature || 0.2,
-          maxOutputTokens: options.maxTokens || 2048,
-          responseFormat: options.responseFormat || undefined
-        }
-      });
+      // Usar o método apropriado do GeminiService
+      const result = await this.geminiService.generateText(
+        enhancedPrompt + "\n\n" + text, 
+        options.temperature || 0.2
+      );
       
       return result;
     } catch (error: any) {

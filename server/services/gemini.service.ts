@@ -131,6 +131,8 @@ export class GeminiService {
           // Examinar a entrada para determinar o tipo de resposta
           const inputContent = params?.contents?.[0]?.parts;
           const userPrompt = inputContent?.find((part: any) => part.text)?.text || "";
+          // Verificar se userPrompt é realmente uma string antes de usar includes
+          const userPromptStr = typeof userPrompt === 'string' ? userPrompt : "";
           
           // Verificar se há áudio na mensagem
           const hasAudio = inputContent?.some((part: any) => part.inlineData?.mimeType?.startsWith('audio/'));
@@ -142,7 +144,7 @@ export class GeminiService {
                 text: () => "Transcrição de áudio (modo mock): Olá, gostaria de marcar uma reserva no apartamento Graça para o próximo fim de semana. Somos duas pessoas e ficaríamos de sexta a domingo. Meu nome é Carlos Silva e meu telefone é 919 876 543."
               }
             };
-          } else if (userPrompt.includes("Extraia todo o texto visível deste documento PDF")) {
+          } else if (userPromptStr.includes("Extraia todo o texto visível deste documento PDF")) {
             // Mock para extração de texto de PDF
             return {
               response: { 
@@ -179,7 +181,7 @@ export class GeminiService {
                 `
               }
             };
-          } else if (userPrompt.includes("Extraia todo o texto visível nesta imagem")) {
+          } else if (userPromptStr.includes("Extraia todo o texto visível nesta imagem")) {
             // Mock para extração de texto de imagem
             return {
               response: { 
@@ -195,7 +197,7 @@ export class GeminiService {
                 `
               }
             };
-          } else if (userPrompt.includes("Classifique o tipo deste documento")) {
+          } else if (userPromptStr.includes("Classifique o tipo deste documento")) {
             // Mock para classificação de documento
             return {
               response: { 
@@ -206,7 +208,7 @@ export class GeminiService {
                 })
               }
             };
-          } else if (userPrompt.includes("Analise este texto de reserva e extraia as informações")) {
+          } else if (userPromptStr.includes("Analise este texto de reserva e extraia as informações")) {
             // Mock para extração de dados estruturados
             return {
               response: { 
@@ -229,7 +231,7 @@ export class GeminiService {
                 })
               }
             };
-          } else if (userPrompt.includes("Verifique inconsistências")) {
+          } else if (userPromptStr.includes("Verifique inconsistências")) {
             // Mock para validação de dados
             return {
               response: { 
