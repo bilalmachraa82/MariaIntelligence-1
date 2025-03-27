@@ -162,6 +162,14 @@ export function VoiceRecorderButton({
   };
   
   const toggleRecording = () => {
+    // Desabilitar temporariamente a funcionalidade de voz
+    toast({
+      title: t("voiceInput.temporaryDisabled", "Funcionalidade Temporariamente Indisponível"),
+      description: t("voiceInput.useTextInput", "A entrada de voz está temporariamente indisponível. Por favor, digite sua mensagem no campo de texto."),
+      variant: "default"
+    });
+    
+    /* Código original comentado
     if (!isSupported) {
       toast({
         title: t("voiceInput.notSupported", "Não suportado"),
@@ -176,10 +184,15 @@ export function VoiceRecorderButton({
     } else {
       startRecording();
     }
+    */
   };
   
   // Renderização condicional do ícone
   const renderIcon = () => {
+    // Mostrar ícone desabilitado
+    return <MicOff className="h-4 w-4 text-muted-foreground" />;
+    
+    /* Código original comentado
     if (isProcessing) {
       return <Loader2 className="h-4 w-4 animate-spin" />;
     }
@@ -187,6 +200,7 @@ export function VoiceRecorderButton({
     return isRecording 
       ? <MicOff className="h-4 w-4 text-red-500" /> 
       : <Mic className="h-4 w-4" />;
+    */
   };
   
   // Renderização condicional da cor do botão

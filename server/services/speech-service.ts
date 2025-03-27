@@ -32,6 +32,11 @@ export class SpeechService {
    * @returns Texto transcrito
    */
   async processAudio(audioBase64: string, mimeType: string = 'audio/webm'): Promise<string> {
+    // FUNCIONALIDADE TEMPORARIAMENTE DESATIVADA
+    console.log('🚫 Funcionalidade de transcrição de áudio temporariamente desativada');
+    return "RECURSO_DESATIVADO: A entrada de voz está temporariamente indisponível devido a limitações técnicas. Por favor, digite sua mensagem no campo de texto.";
+    
+    /* Código original comentado
     try {
       console.log(`Processando áudio de tipo: ${mimeType}`);
       // Implementar método alternativo em vez de usar o modelo experimental diretamente
@@ -78,6 +83,7 @@ export class SpeechService {
       // Retornar mensagem amigável em vez de lançar erro
       return "Ocorreu um erro ao processar o áudio. Por favor, digite sua mensagem.";
     }
+    */
   }
   
   /**

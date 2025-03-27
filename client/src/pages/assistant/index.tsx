@@ -199,6 +199,25 @@ export default function AssistantPage() {
     
     checkApiKey();
   }, [t]);
+  
+  // Adicionar alerta sobre funcionalidade de voz desabilitada
+  useEffect(() => {
+    // Mostrar notificação toast sobre a funcionalidade de entrada por voz desabilitada
+    // Exibir apenas uma vez por sessão
+    const voiceDisabledNoticeShown = sessionStorage.getItem('voice-disabled-notice-shown');
+    
+    if (!voiceDisabledNoticeShown) {
+      toast({
+        title: t("voiceInput.temporaryDisabled", "Entrada por voz temporariamente indisponível"),
+        description: t("voiceInput.useTextInput", "A entrada de voz está temporariamente indisponível devido a limitações técnicas. Por favor, digite sua mensagem no campo de texto."),
+        variant: "default",
+        duration: 7000 // Mostrar por 7 segundos
+      });
+      
+      // Marcar que a notificação já foi mostrada nesta sessão
+      sessionStorage.setItem('voice-disabled-notice-shown', 'true');
+    }
+  }, [t]);
 
   // Rolar para a última mensagem quando novas mensagens são adicionadas
   // E salvar as mensagens no localStorage
