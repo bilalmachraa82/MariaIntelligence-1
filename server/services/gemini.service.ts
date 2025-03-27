@@ -57,14 +57,40 @@ export class GeminiService {
    * @param delay Delay entre tentativas em ms
    * @returns Promise com o resultado da função
    */
-  private async withRetry<T>(fn: () => Promise<T>, maxRetries: number = 5, delay: number = 1000): Promise<T> {
+  /**
+   * Método para executar uma função com retry automático em caso de falha
+   * Inclui suporte para fallback para modelos alternativos após esgotar as tentativas
+   * @param fn Função assíncrona a ser executada
+   * @param maxRetries Número máximo de tentativas (default: 5)
+   * @param delay Atraso inicial entre tentativas em ms (default: 1000)
+   * @param useFallbackModels Se deve tentar modelos alternativos após esgotar tentativas
+   * @returns Resultado da função
+   */
+  private async withRetry<T>(
+    fn: () => Promise<T>, 
+    maxRetries: number = 5, 
+    delay: number = 1000,
+    useFallbackModels: boolean = true
+  ): Promise<T> {
     let lastError: any;
+    // Primeira fase: tentar com o modelo original
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         console.log(`Tentativa ${attempt}/${maxRetries}`);
         return await fn();
       } catch (error: any) {
         lastError = error;
+        
+        // Erros de autorização não devem ser retentados
+        if (error.message && (
+          error.message.includes('API key not valid') || 
+          error.message.includes('invalid authentication') ||
+          error.message.includes('permission denied')
+        )) {
+          console.error(`Erro de autorização na API Gemini:`, error.message);
+          throw error; // Não retentar em caso de erro de autorização
+        }
+        
         console.warn(`Tentativa ${attempt}/${maxRetries} falhou: ${error.message}`);
         
         if (attempt < maxRetries) {
@@ -74,6 +100,46 @@ export class GeminiService {
           console.log(`Aguardando ${Math.round(waitTime)}ms antes da próxima tentativa...`);
           await new Promise(resolve => setTimeout(resolve, waitTime));
         }
+      }
+    }
+    
+    // Segunda fase: se configurado, tentar com modelo alternativo (Flash)
+    if (useFallbackModels && this.flashModel) {
+      console.log("⚠️ Tentando com modelo alternativo (Gemini Flash) após esgotar tentativas...");
+      
+      try {
+        // Capturar o texto da função
+        const fnText = fn.toString();
+        
+        // Criar uma nova função que usa o modelo alternativo
+        let alternativeFn: () => Promise<T>;
+        
+        if (fnText.includes('this.defaultModel')) {
+          // Substituir defaultModel por flashModel
+          alternativeFn = new Function('return ' + fnText
+            .replace(/this\.defaultModel/g, 'this.flashModel'))() as () => Promise<T>;
+          
+          // Vincular o 'this' corretamente
+          alternativeFn = alternativeFn.bind(this);
+          
+          console.log("📊 Substituindo Gemini Pro por Gemini Flash");
+          return await alternativeFn();
+        } 
+        else if (fnText.includes('this.visionModel')) {
+          // Casos onde precisamos do modelo visual - tentar com o modelo padrão
+          console.log("🖼️ Tarefa visual: Tentando com modelo padrão em vez do modelo de visão");
+          alternativeFn = new Function('return ' + fnText
+            .replace(/this\.visionModel/g, 'this.defaultModel'))() as () => Promise<T>;
+          
+          // Vincular o 'this' corretamente
+          alternativeFn = alternativeFn.bind(this);
+          
+          return await alternativeFn();
+        }
+      } catch (fallbackError: any) {
+        console.error("❌ Modelo alternativo também falhou:", fallbackError.message);
+        // Atualizar lastError para incluir a falha do modelo alternativo
+        lastError = new Error(`Falha em todos os modelos disponíveis. Original: ${lastError.message}, Alternativo: ${fallbackError.message}`);
       }
     }
     
@@ -584,32 +650,33 @@ export class GeminiService {
     try {
       const result = await this.withRetry(async () => {
         return await this.defaultModel.generateContent({
-        contents: [
-          {
-            role: 'user',
-            parts: [{ 
-              text: `Você é um especialista em validação de dados de reservas.
-              Verifique inconsistências, valores faltantes e problemas potenciais.
-              Sugira correções quando necessário, mantendo os dados originais quando possível.
-              Verifique especialmente as datas (formato YYYY-MM-DD) e valores monetários.
-              
-              Valide estes dados de reserva contra as regras da propriedade e sugira correções se necessário:
-              
-              Dados: ${JSON.stringify(data)}
-              
-              Regras: ${JSON.stringify(propertyRules)}
-              
-              Retorne um objeto JSON com:
-              - valid: booleano indicando se os dados são válidos
-              - data: objeto com os dados corrigidos
-              - issues: array de strings descrevendo problemas encontrados
-              - corrections: array de strings descrevendo correções aplicadas`
-            }]
+          contents: [
+            {
+              role: 'user',
+              parts: [{ 
+                text: `Você é um especialista em validação de dados de reservas.
+                Verifique inconsistências, valores faltantes e problemas potenciais.
+                Sugira correções quando necessário, mantendo os dados originais quando possível.
+                Verifique especialmente as datas (formato YYYY-MM-DD) e valores monetários.
+                
+                Valide estes dados de reserva contra as regras da propriedade e sugira correções se necessário:
+                
+                Dados: ${JSON.stringify(data)}
+                
+                Regras: ${JSON.stringify(propertyRules)}
+                
+                Retorne um objeto JSON com:
+                - valid: booleano indicando se os dados são válidos
+                - data: objeto com os dados corrigidos
+                - issues: array de strings descrevendo problemas encontrados
+                - corrections: array de strings descrevendo correções aplicadas`
+              }]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.1,
           }
-        ],
-        generationConfig: {
-          temperature: 0.1,
-        }
+        });
       });
       
       const content = result.response.text();
@@ -647,27 +714,28 @@ export class GeminiService {
       // Usar o modelo mais rápido para classificação
       const result = await this.withRetry(async () => {
         return await this.flashModel.generateContent({
-        contents: [
-          {
-            role: 'user',
-            parts: [{ 
-              text: `Classifique o tipo deste documento com base no texto extraído. 
-              Possíveis categorias: reserva_airbnb, reserva_booking, reserva_expedia, reserva_direta, 
-              contrato_aluguel, fatura, recibo, documento_identificacao, outro.
-              
-              Retorne apenas um objeto JSON com: 
-              - type: string (o tipo de documento)
-              - confidence: number (confiança de 0 a 1)
-              - details: string (detalhes adicionais sobre o documento)
-              
-              Texto do documento:
-              ${text.substring(0, 3000)}` // Limitar tamanho para classificação
-            }]
+          contents: [
+            {
+              role: 'user',
+              parts: [{ 
+                text: `Classifique o tipo deste documento com base no texto extraído. 
+                Possíveis categorias: reserva_airbnb, reserva_booking, reserva_expedia, reserva_direta, 
+                contrato_aluguel, fatura, recibo, documento_identificacao, outro.
+                
+                Retorne apenas um objeto JSON com: 
+                - type: string (o tipo de documento)
+                - confidence: number (confiança de 0 a 1)
+                - details: string (detalhes adicionais sobre o documento)
+                
+                Texto do documento:
+                ${text.substring(0, 3000)}` // Limitar tamanho para classificação
+              }]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.1,
           }
-        ],
-        generationConfig: {
-          temperature: 0.1,
-        }
+        });
       });
       
       const content = result.response.text();
@@ -713,32 +781,33 @@ export class GeminiService {
       
       const result = await this.withRetry(async () => {
         return await this.visionModel.generateContent({
-        contents: [
-          { 
-            role: 'user', 
-            parts: [
-              { 
-                text: `Analise visualmente este documento e identifique:
-                1. Qual plataforma emitiu este documento? (Airbnb, Booking.com, Expedia, outro?)
-                2. Existe algum logo ou marca d'água identificável?
-                3. Qual é o formato/layout geral do documento?
-                4. É uma reserva, fatura, recibo ou outro tipo de documento?
-                
-                Responda em formato JSON com: platform, hasLogo, documentType, layout, confidence (de 0 a 1).`
-              },
-              { 
-                inlineData: { 
-                  mimeType: mimeType, 
-                  data: truncatedBase64
-                } 
-              }
-            ]
+          contents: [
+            { 
+              role: 'user', 
+              parts: [
+                { 
+                  text: `Analise visualmente este documento e identifique:
+                  1. Qual plataforma emitiu este documento? (Airbnb, Booking.com, Expedia, outro?)
+                  2. Existe algum logo ou marca d'água identificável?
+                  3. Qual é o formato/layout geral do documento?
+                  4. É uma reserva, fatura, recibo ou outro tipo de documento?
+                  
+                  Responda em formato JSON com: platform, hasLogo, documentType, layout, confidence (de 0 a 1).`
+                },
+                { 
+                  inlineData: { 
+                    mimeType: mimeType, 
+                    data: truncatedBase64
+                  } 
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.1,
+            maxOutputTokens: 600,
           }
-        ],
-        generationConfig: {
-          temperature: 0.1,
-          maxOutputTokens: 600,
-        }
+        });
       });
       
       const content = result.response.text();
@@ -907,16 +976,17 @@ export class GeminiService {
     try {
       const result = await this.withRetry(async () => {
         return await this.defaultModel.generateContent({
-        contents: [
-          {
-            role: 'user',
-            parts: [{ text: prompt }]
+          contents: [
+            {
+              role: 'user',
+              parts: [{ text: prompt }]
+            }
+          ],
+          generationConfig: { 
+            temperature,
+            maxOutputTokens: 2048
           }
-        ],
-        generationConfig: { 
-          temperature,
-          maxOutputTokens: 2048
-        }
+        });
       });
       
       return result.response.text();
@@ -982,24 +1052,25 @@ export class GeminiService {
       // Usar o modelo de visão para análise completa (visual + texto)
       const result = await this.withRetry(async () => {
         return await this.visionModel.generateContent({
-        contents: [
-          {
-            role: 'user',
-            parts: [
-              { text: prompt },
-              { 
-                inlineData: { 
-                  mimeType: mimeType, 
-                  data: fileBase64.length > 1000000 ? fileBase64.substring(0, 1000000) : fileBase64 
-                } 
-              }
-            ]
+          contents: [
+            {
+              role: 'user',
+              parts: [
+                { text: prompt },
+                { 
+                  inlineData: { 
+                    mimeType: mimeType, 
+                    data: fileBase64.length > 1000000 ? fileBase64.substring(0, 1000000) : fileBase64 
+                  } 
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.2,
+            maxOutputTokens: 4096,
           }
-        ],
-        generationConfig: {
-          temperature: 0.2,
-          maxOutputTokens: 4096,
-        }
+        });
       });
       
       const content = result.response.text();
