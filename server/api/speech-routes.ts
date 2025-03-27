@@ -6,6 +6,7 @@
 import { Request, Response } from 'express';
 import { speechService } from '../services/speech-service';
 import { aiService } from '../services/ai-adapter.service';
+import { textToSpeechService } from '../services/text-to-speech.service';
 import bodyParser from 'body-parser';
 
 /**
@@ -106,6 +107,33 @@ export function registerSpeechRoutes(app: any) {
       return res.status(500).json({
         success: false,
         message: 'Erro ao gerar resposta',
+        error: error.message || 'UNKNOWN_ERROR'
+      });
+    }
+  });
+  
+  /**
+   * Endpoint para obter uma mensagem de introdução
+   * Fornece uma saudação personalizada baseada no horário do dia
+   */
+  app.get('/api/speech/introduction', (req: Request, res: Response) => {
+    try {
+      const language = req.query.language as string || 'pt-BR';
+      const greeting = textToSpeechService.generateGreeting(language);
+      const preparedText = textToSpeechService.prepareTextForSpeech(greeting, language);
+      
+      return res.json({
+        success: true,
+        greeting: preparedText,
+        language,
+        timestamp: new Date()
+      });
+    } catch (error: any) {
+      console.error('Erro ao gerar introdução:', error);
+      
+      return res.status(500).json({
+        success: false,
+        message: 'Erro ao gerar introdução',
         error: error.message || 'UNKNOWN_ERROR'
       });
     }

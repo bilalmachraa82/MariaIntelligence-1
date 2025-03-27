@@ -8,6 +8,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReactMarkdown from "react-markdown";
 import { ChatBubble, Message } from "@/components/chat/chat-bubble";
 import { VoiceRecorderButton } from "@/components/chat/voice-recorder-button";
+import { speechSynthesis } from "@/lib/speech-synthesis";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { 
   Send, 
   Bot, 
@@ -25,6 +28,7 @@ import {
   ThumbsUp,
   ThumbsDown,
   Sparkles,
+
   BarChart,
   FileQuestion,
   LightbulbIcon,
@@ -126,6 +130,14 @@ export default function AssistantPage() {
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [hasMistralKey, setHasMistralKey] = useState(false);
   
+  // Estado para controle de recursos de voz
+  const [voiceEnabled, setVoiceEnabled] = useState<boolean>(() => {
+    // Verifica se há configuração salva no localStorage e se a síntese de voz é suportada
+    const savedPreference = localStorage.getItem('voice-enabled');
+    // Se não houver configuração salva, habilitar por padrão
+    return savedPreference !== null ? savedPreference === 'true' : true; 
+  });
+  
   // ID único para as mensagens
   const generateId = () => Math.random().toString(36).substring(2, 9);
   
@@ -209,6 +221,73 @@ export default function AssistantPage() {
       console.error("Erro ao salvar mensagens do chat:", error);
     }
   }, [messages]);
+  
+  // Efeito para salvar a preferência de voz quando mudar
+  useEffect(() => {
+    localStorage.setItem('voice-enabled', voiceEnabled.toString());
+    
+    // Se a voz foi desabilitada, parar qualquer síntese em andamento
+    if (!voiceEnabled) {
+      speechSynthesis.stop();
+    }
+  }, [voiceEnabled]);
+  
+  // Efeito para reproduzir a introdução por voz ao carregar a página
+  // Só executa uma vez quando o componente é montado
+  useEffect(() => {
+    // Flag para controlar se a introdução já foi reproduzida nesta sessão
+    const hasPlayedIntroduction = sessionStorage.getItem('voice-introduction-played');
+    
+    // Só reproduz a introdução se ainda não foi reproduzida nesta sessão e se a voz estiver habilitada
+    if (!hasPlayedIntroduction && speechSynthesis.isVoiceSupported() && voiceEnabled) {
+      const playIntroduction = async () => {
+        try {
+          // Obter a saudação personalizada do servidor
+          const response = await fetch(`/api/speech/introduction?language=${i18n.language}`);
+          
+          if (response.ok) {
+            const data = await response.json();
+            
+            if (data.success && data.greeting) {
+              // Reproduzir a saudação usando a síntese de voz
+              speechSynthesis.speak({
+                text: data.greeting,
+                lang: i18n.language,
+                rate: 1.0,
+                pitch: 1.0,
+                volume: 1.0,
+                onStart: () => {
+                  console.log("Reproduzindo introdução de voz");
+                },
+                onEnd: () => {
+                  console.log("Introdução de voz concluída");
+                  // Marcar como reproduzida para não repetir na mesma sessão
+                  sessionStorage.setItem('voice-introduction-played', 'true');
+                },
+                onError: (error) => {
+                  console.error("Erro na reprodução de voz:", error);
+                }
+              });
+            }
+          }
+        } catch (error) {
+          console.error("Erro ao obter introdução de voz:", error);
+        }
+      };
+      
+      // Atrasa a reprodução em 1.5 segundos para garantir que a página 
+      // esteja totalmente carregada e o usuário esteja pronto
+      const introTimer = setTimeout(() => {
+        playIntroduction();
+      }, 1500);
+      
+      return () => {
+        clearTimeout(introTimer);
+        // Parar a reprodução se o componente for desmontado
+        speechSynthesis.stop();
+      };
+    }
+  }, [i18n.language]);
 
   // Função para enviar mensagem ao assistente com Mistral AI
   const sendMessage = async (messageToSend?: string | React.MouseEvent<HTMLButtonElement>) => {
@@ -315,7 +394,34 @@ export default function AssistantPage() {
         context: context as { type: "property" | "reservation" | "owner" | "report" | "suggestion"; data: any; } | undefined
       };
       
+      // Adiciona a mensagem do assistente à conversa
       setMessages(prev => [...prev, assistantMessage]);
+      
+      // Se a síntese de voz estiver habilitada, vamos converter a resposta em fala
+      if (voiceEnabled && speechSynthesis.isVoiceSupported()) {
+        // Obter texto preparado do servidor para otimizar a pronúncia
+        try {
+          const speechResponse = await fetch(`/api/speech/introduction?language=${i18n.language}`);
+          if (speechResponse.ok) {
+            // Use o texto da resposta do assistente, não a saudação da introdução
+            const preparedText = data.reply || t("aiAssistant.errorMessage", "Desculpe, não consegui processar sua solicitação.");
+            
+            // Reproduzir a resposta usando a síntese de voz
+            speechSynthesis.speak({
+              text: preparedText,
+              lang: i18n.language,
+              rate: 1.0,
+              pitch: 1.0,
+              volume: 1.0,
+              onError: (error) => {
+                console.error("Erro na síntese de voz:", error);
+              }
+            });
+          }
+        } catch (speechError) {
+          console.error("Erro ao processar síntese de voz:", speechError);
+        }
+      }
     } catch (error) {
       console.error("Erro ao processar a mensagem com Mistral AI:", error);
       toast({
@@ -398,7 +504,24 @@ export default function AssistantPage() {
         }
       };
       
+      // Adicionar mensagem à conversa
       setMessages(prev => [...prev, assistantMessage]);
+      
+      // Reproduzir a mensagem se a síntese de voz estiver habilitada
+      if (voiceEnabled && speechSynthesis.isVoiceSupported()) {
+        const fileMessage = t(
+          "aiAssistant.fileProcessed", 
+          `Recebi seu arquivo "${file.name}". O que gostaria de saber sobre ele?`
+        );
+        
+        speechSynthesis.speak({
+          text: fileMessage,
+          lang: i18n.language,
+          rate: 1.0,
+          pitch: 1.0,
+          volume: 1.0
+        });
+      }
     }, 1500);
   };
 
@@ -552,6 +675,23 @@ export default function AssistantPage() {
       handleFileUpload(files[0]);
     }
   };
+  
+  // Alternar o recurso de voz
+  const toggleVoice = () => {
+    const newValue = !voiceEnabled;
+    setVoiceEnabled(newValue);
+    
+    // Feedback ao usuário
+    toast({
+      title: newValue 
+        ? t("aiAssistant.voiceEnabled", "Voz ativada") 
+        : t("aiAssistant.voiceDisabled", "Voz desativada"),
+      description: newValue 
+        ? t("aiAssistant.voiceEnabledDesc", "O assistente agora pode falar com você.") 
+        : t("aiAssistant.voiceDisabledDesc", "O assistente não falará mais."),
+      duration: 3000
+    });
+  };
 
   return (
     <div className="container mx-auto py-6 max-w-6xl">
@@ -579,6 +719,17 @@ export default function AssistantPage() {
                   <UploadCloud className="h-4 w-4 mr-2" />
                   {t("aiAssistant.uploadDocument", "Anexar ficheiro")}
                 </DropdownMenuItem>
+                
+                {/* Opção para controle de voz no menu dropdown para usuários não móveis */}
+                {speechSynthesis.isVoiceSupported() && (
+                  <DropdownMenuItem onClick={toggleVoice}>
+                    <Mic className={`h-4 w-4 mr-2 ${voiceEnabled ? 'text-primary' : 'text-muted-foreground'}`} />
+                    {voiceEnabled 
+                      ? t("aiAssistant.disableVoice", "Desativar voz") 
+                      : t("aiAssistant.enableVoice", "Ativar voz")
+                    }
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           )}
@@ -636,15 +787,41 @@ export default function AssistantPage() {
                     </CardTitle>
                     <CardDescription>{t("aiAssistant.chatDescription", "Tira as tuas dúvidas sobre imóveis, reservas e relatórios")}</CardDescription>
                   </div>
-                  {isMobile && (
-                    <Button 
-                      variant="ghost" 
-                      size="icon"
-                      onClick={clearConversation}
-                    >
-                      <RefreshCw className="h-4 w-4" />
-                    </Button>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {/* Controle de voz - apenas mostrado se a síntese de voz for suportada */}
+                    {speechSynthesis.isVoiceSupported() && (
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center space-x-2">
+                          <Label htmlFor="voice-mode" className="text-xs text-muted-foreground mr-0">
+                            <Mic className={`h-4 w-4 ${voiceEnabled ? 'text-primary' : 'text-muted-foreground'}`} />
+                          </Label>
+                          <Switch
+                            id="voice-mode"
+                            checked={voiceEnabled}
+                            onCheckedChange={toggleVoice}
+                            title={t(
+                              voiceEnabled 
+                                ? "aiAssistant.disableVoice" 
+                                : "aiAssistant.enableVoice", 
+                              voiceEnabled 
+                                ? "Desativar voz" 
+                                : "Ativar voz"
+                            )}
+                          />
+                        </div>
+                      </div>
+                    )}
+                    
+                    {isMobile && (
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        onClick={clearConversation}
+                      >
+                        <RefreshCw className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </CardHeader>
               
@@ -895,6 +1072,21 @@ export default function AssistantPage() {
                     <UploadCloud className="h-4 w-4 mr-2" />
                     {t("aiAssistant.uploadDocument", "Enviar ficheiro")}
                   </Button>
+                  
+                  {/* Controle de síntese de voz - disponível apenas se o recurso for suportado pelo navegador */}
+                  {speechSynthesis.isVoiceSupported() && (
+                    <Button 
+                      variant="outline" 
+                      className={`w-full justify-start ${voiceEnabled ? 'border-primary/50' : ''}`}
+                      onClick={toggleVoice}
+                    >
+                      <Mic className={`h-4 w-4 mr-2 ${voiceEnabled ? 'text-primary' : 'text-muted-foreground'}`} />
+                      {voiceEnabled 
+                        ? t("aiAssistant.disableVoice", "Desativar voz") 
+                        : t("aiAssistant.enableVoice", "Ativar voz")
+                      }
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
