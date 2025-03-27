@@ -25,6 +25,9 @@ export interface TranscriptionResult {
   };
   error?: string;
   timestamp?: Date;
+  // Campos adicionais para tratamento de erros
+  message?: string;
+  alternativeText?: string;
 }
 
 /**

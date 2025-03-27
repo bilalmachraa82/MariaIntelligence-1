@@ -33,32 +33,50 @@ export class SpeechService {
    */
   async processAudio(audioBase64: string, mimeType: string = 'audio/webm'): Promise<string> {
     try {
-      // Usar o modelo Gemini experimental que suporta áudio
-      const result = await this.geminiService['audioModel'].generateContent({
-        contents: [
-          {
-            role: 'user',
-            parts: [
-              { 
-                text: `Escute este áudio e transcreva exatamente o que está sendo dito. 
-                Se ouvir informações sobre reservas, propriedades ou datas, preste atenção 
-                especial para capturar esses detalhes com precisão.`
-              },
-              { 
-                inlineData: { 
-                  mimeType: mimeType, 
-                  data: audioBase64 
-                } 
-              }
-            ]
-          }
-        ]
-      });
+      console.log(`Processando áudio de tipo: ${mimeType}`);
+      // Implementar método alternativo em vez de usar o modelo experimental diretamente
       
-      return result.response.text();
+      // Verificar se temos acesso ao modelo audioModel
+      if (!this.geminiService['audioModel']) {
+        console.log('Modelo de áudio não disponível, usando método alternativo');
+        return "Transcrição não disponível no momento. Por favor, digite seu texto.";
+      }
+      
+      try {
+        // Tentar utilizar o modelo experimental para áudio
+        const result = await this.geminiService['audioModel'].generateContent({
+          contents: [
+            {
+              role: 'user',
+              parts: [
+                { 
+                  text: `Escute este áudio e transcreva exatamente o que está sendo dito. 
+                  Se ouvir informações sobre reservas, propriedades ou datas, preste atenção 
+                  especial para capturar esses detalhes com precisão.`
+                },
+                { 
+                  inlineData: { 
+                    mimeType: mimeType, 
+                    data: audioBase64 
+                  } 
+                }
+              ]
+            }
+          ]
+        });
+        
+        return result.response.text();
+      } catch (modelError) {
+        console.error("Erro com modelo de áudio experimental:", modelError);
+        
+        // Fallback para texto se falhar
+        // Enviar mensagem genérica ao usuário
+        return "Não foi possível transcrever o áudio. Por favor, digite seu texto ou tente novamente mais tarde.";
+      }
     } catch (error: any) {
       console.error("Erro ao processar áudio:", error);
-      throw new Error(`Falha no processamento de áudio: ${error.message}`);
+      // Retornar mensagem amigável em vez de lançar erro
+      return "Ocorreu um erro ao processar o áudio. Por favor, digite sua mensagem.";
     }
   }
   

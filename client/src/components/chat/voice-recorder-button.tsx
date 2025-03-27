@@ -80,12 +80,30 @@ export function VoiceRecorderButton({
         onMessageReceived(result.transcription);
       }
     } else {
-      // Mostrar erro de transcrição
+      // Mostrar erro de transcrição com mensagem amigável
+      let errorMessage = result.error || t("voiceInput.unknownError", "Erro desconhecido");
+      
+      // Se temos uma mensagem alternativa do servidor, usá-la
+      if (result.alternativeText) {
+        errorMessage = result.alternativeText;
+      } else if (result.message) {
+        errorMessage = result.message;
+      }
+      
       toast({
-        title: t("voiceInput.transcriptionFailed", "Falha na transcrição"),
-        description: result.error || t("voiceInput.unknownError", "Erro desconhecido"),
-        variant: "destructive"
+        title: t("voiceInput.transcriptionFailed", "Transcrição não disponível"),
+        description: errorMessage,
+        variant: "default" // Menos agressivo que "destructive"
       });
+      
+      // Mostrar uma dica para o usuário
+      setTimeout(() => {
+        toast({
+          title: t("voiceInput.tip", "Dica"),
+          description: t("voiceInput.tipText", "Você pode digitar sua mensagem diretamente no campo de texto."),
+          duration: 5000
+        });
+      }, 1500);
     }
     
     setIsProcessing(false);

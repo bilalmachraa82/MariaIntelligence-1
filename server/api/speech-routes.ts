@@ -36,29 +36,63 @@ export function registerSpeechRoutes(app: any) {
         });
       }
       
-      // Processar o áudio com o serviço de fala
-      const transcription = await speechService.processAudio(
-        audioData, 
-        mimeType || 'audio/webm'
-      );
+      // Registrar informações úteis para debug
+      console.log(`Recebendo transcrição - Tipo MIME: ${mimeType || 'audio/webm'}`);
+      console.log(`Tamanho do áudio: ${audioData.length / 1024} KB`);
       
-      // Detectar intenções no texto transcrito
-      const intent = await speechService.detectIntent(transcription);
-      
-      return res.json({
-        success: true,
-        transcription,
-        intent,
-        timestamp: new Date()
-      });
-      
+      try {
+        // Processar o áudio com o serviço de fala
+        const transcription = await speechService.processAudio(
+          audioData, 
+          mimeType || 'audio/webm'
+        );
+        
+        // Se recebemos uma resposta de erro do serviço
+        if (transcription.includes("Não foi possível transcrever") || 
+            transcription.includes("Transcrição não disponível") ||
+            transcription.includes("Ocorreu um erro")) {
+          
+          return res.json({
+            success: false,
+            transcription: null,
+            message: transcription,
+            timestamp: new Date()
+          });
+        }
+        
+        // Detectar intenções no texto transcrito apenas se houver transcrição válida
+        let intent = null;
+        try {
+          intent = await speechService.detectIntent(transcription);
+        } catch (intentError) {
+          console.warn("Erro ao detectar intenção, mas continuando com transcrição:", intentError);
+          // Não falhar toda a requisição por erro na detecção de intenção
+        }
+        
+        return res.json({
+          success: true,
+          transcription,
+          intent,
+          timestamp: new Date()
+        });
+      } catch (processingError: any) {
+        console.error('Erro ao processar áudio no serviço:', processingError);
+        return res.json({
+          success: false,
+          message: 'Falha no processamento de áudio',
+          error: processingError.message || 'PROCESSING_ERROR',
+          alternativeText: "Por favor, digite sua mensagem, pois a transcrição falhou."
+        });
+      }
     } catch (error: any) {
-      console.error('Erro ao processar áudio:', error);
+      console.error('Erro geral ao processar áudio:', error);
       
-      return res.status(500).json({
+      // Responder com status 200 mas success false para evitar quebrar a UI
+      return res.json({
         success: false,
         message: 'Erro ao processar o áudio',
-        error: error.message || 'UNKNOWN_ERROR'
+        error: error.message || 'UNKNOWN_ERROR',
+        alternativeText: "A transcrição falhou. Por favor, tente digitar sua mensagem."
       });
     }
   });
