@@ -296,6 +296,29 @@ export class AIAdapter {
    * @param options Opções de configuração (prompt do sistema, formato de resposta, etc.)
    * @returns Dados extraídos no formato solicitado
    */
+  /**
+   * Gera texto com base em um prompt usando o serviço Gemini
+   * @param options Opções para a geração de texto
+   * @returns Texto gerado
+   */
+  public async generateText(options: {
+    prompt: string;
+    temperature?: number;
+    maxTokens?: number;
+  }): Promise<string> {
+    try {
+      // Passar para o serviço Gemini
+      return await this.geminiService.generateText(
+        options.prompt,
+        options.temperature || 0.7,
+        options.maxTokens
+      );
+    } catch (error: any) {
+      console.error("Erro ao gerar texto com Gemini:", error);
+      throw new Error(`Falha ao gerar texto: ${error.message || 'Erro desconhecido'}`);
+    }
+  }
+
   public async extractDataFromText(text: string, options: {
     systemPrompt?: string;
     responseFormat?: { type: string };
@@ -319,10 +342,11 @@ export class AIAdapter {
       }
       
       // Usar Gemini para extrair dados do texto
-      // Usar o método apropriado do GeminiService
+      // Usar o método apropriado do GeminiService com suporte a maxTokens
       const result = await this.geminiService.generateText(
         enhancedPrompt + "\n\n" + text, 
-        options.temperature || 0.2
+        options.temperature || 0.2,
+        options.maxTokens
       );
       
       return result;
@@ -400,7 +424,8 @@ export class AIAdapter {
         responseFormat: { type: "json_object" },
         temperature: 0.2,
         extractFields: fields,
-        documentType: "unknown_format"
+        documentType: "unknown_format",
+        maxTokens: 4096 // Usar um valor maior para extrações complexas
       });
       
       console.log(`✅ Novo formato de documento analisado com sucesso`);

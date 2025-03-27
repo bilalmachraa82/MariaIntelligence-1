@@ -87,6 +87,22 @@ export class RagEnhancedService {
    * @param metadata Metadados sobre o conteúdo
    * @returns ID do item adicionado
    */
+  /**
+   * Adiciona conhecimento ao sistema RAG
+   * Método alternativo com nome diferente para manter compatibilidade
+   * @param content Conteúdo a ser adicionado
+   * @param contentType Tipo de conteúdo (chat_history, document, system_data, etc)
+   * @param metadata Metadados adicionais
+   * @returns Promise<number> ID do item adicionado
+   */
+  public async addKnowledge(
+    content: string,
+    contentType: string,
+    metadata: any = {}
+  ): Promise<number> {
+    return this.addToKnowledgeBase(content, contentType, metadata);
+  }
+
   public async addToKnowledgeBase(
     content: string,
     contentType: string,

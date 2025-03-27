@@ -5,6 +5,7 @@ import { ragService } from '../services/rag-enhanced.service';
 import { insertReservationSchema } from '../../shared/schema';
 import { format } from 'date-fns';
 import { aiService } from '../services/ai-adapter.service';
+import { GeminiModel } from '../services/gemini.service';
 
 // Configurações do assistente da Maria Faz com personalidade definida
 const MARIA_SYSTEM_PROMPT = `
@@ -47,6 +48,60 @@ IMPORTANTE: O teu objetivo é criar uma experiência de assistente virtual posit
  * Função para construir o contexto RAG (Retrieval-Augmented Generation) com dados do sistema
  * Recolhe informações atualizadas da base de dados para fornecer ao modelo
  */
+/**
+ * Extrai possíveis dados de reserva de um texto
+ * Esta função busca padrões no texto que indiquem uma intenção de criar reserva
+ * @param text Texto a ser analisado
+ * @returns Dados da reserva ou null se não for detectado
+ */
+function extractReservationDataFromText(text: string): any | null {
+  if (!text) return null;
+  
+  // Verificar se o texto contém padrões que indicam uma reserva
+  const hasReservationIntent = (
+    text.includes("criar reserva") || 
+    text.includes("nova reserva") ||
+    text.includes("agendar estadia") ||
+    text.includes("marcar hospedagem") ||
+    text.includes("foi criada com sucesso")
+  );
+  
+  if (!hasReservationIntent) return null;
+  
+  // Tentar extrair dados usando expressões regulares
+  try {
+    // Extrair nome do hóspede
+    const guestNameMatch = text.match(/(?:hóspede|hospede|cliente|visitante|para|de)\s*[:\s]?\s*([A-ZÀ-Ú][a-zà-ú]+(?: [A-ZÀ-Ú][a-zà-ú]+)*)/i);
+    const guestName = guestNameMatch ? guestNameMatch[1].trim() : "Hóspede";
+    
+    // Extrair datas
+    const checkInMatch = text.match(/(?:check.?in|entrada|chegada|início|inicio)\s*[:\s]?\s*(\d{1,2}[-\/]\d{1,2}[-\/]\d{2,4}|\d{1,2} de [a-zç]+)/i);
+    const checkOutMatch = text.match(/(?:check.?out|saída|saida|partida|fim)\s*[:\s]?\s*(\d{1,2}[-\/]\d{1,2}[-\/]\d{2,4}|\d{1,2} de [a-zç]+)/i);
+    
+    // Extrair propriedade
+    const propertyMatch = text.match(/(?:propriedade|apartamento|casa|alojamento|local)\s*[:\s]?\s*([A-ZÀ-Ú][a-zà-ú]+(?: [A-ZÀ-Ú][a-zà-ú]+)*)/i);
+    const propertyIdMatch = text.match(/(?:propriedade|apartamento|casa|alojamento|local|id)\s*[:\s]?\s*(\d+)/i);
+    
+    // Extrair valor
+    const valueMatch = text.match(/(?:valor|preço|preco|custo|tarifa|total)\s*[:\s]?\s*€?\s*(\d+(?:[,.]\d+)?)/i);
+    
+    // Se não tem ao menos data e propriedade, não é uma reserva válida
+    if (!checkInMatch && !propertyMatch && !propertyIdMatch) return null;
+    
+    return {
+      guestName,
+      checkInDate: checkInMatch ? checkInMatch[1] : null,
+      checkOutDate: checkOutMatch ? checkOutMatch[1] : null,
+      propertyName: propertyMatch ? propertyMatch[1] : null,
+      propertyId: propertyIdMatch ? parseInt(propertyIdMatch[1]) : null,
+      totalAmount: valueMatch ? valueMatch[1].replace(',', '.') : null
+    };
+  } catch (error) {
+    console.error("Erro ao extrair dados de reserva do texto:", error);
+    return null;
+  }
+}
+
 /**
  * Função auxiliar para criar uma nova reserva a partir dos dados fornecidos
  * @param reservationData Dados da reserva fornecidos pelo LLM
@@ -364,7 +419,10 @@ export async function mariaAssistant(req: Request, res: Response) {
     // Determinar se precisamos usar modelo completo ou otimizado
     // Para mensagens simples, podemos usar um modelo mais leve e rápido
     const isSimpleQuery = message.length < 50 && !message.includes('?') && formattedHistory.length < 3;
-    const modelToUse = isSimpleQuery ? "mistral-small-latest" : "mistral-large-latest";
+    
+    // Usar modelos Gemini em vez de Mistral (migração completa)
+    const modelToUse = isSimpleQuery ? GeminiModel.FLASH : GeminiModel.TEXT;
+    console.log(`Utilizando modelo Gemini: ${modelToUse} para resposta ao usuário`);
     
     // Otimização: adicionar dicas de contexto com base em palavras-chave na mensagem
     let contextHints = "";
@@ -541,28 +599,28 @@ export async function mariaAssistant(req: Request, res: Response) {
         }]
       };
       
-      // Verificar se o modelo fez uma chamada de função
-      const toolCalls = response.choices && response.choices[0]?.message?.toolCalls;
+      // Verificar se o modelo fez uma chamada de função (formato adaptado para Gemini)
+      // Como estamos usando uma resposta simplificada do Gemini via o adaptador,
+      // não temos acesso direto às chamadas de função no mesmo formato
+      // Vamos analisar o conteúdo da resposta para detectar padrões de criação de reserva
       
-      if (toolCalls && toolCalls.length > 0 && toolCalls[0].function?.name === 'criar_reserva') {
+      // Tentar extrair dados de reserva do texto da resposta
+      const responseContent = response.choices && response.choices[0]?.message?.content || '';
+      const reservationData = extractReservationDataFromText(responseContent);
+      
+      if (reservationData) {
         try {
-          // Extrair os argumentos da função (garantindo que é uma string)
-          const argsString = typeof toolCalls[0].function.arguments === 'string' 
-            ? toolCalls[0].function.arguments 
-            : JSON.stringify(toolCalls[0].function.arguments);
+          console.log("Dados de reserva detectados na resposta:", reservationData);
           
-          const args = JSON.parse(argsString);
-          console.log("Chamada de função 'criar_reserva' detectada com argumentos:", args);
-          
-          // Chamar a função de criação de reserva
-          const reservationResult = await createReservationFromAssistant(args);
+          // Chamar a função de criação de reserva usando os dados extraídos
+          const reservationResult = await createReservationFromAssistant(reservationData);
           
           if (reservationResult.success && reservationResult.reservation) {
-            reply = `✅ Reserva criada com sucesso para ${args.guestName}!\n\n` +
-                    `📆 Check-in: ${args.checkInDate}\n` +
-                    `📆 Check-out: ${args.checkOutDate}\n` +
-                    `🏠 Propriedade: ${args.propertyName || `ID ${args.propertyId}`}\n` +
-                    `💰 Valor total: ${args.totalAmount || 'Não informado'}\n\n` +
+            reply = `✅ Reserva criada com sucesso para ${reservationData.guestName}!\n\n` +
+                    `📆 Check-in: ${reservationData.checkInDate}\n` +
+                    `📆 Check-out: ${reservationData.checkOutDate}\n` +
+                    `🏠 Propriedade: ${reservationData.propertyName || `ID ${reservationData.propertyId}`}\n` +
+                    `💰 Valor total: ${reservationData.totalAmount || 'Não informado'}\n\n` +
                     `A reserva foi registrada no sistema com o ID ${reservationResult.reservation.id}. ` +
                     `Posso ajudar com mais alguma coisa?`;
           } else {

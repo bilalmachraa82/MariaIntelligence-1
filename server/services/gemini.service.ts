@@ -970,7 +970,7 @@ export class GeminiService {
    * @param temperature Temperatura para controlar aleatoriedade (0.0 a 1.0)
    * @returns Texto gerado
    */
-  async generateText(prompt: string, temperature: number = 0.3): Promise<string> {
+  async generateText(prompt: string, temperature: number = 0.3, maxTokens?: number): Promise<string> {
     this.checkInitialization();
     
     try {
@@ -984,7 +984,7 @@ export class GeminiService {
           ],
           generationConfig: { 
             temperature,
-            maxOutputTokens: 2048
+            maxOutputTokens: maxTokens || 2048
           }
         });
       });
