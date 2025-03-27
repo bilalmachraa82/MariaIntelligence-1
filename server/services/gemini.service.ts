@@ -46,6 +46,63 @@ export class GeminiService {
   private flashModel: any; // GenerativeModel
   private audioModel: any; // GenerativeModel para processamento de áudio
   private isInitialized: boolean = false;
+  private apiKey: string = '';
+  private isApiConnected: boolean = false;
+  private maxRetries: number = 5; // Número máximo de tentativas para chamadas à API
+  
+  /**
+   * Implementa um sistema de retry para chamadas à API
+   * @param fn Função a ser executada com retry
+   * @param maxRetries Número máximo de tentativas
+   * @param delay Delay entre tentativas em ms
+   * @returns Promise com o resultado da função
+   */
+  private async withRetry<T>(fn: () => Promise<T>, maxRetries: number = 5, delay: number = 1000): Promise<T> {
+    let lastError: any;
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        console.log(`Tentativa ${attempt}/${maxRetries}`);
+        return await fn();
+      } catch (error: any) {
+        lastError = error;
+        console.warn(`Tentativa ${attempt}/${maxRetries} falhou: ${error.message}`);
+        
+        if (attempt < maxRetries) {
+          // Delay exponencial com jitter
+          const jitter = Math.random() * 500;
+          const waitTime = (delay * Math.pow(1.5, attempt - 1)) + jitter;
+          console.log(`Aguardando ${Math.round(waitTime)}ms antes da próxima tentativa...`);
+          await new Promise(resolve => setTimeout(resolve, waitTime));
+        }
+      }
+    }
+    
+    throw lastError || new Error("Falha em todas as tentativas");
+  }
+  
+  /**
+   * Valida a chave da API Gemini tentando obter a lista de modelos disponíveis
+   * @param apiKey Chave API do Google Gemini
+   * @returns Promise<boolean> indicando se a chave é válida
+   */
+  private async validateApiKey(apiKey: string): Promise<boolean> {
+    try {
+      return await this.withRetry(async () => {
+        console.log("Validando chave API Gemini...");
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${apiKey}`);
+        if (!response.ok) {
+          console.error(`Erro na API Gemini: ${response.status} - ${response.statusText}`);
+          throw new Error(`API retornou status ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(`✅ API Gemini válida - ${data.models?.length || 0} modelos disponíveis`);
+        return true;
+      }, this.maxRetries, 1000);
+    } catch (error: any) {
+      console.error("❌ Erro ao validar chave API do Gemini após várias tentativas:", error);
+      return false;
+    }
+  }
 
   constructor() {
     const apiKey = process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
@@ -82,20 +139,19 @@ export class GeminiService {
     try {
       // Tentar integração direta com a API Gemini usando fetch
       // Em vez de usar a biblioteca @google/generative-ai, vamos usar fetch diretamente
+      this.apiKey = apiKey;
       
-      // Verificar se a chave API é válida
-      fetch(`https://generativelanguage.googleapis.com/v1/models?key=${apiKey}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`Resposta da API não válida: ${response.status}`);
+      // Verificar se a chave API é válida de forma assíncrona
+      this.validateApiKey(apiKey)
+        .then(isValid => {
+          this.isApiConnected = isValid;
+          this.isInitialized = isValid;
+          if (isValid) {
+            console.log("✅ API Gemini conectada com sucesso");
+            console.log("🚀 Usando implementação direta da API Gemini via fetch");
+          } else {
+            console.error("❌ Chave API do Gemini inválida ou API indisponível");
           }
-          return response.json();
-        })
-        .then(data => {
-          console.log("✅ Gemini API verificada com sucesso!");
-          // Informar que estamos usando implementação direta
-          console.log("🚀 Usando implementação direta da API Gemini via fetch");
-          this.isInitialized = true;
         })
         .catch(error => {
           console.error("❌ Erro ao verificar Gemini API:", error);
@@ -308,26 +364,28 @@ export class GeminiService {
         ? pdfBase64.substring(0, 500000) + "..." 
         : pdfBase64;
       
-      // Use o modelo padrão para documentos extensos
-      const result = await this.defaultModel.generateContent({
-        contents: [
-          {
-            role: 'user',
-            parts: [
-              { 
-                text: `Você é um especialista em OCR. Extraia todo o texto visível deste documento PDF em base64, 
-                organizando o texto por seções. Preserve tabelas e formatação estruturada.
-                Preste atenção especial em datas, valores monetários e informações de contato.`
-              },
-              { 
-                inlineData: { 
-                  mimeType: 'application/pdf', 
-                  data: truncatedPdfBase64 
-                } 
-              }
-            ]
-          }
-        ]
+      // Use o modelo padrão para documentos extensos com retry
+      const result = await this.withRetry(async () => {
+        return await this.defaultModel.generateContent({
+          contents: [
+            {
+              role: 'user',
+              parts: [
+                { 
+                  text: `Você é um especialista em OCR. Extraia todo o texto visível deste documento PDF em base64, 
+                  organizando o texto por seções. Preserve tabelas e formatação estruturada.
+                  Preste atenção especial em datas, valores monetários e informações de contato.`
+                },
+                { 
+                  inlineData: { 
+                    mimeType: 'application/pdf', 
+                    data: truncatedPdfBase64 
+                  } 
+                }
+              ]
+            }
+          ]
+        });
       });
       
       return result.response.text();
@@ -381,26 +439,28 @@ export class GeminiService {
         imageBase64 = imageBase64.substring(0, 1000000);
       }
       
-      // Usar o modelo de visão para extrair texto da imagem
-      const result = await this.visionModel.generateContent({
-        contents: [
-          {
-            role: 'user',
-            parts: [
-              { 
-                text: `Extraia todo o texto visível nesta imagem, incluindo números, datas, nomes e valores monetários. 
-                Preste atenção especial a detalhes como informações de check-in/check-out, valor total e nome do hóspede. 
-                Preserve a estrutura do documento na sua resposta.` 
-              },
-              { 
-                inlineData: { 
-                  mimeType: mimeType, 
-                  data: imageBase64 
-                } 
-              }
-            ]
-          }
-        ]
+      // Usar o modelo de visão para extrair texto da imagem com retry
+      const result = await this.withRetry(async () => {
+        return await this.visionModel.generateContent({
+          contents: [
+            {
+              role: 'user',
+              parts: [
+                { 
+                  text: `Extraia todo o texto visível nesta imagem, incluindo números, datas, nomes e valores monetários. 
+                  Preste atenção especial a detalhes como informações de check-in/check-out, valor total e nome do hóspede. 
+                  Preserve a estrutura do documento na sua resposta.` 
+                },
+                { 
+                  inlineData: { 
+                    mimeType: mimeType, 
+                    data: imageBase64 
+                  } 
+                }
+              ]
+            }
+          ]
+        });
       });
       
       return result.response.text();
@@ -448,33 +508,36 @@ export class GeminiService {
     this.checkInitialization();
     
     try {
-      const result = await this.defaultModel.generateContent({
-        contents: [
-          {
-            role: 'user',
-            parts: [{ 
-              text: `Você é um especialista em extrair dados estruturados de textos de reservas.
-              Use o formato de data ISO (YYYY-MM-DD) para todas as datas.
-              Converta valores monetários para números decimais sem símbolos de moeda.
-              Se algum campo estiver ausente no texto, deixe-o como null ou string vazia.
-              Atribua a plataforma correta (airbnb/booking/direct/expedia/other) com base no contexto.
-              
-              Analise este texto de reserva e extraia as informações em formato JSON com os campos: 
-              propertyName, guestName, guestEmail, guestPhone, checkInDate (YYYY-MM-DD), checkOutDate (YYYY-MM-DD), 
-              numGuests, totalAmount, platform (airbnb/booking/direct/expedia/other), platformFee, cleaningFee, 
-              checkInFee, commissionFee, teamPayment.
-              
-              Se o texto contiver informação sobre várias propriedades, identifique corretamente qual é a propriedade 
-              que está sendo reservada.
-              
-              Texto da reserva:
-              ${text}`
-            }]
+      const result = await this.withRetry(async () => {
+        const response = await this.defaultModel.generateContent({
+          contents: [
+            {
+              role: 'user',
+              parts: [{ 
+                text: `Você é um especialista em extrair dados estruturados de textos de reservas.
+                Use o formato de data ISO (YYYY-MM-DD) para todas as datas.
+                Converta valores monetários para números decimais sem símbolos de moeda.
+                Se algum campo estiver ausente no texto, deixe-o como null ou string vazia.
+                Atribua a plataforma correta (airbnb/booking/direct/expedia/other) com base no contexto.
+                
+                Analise este texto de reserva e extraia as informações em formato JSON com os campos: 
+                propertyName, guestName, guestEmail, guestPhone, checkInDate (YYYY-MM-DD), checkOutDate (YYYY-MM-DD), 
+                numGuests, totalAmount, platform (airbnb/booking/direct/expedia/other), platformFee, cleaningFee, 
+                checkInFee, commissionFee, teamPayment.
+                
+                Se o texto contiver informação sobre várias propriedades, identifique corretamente qual é a propriedade 
+                que está sendo reservada.
+                
+                Texto da reserva:
+                ${text}`
+              }]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.1,
           }
-        ],
-        generationConfig: {
-          temperature: 0.1,
-        }
+        });
+        return response;
       });
       
       const content = result.response.text();
@@ -519,7 +582,8 @@ export class GeminiService {
     this.checkInitialization();
     
     try {
-      const result = await this.defaultModel.generateContent({
+      const result = await this.withRetry(async () => {
+        return await this.defaultModel.generateContent({
         contents: [
           {
             role: 'user',
@@ -581,7 +645,8 @@ export class GeminiService {
     
     try {
       // Usar o modelo mais rápido para classificação
-      const result = await this.flashModel.generateContent({
+      const result = await this.withRetry(async () => {
+        return await this.flashModel.generateContent({
         contents: [
           {
             role: 'user',
@@ -646,7 +711,8 @@ export class GeminiService {
         ? fileBase64.substring(0, 500000) 
         : fileBase64;
       
-      const result = await this.visionModel.generateContent({
+      const result = await this.withRetry(async () => {
+        return await this.visionModel.generateContent({
         contents: [
           { 
             role: 'user', 
@@ -839,7 +905,8 @@ export class GeminiService {
     this.checkInitialization();
     
     try {
-      const result = await this.defaultModel.generateContent({
+      const result = await this.withRetry(async () => {
+        return await this.defaultModel.generateContent({
         contents: [
           {
             role: 'user',
@@ -913,7 +980,8 @@ export class GeminiService {
       `;
       
       // Usar o modelo de visão para análise completa (visual + texto)
-      const result = await this.visionModel.generateContent({
+      const result = await this.withRetry(async () => {
+        return await this.visionModel.generateContent({
         contents: [
           {
             role: 'user',

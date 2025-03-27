@@ -16,8 +16,15 @@
  */
 
 import { db } from '../db';
-import { sql } from 'drizzle-orm';
+import { sql, desc, gte, lte } from 'drizzle-orm';
 import { aiService } from './ai-adapter.service';
+import { knowledgeEmbeddings, conversationHistory, queryEmbeddings } from '../../shared/schema';
+import type { 
+  KnowledgeEmbedding, 
+  InsertKnowledgeEmbedding, 
+  InsertConversationHistory,
+  InsertQueryEmbedding
+} from '../../shared/schema';
 import { storage } from '../storage';
 import {
   knowledgeEmbeddings,
@@ -107,8 +114,8 @@ export class RagEnhancedService {
         content: content.length > 10000 ? content.substring(0, 10000) : content,
         contentType,
         metadata: JSON.stringify(metadata),
-        embedding: embedding ? embedding : undefined,
-        createdAt: new Date()
+        embeddingJson: embedding ? JSON.stringify(embedding) : undefined
+        // createdAt é adicionado automaticamente pelo schema
       };
       
       // Inserir na base de dados
@@ -227,14 +234,26 @@ export class RagEnhancedService {
         const dbResults = await query;
         
         // Calcular similaridade manualmente (simplificado)
-        results = dbResults.map(item => ({
-          id: item.id,
-          content: item.content,
-          contentType: item.contentType,
-          embedding: item.embedding as number[],
-          metadata: JSON.parse(item.metadata as string),
-          createdAt: item.createdAt as Date
-        }));
+        results = dbResults.map(item => {
+          // Extrair embedding do formato JSON armazenado
+          let parsedEmbedding: number[] = [];
+          try {
+            if (item.embeddingJson) {
+              parsedEmbedding = JSON.parse(item.embeddingJson as string);
+            }
+          } catch (err) {
+            console.error('Erro ao fazer parse do embedding JSON:', err);
+          }
+          
+          return {
+            id: item.id,
+            content: item.content,
+            contentType: item.contentType,
+            embedding: parsedEmbedding,
+            metadata: JSON.parse(item.metadata as string),
+            createdAt: item.createdAt as Date
+          };
+        });
       } else {
         // Usando memory storage
         const allItems = await storage.getKnowledgeEmbeddings();
@@ -298,10 +317,12 @@ export class RagEnhancedService {
    */
   private async saveQueryEmbedding(query: string, embedding: number[]): Promise<void> {
     try {
-      const newQueryEmbedding = {
+      // Para evitar erro "null value in column response", garantimos que temos uma resposta
+      const newQueryEmbedding: InsertQueryEmbedding = {
         query,
-        embedding,
-        createdAt: new Date()
+        response: "Consulta armazenada para aprendizado", // Adicionando valor padrão para response
+        embeddingJson: JSON.stringify(embedding) // Armazenar como JSON
+        // frequency é adicionado automaticamente pelo schema
       };
       
       // Salvar na base de dados
@@ -312,6 +333,11 @@ export class RagEnhancedService {
       }
     } catch (error) {
       console.error('Erro ao salvar embedding de consulta:', error);
+      // Log mais detalhado do erro para diagnóstico
+      if (error instanceof Error) {
+        console.error(`Detalhes do erro: ${error.message}`);
+        console.error(`Stack: ${error.stack}`);
+      }
     }
   }
 
@@ -327,25 +353,21 @@ export class RagEnhancedService {
     metadata: any = {}
   ): Promise<void> {
     try {
-      const conversationEntry = {
-        content: message,
+      // Garantir que a mensagem não seja nula
+      const safeMessage = message || "";
+      
+      // Criar entrada conforme o schema esperado pelo banco
+      const conversationEntry: InsertConversationHistory = {
+        message: safeMessage,
         role,
-        metadata: JSON.stringify(metadata),
-        createdAt: new Date()
+        metadata: JSON.stringify(metadata)
+        // userId e timestamp são definidos automaticamente pelo schema
       };
       
       // Salvar na base de dados
       if (db) {
-        // Garantir que a mensagem não seja nula
-        if (!conversationEntry.content) {
-          conversationEntry.content = ""; // Fornecer valor padrão para evitar violação de not-null
-        }
         await db.insert(conversationHistory).values(conversationEntry);
       } else {
-        // Garantir que a mensagem não seja nula
-        if (!conversationEntry.content) {
-          conversationEntry.content = ""; // Fornecer valor padrão para evitar violação de not-null
-        }
         await storage.saveConversationHistory(conversationEntry);
       }
       
