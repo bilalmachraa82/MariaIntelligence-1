@@ -1638,7 +1638,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Se for mistral, redirecionar para gemini
         if (service === "mistral") {
           console.log("Serviço Mistral não é mais suportado, usando Gemini no lugar");
-          service = "gemini";
+          const newService = "gemini";
+          aiService.setService(serviceTypeMap[newService]);
+          return res.json({
+            success: true,
+            message: `Serviço Mistral não é mais suportado. Alterado para Gemini automaticamente.`,
+            currentService: aiService.getCurrentService()
+          });
         }
         
         aiService.setService(serviceTypeMap[service]);
@@ -2033,11 +2039,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Verifica se a chave da API Mistral está disponível
-      if (!process.env.MISTRAL_API_KEY) {
+      // Verifica se a chave da API Gemini está disponível
+      if (!process.env.GOOGLE_GEMINI_API_KEY && !process.env.GOOGLE_API_KEY) {
         return res.status(400).json({ 
           success: false,
-          message: "Chave da API Mistral não configurada. Configure a chave nas definições." 
+          message: "Chave da API Gemini não configurada. Configure a chave nas definições." 
         });
       }
 
@@ -2077,15 +2083,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const fileBuffer = await fs.promises.readFile(filePath);
         const fileBase64 = fileBuffer.toString('base64');
         
-        // Processar documento usando mistralService
+        // Processar documento usando o adaptador de IA
         console.log(`Processando documento financeiro: ${req.file.originalname} (${req.file.mimetype})`);
+        
+        // Importar o adaptador de IA
+        const { aiService } = await import('./services/ai-adapter.service');
         
         // Extrair texto do documento
         let extractedText = '';
         if (req.file.mimetype.includes('pdf')) {
-          extractedText = await mistralService.extractTextFromPDF(fileBase64);
+          extractedText = await aiService.extractTextFromPDF(fileBase64);
         } else if (req.file.mimetype.includes('image')) {
-          extractedText = await mistralService.extractTextFromImage(fileBase64, req.file.mimetype);
+          extractedText = await aiService.extractTextFromImage(fileBase64, req.file.mimetype);
         }
         
         if (!extractedText || extractedText.length < 50) {
@@ -2128,14 +2137,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
           Para campos não encontrados no documento, use null.
         `;
         
-        const response = await mistralService.getMistralClient().chat.complete({
-          model: "mistral-large-latest",
-          messages: [
-            { role: "system", content: "Você é um assistente especializado em extração de dados de documentos financeiros." },
-            { role: "user", content: `${extractionPrompt}\n\nTexto do documento:\n${extractedText}` }
-          ],
+        // Usar o adaptador de IA para processamento de texto
+        const result = await aiService.extractDataFromText(extractedText, {
+          systemPrompt: "Você é um assistente especializado em extração de dados de documentos financeiros.",
+          responseFormat: { type: "json_object" },
           temperature: 0.1,
-          responseFormat: { type: "json_object" }
+          documentType: docType,
+          extractFields: [
+            'issuerName', 'issuerTaxId', 'recipientName', 'recipientTaxId',
+            'documentNumber', 'issueDate', 'dueDate', 'totalAmount',
+            'currency', 'items', 'taxes', 'paymentMethod', 'status'
+          ]
+        });
         });
         
         const content = response.choices?.[0]?.message?.content;
@@ -2266,14 +2279,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         `;
       }
       
-      const response = await mistralService.getMistralClient().chat.complete({
-        model: "mistral-medium",
-        messages: [
-          { role: "system", content: "Você é um auditor financeiro especializado." },
-          { role: "user", content: validationPrompt }
-        ],
+      // Importar o adaptador de IA
+      const { aiService } = await import('./services/ai-adapter.service');
+      
+      // Usar o adaptador de IA para extrair dados do texto
+      const result = await aiService.extractDataFromText(validationPrompt, {
+        systemPrompt: "Você é um auditor financeiro especializado.",
+        responseFormat: { type: "json_object" },
         temperature: 0.1,
-        responseFormat: { type: "json_object" }
+        documentType: documentType
       });
       
       const content = response.choices?.[0]?.message?.content;
