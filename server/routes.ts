@@ -529,7 +529,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const directQuery = `SELECT SUM(CAST(total_amount AS DECIMAL)) as direct_total FROM reservations WHERE status = 'completed'`;
             const directResult = await db.execute(sql.raw(directQuery));
             console.log("Resultado da consulta SQL direta:", directResult);
-            console.log("Valor total diretamente da tabela:", directResult[0]?.direct_total);
+            const results = directResult as unknown as any[];
+            console.log("Valor total diretamente da tabela:", results[0]?.direct_total);
           } else {
             console.log("Banco de dados não disponível para consulta direta");
           }
@@ -700,7 +701,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         );
         
         const profit = monthReservations.reduce(
-          (sum, r) => sum + parseFloat(r.netAmount), 0
+          (sum, r) => sum + parseFloat(r.netAmount || '0'), 0
         );
         
         return {
@@ -829,7 +830,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         if (autoCreateReservation) {
           // Usar o serviço completo que processa o PDF e cria uma reserva
-          result = await processPdfAndCreateReservation(req.file.path, process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY, { skipQualityCheck, useCache });
+          result = await processPdfAndCreateReservation(req.file.path, process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "", { skipQualityCheck, useCache });
           console.log('Processamento e criação de reserva concluídos:', result.success);
           
           // Adicionar atividade ao sistema se a reserva foi criada
@@ -869,7 +870,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log('Processando PDF sem criação automática de reserva');
           
           // Usar o serviço de extração e validação
-          const validationResult = await processPdf(req.file.path, process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY, { 
+          const validationResult = await processPdf(req.file.path, process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "", { 
             skipQualityCheck, 
             useCache 
           });
@@ -2150,7 +2151,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           ]
         });
         
-        const content = response.choices?.[0]?.message?.content;
+        const content = result.choices?.[0]?.message?.content;
         let extractedData = {};
         
         try {
@@ -2289,7 +2290,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         documentType: documentType
       });
       
-      const content = response.choices?.[0]?.message?.content;
+      const content = result.choices?.[0]?.message?.content;
       let validationResult = {
         isValid: false,
         issues: [],
@@ -2967,7 +2968,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         endDate: report.period.endDate,
         properties: report.properties,
         totals: report.summary,
-        reservations: report.properties.flatMap(p => p.reservations || [])
+        reservations: report.properties.flatMap((p: any) => p.reservations || [])
       });
     } catch (err) {
       console.error("Erro ao gerar relatório financeiro de proprietário:", err);
