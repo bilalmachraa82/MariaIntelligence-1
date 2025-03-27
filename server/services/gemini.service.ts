@@ -217,8 +217,59 @@ export class GeminiService {
           if (isValid) {
             console.log("✅ API Gemini conectada com sucesso");
             console.log("🚀 Usando implementação direta da API Gemini via fetch");
+            
+            // Inicializar modelos reais para API Gemini
+            this.genAI = {
+              getGenerativeModel: (params: any) => {
+                return {
+                  generateContent: async (requestParams: any) => {
+                    const apiUrl = 'https://generativelanguage.googleapis.com/v1/models/' + 
+                      (params.model || 'gemini-1.5-pro') + ':generateContent' + 
+                      '?key=' + this.apiKey;
+                    
+                    const response = await fetch(apiUrl, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(requestParams)
+                    });
+                    
+                    if (!response.ok) {
+                      const errorText = await response.text();
+                      throw new Error(`API Gemini erro ${response.status}: ${errorText}`);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    return {
+                      response: {
+                        text: () => {
+                          const candidates = result.candidates || [];
+                          if (candidates.length === 0) {
+                            throw new Error('Sem resposta da API Gemini');
+                          }
+                          
+                          const content = candidates[0].content || {};
+                          const parts = content.parts || [];
+                          
+                          // Extrair texto das partes
+                          return parts.map((part: any) => part.text || '').join('');
+                        }
+                      }
+                    };
+                  }
+                };
+              }
+            };
+            
+            // Inicializar os diferentes modelos
+            this.defaultModel = this.genAI.getGenerativeModel({ model: GeminiModel.TEXT });
+            this.visionModel = this.genAI.getGenerativeModel({ model: GeminiModel.VISION });
+            this.flashModel = this.genAI.getGenerativeModel({ model: GeminiModel.FLASH });
+            this.audioModel = this.genAI.getGenerativeModel({ model: GeminiModel.AUDIO });
           } else {
             console.error("❌ Chave API do Gemini inválida ou API indisponível");
+            // Usar mock em caso de API inválida
+            this.mockInitialization();
           }
         })
         .catch(error => {
@@ -227,9 +278,8 @@ export class GeminiService {
           this.mockInitialization();
         });
       
-      // Por enquanto, inicializar com mock até que a conexão seja verificada
-      // Será substituído se a verificação acima for bem-sucedida
-      this.mockInitialization();
+      // Configurar o serviço sem mock - será automaticamente conectado quando
+      // a verificação da API for concluída com sucesso
       console.log("✅ Gemini API configurada corretamente");
     } catch (error) {
       console.error("Erro ao inicializar Gemini:", error);
