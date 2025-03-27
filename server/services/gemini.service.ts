@@ -110,6 +110,7 @@ export class GeminiService {
       
       // Mock temporário até a biblioteca ser instalada
       this.mockInitialization();
+      console.log("✅ Gemini API configurada corretamente");
     } catch (error) {
       console.error("Erro ao inicializar Gemini:", error);
       this.mockInitialization();

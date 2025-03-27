@@ -759,7 +759,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Verificar se temos a chave de API do Google Gemini disponível
-      if (!process.env.GOOGLE_API_KEY if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY)if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) !process.env.GOOGLE_GEMINI_API_KEY) {
+      if (!process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) {
         return res.status(500).json({ 
           success: false,
           message: "Nenhuma chave de API do Google Gemini configurada" 
@@ -1025,7 +1025,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Verificar se temos a chave de API do Google Gemini disponível
-      if (!process.env.GOOGLE_API_KEY if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY)if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) !process.env.GOOGLE_GEMINI_API_KEY) {
+      if (!process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) {
         return res.status(500).json({ 
           success: false,
           message: "Nenhuma chave de API do Google Gemini configurada" 
@@ -1117,7 +1117,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Verificamos se temos alguma das chaves de API disponíveis (Mistral ou Gemini)
-      if (!process.env.GOOGLE_API_KEY if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY)if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) !process.env.GOOGLE_GEMINI_API_KEY) {
+      if (!process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) {
         return res.status(500).json({ 
           success: false,
           message: "Nenhuma chave de API do Google Gemini configurada" 
@@ -1231,7 +1231,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // mas pode processar individualmente quando necessário
 
       // Verificar se temos a chave de API do Google Gemini disponível
-      if (!process.env.GOOGLE_API_KEY if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY)if (!process.env.MISTRAL_API_KEY && !process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) !process.env.GOOGLE_GEMINI_API_KEY) {
+      if (!process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) {
         return res.status(500).json({ 
           success: false,
           message: "Nenhuma chave de API do Google Gemini configurada" 
@@ -1557,7 +1557,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/check-mistral-key", (_req: Request, res: Response) => {
     try {
       const hasGeminiKey = process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
-                          process.env.MISTRAL_API_KEY !== '';
+                          process.env.GOOGLE_GEMINI_API_KEY !== '' || process.env.GOOGLE_API_KEY !== '';
       res.json({ available: hasGeminiKey });
     } catch (err) {
       handleError(err, res);
@@ -1582,10 +1582,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const hasGeminiKey = process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
-                          process.env.MISTRAL_API_KEY !== '';
+                          process.env.GOOGLE_GEMINI_API_KEY !== '' || process.env.GOOGLE_API_KEY !== '';
       
       // Verificar ambas as variáveis de ambiente possíveis para a API do Gemini
-      const hasGeminiKey = (process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
+      const hasGeminiKeyForUpload = (process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
                            process.env.GOOGLE_GEMINI_API_KEY !== '') || 
                           (process.env.GOOGLE_API_KEY !== undefined && 
                            process.env.GOOGLE_API_KEY !== '');
@@ -1781,9 +1781,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Verificar disponibilidade de chaves
       const hasGeminiKey = process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
-                            process.env.MISTRAL_API_KEY !== '';
+                            process.env.GOOGLE_GEMINI_API_KEY !== '' || process.env.GOOGLE_API_KEY !== '';
       
-      const hasGeminiKey = (process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
+      const hasGeminiKeyForProcess = (process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
                             process.env.GOOGLE_GEMINI_API_KEY !== '') || 
                            (process.env.GOOGLE_API_KEY !== undefined && 
                             process.env.GOOGLE_API_KEY !== '');
@@ -1845,9 +1845,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           // Verificar quais serviços estão disponíveis
           const hasGeminiKey = process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
-                              process.env.MISTRAL_API_KEY !== '';
+                              process.env.GOOGLE_GEMINI_API_KEY !== '' || process.env.GOOGLE_API_KEY !== '';
                               
-          const hasGeminiKey = (process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
+          const hasGeminiKeyForExtraction = (process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
                               process.env.GOOGLE_GEMINI_API_KEY !== '') || 
                              (process.env.GOOGLE_API_KEY !== undefined && 
                               process.env.GOOGLE_API_KEY !== '');
@@ -2148,7 +2148,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
             'documentNumber', 'issueDate', 'dueDate', 'totalAmount',
             'currency', 'items', 'taxes', 'paymentMethod', 'status'
           ]
-        });
         });
         
         const content = response.choices?.[0]?.message?.content;
