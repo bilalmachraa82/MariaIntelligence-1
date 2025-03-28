@@ -130,13 +130,8 @@ export default function AssistantPage() {
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [hasMistralKey, setHasMistralKey] = useState(false);
   
-  // Estado para controle de recursos de voz
-  const [voiceEnabled, setVoiceEnabled] = useState<boolean>(() => {
-    // Verifica se há configuração salva no localStorage e se a síntese de voz é suportada
-    const savedPreference = localStorage.getItem('voice-enabled');
-    // Se não houver configuração salva, habilitar por padrão
-    return savedPreference !== null ? savedPreference === 'true' : true; 
-  });
+  // Voz sempre desabilitada
+  const [voiceEnabled, setVoiceEnabled] = useState<boolean>(false);
   
   // ID único para as mensagens
   const generateId = () => Math.random().toString(36).substring(2, 9);
@@ -251,62 +246,10 @@ export default function AssistantPage() {
     }
   }, [voiceEnabled]);
   
-  // Efeito para reproduzir a introdução por voz ao carregar a página
-  // Só executa uma vez quando o componente é montado
+  // Funcionalidade de introdução por voz removida
   useEffect(() => {
-    // Flag para controlar se a introdução já foi reproduzida nesta sessão
-    const hasPlayedIntroduction = sessionStorage.getItem('voice-introduction-played');
-    
-    // Só reproduz a introdução se ainda não foi reproduzida nesta sessão e se a voz estiver habilitada
-    if (!hasPlayedIntroduction && speechSynthesis.isVoiceSupported() && voiceEnabled) {
-      const playIntroduction = async () => {
-        try {
-          // Obter a saudação personalizada do servidor
-          const response = await fetch(`/api/speech/introduction?language=${i18n.language}`);
-          
-          if (response.ok) {
-            const data = await response.json();
-            
-            if (data.success && data.greeting) {
-              // Reproduzir a saudação usando a síntese de voz
-              speechSynthesis.speak({
-                text: data.greeting,
-                lang: i18n.language,
-                rate: 1.0,
-                pitch: 1.0,
-                volume: 1.0,
-                onStart: () => {
-                  console.log("Reproduzindo introdução de voz");
-                },
-                onEnd: () => {
-                  console.log("Introdução de voz concluída");
-                  // Marcar como reproduzida para não repetir na mesma sessão
-                  sessionStorage.setItem('voice-introduction-played', 'true');
-                },
-                onError: (error) => {
-                  console.error("Erro na reprodução de voz:", error);
-                }
-              });
-            }
-          }
-        } catch (error) {
-          console.error("Erro ao obter introdução de voz:", error);
-        }
-      };
-      
-      // Atrasa a reprodução em 1.5 segundos para garantir que a página 
-      // esteja totalmente carregada e o usuário esteja pronto
-      const introTimer = setTimeout(() => {
-        playIntroduction();
-      }, 1500);
-      
-      return () => {
-        clearTimeout(introTimer);
-        // Parar a reprodução se o componente for desmontado
-        speechSynthesis.stop();
-      };
-    }
-  }, [i18n.language]);
+    // Nada a fazer, funcionalidade removida
+  }, []);
 
   // Função para enviar mensagem ao assistente com Mistral AI
   const sendMessage = async (messageToSend?: string | React.MouseEvent<HTMLButtonElement>) => {
@@ -416,31 +359,7 @@ export default function AssistantPage() {
       // Adiciona a mensagem do assistente à conversa
       setMessages(prev => [...prev, assistantMessage]);
       
-      // Se a síntese de voz estiver habilitada, vamos converter a resposta em fala
-      if (voiceEnabled && speechSynthesis.isVoiceSupported()) {
-        // Obter texto preparado do servidor para otimizar a pronúncia
-        try {
-          const speechResponse = await fetch(`/api/speech/introduction?language=${i18n.language}`);
-          if (speechResponse.ok) {
-            // Use o texto da resposta do assistente, não a saudação da introdução
-            const preparedText = data.reply || t("aiAssistant.errorMessage", "Desculpe, não consegui processar sua solicitação.");
-            
-            // Reproduzir a resposta usando a síntese de voz
-            speechSynthesis.speak({
-              text: preparedText,
-              lang: i18n.language,
-              rate: 1.0,
-              pitch: 1.0,
-              volume: 1.0,
-              onError: (error) => {
-                console.error("Erro na síntese de voz:", error);
-              }
-            });
-          }
-        } catch (speechError) {
-          console.error("Erro ao processar síntese de voz:", speechError);
-        }
-      }
+      // Funcionalidade de síntese de voz removida
     } catch (error) {
       console.error("Erro ao processar a mensagem com Mistral AI:", error);
       toast({
@@ -580,16 +499,7 @@ export default function AssistantPage() {
             
             setMessages(prev => [...prev, assistantMessage]);
             
-            // Reproduzir a mensagem de resposta se a síntese de voz estiver habilitada
-            if (voiceEnabled && speechSynthesis.isVoiceSupported()) {
-              speechSynthesis.speak({
-                text: responseMessage,
-                lang: i18n.language,
-                rate: 1.0,
-                pitch: 1.0,
-                volume: 1.0
-              });
-            }
+            // Funcionalidade de síntese de voz removida
             
             setIsLoading(false);
             return;
@@ -677,16 +587,7 @@ export default function AssistantPage() {
           // Adicionar mensagem à conversa
           setMessages(prev => [...prev, assistantMessage]);
           
-          // Reproduzir a mensagem de resposta se a síntese de voz estiver habilitada
-          if (voiceEnabled && speechSynthesis.isVoiceSupported()) {
-            speechSynthesis.speak({
-              text: responseMessage,
-              lang: i18n.language,
-              rate: 1.0,
-              pitch: 1.0,
-              volume: 1.0
-            });
-          }
+          // Funcionalidade de síntese de voz removida
         } else {
           throw new Error(data.error || "Erro ao processar o arquivo");
         }
@@ -870,19 +771,12 @@ export default function AssistantPage() {
     }
   };
   
-  // Alternar o recurso de voz
+  // Funcionalidade de voz removida
   const toggleVoice = () => {
-    const newValue = !voiceEnabled;
-    setVoiceEnabled(newValue);
-    
-    // Feedback ao usuário
+    // Apenas para informar ao usuário que a funcionalidade foi removida
     toast({
-      title: newValue 
-        ? t("aiAssistant.voiceEnabled", "Voz ativada") 
-        : t("aiAssistant.voiceDisabled", "Voz desativada"),
-      description: newValue 
-        ? t("aiAssistant.voiceEnabledDesc", "O assistente agora pode falar com você.") 
-        : t("aiAssistant.voiceDisabledDesc", "O assistente não falará mais."),
+      title: t("aiAssistant.voiceRemoved", "Funcionalidade removida"),
+      description: t("aiAssistant.voiceRemovedDesc", "A funcionalidade de voz foi removida do sistema."),
       duration: 3000
     });
   };
@@ -1086,15 +980,7 @@ export default function AssistantPage() {
                     className="flex-1"
                   />
                   
-                  <VoiceRecorderButton 
-                    onMessageReceived={(text) => {
-                      setMessage(text);
-                      // Pequeno delay para garantir que o estado foi atualizado antes de enviar
-                      setTimeout(() => sendMessage(text), 100);
-                    }}
-                    disabled={isLoading}
-                    className="mr-1"
-                  />
+                  {/* Botão de voz removido */}
                   
                   <Button 
                     onClick={() => sendMessage()} 
