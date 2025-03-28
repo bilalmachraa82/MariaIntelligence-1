@@ -10,12 +10,27 @@ import { InsertReservation } from '../../shared/schema';
 import { AIAdapter } from './ai-adapter.service';
 import { ragService } from './rag-enhanced.service';
 
+// Definição do tipo para propriedade para resolver erros de tipo
+export type Property = {
+  id: number;
+  name: string;
+  cleaningCost: string | null;
+  checkInFee: string | null;
+  commission: string | null;
+  teamPayment: string | null;
+  cleaningTeam: string | null;
+  active: boolean | null;
+  cleaningTeamId: number | null;
+  ownerId: number;
+  monthlyFixedCost: string | null;
+};
+
 // Interface para o resultado do processamento do arquivo de controle
 export interface ControlFileResult {
   success: boolean;
   isControlFile: boolean;
   propertyName: string;
-  reservations: any[];
+  reservations: ControlReservation[];
   rawText: string;
   error?: string;
 }
@@ -25,13 +40,17 @@ export interface ControlReservation {
   guestName: string;
   checkInDate: string;
   checkOutDate: string;
-  numGuests: number;
-  totalAmount: string;
+  numGuests: number | string;
+  totalAmount: string | number;
   platform: string;
   // Outros campos opcionais
   notes?: string;
   phoneNumber?: string;
   email?: string;
+  country?: string;
+  language?: string;
+  paymentStatus?: string;
+  comments?: string;
 }
 
 /**
@@ -84,23 +103,56 @@ export async function processControlFile(filePath: string): Promise<ControlFileR
     console.log('[ControlFileProcessor] Arquivo identificado como controle de reservas!');
     
     // Extrair nome da propriedade (geralmente presente no título do documento)
-    let propertyName = 'Propriedade Desconhecida';
+    let propertyName = '';
     
     // Padrões comuns para identificar o nome da propriedade
     const propertyNamePatterns = [
-      /EXCITING LISBON ([A-Za-z\s]+)/i,
-      /EXCITING\s+LISBON\s+([A-Za-z\s]+)/i,
-      /Controlo_([A-Za-z\s]+)/i,
-      /Controlo\s+([A-Za-z\s]+)/i,
+      // Padrões para Aroeira
+      /EXCITING LISBON ([A-Za-z\s]+\s*[IVX]*)/i,
+      /EXCITING\s+LISBON\s+([A-Za-z\s]+\s*[IVX]*)/i,
+      /Controlo_([A-Za-z\s]+\s*[IVX]*)/i,
+      /Controlo\s+([A-Za-z\s]+\s*[IVX]*)/i,
       /Aroeira\s+(I|II|III)/i,
-      /Mapa de Reservas\s+-\s+([A-Za-z\s]+)/i
+      /AROEIRA\s+(I|II|III)/i,
+      // Capturar apenas "Aroeira" se não estiver qualificado
+      /\b(Aroeira)\b/i,
+      /\b(AROEIRA)\b/i,
+      // Outros formatos comuns
+      /Mapa de Reservas\s+-\s+([A-Za-z\s]+\s*[IVX]*)/i,
+      /Mapa de Ocupação\s+-\s+([A-Za-z\s]+\s*[IVX]*)/i,
+      // Tentativa de capturar qualquer nome após "Lisbon"
+      /Lisbon\s+([A-Za-z\s]+\s*[IVX]*)/i
     ];
     
+    // Procurar padrões em ordem de prioridade
     for (const pattern of propertyNamePatterns) {
       const match = rawText.match(pattern);
       if (match && match[1]) {
         propertyName = match[1].trim();
+        // Se encontrarmos, interrompemos o loop
         break;
+      }
+    }
+    
+    // Tratar caso especial de Aroeira
+    if (propertyName.toLowerCase() === 'aroeira') {
+      // Procurar por "Aroeira I", "Aroeira II", etc. no texto completo
+      const aroeiraSuffixMatch = rawText.match(/Aroeira\s+(I|II|III)/i) || 
+                                 rawText.match(/AROEIRA\s+(I|II|III)/i);
+      
+      if (aroeiraSuffixMatch && aroeiraSuffixMatch[1]) {
+        propertyName = `Aroeira ${aroeiraSuffixMatch[1]}`;
+      }
+    }
+    
+    // Se ainda não encontramos nada, usar método alternativo
+    if (!propertyName) {
+      // Procurar por qualquer nome que pareça ser um título no início do documento
+      const firstLine = rawText.split('\n')[0].trim();
+      if (firstLine && firstLine.length > 0 && firstLine.length < 50) {
+        propertyName = firstLine;
+      } else {
+        propertyName = 'Propriedade Desconhecida';
       }
     }
     
@@ -224,15 +276,96 @@ export async function createReservationsFromControlFile(controlResult: ControlFi
     // Encontrar a propriedade pelo nome
     const properties = await storage.getProperties();
     
-    // Tentar encontrar a propriedade usando correspondência de texto
+    // Tentar encontrar a propriedade usando correspondência de texto e pontuação de similaridade
     let propertyId: number | null = null;
+    let bestMatch: { property: any, score: number } = { property: null, score: 0 };
     
+    // Normalizar o nome da propriedade extraído para comparação
+    const normalizedPropertyName = controlResult.propertyName.toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remover acentos
+      .replace(/[^a-z0-9\s]/g, "") // Manter apenas letras, números e espaços
+      .trim();
+    
+    console.log(`[ControlFileProcessor] Nome normalizado para busca: "${normalizedPropertyName}"`);
+    
+    // Processar casos especiais
+    const isAroeira = normalizedPropertyName.includes('aroeira');
+    const aroeiraSuffix = isAroeira ? 
+      normalizedPropertyName.match(/aroeira\s*(i|ii|iii|iv|1|2|3|4)/i)?.[1] : null;
+    
+    // Loop por todas as propriedades para encontrar a melhor correspondência
     for (const property of properties) {
-      if (property.name.toLowerCase().includes(controlResult.propertyName.toLowerCase()) ||
-          controlResult.propertyName.toLowerCase().includes(property.name.toLowerCase())) {
-        propertyId = property.id;
-        console.log(`[ControlFileProcessor] Propriedade correspondente encontrada: ${property.name} (ID: ${propertyId})`);
-        break;
+      // Normalizar o nome da propriedade para comparação
+      const normalizedName = property.name.toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9\s]/g, "")
+        .trim();
+      
+      let score = 0;
+      
+      // Casos especiais para Aroeira
+      if (isAroeira && normalizedName.includes('aroeira')) {
+        // Correspondência perfeita para Aroeira com o número romano correto
+        if (aroeiraSuffix && normalizedName.includes(`aroeira ${aroeiraSuffix}`)) {
+          score = 100;
+        } 
+        // Correspondência para Aroeira I quando temos apenas "aroeira" no documento
+        else if (!aroeiraSuffix && normalizedName.includes('aroeira i')) {
+          score = 80;
+        }
+        // Correspondência parcial para qualquer Aroeira
+        else {
+          score = 60;
+        }
+      }
+      // Correspondência exata
+      else if (normalizedName === normalizedPropertyName) {
+        score = 100;
+      }
+      // Uma string contém a outra completamente
+      else if (normalizedName.includes(normalizedPropertyName) || 
+               normalizedPropertyName.includes(normalizedName)) {
+        // Calculamos o score baseado no tamanho relativo das strings
+        const lengthRatio = Math.min(normalizedName.length, normalizedPropertyName.length) / 
+                           Math.max(normalizedName.length, normalizedPropertyName.length);
+        score = 70 * lengthRatio;
+      }
+      // Correspondência parcial (palavras em comum)
+      else {
+        const nameWords = normalizedName.split(/\s+/);
+        const propertyWords = normalizedPropertyName.split(/\s+/);
+        
+        // Contar palavras em comum
+        const commonWords = nameWords.filter(word => 
+          propertyWords.some(propWord => propWord === word));
+        
+        if (commonWords.length > 0) {
+          // Pontuação baseada no número de palavras em comum
+          score = 40 * (commonWords.length / Math.max(nameWords.length, propertyWords.length));
+        }
+      }
+      
+      // Atualizar a melhor correspondência
+      if (score > bestMatch.score) {
+        bestMatch = { property: property as Property, score };
+      }
+    }
+    
+    // Definir a propriedade se tivermos uma correspondência razoável (score > 40)
+    if (bestMatch.score > 40 && bestMatch.property) {
+      propertyId = bestMatch.property.id;
+      console.log(`[ControlFileProcessor] Propriedade correspondente encontrada: ${bestMatch.property.name} (ID: ${propertyId}) com pontuação ${bestMatch.score.toFixed(2)}`);
+    } else {
+      // Caso especial: se é Aroeira sem correspondência, mas temos propriedades Aroeira no sistema
+      if (isAroeira) {
+        // Procurar qualquer propriedade Aroeira
+        const anyAroeira = properties.find(p => 
+          p.name.toLowerCase().includes('aroeira')) as Property | undefined;
+          
+        if (anyAroeira) {
+          propertyId = anyAroeira.id;
+          console.log(`[ControlFileProcessor] Usando propriedade Aroeira genérica: ${anyAroeira.name} (ID: ${propertyId})`);
+        }
       }
     }
     
@@ -244,39 +377,169 @@ export async function createReservationsFromControlFile(controlResult: ControlFi
     // Processar cada reserva extraída
     for (const reservation of controlResult.reservations) {
       try {
-        // Formatar datas para o formato YYYY-MM-DD
+        // Formatar datas para o formato YYYY-MM-DD com validação
         const formatDate = (dateStr: string): string => {
           if (!dateStr) return '';
           
-          // Verificar o formato da data (DD/MM/YYYY ou DD-MM-YYYY)
-          const parts = dateStr.includes('/') 
-            ? dateStr.split('/') 
-            : dateStr.split('-');
+          // Limpar a string de data de possíveis caracteres extras
+          const cleanDateStr = dateStr.trim().replace(/\s+/g, '');
           
-          if (parts.length !== 3) return '';
+          // Padrões comuns de data
+          const ddmmyyyyPattern = /^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})$/;
+          const yyyymmddPattern = /^(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})$/;
           
-          const [day, month, year] = parts;
-          return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+          let day: string, month: string, year: string;
+          
+          // Tentar detectar o formato da data
+          if (ddmmyyyyPattern.test(cleanDateStr)) {
+            // Formato DD/MM/YYYY (ou com - ou .)
+            const match = cleanDateStr.match(ddmmyyyyPattern);
+            if (!match) return '';
+            
+            [, day, month, year] = match;
+            
+            // Se o ano é de dois dígitos, adicionar 2000
+            if (year.length === 2) {
+              year = '20' + year;
+            }
+          } else if (yyyymmddPattern.test(cleanDateStr)) {
+            // Formato YYYY/MM/DD (ou com - ou .)
+            const match = cleanDateStr.match(yyyymmddPattern);
+            if (!match) return '';
+            
+            [, year, month, day] = match;
+          } else {
+            // Formato padrão DD/MM/YYYY
+            const parts = cleanDateStr.includes('/') 
+              ? cleanDateStr.split('/') 
+              : cleanDateStr.includes('-')
+                ? cleanDateStr.split('-')
+                : cleanDateStr.includes('.')
+                  ? cleanDateStr.split('.')
+                  : [];
+            
+            if (parts.length !== 3) return '';
+            
+            // Assumir formato DD/MM/YYYY
+            [day, month, year] = parts;
+            
+            // Se o ano é de dois dígitos, adicionar 2000
+            if (year.length === 2) {
+              year = '20' + year;
+            }
+          }
+          
+          // Validar componentes da data
+          const dayNum = parseInt(day, 10);
+          const monthNum = parseInt(month, 10);
+          const yearNum = parseInt(year, 10);
+          
+          // Validações básicas
+          if (
+            isNaN(dayNum) || isNaN(monthNum) || isNaN(yearNum) ||
+            dayNum < 1 || dayNum > 31 ||
+            monthNum < 1 || monthNum > 12 ||
+            yearNum < 2000 || yearNum > 2100
+          ) {
+            console.warn(`[ControlFileProcessor] Data inválida: ${dateStr}`);
+            return '';
+          }
+          
+          // Formatar no padrão YYYY-MM-DD
+          return `${yearNum}-${monthNum.toString().padStart(2, '0')}-${dayNum.toString().padStart(2, '0')}`;
         };
         
         // Converter valores para os tipos adequados
         const checkInDate = formatDate(reservation.checkInDate);
         const checkOutDate = formatDate(reservation.checkOutDate);
         
-        // Converter valor monetário para número
-        const totalAmount = typeof reservation.totalAmount === 'string'
-          ? reservation.totalAmount.replace(/[^0-9.,]/g, '').replace(',', '.')
-          : String(reservation.totalAmount || 0);
+        // Validar datas (não processar se alguma data estiver incorreta)
+        if (!checkInDate || !checkOutDate) {
+          console.warn(`[ControlFileProcessor] Ignorando reserva para ${reservation.guestName} devido a data inválida (check-in: ${reservation.checkInDate}, check-out: ${reservation.checkOutDate})`);
+          continue;
+        }
         
-        // Calcular a taxa da plataforma (estimativa de 10% para Airbnb/Booking)
-        const platform = reservation.platform || 'direct';
-        const platformFee = platform.toLowerCase().includes('airbnb') || 
-                            platform.toLowerCase().includes('booking')
-          ? String(Math.round(parseFloat(totalAmount) * 0.1))
-          : '0';
+        // Converter e validar valor monetário
+        const processMonetaryValue = (value: string | number | undefined): string => {
+          if (value === undefined || value === null) return '0';
+          
+          let valueStr = typeof value === 'string' ? value : String(value);
+          
+          // Remover símbolos de moeda e caracteres não numéricos, mantendo pontos e vírgulas
+          valueStr = valueStr.replace(/[^0-9.,]/g, '');
+          
+          // Detectar formato com vírgula como separador decimal (e.g. 1.234,56)
+          const hasThousandsDot = valueStr.includes('.') && valueStr.includes(',') && 
+                                 valueStr.lastIndexOf('.') < valueStr.lastIndexOf(',');
+          
+          if (hasThousandsDot) {
+            // Formato europeu (1.234,56) - remover pontos de milhar e substituir vírgula por ponto
+            valueStr = valueStr.replace(/\./g, '').replace(',', '.');
+          } else if (valueStr.includes(',')) {
+            // Formato com vírgula como separador decimal sem ponto de milhar (1234,56)
+            valueStr = valueStr.replace(',', '.');
+          }
+          
+          // Converter para número e validar
+          const numValue = parseFloat(valueStr);
+          
+          if (isNaN(numValue)) {
+            console.warn(`[ControlFileProcessor] Valor monetário inválido: ${value}, usando 0`);
+            return '0';
+          }
+          
+          // Lidar com valores negativos (improvável, mas por segurança)
+          if (numValue < 0) {
+            console.warn(`[ControlFileProcessor] Valor monetário negativo: ${value}, convertendo para positivo`);
+            return String(Math.abs(numValue));
+          }
+          
+          // Valores muito altos podem ser erros (mais de 100.000€)
+          if (numValue > 100000) {
+            console.warn(`[ControlFileProcessor] Valor monetário suspeito: ${value}, validar manualmente`);
+          }
+          
+          // Formatar com 2 casas decimais
+          return numValue.toFixed(2);
+        };
+        
+        const totalAmount = processMonetaryValue(reservation.totalAmount);
+        
+        // Identificar plataforma e calcular taxas apropriadas
+        let platform = (reservation.platform || '').toLowerCase().trim();
+        
+        // Normalizar nomes de plataformas
+        if (platform.includes('airbnb')) {
+          platform = 'Airbnb';
+        } else if (platform.includes('booking')) {
+          platform = 'Booking.com';
+        } else if (platform.includes('vrbo') || platform.includes('homeaway')) {
+          platform = 'VRBO';
+        } else if (platform === '' || platform === 'direct' || platform.includes('direct')) {
+          platform = 'Direct';
+        }
+        
+        // Calcular taxas baseadas na plataforma
+        let platformFeePercentage = 0;
+        
+        switch (platform) {
+          case 'Airbnb':
+            platformFeePercentage = 0.14; // 14%
+            break;
+          case 'Booking.com':
+            platformFeePercentage = 0.15; // 15%
+            break;
+          case 'VRBO':
+            platformFeePercentage = 0.12; // 12%
+            break;
+          default:
+            platformFeePercentage = 0; // Sem taxa para reservas diretas
+        }
+        
+        const platformFee = String((parseFloat(totalAmount) * platformFeePercentage).toFixed(2));
         
         // Estimar a taxa de limpeza com base na propriedade
-        const property = properties.find(p => p.id === propertyId);
+        const property = properties.find(p => p.id === propertyId) as Property | undefined;
         const cleaningFee = property?.cleaningCost || '0';
         
         // Criar a reserva

@@ -3,12 +3,19 @@
  * Este script envia uma solicitação para processar um arquivo de controle
  */
 
-const fs = require('fs');
-const path = require('path');
-const FormData = require('form-data');
-const axios = require('axios');
+import fs from 'fs';
+import path from 'path';
+import FormData from 'form-data';
+import axios from 'axios';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-const API_URL = 'http://localhost:5000/api/upload-control-file';
+// Usando a porta correta do servidor que está rodando no Replit
+const API_URL = 'http://localhost:3000/api/upload-control-file';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const filePath = path.join(__dirname, 'attached_assets', 'Controlo_Aroeira I.pdf');
 
 async function testControlFileUpload() {

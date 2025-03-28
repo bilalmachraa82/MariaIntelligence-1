@@ -3,7 +3,7 @@
  * Processa arquivos de controle como "Controlo_Aroeira I.pdf" e extrai múltiplas reservas
  */
 
-const { processControlFile } = require('./server/services/control-file-processor');
+import { processControlFile } from './server/services/control-file-processor.ts';
 
 async function testControlFileProcessor() {
   console.log('Testando processador de arquivos de controle...');
