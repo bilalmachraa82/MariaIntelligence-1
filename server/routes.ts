@@ -747,6 +747,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const ragService = new RAGService();
   // Use the enhanced RAG service for additional capabilities
 
+  // Upload e processamento de arquivos de controle
+  app.post("/api/upload-control-file", pdfUpload.single('pdf'), async (req: Request, res: Response) => {
+    try {
+      console.log('Iniciando processamento de arquivo de controle...');
+      
+      if (!req.file) {
+        return res.status(400).json({ 
+          success: false,
+          message: "Nenhum arquivo enviado" 
+        });
+      }
+
+      // Verificar se temos a chave de API do Google Gemini disponível
+      if (!process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) {
+        return res.status(500).json({ 
+          success: false,
+          message: "Chave de API do Google não configurada" 
+        });
+      }
+
+      // Processar o arquivo para extrair reservas
+      const controlResult = await processControlFile(req.file.path);
+      
+      if (!controlResult.success) {
+        return res.status(500).json({
+          success: false,
+          message: "Falha ao processar arquivo de controle",
+          error: controlResult.error
+        });
+      }
+      
+      if (!controlResult.isControlFile) {
+        return res.status(400).json({
+          success: false,
+          message: "O arquivo enviado não parece ser um arquivo de controle válido"
+        });
+      }
+      
+      // Criar reservas a partir dos dados extraídos
+      const createdReservations = await createReservationsFromControlFile(controlResult);
+      
+      return res.status(200).json({
+        success: true,
+        isControlFile: true,
+        propertyName: controlResult.propertyName,
+        reservationsExtracted: controlResult.reservations.length,
+        reservationsCreated: createdReservations.length,
+        reservations: createdReservations
+      });
+      
+    } catch (error) {
+      console.error("Erro ao processar arquivo de controle:", error);
+      return res.status(500).json({ 
+        success: false, 
+        message: "Erro ao processar arquivo de controle",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+  
   // PDF Upload e Processamento
   app.post("/api/upload-pdf", pdfUpload.single('pdf'), async (req: Request, res: Response) => {
     try {

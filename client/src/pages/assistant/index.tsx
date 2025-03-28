@@ -497,51 +497,226 @@ export default function AssistantPage() {
   };
   
   // Processar upload de arquivo
-  const handleFileUpload = (file: File) => {
-    // Implementar processamento de arquivo
+  const handleFileUpload = async (file: File) => {
+    if (!file) return;
+    
+    // Verificar se é um PDF
+    if (file.type !== 'application/pdf') {
+      toast({
+        title: t("aiAssistant.fileError", "Formato não suportado"),
+        description: t("aiAssistant.pdfOnly", "Por favor, envie apenas arquivos PDF."),
+        variant: "destructive"
+      });
+      return;
+    }
+    
     toast({
       title: t("aiAssistant.fileUploaded", "Arquivo enviado"),
       description: t("aiAssistant.fileProcessing", "Processando arquivo: ") + file.name,
     });
     
-    // Simulação de processamento - em produção, substituir por real API
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
+    
+    // Adicionar mensagem do usuário mostrando o envio do arquivo
+    const userMessage: Message = { 
+      role: "user" as const, 
+      content: t("aiAssistant.userSentFile", `📄 Enviei o arquivo: ${file.name}`), 
+      timestamp: new Date(),
+      id: generateId()
+    };
+    setMessages(prev => [...prev, userMessage]);
+    
+    try {
+      // Criar formData para enviar o arquivo
+      const formData = new FormData();
+      formData.append('pdf', file); // Importante: "pdf" é o nome esperado pela API
       
-      const assistantMessage: Message = { 
+      // Tentar processar como arquivo de controle primeiro
+      try {
+        const controlResponse = await fetch("/api/upload-control-file", {
+          method: "POST",
+          body: formData,
+          credentials: "include"
+        });
+        
+        if (controlResponse.ok) {
+          const controlData = await controlResponse.json();
+          
+          if (controlData.success && controlData.isControlFile) {
+            // Formatar uma resposta amigável sobre as reservas criadas
+            let responseMessage = '';
+            
+            if (controlData.reservationsCreated && controlData.reservationsCreated.length > 0) {
+              responseMessage = t(
+                "aiAssistant.controlFileSuccess", 
+                `✅ Processado o arquivo de controle para a propriedade **${controlData.propertyName}**.\n\n` +
+                `Foram encontradas ${controlData.reservationsExtracted} reservas no documento e ` +
+                `${controlData.reservationsCreated.length} foram criadas com sucesso no sistema.\n\n` +
+                `Você pode visualizar as reservas na seção de reservas.`
+              );
+            } else {
+              responseMessage = t(
+                "aiAssistant.controlFileNoReservations", 
+                `✅ Processado o arquivo de controle para a propriedade **${controlData.propertyName}**.\n\n` +
+                `Foram encontradas ${controlData.reservationsExtracted} reservas no documento, ` +
+                `mas nenhuma foi adicionada ao sistema. Isso pode ocorrer porque as reservas já existem ou porque houve problemas na validação dos dados.`
+              );
+            }
+            
+            // Adicionar mensagem do assistente com o resultado do processamento
+            const assistantMessage: Message = { 
+              role: "assistant" as const, 
+              content: responseMessage, 
+              timestamp: new Date(),
+              id: generateId(),
+              context: {
+                type: "reservation",
+                data: {
+                  reservations: controlData.reservations,
+                  propertyName: controlData.propertyName
+                }
+              }
+            };
+            
+            setMessages(prev => [...prev, assistantMessage]);
+            
+            // Reproduzir a mensagem de resposta se a síntese de voz estiver habilitada
+            if (voiceEnabled && speechSynthesis.isVoiceSupported()) {
+              speechSynthesis.speak({
+                text: responseMessage,
+                lang: i18n.language,
+                rate: 1.0,
+                pitch: 1.0,
+                volume: 1.0
+              });
+            }
+            
+            setIsLoading(false);
+            return;
+          }
+        }
+      } catch (controlError) {
+        console.error("Erro ao processar como arquivo de controle:", controlError);
+      }
+      
+      // Se chegou aqui, não é um arquivo de controle ou houve erro
+      // Processar como PDF normal
+      try {
+        // Criar novo FormData já que o anterior foi consumido
+        const regularFormData = new FormData();
+        regularFormData.append('pdf', file);
+        
+        const response = await fetch("/api/upload-pdf", {
+          method: "POST",
+          body: regularFormData,
+          credentials: "include"
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Erro ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          let assistantMessage: Message;
+          let responseMessage = "";
+          
+          if (data.isControlFile) {
+            // Mostrar as reservas detectadas
+            responseMessage = t(
+              "aiAssistant.controlFileDetected", 
+              `Detectei que este é um arquivo de controle para a propriedade "${data.propertyName}". Encontrei ${data.reservations.length} reservas.`
+            );
+            
+            // Adicionar detalhes das reservas
+            if (data.reservations && data.reservations.length > 0) {
+              responseMessage += "\n\n**Reservas detectadas:**\n";
+              data.reservations.forEach((reservation: any, index: number) => {
+                responseMessage += `\n${index + 1}. **${reservation.guestName}** - Check-in: ${reservation.checkInDate}, Check-out: ${reservation.checkOutDate}, Valor: ${reservation.totalAmount}€`;
+              });
+              
+              responseMessage += `\n\n${t("aiAssistant.createReservationsQuestion", "Gostaria de criar estas reservas no sistema?")}`;
+            }
+            
+            assistantMessage = { 
+              role: "assistant" as const, 
+              content: responseMessage, 
+              timestamp: new Date(),
+              id: generateId(),
+              context: {
+                type: "suggestion",
+                data: { 
+                  fileName: file.name, 
+                  fileType: 'control_file',
+                  propertyName: data.propertyName,
+                  reservationsCount: data.reservations ? data.reservations.length : 0,
+                  controlFileId: data.controlFileId || null
+                }
+              }
+            };
+          } else {
+            // É um PDF comum
+            responseMessage = t(
+              "aiAssistant.pdfAdded", 
+              `Adicionei o documento "${file.name}" à minha base de conhecimento. O que gostaria de saber sobre ele?`
+            );
+            
+            assistantMessage = { 
+              role: "assistant" as const, 
+              content: responseMessage, 
+              timestamp: new Date(),
+              id: generateId(),
+              context: {
+                type: "suggestion",
+                data: { fileName: file.name, fileType: file.type }
+              }
+            };
+          }
+          
+          // Adicionar mensagem à conversa
+          setMessages(prev => [...prev, assistantMessage]);
+          
+          // Reproduzir a mensagem de resposta se a síntese de voz estiver habilitada
+          if (voiceEnabled && speechSynthesis.isVoiceSupported()) {
+            speechSynthesis.speak({
+              text: responseMessage,
+              lang: i18n.language,
+              rate: 1.0,
+              pitch: 1.0,
+              volume: 1.0
+            });
+          }
+        } else {
+          throw new Error(data.error || "Erro ao processar o arquivo");
+        }
+      } catch (regularError) {
+        throw regularError; // Propagar o erro para o catch externo
+      }
+    } catch (error) {
+      console.error("Erro ao processar arquivo:", error);
+      
+      const errorMessage: Message = { 
         role: "assistant" as const, 
         content: t(
-          "aiAssistant.fileProcessed", 
-          `Recebi seu arquivo "${file.name}". O que gostaria de saber sobre ele?`
+          "aiAssistant.fileError", 
+          `Ocorreu um erro ao processar o arquivo "${file.name}". Por favor, tente novamente.`
         ), 
         timestamp: new Date(),
-        id: generateId(),
-        context: {
-          type: "suggestion",
-          data: { fileName: file.name, fileType: file.type }
-        }
+        id: generateId()
       };
       
-      // Adicionar mensagem à conversa
-      setMessages(prev => [...prev, assistantMessage]);
+      // Adicionar mensagem de erro à conversa
+      setMessages(prev => [...prev, errorMessage]);
       
-      // Reproduzir a mensagem se a síntese de voz estiver habilitada
-      if (voiceEnabled && speechSynthesis.isVoiceSupported()) {
-        const fileMessage = t(
-          "aiAssistant.fileProcessed", 
-          `Recebi seu arquivo "${file.name}". O que gostaria de saber sobre ele?`
-        );
-        
-        speechSynthesis.speak({
-          text: fileMessage,
-          lang: i18n.language,
-          rate: 1.0,
-          pitch: 1.0,
-          volume: 1.0
-        });
-      }
-    }, 1500);
+      toast({
+        title: t("aiAssistant.fileError", "Erro ao processar arquivo"),
+        description: error instanceof Error ? error.message : String(error),
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Categorias de sugestões
