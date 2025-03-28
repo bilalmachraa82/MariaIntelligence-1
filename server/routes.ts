@@ -830,14 +830,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         console.log(`Processando PDF: ${req.file.path}`);
         
-        // Parâmetros de controle
-        const autoCreateReservation = req.query.autoCreate === 'true';
+        // Configurar para criar reservas automaticamente por padrão
+        const autoCreateReservation = req.query.autoCreate !== 'false'; // Por padrão sempre cria
         
         // Sempre usar alta qualidade para processamento
         const skipQualityCheck = false;
         const useCache = false;
         
-        console.log(`Processando PDF com máxima qualidade (skipQualityCheck=${skipQualityCheck}, useCache=${useCache})`);
+        console.log(`Processando PDF com máxima qualidade (skipQualityCheck=${skipQualityCheck}, useCache=${useCache}, autoCreateReservation=${autoCreateReservation})`);
         
         // Primeiro, verificar se o arquivo é um PDF de controle (com múltiplas reservas)
         const controlResult = await processControlFile(req.file.path);
@@ -1097,7 +1097,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log(`Processando imagem: ${req.file.path}`);
         
         // Parâmetros de controle
-        const autoCreateReservation = req.query.autoCreate === 'true';
+        const autoCreateReservation = req.query.autoCreate !== 'false'; // Por padrão sempre cria
         
         // Sempre usar alta qualidade para processamento
         const skipQualityCheck = false;
@@ -1188,7 +1188,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         console.log(`Processando arquivo: ${req.file.path} (${req.file.mimetype})`);
         // Parâmetros de controle
-        const autoCreateReservation = req.query.autoCreate === 'true';
+        const autoCreateReservation = req.query.autoCreate !== 'false'; // Por padrão sempre cria
         
         // Sempre usar alta qualidade para processamento
         const skipQualityCheck = false;
