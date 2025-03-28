@@ -180,8 +180,10 @@ export class GeminiService {
       // Criar mock para evitar erros
       this.mockInitialization();
     } else {
+      // Initialização inicial - a conexão real será testada assincronamente
       this.initialize(apiKey);
-      this.isInitialized = true;
+      // Não definimos isInitialized=true aqui, isso será feito após a validação da API
+      // em validateApiKey callback (linha ~215)
     }
   }
   
@@ -195,8 +197,8 @@ export class GeminiService {
     }
     
     this.initialize(apiKey);
-    this.isInitialized = true;
-    console.log("Gemini Service: Initialized with provided API key");
+    // Não definimos isInitialized=true aqui, isso será feito após validação no método initialize
+    console.log("Gemini Service: Inicializando com chave API fornecida, validação em andamento...");
   }
 
   /**
@@ -454,8 +456,40 @@ export class GeminiService {
    * Verifica se o serviço está configurado com uma chave API válida
    * @returns Verdadeiro se o serviço estiver configurado
    */
+  /**
+   * Verifica se o serviço está configurado e conectado à API
+   * Esta verificação é síncrona e retorna o estado atual
+   * @returns Verdadeiro se o serviço estiver configurado e conectado
+   */
   public isConfigured(): boolean {
-    return this.isInitialized;
+    return this.isInitialized && this.isApiConnected;
+  }
+  
+  /**
+   * Verifica assincronamente se a API está conectada
+   * Tenta estabelecer conexão se não estiver conectada
+   * @returns Promise<boolean> indicando se a API está conectada
+   */
+  public async checkApiConnection(): Promise<boolean> {
+    try {
+      // Verificar no início - pode já estar conectado
+      if (this.isApiConnected) {
+        return true;
+      }
+      
+      // Tentar validar a chave API
+      if (this.apiKey) {
+        const isValid = await this.validateApiKey(this.apiKey);
+        this.isApiConnected = isValid;
+        this.isInitialized = isValid;
+        return isValid;
+      }
+      
+      return false;
+    } catch (error) {
+      console.error("Erro ao verificar conexão da API Gemini:", error);
+      return false;
+    }
   }
 
   /**

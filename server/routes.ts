@@ -1959,18 +1959,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
           try {
             const { GeminiService } = await import('./services/gemini.service');
             const geminiService = new GeminiService();
-            const isConfigured = await geminiService.isConfigured();
+            // Usar checkApiConnection em vez de isConfigured para testar ativamente a conexão
+            const isConnected = await geminiService.checkApiConnection();
             
-            // Simulando a contagem de modelos disponíveis com um valor fixo
-            // já que a API do Gemini não fornece uma lista como o Mistral
-            tests.push({
-              name: "Gemini AI",
-              success: true,
-              details: {
-                modelsAvailable: 49, // Valor fixo para manter compatibilidade
-                connected: isConfigured
-              }
-            });
+            if (!isConnected) {
+              tests.push({
+                name: "Gemini AI",
+                success: false,
+                error: "Falha na conexão com a API do Gemini."
+              });
+            } else {
+              // API está conectada
+              tests.push({
+                name: "Gemini AI",
+                success: true,
+                details: {
+                  modelsAvailable: 49, // Valor fixo para manter compatibilidade
+                  connected: true
+                }
+              });
+            }
           } catch (geminiError: any) {
             tests.push({
               name: "Gemini AI",
