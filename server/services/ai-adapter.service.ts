@@ -112,10 +112,14 @@ export class AIAdapter {
   /**
    * Analisa texto e extrai dados estruturados de reserva
    * @param text Texto a ser analisado
+   * @param skipQualityCheck Se verdadeiro, faz uma extração mais rápida mas menos precisa
    * @returns Dados estruturados da reserva
    */
-  public async parseReservationData(text: string): Promise<any> {
+  public async parseReservationData(text: string, skipQualityCheck: boolean = false): Promise<any> {
     try {
+      // Ignoramos o parâmetro skipQualityCheck no adaptador, pois o Gemini sempre usa extração de alta qualidade
+      // Este parâmetro existe para compatibilidade com o código legado
+      console.log(`📝 AIAdapter: Extraindo dados de reserva (skipQualityCheck=${skipQualityCheck})`);
       return await this.geminiService.parseReservationData(text);
     } catch (error: any) {
       console.error(`Erro ao extrair dados de reserva com Gemini:`, error);

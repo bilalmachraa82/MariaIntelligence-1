@@ -1,7 +1,7 @@
 /**
  * Serviço de extração de texto de PDF
  * Fornece funcionalidades para processar PDFs e extrair texto
- * Implementa estratégias alternativas quando a visão do Mistral não está disponível
+ * Usa o adaptador de IA para processar textos usando o Gemini
  * Inclui validação para dados ausentes ou incompletos
  */
 
@@ -9,9 +9,9 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import crypto from 'crypto';
-import { Mistral } from '@mistralai/mistralai';
 import { log } from '../vite';
 import pdfParse from 'pdf-parse';
+import { aiService } from './ai-adapter.service';
 
 /**
  * Cria um identificador único para o conteúdo usando MD5
@@ -175,175 +175,41 @@ export async function parseReservationFromText(
         // Limpar e normalizar o texto
         const cleanedText = cleanExtractedText(limitedText);
         
-        // Inicializar cliente Mistral
-        const client = new Mistral({ apiKey });
+        // Usar o adaptador de IA que usa o Gemini
+        log(`Usando o adaptador de IA com Gemini para processamento (skipQualityCheck: ${skipQualityCheck})`, 'pdf-extract');
         
-        // Preparar a requisição para o modelo Mistral (tiny é o mais confiável para function calling)
-        log(`Usando modelo mistral-tiny para processamento (skipQualityCheck: ${skipQualityCheck})`, 'pdf-extract');
+        // Usar o serviço de adaptador para extrair dados da reserva do texto
+        const extractedData = await aiService.parseReservationData(cleanedText, skipQualityCheck);
         
-        // Adicionar instruções específicas se skipQualityCheck estiver ativado
-        const systemContent = skipQualityCheck 
-          ? `Você é um assistente especializado em extrair informações estruturadas de documentos de reservas de alojamento local.
-             Sua tarefa é analisar o texto extraído de um PDF e identificar as informações relevantes da reserva.
-             Extraia todos os dados solicitados quando disponíveis. Se um dado não estiver explícito no texto, faça uma suposição razoável.
-             Priorize velocidade e preenchimento de todos os campos solicitados, mesmo que com aproximações ou suposições razoáveis.
-             Retorne os valores nos formatos especificados.`
-          : `Você é um assistente especializado em extrair informações estruturadas de documentos de reservas de alojamento local.
-             Sua tarefa é analisar o texto extraído de um PDF e identificar as informações relevantes da reserva.
-             Extraia todos os dados solicitados quando disponíveis. Se um dado não estiver explícito no texto, não invente.
-             Use apenas o que está claramente indicado no documento. Retorne os valores nos formatos especificados.`;
+        // Adicionar o texto bruto para referência
+        extractedData.rawText = text;
         
-        const response = await client.chat.complete({
-          model: "mistral-tiny",
-          messages: [
-            {
-              role: "system",
-              content: systemContent
-            },
-            {
-              role: "user",
-              content: `Extraia os detalhes da reserva deste texto:\n\n${cleanedText}`
-            }
-          ],
-          tools: [
-            {
-              type: "function",
-              function: {
-                name: "extractReservationData",
-                description: "Extrair dados estruturados de uma reserva a partir do texto",
-                parameters: {
-                  type: "object",
-                  properties: {
-                    documentType: {
-                      type: "string",
-                      description: "Tipo de documento (reserva, check-in, fatura, etc.)"
-                    },
-                    propertyName: {
-                      type: "string",
-                      description: "Nome da propriedade"
-                    },
-                    guestName: {
-                      type: "string",
-                      description: "Nome completo do hóspede"
-                    },
-                    guestEmail: {
-                      type: "string",
-                      description: "Email do hóspede (se disponível)"
-                    },
-                    guestPhone: {
-                      type: "string",
-                      description: "Telefone do hóspede (se disponível)"
-                    },
-                    checkInDate: {
-                      type: "string",
-                      description: "Data de check-in no formato YYYY-MM-DD"
-                    },
-                    checkOutDate: {
-                      type: "string",
-                      description: "Data de check-out no formato YYYY-MM-DD"
-                    },
-                    numGuests: {
-                      type: "integer",
-                      description: "Número de hóspedes"
-                    },
-                    totalAmount: {
-                      type: "number",
-                      description: "Valor total da reserva"
-                    },
-                    platform: {
-                      type: "string",
-                      description: "Plataforma de reserva (Airbnb, Booking, etc.)"
-                    },
-                    cleaningFee: {
-                      type: "number",
-                      description: "Taxa de limpeza (se disponível)"
-                    },
-                    checkInFee: {
-                      type: "number",
-                      description: "Taxa de check-in (se disponível)"
-                    },
-                    commissionFee: {
-                      type: "number",
-                      description: "Taxa de comissão (se disponível)"
-                    },
-                    teamPayment: {
-                      type: "number",
-                      description: "Pagamento à equipe (se disponível)"
-                    },
-                    platformFee: {
-                      type: "number",
-                      description: "Taxa da plataforma (se disponível)"
-                    },
-                    observations: {
-                      type: "string",
-                      description: "Observações adicionais ou notas relevantes"
-                    }
-                  },
-                  required: ["propertyName", "guestName", "checkInDate", "checkOutDate"]
-                }
-              }
-            }
-          ],
-          toolChoice: { type: "function", function: { name: "extractReservationData" } },
-          temperature: 0.1,
-          maxTokens: 1500 // Reduzir tokens para processamento mais rápido
-        });
-        
-        // Extrair os dados da resposta
-        log('Resposta recebida da API Mistral, processando...', 'pdf-extract');
-        if (response && 
-            response.choices && 
-            response.choices[0] && 
-            response.choices[0].message && 
-            response.choices[0].message.toolCalls && 
-            response.choices[0].message.toolCalls.length > 0) {
-          
-          const toolCall = response.choices[0].message.toolCalls[0];
-          
-          if (toolCall.function && toolCall.function.arguments) {
-            // Parse JSON da resposta
-            const functionArgs = toolCall.function.arguments;
-            const argsString = typeof functionArgs === 'string' 
-              ? functionArgs
-              : JSON.stringify(functionArgs);
-              
-            const extractedData = JSON.parse(argsString);
-            
-            // Adicionar o texto bruto para referência
-            extractedData.rawText = text;
-            
-            // Remover campos vazios ou undefined
-            for (const key in extractedData) {
-              if (extractedData[key] === undefined || extractedData[key] === null || extractedData[key] === '') {
-                delete extractedData[key];
-              }
-            }
-            
-            log('Dados extraídos com sucesso', 'pdf-extract');
-            
-            // Salvar em cache se a opção estiver habilitada
-            if (useCache) {
-              try {
-                const cacheKey = createCacheKey(text);
-                const cachePath = path.join(os.tmpdir(), `pdf-extract-${cacheKey}.json`);
-                fs.writeFileSync(cachePath, JSON.stringify(extractedData));
-                log(`Dados salvos em cache: ${cachePath}`, 'pdf-extract');
-              } catch (cacheError: any) {
-                log(`Erro ao salvar cache: ${cacheError.message}`, 'pdf-extract');
-                // Continuar mesmo se falhar ao salvar cache
-              }
-            }
-            
-            return extractedData as ExtractedReservationData;
-          } else {
-            throw new Error('Resposta do Mistral não contém argumentos válidos');
+        // Remover campos vazios ou undefined
+        for (const key in extractedData) {
+          if (extractedData[key] === undefined || extractedData[key] === null || extractedData[key] === '') {
+            delete extractedData[key];
           }
-        } else {
-          throw new Error('Resposta do Mistral não contém toolCalls');
         }
+        
+        log('Dados extraídos com sucesso usando o adaptador de IA', 'pdf-extract');
+        
+        // Salvar em cache se a opção estiver habilitada
+        if (useCache) {
+          try {
+            const cacheKey = createCacheKey(text);
+            const cachePath = path.join(os.tmpdir(), `pdf-extract-${cacheKey}.json`);
+            fs.writeFileSync(cachePath, JSON.stringify(extractedData));
+            log(`Dados salvos em cache: ${cachePath}`, 'pdf-extract');
+          } catch (cacheError: any) {
+            log(`Erro ao salvar cache: ${cacheError.message}`, 'pdf-extract');
+            // Continuar mesmo se falhar ao salvar cache
+          }
+        }
+        
+        return extractedData as ExtractedReservationData;
       } catch (error) {
         console.error('Erro ao extrair dados de reserva:', error);
-        log(`Falha na API Mistral: ${error instanceof Error ? error.message : 'Erro desconhecido'}`, 'pdf-extract');
+        log(`Falha no processamento com Gemini: ${error instanceof Error ? error.message : 'Erro desconhecido'}`, 'pdf-extract');
         
         // Verificar se é um erro de serviço indisponível
         const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
@@ -360,7 +226,7 @@ export async function parseReservationFromText(
           validationStatus: ValidationStatus.FAILED,
           rawText: text,
           observations: isServiceUnavailable
-            ? 'Serviço Mistral temporariamente indisponível. Tente novamente mais tarde.'
+            ? 'Serviço Gemini temporariamente indisponível. Tente novamente mais tarde.'
             : `Erro na extração: ${errorMessage}`
         };
       }
@@ -389,7 +255,7 @@ export async function parseReservationFromText(
       observations: isTimeout 
         ? 'O processamento demorou muito tempo e foi interrompido. Por favor, tente novamente mais tarde.' 
         : isServiceError
-          ? 'Serviço Mistral temporariamente indisponível. Por favor, tente novamente mais tarde.'
+          ? 'Serviço Gemini temporariamente indisponível. Por favor, tente novamente mais tarde.'
           : `Erro na extração: ${errorMessage}`
     };
   }

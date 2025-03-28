@@ -53,13 +53,22 @@ export async function processControlFile(filePath: string): Promise<ControlFileR
     const rawText = pdfData.text;
     
     // Verificar se o texto contém padrões que indicam ser um arquivo de controle
+    // Usando lower case para melhorar a detecção
+    const normalizedText = rawText.toLowerCase();
+    console.log(`[ControlFileProcessor] Texto extraído (primeiros 200 caracteres): ${rawText.substring(0, 200)}`);
+    
     const isControlFile = 
-      (rawText.includes('Controlo_Aroeira') || 
-       rawText.includes('Controlo Aroeira') ||
-       rawText.includes('Controlo_') ||
-       rawText.includes('Mapa de Reservas') ||
-       (rawText.includes('Check-in') && rawText.includes('Check-out') && 
-        rawText.includes('Cliente') && rawText.includes('Noites')));
+      (normalizedText.includes('controlo_aroeira') || 
+       normalizedText.includes('controlo aroeira') ||
+       normalizedText.includes('exciting lisbon aroeira') ||
+       normalizedText.includes('aroeira i') ||
+       normalizedText.includes('aroeira ii') ||
+       normalizedText.includes('controlo_') ||
+       normalizedText.includes('mapa de reservas') ||
+       // Adicionando mais padrões para melhorar a detecção
+       (normalizedText.includes('data entrada') && normalizedText.includes('data saída')) ||
+       (normalizedText.includes('check-in') && normalizedText.includes('check-out')) ||
+       (normalizedText.includes('hóspedes') && normalizedText.includes('noites')));
     
     if (!isControlFile) {
       console.log('[ControlFileProcessor] Arquivo não identificado como controle de reservas');
@@ -79,8 +88,11 @@ export async function processControlFile(filePath: string): Promise<ControlFileR
     
     // Padrões comuns para identificar o nome da propriedade
     const propertyNamePatterns = [
+      /EXCITING LISBON ([A-Za-z\s]+)/i,
+      /EXCITING\s+LISBON\s+([A-Za-z\s]+)/i,
       /Controlo_([A-Za-z\s]+)/i,
       /Controlo\s+([A-Za-z\s]+)/i,
+      /Aroeira\s+(I|II|III)/i,
       /Mapa de Reservas\s+-\s+([A-Za-z\s]+)/i
     ];
     
@@ -98,19 +110,19 @@ export async function processControlFile(filePath: string): Promise<ControlFileR
     const aiAdapter = AIAdapter.getInstance();
     
     // Definir um sistema de prompt para extração de múltiplas reservas
-    const systemPrompt = `
-      Extraia todas as reservas do seguinte documento de controle.
-      Cada reserva deve ter os seguintes campos: 
-      - Nome do cliente (guestName)
-      - Data de check-in (checkInDate) no formato DD/MM/YYYY
-      - Data de check-out (checkOutDate) no formato DD/MM/YYYY
-      - Número de hóspedes (numGuests)
-      - Valor total (totalAmount)
-      - Plataforma de reserva (platform), como Airbnb, Booking, etc.
-      - Notas adicionais (notes), se houver
-
-      Retorne apenas as reservas encontradas, sem textos adicionais.
-    `;
+    const systemPrompt = "Extraia todas as reservas do seguinte documento de controle. " +
+      "Cada reserva deve ter os seguintes campos: " +
+      "- Nome do cliente (guestName) " +
+      "- Data de check-in (checkInDate) no formato DD/MM/YYYY " +
+      "- Data de check-out (checkOutDate) no formato DD/MM/YYYY " +
+      "- Número de hóspedes (numGuests) " +
+      "- Valor total (totalAmount) " +
+      "- Plataforma de reserva (platform), como Airbnb, Booking, etc. " +
+      "- Notas adicionais (notes), se houver " +
+      "IMPORTANTE: Retorne APENAS um array JSON com as reservas extraídas. " +
+      "NÃO use marcadores de código markdown. " +
+      "NÃO inclua explicações ou textos adicionais. " +
+      "Retorne APENAS o JSON puro.";
     
     // Extrair as reservas usando o adaptador de IA
     const extractionResult = await aiAdapter.extractDataFromText(
@@ -140,9 +152,22 @@ export async function processControlFile(filePath: string): Promise<ControlFileR
     
     try {
       // Tentar processar a resposta JSON
-      const parsedResponse = typeof extractionResult === 'string' 
-        ? JSON.parse(extractionResult) 
-        : extractionResult;
+      let jsonText = extractionResult;
+      
+      // Verificar se o texto está em formato markdown com backticks
+      if (typeof extractionResult === 'string') {
+        // Remover marcadores de código markdown (```json e ```)
+        const markdownRegex = /```(?:json)?\s*([\s\S]*?)```/;
+        const jsonMatch = extractionResult.match(markdownRegex);
+        if (jsonMatch && jsonMatch[1]) {
+          console.log('[ControlFileProcessor] Extraindo JSON de resposta markdown');
+          jsonText = jsonMatch[1];
+        }
+      }
+      
+      const parsedResponse = typeof jsonText === 'string' 
+        ? JSON.parse(jsonText) 
+        : jsonText;
       
       // Verificar se temos um array de reservas ou um objeto com a propriedade reservations
       if (Array.isArray(parsedResponse)) {
@@ -270,8 +295,9 @@ export async function createReservationsFromControlFile(controlResult: ControlFi
           checkInFee: property?.checkInFee || '0',
           commissionFee: String(parseFloat(totalAmount) * (parseFloat(property?.commission || '0') / 100)),
           teamPayment: property?.teamPayment || '0',
-          contactPhone: reservation.phoneNumber || '',
-          contactEmail: reservation.email || '',
+          // Usar os campos corretos para informações de contato
+          guestPhone: reservation.phoneNumber || '',
+          guestEmail: reservation.email || '',
           netAmount: String(parseFloat(totalAmount) - parseFloat(platformFee) - parseFloat(cleaningFee))
         };
         
