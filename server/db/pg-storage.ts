@@ -464,6 +464,36 @@ export class PgStorage implements IStorage {
   }
 
   // Método para gerar relatório financeiro de proprietário
+  // Método para obter atividades de manutenção por propriedade no período
+  async getMaintenanceActivities(propertyId: number, startDate: Date, endDate: Date): Promise<any[]> {
+    try {
+      // Consultar atividades de tipo 'maintenance_requested' para a propriedade no período
+      const query = `
+        SELECT a.*, CAST(COALESCE(
+          (SELECT value FROM jsonb_each_text(a.description::jsonb) WHERE key = 'cost'),
+          '0'
+        ) AS DECIMAL) AS maintenance_cost
+        FROM activities a
+        WHERE a.type = 'maintenance_requested'
+        AND a.entity_type = 'property'
+        AND a.entity_id = $1
+        AND a.created_at BETWEEN $2 AND $3
+      `;
+      
+      const result = await this.db.query(query, [propertyId, startDate.toISOString(), endDate.toISOString()]);
+      
+      return result.rows.map(row => ({
+        id: row.id,
+        description: row.description,
+        createdAt: row.created_at,
+        maintenanceCost: Number(row.maintenance_cost) || 0
+      }));
+    } catch (error) {
+      console.error(`Erro ao obter atividades de manutenção para propriedade ${propertyId}:`, error);
+      return [];
+    }
+  }
+  
   async generateOwnerFinancialReport(ownerId: number, month: string, year: string): Promise<any> {
     try {
       console.log(`Gerando relatório financeiro para proprietário ${ownerId} no mês ${month}/${year}`);
@@ -493,13 +523,19 @@ export class PgStorage implements IStorage {
             return (checkIn <= endDate && checkOut >= startDate);
           });
         
+        // Obter atividades de manutenção no período
+        const maintenanceActivities = await this.getMaintenanceActivities(property.id, startDate, endDate);
+        const maintenanceCosts = maintenanceActivities.reduce((sum, activity) => sum + activity.maintenanceCost, 0);
+        
         // Calcular receita total, custos e lucro
         const revenue = reservations.reduce((sum, r) => sum + Number(r.totalAmount), 0);
         const cleaningCosts = reservations.reduce((sum, r) => sum + Number(r.cleaningFee || 0), 0);
         const checkInFees = reservations.reduce((sum, r) => sum + Number(r.checkInFee || 0), 0);
         const commission = reservations.reduce((sum, r) => sum + Number(r.commissionFee || 0), 0);
         const teamPayments = reservations.reduce((sum, r) => sum + Number(r.teamPayment || 0), 0);
-        const netProfit = revenue - cleaningCosts - checkInFees - commission - teamPayments;
+        
+        // Incluir custos de manutenção no cálculo do lucro líquido
+        const netProfit = revenue - cleaningCosts - checkInFees - commission - teamPayments - maintenanceCosts;
         
         // Calcular taxa de ocupação
         const occupancyRate = await this.getOccupancyRate(property.id, startDate, endDate);
@@ -523,15 +559,25 @@ export class PgStorage implements IStorage {
           platform: r.platform || 'direct'
         }));
         
+        // Resumo de atividades de manutenção
+        const maintenanceSummaries = maintenanceActivities.map(a => ({
+          id: a.id,
+          description: a.description,
+          date: a.createdAt,
+          cost: a.maintenanceCost
+        }));
+        
         return {
           propertyId: property.id,
           propertyName: property.name,
           reservations: reservationSummaries,
+          maintenanceActivities: maintenanceSummaries,
           revenue,
           cleaningCosts,
           checkInFees,
           commission,
           teamPayments,
+          maintenanceCosts,
           netProfit,
           occupancyRate,
           availableDays: totalDays,
@@ -545,6 +591,7 @@ export class PgStorage implements IStorage {
       const totalCheckInFees = propertyReports.reduce((sum, p) => sum + p.checkInFees, 0);
       const totalCommission = propertyReports.reduce((sum, p) => sum + p.commission, 0);
       const totalTeamPayments = propertyReports.reduce((sum, p) => sum + p.teamPayments, 0);
+      const totalMaintenanceCosts = propertyReports.reduce((sum, p) => sum + p.maintenanceCosts, 0);
       const totalNetProfit = propertyReports.reduce((sum, p) => sum + p.netProfit, 0);
       
       // Calcular média de ocupação
@@ -563,10 +610,12 @@ export class PgStorage implements IStorage {
           totalCheckInFees,
           totalCommission,
           totalTeamPayments,
+          totalMaintenanceCosts,
           totalNetProfit,
           averageOccupancy,
           totalProperties: propertyReports.length,
-          totalReservations: propertyReports.reduce((sum, p) => sum + p.reservations.length, 0)
+          totalReservations: propertyReports.reduce((sum, p) => sum + p.reservations.length, 0),
+          totalMaintenanceActivities: propertyReports.reduce((sum, p) => sum + p.maintenanceActivities.length, 0)
         }
       };
     } catch (error) {

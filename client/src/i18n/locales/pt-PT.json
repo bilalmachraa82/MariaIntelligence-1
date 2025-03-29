@@ -588,6 +588,8 @@
       "checkInFees": "Taxas de Check-in",
       "commission": "Comissão",
       "teamPayments": "Pagamentos às Equipas",
+      "maintenanceCosts": "Custos de Manutenção",
+      "maintenanceActivities": "Atividades de Manutenção",
       "reservationsDetails": "Detalhes das Reservas por Propriedade",
       "reservationsDetailsDesc": "Dados financeiros de todas as reservas no período, agrupados por propriedade",
       "netProfitCalc": "receita total menos todos os custos",

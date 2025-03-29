@@ -502,6 +502,8 @@
       "selectOwnerToGenerate": "Select an owner to generate the financial report.",
       "fromReservations": "from all bookings in the period",
       "costsInclude": "includes cleaning, check-in, commission, and teams",
+      "maintenanceCosts": "Maintenance Costs",
+      "maintenanceActivities": "Maintenance Activities",
       "netProfitCalc": "total revenue minus all costs",
       "overview": "Overview",
       "properties": "Properties",

@@ -1,7 +1,8 @@
 /**
- * Script para reset parcial do banco de dados
- * Limpa apenas as tabelas relacionadas a reservas, mantendo proprietários, propriedades e equipas de limpeza
- * Também mantém orçamentos e dados de IA (knowledge_embeddings, query_embeddings, conversation_history)
+ * Script para reset completo do banco de dados
+ * Limpa as tabelas relacionadas a reservas, orçamentos e tarefas de manutenção
+ * Mantém apenas proprietários, propriedades e equipas de limpeza
+ * Também mantém dados de IA (knowledge_embeddings, query_embeddings, conversation_history)
  */
 
 import pg from 'pg';
@@ -9,8 +10,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-async function resetReservationsData() {
-  console.log('Iniciando reset parcial do banco de dados...');
+async function resetDatabaseData() {
+  console.log('Iniciando reset do banco de dados...');
   
   // Configuração da conexão com o PostgreSQL
   const client = new pg.Client({
@@ -22,14 +23,15 @@ async function resetReservationsData() {
     await client.connect();
     console.log('Conectado ao banco de dados PostgreSQL');
     
-    // Limpar tabelas relacionadas a reservas em ordem correta para evitar problemas de chaves estrangeiras
+    // Limpar tabelas em ordem correta para evitar problemas de chaves estrangeiras
     // A ordem é importante por causa das restrições de chave estrangeira
     const tablesToClear = [
       'financial_document_items',  // Tem referências para financial_documents e reservations
       'payment_records',           // Tem referências para financial_documents
       'financial_documents',       // Não tem dependências diretas para as tabelas que estamos mantendo
       'activities',                // Pode ter referências para reservations através de entity_id/entity_type
-      'reservations'               // Tem referência para properties, mas properties não será deletada
+      'reservations',              // Tem referência para properties, mas properties não será deletada
+      'quotations'                 // Orçamentos - solicitada limpeza adicional
     ];
     
     // Log das contagens antes da limpeza
@@ -65,7 +67,6 @@ async function resetReservationsData() {
       'owners',
       'properties',
       'cleaning_teams',
-      'quotations',
       'knowledge_embeddings',
       'query_embeddings',
       'conversation_history'
@@ -77,7 +78,7 @@ async function resetReservationsData() {
       console.log(`- ${tableName}: ${countResult.rows[0].count} registros`);
     }
     
-    console.log('\nReset parcial concluído!');
+    console.log('\nReset concluído!');
     
   } catch (error) {
     console.error('Erro durante o reset do banco de dados:', error);
@@ -89,4 +90,4 @@ async function resetReservationsData() {
 }
 
 // Executar o reset
-resetReservationsData();
+resetDatabaseData();

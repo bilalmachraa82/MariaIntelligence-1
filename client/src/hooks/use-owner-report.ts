@@ -20,15 +20,24 @@ export interface OwnerReport {
   totals: ReportTotals;
 }
 
+export interface MaintenanceActivity {
+  id: number;
+  description: string;
+  date: string;
+  cost: number;
+}
+
 export interface PropertyReportItem {
   propertyId: number;
   propertyName: string;
   reservations: ReservationSummary[];
+  maintenanceActivities: MaintenanceActivity[];
   revenue: number;
   cleaningCosts: number;
   checkInFees: number;
   commission: number;
   teamPayments: number;
+  maintenanceCosts: number;
   netProfit: number;
   occupancyRate: number;
   availableDays: number;
@@ -56,10 +65,12 @@ export interface ReportTotals {
   totalCheckInFees: number;
   totalCommission: number;
   totalTeamPayments: number;
+  totalMaintenanceCosts: number;
   totalNetProfit: number;
   averageOccupancy: number;
   totalProperties: number;
   totalReservations: number;
+  totalMaintenanceActivities?: number;
 }
 
 // Interface para proprietários com pagamento fixo no relatório
@@ -126,11 +137,13 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
           propertyId: property.id,
           propertyName: property.name,
           reservations: [],
+          maintenanceActivities: [],
           revenue: 0,
           cleaningCosts: 0,
           checkInFees: 0,
           commission: 0,
           teamPayments: 0,
+          maintenanceCosts: 0,
           netProfit: 0,
           occupancyRate: 0,
           availableDays: 0,
@@ -142,10 +155,12 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
           totalCheckInFees: 0,
           totalCommission: 0,
           totalTeamPayments: 0,
+          totalMaintenanceCosts: 0,
           totalNetProfit: fixedPaymentOwner.monthlyPayment - fixedPaymentOwner.deductions,
           averageOccupancy: 0,
           totalProperties: ownerProperties.length,
-          totalReservations: 0
+          totalReservations: 0,
+          totalMaintenanceActivities: 0
         },
         fixedPaymentInfo: {
           isFixedPayment: true,
@@ -262,16 +277,25 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
         };
       });
       
+      // Resumo de atividades de manutenção (simulado, posteriormente será buscado da API)
+      const maintenanceActivities: MaintenanceActivity[] = [];
+      const maintenanceCosts = 0; // Sem custos de manutenção nesta simulação
+      
+      // Net profit including maintenance costs
+      const finalNetProfit = netProfit - maintenanceCosts;
+      
       return {
         propertyId: property.id,
         propertyName: property.name,
         reservations: reservationSummaries,
+        maintenanceActivities,
         revenue,
         cleaningCosts,
         checkInFees,
         commission,
         teamPayments,
-        netProfit,
+        maintenanceCosts,
+        netProfit: finalNetProfit,
         occupancyRate,
         availableDays,
         occupiedDays
@@ -285,12 +309,14 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
       totalCheckInFees: propertyReports.reduce((sum, p) => sum + p.checkInFees, 0),
       totalCommission: propertyReports.reduce((sum, p) => sum + p.commission, 0),
       totalTeamPayments: propertyReports.reduce((sum, p) => sum + p.teamPayments, 0),
+      totalMaintenanceCosts: propertyReports.reduce((sum, p) => sum + p.maintenanceCosts, 0),
       totalNetProfit: propertyReports.reduce((sum, p) => sum + p.netProfit, 0),
       averageOccupancy: propertyReports.length > 0 
         ? propertyReports.reduce((sum, p) => sum + p.occupancyRate, 0) / propertyReports.length 
         : 0,
       totalProperties: propertyReports.length,
-      totalReservations: propertyReports.reduce((sum, p) => sum + p.reservations.length, 0)
+      totalReservations: propertyReports.reduce((sum, p) => sum + p.reservations.length, 0),
+      totalMaintenanceActivities: propertyReports.reduce((sum, p) => sum + p.maintenanceActivities.length, 0)
     };
     
     return {
@@ -334,6 +360,7 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
       { name: "Custos de Limpeza", value: report.totals.totalCleaningCosts },
       { name: "Taxas de Check-in", value: report.totals.totalCheckInFees },
       { name: "Comissão", value: report.totals.totalCommission },
+      { name: "Custos de Manutenção", value: report.totals.totalMaintenanceCosts },
       { name: "Lucro Líquido", value: report.totals.totalNetProfit }
     ];
   }, [report]);
