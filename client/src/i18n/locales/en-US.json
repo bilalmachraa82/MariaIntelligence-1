@@ -13,11 +13,9 @@
     "dailyTasks.cleaning": "Cleaning",
     "dailyTasks.pendingStatus": "Pending",
     "dailyTasks.scheduleClean": "Schedule Cleaning",
-    "quotation": {
-      "additionalFeatures": "Additional Features",
-      "additionalDetails": "Additional Details",
-      "validUntilDescription": "Date until the quotation is valid"
-    },
+    "quotation.additionalFeatures": "Additional Features",
+    "quotation.additionalDetails": "Additional Details",
+    "quotation.validUntilDescription": "Date until the quotation is valid",
     "navigation": {
       "mainMenu": "Menu",
       "mainAppNav": "Main navigation for Maria Faz application",
