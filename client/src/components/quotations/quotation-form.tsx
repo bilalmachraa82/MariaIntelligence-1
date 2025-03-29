@@ -202,12 +202,13 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
       hasBBQ: Boolean(data.hasBBQ),
       hasGlassGarden: Boolean(data.hasGlassGarden),
       
-      // Campos de preço
+      // Campos de preço - valores individuais para cada adicional
       duplexSurcharge: data.isDuplex ? "50" : "0",
       bbqSurcharge: data.hasBBQ ? "30" : "0",
       exteriorSurcharge: data.exteriorArea > 15 ? "10" : "0",
       glassGardenSurcharge: data.hasGlassGarden ? "60" : "0",
-      additionalSurcharges: additionalPrice.toString(),
+      // O additionalSurcharges deve representar valores extras, não a soma dos outros adicionais
+      additionalSurcharges: "0",
       
       // Campos opcionais
       notes: data.notes || "",

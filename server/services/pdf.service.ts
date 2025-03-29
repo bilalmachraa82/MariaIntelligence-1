@@ -211,7 +211,7 @@ export class PDFService {
         });
       };
       
-      // Calcular os valores corretamente
+      // Calcular os valores corretamente, convertendo para números
       const basePrice = parseFloat(quotation.basePrice?.toString() || "0");
       const duplexSurcharge = parseFloat(quotation.duplexSurcharge?.toString() || "0");
       const bbqSurcharge = parseFloat(quotation.bbqSurcharge?.toString() || "0");
@@ -219,6 +219,7 @@ export class PDFService {
       const glassGardenSurcharge = parseFloat(quotation.glassGardenSurcharge?.toString() || "0");
       const additionalSurcharges = parseFloat(quotation.additionalSurcharges?.toString() || "0");
       
+      // Somar todos os adicionais para obter o total de adicionais
       const additionalTotal = (
         duplexSurcharge + 
         bbqSurcharge + 
@@ -230,14 +231,39 @@ export class PDFService {
       // Garantir que o total é a soma do preço base + adicionais
       const calculatedTotalPrice = basePrice + additionalTotal;
       
+      // Criar array com todos os itens do orçamento detalhados
+      const tableRows = [
+        ['Preço Base', formatCurrency(basePrice)],
+      ];
+      
+      // Adicionar os extras apenas se tiverem valor
+      if (duplexSurcharge > 0) {
+        tableRows.push(['Extra - Duplex', formatCurrency(duplexSurcharge)]);
+      }
+      
+      if (bbqSurcharge > 0) {
+        tableRows.push(['Extra - Churrasqueira', formatCurrency(bbqSurcharge)]);
+      }
+      
+      if (exteriorSurcharge > 0) {
+        tableRows.push(['Extra - Área Exterior', formatCurrency(exteriorSurcharge)]);
+      }
+      
+      if (glassGardenSurcharge > 0) {
+        tableRows.push(['Extra - Jardim com Vidro', formatCurrency(glassGardenSurcharge)]);
+      }
+      
+      if (additionalSurcharges > 0) {
+        tableRows.push(['Outros Extras', formatCurrency(additionalSurcharges)]);
+      }
+      
+      // Adicionar o total no final
+      tableRows.push(['Preço Total', formatCurrency(calculatedTotalPrice)]);
+      
       autoTable(doc, {
         startY: currentY,
         head: [['Item', 'Valor']],
-        body: [
-          ['Preço Base', formatCurrency(basePrice)],
-          ['Adicionais', formatCurrency(additionalTotal)],
-          ['Preço Total', formatCurrency(calculatedTotalPrice)]
-        ],
+        body: tableRows,
         theme: 'grid',
         headStyles: { fillColor: [231, 144, 144], textColor: [255, 255, 255] }, // Rosa para o cabeçalho
         bodyStyles: { fontSize: 12 },
@@ -285,7 +311,9 @@ export class PDFService {
       const pageHeight = doc.internal.pageSize.height;
       
       // Verificar se o conteúdo está muito próximo do rodapé
-      if (currentY > pageHeight - 60) {
+      // Aumentar a margem mínima para evitar que o rodapé seja empurrado para uma nova página
+      // quando não há realmente conteúdo suficiente para justificar uma segunda página
+      if (currentY > pageHeight - 45) {
         // Adicionar uma nova página se o conteúdo estiver muito próximo do rodapé
         doc.addPage();
         currentY = 20; // Resetar a posição Y para o topo da nova página
@@ -296,12 +324,12 @@ export class PDFService {
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(100, 100, 100);
       
-      // Posicionar o rodapé a partir do fim da página
-      const footerY = pageHeight - 25; // 25mm a partir do fim da página
+      // Posicionar o rodapé a partir do fim da página - otimizado para caber em uma única página
+      const footerY = pageHeight - 20; // Reduz para 20mm a partir do fim da página
       
-      doc.text('A MARIA FAZ, UNIPESSOAL, LDA | NIF: 517445271', 105, footerY - 15, { align: 'center' });
-      doc.text('Conta: 4-6175941.000.001 | IBAN: PT50 0010 0000 61759410001 68', 105, footerY - 10, { align: 'center' });
-      doc.text('BIC: BBPIPTPL | BANCO BPI', 105, footerY - 5, { align: 'center' });
+      // Combinar algumas informações para economizar espaço
+      doc.text('A MARIA FAZ, UNIPESSOAL, LDA | NIF: 517445271', 105, footerY - 12, { align: 'center' });
+      doc.text('IBAN: PT50 0010 0000 61759410001 68 | BIC: BBPIPTPL | BANCO BPI', 105, footerY - 6, { align: 'center' });
       doc.text('Este orçamento é válido por 30 dias. Contacte-nos para mais informações.', 105, footerY, { align: 'center' });
       
       // Verificar se o diretório existe antes de salvar
