@@ -7,20 +7,9 @@ import fs from 'fs';
 import path from 'path';
 import { Quotation } from '@shared/schema';
 
-// Definição de tipos para TypeScript
-interface PDFDocument {
-  text(text: string | string[], x: number, y: number, options?: any): PDFDocument;
-  setFont(fontName: string, fontStyle: string): PDFDocument;
-  setFontSize(size: number): PDFDocument;
-  setTextColor(r: number, g: number, b: number): PDFDocument;
-  setProperties(properties: Record<string, string>): PDFDocument;
-  splitTextToSize(text: string, maxWidth: number): string[];
-  output(type?: string): any;
-  lastAutoTable?: { finalY: number };
-  internal: {
-    pageSize: { width: number; height: number };
-  };
-}
+// Importando os tipos diretamente da biblioteca é mais adequado, 
+// mas para este caso simples vamos remover a definição de tipo personalizada
+// e confiar nos tipos fornecidos pela própria biblioteca jsPDF
 
 /**
  * Serviço para geração de PDF
@@ -68,7 +57,7 @@ export class PDFService {
         orientation: 'portrait',
         unit: 'mm',
         format: 'a4'
-      }) as PDFDocument;
+      });
       
       // Adicionar metadados ao documento
       doc.setProperties({
@@ -91,8 +80,9 @@ export class PDFService {
         const logoData = fs.readFileSync('./attached_assets/logo.png');
         const base64Logo = 'data:image/png;base64,' + logoData.toString('base64');
         
-        // Adicionar o logo
-        doc.addImage(base64Logo, 'PNG', 70, 10, 70, 20);
+        // Adicionar o logo com proporções corretas (mantendo a proporção original)
+        // Tamanho ajustado para ser menor e mais proporcional
+        doc.addImage(base64Logo, 'PNG', 75, 10, 60, 17);
       } catch (error) {
         console.error("Erro ao carregar o logo:", error);
         // Em caso de erro ao carregar o logo, apenas usar texto como fallback
@@ -173,6 +163,7 @@ export class PDFService {
         margin: { top: 20, left: 20, right: 20 }
       });
       
+      // @ts-ignore - lastAutoTable é adicionado pelo plugin jspdf-autotable
       currentY = doc.lastAutoTable?.finalY ? doc.lastAutoTable.finalY + 10 : currentY + 30;
       
       // Características adicionais
@@ -256,6 +247,7 @@ export class PDFService {
         footStyles: { fillColor: [245, 213, 213] } // Rosa claro para o rodapé
       });
       
+      // @ts-ignore - lastAutoTable é adicionado pelo plugin jspdf-autotable
       currentY = doc.lastAutoTable?.finalY ? doc.lastAutoTable.finalY + 15 : currentY + 50;
       
       // Observações
@@ -289,14 +281,28 @@ export class PDFService {
       doc.text(callToAction, 105, currentY + 12, { align: 'center' });
       doc.setTextColor(0, 0, 0); // Voltar para preto
       
-      // Rodapé com informações da empresa
+      // Garantir que há espaço suficiente para o rodapé
+      const pageHeight = doc.internal.pageSize.height;
+      
+      // Verificar se o conteúdo está muito próximo do rodapé
+      if (currentY > pageHeight - 60) {
+        // Adicionar uma nova página se o conteúdo estiver muito próximo do rodapé
+        doc.addPage();
+        currentY = 20; // Resetar a posição Y para o topo da nova página
+      }
+      
+      // Rodapé com informações da empresa - posicionado a partir do fim da página
       doc.setFontSize(8);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(100, 100, 100);
-      doc.text('A MARIA FAZ, UNIPESSOAL, LDA | NIF: 517445271', 105, 270, { align: 'center' });
-      doc.text('Conta: 4-6175941.000.001 | IBAN: PT50 0010 0000 61759410001 68', 105, 275, { align: 'center' });
-      doc.text('BIC: BBPIPTPL | BANCO BPI', 105, 280, { align: 'center' });
-      doc.text('Este orçamento é válido por 30 dias. Contacte-nos para mais informações.', 105, 285, { align: 'center' });
+      
+      // Posicionar o rodapé a partir do fim da página
+      const footerY = pageHeight - 25; // 25mm a partir do fim da página
+      
+      doc.text('A MARIA FAZ, UNIPESSOAL, LDA | NIF: 517445271', 105, footerY - 15, { align: 'center' });
+      doc.text('Conta: 4-6175941.000.001 | IBAN: PT50 0010 0000 61759410001 68', 105, footerY - 10, { align: 'center' });
+      doc.text('BIC: BBPIPTPL | BANCO BPI', 105, footerY - 5, { align: 'center' });
+      doc.text('Este orçamento é válido por 30 dias. Contacte-nos para mais informações.', 105, footerY, { align: 'center' });
       
       // Verificar se o diretório existe antes de salvar
       try {
