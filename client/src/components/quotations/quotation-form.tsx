@@ -140,13 +140,73 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
   
   // Calculate pricing based on form values
   useEffect(() => {
-    // Base price calculation (€20 per 50m²)
-    const basePriceRate = 20;
-    // Usar propertyArea para cálculo de preço base
-    const calculatedBasePrice = Math.ceil(watchedValues.propertyArea / 50) * basePriceRate;
+    // Base price calculation usando a tabela oficial de preços
+    let baseType = "";
+    let calculatedBasePrice = 0;
+    
+    // Determinar o tipo de propriedade e definir o preço base de acordo com a tabela de preços
+    switch (watchedValues.propertyType) {
+      case "apartment_t0t1":
+        // Preço para T0/T1: 47€
+        calculatedBasePrice = 47;
+        baseType = "T0/T1";
+        break;
+      case "apartment_t2":
+        // Preço para T2: 60€
+        calculatedBasePrice = 60;
+        baseType = "T2";
+        break;
+      case "apartment_t3":
+        // Preço para T3: 70€
+        calculatedBasePrice = 70;
+        baseType = "T3";
+        break;
+      case "apartment_t4":
+        // Preço para T4: 80€
+        calculatedBasePrice = 80;
+        baseType = "T4";
+        break;
+      case "apartment_t5":
+        // Preço para T5: 90€
+        calculatedBasePrice = 90;
+        baseType = "T5";
+        break;
+      case "house_v1":
+        // Preço para V1: 75€
+        calculatedBasePrice = 75;
+        baseType = "V1";
+        break;
+      case "house_v2":
+        // Preço para V2: 95€
+        calculatedBasePrice = 95;
+        baseType = "V2";
+        break;
+      case "house_v3":
+        // Preço para V3: 115€
+        calculatedBasePrice = 115;
+        baseType = "V3";
+        break;
+      case "house_v4":
+        // Preço para V4: 135€
+        calculatedBasePrice = 135;
+        baseType = "V4";
+        break;
+      case "house_v5":
+        // Preço para V5: 150€
+        calculatedBasePrice = 150;
+        baseType = "V5";
+        break;
+      default:
+        // Valor padrão se nenhum tipo for selecionado
+        calculatedBasePrice = 47;
+        baseType = "T0/T1";
+    }
+    
+    // Registra o tipo de propriedade para referência
+    console.log(`Tipo de propriedade: ${baseType}, Preço Base: ${calculatedBasePrice}€`);
     setBasePrice(calculatedBasePrice);
     
-    // Additional price calculation
+    // Additional price calculation - valores atualizados conforme especificado
     let calculatedAdditionalPrice = 0;
     
     // Exterior area > 15m²: +€10
@@ -154,19 +214,19 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
       calculatedAdditionalPrice += 10;
     }
     
-    // Duplex: +€50
+    // Duplex: +€10 (valor atualizado)
     if (watchedValues.isDuplex) {
-      calculatedAdditionalPrice += 50;
+      calculatedAdditionalPrice += 10;
     }
     
-    // BBQ: +€30
+    // BBQ: +€10 (valor atualizado)
     if (watchedValues.hasBBQ) {
-      calculatedAdditionalPrice += 30;
+      calculatedAdditionalPrice += 10;
     }
     
-    // Glass garden: +€60
+    // Glass garden: +€10 (valor atualizado)
     if (watchedValues.hasGlassGarden) {
-      calculatedAdditionalPrice += 60;
+      calculatedAdditionalPrice += 10;
     }
     
     setAdditionalPrice(calculatedAdditionalPrice);
@@ -202,11 +262,11 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
       hasBBQ: Boolean(data.hasBBQ),
       hasGlassGarden: Boolean(data.hasGlassGarden),
       
-      // Campos de preço - valores individuais para cada adicional
-      duplexSurcharge: data.isDuplex ? "50" : "0",
-      bbqSurcharge: data.hasBBQ ? "30" : "0",
+      // Campos de preço - todos os adicionais são 10€ conforme especificado
+      duplexSurcharge: data.isDuplex ? "10" : "0",
+      bbqSurcharge: data.hasBBQ ? "10" : "0",
       exteriorSurcharge: data.exteriorArea > 15 ? "10" : "0",
-      glassGardenSurcharge: data.hasGlassGarden ? "60" : "0",
+      glassGardenSurcharge: data.hasGlassGarden ? "10" : "0",
       // O additionalSurcharges deve representar valores extras, não a soma dos outros adicionais
       additionalSurcharges: "0",
       
@@ -365,9 +425,12 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
                                   {watchedValues.propertyType === "apartment_t2" && <span>{t("quotation.propertyTypeApartmentT2")}</span>}
                                   {watchedValues.propertyType === "apartment_t3" && <span>{t("quotation.propertyTypeApartmentT3")}</span>}
                                   {watchedValues.propertyType === "apartment_t4" && <span>{t("quotation.propertyTypeApartmentT4")}</span>}
+                                  {watchedValues.propertyType === "apartment_t5" && <span>{t("quotation.propertyTypeApartmentT5") || "T5"}</span>}
                                   {watchedValues.propertyType === "house_v1" && <span>{t("quotation.propertyTypeHouseV1")}</span>}
                                   {watchedValues.propertyType === "house_v2" && <span>{t("quotation.propertyTypeHouseV2")}</span>}
                                   {watchedValues.propertyType === "house_v3" && <span>{t("quotation.propertyTypeHouseV3")}</span>}
+                                  {watchedValues.propertyType === "house_v4" && <span>{t("quotation.propertyTypeHouseV4") || "V4"}</span>}
+                                  {watchedValues.propertyType === "house_v5" && <span>{t("quotation.propertyTypeHouseV5") || "V5"}</span>}
                                 </div>
                               )}
                             </SelectValue>
@@ -398,6 +461,12 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
                               <span>{t("quotation.propertyTypeApartmentT4")}</span>
                             </div>
                           </SelectItem>
+                          <SelectItem value="apartment_t5">
+                            <div className="flex items-center gap-2">
+                              <Building2 className="h-4 w-4 text-blue-500" />
+                              <span>{t("quotation.propertyTypeApartmentT5") || "T5"}</span>
+                            </div>
+                          </SelectItem>
                           <SelectItem value="house_v1">
                             <div className="flex items-center gap-2">
                               <Home className="h-4 w-4 text-green-500" />
@@ -414,6 +483,18 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
                             <div className="flex items-center gap-2">
                               <Home className="h-4 w-4 text-green-500" />
                               <span>{t("quotation.propertyTypeHouseV3")}</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="house_v4">
+                            <div className="flex items-center gap-2">
+                              <Home className="h-4 w-4 text-green-500" />
+                              <span>{t("quotation.propertyTypeHouseV4") || "V4"}</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="house_v5">
+                            <div className="flex items-center gap-2">
+                              <Home className="h-4 w-4 text-green-500" />
+                              <span>{t("quotation.propertyTypeHouseV5") || "V5"}</span>
                             </div>
                           </SelectItem>
                         </SelectContent>

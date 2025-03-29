@@ -237,20 +237,21 @@ export class PDFService {
       ];
       
       // Adicionar os extras apenas se tiverem valor
+      // Todos os adicionais são €10 conforme especificado
       if (duplexSurcharge > 0) {
-        tableRows.push(['Extra - Duplex', formatCurrency(duplexSurcharge)]);
+        tableRows.push(['Extra - Duplex (10€)', formatCurrency(10)]);
       }
       
       if (bbqSurcharge > 0) {
-        tableRows.push(['Extra - Churrasqueira', formatCurrency(bbqSurcharge)]);
+        tableRows.push(['Extra - Churrasqueira (10€)', formatCurrency(10)]);
       }
       
       if (exteriorSurcharge > 0) {
-        tableRows.push(['Extra - Área Exterior', formatCurrency(exteriorSurcharge)]);
+        tableRows.push(['Extra - Área Exterior > 15m² (10€)', formatCurrency(10)]);
       }
       
       if (glassGardenSurcharge > 0) {
-        tableRows.push(['Extra - Jardim com Vidro', formatCurrency(glassGardenSurcharge)]);
+        tableRows.push(['Extra - Jardim com Vidro (10€)', formatCurrency(10)]);
       }
       
       if (additionalSurcharges > 0) {
