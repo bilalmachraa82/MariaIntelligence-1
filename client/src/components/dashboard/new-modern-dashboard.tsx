@@ -31,7 +31,7 @@ import {
   Download,
   FileUp,
   LineChart,
-  DollarSign,
+  DollarSign, Euro as EuroIcon,
   TrendingUp,
   UserCheck,
   BarChart3,
@@ -282,7 +282,7 @@ export default function NewModernDashboard({ minimal = false }: { minimal?: bool
           <div className="bg-blue-50 dark:bg-blue-950/30 p-3 rounded-lg border border-blue-100 dark:border-blue-800/40">
             <div className="flex items-center justify-between">
               <p className="text-muted-foreground text-xs font-medium">{t("dashboard.totalRevenue", "Receita Total")}</p>
-              <DollarSign className="h-4 w-4 text-blue-500" />
+              <EuroIcon className="h-4 w-4 text-blue-500" />
             </div>
             <p className="text-lg font-bold text-primary mt-1">
               {isLoadingStats ? "..." : formatCurrency(statistics?.totalRevenue || 0)}
@@ -451,7 +451,7 @@ export default function NewModernDashboard({ minimal = false }: { minimal?: bool
                         )}
                       </div>
                       <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-3.5 rounded-full shadow-lg group-hover:shadow-blue-500/30 transition-all duration-300 transform group-hover:scale-110">
-                        <DollarSign className="h-7 w-7 text-white" />
+                        <EuroIcon className="h-7 w-7 text-white" />
                       </div>
                     </Flex>
                     {!isLoadingStats && statistics?.revenueChange && (
