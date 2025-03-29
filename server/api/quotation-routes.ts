@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { extendedQuotationSchema, insertQuotationSchema } from "@shared/schema";
+import { insertQuotationSchema } from "@shared/schema";
 import { storage } from "../storage";
 import { z } from "zod";
 import * as fs from 'fs';
@@ -94,7 +94,7 @@ export function registerQuotationRoutes(app: any) {
       console.log("Recebendo dados de orçamento:", JSON.stringify(req.body, null, 2));
       
       // Validar dados do orçamento
-      const validationResult = extendedQuotationSchema.safeParse(req.body);
+      const validationResult = insertQuotationSchema.safeParse(req.body);
       
       if (!validationResult.success) {
         console.error("ERRO DE VALIDAÇÃO DE ORÇAMENTO:");
@@ -178,7 +178,7 @@ export function registerQuotationRoutes(app: any) {
       }
       
       // Validar dados da atualização
-      const updateSchema = extendedQuotationSchema.partial();
+      const updateSchema = insertQuotationSchema.partial();
       const validationResult = updateSchema.safeParse(req.body);
       
       if (!validationResult.success) {

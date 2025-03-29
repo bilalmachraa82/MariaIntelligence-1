@@ -626,12 +626,28 @@ export function OwnerReportModern({
                       <Title>{t("ownerReport.fixedPayment", "Pagamento Fixo Mensal")}</Title>
                     </div>
                     <div className="p-4 rounded-lg bg-white dark:bg-gray-900 shadow-sm">
-                      <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                           <Text className="text-muted-foreground text-sm">{t("ownerReport.fixedAmount", "Valor Fixo Mensal")}</Text>
                           <p className="text-lg font-semibold text-green-600">{formatCurrency(fixedPaymentInfo.monthlyAmount)}</p>
                         </div>
+                        <div>
+                          <Text className="text-muted-foreground text-sm">{t("ownerReport.fixedDeductions", "Deduções")}</Text>
+                          <p className="text-lg font-semibold text-red-600">-{formatCurrency(fixedPaymentInfo.deductions)}</p>
+                        </div>
+                        <div>
+                          <Text className="text-muted-foreground text-sm">{t("ownerReport.maintenanceCosts", "Custos de Manutenção")}</Text>
+                          <p className="text-lg font-semibold text-red-600">-{formatCurrency(fixedPaymentInfo.maintenanceCosts)}</p>
+                        </div>
                       </div>
+                      
+                      <div className="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4">
+                        <div className="flex items-center justify-between">
+                          <Text className="font-medium">{t("ownerReport.netAmount", "Valor Líquido")}</Text>
+                          <p className="text-lg font-bold text-primary">{formatCurrency(fixedPaymentInfo.netAmount)}</p>
+                        </div>
+                      </div>
+                      
                       <div className="mt-4 p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
                         <div className="flex items-center">
                           <AlertCircle className="h-4 w-4 text-amber-600 mr-2" />
@@ -640,7 +656,7 @@ export function OwnerReportModern({
                           </Text>
                         </div>
                         <Text className="text-sm text-amber-800/80 dark:text-amber-300/80 mt-1 ml-6">
-                          O valor de {formatCurrency(fixedPaymentInfo.monthlyAmount)} é pago mensalmente, independentemente da ocupação das propriedades.
+                          O valor de {formatCurrency(fixedPaymentInfo.monthlyAmount)} é pago mensalmente, descontando as deduções contratuais de {formatCurrency(fixedPaymentInfo.deductions)} e os custos de manutenção de {formatCurrency(fixedPaymentInfo.maintenanceCosts)}.
                         </Text>
                       </div>
                     </div>

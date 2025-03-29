@@ -4,6 +4,25 @@ import { useProperties } from "@/hooks/use-properties";
 import { useReservations } from "@/hooks/use-reservations";
 import { useOwners } from "@/hooks/use-owners";
 import { getFixedPaymentOwner } from "@/services/fixed-payment-owners";
+import { useQuery } from "@tanstack/react-query";
+
+/**
+ * Interface para tarefas de manutenção
+ */
+interface MaintenanceTask {
+  id: number;
+  propertyId: number;
+  propertyName: string;
+  description: string;
+  priority: "high" | "medium" | "low";
+  status: "pending" | "scheduled" | "completed";
+  cost: number;
+  reportedAt: string;
+  completedAt?: string;
+  dueDate: string;
+  assignedTo?: string;
+  notes?: string;
+}
 
 export interface DateRange {
   startDate: string;
@@ -78,6 +97,7 @@ export interface FixedPaymentInfo {
   isFixedPayment: boolean;
   monthlyAmount: number;
   deductions: number;
+  maintenanceCosts: number;
   netAmount: number;
 }
 
@@ -132,46 +152,84 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
       const month = start.getMonth() + 1; // JavaScript meses são 0-11
       const year = start.getFullYear();
       
+      // Processar tarefas de manutenção para proprietários com pagamento fixo
+      const propertyReports = ownerProperties.map(property => {
+        // Filtrar tarefas de manutenção completadas para esta propriedade no período
+        const propertyMaintenanceTasks = maintenanceTasks.filter(task => {
+          if (task.propertyId !== property.id) {
+            return false;
+          }
+          
+          // Só incluimos tarefas completadas
+          if (task.status !== "completed") {
+            return false;
+          }
+          
+          const taskDate = new Date(task.completedAt || task.reportedAt);
+          
+          // Verificar se a tarefa foi completada dentro do período
+          return taskDate >= start && taskDate <= end;
+        });
+        
+        // Converter para o formato de MaintenanceActivity para o relatório
+        const maintenanceActivities: MaintenanceActivity[] = propertyMaintenanceTasks.map(task => ({
+          id: task.id,
+          description: task.description,
+          date: task.completedAt || task.reportedAt,
+          cost: task.cost || 0
+        }));
+        
+        // Calcular custos totais de manutenção
+        const maintenanceCosts = maintenanceActivities.reduce((sum, act) => sum + act.cost, 0);
+        
+        return {
+          propertyId: property.id,
+          propertyName: property.name,
+          reservations: [],
+          maintenanceActivities,
+          revenue: 0,
+          cleaningCosts: 0,
+          checkInFees: 0,
+          commission: 0,
+          teamPayments: 0,
+          maintenanceCosts,
+          netProfit: -maintenanceCosts, // Apenas custos de manutenção afetam o lucro líquido por propriedade
+          occupancyRate: 0,
+          availableDays: 0,
+          occupiedDays: 0
+        };
+      });
+      
+      // Total de custos de manutenção para todas as propriedades
+      const totalMaintenanceCosts = propertyReports.reduce((sum, p) => sum + p.maintenanceCosts, 0);
+      const totalMaintenanceActivities = propertyReports.reduce((sum, p) => sum + p.maintenanceActivities.length, 0);
+      
       // Criar um relatório simplificado com o valor fixo
       return {
         ownerId,
         ownerName: owner.name,
         startDate: format(start, "yyyy-MM-dd"),
         endDate: format(end, "yyyy-MM-dd"),
-        propertyReports: ownerProperties.map(property => ({
-          propertyId: property.id,
-          propertyName: property.name,
-          reservations: [],
-          maintenanceActivities: [],
-          revenue: 0,
-          cleaningCosts: 0,
-          checkInFees: 0,
-          commission: 0,
-          teamPayments: 0,
-          maintenanceCosts: 0,
-          netProfit: 0,
-          occupancyRate: 0,
-          availableDays: 0,
-          occupiedDays: 0
-        })),
+        propertyReports,
         totals: {
           totalRevenue: fixedPaymentOwner.monthlyPayment,
           totalCleaningCosts: 0,
           totalCheckInFees: 0,
           totalCommission: 0,
           totalTeamPayments: 0,
-          totalMaintenanceCosts: 0,
-          totalNetProfit: fixedPaymentOwner.monthlyPayment - fixedPaymentOwner.deductions,
+          totalMaintenanceCosts,
+          totalNetProfit: fixedPaymentOwner.monthlyPayment - fixedPaymentOwner.deductions - totalMaintenanceCosts,
           averageOccupancy: 0,
           totalProperties: ownerProperties.length,
           totalReservations: 0,
-          totalMaintenanceActivities: 0
+          totalMaintenanceActivities
         },
         fixedPaymentInfo: {
           isFixedPayment: true,
           monthlyAmount: fixedPaymentOwner.monthlyPayment,
           deductions: fixedPaymentOwner.deductions,
-          netAmount: fixedPaymentOwner.monthlyPayment - fixedPaymentOwner.deductions
+          maintenanceCosts: totalMaintenanceCosts,
+          netAmount: fixedPaymentOwner.monthlyPayment - fixedPaymentOwner.deductions - totalMaintenanceCosts
         }
       };
     }
@@ -282,9 +340,33 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
         };
       });
       
-      // Resumo de atividades de manutenção (simulado, posteriormente será buscado da API)
-      const maintenanceActivities: MaintenanceActivity[] = [];
-      const maintenanceCosts = 0; // Sem custos de manutenção nesta simulação
+      // Filtrar e processar tarefas de manutenção para esta propriedade
+      const propertyMaintenanceTasks = maintenanceTasks.filter(task => {
+        if (task.propertyId !== property.id) {
+          return false;
+        }
+        
+        // Só incluimos tarefas completadas
+        if (task.status !== "completed") {
+          return false;
+        }
+        
+        const taskDate = new Date(task.completedAt || task.reportedAt);
+        
+        // Verificar se a tarefa foi completada dentro do período
+        return taskDate >= start && taskDate <= end;
+      });
+      
+      // Converter para o formato de MaintenanceActivity para o relatório
+      const maintenanceActivities: MaintenanceActivity[] = propertyMaintenanceTasks.map(task => ({
+        id: task.id,
+        description: task.description,
+        date: task.completedAt || task.reportedAt,
+        cost: task.cost || 0
+      }));
+      
+      // Calcular custos totais de manutenção
+      const maintenanceCosts = maintenanceActivities.reduce((sum, act) => sum + act.cost, 0)
       
       // Net profit including maintenance costs
       const finalNetProfit = netProfit - maintenanceCosts;

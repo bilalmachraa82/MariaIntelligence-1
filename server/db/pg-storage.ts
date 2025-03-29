@@ -456,8 +456,10 @@ export class PgStorage implements IStorage {
     
     // Add initial activities to show system is operational
     await this.db.insert(activities).values({ 
-      type: 'system_initialized', 
-      description: 'Sistema inicializado com sucesso' 
+      activityType: 'system_initialized', 
+      description: 'Sistema inicializado com sucesso',
+      resourceType: 'system',
+      resourceId: 0
     });
     
     console.log('Data seeding completed!');
@@ -778,10 +780,10 @@ export class PgStorage implements IStorage {
       
       // Criar um registro de atividade para rastreamento
       await this.createActivity({
-        type: "quotation_pdf_generated",
+        activityType: "quotation_pdf_generated",
         description: `PDF do orçamento para ${quotation.clientName} foi gerado`,
-        entityId: id,
-        entityType: "quotation"
+        resourceId: id,
+        resourceType: "quotation"
       });
       
       return filePath;

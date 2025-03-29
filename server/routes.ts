@@ -19,16 +19,14 @@ import { registerQuotationRoutes } from "./api/quotation-routes";
 import { registerSpeechRoutes } from "./api/speech-routes";
 import uploadControlFileRouter from "./api/upload-control-file";
 import { 
-  extendedPropertySchema, 
-  extendedOwnerSchema,
-  extendedReservationSchema,
+  insertPropertySchema, 
+  insertOwnerSchema,
+  insertReservationSchema,
   insertActivitySchema,
   reservationStatusEnum,
   reservationPlatformEnum,
 
   // Schemas para documentos financeiros
-  extendedFinancialDocumentSchema,
-  extendedPaymentRecordSchema,
   insertFinancialDocumentSchema,
   insertFinancialDocumentItemSchema,
   insertPaymentRecordSchema,
@@ -204,7 +202,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/properties", async (req: Request, res: Response) => {
     try {
-      const validatedData = extendedPropertySchema.parse(req.body);
+      const validatedData = insertPropertySchema.parse(req.body);
       const property = await storage.createProperty(validatedData);
       res.status(201).json(property);
     } catch (err) {
@@ -282,7 +280,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Validar os dados com o schema
       try {
-        const validatedData = extendedOwnerSchema.parse(req.body);
+        const validatedData = insertOwnerSchema.parse(req.body);
         console.log("POST /api/owners - Dados validados:", JSON.stringify(validatedData, null, 2));
 
         // Criar o proprietário
@@ -316,7 +314,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Owner not found" });
       }
 
-      const validatedData = extendedOwnerSchema.partial().parse(req.body);
+      const validatedData = insertOwnerSchema.partial().parse(req.body);
       const updatedOwner = await storage.updateOwner(id, validatedData);
       res.json(updatedOwner);
     } catch (err) {
@@ -370,7 +368,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/reservations", async (req: Request, res: Response) => {
     try {
-      const validatedData = extendedReservationSchema.parse(req.body);
+      const validatedData = insertReservationSchema.parse(req.body);
 
       // Calculate costs based on property information
       const property = await storage.getProperty(validatedData.propertyId);
@@ -865,10 +863,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           // Criar atividade no sistema
           await storage.createActivity({
-            type: 'pdf_processed',
+            activityType: 'pdf_processed',
             description: `PDF de controle processado: ${controlResult.propertyName} - ${controlResult.reservations.length} reservas`,
-            entityId: null,
-            entityType: 'property'
+            resourceId: null,
+            resourceType: 'property'
           });
           
           // Retornar resultado específico para arquivos de controle
@@ -897,10 +895,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Adicionar atividade ao sistema se a reserva foi criada
           if (result.success && result.reservation) {
             await storage.createActivity({
-              type: 'reservation_created',
+              activityType: 'reservation_created',
               description: `Reserva criada automaticamente via PDF: ${result.reservation.propertyId} - ${result.reservation.guestName}`,
-              entityId: result.reservation.id,
-              entityType: 'reservation'
+              resourceId: result.reservation.id,
+              resourceType: 'reservation'
             });
           }
           
@@ -1018,10 +1016,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
           // Adicionar atividade ao sistema
           await storage.createActivity({
-            type: 'pdf_processed',
+            activityType: 'pdf_processed',
             description: `PDF processado: ${extractedData?.propertyName || 'Propriedade desconhecida'} - ${extractedData?.guestName || 'Hóspede desconhecido'} (${validationResult.status})`,
-            entityId: matchedProperty.id,
-            entityType: 'property'
+            resourceId: matchedProperty.id,
+            resourceType: 'property'
           });
 
           // Criar resultados enriquecidos
@@ -1114,10 +1112,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Adicionar atividade ao sistema se a reserva foi criada
         if (result.success && result.reservation) {
           await storage.createActivity({
-            type: 'reservation_created',
+            activityType: 'reservation_created',
             description: `Reserva criada automaticamente via OCR de imagem: ${result.reservation.propertyId} - ${result.reservation.guestName}`,
-            entityId: result.reservation.id,
-            entityType: 'reservation'
+            resourceId: result.reservation.id,
+            resourceType: 'reservation'
           });
         }
         
@@ -1207,10 +1205,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Adicionar atividade ao sistema se a reserva foi criada
         if (result.success && result.reservation) {
           await storage.createActivity({
-            type: 'reservation_created',
+            activityType: 'reservation_created',
             description: `Reserva criada automaticamente via arquivo: ${result.reservation.propertyId} - ${result.reservation.guestName}`,
-            entityId: result.reservation.id,
-            entityType: 'reservation'
+            resourceId: result.reservation.id,
+            resourceType: 'reservation'
           });
         }
         
@@ -1444,10 +1442,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           `PDF processado: ${extractedData?.propertyName || 'Propriedade desconhecida'} - ${extractedData?.guestName || 'Hóspede desconhecido'} (${validationResult.status})`;
         
         await storage.createActivity({
-          type: activityType,
+          activityType: activityType,
           description: activityDescription,
-          entityId: matchedProperty.id,
-          entityType: 'property'
+          resourceId: matchedProperty.id,
+          resourceType: 'property'
         });
 
         // Criar resultados enriquecidos
@@ -1778,10 +1776,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Adicionar atividade ao sistema
         await storage.createActivity({
-          type: 'document_format_learned',
+          activityType: 'document_format_learned',
           description: `Novo formato de documento analisado: ${req.file.originalname} (${fields.length} campos)`,
-          entityId: null,
-          entityType: 'system'
+          resourceId: null,
+          resourceType: 'system'
         });
         
         return res.json({
@@ -2142,10 +2140,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         // Registrar atividade
         await storage.createActivity({
-          type: 'financial_document_upload',
+          activityType: 'financial_document_upload',
           description: `Upload de documento financeiro: ${req.file.originalname} (${docType})`,
-          entityType: entityType,
-          entityId: entityId
+          resourceType: entityType,
+          resourceId: entityId
         });
 
         // Ler conteúdo do arquivo
@@ -2440,7 +2438,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Criar um novo documento financeiro
   app.post("/api/financial-documents", async (req: Request, res: Response) => {
     try {
-      const validatedData = extendedFinancialDocumentSchema.parse(req.body);
+      const validatedData = insertFinancialDocumentSchema.parse(req.body);
       const document = await storage.createFinancialDocument(validatedData);
 
       // Se houver itens no corpo da requisição, criar também os itens
@@ -2662,7 +2660,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Criar um novo registro de pagamento
   app.post("/api/payment-records", async (req: Request, res: Response) => {
     try {
-      const validatedData = extendedPaymentRecordSchema.parse(req.body);
+      const validatedData = insertPaymentRecordSchema.parse(req.body);
 
       // Verificar se o documento existe
       const document = await storage.getFinancialDocument(validatedData.documentId);
@@ -2987,10 +2985,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Registrar atividade
         // Registrar atividade e armazenar no RAG para aprendizado contínuo
         const activity = await storage.createActivity({
-          type: 'report_generation',
+          activityType: 'report_generation',
           description: `Relatório financeiro para proprietário ${owner.name} (ID: ${ownerId}) para o período de ${req.query.startDate} a ${req.query.endDate}`,
-          entityType: 'owner',
-          entityId: ownerId
+          resourceType: 'owner',
+          resourceId: ownerId
         });
       } else {
         // Caso contrário, usar mês e ano específicos
@@ -3009,10 +3007,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Registrar atividade
         await storage.createActivity({
-          type: 'report_generation',
+          activityType: 'report_generation',
           description: `Relatório financeiro para proprietário ${owner.name} (ID: ${ownerId}) para ${month}/${year}`,
-          entityType: 'owner',
-          entityId: ownerId
+          resourceType: 'owner',
+          resourceId: ownerId
         });
       }
       
@@ -3098,10 +3096,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Registrar atividade de geração de relatório
       await storage.createActivity({
-        type: 'report_generation',
+        activityType: 'report_generation',
         description: `Relatório de resumo financeiro gerado para o período de ${startDate?.toISOString().split('T')[0] || 'início'} a ${endDate?.toISOString().split('T')[0] || 'fim'}`,
-        entityType: 'system',
-        entityId: 0
+        resourceType: 'system',
+        resourceId: 0
       });
       
       // Gerar o resumo financeiro
@@ -3185,10 +3183,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Registrar tentativa de validação (para fins de analytics)
       await storage.createActivity({
-        type: 'reservation_validation',
+        activityType: 'reservation_validation',
         description: `Validação de reserva para propriedade ${property.name} (ID: ${property.id})`,
-        entityType: 'property',
-        entityId: property.id
+        resourceType: 'property',
+        resourceId: property.id
       });
       
       // Buscar conhecimento similar do RAG para contextualizar a validação
