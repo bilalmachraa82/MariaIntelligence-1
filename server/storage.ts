@@ -4,9 +4,8 @@ import {
   reservations,
   activities,
   financialDocuments,
-  financialDocumentItems,
-  paymentRecords,
   quotations,
+  maintenanceTasks,
   type Property,
   type InsertProperty,
   type Owner,
@@ -17,13 +16,50 @@ import {
   type InsertActivity,
   type FinancialDocument,
   type InsertFinancialDocument,
-  type FinancialDocumentItem,
-  type InsertFinancialDocumentItem,
-  type PaymentRecord,
-  type InsertPaymentRecord,
   type Quotation,
-  type InsertQuotation
+  type InsertQuotation,
+  type MaintenanceTask,
+  type InsertMaintenanceTask
 } from "@shared/schema";
+
+// Define missing types temporarily
+interface FinancialDocumentItem {
+  id: number;
+  documentId: number;
+  description: string;
+  quantity: number;
+  unitPrice: string;
+  totalPrice: string;
+  notes?: string;
+}
+
+interface InsertFinancialDocumentItem {
+  documentId: number;
+  description: string;
+  quantity: number;
+  unitPrice: string;
+  totalPrice: string;
+  notes?: string;
+}
+
+interface PaymentRecord {
+  id: number;
+  documentId: number;
+  amount: string;
+  paymentDate: string;
+  paymentMethod: string;
+  reference?: string;
+  notes?: string;
+}
+
+interface InsertPaymentRecord {
+  documentId: number;
+  amount: string;
+  paymentDate: string;
+  paymentMethod: string;
+  reference?: string;
+  notes?: string;
+}
 import { db, pool } from './db';
 import { eq, desc, sql } from 'drizzle-orm';
 
@@ -109,6 +145,15 @@ export interface IStorage {
   deleteQuotation(id: number): Promise<boolean>;
   generateQuotationPdf(id: number): Promise<string>; // Retorna o caminho do PDF gerado
   
+  // Sistema de Manutenção
+  getMaintenanceTasks(): Promise<MaintenanceTask[]>;
+  getMaintenanceTask(id: number): Promise<MaintenanceTask | undefined>;
+  getMaintenanceTasksByProperty(propertyId: number): Promise<MaintenanceTask[]>;
+  getMaintenanceTasksByStatus(status: string): Promise<MaintenanceTask[]>;
+  createMaintenanceTask(task: InsertMaintenanceTask): Promise<MaintenanceTask>;
+  updateMaintenanceTask(id: number, task: Partial<InsertMaintenanceTask>): Promise<MaintenanceTask | undefined>;
+  deleteMaintenanceTask(id: number): Promise<boolean>;
+  
   // RAG - Retrieval Augmented Generation
   createKnowledgeEmbedding(data: any): Promise<any>;
   getKnowledgeEmbeddings(): Promise<any[]>;
@@ -125,9 +170,10 @@ export class MemStorage implements IStorage {
   private reservationsMap: Map<number, Reservation>;
   private activitiesMap: Map<number, Activity>;
   private financialDocumentsMap: Map<number, FinancialDocument>;
-  private financialDocumentItemsMap: Map<number, FinancialDocumentItem>;
-  private paymentRecordsMap: Map<number, PaymentRecord>;
+  private financialDocumentItemsMap: Map<number, any>;
+  private paymentRecordsMap: Map<number, any>;
   private quotationsMap: Map<number, Quotation>;
+  private maintenanceTasksMap: Map<number, MaintenanceTask>;
   
   currentUserId: number;
   currentPropertyId: number;
@@ -138,6 +184,7 @@ export class MemStorage implements IStorage {
   currentFinancialDocumentItemId: number;
   currentPaymentRecordId: number;
   currentQuotationId: number;
+  currentMaintenanceTaskId: number;
 
   constructor() {
     this.users = new Map();
@@ -149,6 +196,7 @@ export class MemStorage implements IStorage {
     this.financialDocumentItemsMap = new Map();
     this.paymentRecordsMap = new Map();
     this.quotationsMap = new Map();
+    this.maintenanceTasksMap = new Map();
     
     this.currentUserId = 1;
     this.currentPropertyId = 1;
@@ -159,6 +207,7 @@ export class MemStorage implements IStorage {
     this.currentFinancialDocumentItemId = 1;
     this.currentPaymentRecordId = 1;
     this.currentQuotationId = 1;
+    this.currentMaintenanceTaskId = 1;
     
     // Seed data for properties, owners, financial documents, etc.
     this.seedData();
@@ -2496,6 +2545,94 @@ export class DatabaseStorage implements IStorage {
       console.error(`Erro ao gerar PDF para orçamento ${id}:`, error);
       throw new Error(`Falha ao gerar PDF: ${error.message}`);
     }
+  }
+
+  // Sistema de manutenção
+  async getMaintenanceTasks(): Promise<MaintenanceTask[]> {
+    return Array.from(this.maintenanceTasksMap.values());
+  }
+
+  async getMaintenanceTask(id: number): Promise<MaintenanceTask | undefined> {
+    return this.maintenanceTasksMap.get(id);
+  }
+
+  async getMaintenanceTasksByProperty(propertyId: number): Promise<MaintenanceTask[]> {
+    return Array.from(this.maintenanceTasksMap.values())
+      .filter(task => task.propertyId === propertyId);
+  }
+
+  async getMaintenanceTasksByStatus(status: string): Promise<MaintenanceTask[]> {
+    return Array.from(this.maintenanceTasksMap.values())
+      .filter(task => task.status === status);
+  }
+
+  async createMaintenanceTask(task: InsertMaintenanceTask): Promise<MaintenanceTask> {
+    const id = this.currentMaintenanceTaskId++;
+    const now = new Date();
+    const newTask: MaintenanceTask = {
+      ...task,
+      id,
+      createdAt: now,
+      updatedAt: now
+    };
+    
+    this.maintenanceTasksMap.set(id, newTask);
+    
+    // Registrar atividade
+    const property = await this.getProperty(task.propertyId);
+    this.createActivity({
+      activityType: "maintenance_task_created",
+      description: `Nova tarefa de manutenção para "${property?.name || 'Propriedade desconhecida'}" foi criada`,
+      resourceId: id,
+      resourceType: "maintenance_task"
+    });
+    
+    return newTask;
+  }
+
+  async updateMaintenanceTask(id: number, task: Partial<InsertMaintenanceTask>): Promise<MaintenanceTask | undefined> {
+    const existingTask = this.maintenanceTasksMap.get(id);
+    if (!existingTask) return undefined;
+    
+    const now = new Date();
+    const updatedTask = {
+      ...existingTask,
+      ...task,
+      updatedAt: now
+    };
+    
+    this.maintenanceTasksMap.set(id, updatedTask);
+    
+    // Registrar atividade
+    const property = await this.getProperty(updatedTask.propertyId);
+    this.createActivity({
+      activityType: "maintenance_task_updated",
+      description: `Tarefa de manutenção para "${property?.name || 'Propriedade desconhecida'}" foi atualizada`,
+      resourceId: id,
+      resourceType: "maintenance_task"
+    });
+    
+    return updatedTask;
+  }
+
+  async deleteMaintenanceTask(id: number): Promise<boolean> {
+    const task = this.maintenanceTasksMap.get(id);
+    if (!task) return false;
+    
+    const property = await this.getProperty(task.propertyId);
+    const result = this.maintenanceTasksMap.delete(id);
+    
+    // Registrar atividade
+    if (result) {
+      this.createActivity({
+        activityType: "maintenance_task_deleted",
+        description: `Tarefa de manutenção para "${property?.name || 'Propriedade desconhecida'}" foi excluída`,
+        resourceId: id,
+        resourceType: "maintenance_task"
+      });
+    }
+    
+    return result;
   }
 }
 

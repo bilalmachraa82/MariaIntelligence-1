@@ -3379,6 +3379,143 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Rotas para tarefas de manutenção
+  app.get("/api/maintenance-tasks", async (req: Request, res: Response) => {
+    try {
+      let tasks;
+      
+      if (req.query.propertyId) {
+        tasks = await storage.getMaintenanceTasksByProperty(Number(req.query.propertyId));
+      } else if (req.query.status) {
+        tasks = await storage.getMaintenanceTasksByStatus(req.query.status as string);
+      } else {
+        tasks = await storage.getMaintenanceTasks();
+      }
+      
+      // Adicionar nomes de propriedades às tarefas
+      const properties = await storage.getProperties();
+      const tasksWithPropertyNames = tasks.map(task => {
+        const property = properties.find(p => p.id === task.propertyId);
+        return {
+          ...task,
+          propertyName: property ? property.name : `Propriedade #${task.propertyId}`,
+        };
+      });
+      
+      res.json(tasksWithPropertyNames);
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
+  app.get("/api/maintenance-tasks/:id", async (req: Request, res: Response) => {
+    try {
+      const task = await storage.getMaintenanceTask(Number(req.params.id));
+      
+      if (!task) {
+        return res.status(404).json({ message: "Tarefa de manutenção não encontrada" });
+      }
+      
+      // Adicionar nome da propriedade
+      const property = await storage.getProperty(task.propertyId);
+      const taskWithPropertyName = {
+        ...task,
+        propertyName: property ? property.name : `Propriedade #${task.propertyId}`,
+      };
+      
+      res.json(taskWithPropertyName);
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
+  app.post("/api/maintenance-tasks", async (req: Request, res: Response) => {
+    try {
+      // Validação do corpo da requisição
+      const taskData = {
+        ...req.body,
+        reportedAt: req.body.reportedAt || format(new Date(), 'yyyy-MM-dd'),
+      };
+      
+      // Verificar se a propriedade existe
+      const property = await storage.getProperty(taskData.propertyId);
+      if (!property) {
+        return res.status(400).json({ message: "Propriedade não encontrada" });
+      }
+      
+      const task = await storage.createMaintenanceTask(taskData);
+      
+      // Criar atividade relacionada
+      await storage.createActivity({
+        activityType: "maintenance",
+        resourceId: task.id,
+        resourceType: "maintenance_task",
+        description: `Nova tarefa de manutenção criada para ${property.name}: ${taskData.description.substring(0, 50)}${taskData.description.length > 50 ? '...' : ''}`,
+      });
+      
+      // Adicionar nome da propriedade na resposta
+      const taskWithPropertyName = {
+        ...task,
+        propertyName: property.name,
+      };
+      
+      res.status(201).json(taskWithPropertyName);
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
+  app.patch("/api/maintenance-tasks/:id", async (req: Request, res: Response) => {
+    try {
+      const id = Number(req.params.id);
+      const existingTask = await storage.getMaintenanceTask(id);
+      
+      if (!existingTask) {
+        return res.status(404).json({ message: "Tarefa de manutenção não encontrada" });
+      }
+      
+      // Atualizar os campos
+      const updatedTask = await storage.updateMaintenanceTask(id, req.body);
+      
+      // Criar atividade para manutenção concluída, se for o caso
+      if (req.body.status === "completed" && existingTask.status !== "completed") {
+        const property = await storage.getProperty(updatedTask.propertyId);
+        await storage.createActivity({
+          activityType: "maintenance",
+          resourceId: updatedTask.id,
+          resourceType: "maintenance_task",
+          description: `Tarefa de manutenção concluída para ${property ? property.name : `Propriedade #${updatedTask.propertyId}`}: ${updatedTask.description.substring(0, 50)}${updatedTask.description.length > 50 ? '...' : ''}`,
+        });
+      }
+      
+      // Adicionar nome da propriedade na resposta
+      const property = await storage.getProperty(updatedTask.propertyId);
+      const taskWithPropertyName = {
+        ...updatedTask,
+        propertyName: property ? property.name : `Propriedade #${updatedTask.propertyId}`,
+      };
+      
+      res.json(taskWithPropertyName);
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
+  app.delete("/api/maintenance-tasks/:id", async (req: Request, res: Response) => {
+    try {
+      const id = Number(req.params.id);
+      const result = await storage.deleteMaintenanceTask(id);
+      
+      if (!result) {
+        return res.status(404).json({ message: "Tarefa de manutenção não encontrada" });
+      }
+      
+      res.status(204).end();
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
   // Registrar as rotas de orçamentos
   registerQuotationRoutes(app);
   

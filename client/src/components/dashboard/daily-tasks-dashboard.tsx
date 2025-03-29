@@ -161,31 +161,32 @@ export default function DailyTasksDashboard() {
     }));
   }, [todayCheckOuts, t]);
 
-  // Create maintenance tasks (example/mock data) - com useMemo para evitar recriação
-  const maintenanceTasks: DailyTask[] = useMemo(() => [
-    {
-      id: "maintenance-1",
-      title: t("dashboard.maintenanceTask", "Verificar ar-condicionado"),
-      description: t("dashboard.maintenanceReported", "Reportado pelo hóspede anterior"),
-      propertyName: "Apartamento Central",
-      propertyId: 1,
-      status: "pending",
-      type: "maintenance",
-      icon: <Wrench className="h-5 w-5 text-amber-500" />,
-      priority: "medium"
-    },
-    {
-      id: "maintenance-2",
-      title: t("dashboard.plumbingIssue", "Problema no encanamento"),
-      description: t("dashboard.plumbingDescription", "Vazamento reportado na cozinha"),
-      propertyName: "Casa na Praia",
-      propertyId: 2,
-      status: "attention",
-      type: "maintenance",
-      icon: <AlertTriangle className="h-5 w-5 text-red-500" />,
-      priority: "high"
-    }
-  ], [t]);
+  // Buscar tarefas de manutenção da API
+  const { data: maintenanceTasksData = [] } = useQuery({
+    queryKey: ["/api/maintenance-tasks"],
+    staleTime: 5 * 60 * 1000, // 5 minutos de cache
+  });
+
+  // Converter tarefas de manutenção para o formato DailyTask
+  const maintenanceTasks: DailyTask[] = useMemo(() => {
+    if (!maintenanceTasksData || !Array.isArray(maintenanceTasksData)) return [];
+    
+    return maintenanceTasksData
+      .filter(task => task.status === "pending" || task.status === "scheduled")
+      .map(task => ({
+        id: `maintenance-${task.id}`,
+        title: task.description.split(' - ')[0] || t("maintenance.task", "Tarefa de manutenção"),
+        description: task.description.split(' - ')[1] || task.description,
+        propertyName: task.propertyName,
+        propertyId: task.propertyId,
+        status: task.priority === "high" ? "attention" : "pending",
+        type: "maintenance",
+        icon: task.priority === "high" 
+          ? <AlertTriangle className="h-5 w-5 text-red-500" />
+          : <Wrench className="h-5 w-5 text-amber-500" />,
+        priority: task.priority
+      }));
+  }, [maintenanceTasksData, t]);
 
   // Create other tasks com useMemo
   const otherTasks: DailyTask[] = useMemo(() => [

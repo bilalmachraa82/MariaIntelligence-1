@@ -92,7 +92,12 @@ export function useOwnerReport(ownerId: number | null, dateRange: DateRange) {
   // Usamos o hook normal sem modificações - a key nos componentes principais forçará a atualização
   const { data: allReservations, isLoading: isReservationsLoading } = useReservations();
   
-  const isLoading = isOwnersLoading || isPropertiesLoading || isReservationsLoading;
+  // Buscar as tarefas de manutenção
+  const { data: maintenanceTasks = [], isLoading: isMaintenanceLoading } = useQuery<MaintenanceTask[]>({
+    queryKey: ["/api/maintenance-tasks"],
+  });
+  
+  const isLoading = isOwnersLoading || isPropertiesLoading || isReservationsLoading || isMaintenanceLoading;
   
   // Gera o relatório para um proprietário específico
   const report = useMemo(() => {

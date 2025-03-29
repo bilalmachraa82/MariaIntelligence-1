@@ -1,47 +1,42 @@
 import { useState } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Wrench, ClipboardList, ArrowRight, Calendar, Building2, AlertTriangle } from "lucide-react";
+import { Wrench, ClipboardList, ArrowRight, Calendar, Building2, AlertTriangle, Loader2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+
+interface MaintenanceTask {
+  id: number;
+  propertyId: number;
+  propertyName: string;
+  description: string;
+  priority: "high" | "medium" | "low";
+  dueDate: string;
+  status: "pending" | "scheduled" | "completed";
+  assignedTo: string | null;
+  reportedAt: string;
+  cost?: number;
+  notes?: string;
+}
 
 export default function MaintenancePending() {
   const [activeTab, setActiveTab] = useState("all");
+  const { t } = useTranslation();
+  const [, setLocation] = useLocation();
   
-  // Dados mockup para a interface - em produção viriam da API
-  const maintenanceTasks = [
-    {
-      id: 1,
-      propertyName: "Apartamento Ajuda",
-      description: "Problema com torneira da cozinha - vazamento",
-      priority: "high",
-      dueDate: "2025-03-20",
-      status: "pending",
-      assignedTo: "Técnico João",
-      reportedAt: "2025-03-09"
-    },
-    {
-      id: 2,
-      propertyName: "Vila SJ Estoril",
-      description: "Troca de lâmpadas no corredor",
-      priority: "medium", 
-      dueDate: "2025-03-25",
-      status: "pending",
-      assignedTo: null,
-      reportedAt: "2025-03-11"
-    },
-    {
-      id: 3,
-      propertyName: "Apartamento Cascais",
-      description: "Verificação do sistema de ar condicionado",
-      priority: "low",
-      dueDate: "2025-04-05",
-      status: "scheduled",
-      assignedTo: "Empresa Clima Perfeito",
-      reportedAt: "2025-03-10"
-    }
-  ];
+  // Consultar tarefas de manutenção do backend
+  const { data: maintenanceTasks = [], isLoading } = useQuery<MaintenanceTask[]>({
+    queryKey: ["/api/maintenance-tasks"],
+    // Falhará graciosamente quando a API não estiver implementada
+  });
+  
+  // Contadores de tarefas por status
+  const pendingCount = maintenanceTasks.filter(task => task.status === "pending").length;
+  const scheduledCount = maintenanceTasks.filter(task => task.status === "scheduled").length;
   
   // Função para determinar a cor do badge baseado na prioridade
   const getPriorityColor = (priority: string) => {
@@ -61,11 +56,11 @@ export default function MaintenancePending() {
   const getPriorityText = (priority: string) => {
     switch (priority) {
       case "high":
-        return "Alta";
+        return t("maintenance.priority.high", "Alta");
       case "medium":
-        return "Média";
+        return t("maintenance.priority.medium", "Média");
       case "low":
-        return "Baixa";
+        return t("maintenance.priority.low", "Baixa");
       default:
         return priority;
     }
@@ -89,162 +84,187 @@ export default function MaintenancePending() {
       <Tabs defaultValue="all" className="mt-4" onValueChange={setActiveTab}>
         <TabsList className="mb-4">
           <TabsTrigger value="all">Todas ({maintenanceTasks.length})</TabsTrigger>
-          <TabsTrigger value="pending">Pendentes (2)</TabsTrigger>
-          <TabsTrigger value="scheduled">Agendadas (1)</TabsTrigger>
+          <TabsTrigger value="pending">Pendentes ({pendingCount})</TabsTrigger>
+          <TabsTrigger value="scheduled">Agendadas ({scheduledCount})</TabsTrigger>
         </TabsList>
-        
-        <TabsContent value="all" className="space-y-4">
-          {maintenanceTasks.map(task => (
-            <Card key={task.id} className="maintenance-card overflow-hidden">
-              <CardHeader className="pb-2">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="text-lg flex items-center">
-                      <Building2 className="mr-2 h-4 w-4 text-maria-primary" />
-                      {task.propertyName}
-                    </CardTitle>
-                    <CardDescription>
-                      Reportado em {new Date(task.reportedAt).toLocaleDateString('pt-PT')}
-                    </CardDescription>
-                  </div>
-                  <Badge className={getPriorityColor(task.priority)}>
-                    {getPriorityText(task.priority)}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="mb-2 text-sm font-medium">{task.description}</p>
-                <div className="flex flex-col md:flex-row md:items-center justify-between mt-4 text-xs text-maria-gray">
-                  <div className="flex items-center mb-2 md:mb-0">
-                    <Calendar className="mr-1 h-3 w-3" />
-                    <span>Data limite: {new Date(task.dueDate).toLocaleDateString('pt-PT')}</span>
-                  </div>
-                  <div>
-                    {task.assignedTo ? (
-                      <span>Atribuído a: {task.assignedTo}</span>
-                    ) : (
-                      <span className="flex items-center text-amber-600">
-                        <AlertTriangle className="mr-1 h-3 w-3" />
-                        Não atribuído
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <div className="flex justify-end mt-4">
-                  <Button variant="outline" size="sm" className="mr-2">
-                    Atribuir
-                  </Button>
-                  <Button size="sm" className="bg-yellow-500 hover:bg-yellow-600 text-white">
-                    Gerenciar
-                    <ArrowRight className="ml-2 h-3 w-3" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </TabsContent>
-        
-        <TabsContent value="pending" className="space-y-4">
-          {maintenanceTasks.filter(task => task.status === "pending").map(task => (
-            <Card key={task.id} className="maintenance-card overflow-hidden">
-              <CardHeader className="pb-2">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="text-lg flex items-center">
-                      <Building2 className="mr-2 h-4 w-4 text-maria-primary" />
-                      {task.propertyName}
-                    </CardTitle>
-                    <CardDescription>
-                      Reportado em {new Date(task.reportedAt).toLocaleDateString('pt-PT')}
-                    </CardDescription>
-                  </div>
-                  <Badge className={getPriorityColor(task.priority)}>
-                    {getPriorityText(task.priority)}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="mb-2 text-sm font-medium">{task.description}</p>
-                <div className="flex flex-col md:flex-row md:items-center justify-between mt-4 text-xs text-maria-gray">
-                  <div className="flex items-center mb-2 md:mb-0">
-                    <Calendar className="mr-1 h-3 w-3" />
-                    <span>Data limite: {new Date(task.dueDate).toLocaleDateString('pt-PT')}</span>
-                  </div>
-                  <div>
-                    {task.assignedTo ? (
-                      <span>Atribuído a: {task.assignedTo}</span>
-                    ) : (
-                      <span className="flex items-center text-amber-600">
-                        <AlertTriangle className="mr-1 h-3 w-3" />
-                        Não atribuído
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <div className="flex justify-end mt-4">
-                  <Button variant="outline" size="sm" className="mr-2">
-                    Atribuir
-                  </Button>
-                  <Button size="sm" className="bg-yellow-500 hover:bg-yellow-600 text-white">
-                    Gerenciar
-                    <ArrowRight className="ml-2 h-3 w-3" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </TabsContent>
-        
-        <TabsContent value="scheduled" className="space-y-4">
-          {maintenanceTasks.filter(task => task.status === "scheduled").map(task => (
-            <Card key={task.id} className="maintenance-card overflow-hidden">
-              <CardHeader className="pb-2">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="text-lg flex items-center">
-                      <Building2 className="mr-2 h-4 w-4 text-maria-primary" />
-                      {task.propertyName}
-                    </CardTitle>
-                    <CardDescription>
-                      Reportado em {new Date(task.reportedAt).toLocaleDateString('pt-PT')}
-                    </CardDescription>
-                  </div>
-                  <Badge className={getPriorityColor(task.priority)}>
-                    {getPriorityText(task.priority)}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="mb-2 text-sm font-medium">{task.description}</p>
-                <div className="flex flex-col md:flex-row md:items-center justify-between mt-4 text-xs text-maria-gray">
-                  <div className="flex items-center mb-2 md:mb-0">
-                    <Calendar className="mr-1 h-3 w-3" />
-                    <span>Data limite: {new Date(task.dueDate).toLocaleDateString('pt-PT')}</span>
-                  </div>
-                  <div>
-                    {task.assignedTo ? (
-                      <span>Atribuído a: {task.assignedTo}</span>
-                    ) : (
-                      <span className="flex items-center text-amber-600">
-                        <AlertTriangle className="mr-1 h-3 w-3" />
-                        Não atribuído
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <div className="flex justify-end mt-4">
-                  <Button variant="outline" size="sm" className="mr-2">
-                    Reagendar
-                  </Button>
-                  <Button size="sm" className="bg-yellow-500 hover:bg-yellow-600 text-white">
-                    Gerenciar
-                    <ArrowRight className="ml-2 h-3 w-3" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </TabsContent>
+
+        {isLoading ? (
+          <div className="space-y-4">
+            <Skeleton className="h-40 w-full rounded-md" />
+            <Skeleton className="h-40 w-full rounded-md" />
+            <Skeleton className="h-40 w-full rounded-md" />
+          </div>
+        ) : maintenanceTasks.length === 0 ? (
+          <div className="py-20 text-center">
+            <Wrench className="mx-auto h-12 w-12 text-muted-foreground opacity-20" />
+            <h3 className="mt-4 text-lg font-medium">{t("maintenance.noTasks", "Sem tarefas de manutenção")}</h3>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {t("maintenance.createFirst", "Crie sua primeira tarefa de manutenção para começar")}
+            </p>
+            <Button 
+              onClick={() => setLocation("/manutencao/solicitacao")}
+              className="mt-6 bg-maria-primary hover:bg-maria-primary/90 text-white"
+            >
+              <ClipboardList className="mr-2 h-4 w-4" />
+              {t("maintenance.newRequest", "Nova Solicitação")}
+            </Button>
+          </div>
+        ) : (
+          <>
+            <TabsContent value="all" className="space-y-4">
+              {maintenanceTasks.map(task => (
+                <Card key={task.id} className="maintenance-card overflow-hidden">
+                  <CardHeader className="pb-2">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <CardTitle className="text-lg flex items-center">
+                          <Building2 className="mr-2 h-4 w-4 text-maria-primary" />
+                          {task.propertyName}
+                        </CardTitle>
+                        <CardDescription>
+                          Reportado em {new Date(task.reportedAt).toLocaleDateString('pt-PT')}
+                        </CardDescription>
+                      </div>
+                      <Badge className={getPriorityColor(task.priority)}>
+                        {getPriorityText(task.priority)}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="mb-2 text-sm font-medium">{task.description}</p>
+                    <div className="flex flex-col md:flex-row md:items-center justify-between mt-4 text-xs text-maria-gray">
+                      <div className="flex items-center mb-2 md:mb-0">
+                        <Calendar className="mr-1 h-3 w-3" />
+                        <span>Data limite: {new Date(task.dueDate).toLocaleDateString('pt-PT')}</span>
+                      </div>
+                      <div>
+                        {task.assignedTo ? (
+                          <span>Atribuído a: {task.assignedTo}</span>
+                        ) : (
+                          <span className="flex items-center text-amber-600">
+                            <AlertTriangle className="mr-1 h-3 w-3" />
+                            Não atribuído
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex justify-end mt-4">
+                      <Button variant="outline" size="sm" className="mr-2">
+                        Atribuir
+                      </Button>
+                      <Button size="sm" className="bg-yellow-500 hover:bg-yellow-600 text-white">
+                        Gerenciar
+                        <ArrowRight className="ml-2 h-3 w-3" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </TabsContent>
+            
+            <TabsContent value="pending" className="space-y-4">
+              {maintenanceTasks.filter(task => task.status === "pending").map(task => (
+                <Card key={task.id} className="maintenance-card overflow-hidden">
+                  <CardHeader className="pb-2">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <CardTitle className="text-lg flex items-center">
+                          <Building2 className="mr-2 h-4 w-4 text-maria-primary" />
+                          {task.propertyName}
+                        </CardTitle>
+                        <CardDescription>
+                          Reportado em {new Date(task.reportedAt).toLocaleDateString('pt-PT')}
+                        </CardDescription>
+                      </div>
+                      <Badge className={getPriorityColor(task.priority)}>
+                        {getPriorityText(task.priority)}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="mb-2 text-sm font-medium">{task.description}</p>
+                    <div className="flex flex-col md:flex-row md:items-center justify-between mt-4 text-xs text-maria-gray">
+                      <div className="flex items-center mb-2 md:mb-0">
+                        <Calendar className="mr-1 h-3 w-3" />
+                        <span>Data limite: {new Date(task.dueDate).toLocaleDateString('pt-PT')}</span>
+                      </div>
+                      <div>
+                        {task.assignedTo ? (
+                          <span>Atribuído a: {task.assignedTo}</span>
+                        ) : (
+                          <span className="flex items-center text-amber-600">
+                            <AlertTriangle className="mr-1 h-3 w-3" />
+                            Não atribuído
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex justify-end mt-4">
+                      <Button variant="outline" size="sm" className="mr-2">
+                        Atribuir
+                      </Button>
+                      <Button size="sm" className="bg-yellow-500 hover:bg-yellow-600 text-white">
+                        Gerenciar
+                        <ArrowRight className="ml-2 h-3 w-3" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </TabsContent>
+            
+            <TabsContent value="scheduled" className="space-y-4">
+              {maintenanceTasks.filter(task => task.status === "scheduled").map(task => (
+                <Card key={task.id} className="maintenance-card overflow-hidden">
+                  <CardHeader className="pb-2">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <CardTitle className="text-lg flex items-center">
+                          <Building2 className="mr-2 h-4 w-4 text-maria-primary" />
+                          {task.propertyName}
+                        </CardTitle>
+                        <CardDescription>
+                          Reportado em {new Date(task.reportedAt).toLocaleDateString('pt-PT')}
+                        </CardDescription>
+                      </div>
+                      <Badge className={getPriorityColor(task.priority)}>
+                        {getPriorityText(task.priority)}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="mb-2 text-sm font-medium">{task.description}</p>
+                    <div className="flex flex-col md:flex-row md:items-center justify-between mt-4 text-xs text-maria-gray">
+                      <div className="flex items-center mb-2 md:mb-0">
+                        <Calendar className="mr-1 h-3 w-3" />
+                        <span>Data limite: {new Date(task.dueDate).toLocaleDateString('pt-PT')}</span>
+                      </div>
+                      <div>
+                        {task.assignedTo ? (
+                          <span>Atribuído a: {task.assignedTo}</span>
+                        ) : (
+                          <span className="flex items-center text-amber-600">
+                            <AlertTriangle className="mr-1 h-3 w-3" />
+                            Não atribuído
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex justify-end mt-4">
+                      <Button variant="outline" size="sm" className="mr-2">
+                        Reagendar
+                      </Button>
+                      <Button size="sm" className="bg-yellow-500 hover:bg-yellow-600 text-white">
+                        Gerenciar
+                        <ArrowRight className="ml-2 h-3 w-3" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </TabsContent>
+          </>
+        )}
       </Tabs>
     </div>
   );
