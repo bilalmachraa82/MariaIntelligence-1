@@ -1,5 +1,20 @@
 {
   "translation": {
+    "quotation": {
+      "apartment_t0t1": "Apartment T0/T1",
+      "apartment_t2": "Apartment T2",
+      "apartment_t3": "Apartment T3",
+      "apartment_t4": "Apartment T4",
+      "apartment_t5": "Apartment T5",
+      "house_v1": "House V1",
+      "house_v2": "House V2",
+      "house_v3": "House V3",
+      "house_v4": "House V4",
+      "house_v5": "House V5",
+      "additionalFeatures": "Additional Features",
+      "additionalDetails": "Additional Details",
+      "validUntilDescription": "Date until the quotation is valid"
+    },
     "navigation": {
       "mainMenu": "Menu",
       "mainAppNav": "Main navigation for Maria Faz application",
