@@ -275,6 +275,48 @@ export const insertKnowledgeEmbeddingSchema = createInsertSchema(knowledgeEmbedd
 export const insertQueryEmbeddingSchema = createInsertSchema(queryEmbeddings).omit({ id: true, createdAt: true });
 export const insertConversationHistorySchema = createInsertSchema(conversationHistory).omit({ id: true, timestamp: true });
 
+// Extended schemas (for frontend forms)
+export const extendedPropertySchema = z.object({
+  name: z.string().min(3, { message: "O nome deve ter pelo menos 3 caracteres" }),
+  ownerId: z.number().int().positive({ message: "Selecione um proprietário válido" }),
+  cleaningCost: z.number().nonnegative({ message: "O custo de limpeza não pode ser negativo" }),
+  checkInFee: z.number().nonnegative({ message: "A taxa de check-in não pode ser negativa" }),
+  commission: z.number().nonnegative({ message: "A comissão não pode ser negativa" }),
+  teamPayment: z.number().nonnegative({ message: "O pagamento da equipe não pode ser negativo" }),
+  cleaningTeam: z.string().optional(),
+  monthlyFixedCost: z.number().nonnegative({ message: "O custo fixo mensal não pode ser negativo" }).optional(),
+  active: z.boolean().default(true),
+});
+
+export const extendedOwnerSchema = z.object({
+  name: z.string().min(3, { message: "O nome deve ter pelo menos 3 caracteres" }),
+  company: z.string().optional(),
+  address: z.string().optional(),
+  taxId: z.string().optional(),
+  email: z.string().email({ message: "Email inválido" }),
+  phone: z.string().optional(),
+});
+
+export const extendedReservationSchema = z.object({
+  propertyId: z.number().int().positive({ message: "Selecione uma propriedade válida" }),
+  guestName: z.string().min(2, { message: "O nome do hóspede deve ter pelo menos 2 caracteres" }),
+  guestEmail: z.string().email({ message: "Email inválido" }).optional().or(z.literal("")),
+  guestPhone: z.string().optional().or(z.literal("")),
+  checkInDate: z.date({ required_error: "Selecione a data de check-in" }),
+  checkOutDate: z.date({ required_error: "Selecione a data de check-out" }),
+  numGuests: z.number().int().positive({ message: "Número de hóspedes deve ser maior que zero" }),
+  totalAmount: z.string(),
+  status: z.string(),
+  platform: z.string(),
+  platformFee: z.string(),
+  cleaningFee: z.string(),
+  checkInFee: z.string(),
+  commissionFee: z.string(),
+  teamPayment: z.string(),
+  netAmount: z.string(),
+  notes: z.string().optional().or(z.literal("")),
+});
+
 // Insert Types
 export type InsertProperty = z.infer<typeof insertPropertySchema>;
 export type InsertOwner = z.infer<typeof insertOwnerSchema>;
