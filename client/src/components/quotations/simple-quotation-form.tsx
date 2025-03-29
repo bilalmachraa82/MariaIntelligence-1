@@ -30,6 +30,9 @@ import { apiRequest } from "@/lib/queryClient";
 import { addDays, format } from "date-fns";
 import { Building2, Home, Euro } from "lucide-react";
 
+// Importar constantes para preços e tipos de propriedade
+import { BASE_PRICES, EXTRA_PRICES, EXTERIOR_AREA_THRESHOLD, PROPERTY_TYPES } from "@/api/constants";
+
 // Esquema simplificado alinhado com o banco de dados
 const formSchema = z.object({
   // Dados do cliente
@@ -107,20 +110,27 @@ export function SimpleQuotationForm({ defaultValues, onSuccess, isEditing = fals
     let submissionData: Record<string, any> = {};
     
     try {
-      // Calcular preços fixos com 2 casas decimais para compatibilidade com schema decimal
-      const duplexSurcharge = data.isDuplex ? "50.00" : "0.00";
-      const bbqSurcharge = data.hasBBQ ? "30.00" : "0.00";
-      const glassGardenSurcharge = data.hasGlassGarden ? "60.00" : "0.00";
-      
-      // Calcular preço base (€20 por 50m²) com formato decimal
-      const basePriceValue = Math.ceil(data.propertyArea / 50) * 20;
+      // Obter o preço base conforme o tipo de propriedade escolhido
+      const basePriceValue = BASE_PRICES[data.propertyType] || 47; // Padrão para T0/T1 se não encontrar
       const basePrice = basePriceValue.toFixed(2);
       
-      // Calcular preço adicional total
+      // Calcular preços extras fixos com valores da constante para garantir consistência
+      const duplexSurcharge = data.isDuplex ? `${EXTRA_PRICES.DUPLEX}.00` : "0.00";
+      const bbqSurcharge = data.hasBBQ ? `${EXTRA_PRICES.BBQ}.00` : "0.00";
+      
+      // Calcular sobretaxa para área exterior (apenas se acima do limite)
+      const hasExteriorSurcharge = data.exteriorArea > EXTERIOR_AREA_THRESHOLD;
+      const exteriorSurcharge = hasExteriorSurcharge ? `${EXTRA_PRICES.EXTERIOR_AREA}.00` : "0.00";
+      
+      // Sobretaxa para jardim de vidro
+      const glassGardenSurcharge = data.hasGlassGarden ? `${EXTRA_PRICES.GLASS_GARDEN}.00` : "0.00";
+      
+      // Calcular o valor adicional total
       const additionalValue = (
-        (data.isDuplex ? 50 : 0) +
-        (data.hasBBQ ? 30 : 0) + 
-        (data.hasGlassGarden ? 60 : 0)
+        (data.isDuplex ? EXTRA_PRICES.DUPLEX : 0) +
+        (data.hasBBQ ? EXTRA_PRICES.BBQ : 0) + 
+        (hasExteriorSurcharge ? EXTRA_PRICES.EXTERIOR_AREA : 0) +
+        (data.hasGlassGarden ? EXTRA_PRICES.GLASS_GARDEN : 0)
       );
       const additionalPrice = additionalValue.toFixed(2);
       
@@ -188,14 +198,26 @@ export function SimpleQuotationForm({ defaultValues, onSuccess, isEditing = fals
     } catch (error) {
       // Verificar se temos dados básicos para diagnóstico
       if (Object.keys(submissionData).length === 0) {
+        // Obter o preço base conforme o tipo de propriedade escolhido
+        const basePriceValue = BASE_PRICES[data.propertyType] || 47;
+        
+        // Calcular o valor adicional total
+        const hasExteriorSurcharge = data.exteriorArea > EXTERIOR_AREA_THRESHOLD;
+        const additionalValue = (
+          (data.isDuplex ? EXTRA_PRICES.DUPLEX : 0) +
+          (data.hasBBQ ? EXTRA_PRICES.BBQ : 0) + 
+          (hasExteriorSurcharge ? EXTRA_PRICES.EXTERIOR_AREA : 0) +
+          (data.hasGlassGarden ? EXTRA_PRICES.GLASS_GARDEN : 0)
+        );
+        
+        // Calcular preço total
+        const totalValue = basePriceValue + additionalValue;
+        
         // Se não temos dados de envio, criamos um objeto de diagnóstico com dados básicos
         submissionData = {
           ...data,
-          basePrice: (Math.ceil(data.propertyArea / 50) * 20).toString(),
-          totalPrice: (
-            (Math.ceil(data.propertyArea / 50) * 20) + 
-            ((data.isDuplex ? 50 : 0) + (data.hasBBQ ? 30 : 0) + (data.hasGlassGarden ? 60 : 0))
-          ).toString()
+          basePrice: basePriceValue.toString(),
+          totalPrice: totalValue.toString()
         };
       }
       
@@ -345,6 +367,12 @@ export function SimpleQuotationForm({ defaultValues, onSuccess, isEditing = fals
                               <span>{t("quotation.propertyTypeApartmentT4")}</span>
                             </div>
                           </SelectItem>
+                          <SelectItem value="apartment_t5">
+                            <div className="flex items-center gap-2">
+                              <Building2 className="h-4 w-4 text-blue-500" />
+                              <span>{t("quotation.propertyTypeApartmentT5") || "T5"}</span>
+                            </div>
+                          </SelectItem>
                           <SelectItem value="house_v1">
                             <div className="flex items-center gap-2">
                               <Home className="h-4 w-4 text-green-500" />
@@ -361,6 +389,18 @@ export function SimpleQuotationForm({ defaultValues, onSuccess, isEditing = fals
                             <div className="flex items-center gap-2">
                               <Home className="h-4 w-4 text-green-500" />
                               <span>{t("quotation.propertyTypeHouseV3")}</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="house_v4">
+                            <div className="flex items-center gap-2">
+                              <Home className="h-4 w-4 text-green-500" />
+                              <span>{t("quotation.propertyTypeHouseV4") || "V4"}</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="house_v5">
+                            <div className="flex items-center gap-2">
+                              <Home className="h-4 w-4 text-green-500" />
+                              <span>{t("quotation.propertyTypeHouseV5") || "V5"}</span>
                             </div>
                           </SelectItem>
                         </SelectContent>

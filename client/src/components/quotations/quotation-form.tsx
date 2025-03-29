@@ -37,6 +37,9 @@ import {
   CalendarRange
 } from "lucide-react";
 
+// Importar constantes para preços e tipos de propriedade
+import { BASE_PRICES, EXTRA_PRICES, EXTERIOR_AREA_THRESHOLD, PROPERTY_TYPES } from "@/api/constants";
+
 // Quotation form schema using zod - alinhado com o schema do servidor
 const formSchema = z.object({
   // Informações do cliente
@@ -140,93 +143,40 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
   
   // Calculate pricing based on form values
   useEffect(() => {
-    // Base price calculation usando a tabela oficial de preços
-    let baseType = "";
-    let calculatedBasePrice = 0;
+    // Obter o preço base a partir da constante BASE_PRICES
+    const propertyType = watchedValues.propertyType;
+    const calculatedBasePrice = BASE_PRICES[propertyType] || 47; // Valor padrão para T0/T1
     
-    // Determinar o tipo de propriedade e definir o preço base de acordo com a tabela de preços
-    switch (watchedValues.propertyType) {
-      case "apartment_t0t1":
-        // Preço para T0/T1: 47€
-        calculatedBasePrice = 47;
-        baseType = "T0/T1";
-        break;
-      case "apartment_t2":
-        // Preço para T2: 60€
-        calculatedBasePrice = 60;
-        baseType = "T2";
-        break;
-      case "apartment_t3":
-        // Preço para T3: 70€
-        calculatedBasePrice = 70;
-        baseType = "T3";
-        break;
-      case "apartment_t4":
-        // Preço para T4: 80€
-        calculatedBasePrice = 80;
-        baseType = "T4";
-        break;
-      case "apartment_t5":
-        // Preço para T5: 90€
-        calculatedBasePrice = 90;
-        baseType = "T5";
-        break;
-      case "house_v1":
-        // Preço para V1: 75€
-        calculatedBasePrice = 75;
-        baseType = "V1";
-        break;
-      case "house_v2":
-        // Preço para V2: 95€
-        calculatedBasePrice = 95;
-        baseType = "V2";
-        break;
-      case "house_v3":
-        // Preço para V3: 115€
-        calculatedBasePrice = 115;
-        baseType = "V3";
-        break;
-      case "house_v4":
-        // Preço para V4: 135€
-        calculatedBasePrice = 135;
-        baseType = "V4";
-        break;
-      case "house_v5":
-        // Preço para V5: 150€
-        calculatedBasePrice = 150;
-        baseType = "V5";
-        break;
-      default:
-        // Valor padrão se nenhum tipo for selecionado
-        calculatedBasePrice = 47;
-        baseType = "T0/T1";
-    }
+    // Extrair parte do tipo de propriedade para exibição nos logs
+    const baseTypeParts = propertyType.split('_');
+    const baseType = baseTypeParts.length > 1 ? 
+      baseTypeParts[1].toUpperCase().replace('T', 'T').replace('V', 'V') : 'Desconhecido';
     
     // Registra o tipo de propriedade para referência
     console.log(`Tipo de propriedade: ${baseType}, Preço Base: ${calculatedBasePrice}€`);
     setBasePrice(calculatedBasePrice);
     
-    // Additional price calculation - valores atualizados conforme especificado
+    // Cálculo dos preços adicionais usando as constantes
     let calculatedAdditionalPrice = 0;
     
-    // Exterior area > 15m²: +€10
-    if (watchedValues.exteriorArea > 15) {
-      calculatedAdditionalPrice += 10;
+    // Exterior area > EXTERIOR_AREA_THRESHOLD: +EXTRA_PRICES.EXTERIOR_AREA
+    if (watchedValues.exteriorArea > EXTERIOR_AREA_THRESHOLD) {
+      calculatedAdditionalPrice += EXTRA_PRICES.EXTERIOR_AREA;
     }
     
-    // Duplex: +€10 (valor atualizado)
+    // Duplex: +EXTRA_PRICES.DUPLEX
     if (watchedValues.isDuplex) {
-      calculatedAdditionalPrice += 10;
+      calculatedAdditionalPrice += EXTRA_PRICES.DUPLEX;
     }
     
-    // BBQ: +€10 (valor atualizado)
+    // BBQ: +EXTRA_PRICES.BBQ
     if (watchedValues.hasBBQ) {
-      calculatedAdditionalPrice += 10;
+      calculatedAdditionalPrice += EXTRA_PRICES.BBQ;
     }
     
-    // Glass garden: +€10 (valor atualizado)
+    // Glass garden: +EXTRA_PRICES.GLASS_GARDEN
     if (watchedValues.hasGlassGarden) {
-      calculatedAdditionalPrice += 10;
+      calculatedAdditionalPrice += EXTRA_PRICES.GLASS_GARDEN;
     }
     
     setAdditionalPrice(calculatedAdditionalPrice);
@@ -262,11 +212,11 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
       hasBBQ: Boolean(data.hasBBQ),
       hasGlassGarden: Boolean(data.hasGlassGarden),
       
-      // Campos de preço - todos os adicionais são 10€ conforme especificado
-      duplexSurcharge: data.isDuplex ? "10" : "0",
-      bbqSurcharge: data.hasBBQ ? "10" : "0",
-      exteriorSurcharge: data.exteriorArea > 15 ? "10" : "0",
-      glassGardenSurcharge: data.hasGlassGarden ? "10" : "0",
+      // Campos de preço - todos os valores de sobretaxas vêm das constantes
+      duplexSurcharge: data.isDuplex ? EXTRA_PRICES.DUPLEX.toString() : "0",
+      bbqSurcharge: data.hasBBQ ? EXTRA_PRICES.BBQ.toString() : "0",
+      exteriorSurcharge: data.exteriorArea > EXTERIOR_AREA_THRESHOLD ? EXTRA_PRICES.EXTERIOR_AREA.toString() : "0",
+      glassGardenSurcharge: data.hasGlassGarden ? EXTRA_PRICES.GLASS_GARDEN.toString() : "0",
       // O additionalSurcharges deve representar valores extras, não a soma dos outros adicionais
       additionalSurcharges: "0",
       
