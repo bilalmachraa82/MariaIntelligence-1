@@ -19,36 +19,26 @@ export const financialDocumentStatusEnum = pgEnum("financial_document_status", [
 export const properties = pgTable("properties", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  address: text("address").notNull(),
-  type: text("type").notNull(), // T0-T5, V1-V5, etc.
-  area: integer("area").notNull(),
-  bedrooms: integer("bedrooms").notNull(),
-  bathrooms: integer("bathrooms").notNull(),
   ownerId: integer("owner_id").notNull(),
-  status: text("status").notNull().default("active"), // active, inactive, maintenance
   cleaningCost: text("cleaning_cost"), // Custo de limpeza em euros
   checkInFee: text("check_in_fee"), // Taxa de check-in em euros
   commission: text("commission"), // Comissão em percentagem
   teamPayment: text("team_payment"), // Pagamento da equipe em euros
   cleaningTeam: text("cleaning_team"), // Nome da equipe de limpeza
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  cleaningTeamId: integer("cleaning_team_id"),
+  monthlyFixedCost: text("monthly_fixed_cost"),
+  active: boolean("active").default(true),
 });
 
 // Owners
 export const owners = pgTable("owners", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  email: text("email").notNull().unique(),
-  phone: text("phone"),
-  bankName: text("bank_name"),
-  accountNumber: text("account_number"),
-  iban: text("iban"),
+  company: text("company"),
+  address: text("address"),
   taxId: text("tax_id"),
-  commissionRate: text("commission_rate").default("10"), // porcentagem
-  status: text("status").notNull().default("active"), // active, inactive
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  email: text("email").notNull(),
+  phone: text("phone"),
 });
 
 // Reservations
@@ -78,9 +68,9 @@ export const reservations = pgTable("reservations", {
 // Activities
 export const activities = pgTable("activities", {
   id: serial("id").primaryKey(),
-  activityType: text("activity_type").notNull(), // reservation, check-in, check-out, maintenance, cleaning, etc.
-  resourceId: integer("resource_id"), // ID do recurso (reserva, propriedade, etc.)
-  resourceType: text("resource_type"), // tipo do recurso (reservation, property, etc.)
+  type: text("type").notNull(), // reservation, check-in, check-out, maintenance, cleaning, etc.
+  entityId: integer("entity_id"), // ID do recurso (reserva, propriedade, etc.)
+  entityType: text("entity_type"), // tipo do recurso (reservation, property, etc.)
   description: text("description").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -189,10 +179,11 @@ export const quotations = pgTable("quotations", {
 export const knowledgeEmbeddings = pgTable("knowledge_embeddings", {
   id: serial("id").primaryKey(),
   content: text("content").notNull(),
-  source: text("source"),
+  content_type: text("content_type"),
+  embedding_json: text("embedding_json"),
   metadata: text("metadata"),
-  embedding: text("embedding"),
-  createdAt: timestamp("created_at").defaultNow(),
+  created_at: timestamp("created_at").defaultNow(),
+  updated_at: timestamp("updated_at").defaultNow(),
 });
 
 // Query Embeddings para o RAG
@@ -200,17 +191,20 @@ export const queryEmbeddings = pgTable("query_embeddings", {
   id: serial("id").primaryKey(),
   query: text("query").notNull(),
   response: text("response"),
-  embedding: text("embedding"),
-  createdAt: timestamp("created_at").defaultNow(),
+  embedding_json: text("embedding_json"),
+  frequency: integer("frequency"),
+  last_used: timestamp("last_used"),
+  created_at: timestamp("created_at").defaultNow(),
 });
 
 // Histórico de Conversas para contexto
 export const conversationHistory = pgTable("conversation_history", {
   id: serial("id").primaryKey(),
-  sessionId: text("session_id").notNull(),
+  user_id: integer("user_id"),
+  message: text("message").notNull(),
   role: text("role").notNull(), // user, assistant, system
-  content: text("content").notNull(),
   timestamp: timestamp("timestamp").defaultNow(),
+  metadata: text("metadata"),
 });
 
 // Relations
@@ -261,8 +255,8 @@ export const paymentRecordsRelations = relations(paymentRecords, ({ one }) => ({
 }));
 
 // Insert Schemas
-export const insertPropertySchema = createInsertSchema(properties).omit({ id: true, createdAt: true, updatedAt: true });
-export const insertOwnerSchema = createInsertSchema(owners).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertPropertySchema = createInsertSchema(properties).omit({ id: true });
+export const insertOwnerSchema = createInsertSchema(owners).omit({ id: true });
 export const insertReservationSchema = createInsertSchema(reservations).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertActivitySchema = createInsertSchema(activities).omit({ id: true, createdAt: true });
 export const insertCleaningTeamSchema = createInsertSchema(cleaningTeams).omit({ id: true, createdAt: true, updatedAt: true });
@@ -271,8 +265,8 @@ export const insertFinancialDocumentSchema = createInsertSchema(financialDocumen
 export const insertFinancialDocumentItemSchema = createInsertSchema(financialDocumentItems).omit({ id: true, createdAt: true });
 export const insertPaymentRecordSchema = createInsertSchema(paymentRecords).omit({ id: true, createdAt: true });
 export const insertQuotationSchema = createInsertSchema(quotations).omit({ id: true, createdAt: true, updatedAt: true });
-export const insertKnowledgeEmbeddingSchema = createInsertSchema(knowledgeEmbeddings).omit({ id: true, createdAt: true });
-export const insertQueryEmbeddingSchema = createInsertSchema(queryEmbeddings).omit({ id: true, createdAt: true });
+export const insertKnowledgeEmbeddingSchema = createInsertSchema(knowledgeEmbeddings).omit({ id: true, created_at: true, updated_at: true });
+export const insertQueryEmbeddingSchema = createInsertSchema(queryEmbeddings).omit({ id: true, created_at: true });
 export const insertConversationHistorySchema = createInsertSchema(conversationHistory).omit({ id: true, timestamp: true });
 
 // Extended schemas (for frontend forms)
