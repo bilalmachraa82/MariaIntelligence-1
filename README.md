@@ -17,7 +17,7 @@ Sistema completo para gestão de propriedades, reservas e finanças para o negó
 - **Frontend**: React, TypeScript, TailwindCSS, Shadcn UI
 - **Backend**: Node.js, Express
 - **Banco de Dados**: PostgreSQL
-- **Inteligência Artificial**: Mistral AI para processamento de documentos
+- **Inteligência Artificial**: Google Gemini 2.5 Pro para processamento de documentos e assistência
 - **Internacionalização**: i18next com suporte a Português (PT)
 
 ## Estrutura do Projeto
@@ -46,14 +46,14 @@ O projeto está configurado para deploy via Replit CloudRun. Para implantar:
 ## Variáveis de Ambiente Necessárias
 
 - `DATABASE_URL`: URL de conexão ao banco de dados PostgreSQL
-- `MISTRAL_API_KEY`: Chave de API para o Mistral AI
+- `GOOGLE_GEMINI_API_KEY`: Chave de API para o Google Gemini AI
 - `EMAIL_SERVICE`: Serviço de email (ex: "gmail")
 - `EMAIL_USER`: Endereço de email para envio de relatórios
 - `EMAIL_PASSWORD`: Senha ou token para autenticação do email
 
 ## Recursos Externos
 
-- Mistral AI: Para processamento de documentos e assistente virtual
+- Google Gemini AI: Para processamento de documentos e assistente virtual
 - Serviço de Email: Para envio de relatórios aos proprietários
 
 ## Capacitor Mobile
