@@ -9,6 +9,7 @@ import {
   financialDocuments,
   financialDocumentItems,
   paymentRecords,
+  maintenanceTasks,
   Property,
   Owner,
   Reservation,
@@ -17,6 +18,7 @@ import {
   FinancialDocument,
   FinancialDocumentItem,
   PaymentRecord,
+  MaintenanceTask,
   InsertProperty,
   InsertOwner,
   InsertReservation,
@@ -24,7 +26,8 @@ import {
   InsertQuotation,
   InsertFinancialDocument,
   InsertFinancialDocumentItem,
-  InsertPaymentRecord
+  InsertPaymentRecord,
+  InsertMaintenanceTask
 } from '../../shared/schema';
 import { IStorage } from '../storage';
 
@@ -876,6 +879,224 @@ export class PgStorage implements IStorage {
       return true;
     } catch (error) {
       console.error(`Erro ao excluir orçamento #${id}:`, error);
+      return false;
+    }
+  }
+
+  // Sistema de Manutenção
+  /**
+   * Obtém todas as tarefas de manutenção
+   * @returns Lista de tarefas de manutenção
+   */
+  async getMaintenanceTasks(): Promise<MaintenanceTask[]> {
+    try {
+      const tasks = await this.db
+        .select()
+        .from(maintenanceTasks)
+        .orderBy(desc(maintenanceTasks.reportedAt));
+      return tasks;
+    } catch (error) {
+      console.error("Erro ao obter tarefas de manutenção:", error);
+      return [];
+    }
+  }
+
+  /**
+   * Obtém uma tarefa de manutenção específica
+   * @param id ID da tarefa
+   * @returns Tarefa de manutenção ou undefined
+   */
+  async getMaintenanceTask(id: number): Promise<MaintenanceTask | undefined> {
+    try {
+      const results = await this.db
+        .select()
+        .from(maintenanceTasks)
+        .where(eq(maintenanceTasks.id, id));
+      return results.length > 0 ? results[0] : undefined;
+    } catch (error) {
+      console.error(`Erro ao obter tarefa de manutenção #${id}:`, error);
+      return undefined;
+    }
+  }
+
+  /**
+   * Obtém tarefas de manutenção de uma propriedade específica
+   * @param propertyId ID da propriedade
+   * @returns Lista de tarefas de manutenção
+   */
+  async getMaintenanceTasksByProperty(propertyId: number): Promise<MaintenanceTask[]> {
+    try {
+      const tasks = await this.db
+        .select()
+        .from(maintenanceTasks)
+        .where(eq(maintenanceTasks.propertyId, propertyId))
+        .orderBy(desc(maintenanceTasks.reportedAt));
+      return tasks;
+    } catch (error) {
+      console.error(`Erro ao obter tarefas de manutenção para propriedade #${propertyId}:`, error);
+      return [];
+    }
+  }
+
+  /**
+   * Obtém tarefas de manutenção por status
+   * @param status Status das tarefas (pending, scheduled, completed)
+   * @returns Lista de tarefas de manutenção
+   */
+  async getMaintenanceTasksByStatus(status: string): Promise<MaintenanceTask[]> {
+    try {
+      const tasks = await this.db
+        .select()
+        .from(maintenanceTasks)
+        .where(eq(maintenanceTasks.status, status))
+        .orderBy(desc(maintenanceTasks.reportedAt));
+      return tasks;
+    } catch (error) {
+      console.error(`Erro ao obter tarefas de manutenção com status ${status}:`, error);
+      return [];
+    }
+  }
+
+  /**
+   * Cria uma nova tarefa de manutenção
+   * @param task Dados da tarefa de manutenção
+   * @returns Nova tarefa de manutenção criada
+   */
+  async createMaintenanceTask(task: InsertMaintenanceTask): Promise<MaintenanceTask> {
+    try {
+      // Formatar as datas se estiverem em string
+      const formattedTask = {
+        ...task,
+        reportedAt: typeof task.reportedAt === 'string' ? task.reportedAt : task.reportedAt,
+        dueDate: typeof task.dueDate === 'string' ? task.dueDate : task.dueDate,
+        completedAt: task.completedAt ? 
+          (typeof task.completedAt === 'string' ? task.completedAt : task.completedAt) : 
+          null
+      };
+
+      // Inserir no banco de dados
+      const result = await this.db
+        .insert(maintenanceTasks)
+        .values(formattedTask)
+        .returning();
+
+      const newTask = result[0];
+
+      // Criar atividade para registrar a criação da tarefa
+      const property = await this.getProperty(newTask.propertyId);
+      if (property) {
+        await this.createActivity({
+          activityType: "maintenance_task_created",
+          description: `Nova tarefa de manutenção criada para ${property.name}: ${newTask.description.substring(0, 50)}${newTask.description.length > 50 ? '...' : ''}`,
+          resourceId: newTask.id,
+          resourceType: "maintenance_task"
+        });
+      }
+
+      return newTask;
+    } catch (error) {
+      console.error("Erro ao criar tarefa de manutenção:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Atualiza uma tarefa de manutenção existente
+   * @param id ID da tarefa
+   * @param task Dados atualizados
+   * @returns Tarefa atualizada ou undefined
+   */
+  async updateMaintenanceTask(id: number, task: Partial<InsertMaintenanceTask>): Promise<MaintenanceTask | undefined> {
+    try {
+      // Verificar se a tarefa existe
+      const existingTask = await this.getMaintenanceTask(id);
+      if (!existingTask) {
+        console.error(`Tarefa de manutenção #${id} não encontrada para atualização`);
+        return undefined;
+      }
+
+      // Formatar as datas se estiverem em string
+      const updateData = { ...task };
+      if (updateData.reportedAt && typeof updateData.reportedAt === 'string') {
+        updateData.reportedAt = updateData.reportedAt;
+      }
+      if (updateData.dueDate && typeof updateData.dueDate === 'string') {
+        updateData.dueDate = updateData.dueDate;
+      }
+      if (updateData.completedAt && typeof updateData.completedAt === 'string') {
+        updateData.completedAt = updateData.completedAt;
+      }
+
+      // Atualizar o campo updatedAt para a data atual
+      const now = new Date();
+      const result = await this.db
+        .update(maintenanceTasks)
+        .set({ ...updateData, updatedAt: now })
+        .where(eq(maintenanceTasks.id, id))
+        .returning();
+
+      if (result.length === 0) {
+        return undefined;
+      }
+
+      const updatedTask = result[0];
+
+      // Registrar atividade para esta atualização
+      const property = await this.getProperty(updatedTask.propertyId);
+      const activityType = updatedTask.status === 'completed' ? 
+        "maintenance_task_completed" : 
+        "maintenance_task_updated";
+
+      await this.createActivity({
+        activityType,
+        description: `Tarefa de manutenção ${updatedTask.status === 'completed' ? 'concluída' : 'atualizada'} para ${property?.name || `Propriedade #${updatedTask.propertyId}`}: ${updatedTask.description.substring(0, 50)}${updatedTask.description.length > 50 ? '...' : ''}`,
+        resourceId: updatedTask.id,
+        resourceType: "maintenance_task"
+      });
+
+      return updatedTask;
+    } catch (error) {
+      console.error(`Erro ao atualizar tarefa de manutenção #${id}:`, error);
+      return undefined;
+    }
+  }
+
+  /**
+   * Remove uma tarefa de manutenção
+   * @param id ID da tarefa
+   * @returns Indicação de sucesso da operação
+   */
+  async deleteMaintenanceTask(id: number): Promise<boolean> {
+    try {
+      // Obter os dados da tarefa antes de excluir para registrar a atividade
+      const task = await this.getMaintenanceTask(id);
+      if (!task) {
+        return false;
+      }
+
+      const property = await this.getProperty(task.propertyId);
+      
+      // Excluir a tarefa
+      const result = await this.db
+        .delete(maintenanceTasks)
+        .where(eq(maintenanceTasks.id, id))
+        .returning({ id: maintenanceTasks.id });
+
+      if (result.length === 0) {
+        return false;
+      }
+
+      // Registrar atividade para esta exclusão
+      await this.createActivity({
+        activityType: "maintenance_task_deleted",
+        description: `Tarefa de manutenção excluída para ${property?.name || `Propriedade #${task.propertyId}`}: ${task.description.substring(0, 50)}${task.description.length > 50 ? '...' : ''}`,
+        resourceId: task.propertyId,
+        resourceType: "property"
+      });
+
+      return true;
+    } catch (error) {
+      console.error(`Erro ao excluir tarefa de manutenção #${id}:`, error);
       return false;
     }
   }
