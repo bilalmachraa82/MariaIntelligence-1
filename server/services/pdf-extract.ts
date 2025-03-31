@@ -41,7 +41,7 @@ export interface ExtractedReservationData {
   platformFee?: number;          // Opcional
   cleaningFee?: number;          // Opcional
   checkInFee?: number;           // Opcional
-  commissionFee?: number;        // Opcional
+  commission?: number;           // Opcional
   teamPayment?: number;          // Opcional
   rawText?: string;              // Texto bruto extraído
   documentType?: string;         // Tipo de documento (reserva, fatura, etc.)
@@ -404,7 +404,7 @@ export function validateReservationData(data: ExtractedReservationData): Validat
     platformFee: data.platformFee || 0,
     cleaningFee: data.cleaningFee || 0,
     checkInFee: data.checkInFee || 0,
-    commissionFee: data.commissionFee || 0,
+    commission: data.commission || 0,
     teamPayment: data.teamPayment || 0,
     platform: data.platform || 'direct',
     validationStatus: status

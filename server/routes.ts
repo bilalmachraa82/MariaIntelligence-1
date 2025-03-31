@@ -379,13 +379,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Apply property-specific costs with verificação de nulos
       validatedData.cleaningFee = (property.cleaningCost || '0').toString();
       validatedData.checkInFee = (property.checkInFee || '0').toString();
-      validatedData.commissionFee = (Number(validatedData.totalAmount) * Number(property.commission || '0') / 100).toString();
+      validatedData.commission = (Number(validatedData.totalAmount) * Number(property.commission || '0') / 100).toString();
       validatedData.teamPayment = (property.teamPayment || '0').toString();
 
       // Calculate net amount
       const totalCosts = Number(validatedData.cleaningFee) + 
                         Number(validatedData.checkInFee) + 
-                        Number(validatedData.commissionFee) + 
+                        Number(validatedData.commission) + 
                         Number(validatedData.teamPayment) + 
                         Number(validatedData.platformFee);
 
@@ -425,14 +425,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         validatedData.checkInFee = (property.checkInFee || '0').toString();
 
         const totalAmount = validatedData.totalAmount || existingReservation.totalAmount;
-        validatedData.commissionFee = (Number(totalAmount) * Number(property.commission || '0') / 100).toString();
+        validatedData.commission = (Number(totalAmount) * Number(property.commission || '0') / 100).toString();
         validatedData.teamPayment = (property.teamPayment || '0').toString();
 
         // Recalculate net amount
         const platformFee = validatedData.platformFee || existingReservation.platformFee;
         const totalCosts = Number(validatedData.cleaningFee) + 
                           Number(validatedData.checkInFee) + 
-                          Number(validatedData.commissionFee) + 
+                          Number(validatedData.commission) + 
                           Number(validatedData.teamPayment) + 
                           Number(platformFee);
 
@@ -1029,7 +1029,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             platformFee: platformFee,
             cleaningFee: extractedData?.cleaningFee || Number(matchedProperty.cleaningCost || 0),
             checkInFee: extractedData?.checkInFee || Number(matchedProperty.checkInFee || 0),
-            commissionFee: extractedData?.commissionFee || (totalAmount * Number(matchedProperty.commission || 0) / 100),
+            commission: extractedData?.commission || (totalAmount * Number(matchedProperty.commission || 0) / 100),
             teamPayment: extractedData?.teamPayment || Number(matchedProperty.teamPayment || 0)
           };
 
@@ -1455,7 +1455,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           platformFee: platformFee,
           cleaningFee: extractedData?.cleaningFee || Number(matchedProperty.cleaningCost || 0),
           checkInFee: extractedData?.checkInFee || Number(matchedProperty.checkInFee || 0),
-          commissionFee: extractedData?.commissionFee || (totalAmount * Number(matchedProperty.commission || 0) / 100),
+          commission: extractedData?.commission || (totalAmount * Number(matchedProperty.commission || 0) / 100),
           teamPayment: extractedData?.teamPayment || Number(matchedProperty.teamPayment || 0)
         };
 
@@ -1564,7 +1564,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       - Taxa da plataforma (platformFee) - apenas o número
       - Taxa de limpeza (cleaningFee) - apenas o número
       - Taxa de check-in (checkInFee) - apenas o número
-      - Taxa de comissão (commissionFee) - apenas o número
+      - Taxa de comissão (commission) - apenas o número
       - Pagamento à equipe (teamPayment) - apenas o número
 
       Se alguma informação não estiver disponível, use valores nulos ou vazios.
