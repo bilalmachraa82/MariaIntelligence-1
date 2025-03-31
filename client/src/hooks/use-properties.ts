@@ -3,10 +3,15 @@ import { apiRequest } from "../lib/queryClient";
 import type { Property } from "@shared/schema";
 
 export function useProperties() {
-  return useQuery<Property[]>({
+  const query = useQuery<Property[]>({
     queryKey: ['/api/properties'],
     queryFn: () => apiRequest('/api/properties')
   });
+  
+  return {
+    ...query,
+    properties: query.data || []
+  };
 }
 
 export function useProperty(id: number) {

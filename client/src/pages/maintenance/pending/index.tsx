@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,19 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Wrench, ClipboardList, ArrowRight, Calendar, Building2, AlertTriangle, Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MaintenanceTask } from "@shared/schema";
+import { useMaintenanceTasks } from "@/hooks/use-maintenance-tasks";
+import { useProperties } from "@/hooks/use-properties";
 
-interface MaintenanceTask {
-  id: number;
-  propertyId: number;
+// Estender o tipo MaintenanceTask para incluir propertyName
+interface ExtendedMaintenanceTask extends MaintenanceTask {
   propertyName: string;
-  description: string;
-  priority: "high" | "medium" | "low";
-  dueDate: string;
-  status: "pending" | "scheduled" | "completed";
-  assignedTo: string | null;
-  reportedAt: string;
-  cost?: number;
-  notes?: string;
 }
 
 export default function MaintenancePending() {
@@ -28,10 +21,17 @@ export default function MaintenancePending() {
   const { t } = useTranslation();
   const [, setLocation] = useLocation();
   
-  // Consultar tarefas de manutenção do backend
-  const { data: maintenanceTasks = [], isLoading } = useQuery<MaintenanceTask[]>({
-    queryKey: ["/api/maintenance-tasks"],
-    // Falhará graciosamente quando a API não estiver implementada
+  // Usar o hook de tarefas de manutenção
+  const { maintenanceTasks: tasks = [], isLoading } = useMaintenanceTasks();
+  const { properties = [] } = useProperties();
+  
+  // Adicionar nomes de propriedades às tarefas
+  const maintenanceTasks: ExtendedMaintenanceTask[] = tasks.map(task => {
+    const property = properties.find((p) => p.id === task.propertyId);
+    return {
+      ...task,
+      propertyName: property ? property.name : `Propriedade #${task.propertyId}`,
+    };
   });
   
   // Contadores de tarefas por status
