@@ -536,7 +536,7 @@ export class PgStorage implements IStorage {
         const revenue = reservations.reduce((sum, r) => sum + Number(r.totalAmount), 0);
         const cleaningCosts = reservations.reduce((sum, r) => sum + Number(r.cleaningFee || 0), 0);
         const checkInFees = reservations.reduce((sum, r) => sum + Number(r.checkInFee || 0), 0);
-        const commission = reservations.reduce((sum, r) => sum + Number(r.commissionFee || 0), 0);
+        const commission = reservations.reduce((sum, r) => sum + Number(r.commission || 0), 0);
         const teamPayments = reservations.reduce((sum, r) => sum + Number(r.teamPayment || 0), 0);
         
         // Incluir custos de manutenção no cálculo do lucro líquido
@@ -558,7 +558,7 @@ export class PgStorage implements IStorage {
           totalAmount: Number(r.totalAmount),
           cleaningFee: Number(r.cleaningFee || 0),
           checkInFee: Number(r.checkInFee || 0),
-          commission: Number(r.commissionFee || 0),
+          commission: Number(r.commission || 0),
           teamPayment: Number(r.teamPayment || 0),
           netAmount: Number(r.netAmount || 0),
           platform: r.platform || 'direct'

@@ -165,8 +165,15 @@ export function Sidebar({ className }: SidebarProps) {
 
   // Função para fechar a sidebar em dispositivos móveis após clicar em um link
   const handleLinkClick = (href: string) => {
-    // Remover barras duplicadas, se houverem
-    const cleanHref = href.replace(/([^:]\/)\/+/g, "$1");
+    // Remover barras duplicadas, se houverem (considerando a URL base do Replit)
+    let cleanHref = href;
+    
+    // Caso especial para URLs da API (deixar a barra após o domínio)
+    if (href.startsWith('/')) {
+      // Remove barras duplicadas, mas mantém uma única barra
+      cleanHref = '/' + href.split('/').filter(Boolean).join('/');
+    }
+    
     setLocation(cleanHref);
     if (isMobile) {
       setIsOpen(false);
