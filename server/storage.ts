@@ -2554,19 +2554,16 @@ export class DatabaseStorage implements IStorage {
       // Evitando qualquer coluna que possa causar problemas como "bedrooms"
       let query = db.select({
         id: quotations.id,
-        customerName: quotations.customerName,
-        customerEmail: quotations.customerEmail,
-        customerPhone: quotations.customerPhone,
-        serviceType: quotations.serviceType,
+        customerName: quotations.clientName,
+        customerEmail: quotations.clientEmail,
+        customerPhone: quotations.clientPhone,
         status: quotations.status,
-        totalAmount: quotations.totalAmount,
+        totalAmount: quotations.totalPrice,
         validUntil: quotations.validUntil,
         notes: quotations.notes,
         address: quotations.address,
-        city: quotations.city,
         createdAt: quotations.createdAt,
-        updatedAt: quotations.updatedAt,
-        pdfUrl: quotations.pdfUrl
+        updatedAt: quotations.updatedAt
       })
       .from(quotations);
       
@@ -2602,19 +2599,16 @@ export class DatabaseStorage implements IStorage {
       // Evitando qualquer coluna que possa causar problemas como "bedrooms"
       const result = await db.select({
         id: quotations.id,
-        customerName: quotations.customerName,
-        customerEmail: quotations.customerEmail,
-        customerPhone: quotations.customerPhone,
-        serviceType: quotations.serviceType,
+        customerName: quotations.clientName,
+        customerEmail: quotations.clientEmail,
+        customerPhone: quotations.clientPhone,
         status: quotations.status,
-        totalAmount: quotations.totalAmount,
+        totalAmount: quotations.totalPrice,
         validUntil: quotations.validUntil,
         notes: quotations.notes,
         address: quotations.address,
-        city: quotations.city,
         createdAt: quotations.createdAt,
-        updatedAt: quotations.updatedAt,
-        pdfUrl: quotations.pdfUrl
+        updatedAt: quotations.updatedAt
       })
       .from(quotations)
       .where(eq(quotations.id, id))
@@ -2645,7 +2639,7 @@ export class DatabaseStorage implements IStorage {
         // Registrar atividade
         this.createActivity({
           type: "quotation_created",
-          description: `Orçamento para ${quotation.customerName || "cliente"} foi criado`,
+          description: `Orçamento para ${quotation.clientName || "cliente"} foi criado`,
           entityId: result[0].id,
           entityType: "quotation"
         }).catch(err => console.error("Erro ao registrar atividade:", err));
@@ -2684,7 +2678,7 @@ export class DatabaseStorage implements IStorage {
         // Registrar atividade
         this.createActivity({
           type: "quotation_updated",
-          description: `Orçamento para ${result[0].customerName || "cliente"} foi atualizado`,
+          description: `Orçamento para ${result[0].clientName || "cliente"} foi atualizado`,
           entityId: id,
           entityType: "quotation"
         }).catch(err => console.error("Erro ao registrar atividade:", err));
@@ -2714,7 +2708,7 @@ export class DatabaseStorage implements IStorage {
       if (result && result.length > 0) {
         this.createActivity({
           type: "quotation_deleted",
-          description: `Orçamento para ${quotation.customerName || "cliente"} foi excluído`,
+          description: `Orçamento para ${quotation.clientName || "cliente"} foi excluído`,
           entityId: id,
           entityType: "quotation"
         }).catch(err => console.error("Erro ao registrar atividade:", err));
