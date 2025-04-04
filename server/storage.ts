@@ -2554,9 +2554,9 @@ export class DatabaseStorage implements IStorage {
       // Evitando qualquer coluna que possa causar problemas como "bedrooms"
       let query = db.select({
         id: quotations.id,
-        customerName: quotations.clientName,
-        customerEmail: quotations.clientEmail,
-        customerPhone: quotations.clientPhone,
+        clientName: quotations.clientName,
+        clientEmail: quotations.clientEmail,
+        clientPhone: quotations.clientPhone,
         status: quotations.status,
         totalAmount: quotations.totalPrice,
         validUntil: quotations.validUntil,
@@ -2599,9 +2599,9 @@ export class DatabaseStorage implements IStorage {
       // Evitando qualquer coluna que possa causar problemas como "bedrooms"
       const result = await db.select({
         id: quotations.id,
-        customerName: quotations.clientName,
-        customerEmail: quotations.clientEmail,
-        customerPhone: quotations.clientPhone,
+        clientName: quotations.clientName,
+        clientEmail: quotations.clientEmail,
+        clientPhone: quotations.clientPhone,
         status: quotations.status,
         totalAmount: quotations.totalPrice,
         validUntil: quotations.validUntil,
