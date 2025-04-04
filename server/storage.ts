@@ -2550,7 +2550,25 @@ export class DatabaseStorage implements IStorage {
     if (!db) return [];
     
     try {
-      let query = db.select().from(quotations);
+      // Selecionando apenas as colunas que sabemos que existem no banco de dados
+      // Evitando qualquer coluna que possa causar problemas como "bedrooms"
+      let query = db.select({
+        id: quotations.id,
+        customerName: quotations.customerName,
+        customerEmail: quotations.customerEmail,
+        customerPhone: quotations.customerPhone,
+        serviceType: quotations.serviceType,
+        status: quotations.status,
+        totalAmount: quotations.totalAmount,
+        validUntil: quotations.validUntil,
+        notes: quotations.notes,
+        address: quotations.address,
+        city: quotations.city,
+        createdAt: quotations.createdAt,
+        updatedAt: quotations.updatedAt,
+        pdfUrl: quotations.pdfUrl
+      })
+      .from(quotations);
       
       // Aplicar filtros se houver opções
       if (options) {
@@ -2580,7 +2598,27 @@ export class DatabaseStorage implements IStorage {
     if (!db) return undefined;
     
     try {
-      const result = await db.select().from(quotations).where(eq(quotations.id, id)).limit(1);
+      // Selecionando apenas as colunas que sabemos que existem no banco de dados
+      // Evitando qualquer coluna que possa causar problemas como "bedrooms"
+      const result = await db.select({
+        id: quotations.id,
+        customerName: quotations.customerName,
+        customerEmail: quotations.customerEmail,
+        customerPhone: quotations.customerPhone,
+        serviceType: quotations.serviceType,
+        status: quotations.status,
+        totalAmount: quotations.totalAmount,
+        validUntil: quotations.validUntil,
+        notes: quotations.notes,
+        address: quotations.address,
+        city: quotations.city,
+        createdAt: quotations.createdAt,
+        updatedAt: quotations.updatedAt,
+        pdfUrl: quotations.pdfUrl
+      })
+      .from(quotations)
+      .where(eq(quotations.id, id))
+      .limit(1);
       return result[0];
     } catch (error) {
       console.error(`Erro ao buscar orçamento ${id}:`, error);
