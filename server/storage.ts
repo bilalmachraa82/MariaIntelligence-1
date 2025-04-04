@@ -1813,18 +1813,71 @@ export class DatabaseStorage implements IStorage {
 
   async getReservation(id: number): Promise<Reservation | undefined> {
     if (!db) return undefined;
-    const [result] = await db.select().from(reservations).where(eq(reservations.id, id));
-    return result;
+    try {
+      // Selecionando apenas as colunas que sabemos que existem no banco de dados
+      // Abordagem similar a getReservations() para evitar problemas com colunas
+      const [result] = await db.select({
+        id: reservations.id,
+        propertyId: reservations.propertyId,
+        guestName: reservations.guestName,
+        guestEmail: reservations.guestEmail,
+        guestPhone: reservations.guestPhone,
+        checkInDate: reservations.checkInDate,
+        checkOutDate: reservations.checkOutDate,
+        numGuests: reservations.numGuests,
+        totalAmount: reservations.totalAmount,
+        status: reservations.status,
+        notes: reservations.notes,
+        checkInFee: reservations.checkInFee,
+        commission: reservations.commission,
+        teamPayment: reservations.teamPayment,
+        ownerRevenue: reservations.ownerRevenue,
+        source: reservations.source,
+        createdAt: reservations.createdAt,
+        updatedAt: reservations.updatedAt
+      })
+      .from(reservations)
+      .where(eq(reservations.id, id));
+      return result;
+    } catch (error) {
+      console.error("Erro ao buscar reserva por ID:", error);
+      return undefined;
+    }
   }
 
   async getReservationsByProperty(propertyId: number): Promise<Reservation[]> {
     if (!db) return [];
-    const results = await db
-      .select()
+    try {
+      // Selecionando apenas as colunas que sabemos que existem no banco de dados
+      // Abordagem similar a getReservations() para evitar problemas com colunas
+      const results = await db.select({
+        id: reservations.id,
+        propertyId: reservations.propertyId,
+        guestName: reservations.guestName,
+        guestEmail: reservations.guestEmail,
+        guestPhone: reservations.guestPhone,
+        checkInDate: reservations.checkInDate,
+        checkOutDate: reservations.checkOutDate,
+        numGuests: reservations.numGuests,
+        totalAmount: reservations.totalAmount,
+        status: reservations.status,
+        notes: reservations.notes,
+        checkInFee: reservations.checkInFee,
+        commission: reservations.commission,
+        teamPayment: reservations.teamPayment,
+        ownerRevenue: reservations.ownerRevenue,
+        source: reservations.source,
+        createdAt: reservations.createdAt,
+        updatedAt: reservations.updatedAt
+      })
       .from(reservations)
       .where(eq(reservations.propertyId, propertyId))
       .orderBy(desc(reservations.checkInDate));
-    return results;
+      return results;
+    } catch (error) {
+      console.error("Erro ao buscar reservas por propriedade:", error);
+      return [];
+    }
   }
 
   async createReservation(reservation: InsertReservation): Promise<Reservation> {
