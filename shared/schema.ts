@@ -53,7 +53,7 @@ export const reservations = pgTable("reservations", {
   teamPayment: text("team_payment"), // Pagamento para equipe em euros
   platformFee: text("platform_fee"), // Taxa da plataforma em euros
   cleaningFee: text("cleaning_fee"), // Taxa de limpeza em euros
-  commission: text("commission"), // Comissão do administrador em euros
+  commission: text("commission_fee"), // Comissão do administrador em euros
   companyRevenue: text("company_revenue"), // Receita da empresa em euros
   ownerRevenue: text("owner_revenue"), // Receita do proprietário em euros
   guestEmail: text("guest_email"),

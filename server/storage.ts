@@ -1514,6 +1514,88 @@ export class MemStorage implements IStorage {
       }
     });
     
+    // Seed maintenance tasks
+    const maintenanceTaskData = [
+      {
+        id: 1,
+        propertyId: 12,
+        description: "Reparação - Vazamento na pia da cozinha",
+        reportedAt: new Date(today.getTime() - (3 * oneDay)),
+        scheduledFor: new Date(today.getTime() + (1 * oneDay)),
+        completedAt: null,
+        status: "scheduled",
+        priority: "medium",
+        assignedTo: "João Silva",
+        estimatedCost: "75",
+        actualCost: null,
+        notes: "Cliente reportou vazamento constante sob a pia da cozinha."
+      },
+      {
+        id: 2,
+        propertyId: 19,
+        description: "Emergência - Aquecedor não funciona",
+        reportedAt: new Date(today.getTime() - (1 * oneDay)),
+        scheduledFor: new Date(today.getTime()),
+        completedAt: null,
+        status: "pending",
+        priority: "high",
+        assignedTo: "António Santos",
+        estimatedCost: "150",
+        actualCost: null,
+        notes: "Hóspedes reclamaram que o aquecedor parou de funcionar durante a noite. Verificar sistema elétrico."
+      },
+      {
+        id: 3,
+        propertyId: 5,
+        description: "Manutenção - Substituir lâmpadas queimadas",
+        reportedAt: new Date(today.getTime() - (5 * oneDay)),
+        scheduledFor: new Date(today.getTime() - (2 * oneDay)),
+        completedAt: new Date(today.getTime() - (2 * oneDay)),
+        status: "completed",
+        priority: "low",
+        assignedTo: "Maria Oliveira",
+        estimatedCost: "35",
+        actualCost: "30",
+        notes: "Substituídas 4 lâmpadas na sala e 2 no corredor."
+      },
+      {
+        id: 4,
+        propertyId: 16,
+        description: "Reparo - Persiana quebrada no quarto principal",
+        reportedAt: new Date(today.getTime() - (7 * oneDay)),
+        scheduledFor: new Date(today.getTime() + (3 * oneDay)),
+        completedAt: null,
+        status: "scheduled",
+        priority: "medium",
+        assignedTo: "Carlos Mendes",
+        estimatedCost: "90",
+        actualCost: null,
+        notes: "Persiana não abre/fecha corretamente. Necessário substituir o mecanismo."
+      },
+      {
+        id: 5,
+        propertyId: 3,
+        description: "Verificação - Problema com internet",
+        reportedAt: new Date(today.getTime() - (2 * oneDay)),
+        scheduledFor: new Date(today.getTime() + (1 * oneDay)),
+        completedAt: null,
+        status: "pending",
+        priority: "medium",
+        assignedTo: "Ricardo Pereira",
+        estimatedCost: "45",
+        actualCost: null,
+        notes: "Hóspedes reportaram conexão instável de internet. Verificar roteador e cabos."
+      }
+    ];
+    
+    // Add maintenance tasks to the map
+    maintenanceTaskData.forEach(task => {
+      this.maintenanceTasksMap.set(task.id, task);
+      if (task.id >= this.currentMaintenanceTaskId) {
+        this.currentMaintenanceTaskId = task.id + 1;
+      }
+    });
+    
     // Seed financial documents data
     seedFinancialDocuments.call(this);
   }
@@ -1697,8 +1779,36 @@ export class DatabaseStorage implements IStorage {
   // Reservation methods
   async getReservations(): Promise<Reservation[]> {
     if (!db) return [];
-    const results = await db.select().from(reservations).orderBy(desc(reservations.createdAt));
-    return results;
+    try {
+      // Selecionando apenas as colunas que sabemos que existem no banco de dados
+      // Removendo a coluna "company_revenue" que está causando o erro
+      const results = await db.select({
+        id: reservations.id,
+        propertyId: reservations.propertyId,
+        guestName: reservations.guestName,
+        guestEmail: reservations.guestEmail,
+        guestPhone: reservations.guestPhone,
+        checkInDate: reservations.checkInDate,
+        checkOutDate: reservations.checkOutDate,
+        numGuests: reservations.numGuests,
+        totalAmount: reservations.totalAmount,
+        status: reservations.status,
+        notes: reservations.notes,
+        checkInFee: reservations.checkInFee,
+        commission: reservations.commission,
+        teamPayment: reservations.teamPayment,
+        ownerRevenue: reservations.ownerRevenue,
+        source: reservations.source,
+        createdAt: reservations.createdAt,
+        updatedAt: reservations.updatedAt
+      })
+      .from(reservations)
+      .orderBy(desc(reservations.createdAt));
+      return results;
+    } catch (error) {
+      console.error("Erro ao buscar reservas:", error);
+      return [];
+    }
   }
 
   async getReservation(id: number): Promise<Reservation | undefined> {
@@ -2549,24 +2659,143 @@ export class DatabaseStorage implements IStorage {
 
   // Sistema de manutenção
   async getMaintenanceTasks(): Promise<MaintenanceTask[]> {
-    return Array.from(this.maintenanceTasksMap.values());
+    // Verificar se maintenanceTasksMap está inicializado
+    if (!this.maintenanceTasksMap) {
+      this.maintenanceTasksMap = new Map();
+      console.log("Inicializando maintenanceTasksMap que estava indefinido");
+    }
+    
+    // Verificar se estamos usando o armazenamento de banco de dados (tem a propriedade poolInstance)
+    if ('poolInstance' in this) {
+      try {
+        if (!db) {
+          console.error("Banco de dados não disponível");
+          return Array.from(this.maintenanceTasksMap.values());
+        }
+        console.log("Consultando tarefas de manutenção do banco de dados...");
+        const tasks = await db
+          .select()
+          .from(maintenanceTasks)
+          .orderBy(desc(maintenanceTasks.reportedAt));
+        return tasks;
+      } catch (error) {
+        console.error("Erro ao obter tarefas de manutenção do banco de dados:", error);
+        return Array.from(this.maintenanceTasksMap.values());
+      }
+    } else {
+      // Usando MemStorage
+      return Array.from(this.maintenanceTasksMap.values());
+    }
   }
 
   async getMaintenanceTask(id: number): Promise<MaintenanceTask | undefined> {
-    return this.maintenanceTasksMap.get(id);
+    // Verificar se maintenanceTasksMap está inicializado
+    if (!this.maintenanceTasksMap) {
+      this.maintenanceTasksMap = new Map();
+      console.log("Inicializando maintenanceTasksMap que estava indefinido");
+    }
+    
+    // Verificar se estamos usando o armazenamento de banco de dados (tem a propriedade poolInstance)
+    if ('poolInstance' in this) {
+      try {
+        if (!db) {
+          console.error("Banco de dados não disponível");
+          return this.maintenanceTasksMap.get(id);
+        }
+        console.log("Consultando tarefa de manutenção do banco de dados por ID:", id);
+        const tasks = await db
+          .select()
+          .from(maintenanceTasks)
+          .where(eq(maintenanceTasks.id, id));
+        
+        return tasks.length > 0 ? tasks[0] : undefined;
+      } catch (error) {
+        console.error("Erro ao obter tarefa de manutenção do banco de dados:", error);
+        return this.maintenanceTasksMap.get(id);
+      }
+    } else {
+      // Usando MemStorage
+      return this.maintenanceTasksMap.get(id);
+    }
   }
 
   async getMaintenanceTasksByProperty(propertyId: number): Promise<MaintenanceTask[]> {
-    return Array.from(this.maintenanceTasksMap.values())
-      .filter(task => task.propertyId === propertyId);
+    // Verificar se maintenanceTasksMap está inicializado
+    if (!this.maintenanceTasksMap) {
+      this.maintenanceTasksMap = new Map();
+      console.log("Inicializando maintenanceTasksMap que estava indefinido");
+    }
+    
+    // Verificar se estamos usando o armazenamento de banco de dados (tem a propriedade poolInstance)
+    if ('poolInstance' in this) {
+      try {
+        if (!db) {
+          console.error("Banco de dados não disponível");
+          return Array.from(this.maintenanceTasksMap.values())
+            .filter(task => task.propertyId === propertyId);
+        }
+        console.log("Consultando tarefas de manutenção do banco de dados por propertyId:", propertyId);
+        const tasks = await db
+          .select()
+          .from(maintenanceTasks)
+          .where(eq(maintenanceTasks.propertyId, propertyId))
+          .orderBy(desc(maintenanceTasks.reportedAt));
+        
+        return tasks;
+      } catch (error) {
+        console.error("Erro ao obter tarefas de manutenção do banco de dados por propriedade:", error);
+        return Array.from(this.maintenanceTasksMap.values())
+          .filter(task => task.propertyId === propertyId);
+      }
+    } else {
+      // Usando MemStorage
+      return Array.from(this.maintenanceTasksMap.values())
+        .filter(task => task.propertyId === propertyId);
+    }
   }
 
   async getMaintenanceTasksByStatus(status: string): Promise<MaintenanceTask[]> {
-    return Array.from(this.maintenanceTasksMap.values())
-      .filter(task => task.status === status);
+    // Verificar se maintenanceTasksMap está inicializado
+    if (!this.maintenanceTasksMap) {
+      this.maintenanceTasksMap = new Map();
+      console.log("Inicializando maintenanceTasksMap que estava indefinido");
+    }
+    
+    // Verificar se estamos usando o armazenamento de banco de dados (tem a propriedade poolInstance)
+    if ('poolInstance' in this) {
+      try {
+        if (!db) {
+          console.error("Banco de dados não disponível");
+          return Array.from(this.maintenanceTasksMap.values())
+            .filter(task => task.status === status);
+        }
+        console.log("Consultando tarefas de manutenção do banco de dados por status:", status);
+        const tasks = await db
+          .select()
+          .from(maintenanceTasks)
+          .where(eq(maintenanceTasks.status, status))
+          .orderBy(desc(maintenanceTasks.reportedAt));
+        
+        return tasks;
+      } catch (error) {
+        console.error("Erro ao obter tarefas de manutenção do banco de dados por status:", error);
+        return Array.from(this.maintenanceTasksMap.values())
+          .filter(task => task.status === status);
+      }
+    } else {
+      // Usando MemStorage
+      return Array.from(this.maintenanceTasksMap.values())
+        .filter(task => task.status === status);
+    }
   }
 
   async createMaintenanceTask(task: InsertMaintenanceTask): Promise<MaintenanceTask> {
+    // Verificar se maintenanceTasksMap está inicializado
+    if (!this.maintenanceTasksMap) {
+      this.maintenanceTasksMap = new Map();
+      console.log("Inicializando maintenanceTasksMap que estava indefinido");
+    }
+    
     const id = this.currentMaintenanceTaskId++;
     const now = new Date();
     const newTask: MaintenanceTask = {
@@ -2581,16 +2810,23 @@ export class DatabaseStorage implements IStorage {
     // Registrar atividade
     const property = await this.getProperty(task.propertyId);
     this.createActivity({
-      activityType: "maintenance_task_created",
+      type: "maintenance_task_created", // Usando 'type' em vez de 'activityType'
       description: `Nova tarefa de manutenção para "${property?.name || 'Propriedade desconhecida'}" foi criada`,
-      resourceId: id,
-      resourceType: "maintenance_task"
+      entityId: id, // Usando 'entityId' em vez de 'resourceId'
+      entityType: "maintenance_task" // Usando 'entityType' em vez de 'resourceType'
     });
     
     return newTask;
   }
 
   async updateMaintenanceTask(id: number, task: Partial<InsertMaintenanceTask>): Promise<MaintenanceTask | undefined> {
+    // Verificar se maintenanceTasksMap está inicializado
+    if (!this.maintenanceTasksMap) {
+      this.maintenanceTasksMap = new Map();
+      console.log("Inicializando maintenanceTasksMap que estava indefinido");
+      return undefined;
+    }
+    
     const existingTask = this.maintenanceTasksMap.get(id);
     if (!existingTask) return undefined;
     
@@ -2606,16 +2842,23 @@ export class DatabaseStorage implements IStorage {
     // Registrar atividade
     const property = await this.getProperty(updatedTask.propertyId);
     this.createActivity({
-      activityType: "maintenance_task_updated",
+      type: "maintenance_task_updated", // Usando 'type' em vez de 'activityType'
       description: `Tarefa de manutenção para "${property?.name || 'Propriedade desconhecida'}" foi atualizada`,
-      resourceId: id,
-      resourceType: "maintenance_task"
+      entityId: id, // Usando 'entityId' em vez de 'resourceId'
+      entityType: "maintenance_task" // Usando 'entityType' em vez de 'resourceType'
     });
     
     return updatedTask;
   }
 
   async deleteMaintenanceTask(id: number): Promise<boolean> {
+    // Verificar se maintenanceTasksMap está inicializado
+    if (!this.maintenanceTasksMap) {
+      this.maintenanceTasksMap = new Map();
+      console.log("Inicializando maintenanceTasksMap que estava indefinido");
+      return false;
+    }
+    
     const task = this.maintenanceTasksMap.get(id);
     if (!task) return false;
     
@@ -2625,10 +2868,10 @@ export class DatabaseStorage implements IStorage {
     // Registrar atividade
     if (result) {
       this.createActivity({
-        activityType: "maintenance_task_deleted",
+        type: "maintenance_task_deleted", // Usando 'type' em vez de 'activityType'
         description: `Tarefa de manutenção para "${property?.name || 'Propriedade desconhecida'}" foi excluída`,
-        resourceId: id,
-        resourceType: "maintenance_task"
+        entityId: id, // Usando 'entityId' em vez de 'resourceId'
+        entityType: "maintenance_task" // Usando 'entityType' em vez de 'resourceType'
       });
     }
     
