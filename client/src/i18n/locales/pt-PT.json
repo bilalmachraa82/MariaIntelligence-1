@@ -246,7 +246,12 @@
       },
       "quickSuggestions": {
         "title": "Atalhos",
-        "subtitle": "Ações rápidas para as tuas tarefas mais comuns"
+        "subtitle": "Ações rápidas para as tuas tarefas mais comuns",
+        "revenueDesc": "Análises e estatísticas",
+        "propertiesDesc": "Gestão e desempenho",
+        "helpTitle": "Ajuda & Recomendações",
+        "helpDesc": "Dicas para otimização",
+        "marketDesc": "FAQs e melhores práticas"
       },
       "tools": {
         "title": "Opções",
@@ -260,14 +265,39 @@
         "business": {
           "revenue": "Qual foi a receita total no último mês?",
           "occupancy": "Qual é a taxa de ocupação dos meus imóveis?",
-          "profit": "Como está o lucro este mês comparado com o mês passado?"
+          "profit": "Como está o lucro este mês comparado com o mês passado?",
+          "performance": "Como está o desempenho geral do meu negócio?",
+          "trends": "Quais são as tendências de receita nos últimos meses?"
+        },
+        "properties": {
+          "list": "Quais são todos os meus imóveis?",
+          "maintenance": "Quais imóveis precisam de manutenção?",
+          "cleaning": "Quais imóveis estão programados para limpeza?",
+          "recommendations": "Recomendações para otimizar meus imóveis"
+        },
+        "reservations": {
+          "upcoming": "Quais são as próximas reservas?",
+          "cancellations": "Houve cancelamentos recentes?",
+          "availability": "Qual a disponibilidade dos imóveis?",
+          "longestStay": "Qual foi a estadia mais longa?"
+        },
+        "assistant": {
+          "personality": "Qual é a tua personalidade?",
+          "capabilities": "O que consegues fazer?",
+          "dataSource": "De onde vêm os teus dados?",
+          "improvement": "Como posso melhorar a tua eficiência?"
         }
       },
       "quickPrompts": {
         "revenue": "Podes mostrar-me um resumo da receita dos últimos 3 meses?",
         "properties": "Quais são os meus imóveis com melhor desempenho?",
         "recommendations": "Que recomendações tens para melhorar o rendimento dos meus alugueres?",
-        "knowledgebase": "Quais são as melhores práticas para gestão de imóveis no sistema?"
+        "knowledgebase": "Quais são as melhores práticas para gestão de imóveis no sistema?",
+        "nextCheckins": "Quais são os próximos check-ins agendados para hoje e amanhã?",
+        "nextCheckouts": "Quais são os check-outs previstos para hoje?",
+        "cleaning": "Quais são as limpezas pendentes para hoje?",
+        "maintenance": "Quais são as tarefas de manutenção pendentes?",
+        "today": "O que tenho para fazer hoje?"
       },
       "features": {
         "revenueTitle": "Relatórios",
@@ -278,13 +308,21 @@
         "documents": "Upload de documentos",
         "knowledgebaseTitle": "Base de Conhecimento"
       },
-      "quickSuggestions": {
-        "revenueDesc": "Análises e estatísticas",
-        "propertiesDesc": "Gestão e desempenho",
-        "helpTitle": "Ajuda & Recomendações",
-        "helpDesc": "Dicas para otimização",
-        "marketDesc": "FAQs e melhores práticas"
-      }
+      "quickTasks": {
+        "nextCheckins": "Próximos Check-ins",
+        "checkinsDesc": "Check-ins previstos para hoje",
+        "nextCheckouts": "Próximos Check-outs",
+        "checkoutsDesc": "Check-outs previstos para hoje",
+        "cleaning": "Limpezas Pendentes",
+        "cleaningDesc": "Limpezas agendadas após check-outs",
+        "maintenance": "Manutenção Pendente",
+        "maintenanceDesc": "Tarefas de manutenção urgentes",
+        "today": "Hoje",
+        "todayDesc": "Resumo das tarefas do dia"
+      },
+      "options": "Opções",
+      "contextSuggestion": "Baseado no contexto atual, talvez queiras perguntar:",
+      "contextReservation": "Sobre esta reserva, podes perguntar:"
     },
     "dashboard": {
       "title": "Painel",
