@@ -6,6 +6,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import ptPT from './locales/pt-PT.json';
 import enGB from './locales/en-GB.json';
 
+// Certificando-se de que todos os namespaces são incluídos corretamente
 const resources = {
   'pt-PT': ptPT,
   'en-GB': enGB,
@@ -31,7 +32,28 @@ i18n
       lookupQuerystring: 'lang',
       lookupLocalStorage: 'i18nextLng',
       caches: ['localStorage']
+    },
+    // Garantir que as chaves de dashboard sejam corretamente acessadas
+    keySeparator: '.',
+    parseMissingKeyHandler: (key) => {
+      console.warn(`Chave de tradução faltando: ${key}`);
+      // Extrair valor padrão (texto após a última vírgula)
+      const parts = key.split(',');
+      if (parts.length > 1) {
+        return parts[parts.length - 1].trim();
+      }
+      return key;
     }
   });
+
+// Adicionar alguns registros para debug
+console.log('i18n inicializado com os seguintes recursos:', 
+  Object.keys(resources).map(lang => ({
+    lang,
+    hasTranslation: !!resources[lang],
+    dashboardKeys: resources[lang]?.translation?.dashboard ? 
+      Object.keys(resources[lang].translation.dashboard) : []
+  }))
+);
 
 export default i18n;

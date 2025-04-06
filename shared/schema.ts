@@ -156,7 +156,7 @@ export const quotations = pgTable("quotations", {
   propertyArea: integer("property_area").notNull(),
   bedrooms: integer("bedrooms").notNull(),
   bathrooms: integer("bathrooms").notNull(),
-  address: text("address"),
+  propertyAddress: text("property_address"),
   basePrice: text("base_price").notNull(), // Preço base em euros
   cleaningFrequency: text("cleaning_frequency"), // weekly, biweekly, monthly
   includeSupplies: boolean("include_supplies").default(false),

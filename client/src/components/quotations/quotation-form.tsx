@@ -454,6 +454,24 @@ export function QuotationForm({ defaultValues, onSuccess, isEditing = false }: Q
                   )}
                 />
                 
+                <FormField
+                  control={form.control}
+                  name="propertyAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("quotation.propertyAddress")}</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder={t("quotation.propertyAddressPlaceholder") || "Rua exemplo, 123"}
+                          {...field} 
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}

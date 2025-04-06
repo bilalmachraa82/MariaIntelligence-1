@@ -2561,7 +2561,7 @@ export class DatabaseStorage implements IStorage {
         totalAmount: quotations.totalPrice,
         validUntil: quotations.validUntil,
         notes: quotations.notes,
-        address: quotations.address,
+        address: quotations.propertyAddress, // Correção: usando o nome correto da coluna
         createdAt: quotations.createdAt,
         updatedAt: quotations.updatedAt
       })
@@ -2606,7 +2606,7 @@ export class DatabaseStorage implements IStorage {
         totalAmount: quotations.totalPrice,
         validUntil: quotations.validUntil,
         notes: quotations.notes,
-        address: quotations.address,
+        address: quotations.propertyAddress, // Correção: usando o nome correto da coluna
         createdAt: quotations.createdAt,
         updatedAt: quotations.updatedAt
       })
