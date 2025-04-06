@@ -134,7 +134,7 @@ export async function generateDemoOwners(count: number = 3): Promise<number[]> {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            type: 'owner_added',
+            type: 'owner_created',
             description: `Novo proprietário demo adicionado: ${owner.name}`,
             entityId: response.id,
             entityType: 'owner',
@@ -195,7 +195,7 @@ export async function generateDemoProperties(ownerIds: number[], count: number =
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            type: 'property_added',
+            type: 'property_created',
             description: `Nova propriedade demo adicionada: ${property.name}`,
             entityId: response.id,
             entityType: 'property',
@@ -378,15 +378,18 @@ export async function generateDemoActivities(count: number = 10): Promise<number
       const descriptionList = descriptions[type as keyof typeof descriptions];
       const description = `${randomChoice(descriptionList)} [DEMO]`;
       
+      // Os campos type e description são obrigatórios no schema
+      const activityData = {
+        type: type,
+        description: description,
+        entityId: null,
+        entityType: "system" // Fornecendo um valor para entityType em vez de null
+      };
+      
       const response = await apiRequest<any>('/api/activities', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: type,
-          description: description,
-          entityId: null,
-          entityType: null,
-        }),
+        body: JSON.stringify(activityData),
       });
       
       if (response && response.id) {
