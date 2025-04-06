@@ -20,7 +20,7 @@
       "view": "Ver",
       "actions": "Ações"
     },
-    "dashboard": {
+    "_dashboardBackup": {
       "welcome": "Olá Maria!",
       "checkins": "Check-ins de Hoje",
       "viewCheckins": "Ver Check-ins",
@@ -304,6 +304,7 @@
       "comingSoon": "Análise detalhada em desenvolvimento. Disponível em breve!",
       "backToOverview": "Voltar para Visão Geral",
       "noDataAvailable": "Não há dados disponíveis.",
+      "noData": "Sem dados para este período",
       "dailyTasks": "Tarefas do Dia",
       "financialView": "Visão Financeira",
       "guestArrival": "Chegada de hóspede",
@@ -315,7 +316,16 @@
       "contactSupplier": "Contatar fornecedor",
       "supplierDescription": "Confirmar entrega dos novos lençóis",
       "monthlyInvoices": "Preparar faturas mensais",
-      "invoicesDescription": "Enviar para proprietários até amanhã"
+      "invoicesDescription": "Enviar para proprietários até amanhã",
+      "welcome": "Olá Maria!",
+      "checkins": "Check-ins de Hoje",
+      "viewCheckins": "Ver Check-ins",
+      "checkouts": "Check-outs de Hoje",
+      "viewCheckouts": "Ver Check-outs",
+      "cleanings": "Limpezas Agendadas",
+      "viewCleanings": "Ver Limpezas",
+      "financialSummary": "Resumo Financeiro",
+      "viewDetails": "Ver Detalhes"
     },
     "reservations": {
       "recentReservations": "Reservas Recentes",
