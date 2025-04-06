@@ -2765,10 +2765,11 @@ export class DatabaseStorage implements IStorage {
         return tasks;
       } catch (error) {
         console.error("Erro ao obter tarefas de manutenção do banco de dados:", error);
+        // Garantimos que maintenanceTasksMap foi inicializado acima
         return Array.from(this.maintenanceTasksMap.values());
       }
     } else {
-      // Usando MemStorage
+      // Usando MemStorage - Garantimos que maintenanceTasksMap foi inicializado acima
       return Array.from(this.maintenanceTasksMap.values());
     }
   }
