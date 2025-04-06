@@ -122,8 +122,7 @@ export async function generateDemoOwners(count: number = 3): Promise<number[]> {
       
       const response = await apiRequest<any>('/api/owners', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(owner),
+        data: owner,
       });
       
       if (response && response.id) {
@@ -132,13 +131,12 @@ export async function generateDemoOwners(count: number = 3): Promise<number[]> {
         // Criar atividade
         await apiRequest<any>('/api/activities', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          data: {
             type: 'owner_created',
             description: `Novo proprietário demo adicionado: ${owner.name}`,
             entityId: response.id,
             entityType: 'owner',
-          }),
+          },
         });
       }
     }
@@ -183,8 +181,7 @@ export async function generateDemoProperties(ownerIds: number[], count: number =
       
       const response = await apiRequest<any>('/api/properties', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(property),
+        data: property,
       });
       
       if (response && response.id) {
@@ -193,13 +190,12 @@ export async function generateDemoProperties(ownerIds: number[], count: number =
         // Criar atividade
         await apiRequest<any>('/api/activities', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          data: {
             type: 'property_created',
             description: `Nova propriedade demo adicionada: ${property.name}`,
             entityId: response.id,
             entityType: 'property',
-          }),
+          },
         });
       }
     }
@@ -333,8 +329,7 @@ export async function generateDemoReservations(propertyIds: number[], count: num
       
       const response = await apiRequest<any>('/api/reservations', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(reservation),
+        data: reservation,
       });
       
       if (response && response.id) {
@@ -343,13 +338,12 @@ export async function generateDemoReservations(propertyIds: number[], count: num
         // Criar atividade
         await apiRequest<any>('/api/activities', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          data: {
             type: 'reservation_created',
             description: `Nova reserva demo: ${property.name} - ${guestName} (${format(checkInDate, 'dd/MM/yyyy')} - ${format(checkOutDate, 'dd/MM/yyyy')})`,
             entityId: response.id,
             entityType: 'reservation',
-          }),
+          },
         });
       }
     }
@@ -388,8 +382,7 @@ export async function generateDemoActivities(count: number = 10): Promise<number
       
       const response = await apiRequest<any>('/api/activities', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(activityData),
+        data: activityData,
       });
       
       if (response && response.id) {
