@@ -1,6 +1,23 @@
 {
   "translation": {
     "quotation.undefined": "Property type not defined",
+    "settings": {
+      "title": "Settings",
+      "tabs": {
+        "general": "General",
+        "notifications": "Notifications",
+        "account": "Account",
+        "language": "Language", 
+        "integrations": "Integrations",
+        "api": "API",
+        "manual": "Manual"
+      },
+      "integrations": {
+        "title": "Integrations",
+        "description": "Connect with other platforms and services",
+        "aiStatus": "AI Services Status"
+      }
+    },
     "aiServices": {
       "statusTitle": "AI Services",
       "statusDescription": "Status of artificial intelligence services",
