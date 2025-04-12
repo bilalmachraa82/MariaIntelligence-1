@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { apiRequest } from "@/lib/queryClient";
+import { AIServiceStatus } from "@/components/ai-service-status";
 
 export default function SettingsPage() {
   const [_, navigate] = useLocation();
@@ -685,6 +686,13 @@ export default function SettingsPage() {
                     A chave da API Gemini está configurada internamente no sistema por razões de segurança e não pode ser modificada através da interface. Esta abordagem garante maior segurança no acesso à API e consistência na integração. Se você precisar atualizar a chave ou tiver problemas com a integração, entre em contato com o suporte técnico.
                   </AlertDescription>
                 </Alert>
+              </div>
+              
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold mb-2">{t("settings.integrations.aiStatus", "Status dos serviços de IA")}</h3>
+                <div className="border rounded-md p-4 bg-muted/30">
+                  <AIServiceStatus />
+                </div>
               </div>
               
               <div className="flex gap-2">

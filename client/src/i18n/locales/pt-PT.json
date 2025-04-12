@@ -933,7 +933,8 @@
       },
       "integrations": {
         "title": "Integrações",
-        "description": "Conecta com outras plataformas e serviços"
+        "description": "Conecta com outras plataformas e serviços",
+        "aiStatus": "Status dos serviços de IA"
       },
       "manual": {
         "title": "Manual do Usuário",
