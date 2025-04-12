@@ -1780,31 +1780,53 @@ export class DatabaseStorage implements IStorage {
   async getReservations(): Promise<Reservation[]> {
     if (!db) return [];
     try {
-      // Selecionando apenas as colunas que sabemos que existem no banco de dados
-      // Removendo a coluna "company_revenue" que está causando o erro
-      const results = await db.select({
-        id: reservations.id,
-        propertyId: reservations.propertyId,
-        guestName: reservations.guestName,
-        guestEmail: reservations.guestEmail,
-        guestPhone: reservations.guestPhone,
-        checkInDate: reservations.checkInDate,
-        checkOutDate: reservations.checkOutDate,
-        numGuests: reservations.numGuests,
-        totalAmount: reservations.totalAmount,
-        status: reservations.status,
-        notes: reservations.notes,
-        checkInFee: reservations.checkInFee,
-        commission: reservations.commission,
-        teamPayment: reservations.teamPayment,
-        ownerRevenue: reservations.ownerRevenue,
-        source: reservations.source,
-        createdAt: reservations.createdAt,
-        updatedAt: reservations.updatedAt
-      })
-      .from(reservations)
-      .orderBy(desc(reservations.createdAt));
-      return results;
+      // Calcular data mínima (hoje + 3 dias)
+      const today = new Date();
+      const minDate = new Date();
+      minDate.setDate(today.getDate() + 3);
+      const minDateStr = minDate.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+      
+      console.log(`Buscando reservas a partir de ${minDateStr} (hoje + 3 dias)`);
+      
+      // Abordagem alternativa com SQL direto via pool de conexão para evitar problemas com o Drizzle ORM
+      if (this.poolInstance) {
+        const query = `
+          SELECT * FROM reservations 
+          WHERE check_in_date >= $1::DATE
+          ORDER BY created_at DESC
+        `;
+        
+        const result = await this.poolInstance.query(query, [minDateStr]);
+        console.log(`Encontradas ${result.rows.length} reservas futuras a partir de ${minDateStr}`);
+        
+        // Mapear resultado para o formato esperado pelo sistema
+        return result.rows.map(row => ({
+          id: row.id,
+          propertyId: row.property_id,
+          guestName: row.guest_name,
+          guestEmail: row.guest_email,
+          guestPhone: row.guest_phone,
+          checkInDate: row.check_in_date,
+          checkOutDate: row.check_out_date,
+          numGuests: row.num_guests,
+          totalAmount: row.total_amount,
+          status: row.status,
+          notes: row.notes,
+          checkInFee: row.check_in_fee,
+          commission: row.commission_fee, // Mapeando do campo DB commission_fee para campo da aplicação commission
+          teamPayment: row.team_payment,
+          ownerRevenue: row.owner_revenue,
+          source: row.platform, // Mapeando do campo DB platform para campo da aplicação source
+          platformFee: row.platform_fee,
+          cleaningFee: row.cleaning_fee,
+          netAmount: row.net_amount,
+          createdAt: row.created_at,
+          updatedAt: row.updated_at
+        }));
+      }
+      
+      // Fallback para Drizzle caso o pool não esteja disponível
+      return [];
     } catch (error) {
       console.error("Erro ao buscar reservas:", error);
       return [];
@@ -1848,32 +1870,53 @@ export class DatabaseStorage implements IStorage {
   async getReservationsByProperty(propertyId: number): Promise<Reservation[]> {
     if (!db) return [];
     try {
-      // Selecionando apenas as colunas que sabemos que existem no banco de dados
-      // Abordagem similar a getReservations() para evitar problemas com colunas
-      const results = await db.select({
-        id: reservations.id,
-        propertyId: reservations.propertyId,
-        guestName: reservations.guestName,
-        guestEmail: reservations.guestEmail,
-        guestPhone: reservations.guestPhone,
-        checkInDate: reservations.checkInDate,
-        checkOutDate: reservations.checkOutDate,
-        numGuests: reservations.numGuests,
-        totalAmount: reservations.totalAmount,
-        status: reservations.status,
-        notes: reservations.notes,
-        checkInFee: reservations.checkInFee,
-        commission: reservations.commission,
-        teamPayment: reservations.teamPayment,
-        ownerRevenue: reservations.ownerRevenue,
-        source: reservations.source,
-        createdAt: reservations.createdAt,
-        updatedAt: reservations.updatedAt
-      })
-      .from(reservations)
-      .where(eq(reservations.propertyId, propertyId))
-      .orderBy(desc(reservations.checkInDate));
-      return results;
+      // Calcular data mínima (hoje + 3 dias)
+      const today = new Date();
+      const minDate = new Date();
+      minDate.setDate(today.getDate() + 3);
+      const minDateStr = minDate.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+      
+      console.log(`Buscando reservas para a propriedade ${propertyId} a partir de ${minDateStr} (hoje + 3 dias)`);
+      
+      // Abordagem alternativa com SQL direto via pool de conexão para evitar problemas com o Drizzle ORM
+      if (this.poolInstance) {
+        const query = `
+          SELECT * FROM reservations 
+          WHERE property_id = $1 AND check_in_date >= $2::DATE
+          ORDER BY check_in_date DESC
+        `;
+        
+        const result = await this.poolInstance.query(query, [propertyId, minDateStr]);
+        console.log(`Encontradas ${result.rows.length} reservas futuras para a propriedade ${propertyId} a partir de ${minDateStr}`);
+        
+        // Mapear resultado para o formato esperado pelo sistema
+        return result.rows.map(row => ({
+          id: row.id,
+          propertyId: row.property_id,
+          guestName: row.guest_name,
+          guestEmail: row.guest_email,
+          guestPhone: row.guest_phone,
+          checkInDate: row.check_in_date,
+          checkOutDate: row.check_out_date,
+          numGuests: row.num_guests,
+          totalAmount: row.total_amount,
+          status: row.status,
+          notes: row.notes,
+          checkInFee: row.check_in_fee,
+          commission: row.commission_fee, // Mapeando do campo DB commission_fee para campo da aplicação commission
+          teamPayment: row.team_payment,
+          ownerRevenue: row.owner_revenue,
+          source: row.platform, // Mapeando do campo DB platform para campo da aplicação source
+          platformFee: row.platform_fee,
+          cleaningFee: row.cleaning_fee,
+          netAmount: row.net_amount,
+          createdAt: row.created_at,
+          updatedAt: row.updated_at
+        }));
+      }
+      
+      // Fallback para Drizzle caso o pool não esteja disponível
+      return [];
     } catch (error) {
       console.error("Erro ao buscar reservas por propriedade:", error);
       return [];
