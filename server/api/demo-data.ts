@@ -247,10 +247,11 @@ export async function generateDemoReservations(count: number = 15): Promise<numb
         // Total amount: base + cleaning
         const totalAmount = (baseAmount + parseFloat(cleaningFee)).toFixed(2);
         
-        // Net amount: total - fees
+        // Calcular o valor líquido (total - todas as taxas)
         const netAmount = (
           parseFloat(totalAmount) - 
           parseFloat(platformFee) - 
+          parseFloat(cleaningFee) - 
           parseFloat(checkInFee) - 
           parseFloat(commission) - 
           parseFloat(teamPayment)
@@ -264,15 +265,16 @@ export async function generateDemoReservations(count: number = 15): Promise<numb
           checkInDate: format(checkInDate, 'yyyy-MM-dd'),
           checkOutDate: format(checkOutDate, 'yyyy-MM-dd'),
           totalAmount: totalAmount,
-          source: platform, // Usando source em vez de platform (conforme schema)
+          source: platform, // Usando source conforme existe na tabela
           status: status,
           notes: `Demo reservation created automatically.`,
           platformFee: platformFee,
           cleaningFee: cleaningFee,
           checkInFee: checkInFee,
-          commission: commission, // Usando commission em vez de commissionFee (conforme schema)
+          commission_fee: commission, // Usando commission_fee conforme existe na tabela
           teamPayment: teamPayment,
-          invoiceNumber: `INV-DEMO-${Date.now().toString().slice(-6)}`,
+          netAmount: netAmount, // Usando netAmount que existe na tabela
+          numGuests: Math.floor(Math.random() * 4) + 1, // Entre 1 e 4 hóspedes
         };
         
         try {
