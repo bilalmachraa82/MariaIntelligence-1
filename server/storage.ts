@@ -931,7 +931,7 @@ export class MemStorage implements IStorage {
       const revenue = reservations.reduce((sum, r) => sum + Number(r.totalAmount), 0);
       const cleaningCosts = reservations.reduce((sum, r) => sum + Number(r.cleaningFee || 0), 0);
       const checkInFees = reservations.reduce((sum, r) => sum + Number(r.checkInFee || 0), 0);
-      const commission = reservations.reduce((sum, r) => sum + Number(r.commissionFee || 0), 0);
+      const commission = reservations.reduce((sum, r) => sum + Number(r.commission || 0), 0); // Usando commission conforme schema
       const teamPayments = reservations.reduce((sum, r) => sum + Number(r.teamPayment || 0), 0);
       const netProfit = revenue - cleaningCosts - checkInFees - commission - teamPayments;
       
@@ -951,7 +951,7 @@ export class MemStorage implements IStorage {
         totalAmount: Number(r.totalAmount),
         cleaningFee: Number(r.cleaningFee || 0),
         checkInFee: Number(r.checkInFee || 0),
-        commission: Number(r.commissionFee || 0),
+        commission: Number(r.commission || 0), // Usando commission conforme schema
         teamPayment: Number(r.teamPayment || 0),
         netAmount: Number(r.netAmount || 0),
         platform: r.platform || 'direct'
@@ -1391,7 +1391,7 @@ export class MemStorage implements IStorage {
         platformFee: "48",
         cleaningFee: "50",
         checkInFee: "0",
-        commissionFee: "0",
+        commission: "0", // Corrigido de commissionFee para commission conforme schema
         teamPayment: "50",
         netAmount: "332",
         notes: "",
@@ -1412,7 +1412,7 @@ export class MemStorage implements IStorage {
         platformFee: "92",
         cleaningFee: "90",
         checkInFee: "0",
-        commissionFee: "0",
+        commission: "0", // Corrigido de commissionFee para commission conforme schema
         teamPayment: "90",
         netAmount: "648",
         notes: "Guests will arrive late, around 22:00",
@@ -1433,7 +1433,7 @@ export class MemStorage implements IStorage {
         platformFee: "0",
         cleaningFee: "45",
         checkInFee: "15",
-        commissionFee: "0",
+        commission: "0", // Corrigido de commissionFee para commission conforme schema
         teamPayment: "60",
         netAmount: "200",
         notes: "",
@@ -1454,7 +1454,7 @@ export class MemStorage implements IStorage {
         platformFee: "75",
         cleaningFee: "65",
         checkInFee: "0",
-        commissionFee: "0",
+        commission: "0", // Corrigido de commissionFee para commission conforme schema
         teamPayment: "65",
         netAmount: "545",
         notes: "Will need extra bedding for child",
