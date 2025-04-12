@@ -224,6 +224,19 @@
         "utilities": "Utilidades"
       }
     },
+    "aiServices": {
+      "statusTitle": "Serviços de IA",
+      "statusDescription": "Status dos serviços de inteligência artificial",
+      "currentService": "Serviço atual",
+      "geminiDescription": "Serviço de IA do Google",
+      "mistralDescription": "Serviço substituído pelo Google Gemini",
+      "active": "Ativo",
+      "error": "Erro",
+      "notConfigured": "Não configurado",
+      "deprecated": "Descontinuado",
+      "noData": "Sem informações disponíveis",
+      "ready": "Pronto para uso"
+    },
     "aiAssistant": {
       "title": "Assistente Maria",
       "tabs": {

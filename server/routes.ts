@@ -3724,6 +3724,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Rota para verificar o status de todos os serviços de IA
+  app.get("/api/check-ai-services", async (req: Request, res: Response) => {
+    try {
+      // Verificar o serviço Gemini
+      const geminiService = aiService.getGeminiService();
+      const geminiAvailable = geminiService.isConfigured();
+      const geminiKeyConfigured = !!process.env.GOOGLE_GEMINI_API_KEY || !!process.env.GOOGLE_API_KEY;
+      
+      // Verificar conexão assíncrona com o Gemini
+      let geminiConnected = false;
+      if (geminiKeyConfigured) {
+        try {
+          geminiConnected = await geminiService.checkApiConnection();
+        } catch (error) {
+          console.error("Erro ao verificar a conexão com o Gemini:", error);
+        }
+      }
+      
+      // Verificar se o Mistral estava configurado anteriormente
+      // Nota: Este serviço foi descontinuado, estamos apenas verificando se ele estava configurado
+      const mistralKeyConfigured = !!process.env.MISTRAL_API_KEY;
+      
+      // Obtém informações do adaptador de IA
+      const currentService = aiService.getCurrentServiceName();
+      const anyServiceAvailable = geminiConnected;
+      
+      // Retorna o status completo
+      res.json({
+        success: true,
+        services: {
+          mistral: {
+            available: false, // Sempre falso, pois o serviço foi descontinuado
+            keyConfigured: mistralKeyConfigured,
+            deprecated: true // Marcamos como descontinuado
+          },
+          gemini: {
+            available: geminiConnected,
+            keyConfigured: geminiKeyConfigured
+          }
+        },
+        currentService,
+        anyServiceAvailable
+      });
+    } catch (error: any) {
+      console.error("Erro ao verificar serviços de IA:", error);
+      res.status(500).json({
+        success: false,
+        message: "Erro ao verificar serviços de IA",
+        error: error.message
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

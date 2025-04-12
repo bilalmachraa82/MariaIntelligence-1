@@ -1,6 +1,19 @@
 {
   "translation": {
     "quotation.undefined": "Property type not defined",
+    "aiServices": {
+      "statusTitle": "AI Services",
+      "statusDescription": "Status of artificial intelligence services",
+      "currentService": "Current service",
+      "geminiDescription": "Google AI service",
+      "mistralDescription": "Service replaced by Google Gemini",
+      "active": "Active",
+      "error": "Error",
+      "notConfigured": "Not configured",
+      "deprecated": "Deprecated",
+      "noData": "No information available",
+      "ready": "Ready to use"
+    },
     "aiAssistant": {
       "title": "Maria Assistant",
       "tabs": {

@@ -89,7 +89,7 @@ export function AIServiceStatus() {
                   <h4 className="font-medium">Google Gemini</h4>
                   <p className="text-sm text-muted-foreground">{t("aiServices.geminiDescription", "Serviço de IA do Google")}</p>
                 </div>
-                <Badge variant={status.services.gemini.available ? "success" : "destructive"}>
+                <Badge variant={status.services.gemini.available ? "default" : "destructive"} className={status.services.gemini.available ? "bg-green-500" : ""}>
                   {status.services.gemini.available ? (
                     <span className="flex items-center">
                       <CheckCircle className="h-3 w-3 mr-1" /> 
