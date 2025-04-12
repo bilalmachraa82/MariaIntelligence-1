@@ -980,8 +980,13 @@
         }
       },
       "general": {
+        "title": "Configurações Gerais",
+        "description": "Gerencie as configurações básicas da sua conta",
+        "timezone": "Fuso Horário",
+        "darkMode": "Modo Escuro",
         "saveSuccess": "Configurações salvas com sucesso",
-        "saveSuccessDesc": "As alterações foram aplicadas com sucesso."
+        "saveSuccessDesc": "As alterações foram aplicadas com sucesso.",
+        "saveError": "Erro ao salvar configurações"
       }
     },
     "emailPreview": {
@@ -1059,6 +1064,10 @@
       "propertyPerformance": "Desempenho por Propriedade",
       "ownerPerformance": "Desempenho por Proprietário",
       "managementInsights": "Insights de Gestão"
+    },
+    "voiceInput": {
+      "temporaryDisabled": "Entrada por voz temporariamente indisponível",
+      "useTextInput": "A entrada de voz está temporariamente indisponível devido a limitações técnicas. Por favor, digite sua mensagem no campo de texto."
     },
     "quotations": {
       "title": "Orçamentos",

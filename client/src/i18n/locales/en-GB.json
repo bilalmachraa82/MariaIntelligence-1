@@ -12,6 +12,15 @@
         "api": "API",
         "manual": "Manual"
       },
+      "general": {
+        "title": "General Settings",
+        "description": "Manage your account's basic settings",
+        "timezone": "Time Zone",
+        "darkMode": "Dark Mode",
+        "saveSuccess": "Settings saved successfully",
+        "saveSuccessDesc": "Your changes have been applied successfully.",
+        "saveError": "Error saving settings"
+      },
       "integrations": {
         "title": "Integrations",
         "description": "Connect with other platforms and services",
@@ -204,6 +213,10 @@
     },
     "pdfUpload": {
       "uploadButton": "Import PDF"
+    },
+    "voiceInput": {
+      "temporaryDisabled": "Voice input temporarily unavailable",
+      "useTextInput": "Voice input is temporarily unavailable due to technical limitations. Please type your message in the text field."
     }
   }
 }
