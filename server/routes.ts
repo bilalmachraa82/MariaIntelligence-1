@@ -3778,6 +3778,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Demo Data Routes
+  // Rota para gerar dados de demonstração
+  app.post("/api/demo/generate", generateDemoData);
+  
+  // Rota para resetar/limpar dados de demonstração
+  app.post("/api/demo/reset", resetDemoDataHandler);
+
   const httpServer = createServer(app);
   return httpServer;
 }
