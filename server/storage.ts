@@ -2319,10 +2319,10 @@ export class DatabaseStorage implements IStorage {
         const totalRevenue = reservations.reduce((sum, r) => sum + Number(r.total_amount || 0), 0);
         const cleaningCosts = reservations.reduce((sum, r) => sum + Number(r.cleaning_fee || 0), 0);
         const checkInFees = reservations.reduce((sum, r) => sum + Number(r.check_in_fee || 0), 0);
-        const commissionFees = reservations.reduce((sum, r) => sum + Number(r.commission_fee || 0), 0);
+        const commissions = reservations.reduce((sum, r) => sum + Number(r.commission || 0), 0);
         const teamPayments = reservations.reduce((sum, r) => sum + Number(r.team_payment || 0), 0);
         
-        const totalCosts = cleaningCosts + checkInFees + commissionFees + teamPayments;
+        const totalCosts = cleaningCosts + checkInFees + commissions + teamPayments;
         const netProfit = totalRevenue - totalCosts;
         
         // Calcular taxa de ocupação
@@ -2349,7 +2349,7 @@ export class DatabaseStorage implements IStorage {
             totalRevenue,
             cleaningCosts,
             checkInFees,
-            commissionFees,
+            commissions,
             teamPayments,
             totalCosts,
             netProfit,
