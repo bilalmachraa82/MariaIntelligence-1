@@ -18,6 +18,7 @@ import {
 import { registerQuotationRoutes } from "./api/quotation-routes";
 import { registerSpeechRoutes } from "./api/speech-routes";
 import uploadControlFileRouter from "./api/upload-control-file";
+import { generateDemoData, resetDemoDataHandler } from "./api/demo-data";
 import { 
   insertPropertySchema, 
   insertOwnerSchema,
