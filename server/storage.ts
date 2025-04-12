@@ -1945,6 +1945,107 @@ export class DatabaseStorage implements IStorage {
       return [];
     }
   }
+  
+  async getReservationsForDashboard(): Promise<Reservation[]> {
+    if (!db) return [];
+    try {
+      // Obter data atual e de amanhã no formato de string YYYY-MM-DD
+      const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      
+      const todayStr = today.toISOString().split('T')[0];
+      const tomorrowStr = tomorrow.toISOString().split('T')[0];
+      
+      console.log(`Buscando reservas para dashboard - Hoje: ${todayStr}, Amanhã: ${tomorrowStr}`);
+      
+      // Usar o pool de conexão SQL para busca direta
+      if (this.poolInstance) {
+        const query = `
+          SELECT * FROM reservations 
+          WHERE 
+            (check_in_date::DATE = $1::DATE OR 
+             check_in_date::DATE = $2::DATE OR 
+             check_out_date::DATE = $1::DATE)
+          ORDER BY check_in_date ASC
+        `;
+        
+        const result = await this.poolInstance.query(query, [todayStr, tomorrowStr]);
+        console.log(`Encontradas ${result.rows.length} reservas para o dashboard de hoje e amanhã`);
+        
+        // Mapear resultado para o formato esperado pelo sistema
+        return result.rows.map(row => ({
+          id: row.id,
+          propertyId: row.property_id,
+          guestName: row.guest_name,
+          guestEmail: row.guest_email,
+          guestPhone: row.guest_phone,
+          checkInDate: row.check_in_date,
+          checkOutDate: row.check_out_date,
+          numGuests: row.num_guests,
+          totalAmount: row.total_amount,
+          platformFee: row.platform_fee,
+          cleaningFee: row.cleaning_fee,
+          checkInFee: row.check_in_fee,
+          commission: row.commission_fee, // Mapeando do campo DB commission_fee para campo da aplicação commission
+          teamPayment: row.team_payment,
+          ownerRevenue: row.owner_revenue,
+          source: row.platform, // Mapeando do campo DB platform para campo da aplicação source
+          status: row.status,
+          notes: row.notes,
+          netAmount: row.net_amount,
+          createdAt: row.created_at,
+          updatedAt: row.updated_at
+        }));
+      }
+      
+      // Fallback para Drizzle caso o pool não esteja disponível
+      // Usando sql raw para conseguir executar condições OR complexas
+      try {
+        const results = await db.execute(sql`
+          SELECT * FROM reservations 
+          WHERE 
+            (check_in_date::DATE = ${todayStr}::DATE OR 
+            check_in_date::DATE = ${tomorrowStr}::DATE OR 
+            check_out_date::DATE = ${todayStr}::DATE)
+          ORDER BY check_in_date ASC
+        `);
+        
+        if (Array.isArray(results)) {
+          return results.map((row: any) => ({
+            id: row.id,
+            propertyId: row.property_id,
+            guestName: row.guest_name,
+            guestEmail: row.guest_email,
+            guestPhone: row.guest_phone,
+            checkInDate: row.check_in_date,
+            checkOutDate: row.check_out_date,
+            numGuests: row.num_guests,
+            totalAmount: row.total_amount,
+            status: row.status,
+            notes: row.notes,
+            platformFee: row.platform_fee,
+            cleaningFee: row.cleaning_fee,
+            checkInFee: row.check_in_fee,
+            commission: row.commission_fee,
+            teamPayment: row.team_payment,
+            ownerRevenue: row.owner_revenue,
+            netAmount: row.net_amount,
+            source: row.platform,
+            createdAt: row.created_at,
+            updatedAt: row.updated_at
+          }));
+        }
+      } catch (sqlError) {
+        console.error("Erro no fallback SQL para dashboard:", sqlError);
+      }
+      
+      return [];
+    } catch (error) {
+      console.error("Erro ao buscar reservas para dashboard:", error);
+      return [];
+    }
+  }
 
   async createReservation(reservation: InsertReservation): Promise<Reservation> {
     if (!db) {
