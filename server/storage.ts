@@ -1884,8 +1884,100 @@ export class DatabaseStorage implements IStorage {
     if (!db) {
       throw new Error("Database not available");
     }
-    const [result] = await db.insert(reservations).values(reservation).returning();
-    return result;
+    
+    // Filtrar apenas os campos que sabemos que existem na tabela
+    // De acordo com o banco de dados, o campo correto é 'platform' (não 'source')
+    const sanitizedReservation = {
+      property_id: reservation.propertyId,
+      guest_name: reservation.guestName,
+      guest_email: reservation.guestEmail || '',
+      guest_phone: reservation.guestPhone || '',
+      check_in_date: reservation.checkInDate,
+      check_out_date: reservation.checkOutDate,
+      total_amount: reservation.totalAmount,
+      platform: reservation.source || 'direct', // Campo correto é 'platform'
+      status: reservation.status || 'pending',
+      platform_fee: reservation.platformFee || '0',
+      cleaning_fee: reservation.cleaningFee || '0',
+      check_in_fee: reservation.checkInFee || '0',
+      commission_fee: reservation.commission_fee || '0',
+      team_payment: reservation.teamPayment || '0',
+      net_amount: reservation.netAmount || '0',
+      notes: reservation.notes || '',
+      num_guests: reservation.numGuests || 1
+    };
+    
+    console.log('Criando reserva com dados sanitizados:', sanitizedReservation);
+    
+    // Usar inserção SQL direta para evitar campos adicionais como "company_revenue"
+    try {
+      const client = await this.poolInstance.connect();
+      try {
+        const insertQuery = `
+          INSERT INTO reservations (
+            property_id, guest_name, guest_email, guest_phone, 
+            check_in_date, check_out_date, total_amount, platform, 
+            status, platform_fee, cleaning_fee, check_in_fee, 
+            commission_fee, team_payment, net_amount, notes, num_guests
+          ) VALUES (
+            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17
+          ) RETURNING *
+        `;
+        
+        const values = [
+          sanitizedReservation.property_id,
+          sanitizedReservation.guest_name,
+          sanitizedReservation.guest_email,
+          sanitizedReservation.guest_phone,
+          sanitizedReservation.check_in_date,
+          sanitizedReservation.check_out_date,
+          sanitizedReservation.total_amount,
+          sanitizedReservation.platform,
+          sanitizedReservation.status,
+          sanitizedReservation.platform_fee,
+          sanitizedReservation.cleaning_fee,
+          sanitizedReservation.check_in_fee,
+          sanitizedReservation.commission_fee,
+          sanitizedReservation.team_payment,
+          sanitizedReservation.net_amount,
+          sanitizedReservation.notes,
+          sanitizedReservation.num_guests
+        ];
+        
+        const result = await client.query(insertQuery, values);
+        console.log('Reserva criada com sucesso via SQL:', result.rows[0]);
+        
+        // Mapear o resultado para o formato esperado pelo sistema
+        const createdReservation = {
+          id: result.rows[0].id,
+          propertyId: result.rows[0].property_id,
+          guestName: result.rows[0].guest_name,
+          guestEmail: result.rows[0].guest_email,
+          guestPhone: result.rows[0].guest_phone,
+          checkInDate: result.rows[0].check_in_date,
+          checkOutDate: result.rows[0].check_out_date,
+          totalAmount: result.rows[0].total_amount,
+          status: result.rows[0].status,
+          source: result.rows[0].platform,
+          platformFee: result.rows[0].platform_fee,
+          cleaningFee: result.rows[0].cleaning_fee,
+          checkInFee: result.rows[0].check_in_fee,
+          commission_fee: result.rows[0].commission_fee,
+          teamPayment: result.rows[0].team_payment,
+          netAmount: result.rows[0].net_amount,
+          notes: result.rows[0].notes,
+          numGuests: result.rows[0].num_guests,
+          createdAt: result.rows[0].created_at
+        };
+        
+        return createdReservation;
+      } finally {
+        client.release();
+      }
+    } catch (error) {
+      console.error('Erro na inserção SQL:', error);
+      throw error;
+    }
   }
 
   async updateReservation(id: number, reservation: Partial<InsertReservation>): Promise<Reservation | undefined> {

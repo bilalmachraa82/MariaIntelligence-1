@@ -54,8 +54,7 @@ export const reservations = pgTable("reservations", {
   platformFee: text("platform_fee"), // Taxa da plataforma em euros
   cleaningFee: text("cleaning_fee"), // Taxa de limpeza em euros
   commission: text("commission_fee"), // Comissão do administrador em euros
-  companyRevenue: text("company_revenue"), // Receita da empresa em euros
-  ownerRevenue: text("owner_revenue"), // Receita do proprietário em euros
+  netAmount: text("net_amount"), // Valor líquido após taxas
   guestEmail: text("guest_email"),
   guestPhone: text("guest_phone"),
   status: text("status").notNull().default("confirmed"), // confirmed, checked-in, checked-out, cancelled
