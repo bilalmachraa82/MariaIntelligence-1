@@ -42,6 +42,7 @@
     "quotation.apartment_t3": "Apartamento T3",
     "quotation.apartment_t4": "Apartamento T4",
     "quotation.apartment_t5": "Apartamento T5",
+    "quotation.undefined": "Tipo de propriedade não definido",
     "quotation": {
       "pageTitle": "Orçamentos",
       "pageDescription": "Gerir orçamentos para clientes e propriedades",
@@ -750,6 +751,21 @@
       "pending": "Pendente",
       "attention": "Atenção",
       "upcoming": "Agendado"
+    },
+    "cleaningTeams": {
+      "title": "Prestadores de Serviço",
+      "addTeam": "Adicionar Prestador",
+      "searchPlaceholder": "Pesquisar prestadores...",
+      "teams": "Prestadores",
+      "schedule": "Agendamento",
+      "allTeams": "Todos os Prestadores",
+      "managementDescription": "Gerencie todos os prestadores de serviço da sua operação.",
+      "name": "Nome",
+      "contact": "Contacto",
+      "status": "Estado",
+      "statusActive": "Ativa",
+      "scheduleDescription": "Visualize e gerencie o agendamento de limpezas.",
+      "viewSchedules": "Ver Agendamentos"
     },
     "quotation": {
       "title": "Orçamentos",

@@ -1,5 +1,6 @@
 {
   "translation": {
+    "quotation.undefined": "Property type not defined",
     "aiAssistant": {
       "title": "Maria Assistant",
       "tabs": {
@@ -118,6 +119,21 @@
       "pending": "Pending",
       "attention": "Attention",
       "upcoming": "Scheduled"
+    },
+    "cleaningTeams": {
+      "title": "Service Providers",
+      "addTeam": "Add Provider",
+      "searchPlaceholder": "Search providers...",
+      "teams": "Providers",
+      "schedule": "Schedule",
+      "allTeams": "All Providers",
+      "managementDescription": "Manage all service providers for your operation.",
+      "name": "Name",
+      "contact": "Contact",
+      "status": "Status",
+      "statusActive": "Active",
+      "scheduleDescription": "View and manage cleaning schedules.",
+      "viewSchedules": "View Schedules"
     },
     "reservations": {
       "recentReservations": "Recent Bookings",
