@@ -355,6 +355,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Rota específica para reservas do dia atual e amanhã (para dashboard)
+  app.get("/api/reservations/dashboard", async (req: Request, res: Response) => {
+    try {
+      const reservations = await storage.getReservationsForDashboard();
+      res.json(reservations);
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+
   app.get("/api/reservations/:id", async (req: Request, res: Response) => {
     try {
       const reservation = await storage.getReservation(Number(req.params.id));

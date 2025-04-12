@@ -87,6 +87,7 @@ export interface IStorage {
   getReservations(): Promise<Reservation[]>;
   getReservation(id: number): Promise<Reservation | undefined>;
   getReservationsByProperty(propertyId: number): Promise<Reservation[]>;
+  getReservationsForDashboard(): Promise<Reservation[]>; // Nova função para obter check-ins e check-outs de hoje e amanhã
   createReservation(reservation: InsertReservation): Promise<Reservation>;
   updateReservation(id: number, reservation: Partial<InsertReservation>): Promise<Reservation | undefined>;
   deleteReservation(id: number): Promise<boolean>;
@@ -367,6 +368,28 @@ export class MemStorage implements IStorage {
   async getReservationsByProperty(propertyId: number): Promise<Reservation[]> {
     return Array.from(this.reservationsMap.values()).filter(
       (reservation) => reservation.propertyId === propertyId
+    );
+  }
+  
+  async getReservationsForDashboard(): Promise<Reservation[]> {
+    // Obter data atual e de amanhã (como strings ISO no formato YYYY-MM-DD)
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    const todayStr = today.toISOString().split('T')[0];
+    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    
+    // Filtrar reservas para check-ins e check-outs de hoje e amanhã
+    return Array.from(this.reservationsMap.values()).filter(
+      (reservation) => {
+        const checkInDate = reservation.checkInDate.split('T')[0];
+        const checkOutDate = reservation.checkOutDate.split('T')[0];
+        
+        return checkInDate === todayStr || 
+               checkInDate === tomorrowStr || 
+               checkOutDate === todayStr;
+      }
     );
   }
 
