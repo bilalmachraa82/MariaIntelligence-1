@@ -169,7 +169,8 @@
     "common": {
       "cancel": "Cancel",
       "confirm": "Confirm",
-      "logout": "Logout"
+      "logout": "Logout",
+      "nif": "Tax ID"
     },
     "pdfUpload": {
       "uploadButton": "Import PDF"
