@@ -537,7 +537,7 @@ export class MemStorage implements IStorage {
       return sum + 
         Number(r.cleaningFee) + 
         Number(r.checkInFee) + 
-        Number(r.commissionFee) + 
+        Number(r.commission) + // Usando commission conforme schema
         Number(r.teamPayment);
     }, 0);
     
@@ -1900,7 +1900,7 @@ export class DatabaseStorage implements IStorage {
       platform_fee: reservation.platformFee || '0',
       cleaning_fee: reservation.cleaningFee || '0',
       check_in_fee: reservation.checkInFee || '0',
-      commission_fee: reservation.commission_fee || '0',
+      commission_fee: reservation.commission || '0', // Usa commission do schema
       team_payment: reservation.teamPayment || '0',
       net_amount: reservation.netAmount || '0',
       notes: reservation.notes || '',
@@ -1962,7 +1962,7 @@ export class DatabaseStorage implements IStorage {
           platformFee: result.rows[0].platform_fee,
           cleaningFee: result.rows[0].cleaning_fee,
           checkInFee: result.rows[0].check_in_fee,
-          commission_fee: result.rows[0].commission_fee,
+          commission: result.rows[0].commission_fee, // Usando commission conforme schema
           teamPayment: result.rows[0].team_payment,
           netAmount: result.rows[0].net_amount,
           notes: result.rows[0].notes,

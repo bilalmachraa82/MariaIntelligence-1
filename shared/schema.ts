@@ -55,6 +55,7 @@ export const reservations = pgTable("reservations", {
   cleaningFee: text("cleaning_fee"), // Taxa de limpeza em euros
   commission: text("commission_fee"), // Comissão do administrador em euros
   netAmount: text("net_amount"), // Valor líquido após taxas
+  numGuests: integer("num_guests").default(1), // Número de hóspedes
   guestEmail: text("guest_email"),
   guestPhone: text("guest_phone"),
   status: text("status").notNull().default("confirmed"), // confirmed, checked-in, checked-out, cancelled
@@ -304,7 +305,7 @@ export const extendedReservationSchema = z.object({
   platformFee: z.string(),
   cleaningFee: z.string(),
   checkInFee: z.string(),
-  commissionFee: z.string(),
+  commission: z.string(), // Alteração para usar 'commission' em vez de 'commissionFee'
   teamPayment: z.string(),
   netAmount: z.string(),
   notes: z.string().optional().or(z.literal("")),
