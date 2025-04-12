@@ -88,9 +88,9 @@ export default function DailyTasksDashboard() {
     staleTime: 10 * 60 * 1000, // 10 minutos de cache
   });
 
-  // Fetch reservations com cache estendido
+  // Fetch reservations do dashboard específicas para hoje e amanhã
   const { data: rawReservations = [], isLoading: isLoadingReservations } = useQuery<Reservation[]>({
-    queryKey: ["/api/reservations"],
+    queryKey: ["/api/reservations/dashboard"],
     staleTime: 5 * 60 * 1000, // 5 minutos de cache
   });
   
@@ -124,19 +124,16 @@ export default function DailyTasksDashboard() {
     };
   }, []);
 
-  // Filter today's check-ins from reservations com useMemo
+  // Filtrar check-ins - agora API já retorna apenas as reservas de hoje e amanhã
   const todayCheckIns = useMemo(() => {
     if (isLoadingReservations || !reservations.length) return [];
     
     return reservations
-      .filter(res => 
-        res.checkInDate.split('T')[0] === todayStr || 
-        res.checkInDate.split('T')[0] === tomorrowStr
-      )
+      .filter(res => res.checkInDate.split('T')[0] === todayStr || res.checkInDate.split('T')[0] === tomorrowStr)
       .sort((a, b) => new Date(a.checkInDate).getTime() - new Date(b.checkInDate).getTime());
   }, [isLoadingReservations, reservations, todayStr, tomorrowStr]);
 
-  // Filter today's check-outs from reservations com useMemo
+  // Filtrar check-outs de hoje apenas
   const todayCheckOuts = useMemo(() => {
     if (isLoadingReservations || !reservations.length) return [];
     
