@@ -8,8 +8,8 @@
  */
 
 // Importações necessárias
-// Descomentar quando a biblioteca @google/generative-ai estiver disponível
-// import { GoogleGenerativeAI, GenerativeModel, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
+// Nota: Estamos usando implementação direta com fetch em vez da biblioteca oficial
+// pois a implementação atual é mais robusta e inclui recursos de fallback/retry
 import { rateLimiter } from './rate-limiter.service';
 import crypto from 'crypto';
 
