@@ -371,73 +371,73 @@ export default function DailyTasksDashboard() {
         </div>
       </motion.div>
 
-      {/* Task Statistics */}
+      {/* Task Statistics - Otimizado para mobile */}
       <motion.div 
         variants={fadeIn}
         initial="hidden"
         animate="visible"
         custom={1}
-        className="grid grid-cols-2 sm:grid-cols-4 gap-4"
+        className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4"
       >
         <Card className="bg-background/70 backdrop-blur-sm shadow-sm border-primary/20">
-          <CardContent className="p-6">
+          <CardContent className="p-3 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">{t("dailyTasks.todayCheckins", "Check-ins Hoje")}</p>
-                <h3 className="text-3xl font-bold text-primary mt-1">{taskStatistics.checkIns}</h3>
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground">{t("dailyTasks.todayCheckins", "Check-ins Hoje")}</p>
+                <h3 className="text-2xl sm:text-3xl font-bold text-primary mt-1">{taskStatistics.checkIns}</h3>
               </div>
-              <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full">
-                <User className="h-6 w-6 text-blue-500" />
+              <div className="bg-blue-100 dark:bg-blue-900/30 p-2 sm:p-3 rounded-full">
+                <User className="h-5 w-5 sm:h-6 sm:w-6 text-blue-500" />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card className="bg-background/70 backdrop-blur-sm shadow-sm border-primary/20">
-          <CardContent className="p-6">
+          <CardContent className="p-3 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">{t("dailyTasks.todayCheckouts", "Check-outs Hoje")}</p>
-                <h3 className="text-3xl font-bold text-primary mt-1">{taskStatistics.checkOuts}</h3>
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground">{t("dailyTasks.todayCheckouts", "Check-outs Hoje")}</p>
+                <h3 className="text-2xl sm:text-3xl font-bold text-primary mt-1">{taskStatistics.checkOuts}</h3>
               </div>
-              <div className="bg-rose-100 dark:bg-rose-900/30 p-3 rounded-full">
-                <LogOut className="h-6 w-6 text-rose-500" />
+              <div className="bg-rose-100 dark:bg-rose-900/30 p-2 sm:p-3 rounded-full">
+                <LogOut className="h-5 w-5 sm:h-6 sm:w-6 text-rose-500" />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card className="bg-background/70 backdrop-blur-sm shadow-sm border-primary/20">
-          <CardContent className="p-6">
+          <CardContent className="p-3 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">{t("dailyTasks.pendingCleanings", "Limpezas")}</p>
-                <h3 className="text-3xl font-bold text-primary mt-1">{taskStatistics.cleaningTasks}</h3>
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground">{t("dailyTasks.pendingCleanings", "Limpezas")}</p>
+                <h3 className="text-2xl sm:text-3xl font-bold text-primary mt-1">{taskStatistics.cleaningTasks}</h3>
               </div>
-              <div className="bg-emerald-100 dark:bg-emerald-900/30 p-3 rounded-full">
-                <Sparkles className="h-6 w-6 text-emerald-500" />
+              <div className="bg-emerald-100 dark:bg-emerald-900/30 p-2 sm:p-3 rounded-full">
+                <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-500" />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card className="bg-background/70 backdrop-blur-sm shadow-sm border-primary/20">
-          <CardContent className="p-6">
+          <CardContent className="p-3 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">{t("dailyTasks.maintenanceIssues", "Manutenções")}</p>
-                <h3 className="text-3xl font-bold text-primary mt-1">{taskStatistics.maintenanceTasks}</h3>
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground">{t("dailyTasks.maintenanceIssues", "Manutenções")}</p>
+                <h3 className="text-2xl sm:text-3xl font-bold text-primary mt-1">{taskStatistics.maintenanceTasks}</h3>
               </div>
-              <div className="bg-amber-100 dark:bg-amber-900/30 p-3 rounded-full">
-                <Wrench className="h-6 w-6 text-amber-500" />
+              <div className="bg-amber-100 dark:bg-amber-900/30 p-2 sm:p-3 rounded-full">
+                <Wrench className="h-5 w-5 sm:h-6 sm:w-6 text-amber-500" />
               </div>
             </div>
           </CardContent>
         </Card>
       </motion.div>
 
-      {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Main Content - Otimizado para mobile */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Check-ins Column */}
         <motion.div
           variants={fadeIn}
@@ -446,17 +446,17 @@ export default function DailyTasksDashboard() {
           custom={2}
         >
           <Card className="h-full bg-background/70 backdrop-blur-sm border-blue-200/30">
-            <CardHeader className="pb-2">
+            <CardHeader className="pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                  <User className="h-5 w-5 text-blue-500" />
-                  <CardTitle className="text-lg">{t("dailyTasks.checkins", "Check-ins")}</CardTitle>
+                  <User className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500" />
+                  <CardTitle className="text-base sm:text-lg">{t("dailyTasks.checkins", "Check-ins")}</CardTitle>
                 </div>
-                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs sm:text-sm">
                   {todayCheckIns.length}
                 </Badge>
               </div>
-              <CardDescription>{t("dailyTasks.checkinsDescription", "Chegadas de hóspedes para hoje e amanhã")}</CardDescription>
+              <CardDescription className="text-xs sm:text-sm">{t("dailyTasks.checkinsDescription", "Chegadas de hóspedes para hoje e amanhã")}</CardDescription>
             </CardHeader>
             <CardContent className="p-0">
               <ScrollArea className="h-[calc(100vh-30rem)] px-4 pt-1 pb-2">
@@ -549,17 +549,17 @@ export default function DailyTasksDashboard() {
           custom={3}
         >
           <Card className="h-full bg-background/70 backdrop-blur-sm border-rose-200/30">
-            <CardHeader className="pb-2">
+            <CardHeader className="pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                  <LogOut className="h-5 w-5 text-rose-500" />
-                  <CardTitle className="text-lg">{t("dailyTasks.checkouts", "Check-outs")}</CardTitle>
+                  <LogOut className="h-4 w-4 sm:h-5 sm:w-5 text-rose-500" />
+                  <CardTitle className="text-base sm:text-lg">{t("dailyTasks.checkouts", "Check-outs")}</CardTitle>
                 </div>
-                <Badge variant="outline" className="bg-rose-50 text-rose-700 border-rose-200">
+                <Badge variant="outline" className="bg-rose-50 text-rose-700 border-rose-200 text-xs sm:text-sm">
                   {todayCheckOuts.length}
                 </Badge>
               </div>
-              <CardDescription>{t("dailyTasks.checkoutsDescription", "Saídas de hóspedes para hoje")}</CardDescription>
+              <CardDescription className="text-xs sm:text-sm">{t("dailyTasks.checkoutsDescription", "Saídas de hóspedes para hoje")}</CardDescription>
             </CardHeader>
             <CardContent className="p-0">
               <ScrollArea className="h-[calc(100vh-30rem)] px-4 pt-1 pb-2">
@@ -699,17 +699,17 @@ export default function DailyTasksDashboard() {
           custom={4}
         >
           <Card className="h-full bg-background/70 backdrop-blur-sm border-amber-200/30">
-            <CardHeader className="pb-2">
+            <CardHeader className="pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                  <Wrench className="h-5 w-5 text-amber-500" />
-                  <CardTitle className="text-lg">{t("dailyTasks.maintenance", "Manutenção & Tarefas")}</CardTitle>
+                  <Wrench className="h-4 w-4 sm:h-5 sm:w-5 text-amber-500" />
+                  <CardTitle className="text-base sm:text-lg">{t("dailyTasks.maintenance", "Manutenção & Tarefas")}</CardTitle>
                 </div>
-                <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
+                <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 text-xs sm:text-sm">
                   {maintenanceTasks.length + otherTasks.length}
                 </Badge>
               </div>
-              <CardDescription>{t("dailyTasks.maintenanceDescription", "Reparos e tarefas pendentes")}</CardDescription>
+              <CardDescription className="text-xs sm:text-sm">{t("dailyTasks.maintenanceDescription", "Reparos e tarefas pendentes")}</CardDescription>
             </CardHeader>
             <CardContent className="p-0">
               <ScrollArea className="h-[calc(100vh-30rem)] px-4 pt-1 pb-2">
