@@ -273,7 +273,8 @@ export async function generateDemoReservations(count: number = 15): Promise<numb
           checkInFee: checkInFee,
           commission: commission, // Campo está definido como commission no schema
           teamPayment: teamPayment,
-          netAmount: netAmount // Usando netAmount que existe na tabela
+          netAmount: netAmount, // Usando netAmount que existe na tabela
+          numGuests: Math.floor(Math.random() * 4) + 1 // Entre 1 e 4 hóspedes
         };
         
         try {
