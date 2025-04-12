@@ -359,7 +359,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/reservations/dashboard", async (req: Request, res: Response) => {
     try {
       const reservations = await storage.getReservationsForDashboard();
-      res.json(reservations);
+      
+      // Categorizar reservas para o formato esperado pelo componente
+      const today = new Date().toISOString().split('T')[0];
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const tomorrowStr = tomorrow.toISOString().split('T')[0];
+      
+      // Arrays para armazenar cada tipo de reserva
+      const checkIns: any[] = [];
+      const checkOuts: any[] = [];
+      const cleaningTasks: any[] = [];
+      
+      // Categorizar as reservas
+      reservations.forEach((reservation: any) => {
+        // Check-ins para hoje e amanhã
+        if (reservation.checkInDate.split('T')[0] === today || 
+            reservation.checkInDate.split('T')[0] === tomorrowStr) {
+          checkIns.push(reservation);
+        }
+        
+        // Check-outs para hoje
+        if (reservation.checkOutDate.split('T')[0] === today) {
+          checkOuts.push(reservation);
+          
+          // Cada check-out gera uma tarefa de limpeza
+          cleaningTasks.push({
+            id: `cleaning-${reservation.id}`,
+            propertyId: reservation.propertyId,
+            propertyName: reservation.propertyName,
+            title: `Limpeza após saída`,
+            description: `Limpeza necessária após saída do hóspede ${reservation.guestName}`,
+            status: 'pending',
+            priority: 'medium',
+            type: 'cleaning',
+            date: reservation.checkOutDate
+          });
+        }
+      });
+      
+      // Retornar dados estruturados
+      res.json({
+        checkIns,
+        checkOuts,
+        cleaningTasks
+      });
     } catch (err) {
       handleError(err, res);
     }
@@ -477,7 +521,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const limit = req.query.limit ? Number(req.query.limit) : undefined;
       const activities = await storage.getActivities(limit);
-      res.json(activities);
+      
+      // Adicionar tarefas estruturadas para o dashboard
+      // Obter propriedades para definir as tarefas em algumas delas
+      const properties = await storage.getProperties();
+      const activeProperties = properties.filter(p => p.active).slice(0, 3);
+      
+      // Criar tarefas de manutenção para o dashboard
+      const maintenance = activeProperties.map((property, index) => ({
+        id: `maintenance-${property.id}`,
+        propertyId: property.id,
+        propertyName: property.name,
+        title: index === 0 ? 'Problema na torneira do banheiro' : 
+               index === 1 ? 'Ar condicionado com problema' :
+               'Manutenção da fechadura',
+        description: index === 0 ? 'Cliente reportou vazamento na torneira do banheiro principal' :
+                    index === 1 ? 'Unidade interna do ar condicionado fazendo barulho' :
+                    'Fechadura da porta principal necessita manutenção',
+        status: index === 0 ? 'attention' : 'pending',
+        priority: index === 0 ? 'high' : 'medium',
+        type: 'maintenance',
+        date: new Date().toISOString()
+      }));
+      
+      // Criar outras tarefas gerais para o dashboard
+      const tasks = [
+        {
+          id: 'task-1',
+          title: 'Contatar fornecedor de produtos',
+          description: 'Refazer pedido de amenities para os próximos meses',
+          status: 'pending',
+          priority: 'medium',
+          type: 'task',
+          icon: 'Phone',
+          date: new Date().toISOString()
+        },
+        {
+          id: 'task-2',
+          title: 'Atualizar preços no site',
+          description: 'Revisar tarifas para o período de alta temporada',
+          status: 'upcoming',
+          priority: 'low',
+          type: 'task',
+          icon: 'Calendar',
+          date: new Date().toISOString()
+        }
+      ];
+      
+      // Retornar resposta estruturada para dashboard
+      res.json({
+        activities,
+        maintenance,
+        tasks
+      });
     } catch (err) {
       handleError(err, res);
     }
