@@ -19,7 +19,10 @@
       "confirm": "Confirmar",
       "view": "Ver",
       "actions": "Ações",
-      "nif": "NIF"
+      "nif": "NIF",
+      "loading": "A carregar...",
+      "refreshing": "A atualizar...",
+      "refresh": "Atualizar"
     },
     "_dashboardBackup": {
       "welcome": "Olá Maria!",
