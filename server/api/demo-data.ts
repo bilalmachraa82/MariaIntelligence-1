@@ -149,156 +149,164 @@ export async function generateDemoOwners(count: number = 3): Promise<number[]> {
 // Generate demo reservations for properties
 export async function generateDemoReservations(count: number = 15): Promise<number[]> {
   const createdIds: number[] = [];
-  const properties = await storage.getProperties();
+  console.log('Iniciando geração de reservas demo...');
   
-  if (properties.length === 0) {
-    // Can't create reservations without properties
-    console.error('Não existem propriedades para criar reservas!');
-    return createdIds;
-  }
+  try {
+    const properties = await storage.getProperties();
+    console.log(`Propriedades obtidas: ${properties.length}`);
+    
+    if (properties.length === 0) {
+      // Can't create reservations without properties
+      console.error('Não existem propriedades para criar reservas!');
+      return createdIds;
+    }
+    
+    console.log(`Gerando ${count} reservas para ${properties.length} propriedades disponíveis`);
   
-  console.log(`Gerando ${count} reservas para ${properties.length} propriedades disponíveis`);
-  
-  // Plataformas e estatus usando os valores reais do sistema
-  const platformOptions = ['airbnb', 'booking', 'direct', 'expedia', 'other'];
-  const statusOptions = ['confirmed', 'pending'];
-  
-  // Nomes de hóspedes para geração de dados demo
-  const guestFirstNames = ['John', 'Emma', 'Michael', 'Sophie', 'David', 'Julia', 'Robert', 'Laura'];
-  const guestLastNames = ['Smith', 'Johnson', 'Brown', 'Davis', 'Miller', 'Wilson', 'Moore', 'Taylor'];
-  
-  // Data atual para referência
-  const now = new Date();
-  
-  for (let i = 0; i < count; i++) {
-    try {
-      // Selecionar propriedade aleatória
-      const randomPropertyIndex = Math.floor(Math.random() * properties.length);
-      const property = properties[randomPropertyIndex];
-      
-      if (!property) {
-        console.error(`Erro: Propriedade não encontrada no índice ${randomPropertyIndex}`);
-        continue; // Pular esta iteração e tentar a próxima
-      }
-      
-      console.log(`Criando reserva ${i+1}/${count} para propriedade: ${property.name} (ID: ${property.id})`);
-      
-      // Gerar apenas reservas atuais e futuras (atendendo ao pedido do cliente)
-      let checkInDate, checkOutDate;
-      
-      if (i % 2 === 0) {
-        // Reserva atual (próximos 14 dias)
-        const startOffset = Math.floor(Math.random() * 14); // Próximos 14 dias
-        checkInDate = addDays(now, startOffset);
-        const stayDuration = Math.floor(Math.random() * 7) + 2; // 2-9 dias
-        checkOutDate = addDays(checkInDate, stayDuration);
-      } else {
-        // Reserva futura (próximos 15-90 dias)
-        const futureStartDay = Math.floor(Math.random() * 75) + 15; // Entre 15 e 90 dias no futuro
-        checkInDate = addDays(now, futureStartDay);
-        const stayDuration = Math.floor(Math.random() * 7) + 2; // 2-9 dias
-        checkOutDate = addDays(checkInDate, stayDuration);
-      }
-      
-      // Generate random guest data
-      const guestFirstName = guestFirstNames[Math.floor(Math.random() * guestFirstNames.length)];
-      const guestLastName = guestLastNames[Math.floor(Math.random() * guestLastNames.length)];
-      const guestName = `${guestFirstName} ${guestLastName}`;
-      const guestEmail = `${guestFirstName.toLowerCase()}.${guestLastName.toLowerCase()}@example.com`;
-      const guestPhone = `+${Math.floor(Math.random() * 90) + 10} ${Math.floor(Math.random() * 1000000000) + 1000000000}`;
-      
-      // Random platform and status
-      const platform = platformOptions[Math.floor(Math.random() * platformOptions.length)];
-      
-      // Status based on dates
-      let status;
-      if (checkOutDate < now) {
-        status = 'completed';
-      } else if (checkInDate > now) {
-        status = 'confirmed';
-      } else {
-        status = 'in_progress';
-      }
-      
-      // Random cancellation (approximately 10% of reservations)
-      if (Math.random() < 0.1) {
-        status = 'cancelled';
-      }
-      
-      // Calculate prices based on property data
-      const basePricePerNight = Math.floor(Math.random() * 100) + 50; // Between 50-150 per night
-      const stayDurationDays = Math.floor((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
-      const baseAmount = basePricePerNight * stayDurationDays;
-      
-      // Platform fee (percentage of base amount)
-      const platformFeePercent = platform === 'direct' ? 0 : Math.floor(Math.random() * 15) + 5; // 5-20%
-      const platformFee = (baseAmount * platformFeePercent / 100).toFixed(2);
-      
-      // Calculate costs using the property's values
-      const cleaningFee = property.cleaningCost || '45.00';
-      const checkInFee = property.checkInFee || '25.00';
-      const commissionFee = property.commission ? (baseAmount * parseFloat(property.commission) / 100).toFixed(2) : '0.00';
-      const teamPayment = property.teamPayment || '30.00';
-      
-      // Total amount: base + cleaning
-      const totalAmount = (baseAmount + parseFloat(cleaningFee)).toFixed(2);
-      
-      // Net amount: total - fees
-      const netAmount = (
-        parseFloat(totalAmount) - 
-        parseFloat(platformFee) - 
-        parseFloat(checkInFee) - 
-        parseFloat(commissionFee) - 
-        parseFloat(teamPayment)
-      ).toFixed(2);
-      
-      const newReservation: InsertReservation = {
-        propertyId: property.id,
-        guestName: `${guestName} [DEMO]`,
-        guestEmail: guestEmail,
-        guestPhone: guestPhone,
-        checkInDate: format(checkInDate, 'yyyy-MM-dd'),
-        checkOutDate: format(checkOutDate, 'yyyy-MM-dd'),
-        totalAmount: totalAmount,
-        platform: platform,
-        status: status,
-        notes: `Demo reservation created automatically.`,
-        platformFee: platformFee,
-        cleaningFee: cleaningFee,
-        checkInFee: checkInFee,
-        commissionFee: commissionFee,
-        teamPayment: teamPayment,
-        invoiceNumber: `INV-DEMO-${Date.now().toString().slice(-6)}`,
-      };
-      
+    // Plataformas e estatus usando os valores reais do sistema
+    const platformOptions = ['airbnb', 'booking', 'direct', 'expedia', 'other'];
+    const statusOptions = ['confirmed', 'pending'];
+    
+    // Nomes de hóspedes para geração de dados demo
+    const guestFirstNames = ['John', 'Emma', 'Michael', 'Sophie', 'David', 'Julia', 'Robert', 'Laura'];
+    const guestLastNames = ['Smith', 'Johnson', 'Brown', 'Davis', 'Miller', 'Wilson', 'Moore', 'Taylor'];
+    
+    // Data atual para referência
+    const now = new Date();
+    
+    for (let i = 0; i < count; i++) {
       try {
-        const createdReservation = await storage.createReservation(newReservation);
-        createdIds.push(createdReservation.id);
+        // Selecionar propriedade aleatória
+        const randomPropertyIndex = Math.floor(Math.random() * properties.length);
+        const property = properties[randomPropertyIndex];
         
-        // Create an activity for this reservation
-        await storage.createActivity({
-          type: 'reservation_created',
-          description: `Nova reserva demo criada para ${property.name}: ${guestName} (${format(checkInDate, 'dd/MM/yyyy')} - ${format(checkOutDate, 'dd/MM/yyyy')})`,
-          entityId: createdReservation.id,
-          entityType: 'reservation',
-        });
+        if (!property) {
+          console.error(`Erro: Propriedade não encontrada no índice ${randomPropertyIndex}`);
+          continue; // Pular esta iteração e tentar a próxima
+        }
         
-        // Mark as demo data
-        await createDemoDataMarker('reservation', createdReservation.id);
+        console.log(`Criando reserva ${i+1}/${count} para propriedade: ${property.name} (ID: ${property.id})`);
         
-        // Create financial documents for completed reservations
-        if (status === 'completed') {
-          await generateFinancialDocumentsForReservation(createdReservation.id, property);
+        // Gerar apenas reservas atuais e futuras (atendendo ao pedido do cliente)
+        let checkInDate, checkOutDate;
+        
+        if (i % 2 === 0) {
+          // Reserva atual (próximos 14 dias)
+          const startOffset = Math.floor(Math.random() * 14); // Próximos 14 dias
+          checkInDate = addDays(now, startOffset);
+          const stayDuration = Math.floor(Math.random() * 7) + 2; // 2-9 dias
+          checkOutDate = addDays(checkInDate, stayDuration);
+        } else {
+          // Reserva futura (próximos 15-90 dias)
+          const futureStartDay = Math.floor(Math.random() * 75) + 15; // Entre 15 e 90 dias no futuro
+          checkInDate = addDays(now, futureStartDay);
+          const stayDuration = Math.floor(Math.random() * 7) + 2; // 2-9 dias
+          checkOutDate = addDays(checkInDate, stayDuration);
+        }
+        
+        // Generate random guest data
+        const guestFirstName = guestFirstNames[Math.floor(Math.random() * guestFirstNames.length)];
+        const guestLastName = guestLastNames[Math.floor(Math.random() * guestLastNames.length)];
+        const guestName = `${guestFirstName} ${guestLastName}`;
+        const guestEmail = `${guestFirstName.toLowerCase()}.${guestLastName.toLowerCase()}@example.com`;
+        const guestPhone = `+${Math.floor(Math.random() * 90) + 10} ${Math.floor(Math.random() * 1000000000) + 1000000000}`;
+        
+        // Random platform and status
+        const platform = platformOptions[Math.floor(Math.random() * platformOptions.length)];
+        
+        // Status based on dates
+        let status;
+        if (checkOutDate < now) {
+          status = 'completed';
+        } else if (checkInDate > now) {
+          status = 'confirmed';
+        } else {
+          status = 'in_progress';
+        }
+        
+        // Random cancellation (approximately 10% of reservations)
+        if (Math.random() < 0.1) {
+          status = 'cancelled';
+        }
+        
+        // Calculate prices based on property data
+        const basePricePerNight = Math.floor(Math.random() * 100) + 50; // Between 50-150 per night
+        const stayDurationDays = Math.floor((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
+        const baseAmount = basePricePerNight * stayDurationDays;
+        
+        // Platform fee (percentage of base amount)
+        const platformFeePercent = platform === 'direct' ? 0 : Math.floor(Math.random() * 15) + 5; // 5-20%
+        const platformFee = (baseAmount * platformFeePercent / 100).toFixed(2);
+        
+        // Calculate costs using the property's values
+        const cleaningFee = property.cleaningCost || '45.00';
+        const checkInFee = property.checkInFee || '25.00';
+        const commission = property.commission ? (baseAmount * parseFloat(property.commission) / 100).toFixed(2) : '0.00';
+        const teamPayment = property.teamPayment || '30.00';
+        
+        // Total amount: base + cleaning
+        const totalAmount = (baseAmount + parseFloat(cleaningFee)).toFixed(2);
+        
+        // Net amount: total - fees
+        const netAmount = (
+          parseFloat(totalAmount) - 
+          parseFloat(platformFee) - 
+          parseFloat(checkInFee) - 
+          parseFloat(commission) - 
+          parseFloat(teamPayment)
+        ).toFixed(2);
+        
+        const newReservation: InsertReservation = {
+          propertyId: property.id,
+          guestName: `${guestName} [DEMO]`,
+          guestEmail: guestEmail,
+          guestPhone: guestPhone,
+          checkInDate: format(checkInDate, 'yyyy-MM-dd'),
+          checkOutDate: format(checkOutDate, 'yyyy-MM-dd'),
+          totalAmount: totalAmount,
+          source: platform, // Usando source em vez de platform (conforme schema)
+          status: status,
+          notes: `Demo reservation created automatically.`,
+          platformFee: platformFee,
+          cleaningFee: cleaningFee,
+          checkInFee: checkInFee,
+          commission: commission, // Usando commission em vez de commissionFee (conforme schema)
+          teamPayment: teamPayment,
+          invoiceNumber: `INV-DEMO-${Date.now().toString().slice(-6)}`,
+        };
+        
+        try {
+          const createdReservation = await storage.createReservation(newReservation);
+          createdIds.push(createdReservation.id);
+          
+          // Create an activity for this reservation
+          await storage.createActivity({
+            type: 'reservation_created',
+            description: `Nova reserva demo criada para ${property.name}: ${guestName} (${format(checkInDate, 'dd/MM/yyyy')} - ${format(checkOutDate, 'dd/MM/yyyy')})`,
+            entityId: createdReservation.id,
+            entityType: 'reservation',
+          });
+          
+          // Mark as demo data
+          await createDemoDataMarker('reservation', createdReservation.id);
+          
+          // Create financial documents for completed reservations
+          if (status === 'completed') {
+            await generateFinancialDocumentsForReservation(createdReservation.id, property);
+          }
+        } catch (error) {
+          console.error('Error creating demo reservation:', error);
         }
       } catch (error) {
-        console.error('Error creating demo reservation:', error);
+        console.error('Error generating reservation:', error);
       }
-    } catch (error) {
-      console.error('Error generating reservation:', error);
     }
+    
+    return createdIds;
+  } catch (error) {
+    console.error('Erro geral na geração de reservas:', error);
+    return [];
   }
-  
-  return createdIds;
 }
 
 // Generate demo activities
@@ -561,7 +569,14 @@ export async function generateDemoData(req: Request, res: Response) {
     // Sempre gerar reservas com as propriedades disponíveis
     if (options.includes('reservations')) {
       console.log(`Gerando reservas para ${propertyIds.length} propriedades`);
-      reservationIds = await generateDemoReservations(15);
+      try {
+        reservationIds = await generateDemoReservations(15);
+        console.log(`Reservas geradas com sucesso: ${reservationIds.length}`);
+      } catch (error) {
+        console.error('Erro detalhado ao gerar reservas:', error);
+        // Continuar a execução mesmo com erro nas reservas
+        reservationIds = [];
+      }
     }
     
     if (options.includes('activities')) {
