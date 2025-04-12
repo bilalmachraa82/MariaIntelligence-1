@@ -3174,17 +3174,69 @@ async function createStorage(): Promise<IStorage> {
   }
 })();
 
+// Função para aguardar a inicialização do armazenamento
+let storageInitialized = false;
+let storageInitPromise: Promise<void> | null = null;
+
+function ensureStorageInitialized(): Promise<void> {
+  if (storageInitialized) {
+    return Promise.resolve();
+  }
+  
+  if (!storageInitPromise) {
+    storageInitPromise = new Promise((resolve) => {
+      // Se já temos uma instância, resolver imediatamente
+      if (storageInstance) {
+        storageInitialized = true;
+        console.log('Armazenamento já está inicializado');
+        resolve();
+        return;
+      }
+      
+      // Caso contrário, verificar periodicamente
+      const checkInterval = setInterval(() => {
+        if (storageInstance) {
+          clearInterval(checkInterval);
+          storageInitialized = true;
+          console.log('Armazenamento inicializado com sucesso');
+          resolve();
+        }
+      }, 50); // Verificar a cada 50ms
+      
+      // Garantir que não vai ficar preso verificando infinitamente
+      setTimeout(() => {
+        if (!storageInitialized) {
+          clearInterval(checkInterval);
+          console.log('Timeout ao inicializar armazenamento, tentando criar manualmente');
+          // Tentar criar uma instância manualmente
+          createStorage().then((instance) => {
+            storageInstance = instance;
+            storageInitialized = true;
+            console.log('Armazenamento criado manualmente com sucesso');
+            resolve();
+          }).catch((err) => {
+            console.error('Falha ao criar armazenamento manualmente:', err);
+            // Mesmo com erro, precisamos resolver a promessa
+            storageInitialized = true;
+            resolve();
+          });
+        }
+      }, 5000); // Timeout de 5 segundos
+    });
+  }
+  
+  return storageInitPromise;
+}
+
 // Função de proxy para garantir que sempre usamos a instância correta
 // e tentamos reconectar ao banco quando necessário
 export const storage = new Proxy({} as IStorage, {
   get: function(target, prop) {
-    // Se a propriedade não for uma função, apenas retornar o valor
-    if (typeof storageInstance[prop as keyof IStorage] !== 'function') {
-      return storageInstance[prop as keyof IStorage];
-    }
-    
-    // Se for uma função, retornar uma função que verifica o estado do armazenamento antes de executar
+    // Retornar uma função que garante que o armazenamento está inicializado antes de executar
     return async function(...args: any[]) {
+      // Primeiro, garantir que o armazenamento está inicializado
+      await ensureStorageInitialized();
+      
       console.log(`Chamando método: ${String(prop)} com args:`, args);
       
       try {
