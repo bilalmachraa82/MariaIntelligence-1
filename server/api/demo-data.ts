@@ -19,6 +19,22 @@ function generateDemoId() {
   return `demo-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 }
 
+// Create a marker to identify demo data (in a real app, this should be a field in the table)
+async function createDemoDataMarker(entityType: string, entityId: number): Promise<void> {
+  // In a real implementation, you would add a 'demo' flag to each record
+  // For simplicity, we're storing a list of demo entities that can be used when cleaning up
+  try {
+    await storage.createActivity({
+      type: DEMO_DATA_FLAG,
+      description: `${entityType}:${entityId}`,
+      entityId: entityId,
+      entityType: entityType,
+    });
+  } catch (error) {
+    console.error(`Error marking demo data: ${entityType}:${entityId}`, error);
+  }
+}
+
 // Generate demo properties based on existing ones
 export async function generateDemoProperties(count: number = 5): Promise<number[]> {
   const createdIds: number[] = [];
@@ -30,66 +46,50 @@ export async function generateDemoProperties(count: number = 5): Promise<number[
     return createdIds;
   }
   
-  const propertyTypes = ['Apartamento', 'Casa', 'Villa', 'Studio', 'Loft'];
-  const neighborhoods = ['Ajuda', 'Alcântara', 'Alfama', 'Alvalade', 'Avenidas Novas', 'Baixa', 'Belém', 'Campo de Ourique'];
-  const streets = ['Rua', 'Avenida', 'Praça', 'Largo', 'Travessa'];
+  // Sample property names
+  const propertyNames = [
+    'Casa da Praia', 'Apartamento no Centro', 'Villa Aroeira', 
+    'Loft Moderno', 'Chalé nas Montanhas', 'Casa de Campo', 
+    'Apartamento Vista Mar', 'Quinta do Lago'
+  ];
   
   for (let i = 0; i < count; i++) {
-    // Randomly select an owner
-    const randomOwnerIndex = Math.floor(Math.random() * existingOwners.length);
-    const ownerId = existingOwners[randomOwnerIndex].id;
+    // Select a random existing owner
+    const owner = existingOwners[Math.floor(Math.random() * existingOwners.length)];
     
-    // Generate a property name based on type and location
-    const propertyType = propertyTypes[Math.floor(Math.random() * propertyTypes.length)];
-    const neighborhood = neighborhoods[Math.floor(Math.random() * neighborhoods.length)];
-    const streetType = streets[Math.floor(Math.random() * streets.length)];
-    const streetNumber = Math.floor(Math.random() * 100) + 1;
-    
-    const propertyName = `${propertyType} ${streetType} ${neighborhood} ${streetNumber}`;
-    
-    // Generate random costs based on existing properties for realistic values
-    const avgCleaningCost = existingProperties.length > 0 
-      ? existingProperties.reduce((sum, prop) => sum + parseFloat(prop.cleaningCost || '0'), 0) / existingProperties.length 
-      : 45;
-      
-    const avgCheckInFee = existingProperties.length > 0 
-      ? existingProperties.reduce((sum, prop) => sum + parseFloat(prop.checkInFee || '0'), 0) / existingProperties.length 
-      : 25;
-      
-    const avgCommission = existingProperties.length > 0 
-      ? existingProperties.reduce((sum, prop) => sum + parseFloat(prop.commission || '0'), 0) / existingProperties.length 
-      : 15;
-    
-    // Add some variation to the average values
-    const variationFactor = 0.8 + (Math.random() * 0.4); // Variation between 0.8 and 1.2
+    // Random property data
+    const propertyName = `${propertyNames[Math.floor(Math.random() * propertyNames.length)]} [DEMO]`;
+    const maxGuests = Math.floor(Math.random() * 6) + 2; // 2-8 guests
+    const cleaningCost = (Math.floor(Math.random() * 50) + 30).toFixed(2); // 30-80
+    const checkInFee = (Math.floor(Math.random() * 20) + 15).toFixed(2); // 15-35
+    const commission = (Math.floor(Math.random() * 10) + 5).toFixed(2); // 5-15%
+    const teamPayment = (Math.floor(Math.random() * 20) + 20).toFixed(2); // 20-40
     
     const newProperty: InsertProperty = {
-      name: `${propertyName} [DEMO]`,
-      ownerId: ownerId,
-      cleaningCost: (avgCleaningCost * variationFactor).toFixed(2),
-      checkInFee: (avgCheckInFee * variationFactor).toFixed(2),
-      commission: (avgCommission * variationFactor).toFixed(2),
-      teamPayment: (avgCleaningCost * 0.7 * variationFactor).toFixed(2),
-      cleaningTeam: "Equipa Maria",
-      active: true,
-      monthlyFixedCost: (Math.random() * 100 + 50).toFixed(2),
-      cleaningTeamId: null,
+      name: propertyName,
+      address: `Rua das Flores, ${Math.floor(Math.random() * 200) + 1}`,
+      ownerId: owner.id,
+      maxGuests: maxGuests,
+      description: `Propriedade demo criada automaticamente para testes.`,
+      cleaningCost: cleaningCost,
+      checkInFee: checkInFee,
+      commission: commission,
+      teamPayment: teamPayment,
     };
     
     try {
       const createdProperty = await storage.createProperty(newProperty);
       createdIds.push(createdProperty.id);
       
-      // Create an activity for this property
+      // Create an activity for this property creation
       await storage.createActivity({
-        type: 'property_added',
-        description: `Nova propriedade demo adicionada: ${createdProperty.name}`,
+        type: 'property_created',
+        description: `Nova propriedade demo criada: ${propertyName}`,
         entityId: createdProperty.id,
         entityType: 'property',
       });
       
-      // Mark as demo data in custom field
-      // In a real scenario, this should be saved in a dedicated table or field
+      // Mark as demo data
       await createDemoDataMarker('property', createdProperty.id);
       
     } catch (error) {
@@ -103,52 +103,34 @@ export async function generateDemoProperties(count: number = 5): Promise<number[
 // Generate demo owners
 export async function generateDemoOwners(count: number = 3): Promise<number[]> {
   const createdIds: number[] = [];
-  const names = [
-    'António Silva', 'Maria Sousa', 'João Ribeiro', 'Ana Pereira', 
-    'Francisco Costa', 'Margarida Santos', 'Luís Oliveira', 'Sofia Martins'
-  ];
-  const companies = [
-    'Imobiliária Lisboa', 'Apartamentos Premium', 'Casas do Tejo', 
-    'Alfama Rentals', 'Belém Properties', null
-  ];
   
-  const phonePrefixes = ['+351 91', '+351 92', '+351 93', '+351 96'];
+  const firstNames = ['João', 'Ana', 'Carlos', 'Maria', 'António', 'Sofia', 'Miguel', 'Luísa'];
+  const lastNames = ['Silva', 'Santos', 'Ferreira', 'Costa', 'Oliveira', 'Rodrigues', 'Martins', 'Pereira'];
   
   for (let i = 0; i < count; i++) {
-    // Generate random owner data
-    const nameIndex = Math.floor(Math.random() * names.length);
-    const name = names[nameIndex];
-    names.splice(nameIndex, 1); // Remove used name to avoid duplicates
-    
-    const firstName = name.split(' ')[0].toLowerCase();
-    const email = `${firstName}.demo${Math.floor(Math.random() * 1000)}@example.com`;
-    
-    const phonePrefix = phonePrefixes[Math.floor(Math.random() * phonePrefixes.length)];
-    const phoneNumber = `${phonePrefix} ${Math.floor(Math.random() * 10000000).toString().padStart(7, '0')}`;
-    
-    const companyIndex = Math.floor(Math.random() * companies.length);
-    const company = companies[companyIndex];
-    
-    // Create random tax ID (NIF in Portugal)
-    const taxId = `${Math.floor(Math.random() * 900000000) + 100000000}`;
+    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+    const fullName = `${firstName} ${lastName} [DEMO]`;
+    const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@example.com`;
     
     const newOwner: InsertOwner = {
-      name: `${name} [DEMO]`,
+      name: fullName,
       email: email,
-      phone: phoneNumber,
-      address: `Rua da Demo ${Math.floor(Math.random() * 100) + 1}, Lisboa`,
-      company: company,
-      taxId: taxId,
+      phone: `+351 ${Math.floor(Math.random() * 900000000) + 100000000}`,
+      address: `Av. da República, ${Math.floor(Math.random() * 100) + 1}, Lisboa`,
+      taxId: `${Math.floor(Math.random() * 900000000) + 100000000}`,
+      notes: `Proprietário demo criado automaticamente para testes.`,
+      bankAccountInfo: generateDemoId(),
     };
     
     try {
       const createdOwner = await storage.createOwner(newOwner);
       createdIds.push(createdOwner.id);
       
-      // Create an activity for this owner
+      // Create an activity for this owner creation
       await storage.createActivity({
-        type: 'owner_added',
-        description: `Novo proprietário demo adicionado: ${createdOwner.name}`,
+        type: 'owner_created',
+        description: `Novo proprietário demo criado: ${fullName}`,
         entityId: createdOwner.id,
         entityType: 'owner',
       });
@@ -171,138 +153,148 @@ export async function generateDemoReservations(count: number = 15): Promise<numb
   
   if (properties.length === 0) {
     // Can't create reservations without properties
+    console.error('Não existem propriedades para criar reservas!');
     return createdIds;
   }
   
-  const platformOptions = ['Airbnb', 'Booking.com', 'VRBO', 'Direct'];
-  const statusOptions = ['confirmed', 'completed', 'cancelled'];
+  console.log(`Gerando ${count} reservas para ${properties.length} propriedades disponíveis`);
+  
+  // Plataformas e estatus usando os valores reais do sistema
+  const platformOptions = ['airbnb', 'booking', 'direct', 'expedia', 'other'];
+  const statusOptions = ['confirmed', 'pending'];
+  
+  // Nomes de hóspedes para geração de dados demo
   const guestFirstNames = ['John', 'Emma', 'Michael', 'Sophie', 'David', 'Julia', 'Robert', 'Laura'];
   const guestLastNames = ['Smith', 'Johnson', 'Brown', 'Davis', 'Miller', 'Wilson', 'Moore', 'Taylor'];
   
-  // Current date for reference
+  // Data atual para referência
   const now = new Date();
   
   for (let i = 0; i < count; i++) {
-    // Select random property
-    const randomPropertyIndex = Math.floor(Math.random() * properties.length);
-    const property = properties[randomPropertyIndex];
-    
-    // Generate random dates
-    // Mix of past, current, and future reservations
-    let checkInDate, checkOutDate;
-    
-    if (i % 3 === 0) {
-      // Past reservation
-      const pastStartDay = Math.floor(Math.random() * 180) + 30; // Between 30 and 210 days ago
-      checkInDate = subDays(now, pastStartDay);
-      checkOutDate = subDays(now, pastStartDay - Math.floor(Math.random() * 10) - 2); // 2-12 days stay
-    } else if (i % 3 === 1) {
-      // Current or near future reservation
-      const startOffset = Math.floor(Math.random() * 30) - 15; // Between 15 days ago and 15 days from now
-      checkInDate = addDays(now, startOffset);
-      checkOutDate = addDays(checkInDate, Math.floor(Math.random() * 10) + 2); // 2-12 days stay
-    } else {
-      // Future reservation
-      const futureStartDay = Math.floor(Math.random() * 180) + 15; // Between 15 and 195 days in future
-      checkInDate = addDays(now, futureStartDay);
-      checkOutDate = addDays(checkInDate, Math.floor(Math.random() * 10) + 2); // 2-12 days stay
-    }
-    
-    // Generate random guest data
-    const guestFirstName = guestFirstNames[Math.floor(Math.random() * guestFirstNames.length)];
-    const guestLastName = guestLastNames[Math.floor(Math.random() * guestLastNames.length)];
-    const guestName = `${guestFirstName} ${guestLastName}`;
-    const guestEmail = `${guestFirstName.toLowerCase()}.${guestLastName.toLowerCase()}@example.com`;
-    const guestPhone = `+${Math.floor(Math.random() * 90) + 10} ${Math.floor(Math.random() * 1000000000) + 1000000000}`;
-    
-    // Random platform and status
-    const platform = platformOptions[Math.floor(Math.random() * platformOptions.length)];
-    
-    // Status based on dates
-    let status;
-    if (checkOutDate < now) {
-      status = 'completed';
-    } else if (checkInDate > now) {
-      status = 'confirmed';
-    } else {
-      status = 'in_progress';
-    }
-    
-    // Random cancellation (approximately 10% of reservations)
-    if (Math.random() < 0.1) {
-      status = 'cancelled';
-    }
-    
-    // Calculate prices based on property data
-    const basePricePerNight = Math.floor(Math.random() * 100) + 50; // Between 50-150 per night
-    const stayDurationDays = Math.floor((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
-    const baseAmount = basePricePerNight * stayDurationDays;
-    
-    // Platform fee (percentage of base amount)
-    const platformFeePercent = platform === 'Direct' ? 0 : Math.floor(Math.random() * 15) + 5; // 5-20%
-    const platformFee = (baseAmount * platformFeePercent / 100).toFixed(2);
-    
-    // Calculate costs using the property's values
-    const cleaningFee = property.cleaningCost || '45.00';
-    const checkInFee = property.checkInFee || '25.00';
-    const commissionFee = property.commission ? (baseAmount * parseFloat(property.commission) / 100).toFixed(2) : '0.00';
-    const teamPayment = property.teamPayment || '30.00';
-    
-    // Total amount: base + cleaning
-    const totalAmount = (baseAmount + parseFloat(cleaningFee)).toFixed(2);
-    
-    // Net amount: total - fees
-    const netAmount = (
-      parseFloat(totalAmount) - 
-      parseFloat(platformFee) - 
-      parseFloat(checkInFee) - 
-      parseFloat(commissionFee) - 
-      parseFloat(teamPayment)
-    ).toFixed(2);
-    
-    const newReservation: InsertReservation = {
-      propertyId: property.id,
-      guestName: `${guestName} [DEMO]`,
-      guestEmail: guestEmail,
-      guestPhone: guestPhone,
-      checkInDate: format(checkInDate, 'yyyy-MM-dd'),
-      checkOutDate: format(checkOutDate, 'yyyy-MM-dd'),
-      numGuests: Math.floor(Math.random() * 5) + 1, // 1-6 guests
-      totalAmount: totalAmount,
-      platform: platform,
-      status: status,
-      notes: `Demo reservation created automatically.`,
-      platformFee: platformFee,
-      cleaningFee: cleaningFee,
-      checkInFee: checkInFee,
-      commissionFee: commissionFee,
-      teamPayment: teamPayment,
-      netAmount: netAmount,
-      invoiceNumber: `INV-DEMO-${Date.now().toString().slice(-6)}`,
-    };
-    
     try {
-      const createdReservation = await storage.createReservation(newReservation);
-      createdIds.push(createdReservation.id);
+      // Selecionar propriedade aleatória
+      const randomPropertyIndex = Math.floor(Math.random() * properties.length);
+      const property = properties[randomPropertyIndex];
       
-      // Create an activity for this reservation
-      await storage.createActivity({
-        type: 'reservation_created',
-        description: `Nova reserva demo criada para ${property.name}: ${guestName} (${format(checkInDate, 'dd/MM/yyyy')} - ${format(checkOutDate, 'dd/MM/yyyy')})`,
-        entityId: createdReservation.id,
-        entityType: 'reservation',
-      });
-      
-      // Mark as demo data
-      await createDemoDataMarker('reservation', createdReservation.id);
-      
-      // Create financial documents for completed reservations
-      if (status === 'completed') {
-        await generateFinancialDocumentsForReservation(createdReservation.id, property);
+      if (!property) {
+        console.error(`Erro: Propriedade não encontrada no índice ${randomPropertyIndex}`);
+        continue; // Pular esta iteração e tentar a próxima
       }
       
+      console.log(`Criando reserva ${i+1}/${count} para propriedade: ${property.name} (ID: ${property.id})`);
+      
+      // Gerar apenas reservas atuais e futuras (atendendo ao pedido do cliente)
+      let checkInDate, checkOutDate;
+      
+      if (i % 2 === 0) {
+        // Reserva atual (próximos 14 dias)
+        const startOffset = Math.floor(Math.random() * 14); // Próximos 14 dias
+        checkInDate = addDays(now, startOffset);
+        const stayDuration = Math.floor(Math.random() * 7) + 2; // 2-9 dias
+        checkOutDate = addDays(checkInDate, stayDuration);
+      } else {
+        // Reserva futura (próximos 15-90 dias)
+        const futureStartDay = Math.floor(Math.random() * 75) + 15; // Entre 15 e 90 dias no futuro
+        checkInDate = addDays(now, futureStartDay);
+        const stayDuration = Math.floor(Math.random() * 7) + 2; // 2-9 dias
+        checkOutDate = addDays(checkInDate, stayDuration);
+      }
+      
+      // Generate random guest data
+      const guestFirstName = guestFirstNames[Math.floor(Math.random() * guestFirstNames.length)];
+      const guestLastName = guestLastNames[Math.floor(Math.random() * guestLastNames.length)];
+      const guestName = `${guestFirstName} ${guestLastName}`;
+      const guestEmail = `${guestFirstName.toLowerCase()}.${guestLastName.toLowerCase()}@example.com`;
+      const guestPhone = `+${Math.floor(Math.random() * 90) + 10} ${Math.floor(Math.random() * 1000000000) + 1000000000}`;
+      
+      // Random platform and status
+      const platform = platformOptions[Math.floor(Math.random() * platformOptions.length)];
+      
+      // Status based on dates
+      let status;
+      if (checkOutDate < now) {
+        status = 'completed';
+      } else if (checkInDate > now) {
+        status = 'confirmed';
+      } else {
+        status = 'in_progress';
+      }
+      
+      // Random cancellation (approximately 10% of reservations)
+      if (Math.random() < 0.1) {
+        status = 'cancelled';
+      }
+      
+      // Calculate prices based on property data
+      const basePricePerNight = Math.floor(Math.random() * 100) + 50; // Between 50-150 per night
+      const stayDurationDays = Math.floor((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
+      const baseAmount = basePricePerNight * stayDurationDays;
+      
+      // Platform fee (percentage of base amount)
+      const platformFeePercent = platform === 'direct' ? 0 : Math.floor(Math.random() * 15) + 5; // 5-20%
+      const platformFee = (baseAmount * platformFeePercent / 100).toFixed(2);
+      
+      // Calculate costs using the property's values
+      const cleaningFee = property.cleaningCost || '45.00';
+      const checkInFee = property.checkInFee || '25.00';
+      const commissionFee = property.commission ? (baseAmount * parseFloat(property.commission) / 100).toFixed(2) : '0.00';
+      const teamPayment = property.teamPayment || '30.00';
+      
+      // Total amount: base + cleaning
+      const totalAmount = (baseAmount + parseFloat(cleaningFee)).toFixed(2);
+      
+      // Net amount: total - fees
+      const netAmount = (
+        parseFloat(totalAmount) - 
+        parseFloat(platformFee) - 
+        parseFloat(checkInFee) - 
+        parseFloat(commissionFee) - 
+        parseFloat(teamPayment)
+      ).toFixed(2);
+      
+      const newReservation: InsertReservation = {
+        propertyId: property.id,
+        guestName: `${guestName} [DEMO]`,
+        guestEmail: guestEmail,
+        guestPhone: guestPhone,
+        checkInDate: format(checkInDate, 'yyyy-MM-dd'),
+        checkOutDate: format(checkOutDate, 'yyyy-MM-dd'),
+        totalAmount: totalAmount,
+        platform: platform,
+        status: status,
+        notes: `Demo reservation created automatically.`,
+        platformFee: platformFee,
+        cleaningFee: cleaningFee,
+        checkInFee: checkInFee,
+        commissionFee: commissionFee,
+        teamPayment: teamPayment,
+        invoiceNumber: `INV-DEMO-${Date.now().toString().slice(-6)}`,
+      };
+      
+      try {
+        const createdReservation = await storage.createReservation(newReservation);
+        createdIds.push(createdReservation.id);
+        
+        // Create an activity for this reservation
+        await storage.createActivity({
+          type: 'reservation_created',
+          description: `Nova reserva demo criada para ${property.name}: ${guestName} (${format(checkInDate, 'dd/MM/yyyy')} - ${format(checkOutDate, 'dd/MM/yyyy')})`,
+          entityId: createdReservation.id,
+          entityType: 'reservation',
+        });
+        
+        // Mark as demo data
+        await createDemoDataMarker('reservation', createdReservation.id);
+        
+        // Create financial documents for completed reservations
+        if (status === 'completed') {
+          await generateFinancialDocumentsForReservation(createdReservation.id, property);
+        }
+      } catch (error) {
+        console.error('Error creating demo reservation:', error);
+      }
     } catch (error) {
-      console.error('Error creating demo reservation:', error);
+      console.error('Error generating reservation:', error);
     }
   }
   
@@ -398,17 +390,15 @@ async function generateFinancialDocumentsForReservation(reservationId: number, p
     const dueDate = addDays(invoiceDate, 15);
     
     const incomeDocument: InsertFinancialDocument = {
-      type: 'incoming',
-      totalAmount: reservation.totalAmount,
-      entityId: property.ownerId,
-      entityType: 'owner',
-      referenceMonth: format(new Date(reservation.checkInDate), 'yyyy-MM'),
+      documentType: 'invoice',
+      documentNumber: `DEMO-INV-${Date.now().toString().slice(-6)}`,
+      amount: reservation.totalAmount,
       issueDate: format(invoiceDate, 'yyyy-MM-dd'),
       dueDate: format(dueDate, 'yyyy-MM-dd'),
-      paidAmount: reservation.totalAmount, // Assuming paid in full
       status: 'paid',
       description: `Fatura de reserva [DEMO]: ${reservation.guestName} (${format(new Date(reservation.checkInDate), 'dd/MM/yyyy')} - ${format(new Date(reservation.checkOutDate), 'dd/MM/yyyy')})`,
-      externalReference: reservation.invoiceNumber,
+      relatedEntityType: 'owner',
+      relatedEntityId: property.ownerId
     };
     
     const createdIncome = await storage.createFinancialDocument(incomeDocument);
@@ -425,13 +415,10 @@ async function generateFinancialDocumentsForReservation(reservationId: number, p
     const stayItem: InsertFinancialDocumentItem = {
       documentId: createdIncome.id,
       description: `Estadia de ${stayDurationDays} dias [DEMO]`,
-      amount: (parseFloat(reservation.totalAmount) - parseFloat(reservation.cleaningFee || '0')).toFixed(2),
-      propertyId: property.id,
-      reservationId: reservation.id,
       quantity: stayDurationDays,
-      unitValue: (parseFloat(reservation.totalAmount) / stayDurationDays).toFixed(2),
-      taxRate: '0',
-      notes: 'Item de demonstração',
+      unitPrice: (parseFloat(reservation.totalAmount) / stayDurationDays).toFixed(2),
+      totalPrice: (parseFloat(reservation.totalAmount) - parseFloat(reservation.cleaningFee || '0')).toFixed(2),
+      notes: 'Item de demonstração'
     };
     
     await storage.createFinancialDocumentItem(stayItem);
@@ -440,13 +427,10 @@ async function generateFinancialDocumentsForReservation(reservationId: number, p
     const cleaningItem: InsertFinancialDocumentItem = {
       documentId: createdIncome.id,
       description: `Serviço de limpeza [DEMO]`,
-      amount: reservation.cleaningFee || '0',
-      propertyId: property.id,
-      reservationId: reservation.id,
       quantity: 1,
-      unitValue: reservation.cleaningFee || '0',
-      taxRate: '0',
-      notes: 'Item de demonstração',
+      unitPrice: reservation.cleaningFee || '0',
+      totalPrice: reservation.cleaningFee || '0',
+      notes: 'Item de demonstração'
     };
     
     await storage.createFinancialDocumentItem(cleaningItem);
@@ -457,11 +441,10 @@ async function generateFinancialDocumentsForReservation(reservationId: number, p
     const payment: InsertPaymentRecord = {
       documentId: createdIncome.id,
       paymentDate: format(paymentDate, 'yyyy-MM-dd'),
-      method: reservation.platform === 'Direct' ? 'bank_transfer' : reservation.platform.toLowerCase(),
+      paymentMethod: 'bank_transfer',
       amount: reservation.totalAmount,
-      externalReference: `PAY-DEMO-${Date.now().toString().slice(-6)}`,
       notes: 'Pagamento de demonstração',
-      attachment: null,
+      reference: `PAY-DEMO-${Date.now().toString().slice(-6)}`
     };
     
     await storage.createPaymentRecord(payment);
@@ -469,17 +452,15 @@ async function generateFinancialDocumentsForReservation(reservationId: number, p
     // Create expense documents for services (cleaning, check-in)
     if (parseFloat(reservation.cleaningFee || '0') > 0) {
       const cleaningExpense: InsertFinancialDocument = {
-        type: 'outgoing',
-        totalAmount: property.teamPayment || '0',
-        entityId: 1, // Using default supplier ID
-        entityType: 'supplier',
-        referenceMonth: format(new Date(reservation.checkInDate), 'yyyy-MM'),
+        documentType: 'expense',
+        documentNumber: `DEMO-EXP-${Date.now().toString().slice(-6)}`,
+        amount: property.teamPayment || '0',
         issueDate: format(subDays(new Date(reservation.checkOutDate), 1), 'yyyy-MM-dd'),
         dueDate: format(addDays(new Date(reservation.checkOutDate), 15), 'yyyy-MM-dd'),
-        paidAmount: property.teamPayment || '0',
         status: 'paid',
         description: `Serviço de limpeza para reserva [DEMO]: ${property.name} (${format(new Date(reservation.checkOutDate), 'dd/MM/yyyy')})`,
-        externalReference: `CLEAN-DEMO-${Date.now().toString().slice(-6)}`,
+        relatedEntityType: 'supplier',
+        relatedEntityId: 1 // Using default supplier ID
       };
       
       const createdExpense = await storage.createFinancialDocument(cleaningExpense);
@@ -491,13 +472,10 @@ async function generateFinancialDocumentsForReservation(reservationId: number, p
       const cleaningExpenseItem: InsertFinancialDocumentItem = {
         documentId: createdExpense.id,
         description: `Limpeza após checkout [DEMO]`,
-        amount: property.teamPayment || '0',
-        propertyId: property.id,
-        reservationId: reservation.id,
         quantity: 1,
-        unitValue: property.teamPayment || '0',
-        taxRate: '0',
-        notes: 'Item de demonstração',
+        unitPrice: property.teamPayment || '0',
+        totalPrice: property.teamPayment || '0',
+        notes: 'Item de demonstração'
       };
       
       await storage.createFinancialDocumentItem(cleaningExpenseItem);
@@ -506,11 +484,10 @@ async function generateFinancialDocumentsForReservation(reservationId: number, p
       const expensePayment: InsertPaymentRecord = {
         documentId: createdExpense.id,
         paymentDate: format(addDays(new Date(reservation.checkOutDate), 3), 'yyyy-MM-dd'),
-        method: 'bank_transfer',
+        paymentMethod: 'bank_transfer',
         amount: property.teamPayment || '0',
-        externalReference: `PAY-DEMO-${Date.now().toString().slice(-6)}`,
         notes: 'Pagamento de demonstração',
-        attachment: null,
+        reference: `PAY-DEMO-${Date.now().toString().slice(-6)}`
       };
       
       await storage.createPaymentRecord(expensePayment);
@@ -521,24 +498,8 @@ async function generateFinancialDocumentsForReservation(reservationId: number, p
   }
 }
 
-// Create a marker to identify demo data (in a real app, this should be a field in the table)
-async function createDemoDataMarker(entityType: string, entityId: number): Promise<void> {
-  // In a real implementation, you would add a 'demo' flag to each record
-  // For simplicity, we're storing a list of demo entities that can be used when cleaning up
-  try {
-    await storage.createActivity({
-      type: DEMO_DATA_FLAG,
-      description: `${entityType}:${entityId}`,
-      entityId: entityId,
-      entityType: entityType,
-    });
-  } catch (error) {
-    console.error(`Error marking demo data: ${entityType}:${entityId}`, error);
-  }
-}
-
 // Get all demo data markers
-async function getDemoDataMarkers(): Promise<{entityType: string, entityId: number}[]> {
+async function getDemoDataMarkers(): Promise<{entityType: string, entityId: number, markerId: number}[]> {
   try {
     const activities = await storage.getActivities();
     const demoMarkers = activities
@@ -556,6 +517,77 @@ async function getDemoDataMarkers(): Promise<{entityType: string, entityId: numb
   } catch (error) {
     console.error('Error getting demo data markers:', error);
     return [];
+  }
+}
+
+// Handler for API endpoint to generate demo data
+export async function generateDemoData(req: Request, res: Response) {
+  try {
+    const options = req.body.include || ['properties', 'owners', 'reservations', 'activities'];
+    
+    let ownerIds: number[] = [];
+    let propertyIds: number[] = [];
+    let reservationIds: number[] = [];
+    let activityIds: number[] = [];
+    
+    // If we're not supposed to create new owners or properties, get existing ones
+    if (!options.includes('owners') && !options.includes('properties')) {
+      // Get existing owners and properties
+      const existingOwners = await storage.getOwners();
+      const existingProperties = await storage.getProperties();
+      
+      if (existingProperties.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Não existem propriedades no sistema. Crie propriedades primeiro ou inclua a opção "properties"'
+        });
+      }
+      
+      ownerIds = existingOwners.map(o => o.id);
+      propertyIds = existingProperties.map(p => p.id);
+      
+      console.log(`Usando ${propertyIds.length} propriedades existentes e ${ownerIds.length} proprietários existentes`);
+    } else {
+      // Gerar dados na ordem correta (proprietários -> propriedades -> reservas -> atividades)
+      if (options.includes('owners')) {
+        ownerIds = await generateDemoOwners(3);
+      }
+      
+      if (options.includes('properties')) {
+        propertyIds = await generateDemoProperties(5);
+      }
+    }
+    
+    // Sempre gerar reservas com as propriedades disponíveis
+    if (options.includes('reservations')) {
+      console.log(`Gerando reservas para ${propertyIds.length} propriedades`);
+      reservationIds = await generateDemoReservations(15);
+    }
+    
+    if (options.includes('activities')) {
+      activityIds = await generateDemoActivities(10);
+    }
+    
+    const totalItems = ownerIds.length + propertyIds.length + reservationIds.length + activityIds.length;
+    
+    res.status(200).json({
+      success: true,
+      message: 'Dados de demonstração gerados com sucesso',
+      itemsCreated: totalItems,
+      details: {
+        owners: ownerIds.length,
+        properties: propertyIds.length,
+        reservations: reservationIds.length,
+        activities: activityIds.length
+      }
+    });
+  } catch (error) {
+    console.error('Erro ao gerar dados de demonstração:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro ao gerar dados de demonstração',
+      error: error instanceof Error ? error.message : String(error)
+    });
   }
 }
 
@@ -625,80 +657,21 @@ export async function resetDemoData(): Promise<{success: boolean, removedItems: 
   }
 }
 
-// Endpoint handlers
-export async function generateDemoData(req: Request, res: Response) {
-  try {
-    const options = req.body.include || ['properties', 'owners', 'reservations', 'activities', 'financialDocuments'];
-    
-    let ownerIds: number[] = [];
-    let propertyIds: number[] = [];
-    let reservationIds: number[] = [];
-    let activityIds: number[] = [];
-    
-    // Generate data in the correct order (owners -> properties -> reservations -> activities)
-    if (options.includes('owners')) {
-      ownerIds = await generateDemoOwners(3);
-    }
-    
-    if (options.includes('properties')) {
-      propertyIds = await generateDemoProperties(5);
-    }
-    
-    if (options.includes('reservations')) {
-      reservationIds = await generateDemoReservations(15);
-    }
-    
-    if (options.includes('activities')) {
-      activityIds = await generateDemoActivities(10);
-    }
-    
-    // Financial documents are generated as part of reservations
-    
-    const totalItems = ownerIds.length + propertyIds.length + reservationIds.length + activityIds.length;
-    
-    res.status(200).json({
-      success: true,
-      message: 'Demo data generated successfully',
-      itemsCreated: totalItems,
-      details: {
-        owners: ownerIds.length,
-        properties: propertyIds.length,
-        reservations: reservationIds.length,
-        activities: activityIds.length
-      }
-    });
-  } catch (error) {
-    console.error('Error generating demo data:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error generating demo data',
-      error: error instanceof Error ? error.message : 'Unknown error'
-    });
-  }
-}
-
+// Handler for API endpoint to reset demo data
 export async function resetDemoDataHandler(req: Request, res: Response) {
   try {
     const result = await resetDemoData();
-    
-    if (result.success) {
-      res.status(200).json({
-        success: true,
-        message: 'Demo data reset successfully',
-        removedItems: result.removedItems
-      });
-    } else {
-      res.status(500).json({
-        success: false,
-        message: 'Error resetting demo data'
-      });
-    }
+    res.status(200).json({
+      success: result.success,
+      message: `${result.removedItems} itens de demonstração removidos com sucesso`,
+      itemsRemoved: result.removedItems
+    });
   } catch (error) {
-    console.error('Error in reset demo data handler:', error);
+    console.error('Erro ao limpar dados de demonstração:', error);
     res.status(500).json({
       success: false,
-      message: 'Error resetting demo data',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      message: 'Erro ao limpar dados de demonstração',
+      error: error instanceof Error ? error.message : String(error)
     });
   }
 }
