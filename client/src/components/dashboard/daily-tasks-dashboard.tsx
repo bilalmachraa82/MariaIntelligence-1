@@ -320,24 +320,24 @@ export default function DailyTasksDashboard() {
   };
 
   return (
-    <div className="mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 max-w-[1600px]">
-      {/* Header */}
+    <div className="mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6 max-w-[1600px]">
+      {/* Header - Otimizado para mobile com melhor utilização de espaço */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative bg-background/70 backdrop-blur-sm rounded-2xl p-6 border border-border/30 shadow-lg"
+        className="relative bg-background/70 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-border/30 shadow-lg"
       >
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <h1 className="text-2xl md:text-3xl font-bold text-primary">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary">
               {t("dailyTasks.title", "Tarefas do Dia")}
             </h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               {t("dailyTasks.todayDate", "Hoje")}: {new Date().toLocaleDateString()}
             </p>
           </motion.div>
@@ -346,23 +346,25 @@ export default function DailyTasksDashboard() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-wrap gap-3"
+            className="flex flex-wrap gap-2 sm:gap-3"
           >
             <Button 
               variant="outline" 
               onClick={() => setLocation("/assistant")}
-              className="whitespace-nowrap"
+              className="whitespace-nowrap text-sm sm:text-base"
+              size="sm"
             >
-              <Bell className="mr-2 h-4 w-4" />
+              <Bell className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
               {t("dailyTasks.assistant", "Assistente")}
             </Button>
             
             <Button 
               variant="default"
-              className="whitespace-nowrap"
+              className="whitespace-nowrap text-sm sm:text-base"
+              size="sm"
               onClick={() => setLocation("/statistics")}
             >
-              <ArrowRight className="mr-2 h-4 w-4" />
+              <ArrowRight className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
               {t("dailyTasks.viewAll", "Ver Estatísticas")}
             </Button>
           </motion.div>
