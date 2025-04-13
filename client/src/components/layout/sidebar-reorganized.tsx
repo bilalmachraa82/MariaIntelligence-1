@@ -389,52 +389,23 @@ export function SidebarReorganized({
     }
   ];
 
-  // Finanças - Agrupadas todas as operações financeiras
+  // Finanças - Menu simplificado para melhor usabilidade
   const financeNavItems = [
-    // Orçamentos no topo por ser uma funcionalidade comercial prioritária
+    // Despesas e Pagamentos como primeiro item por ser o mais utilizado
     {
-      name: t("navigation.quotations", "Orçamentos"),
-      href: "/quotations",
-      altHref: "/orcamentos",
-      icon: FileText,
-      iconColor: "text-blue-500"
-    },
-    // Relatórios financeiros
-    {
-      name: t("navigation.reports.financial", "Relatórios"),
-      href: isPortuguese ? "/relatorios" : "/reports",
-      altHref: isPortuguese ? "/reports" : "/relatorios",
-      icon: FileSpreadsheet,
-      iconColor: "text-emerald-500",
-      submenu: [
-        {
-          name: t("navigation.reports.owner", "Proprietários"),
-          href: isPortuguese ? "/relatorios/proprietario" : "/reports/owner-report",
-          altHref: isPortuguese ? "/reports/owner-report" : "/relatorios/proprietario",
-          icon: FileSpreadsheet,
-        },
-        {
-          name: t("navigation.reports.monthly", "Faturas Mensais"),
-          href: isPortuguese ? "/relatorios/faturacao-mensal" : "/reports/monthly-invoice",
-          altHref: isPortuguese ? "/reports/monthly-invoice" : "/relatorios/faturacao-mensal",
-          icon: FileSpreadsheet,
-        },
-        {
-          name: t("navigation.reports.trends", "Tendências"),
-          href: isPortuguese ? "/relatorios/tendencias" : "/reports/trends",
-          altHref: isPortuguese ? "/reports/trends" : "/relatorios/tendencias",
-          icon: BarChart3,
-        }
-      ]
-    },
-    // Pagamentos - Agrupados como um submenu
-    {
-      name: t("navigation.payments.title", "Pagamentos"),
+      name: t("navigation.payments.title", "Finanças"),
       href: "/pagamentos",
       altHref: "/payments",
       icon: BadgeDollarSign,
       iconColor: "text-green-500",
       submenu: [
+        {
+          name: t("navigation.payments.expenses", "Despesas"),
+          href: "/pagamentos/saida",
+          altHref: "/payments/outgoing",
+          icon: CreditCard,
+          iconColor: "text-red-500"
+        },
         {
           name: t("navigation.payments.income", "Recebimentos"),
           href: "/pagamentos/entrada",
@@ -443,15 +414,21 @@ export function SidebarReorganized({
           iconColor: "text-green-500"
         },
         {
-          name: t("navigation.payments.expenses", "Despesas"),
-          href: "/pagamentos/saida",
-          altHref: "/payments/outgoing",
-          icon: CreditCard,
-          iconColor: "text-red-500"
+          name: t("navigation.quotations", "Orçamentos"),
+          href: "/quotations",
+          altHref: "/orcamentos",
+          icon: FileText,
+          iconColor: "text-blue-500"
+        },
+        {
+          name: t("navigation.reports.financial", "Relatórios"),
+          href: isPortuguese ? "/relatorios" : "/reports",
+          altHref: isPortuguese ? "/reports" : "/relatorios",
+          icon: BarChart3,
+          iconColor: "text-emerald-500"
         }
       ]
     },
-    // Item "Documentos" removido por ser redundante com outros menus financeiros
   ];
 
   // Operações - Serviços e manutenção
