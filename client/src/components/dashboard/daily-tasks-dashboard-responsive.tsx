@@ -304,38 +304,45 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
       </motion.div>
       ) : null}
 
-      {/* Main Content - Otimizado para mobile */}
+      {/* Main Content - Layout mais amigável e clean */}
       {!minimal ? (
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-        {/* Check-ins Column */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        {/* Check-ins Column - Redesenhado para ser mais clean */}
         <motion.div
           variants={fadeIn}
           initial="hidden"
           animate="visible"
           custom={2}
         >
-          <Card className="h-full bg-background/70 backdrop-blur-sm border-blue-200/30">
-            <CardHeader className="pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
+          <Card className="overflow-hidden bg-white shadow-sm border-0">
+            <CardHeader className="pb-2 px-4 pt-4 bg-gradient-to-br from-blue-50 to-white border-b">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                  <User className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500" />
-                  <CardTitle className="text-base sm:text-lg">{t("dailyTasks.checkins", "Check-ins")}</CardTitle>
+                  <div className="bg-blue-100 p-1.5 rounded-md">
+                    <User className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <CardTitle className="text-base font-semibold text-secondary-900">
+                    {t("dailyTasks.checkins", "Check-ins")}
+                  </CardTitle>
                 </div>
-                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs sm:text-sm">
+                <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200 border-0">
                   {todayCheckIns.length}
                 </Badge>
               </div>
-              <CardDescription className="text-xs sm:text-sm">{t("dailyTasks.checkinsDescription", "Chegadas de hóspedes para hoje e amanhã")}</CardDescription>
+              <CardDescription className="text-xs text-secondary-500 mt-1">
+                {t("dailyTasks.checkinsDescription", "Chegadas de hóspedes para hoje e amanhã")}
+              </CardDescription>
             </CardHeader>
+            
             <CardContent className="p-0">
-              <ScrollArea className="h-[calc(100vh-32rem)] sm:h-[calc(100vh-30rem)] px-3 sm:px-4 pt-1 pb-2">
+              <ScrollArea className="h-[350px] px-4 pt-2 pb-2">
                 {isLoadingReservations ? (
                   <div className="space-y-4 py-2">
-                    <Skeleton className="h-24 w-full" />
-                    <Skeleton className="h-24 w-full" />
+                    <Skeleton className="h-20 w-full" />
+                    <Skeleton className="h-20 w-full" />
                   </div>
                 ) : todayCheckIns.length > 0 ? (
-                  <div className="space-y-3 py-1">
+                  <div className="space-y-3 py-2">
                     {todayCheckIns.map((checkin, index) => {
                       const { time, date } = formatDateTime(checkin.checkInDate);
                       const isToday = date === new Date().toLocaleDateString();
@@ -343,44 +350,44 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
                       return (
                         <div 
                           key={`checkin-${checkin.id}`}
-                          className="p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors relative group"
+                          className="p-3 rounded-lg bg-white border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all relative"
                         >
-                          <div className={`absolute left-0 top-0 w-1 h-full rounded-l-lg ${isToday ? 'bg-blue-500' : 'bg-purple-400'}`}></div>
-                          <div className="flex items-start gap-3">
-                            <Avatar className="h-8 w-8 sm:h-9 sm:w-9 mt-0.5 border">
-                              <AvatarFallback className="bg-blue-100 text-blue-700 text-xs">
-                                {checkin.guestName?.split(' ').map(n => n[0]).join('').toUpperCase() || 'G'}
-                              </AvatarFallback>
-                            </Avatar>
+                          <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-medium text-blue-700">
+                              {checkin.guestName?.split(' ').map(n => n[0]).join('').toUpperCase() || 'G'}
+                            </div>
+                            
                             <div className="flex-1 min-w-0">
-                              <div className="flex justify-between items-start">
-                                <h4 className="font-medium text-sm truncate">{checkin.guestName}</h4>
-                                {isToday ? (
-                                  <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs whitespace-nowrap">
-                                    {t("dailyTasks.today", "Hoje")} • {time}
-                                  </Badge>
-                                ) : (
-                                  <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 text-xs whitespace-nowrap">
-                                    {t("dailyTasks.tomorrow", "Amanhã")} • {time}
-                                  </Badge>
-                                )}
+                              <div className="flex justify-between items-center">
+                                <h4 className="font-medium text-sm truncate">
+                                  {checkin.guestName}
+                                </h4>
+                                <div className="flex-shrink-0">
+                                  {isToday ? (
+                                    <Badge className="bg-blue-50 text-blue-700 border-blue-100 text-xs whitespace-nowrap">
+                                      {t("dailyTasks.today", "Hoje")} • {time}
+                                    </Badge>
+                                  ) : (
+                                    <Badge className="bg-purple-50 text-purple-700 border-purple-100 text-xs whitespace-nowrap">
+                                      {t("dailyTasks.tomorrow", "Amanhã")} • {time}
+                                    </Badge>
+                                  )}
+                                </div>
                               </div>
-                              <p className="text-xs text-muted-foreground mt-1 truncate">
-                                <span className="inline-flex items-center">
-                                  <Home className="h-3 w-3 mr-1 text-muted-foreground" />
-                                  {checkin.propertyName}
-                                </span>
+                              
+                              <p className="text-xs text-secondary-500 mt-1 flex items-center">
+                                <Home className="h-3 w-3 mr-1" />
+                                {checkin.propertyName}
                               </p>
-                              <div className="flex gap-2 mt-2">
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className="h-7 px-2 text-xs w-full"
-                                  onClick={() => navigateToDetail("reservation", checkin.id)}
-                                >
-                                  {t("dailyTasks.viewDetails", "Ver Detalhes")}
-                                </Button>
-                              </div>
+                              
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-7 px-2 text-xs mt-2 w-full border-blue-200 text-blue-700 hover:bg-blue-50"
+                                onClick={() => navigateToDetail("reservation", checkin.id)}
+                              >
+                                {t("dailyTasks.viewDetails", "Ver Detalhes")}
+                              </Button>
                             </div>
                           </div>
                         </div>
@@ -389,18 +396,19 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
                   </div>
                 ) : (
                   <div className="py-8 text-center">
-                    <p className="text-muted-foreground text-sm">
+                    <p className="text-secondary-500 text-sm">
                       {t("dailyTasks.noCheckins", "Não há check-ins agendados para hoje")}
                     </p>
                   </div>
                 )}
               </ScrollArea>
             </CardContent>
-            <CardFooter className="border-t bg-muted/50 justify-center py-2 sm:py-3">
+            
+            <CardFooter className="border-t justify-center py-2">
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="gap-1 text-xs h-7 sm:h-8"
+                className="gap-1 text-xs h-7 text-blue-700"
                 onClick={() => setLocation("/reservations")}
               >
                 {t("dailyTasks.viewAllReservations", "Ver Todas as Reservas")}
@@ -410,82 +418,84 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
           </Card>
         </motion.div>
 
-        {/* Check-outs & Cleaning Column */}
+        {/* Check-outs & Cleaning Column - Redesenhado para ser mais clean */}
         <motion.div
           variants={fadeIn}
           initial="hidden"
           animate="visible"
           custom={3}
         >
-          <Card className="h-full bg-background/70 backdrop-blur-sm border-rose-200/30">
-            <CardHeader className="pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
+          <Card className="overflow-hidden bg-white shadow-sm border-0">
+            <CardHeader className="pb-2 px-4 pt-4 bg-gradient-to-br from-red-50 to-white border-b">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                  <LogOut className="h-4 w-4 sm:h-5 sm:w-5 text-rose-500" />
-                  <CardTitle className="text-base sm:text-lg">{t("dailyTasks.checkouts", "Check-outs")}</CardTitle>
+                  <div className="bg-red-100 p-1.5 rounded-md">
+                    <LogOut className="h-4 w-4 text-red-600" />
+                  </div>
+                  <CardTitle className="text-base font-semibold text-secondary-900">
+                    {t("dailyTasks.checkouts", "Check-outs")}
+                  </CardTitle>
                 </div>
-                <Badge variant="outline" className="bg-rose-50 text-rose-700 border-rose-200 text-xs sm:text-sm">
+                <Badge className="bg-red-100 text-red-700 hover:bg-red-200 border-0">
                   {todayCheckOuts.length}
                 </Badge>
               </div>
-              <CardDescription className="text-xs sm:text-sm">{t("dailyTasks.checkoutsDescription", "Saídas de hóspedes para hoje")}</CardDescription>
+              <CardDescription className="text-xs text-secondary-500 mt-1">
+                {t("dailyTasks.checkoutsDescription", "Saídas de hóspedes para hoje")}
+              </CardDescription>
             </CardHeader>
+            
             <CardContent className="p-0">
-              <ScrollArea className="h-[calc(100vh-32rem)] sm:h-[calc(100vh-30rem)] px-3 sm:px-4 pt-1 pb-2">
+              <ScrollArea className="h-[350px] px-4 pt-2 pb-2">
                 {isLoadingReservations ? (
                   <div className="space-y-4 py-2">
-                    <Skeleton className="h-24 w-full" />
-                    <Skeleton className="h-24 w-full" />
+                    <Skeleton className="h-20 w-full" />
+                    <Skeleton className="h-20 w-full" />
                   </div>
                 ) : todayCheckOuts.length > 0 ? (
-                  <div className="space-y-3 py-1">
+                  <div className="space-y-3 py-2">
                     {todayCheckOuts.map((checkout) => {
                       const { time } = formatDateTime(checkout.checkOutDate);
                       
                       return (
                         <div 
                           key={`checkout-${checkout.id}`}
-                          className="p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors relative group"
+                          className="p-3 rounded-lg bg-white border border-gray-100 hover:border-red-200 hover:shadow-sm transition-all relative"
                         >
-                          <div className="absolute left-0 top-0 w-1 h-full rounded-l-lg bg-rose-500"></div>
-                          <div className="flex items-start gap-3">
-                            <Avatar className="h-8 w-8 sm:h-9 sm:w-9 mt-0.5 border">
-                              <AvatarFallback className="bg-rose-100 text-rose-700 text-xs">
-                                {checkout.guestName?.split(' ').map(n => n[0]).join('').toUpperCase() || 'G'}
-                              </AvatarFallback>
-                            </Avatar>
+                          <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-medium text-red-700">
+                              {checkout.guestName?.split(' ').map(n => n[0]).join('').toUpperCase() || 'G'}
+                            </div>
+                            
                             <div className="flex-1 min-w-0">
-                              <div className="flex justify-between items-start">
-                                <h4 className="font-medium text-sm truncate">{checkout.guestName}</h4>
-                                <Badge variant="outline" className="bg-rose-50 text-rose-700 border-rose-200 text-xs whitespace-nowrap">
+                              <div className="flex justify-between items-center">
+                                <h4 className="font-medium text-sm truncate">
+                                  {checkout.guestName}
+                                </h4>
+                                <Badge className="bg-red-50 text-red-700 border-red-100 text-xs whitespace-nowrap">
                                   {time}
                                 </Badge>
                               </div>
-                              <p className="text-xs text-muted-foreground mt-1 truncate">
-                                <span className="inline-flex items-center">
-                                  <Home className="h-3 w-3 mr-1 text-muted-foreground" />
-                                  {checkout.propertyName}
-                                </span>
+                              
+                              <p className="text-xs text-secondary-500 mt-1 flex items-center">
+                                <Home className="h-3 w-3 mr-1" />
+                                {checkout.propertyName}
                               </p>
                               
-                              {/* Cleaning section */}
-                              <div className="mt-3 pt-2 border-t border-dashed border-muted">
-                                <div className="flex items-center justify-between">
-                                  <span className="text-xs font-medium flex items-center">
-                                    <Sparkles className="h-3 w-3 mr-1 text-emerald-500" />
-                                    {t("dailyTasks.cleaning", "Limpeza")}
-                                  </span>
-                                  <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 text-xs">
-                                    {t("dailyTasks.pendingStatus", "Pendente")}
-                                  </Badge>
+                              {/* Cleaning tag */}
+                              <div className="flex items-center mt-2">
+                                <div className="flex gap-1 items-center bg-green-50 text-green-700 px-2 py-0.5 rounded-full text-xs">
+                                  <Sparkles className="h-3 w-3" />
+                                  <span>Limpeza:</span>
+                                  <span className="font-medium">Pendente</span>
                                 </div>
                               </div>
                               
-                              <div className="flex flex-wrap gap-2 mt-2">
+                              <div className="flex gap-2 mt-2">
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="h-7 px-2 text-xs"
+                                  className="h-7 px-2 text-xs border-red-200 text-red-700 hover:bg-red-50"
                                   onClick={() => navigateToDetail("reservation", checkout.id)}
                                 >
                                   {t("dailyTasks.viewDetails", "Ver Detalhes")}
@@ -493,7 +503,7 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
                                 <Button
                                   size="sm"
                                   variant="default"
-                                  className="h-7 px-2 text-xs bg-emerald-500 hover:bg-emerald-600"
+                                  className="h-7 px-2 text-xs bg-green-600 hover:bg-green-700 text-white"
                                 >
                                   {t("dailyTasks.scheduleClean", "Agendar Limpeza")}
                                 </Button>
@@ -504,32 +514,36 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
                       );
                     })}
 
-                    {/* Cleaning tasks for properties without checkouts */}
+                    {/* Limpezas adicionais */}
                     {cleaningTasks.length > todayCheckOuts.length && (
                       <>
-                        <Separator className="my-3" />
-                        <h3 className="text-sm font-medium px-1 flex items-center gap-2 mb-2">
-                          <Sparkles className="h-4 w-4 text-emerald-500" />
-                          {t("dailyTasks.additionalCleanings", "Limpezas Adicionais")}
-                        </h3>
+                        <div className="flex items-center gap-2 my-3">
+                          <div className="h-px flex-1 bg-gray-100"></div>
+                          <span className="text-xs font-medium text-gray-500">Limpezas Adicionais</span>
+                          <div className="h-px flex-1 bg-gray-100"></div>
+                        </div>
                         
                         {cleaningTasks
                           .filter((task, index) => index >= todayCheckOuts.length)
                           .map((task) => (
                             <div 
                               key={task.id}
-                              className="p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors relative"
+                              className="p-3 rounded-lg bg-white border border-gray-100 hover:border-green-200 hover:shadow-sm transition-all"
                             >
-                              <div className="absolute left-0 top-0 w-1 h-full rounded-l-lg bg-emerald-500"></div>
-                              <div className="flex items-center gap-2">
-                                <div className="bg-emerald-100 dark:bg-emerald-900/50 p-2 rounded-full">
-                                  <Sparkles className="h-4 w-4 text-emerald-500" />
+                              <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                  <Sparkles className="h-4 w-4 text-green-600" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <h4 className="font-medium text-sm">{task.title}</h4>
-                                  <p className="text-xs text-muted-foreground">{task.propertyName}</p>
+                                  <div className="flex justify-between items-center">
+                                    <h4 className="font-medium text-sm">{task.title}</h4>
+                                    <div className="bg-green-50 text-green-700 px-2 py-0.5 rounded-full text-xs font-medium">
+                                      {task.status === 'pending' ? 'Pendente' : 
+                                       task.status === 'upcoming' ? 'Agendada' : 'Atenção'}
+                                    </div>
+                                  </div>
+                                  <p className="text-xs text-secondary-500 mt-1">{task.propertyName}</p>
                                 </div>
-                                {getStatusBadge(task.status)}
                               </div>
                             </div>
                           ))
@@ -539,18 +553,19 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
                   </div>
                 ) : (
                   <div className="py-8 text-center">
-                    <p className="text-muted-foreground text-sm">
+                    <p className="text-secondary-500 text-sm">
                       {t("dailyTasks.noCheckouts", "Não há check-outs agendados para hoje")}
                     </p>
                   </div>
                 )}
               </ScrollArea>
             </CardContent>
-            <CardFooter className="border-t bg-muted/50 justify-center py-2 sm:py-3">
+            
+            <CardFooter className="border-t justify-center py-2">
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="gap-1 text-xs h-7 sm:h-8"
+                className="gap-1 text-xs h-7 text-red-700"
                 onClick={() => setLocation("/cleaning-teams")}
               >
                 {t("dailyTasks.viewAllCleanings", "Ver Todas as Limpezas")}
@@ -560,84 +575,97 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
           </Card>
         </motion.div>
 
-        {/* Maintenance & Other Tasks Column */}
+        {/* Maintenance & Other Tasks Column - Redesenhado para ser mais clean */}
         <motion.div
           variants={fadeIn}
           initial="hidden"
           animate="visible"
           custom={4}
         >
-          <Card className="h-full bg-background/70 backdrop-blur-sm border-amber-200/30">
-            <CardHeader className="pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
+          <Card className="overflow-hidden bg-white shadow-sm border-0">
+            <CardHeader className="pb-2 px-4 pt-4 bg-gradient-to-br from-amber-50 to-white border-b">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                  <Wrench className="h-4 w-4 sm:h-5 sm:w-5 text-amber-500" />
-                  <CardTitle className="text-base sm:text-lg">{t("dailyTasks.maintenance", "Manutenção & Tarefas")}</CardTitle>
+                  <div className="bg-amber-100 p-1.5 rounded-md">
+                    <Wrench className="h-4 w-4 text-amber-600" />
+                  </div>
+                  <CardTitle className="text-base font-semibold text-secondary-900">
+                    {t("dailyTasks.maintenance", "Manutenção & Tarefas")}
+                  </CardTitle>
                 </div>
-                <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 text-xs sm:text-sm">
+                <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-200 border-0">
                   {maintenanceTasks.length + otherTasks.length}
                 </Badge>
               </div>
-              <CardDescription className="text-xs sm:text-sm">{t("dailyTasks.maintenanceDescription", "Reparos e tarefas pendentes")}</CardDescription>
+              <CardDescription className="text-xs text-secondary-500 mt-1">
+                {t("dailyTasks.maintenanceDescription", "Reparos e tarefas pendentes")}
+              </CardDescription>
             </CardHeader>
+            
             <CardContent className="p-0">
-              <ScrollArea className="h-[calc(100vh-32rem)] sm:h-[calc(100vh-30rem)] px-3 sm:px-4 pt-1 pb-2">
+              <ScrollArea className="h-[350px] px-4 pt-2 pb-2">
                 {isLoadingActivities ? (
                   <div className="space-y-4 py-2">
-                    <Skeleton className="h-24 w-full" />
-                    <Skeleton className="h-24 w-full" />
+                    <Skeleton className="h-20 w-full" />
+                    <Skeleton className="h-20 w-full" />
                   </div>
                 ) : (
-                  <div className="space-y-3 py-1">
-                    {/* Maintenance Tasks */}
+                  <div className="space-y-3 py-2">
+                    {/* Manutenção */}
                     {maintenanceTasks.length > 0 && (
                       <>
-                        <h3 className="text-xs sm:text-sm font-medium px-1 mt-1 mb-2 flex items-center gap-2">
-                          <Wrench className="h-3 w-3 sm:h-4 sm:w-4 text-amber-500" />
-                          {t("dailyTasks.maintenanceIssues", "Problemas de Manutenção")}
-                        </h3>
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center">
+                            <Wrench className="h-3 w-3 text-amber-600" />
+                          </div>
+                          <span className="text-sm font-medium text-secondary-900">
+                            {t("dailyTasks.maintenanceIssues", "Problemas de Manutenção")}
+                          </span>
+                        </div>
                         
                         {maintenanceTasks.map((task) => (
                           <div 
                             key={task.id}
-                            className="p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors relative"
+                            className="rounded-lg bg-white border border-gray-100 hover:border-amber-200 hover:shadow-sm transition-all overflow-hidden"
                           >
-                            <div className={`absolute left-0 top-0 w-1 h-full rounded-l-lg ${task.status === 'attention' ? 'bg-red-500' : 'bg-amber-500'}`}></div>
-                            <div className="flex items-start gap-3">
-                              <div className={`p-2 rounded-full ${task.status === 'attention' ? 'bg-red-100 dark:bg-red-900/30' : 'bg-amber-100 dark:bg-amber-900/30'}`}>
-                                {task.status === 'attention' ? (
-                                  <AlertTriangle className="h-3 w-3 sm:h-4 sm:w-4 text-red-500" />
-                                ) : (
-                                  <Wrench className="h-3 w-3 sm:h-4 sm:w-4 text-amber-500" />
-                                )}
+                            {task.status === 'attention' ? (
+                              <div className="bg-red-100 px-3 py-1 flex items-center">
+                                <AlertTriangle className="h-3 w-3 text-red-600 mr-2" />
+                                <span className="text-xs font-medium text-red-800">Urgente</span>
                               </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex justify-between items-start">
-                                  <h4 className="font-medium text-sm">{task.title}</h4>
-                                  {getStatusBadge(task.status)}
-                                </div>
-                                <p className="text-xs text-muted-foreground mt-1">{task.description}</p>
-                                <p className="text-xs text-muted-foreground mt-1 flex items-center">
-                                  <Home className="h-3 w-3 mr-1" />
-                                  {task.propertyName}
-                                </p>
-                                
-                                <div className="flex flex-wrap gap-2 mt-2">
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="h-7 px-2 text-xs"
-                                    onClick={() => navigateToDetail("property", task.propertyId!)}
-                                  >
-                                    {t("dailyTasks.viewProperty", "Ver Imóvel")}
-                                  </Button>
-                                  <Button
-                                    size="sm"
-                                    variant="default"
-                                    className="h-7 px-2 text-xs"
-                                  >
-                                    {t("dailyTasks.markResolved", "Marcar Resolvido")}
-                                  </Button>
+                            ) : null}
+                            
+                            <div className="p-3">
+                              <div className="flex items-start gap-2">
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex justify-between items-start">
+                                    <h4 className="font-medium text-sm">{task.title}</h4>
+                                  </div>
+                                  
+                                  <p className="text-xs text-secondary-500 mt-1">{task.description}</p>
+                                  
+                                  <p className="text-xs text-secondary-500 mt-1 flex items-center">
+                                    <Home className="h-3 w-3 mr-1" />
+                                    {task.propertyName}
+                                  </p>
+                                  
+                                  <div className="flex flex-wrap gap-2 mt-2">
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      className="h-7 px-2 text-xs"
+                                      onClick={() => navigateToDetail("property", task.propertyId!)}
+                                    >
+                                      {t("dailyTasks.viewProperty", "Ver Imóvel")}
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="default"
+                                      className="h-7 px-2 text-xs"
+                                    >
+                                      {t("dailyTasks.markResolved", "Marcar Resolvido")}
+                                    </Button>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -646,31 +674,33 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
                       </>
                     )}
                     
-                    {/* Other Tasks */}
+                    {/* Outras tarefas */}
                     {otherTasks.length > 0 && (
                       <>
-                        <Separator className="my-3" />
-                        <h3 className="text-xs sm:text-sm font-medium px-1 mt-1 mb-2 flex items-center gap-2">
-                          <ClipboardList className="h-3 w-3 sm:h-4 sm:w-4 text-purple-500" />
-                          {t("dailyTasks.otherTasks", "Outras Tarefas")}
-                        </h3>
+                        <div className="flex items-center gap-2 my-3">
+                          <div className="h-px flex-1 bg-gray-100"></div>
+                          <span className="text-xs font-medium text-gray-500">Outras Tarefas</span>
+                          <div className="h-px flex-1 bg-gray-100"></div>
+                        </div>
                         
                         {otherTasks.map((task) => (
                           <div 
                             key={task.id}
-                            className="p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors relative"
+                            className="p-3 rounded-lg bg-white border border-gray-100 hover:border-purple-200 hover:shadow-sm transition-all"
                           >
-                            <div className="absolute left-0 top-0 w-1 h-full rounded-l-lg bg-purple-500"></div>
                             <div className="flex items-center gap-3">
-                              <div className="bg-purple-100 dark:bg-purple-900/30 p-2 rounded-full">
+                              <div className="w-9 h-9 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
                                 {task.icon}
                               </div>
                               <div className="flex-1 min-w-0">
-                                <div className="flex justify-between items-start">
+                                <div className="flex justify-between items-center">
                                   <h4 className="font-medium text-sm">{task.title}</h4>
-                                  {getStatusBadge(task.status)}
+                                  <div className="bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full text-xs font-medium">
+                                    {task.status === 'pending' ? 'Pendente' : 
+                                     task.status === 'upcoming' ? 'Agendada' : 'Atenção'}
+                                  </div>
                                 </div>
-                                <p className="text-xs text-muted-foreground mt-1">{task.description}</p>
+                                <p className="text-xs text-secondary-500 mt-1">{task.description}</p>
                               </div>
                             </div>
                           </div>
@@ -680,7 +710,7 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
                     
                     {maintenanceTasks.length === 0 && otherTasks.length === 0 && (
                       <div className="py-8 text-center">
-                        <p className="text-muted-foreground text-sm">
+                        <p className="text-secondary-500 text-sm">
                           {t("dailyTasks.noMaintenanceTasks", "Não há tarefas de manutenção pendentes")}
                         </p>
                       </div>
@@ -689,11 +719,12 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
                 )}
               </ScrollArea>
             </CardContent>
-            <CardFooter className="border-t bg-muted/50 justify-center py-2 sm:py-3">
+            
+            <CardFooter className="border-t justify-center py-2">
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="gap-1 text-xs h-7 sm:h-8"
+                className="gap-1 text-xs h-7 text-amber-700"
                 onClick={() => setLocation("/maintenance/pending")}
               >
                 {t("dailyTasks.viewAllTasks", "Ver Todas as Tarefas")}
