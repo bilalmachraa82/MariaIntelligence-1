@@ -817,7 +817,7 @@ export default function UserManualDownload() {
                             {t("settings.manual.ai.title", "Tecnologia Avançada de IA")}
                           </h3>
                           <p className="text-sm text-muted-foreground mb-4">
-                            O Maria Faz utiliza o modelo Mistral AI para extrair dados de documentos de forma inteligente e precisa, com reconhecimento automático e validação contextual.
+                            O Maria Faz utiliza o modelo Google Gemini para extrair dados de documentos de forma inteligente e precisa, com reconhecimento automático e validação contextual.
                           </p>
                           <div className="flex flex-wrap gap-2">
                             <Badge variant="secondary">Extração OCR</Badge>
