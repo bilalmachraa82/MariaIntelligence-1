@@ -713,7 +713,7 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
               size="sm"
             >
               <ArrowRight className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-              {t("dailyTasks.viewDashboard", "Ver Dashboard Completo")}
+              {t("dailyTasks.viewAll", "Ver Dashboard Completo")}
             </Button>
           )}
         </div>
