@@ -288,6 +288,38 @@
       "createFirst": "Crie sua primeira tarefa de manutenção para começar",
       "newRequest": "Nova Solicitação"
     },
+    "cleaningTeams": {
+      "title": "Prestadores de Serviço",
+      "addTeam": "Adicionar Prestador",
+      "searchPlaceholder": "Pesquisar prestadores...",
+      "teams": "Prestadores",
+      "schedule": "Agendamento",
+      "allTeams": "Todos os Prestadores",
+      "managementDescription": "Gerencie todos os prestadores de serviço da sua operação.",
+      "name": "Nome",
+      "contact": "Contacto",
+      "status": "Estado",
+      "statusActive": "Ativa",
+      "scheduleDescription": "Visualize e gerencie o agendamento de limpezas.",
+      "viewSchedules": "Ver Agendamentos",
+      "select": "Selecionar equipe",
+      "selectTeam": "Todos os prestadores",
+      "schedules": {
+        "title": "Agendamentos de Limpeza",
+        "filters": "Filtros",
+        "filtersDescription": "Filtre os agendamentos por equipe, status e tipo",
+        "status": "Status",
+        "allStatuses": "Todos os status",
+        "type": "Tipo",
+        "allTypes": "Todos os tipos",
+        "calendarView": "Visualização de Calendário",
+        "listView": "Visualização em Lista",
+        "calendarTitle": "Calendário de Agendamentos",
+        "calendarDescription": "Selecione uma data para ver os agendamentos",
+        "listTitle": "Lista de Agendamentos",
+        "listDescription": "Visualize todos os agendamentos futuros"
+      }
+    },
     "trendsReport": {
       "title": "Relatório de Tendências",
       "description": "Análise de tendências e performance dos imóveis",
@@ -772,6 +804,7 @@
       "create": "Criar",
       "generate": "Gerar",
       "sending": "A enviar...",
+      "nif": "NIF",
       "backToDashboard": "Voltar ao Painel"
     },
     "reports": {
