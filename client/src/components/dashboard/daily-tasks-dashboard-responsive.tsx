@@ -42,6 +42,8 @@ import {
   Wrench,
   CheckSquare,
   Loader2,
+  CalendarCheck,
+  CheckCircle2,
 } from "lucide-react";
 
 // Animation variants
@@ -350,44 +352,47 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
                       return (
                         <div 
                           key={`checkin-${checkin.id}`}
-                          className="p-3 rounded-lg bg-white border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all relative"
+                          className="rounded-lg bg-white border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all overflow-hidden"
                         >
-                          <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-medium text-blue-700">
-                              {checkin.guestName?.split(' ').map(n => n[0]).join('').toUpperCase() || 'G'}
+                          {isToday ? (
+                            <div className="bg-blue-100 px-3 py-1 flex items-center">
+                              <User className="h-3 w-3 text-blue-600 mr-2" />
+                              <span className="text-xs font-medium text-blue-800">{t("dailyTasks.today", "Hoje")} • {time}</span>
                             </div>
-                            
-                            <div className="flex-1 min-w-0">
-                              <div className="flex justify-between items-center">
-                                <h4 className="font-medium text-sm truncate">
-                                  {checkin.guestName}
-                                </h4>
-                                <div className="flex-shrink-0">
-                                  {isToday ? (
-                                    <Badge className="bg-blue-50 text-blue-700 border-blue-100 text-xs whitespace-nowrap">
-                                      {t("dailyTasks.today", "Hoje")} • {time}
-                                    </Badge>
-                                  ) : (
-                                    <Badge className="bg-purple-50 text-purple-700 border-purple-100 text-xs whitespace-nowrap">
-                                      {t("dailyTasks.tomorrow", "Amanhã")} • {time}
-                                    </Badge>
-                                  )}
+                          ) : (
+                            <div className="bg-purple-100 px-3 py-1 flex items-center">
+                              <User className="h-3 w-3 text-purple-600 mr-2" />
+                              <span className="text-xs font-medium text-purple-800">{t("dailyTasks.tomorrow", "Amanhã")} • {time}</span>
+                            </div>
+                          )}
+                          
+                          <div className="p-3">
+                            <div className="flex items-start gap-2">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-start">
+                                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-medium text-blue-700 mr-2">
+                                    {checkin.guestName?.split(' ').map(n => n[0]).join('').toUpperCase() || 'G'}
+                                  </div>
+                                  <div>
+                                    <h4 className="font-medium text-sm">
+                                      {checkin.guestName}
+                                    </h4>
+                                    <p className="text-xs text-secondary-500 mt-0.5 flex items-center">
+                                      <Home className="h-3 w-3 mr-1" />
+                                      {checkin.propertyName}
+                                    </p>
+                                  </div>
                                 </div>
+                                  
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="h-7 px-2 text-xs mt-2 w-full border-blue-200 text-blue-700 hover:bg-blue-50"
+                                  onClick={() => navigateToDetail("reservation", checkin.id)}
+                                >
+                                  {t("dailyTasks.viewDetails", "Ver Detalhes")}
+                                </Button>
                               </div>
-                              
-                              <p className="text-xs text-secondary-500 mt-1 flex items-center">
-                                <Home className="h-3 w-3 mr-1" />
-                                {checkin.propertyName}
-                              </p>
-                              
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="h-7 px-2 text-xs mt-2 w-full border-blue-200 text-blue-700 hover:bg-blue-50"
-                                onClick={() => navigateToDetail("reservation", checkin.id)}
-                              >
-                                {t("dailyTasks.viewDetails", "Ver Detalhes")}
-                              </Button>
                             </div>
                           </div>
                         </div>
@@ -460,53 +465,54 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
                       return (
                         <div 
                           key={`checkout-${checkout.id}`}
-                          className="p-3 rounded-lg bg-white border border-gray-100 hover:border-red-200 hover:shadow-sm transition-all relative"
+                          className="rounded-lg bg-white border border-gray-100 hover:border-red-200 hover:shadow-sm transition-all overflow-hidden"
                         >
-                          <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-medium text-red-700">
-                              {checkout.guestName?.split(' ').map(n => n[0]).join('').toUpperCase() || 'G'}
+                          <div className="bg-red-100 px-3 py-1 flex items-center justify-between">
+                            <div className="flex items-center">
+                              <LogOut className="h-3 w-3 text-red-600 mr-2" />
+                              <span className="text-xs font-medium text-red-800">Check-out • {time}</span>
                             </div>
-                            
-                            <div className="flex-1 min-w-0">
-                              <div className="flex justify-between items-center">
-                                <h4 className="font-medium text-sm truncate">
-                                  {checkout.guestName}
-                                </h4>
-                                <Badge className="bg-red-50 text-red-700 border-red-100 text-xs whitespace-nowrap">
-                                  {time}
-                                </Badge>
-                              </div>
-                              
-                              <p className="text-xs text-secondary-500 mt-1 flex items-center">
-                                <Home className="h-3 w-3 mr-1" />
-                                {checkout.propertyName}
-                              </p>
-                              
-                              {/* Cleaning tag */}
-                              <div className="flex items-center mt-2">
-                                <div className="flex gap-1 items-center bg-green-50 text-green-700 px-2 py-0.5 rounded-full text-xs">
-                                  <Sparkles className="h-3 w-3" />
-                                  <span>Limpeza:</span>
-                                  <span className="font-medium">Pendente</span>
+                            <div className="flex gap-1 items-center bg-green-50 text-green-700 px-2 py-0.5 rounded-full text-xs">
+                              <Sparkles className="h-3 w-3" />
+                              <span className="font-medium">Limpeza Pendente</span>
+                            </div>
+                          </div>
+                          
+                          <div className="p-3">
+                            <div className="flex items-start gap-2">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-start">
+                                  <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-medium text-red-700 mr-2">
+                                    {checkout.guestName?.split(' ').map(n => n[0]).join('').toUpperCase() || 'G'}
+                                  </div>
+                                  <div>
+                                    <h4 className="font-medium text-sm">
+                                      {checkout.guestName}
+                                    </h4>
+                                    <p className="text-xs text-secondary-500 mt-0.5 flex items-center">
+                                      <Home className="h-3 w-3 mr-1" />
+                                      {checkout.propertyName}
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                              
-                              <div className="flex gap-2 mt-2">
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className="h-7 px-2 text-xs border-red-200 text-red-700 hover:bg-red-50"
-                                  onClick={() => navigateToDetail("reservation", checkout.id)}
-                                >
-                                  {t("dailyTasks.viewDetails", "Ver Detalhes")}
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="default"
-                                  className="h-7 px-2 text-xs bg-green-600 hover:bg-green-700 text-white"
-                                >
-                                  {t("dailyTasks.scheduleClean", "Agendar Limpeza")}
-                                </Button>
+                                
+                                <div className="flex gap-2 mt-2">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="h-7 px-2 text-xs border-red-200 text-red-700 hover:bg-red-50"
+                                    onClick={() => navigateToDetail("reservation", checkout.id)}
+                                  >
+                                    {t("dailyTasks.viewDetails", "Ver Detalhes")}
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="default"
+                                    className="h-7 px-2 text-xs bg-green-600 hover:bg-green-700 text-white"
+                                  >
+                                    {t("dailyTasks.scheduleClean", "Agendar Limpeza")}
+                                  </Button>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -528,21 +534,34 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
                           .map((task) => (
                             <div 
                               key={task.id}
-                              className="p-3 rounded-lg bg-white border border-gray-100 hover:border-green-200 hover:shadow-sm transition-all"
+                              className="rounded-lg bg-white border border-gray-100 hover:border-green-200 hover:shadow-sm transition-all overflow-hidden"
                             >
-                              <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                  <Sparkles className="h-4 w-4 text-green-600" />
+                              <div className="bg-green-100 px-3 py-1 flex items-center justify-between">
+                                <div className="flex items-center">
+                                  <Sparkles className="h-3 w-3 text-green-600 mr-2" />
+                                  <span className="text-xs font-medium text-green-800">Limpeza Agendada</span>
                                 </div>
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex justify-between items-center">
-                                    <h4 className="font-medium text-sm">{task.title}</h4>
-                                    <div className="bg-green-50 text-green-700 px-2 py-0.5 rounded-full text-xs font-medium">
-                                      {task.status === 'pending' ? 'Pendente' : 
-                                       task.status === 'upcoming' ? 'Agendada' : 'Atenção'}
+                                <div className="bg-green-50 text-green-700 px-2 py-0.5 rounded-full text-xs font-medium">
+                                  {task.status === 'pending' ? 'Pendente' : 
+                                   task.status === 'upcoming' ? 'Agendada' : 'Atenção'}
+                                </div>
+                              </div>
+                              <div className="p-3">
+                                <div className="flex items-start gap-2">
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-start">
+                                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mr-2">
+                                        <Sparkles className="h-4 w-4 text-green-600" />
+                                      </div>
+                                      <div>
+                                        <h4 className="font-medium text-sm">{task.title}</h4>
+                                        <p className="text-xs text-secondary-500 mt-0.5 flex items-center">
+                                          <Home className="h-3 w-3 mr-1" />
+                                          {task.propertyName}
+                                        </p>
+                                      </div>
                                     </div>
                                   </div>
-                                  <p className="text-xs text-secondary-500 mt-1">{task.propertyName}</p>
                                 </div>
                               </div>
                             </div>
@@ -686,21 +705,31 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
                         {otherTasks.map((task) => (
                           <div 
                             key={task.id}
-                            className="p-3 rounded-lg bg-white border border-gray-100 hover:border-purple-200 hover:shadow-sm transition-all"
+                            className="rounded-lg bg-white border border-gray-100 hover:border-purple-200 hover:shadow-sm transition-all overflow-hidden"
                           >
-                            <div className="flex items-center gap-3">
-                              <div className="w-9 h-9 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                {task.icon}
+                            <div className="bg-purple-100 px-3 py-1 flex items-center justify-between">
+                              <div className="flex items-center">
+                                <CalendarCheck className="h-3 w-3 text-purple-600 mr-2" />
+                                <span className="text-xs font-medium text-purple-800">Tarefa Administrativa</span>
                               </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex justify-between items-center">
-                                  <h4 className="font-medium text-sm">{task.title}</h4>
-                                  <div className="bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full text-xs font-medium">
-                                    {task.status === 'pending' ? 'Pendente' : 
-                                     task.status === 'upcoming' ? 'Agendada' : 'Atenção'}
+                              <div className="bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full text-xs font-medium">
+                                {task.status === 'pending' ? 'Pendente' : 
+                                 task.status === 'upcoming' ? 'Agendada' : 'Atenção'}
+                              </div>
+                            </div>
+                            <div className="p-3">
+                              <div className="flex items-start gap-2">
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-start">
+                                    <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mr-2">
+                                      {task.icon}
+                                    </div>
+                                    <div>
+                                      <h4 className="font-medium text-sm">{task.title}</h4>
+                                      <p className="text-xs text-secondary-500 mt-0.5">{task.description}</p>
+                                    </div>
                                   </div>
                                 </div>
-                                <p className="text-xs text-secondary-500 mt-1">{task.description}</p>
                               </div>
                             </div>
                           </div>
