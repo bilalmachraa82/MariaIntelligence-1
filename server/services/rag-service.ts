@@ -4,7 +4,11 @@
  * para melhorar a experiência do assistente Maria.
  */
 
-import { Mistral } from "@mistralai/mistralai";
+/**
+ * Serviço de RAG (Retrieval-Augmented Generation)
+ * Migrado para usar Gemini para todos os processamentos, incluindo embeddings
+ */
+
 import { db } from "../db";
 import { 
   conversationHistory, 
@@ -16,6 +20,7 @@ import {
 } from "@shared/schema";
 import { eq, desc, and, or, like, sql } from "drizzle-orm";
 import { migrateRagTables } from "../db/migrate-rag";
+import { GeminiService } from "./gemini.service";
 
 // Configurações
 const MAX_CONVERSATION_HISTORY = 50; // Número máximo de mensagens por contexto de conversa
@@ -25,25 +30,23 @@ const DEFAULT_USER_ID = 1; // ID de usuário padrão (até implementar autentica
  * Classe responsável por gerenciar o sistema RAG
  */
 export class RagService {
-  private mistral: Mistral;
+  private geminiService: GeminiService;
   private tablesInitialized: boolean = false;
   
   constructor() {
-    const apiKey = process.env.MISTRAL_API_KEY;
+    const apiKey = process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
     
     if (!apiKey) {
-      console.warn("MISTRAL_API_KEY não encontrada! Algumas funcionalidades de RAG serão limitadas.");
+      console.warn("Google Gemini API KEY não encontrada! Algumas funcionalidades de RAG serão limitadas.");
     }
     
-    this.mistral = new Mistral({
-      apiKey: apiKey || ""
-    });
+    this.geminiService = new GeminiService();
     
     // Inicializar as tabelas necessárias de forma assíncrona
     this.initTables().then(success => {
       this.tablesInitialized = success;
       if (success) {
-        console.log("Tabelas RAG inicializadas com sucesso.");
+        console.log("✅ Serviço RAG inicializado com Gemini API");
       } else {
         console.warn("Não foi possível inicializar todas as tabelas RAG. Algumas funcionalidades podem estar limitadas.");
       }
