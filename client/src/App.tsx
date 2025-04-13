@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Dashboard from "@/pages/dashboard";
+import DashboardFull from "@/pages/dashboard-full";
 import PropertiesPage from "@/pages/properties";
 import PropertyDetailPage from "@/pages/properties/[id]";
 import PropertyEditPage from "@/pages/properties/edit";
@@ -154,6 +155,7 @@ function Router() {
       {/* Rotas em inglês */}
       <Route path="/" component={Dashboard} />
       <Route path="/dashboard" component={Dashboard} />
+      <Route path="/dashboard-full" component={DashboardFull} />
       <Route path="/properties" component={PropertiesPage} />
       <Route path="/properties/edit/:id?" component={PropertyEditPage} />
       <Route path="/properties/estatisticas" component={PropertyStatisticsPage} />
@@ -206,6 +208,7 @@ function Router() {
       
       {/* Rotas em português */}
       <Route path="/painel" component={Dashboard} />
+      <Route path="/painel-completo" component={DashboardFull} />
       <Route path="/propriedades" component={PropertiesPage} />
       <Route path="/propriedades/editar/:id?" component={PropertyEditPage} />
       <Route path="/propriedades/estatisticas" component={PropertyStatisticsPage} />
