@@ -788,25 +788,27 @@ export function TrendsReport({
                             icon={Lightbulb}
                             color="amber"
                           >
-                            {t("trendsReport.performanceSummaryText", 
-                              "A receita mostra um crescimento de {{growth}}% ao longo do período analisado, com tendência {{trend}} nos últimos 3 meses.", 
-                              { 
-                                growth: Math.abs(performanceInsights[0].trend).toFixed(1),
-                                trend: performanceInsights[0].trend > 0 ? 
-                                  t("trendsReport.positive", "positiva") : 
-                                  t("trendsReport.negative", "negativa")
-                              }
-                            )}
-                            <br /><br />
-                            {t("trendsReport.profitInfo",
-                              "A margem de lucro média foi de {{margin}}%, {{comparison}} que o período anterior.",
-                              {
-                                margin: (aggregatedData.reduce((sum, d) => sum + (d.profit / d.revenue * 100), 0) / aggregatedData.length).toFixed(1),
-                                comparison: performanceInsights[1].trend > 0 ? 
-                                  t("trendsReport.higher", "maior") : 
-                                  t("trendsReport.lower", "menor")
-                              }
-                            )}
+                            <span>
+                              {t("trendsReport.performanceSummaryText", 
+                                "A receita mostra um crescimento de {{growth}}% ao longo do período analisado, com tendência {{trend}} nos últimos 3 meses.", 
+                                { 
+                                  growth: Math.abs(performanceInsights[0].trend).toFixed(1),
+                                  trend: performanceInsights[0].trend > 0 ? 
+                                    t("trendsReport.positive", "positiva") : 
+                                    t("trendsReport.negative", "negativa")
+                                }
+                              )}
+                              <br /><br />
+                              {t("trendsReport.profitInfo",
+                                "A margem de lucro média foi de {{margin}}%, {{comparison}} que o período anterior.",
+                                {
+                                  margin: (aggregatedData.reduce((sum, d) => sum + (d.profit / d.revenue * 100), 0) / aggregatedData.length).toFixed(1),
+                                  comparison: performanceInsights[1].trend > 0 ? 
+                                    t("trendsReport.higher", "maior") : 
+                                    t("trendsReport.lower", "menor")
+                                }
+                              )}
+                            </span>
                           </Callout>
                           
                           <Callout
@@ -814,8 +816,8 @@ export function TrendsReport({
                             icon={TrendingUp}
                             color="emerald"
                           >
-                            <div className="space-y-2 text-sm mt-2">
-                              <div className="flex">
+                            <span className="space-y-2 text-sm mt-2 block">
+                              <span className="flex">
                                 <span className="mr-2">•</span>
                                 <span>
                                   {t("trendsReport.opportunityText1", 
@@ -826,16 +828,16 @@ export function TrendsReport({
                                     }
                                   )}
                                 </span>
-                              </div>
-                              <div className="flex">
+                              </span>
+                              <span className="flex">
                                 <span className="mr-2">•</span>
                                 <span>
                                   {t("trendsReport.opportunityText2", 
                                     "Períodos de baixa ocupação representam oportunidades para estratégias promocionais."
                                   )}
                                 </span>
-                              </div>
-                            </div>
+                              </span>
+                            </span>
                           </Callout>
                         </Grid>
                       </Card>
@@ -1150,7 +1152,7 @@ export function TrendsReport({
                             icon={Calendar}
                             color="amber"
                           >
-                            <div className="text-sm mt-2">
+                            <span className="text-sm mt-2 block">
                               {t("trendsReport.seasonalityText", 
                                 "Os meses de {{highSeason}} mostram os melhores desempenhos, com taxas de ocupação {{occupancyRate}}% superiores à média anual.",
                                 { 
@@ -1158,7 +1160,7 @@ export function TrendsReport({
                                   occupancyRate: "20-30"
                                 }
                               )}
-                            </div>
+                            </span>
                           </Callout>
                           
                           <Callout

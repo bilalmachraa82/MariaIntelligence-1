@@ -1,0 +1,54 @@
+i18next::translator: missingKey pt-PT translation trendsReport.negative negativa
+Chave de tradução faltando: trendsReport.negative
+i18next::translator: missingKey pt-PT translation trendsReport.performanceSummaryText A receita mostra um crescimento de {{growth}}% ao longo do período analisado, com tendência {{trend}} nos últimos 3 meses.
+Chave de tradução faltando: trendsReport.performanceSummaryText
+i18next::translator: missingKey pt-PT translation trendsReport.lower menor
+Chave de tradução faltando: trendsReport.lower
+i18next::translator: missingKey pt-PT translation trendsReport.profitInfo A margem de lucro média foi de {{margin}}%, {{comparison}} que o período anterior.
+Chave de tradução faltando: trendsReport.profitInfo
+i18next::translator: missingKey pt-PT translation trendsReport.opportunities Oportunidades
+Chave de tradução faltando: trendsReport.opportunities
+i18next::translator: missingKey pt-PT translation trendsReport.opportunityText1 A propriedade {{property}} mostra o maior potencial de crescimento com {{growth}}%.
+Chave de tradução faltando: trendsReport.opportunityText1
+i18next::translator: missingKey pt-PT translation trendsReport.opportunityText2 Períodos de baixa ocupação representam oportunidades para estratégias promocionais.
+Chave de tradução faltando: trendsReport.opportunityText2
+i18next::translator: missingKey pt-PT translation trendsReport.propertiesComparison Comparação de Propriedades
+Chave de tradução faltando: trendsReport.propertiesComparison
+i18next::translator: missingKey pt-PT translation trendsReport.propertiesComparisonDesc Desempenho comparativo por propriedade durante o período selecionado
+Chave de tradução faltando: trendsReport.propertiesComparisonDesc
+i18next::translator: missingKey pt-PT translation trendsReport.totalRevenue Receita Total
+Chave de tradução faltando: trendsReport.totalRevenue
+i18next::translator: missingKey pt-PT translation trendsReport.profit Lucro
+Chave de tradução faltando: trendsReport.profit
+i18next::translator: missingKey pt-PT translation trendsReport.avgOccupancy Ocupação Média
+Chave de tradução faltando: trendsReport.avgOccupancy
+i18next::translator: missingKey pt-PT translation trendsReport.viewDetails Ver Detalhes
+Chave de tradução faltando: trendsReport.viewDetails
+i18next::translator: missingKey pt-PT translation trendsReport.totalRevenue Receita Total
+Chave de tradução faltando: trendsReport.totalRevenue
+i18next::translator: missingKey pt-PT translation trendsReport.profit Lucro
+Chave de tradução faltando: trendsReport.profit
+i18next::translator: missingKey pt-PT translation trendsReport.avgOccupancy Ocupação Média
+Chave de tradução faltando: trendsReport.avgOccupancy
+i18next::translator: missingKey pt-PT translation trendsReport.viewDetails Ver Detalhes
+Chave de tradução faltando: trendsReport.viewDetails
+i18next::translator: missingKey pt-PT translation trendsReport.totalRevenue Receita Total
+Chave de tradução faltando: trendsReport.totalRevenue
+i18next::translator: missingKey pt-PT translation trendsReport.profit Lucro
+Chave de tradução faltando: trendsReport.profit
+i18next::translator: missingKey pt-PT translation trendsReport.avgOccupancy Ocupação Média
+Chave de tradução faltando: trendsReport.avgOccupancy
+i18next::translator: missingKey pt-PT translation trendsReport.viewDetails Ver Detalhes
+Chave de tradução faltando: trendsReport.viewDetails
+i18next::translator: missingKey pt-PT translation trendsReport.totalRevenue Receita Total
+Chave de tradução faltando: trendsReport.totalRevenue
+i18next::translator: missingKey pt-PT translation trendsReport.profit Lucro
+Chave de tradução faltando: trendsReport.profit
+i18next::translator: missingKey pt-PT translation trendsReport.avgOccupancy Ocupação Média
+Chave de tradução faltando: trendsReport.avgOccupancy
+i18next::translator: missingKey pt-PT translation trendsReport.viewDetails Ver Detalhes
+Chave de tradução faltando: trendsReport.viewDetails
+i18next::translator: missingKey pt-PT translation trendsReport.totalRevenue Receita Total
+Chave de tradução faltando: trendsReport.totalRevenue
+i18next::translator: missingKey pt-PT translation trendsReport.profit Lucro
+Chave de tradução faltando: trendsReport.profit
