@@ -5,8 +5,8 @@ import NewModernDashboard from "@/components/dashboard/new-modern-dashboard";
 import DailyTasksDashboard from "@/components/dashboard/daily-tasks-dashboard-responsive";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Calendar, Activity, ArrowRight, Check, LogOut, Sparkles } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calendar, Activity, ArrowRight, Check, LogOut, Sparkles, BarChart2 } from "lucide-react";
 import { InspirationQuote } from "@/components/ui/inspiration-quote";
 
 export default function DashboardPage() {
@@ -41,11 +41,11 @@ export default function DashboardPage() {
       className="pb-16 md:pb-0" // Adiciona padding no fundo para dispositivos móveis (evitar sobreposição com a bottom nav)
     >
       <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-4">
-        {/* Título e data atual em destaque para mobile first */}
+        {/* Cabeçalho simplificado */}
         <motion.div 
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between mb-3"
+          className="flex items-center justify-between mb-6"
         >
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-primary">
@@ -57,130 +57,96 @@ export default function DashboardPage() {
           </div>
         </motion.div>
         
-        {/* Principais tarefas do dia - Cards grandes e clicáveis para mobile first */}
+        {/* Principal: Área de acesso rápido simplificada */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4"
+          className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8"
         >
-          {/* Check-ins de hoje */}
-          <motion.div variants={itemVariants}>
-            <Card className="h-full bg-gradient-to-br from-blue-50 to-white dark:from-blue-950/30 dark:to-background border-blue-100 dark:border-blue-900/40 shadow-sm hover:shadow-md transition-shadow">
-              <CardContent className="p-4">
-                <div className="flex items-center mb-3">
-                  <div className="bg-blue-100 dark:bg-blue-900/40 p-2 rounded-full mr-3">
-                    <Check className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <h3 className="font-semibold text-lg">{t("dashboard.checkins", "Check-ins de Hoje")}</h3>
-                </div>
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-between text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/40"
-                  onClick={() => setLocation("/reservations")}
-                >
-                  {t("dashboard.viewCheckins", "Ver Check-ins")}
-                  <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
-              </CardContent>
-            </Card>
-          </motion.div>
+          {/* Coluna 1: Ações principais */}
+          <Card className="shadow-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">{t("dashboard.quickActions", "Ações Rápidas")}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 pt-0">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                onClick={() => setLocation("/reservations")}
+              >
+                <Check className="h-4 w-4 mr-2" />
+                {t("dashboard.checkinsToday", "Check-ins de Hoje")}
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                className="w-full justify-start text-rose-700 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20"
+                onClick={() => setLocation("/reservations")}
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                {t("dashboard.checkoutsToday", "Check-outs de Hoje")}
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                className="w-full justify-start text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
+                onClick={() => setLocation("/cleaning-teams")}
+              >
+                <Sparkles className="h-4 w-4 mr-2" />
+                {t("dashboard.scheduledCleanings", "Limpezas Agendadas")}
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                className="w-full justify-start text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                onClick={() => setLocation("/dashboard-full")}
+              >
+                <Activity className="h-4 w-4 mr-2" />
+                {t("dashboard.financialDashboard", "Dashboard Financeiro")}
+              </Button>
+            </CardContent>
+          </Card>
           
-          {/* Check-outs de hoje */}
-          <motion.div variants={itemVariants}>
-            <Card className="h-full bg-gradient-to-br from-rose-50 to-white dark:from-rose-950/30 dark:to-background border-rose-100 dark:border-rose-900/40 shadow-sm hover:shadow-md transition-shadow">
-              <CardContent className="p-4">
-                <div className="flex items-center mb-3">
-                  <div className="bg-rose-100 dark:bg-rose-900/40 p-2 rounded-full mr-3">
-                    <LogOut className="h-5 w-5 text-rose-600 dark:text-rose-400" />
-                  </div>
-                  <h3 className="font-semibold text-lg">{t("dashboard.checkouts", "Check-outs de Hoje")}</h3>
-                </div>
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-between text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-800 hover:bg-rose-50 dark:hover:bg-rose-900/40"
-                  onClick={() => setLocation("/reservations")}
-                >
-                  {t("dashboard.viewCheckouts", "Ver Check-outs")}
-                  <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
-              </CardContent>
-            </Card>
-          </motion.div>
-          
-          {/* Limpezas agendadas */}
-          <motion.div variants={itemVariants}>
-            <Card className="h-full bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-950/30 dark:to-background border-emerald-100 dark:border-emerald-900/40 shadow-sm hover:shadow-md transition-shadow">
-              <CardContent className="p-4">
-                <div className="flex items-center mb-3">
-                  <div className="bg-emerald-100 dark:bg-emerald-900/40 p-2 rounded-full mr-3">
-                    <Sparkles className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-                  </div>
-                  <h3 className="font-semibold text-lg">{t("dashboard.cleanings", "Limpezas Agendadas")}</h3>
-                </div>
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-between text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 hover:bg-emerald-50 dark:hover:bg-emerald-900/40"
-                  onClick={() => setLocation("/cleaning-teams")}
-                >
-                  {t("dashboard.viewCleanings", "Ver Limpezas")}
-                  <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </motion.div>
-
-        {/* Lista detalhada de tarefas */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.4 }}
-          className="mb-4"
-        >
-          <DailyTasksDashboard />
+          {/* Coluna 2 e 3: Resumo de tarefas simplificado */}
+          <Card className="shadow-sm lg:col-span-2">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">{t("dashboard.todaysSchedule", "Agenda de Hoje")}</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="max-h-[300px] overflow-y-auto">
+                <DailyTasksDashboard minimal={true} />
+              </div>
+            </CardContent>
+          </Card>
         </motion.div>
         
         {/* Visualização financeira simplificada */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.4 }}
-          className="mt-8"
+          transition={{ delay: 0.3, duration: 0.4 }}
+          className="mb-8"
         >
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-primary">{t("dashboard.financialSummary", "Resumo Financeiro")}</h2>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => {
-                console.log("Redirecionando para dashboard completo");
-                setLocation("/dashboard-full");
-              }}
-              className="text-muted-foreground hover:text-primary bg-blue-100 dark:bg-blue-900/20"
-            >
-              {t("dashboard.viewDetails", "Ver Dashboard Completo")}
-              <ArrowRight className="h-4 w-4 ml-1" />
-            </Button>
-          </div>
-          <Card className="bg-background/70 border-border/30">
-            <CardContent className="p-4">
+          <Card className="shadow-sm">
+            <CardHeader className="pb-2">
+              <div className="flex justify-between items-center">
+                <CardTitle className="text-lg">{t("dashboard.financialSummary", "Resumo Financeiro")}</CardTitle>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setLocation("/dashboard-full")}
+                  className="text-muted-foreground hover:text-primary"
+                >
+                  {t("dashboard.viewDetails", "Ver Detalhes")}
+                  <ArrowRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
               <NewModernDashboard minimal={true} />
             </CardContent>
           </Card>
-        </motion.div>
-
-        {/* Componente de citação inspiradora no final */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-          className="mt-6 mb-4"
-        >
-          <InspirationQuote 
-            context="dashboard"
-            variant="subtle"
-          />
         </motion.div>
       </div>
     </motion.div>
