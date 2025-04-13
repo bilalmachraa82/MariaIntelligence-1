@@ -467,8 +467,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
    */
   app.post("/api/reservations/import-text", async (req: Request, res: Response) => {
     try {
+      console.log('Iniciando processamento de importação de texto...');
+      
+      // Extrair os dados do corpo da requisição
       const { text, propertyId, userAnswers } = req.body;
       
+      // Validar os dados de entrada
       if (!text || typeof text !== 'string' || text.trim() === '') {
         return res.status(400).json({
           success: false,
@@ -491,85 +495,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
         description: `Tentativa de importação de texto para reserva`
       });
       
-      // Criar contexto para a IA processar o texto
-      const prompt = `
-        Você é um especialista em extrair informações de reservas de alojamento local a partir de textos não estruturados.
-        Analise o seguinte texto que pode conter informações de uma reserva (e-mail, mensagem, etc.) 
-        e extraia os dados relevantes para a criação de uma reserva.
-        
-        Retorne APENAS um objeto JSON com as seguintes propriedades:
-        - property_name: nome da propriedade (string)
-        - check_in_date: data de check-in no formato YYYY-MM-DD (string)
-        - check_in_time: hora de check-in (string, opcional)
-        - check_out_date: data de check-out no formato YYYY-MM-DD (string) 
-        - check_out_time: hora de check-out (string, opcional)
-        - guest_name: nome do hóspede (string)
-        - total_guests: número total de hóspedes (número)
-        - adults: número de adultos (número, opcional)
-        - children: número de crianças (número, opcional)
-        - infants: número de bebês (número, opcional)
-        - guest_country: país de origem do hóspede (string, opcional)
-        - guest_email: email do hóspede (string, opcional)
-        - guest_phone: telefone do hóspede (string, opcional)
-        - booking_source: fonte da reserva (exemplo: "Airbnb", "Booking.com", "Direct", etc.) (string, opcional)
-        - special_requests: pedidos especiais (string, opcional)
-        - booking_reference: referência da reserva (string, opcional)
-        
-        Se não conseguir identificar alguma informação com certeza, deixe a propriedade correspondente como null.
-        Se houver ambiguidade ou incerteza sobre alguma informação, inclua uma propriedade adicional 
-        chamada 'clarification_questions' com um array de perguntas específicas que precisam ser respondidas.
-      `;
-      
-      // Processar o texto com a IA
-      let reservationData;
-      let needsClarification = false;
-      let clarificationQuestions = [];
-      
       try {
         // Inicializar o serviço de importação
+        console.log('Inicializando serviço de importação...');
         const importerService = new ReservationImporterService();
         const apiKey = process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "";
         await importerService.initialize(apiKey);
         
         // Importar dados da reserva do texto
+        console.log('Enviando texto para processamento:', text.substring(0, 50) + '...');
         const importOptions = {
           originalText: text,
           userAnswers: userAnswers || {}
         };
         
         const result = await importerService.importFromText(text, importOptions);
+        console.log('Resultado recebido do serviço de importação');
         
-        // Extrair dados da resposta
-        if (result.reservation_data) {
-          reservationData = result.reservation_data;
-          
-          if (result.clarification_questions && result.clarification_questions.length > 0) {
-            needsClarification = true;
-            clarificationQuestions = result.clarification_questions;
-          }
-        } else {
+        // Tratar dados do resultado
+        if (!result.reservation_data) {
           throw new Error("Não foi possível extrair dados estruturados do texto");
         }
         
-        // Já temos os dados de reserva extraídos no result.reservation_data
+        // Criando uma cópia para não modificar o objeto original
+        const reservationDataWithProperty: any = { ...result.reservation_data };
+        let needsClarification = false;
+        let clarificationQuestions: string[] = [];
+        
+        if (result.clarification_questions && result.clarification_questions.length > 0) {
+          needsClarification = true;
+          clarificationQuestions = result.clarification_questions;
+          console.log('Foram encontradas questões de esclarecimento:', clarificationQuestions.length);
+        }
         
         // Se um propertyId foi enviado, vamos associar à propriedade
         if (propertyId && !isNaN(Number(propertyId))) {
+          console.log('Associando à propriedade com ID:', propertyId);
           const property = await storage.getProperty(Number(propertyId));
           if (property) {
-            reservationData.propertyId = property.id;
-            reservationData.property_name = property.name;
+            // Adicionando propriedade para uso interno
+            reservationDataWithProperty.propertyId = property.id;
+            reservationDataWithProperty.property_name = property.name;
           }
-        } else if (reservationData && reservationData.property_name) {
+        } else if (reservationDataWithProperty.property_name) {
           // Tentar encontrar a propriedade pelo nome
+          console.log('Tentando encontrar propriedade pelo nome:', reservationDataWithProperty.property_name);
           const properties = await storage.getProperties();
           const matchingProperty = properties.find(p => 
-            p.name && reservationData.property_name && 
-            p.name.toLowerCase() === reservationData.property_name.toLowerCase()
+            p.name && 
+            p.name.toLowerCase() === reservationDataWithProperty.property_name.toLowerCase()
           );
           
           if (matchingProperty) {
-            reservationData.propertyId = matchingProperty.id;
+            // Adicionando propriedade para uso interno
+            reservationDataWithProperty.propertyId = matchingProperty.id;
+            console.log('Propriedade encontrada com ID:', matchingProperty.id);
           }
         }
         
@@ -579,11 +559,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           description: `Dados extraídos com sucesso do texto para reserva`
         });
         
+        console.log('Respondendo com dados extraídos, needsClarification:', needsClarification);
         return res.json({
           success: true,
           needsClarification,
           clarificationQuestions: needsClarification ? clarificationQuestions : undefined,
-          reservationData
+          reservationData: reservationDataWithProperty
         });
       } catch (error) {
         console.error("Erro ao processar texto da reserva com IA:", error);
