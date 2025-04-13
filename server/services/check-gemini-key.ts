@@ -3,7 +3,6 @@
  * @returns True se a chave estiver disponível e válida
  */
 export async function checkGeminiApiKey(): Promise<boolean> {
-  // Verificar tanto GOOGLE_GEMINI_API_KEY quanto GOOGLE_API_KEY para compatibilidade
   const apiKey = process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
   
   // Verificar se a variável de ambiente está definida
@@ -13,22 +12,18 @@ export async function checkGeminiApiKey(): Promise<boolean> {
   }
   
   try {
-    // Fazer uma chamada de teste básica
+    // Fazer uma chamada de teste para listar modelos disponíveis
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
     
     // Verificar se a resposta é válida
     if (response.ok) {
       const data = await response.json();
-      if (data && data.models && Array.isArray(data.models)) {
-        console.log(`✅ API Gemini válida - ${data.models.length} modelos disponíveis`);
-        return true;
-      } else {
-        console.error("Resposta da API Gemini não contém lista de modelos");
-        return false;
-      }
+      const modelsCount = data?.models?.length || 0;
+      console.log(`✅ API Gemini válida - ${modelsCount} modelos disponíveis`);
+      return true;
     } else {
-      const errorText = await response.text();
-      console.error(`Erro na verificação da API Gemini: ${response.status} - ${errorText}`);
+      const errorData = await response.json().catch(() => ({ error: { message: "Erro desconhecido" } }));
+      console.error(`Erro na API Gemini: ${response.status} - ${errorData?.error?.message || response.statusText}`);
       return false;
     }
   } catch (error) {
@@ -43,5 +38,5 @@ export async function checkGeminiApiKey(): Promise<boolean> {
  */
 export function hasGeminiApiKey(): boolean {
   const apiKey = process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
-  return !!apiKey && apiKey.trim() !== '';
+  return !!apiKey;
 }

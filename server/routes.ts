@@ -7,6 +7,7 @@ import { ZodError, z } from "zod";
 // Removemos o Mistral e usamos apenas o Gemini agora
 import { aiService, AIServiceType } from "./services/ai-adapter.service";
 import { AIAdapter } from "./services/ai-adapter.service";
+import { hasGeminiApiKey, checkGeminiApiKey } from "./services/check-gemini-key";
 import { RAGService } from "./services/rag.service";
 import { RagService } from "./services/rag-service";
 import { ragService as enhancedRagService } from "./services/rag-enhanced.service";
@@ -1817,11 +1818,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // Checar se a chave API Mistral está configurada (mantido para compatibilidade)
+  // Checar se a chave API Gemini está configurada 
+  app.get("/api/check-gemini-key", (_req: Request, res: Response) => {
+    try {
+      const hasGeminiKey = hasGeminiApiKey();
+      res.json({ available: hasGeminiKey });
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+  
+  // Redirecionamento da rota antiga (mantido para compatibilidade)
   app.get("/api/check-mistral-key", (_req: Request, res: Response) => {
     try {
-      const hasGeminiKey = process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
-                          process.env.GOOGLE_GEMINI_API_KEY !== '' || process.env.GOOGLE_API_KEY !== '';
+      const hasGeminiKey = hasGeminiApiKey();
       res.json({ available: hasGeminiKey });
     } catch (err) {
       handleError(err, res);
@@ -1830,18 +1840,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   /**
    * Endpoint para verificar a disponibilidade da chave da API Gemini
+   * Já implementado acima com a função hasGeminiApiKey()
    */
-  app.get("/api/check-gemini-key", (_req: Request, res: Response) => {
-    try {
-      const hasGeminiKey = process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
-                          process.env.GOOGLE_GEMINI_API_KEY !== '' || 
-                          process.env.GOOGLE_API_KEY !== undefined && 
-                          process.env.GOOGLE_API_KEY !== '';
-      res.json({ available: hasGeminiKey });
-    } catch (err) {
-      handleError(err, res);
-    }
-  });
   
   /**
    * Endpoint para configurar a chave da API Gemini
