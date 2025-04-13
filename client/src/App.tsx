@@ -153,8 +153,8 @@ function Router() {
   return (
     <Switch>
       {/* Rotas em inglês */}
-      <Route path="/" component={Dashboard} />
-      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/" component={DashboardFull} />
+      <Route path="/dashboard" component={DashboardFull} />
       <Route path="/dashboard-full" component={DashboardFull} />
       <Route path="/properties" component={PropertiesPage} />
       <Route path="/properties/edit/:id?" component={PropertyEditPage} />
@@ -207,7 +207,7 @@ function Router() {
       <Route path="/quotations/:id" component={QuotationDetailPage} />
       
       {/* Rotas em português */}
-      <Route path="/painel" component={Dashboard} />
+      <Route path="/painel" component={DashboardFull} />
       <Route path="/painel-completo" component={DashboardFull} />
       <Route path="/propriedades" component={PropertiesPage} />
       <Route path="/propriedades/editar/:id?" component={PropertyEditPage} />
