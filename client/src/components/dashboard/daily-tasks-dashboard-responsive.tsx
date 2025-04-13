@@ -116,27 +116,27 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
   // Extraindo dados do resultado da query
   const todayCheckIns = useMemo(() => {
     if (!dashboardData || !dashboardData.checkIns) return [];
-    return dashboardData.checkIns;
+    return dashboardData.checkIns as Reservation[];
   }, [dashboardData]);
   
   const todayCheckOuts = useMemo(() => {
     if (!dashboardData || !dashboardData.checkOuts) return [];
-    return dashboardData.checkOuts;
+    return dashboardData.checkOuts as Reservation[];
   }, [dashboardData]);
   
   const cleaningTasks = useMemo(() => {
     if (!dashboardData || !dashboardData.cleaningTasks) return [];
-    return dashboardData.cleaningTasks;
+    return dashboardData.cleaningTasks as DailyTask[];
   }, [dashboardData]);
   
   const maintenanceTasks = useMemo(() => {
     if (!activitiesData?.maintenance) return [];
-    return activitiesData.maintenance;
+    return activitiesData.maintenance as DailyTask[];
   }, [activitiesData]);
   
   const otherTasks = useMemo(() => {
     if (!activitiesData?.tasks) return [];
-    return activitiesData.tasks;
+    return activitiesData.tasks as DailyTask[];
   }, [activitiesData]);
   
   // Contagem de estatísticas para exibição nos cards
@@ -345,7 +345,7 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
                   </div>
                 ) : todayCheckIns.length > 0 ? (
                   <div className="space-y-3 py-2">
-                    {todayCheckIns.map((checkin, index) => {
+                    {todayCheckIns.map((checkin: Reservation, index: number) => {
                       const { time, date } = formatDateTime(checkin.checkInDate);
                       const isToday = date === new Date().toLocaleDateString();
                       
@@ -459,7 +459,7 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
                   </div>
                 ) : todayCheckOuts.length > 0 ? (
                   <div className="space-y-3 py-2">
-                    {todayCheckOuts.map((checkout) => {
+                    {todayCheckOuts.map((checkout: Reservation) => {
                       const { time } = formatDateTime(checkout.checkOutDate);
                       
                       return (
