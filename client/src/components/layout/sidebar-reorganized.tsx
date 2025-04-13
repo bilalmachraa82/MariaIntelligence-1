@@ -358,6 +358,14 @@ export function SidebarReorganized({
       altHref: "/owners",
       icon: Users,
       iconColor: "text-orange-500"
+    },
+    // Acesso direto aos relatórios adicionado ao menu principal
+    {
+      name: t("navigation.reports.financial", "Relatórios"),
+      href: isPortuguese ? "/relatorios" : "/reports",
+      altHref: isPortuguese ? "/reports" : "/relatorios",
+      icon: BarChart3,
+      iconColor: "text-emerald-500"
     }
   ];
 

@@ -154,12 +154,12 @@ export default function DashboardPage() {
               variant="ghost" 
               size="sm" 
               onClick={() => {
-                console.log("Redirecionando para:", t("routes.reports", "/relatorios"));
-                setLocation(t("routes.reports", "/relatorios"));
+                console.log("Redirecionando para dashboard completo");
+                setLocation("/dashboard-full");
               }}
               className="text-muted-foreground hover:text-primary bg-blue-100 dark:bg-blue-900/20"
             >
-              {t("dashboard.viewDetails", "Ver Detalhes")}
+              {t("dashboard.viewDetails", "Ver Dashboard Completo")}
               <ArrowRight className="h-4 w-4 ml-1" />
             </Button>
           </div>

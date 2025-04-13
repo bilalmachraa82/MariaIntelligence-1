@@ -222,7 +222,7 @@ export default function DailyTasksDashboard() {
               variant="default"
               className="whitespace-nowrap text-sm sm:text-base"
               size="sm"
-              onClick={() => setLocation("/statistics")}
+              onClick={() => setLocation(t("routes.reports", "/relatorios"))}
             >
               <ArrowRight className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
               {t("dailyTasks.viewAll", "Ver Estatísticas")}
