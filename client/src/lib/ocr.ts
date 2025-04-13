@@ -127,7 +127,7 @@ function processGeminiResponse(response: any): any {
 
 /**
  * Função auxiliar para processar conteúdo de texto, garantindo que seja string
- * @param content Conteúdo textual da resposta da API Mistral
+ * @param content Conteúdo textual da resposta da API Gemini
  * @returns Conteúdo como string, vazio se for inválido
  */
 function extractTextContent(content: any): string {
@@ -344,8 +344,8 @@ export async function processPDFWithOCR(
   }
 }
 
-// Função removida: processImageWithMistralOCR não é necessária
-// pois não temos acesso ao modelo Mistral Vision
+// Função removida: processImageWithGeminiVision não é necessária
+// pois não estamos utilizando esse recurso do Gemini
 
 /**
  * Processa um PDF de reserva com o sistema aprimorado

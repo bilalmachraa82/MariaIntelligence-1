@@ -181,7 +181,7 @@ export default function UserManualDownload() {
             sectionContent = t("settings.manual.content.reservations", 
               "O sistema de Reservas facilita o gerenciamento completo dos aluguéis: " +
               "\n\n• Criação manual de novas reservas com todos os detalhes necessários " +
-              "\n• Processamento automático de PDFs de reservas via Mistral AI " +
+              "\n• Processamento automático de PDFs de reservas via Google Gemini " +
               "\n• Visualização de reservas por propriedade e status " +
               "\n• Rastreamento de valores, taxas e custos associados " +
               "\n• Gestão de status das reservas (confirmada, em andamento, concluída, cancelada)");
@@ -215,7 +215,7 @@ export default function UserManualDownload() {
             break;
           case "documents":
             sectionContent = t("settings.manual.content.documents", 
-              "O Processamento de Documentos automatiza tarefas através da IA Mistral: " +
+              "O Processamento de Documentos automatiza tarefas através da IA Google Gemini: " +
               "\n\n• Processamento de PDFs de Reservas: Faça upload de confirmações de reservas das plataformas principais e o sistema extrairá automaticamente todos os dados relevantes como nome do hóspede, datas, valores e detalhes da propriedade." +
               "\n\n• Processamento de Check-ins e Check-outs: O sistema pode processar documentos de entrada e saída, extraindo as informações específicas de cada tipo." +
               "\n\n• Extração Inteligente: A IA identifica automaticamente as informações importantes no documento, mesmo quando o formato varia entre diferentes plataformas." +
