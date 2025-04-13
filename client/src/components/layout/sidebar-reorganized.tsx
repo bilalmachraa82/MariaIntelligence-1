@@ -425,50 +425,39 @@ export function SidebarReorganized({
     }
   ];
 
-  // Operações - Serviços e manutenção
+  // Operações - Serviços e manutenção - simplificados como links diretos
   const operationsNavItems = [
+    // Equipe de limpeza
     {
-      name: t("navigation.cleaning.title", "Limpeza"),
+      name: t("navigation.cleaning.teams", "Equipas de Limpeza"),
       href: "/equipas-limpeza",
       altHref: "/cleaning-teams",
       icon: PaintBucket,
-      iconColor: "text-cyan-500",
-      submenu: [
-        {
-          name: t("navigation.cleaning.teams", "Equipas"),
-          href: "/equipas-limpeza",
-          altHref: "/cleaning-teams",
-          icon: PaintBucket,
-        },
-        {
-          name: t("navigation.cleaning.schedules", "Agendamentos"),
-          href: "/equipas-limpeza/agendamentos",
-          altHref: "/cleaning-teams/schedules",
-          icon: CalendarDays,
-        }
-      ]
+      iconColor: "text-cyan-500"
     },
+    // Agendamentos de limpeza
     {
-      name: t("navigation.maintenance.title", "Manutenção"),
+      name: t("navigation.cleaning.schedules", "Agendamentos"),
+      href: "/equipas-limpeza/agendamentos",
+      altHref: "/cleaning-teams/schedules",
+      icon: CalendarDays,
+      iconColor: "text-cyan-500"
+    },
+    // Manutenção pendente
+    {
+      name: t("navigation.maintenance.pending", "Manutenção Pendente"),
       href: "/manutencao/pendentes",
       altHref: "/maintenance/pending",
       icon: Wrench,
-      iconColor: "text-amber-500",
-      submenu: [
-
-        {
-          name: t("navigation.maintenance.pending", "Pendentes"),
-          href: "/manutencao/pendentes",
-          altHref: "/maintenance/pending",
-          icon: Wrench,
-        },
-        {
-          name: t("navigation.maintenance.request", "Solicitar"),
-          href: "/manutencao/solicitacao",
-          altHref: "/maintenance/request",
-          icon: FileText,
-        }
-      ]
+      iconColor: "text-amber-500"
+    },
+    // Solicitação de manutenção
+    {
+      name: t("navigation.maintenance.request", "Solicitar Manutenção"),
+      href: "/manutencao/solicitacao",
+      altHref: "/maintenance/request",
+      icon: FileText,
+      iconColor: "text-amber-500"
     }
   ];
 
@@ -703,52 +692,20 @@ export function SidebarReorganized({
             </SidebarSection>
             
             <SidebarSection title={t("navigation.categories.operations", "Operações")}>
-              <Collapsible 
-                open={openSections.operations}
-                onOpenChange={() => toggleSection('operations')}
-                className="space-y-1"
-              >
-                <CollapsibleTrigger asChild>
-                  <div className="flex items-center">
-                    {/* Este wrapper permite clicar no ícone separadamente do texto */}
-                    <button 
-                      className={cn(
-                        "flex-grow flex items-center w-full gap-3 px-3 rounded-md transition-colors",
-                        isMobile ? "py-3 text-base" : "py-2 text-sm",
-                        "text-foreground hover:bg-accent hover:text-accent-foreground",
-                        isMobile && "font-medium"
-                      )}
-                    >
-                      <HardHat className={cn(
-                        isMobile ? "h-6 w-6" : "h-5 w-5", 
-                        "text-amber-500"
-                      )} />
-                      <span className="flex-1 truncate">{t("navigation.categories.operations", "Operações")}</span>
-                      <ChevronRight className={cn(
-                        "transition-transform", 
-                        openSections.operations ? "rotate-90" : "",
-                        isMobile ? "h-5 w-5" : "h-4 w-4"
-                      )} />
-                    </button>
-                  </div>
-                </CollapsibleTrigger>
-                <CollapsibleContent className="pt-1">
-                  <div className="space-y-1">
-                    {operationsNavItems.map((item) => (
-                      <SidebarItem
-                        key={item.href}
-                        icon={item.icon}
-                        label={item.name}
-                        href={item.href}
-                        isActive={checkIfActive(item.href)}
-                        onClick={() => navigate(item.href)}
-                        iconColor={item.iconColor}
-                        isSubItem
-                      />
-                    ))}
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
+              <div className="space-y-1">
+                {operationsNavItems.map((item) => (
+                  <SidebarItem
+                    key={item.href}
+                    icon={item.icon}
+                    label={item.name}
+                    href={item.href}
+                    altHref={item.altHref}
+                    isActive={checkIfActive(item.href, item.altHref)}
+                    onClick={() => navigate(item.href)}
+                    iconColor={item.iconColor}
+                  />
+                ))}
+              </div>
             </SidebarSection>
             
             <Separator className="my-3" />
@@ -761,7 +718,7 @@ export function SidebarReorganized({
                     icon={item.icon}
                     label={item.name}
                     href={item.href}
-                    isActive={checkIfActive(item.href)}
+                    isActive={checkIfActive(item.href, item.altHref)}
                     onClick={() => navigate(item.href)}
                     iconColor={item.iconColor}
                   />
