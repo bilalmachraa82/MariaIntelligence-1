@@ -1,0 +1,30 @@
+Chave de tradução faltando: settings.manual.documents.types.title
+i18next::translator: missingKey pt-PT translation settings.manual.documents.types.pdfs PDFs de reservas
+Chave de tradução faltando: settings.manual.documents.types.pdfs
+i18next::translator: missingKey pt-PT translation settings.manual.documents.types.checkin Formulários de check-in
+Chave de tradução faltando: settings.manual.documents.types.checkin
+i18next::translator: missingKey pt-PT translation settings.manual.documents.types.checkout Relatórios de check-out
+Chave de tradução faltando: settings.manual.documents.types.checkout
+i18next::translator: missingKey pt-PT translation settings.manual.documents.types.invoices Faturas e recibos
+Chave de tradução faltando: settings.manual.documents.types.invoices
+i18next::translator: missingKey pt-PT translation settings.manual.documents.data.title Dados extraídos
+Chave de tradução faltando: settings.manual.documents.data.title
+i18next::translator: missingKey pt-PT translation settings.manual.documents.data.guest Dados do hóspede
+Chave de tradução faltando: settings.manual.documents.data.guest
+i18next::translator: missingKey pt-PT translation settings.manual.documents.data.dates Datas de check-in/check-out
+Chave de tradução faltando: settings.manual.documents.data.dates
+i18next::translator: missingKey pt-PT translation settings.manual.documents.data.amounts Valores e taxas
+Chave de tradução faltando: settings.manual.documents.data.amounts
+i18next::translator: missingKey pt-PT translation settings.manual.documents.data.property Propriedade e plataforma
+Chave de tradução faltando: settings.manual.documents.data.property
+i18next::translator: missingKey pt-PT translation settings.manual.documents.process.title Processo de Processamento
+Chave de tradução faltando: settings.manual.documents.process.title
+i18next::translator: missingKey pt-PT translation settings.manual.documents.process.upload Upload de Documento
+Chave de tradução faltando: settings.manual.documents.process.upload
+i18next::translator: missingKey pt-PT translation settings.manual.documents.process.upload.desc Faça upload do PDF ou imagem através do sistema
+Chave de tradução faltando: settings.manual.documents.process.upload.desc
+i18next::translator: missingKey pt-PT translation settings.manual.documents.process.extraction Extração com IA
+Chave de tradução faltando: settings.manual.documents.process.extraction
+i18next::translator: missingKey pt-PT translation settings.manual.documents.process.extraction.desc A IA processa e extrai todos os dados relevantes
+Chave de tradução faltando: settings.manual.documents.process.extraction.desc
+i18next::translator: missingKey pt-PT translation settings.manual.documents.process.validation Validação e Finalização

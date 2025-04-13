@@ -1149,6 +1149,32 @@
         "generateButton": "Gerar Manual em PDF",
         "viewOnlineButton": "Ver Manual Online",
         "onlySelectedSections": "Apenas seções selecionadas",
+        "documents": {
+          "description": "Aprenda a processar documentos com nosso sistema integrado",
+          "types": {
+            "title": "Tipos de Documentos",
+            "pdfs": "PDFs de reservas",
+            "checkin": "Formulários de check-in",
+            "checkout": "Relatórios de check-out",
+            "invoices": "Faturas e recibos"
+          },
+          "data": {
+            "title": "Dados extraídos",
+            "guest": "Dados do hóspede",
+            "dates": "Datas de check-in/check-out",
+            "amounts": "Valores e taxas",
+            "property": "Propriedade e plataforma"
+          },
+          "process": {
+            "title": "Processo de Processamento",
+            "upload": "Upload de Documento",
+            "upload.desc": "Faça upload do PDF ou imagem através do sistema",
+            "extraction": "Extração com IA",
+            "extraction.desc": "A IA processa e extrai todos os dados relevantes",
+            "validation": "Validação e Finalização",
+            "validation.desc": "Verifique os dados extraídos e confirme a importação"
+          }
+        },
         "allSections": "Manual completo",
         "loading": "A gerar o manual...",
         "downloadReady": "Download pronto",
