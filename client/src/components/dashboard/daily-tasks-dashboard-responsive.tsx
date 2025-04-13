@@ -59,6 +59,11 @@ const fadeIn = {
   }),
 };
 
+// Interfaces estendidas para o dashboard
+interface ExtendedReservation extends Reservation {
+  propertyName?: string;
+}
+
 // Daily tasks interface
 interface DailyTask {
   id: string;
@@ -116,12 +121,12 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
   // Extraindo dados do resultado da query
   const todayCheckIns = useMemo(() => {
     if (!dashboardData || !dashboardData.checkIns) return [];
-    return dashboardData.checkIns as Reservation[];
+    return dashboardData.checkIns as ExtendedReservation[];
   }, [dashboardData]);
   
   const todayCheckOuts = useMemo(() => {
     if (!dashboardData || !dashboardData.checkOuts) return [];
-    return dashboardData.checkOuts as Reservation[];
+    return dashboardData.checkOuts as ExtendedReservation[];
   }, [dashboardData]);
   
   const cleaningTasks = useMemo(() => {
@@ -345,7 +350,7 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
                   </div>
                 ) : todayCheckIns.length > 0 ? (
                   <div className="space-y-3 py-2">
-                    {todayCheckIns.map((checkin: Reservation, index: number) => {
+                    {todayCheckIns.map((checkin: ExtendedReservation, index: number) => {
                       const { time, date } = formatDateTime(checkin.checkInDate);
                       const isToday = date === new Date().toLocaleDateString();
                       
@@ -459,7 +464,7 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
                   </div>
                 ) : todayCheckOuts.length > 0 ? (
                   <div className="space-y-3 py-2">
-                    {todayCheckOuts.map((checkout: Reservation) => {
+                    {todayCheckOuts.map((checkout: ExtendedReservation) => {
                       const { time } = formatDateTime(checkout.checkOutDate);
                       
                       return (
