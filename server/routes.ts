@@ -524,6 +524,125 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Importação de reservas via texto com IA
+  app.post("/api/reservations/import-text", async (req: Request, res: Response) => {
+    try {
+      console.log('Iniciando importação de reserva a partir de texto...');
+      
+      if (!process.env.GOOGLE_GEMINI_API_KEY && !process.env.GOOGLE_API_KEY) {
+        return res.status(400).json({
+          success: false,
+          message: "Chave da API Google Gemini não configurada",
+          needsApiKey: true
+        });
+      }
+
+      const { text, propertyId, userAnswers } = req.body;
+      
+      if (!text || text.trim() === '') {
+        return res.status(400).json({
+          success: false,
+          message: "Texto vazio. Por favor, forneça informações da reserva para análise."
+        });
+      }
+
+      // Inicializar o serviço de importação
+      const importerService = new ReservationImporterService();
+      const apiKey = process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "";
+      await importerService.initialize(apiKey);
+      
+      // Importar dados da reserva do texto
+      const importOptions = {
+        originalText: text,
+        userAnswers: userAnswers || {}
+      };
+      
+      const result = await importerService.importFromText(text, importOptions);
+      
+      // Se temos perguntas de clarificação, retorná-las para o cliente
+      if (result.clarification_questions && result.clarification_questions.length > 0) {
+        return res.json({
+          success: true,
+          needsClarification: true,
+          reservationData: result.reservation_data,
+          clarificationQuestions: result.clarification_questions
+        });
+      }
+      
+      // Se temos um propertyId, converter para o formato de inserção e criar a reserva
+      if (propertyId) {
+        try {
+          const property = await storage.getProperty(Number(propertyId));
+          
+          if (!property) {
+            return res.status(400).json({
+              success: false,
+              message: "Propriedade não encontrada"
+            });
+          }
+          
+          // Converter dados importados para o formato de inserção
+          const insertData = await importerService.convertToInsertReservation(
+            result.reservation_data, 
+            Number(propertyId)
+          );
+          
+          // Adicionar informações financeiras
+          insertData.totalAmount = '0'; // Valor padrão, deve ser atualizado pelo usuário
+          insertData.cleaningFee = (property.cleaningCost || '0').toString();
+          insertData.checkInFee = (property.checkInFee || '0').toString();
+          insertData.commission = '0'; // Será calculado quando o valor total for definido
+          insertData.teamPayment = (property.teamPayment || '0').toString();
+          insertData.platformFee = '0'; // Deve ser atualizado pelo usuário
+          insertData.netAmount = '0'; // Será calculado quando o valor total for definido
+          
+          // Criar a reserva no sistema
+          const reservation = await storage.createReservation(insertData);
+          
+          // Registrar atividade
+          await storage.createActivity({
+            type: 'reservation_imported',
+            description: `Reserva importada via IA: ${result.reservation_data.guest_name} - ${result.reservation_data.check_in_date} a ${result.reservation_data.check_out_date}`,
+            entityId: reservation.id,
+            entityType: 'reservation'
+          });
+          
+          return res.status(201).json({
+            success: true,
+            message: "Reserva importada e criada com sucesso",
+            reservationData: result.reservation_data,
+            reservation: reservation,
+            needsClarification: false
+          });
+        } catch (error) {
+          console.error('Erro ao criar reserva a partir dos dados importados:', error);
+          return res.status(500).json({
+            success: false,
+            message: "Erro ao criar reserva a partir dos dados importados",
+            reservationData: result.reservation_data,
+            error: error instanceof Error ? error.message : "Erro desconhecido"
+          });
+        }
+      }
+      
+      // Se não temos propertyId, apenas retornar os dados importados
+      return res.json({
+        success: true,
+        message: "Dados da reserva extraídos com sucesso",
+        reservationData: result.reservation_data,
+        needsClarification: false
+      });
+      
+    } catch (error) {
+      console.error('Erro na importação de reserva via texto:', error);
+      return res.status(500).json({
+        success: false,
+        message: "Erro na importação de reserva via texto",
+        error: error instanceof Error ? error.message : "Erro desconhecido"
+      });
+    }
+  });
+
   // Activities routes
   app.get("/api/activities", async (req: Request, res: Response) => {
     try {

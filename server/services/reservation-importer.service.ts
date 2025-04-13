@@ -54,7 +54,19 @@ export class ReservationImporterService {
    * @param apiKey Google Gemini API key
    */
   async initialize(apiKey: string): Promise<boolean> {
-    return this.geminiService.initialize(apiKey);
+    // Instead of trying to initialize the service directly, we'll just
+    // initialize our instance and check if the API key is valid
+    if (!apiKey) {
+      return false;
+    }
+    
+    try {
+      this.geminiService = new GeminiService();
+      return true;
+    } catch (error) {
+      console.error('Erro ao inicializar o serviço Gemini:', error);
+      return false;
+    }
   }
 
   /**
@@ -116,40 +128,50 @@ export class ReservationImporterService {
     // Create the prompt for Gemini
     const prompt = this.createReservationImportPrompt(context.text);
     
-    // Call Gemini with function calling capability
-    const result = await this.geminiService.generateContentWithFunctionCalling(
-      prompt,
-      this.getReservationImportFunctions(),
-      {
-        model: GeminiModel.FLASH,
-        temperature: 0.1,
-        topK: 1,
-        topP: 0.1,
-      }
-    );
-    
-    // Parse the result
-    if (!result || !result.functionCalls || result.functionCalls.length === 0) {
-      throw new Error('No valid response from AI service');
-    }
-    
-    const functionCall = result.functionCalls[0];
-    if (functionCall.name !== 'extractReservationData') {
-      throw new Error('Unexpected function call response');
-    }
-    
     try {
-      // Parse the arguments as JSON
-      const args = functionCall.args;
+      // Use the standard generateContent method instead
+      const result = await this.geminiService.generateText(
+        prompt,
+        {
+          model: GeminiModel.FLASH,
+          temperature: 0.1,
+          maxOutputTokens: 1024,
+        }
+      );
       
-      // Return the structured result
+      if (!result || typeof result !== 'string') {
+        throw new Error('Invalid response from AI service');
+      }
+      
+      // Parse the JSON response from the text output
+      // The AI should return JSON with reservation_data and clarification_questions
+      const cleanedResult = result.replace(/```json\s*|\s*```/g, '');
+      const parsedResult = JSON.parse(cleanedResult);
+      
+      if (!parsedResult.reservation_data) {
+        throw new Error('Missing reservation data in AI response');
+      }
+      
       return {
-        reservation_data: args.reservation_data || {},
-        clarification_questions: args.clarification_questions || [],
+        reservation_data: parsedResult.reservation_data,
+        clarification_questions: parsedResult.clarification_questions || [],
       };
     } catch (error) {
-      console.error('Error parsing Gemini response:', error);
-      throw new Error('Failed to parse AI service response');
+      console.error('Error processing Gemini response:', error);
+      
+      // If we fail to parse JSON but have a text response, provide a basic fallback
+      return {
+        reservation_data: {
+          property_name: "",
+          check_in_date: "",
+          check_out_date: "",
+          guest_name: "",
+          total_guests: 0
+        },
+        clarification_questions: [
+          "Não foi possível extrair os detalhes da reserva. Por favor, verifique o formato e tente novamente."
+        ]
+      };
     }
   }
 
@@ -171,6 +193,27 @@ Extrai APENAS os dados presentes no texto. Se informações estiverem faltando o
 Você deve retornar um objeto JSON com duas propriedades:
 - reservation_data: Um objeto com os campos da reserva extraídos do texto
 - clarification_questions: Um array de perguntas para o usuário, caso haja informações ambíguas ou faltantes
+
+IMPORTANTE: Responda APENAS com o JSON, sem texto adicional. Não inclua comentários ou explicações.
+
+Exemplo de formato de resposta:
+\`\`\`json
+{
+  "reservation_data": {
+    "property_name": "EXCITING LISBON 5 DE OUTUBRO",
+    "check_in_date": "2025-04-15",
+    "check_out_date": "2025-04-20",
+    "guest_name": "Joao Silva",
+    "total_guests": 2,
+    "adults": 2,
+    "booking_source": "Airbnb"
+  },
+  "clarification_questions": [
+    "Qual é o email do hóspede?",
+    "Há algum pedido especial para esta reserva?"
+  ]
+}
+\`\`\`
 
 # Regras para clarificação:
 - Se "property_name" for ambíguo ou ausente, pergunte: "A qual propriedade pertence esta reserva?"
