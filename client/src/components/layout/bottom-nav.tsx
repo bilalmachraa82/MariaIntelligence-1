@@ -34,9 +34,9 @@ export function BottomNav() {
       icon: CalendarDays
     },
     {
-      name: t("navigation.cleaning.title", "Limpeza"),
-      href: isPortuguese ? "/equipas-limpeza" : "/cleaning-teams",
-      icon: Brush
+      name: t("navigation.reports.financial", "Relatórios"),
+      href: isPortuguese ? "/relatorios" : "/reports",
+      icon: FileText
     },
     {
       name: t("navigation.documentScan", "Scanner"),
