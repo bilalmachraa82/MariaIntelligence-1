@@ -1,0 +1,40 @@
+i18next::translator: missingKey pt-PT translation trendsReport.monthly Mensal
+Chave de tradução faltando: trendsReport.monthly
+i18next::translator: missingKey pt-PT translation trendsReport.quarterly Trimestral
+Chave de tradução faltando: trendsReport.quarterly
+i18next::translator: missingKey pt-PT translation trendsReport.yearly Anual
+Chave de tradução faltando: trendsReport.yearly
+i18next::translator: missingKey pt-PT translation trendsReport.byRevenue Por Receita
+Chave de tradução faltando: trendsReport.byRevenue
+i18next::translator: missingKey pt-PT translation trendsReport.byProfit Por Lucro
+Chave de tradução faltando: trendsReport.byProfit
+i18next::translator: missingKey pt-PT translation trendsReport.byGrowth Por Crescimento
+Chave de tradução faltando: trendsReport.byGrowth
+i18next::translator: missingKey pt-PT translation trendsReport.byOccupancy Por Ocupação
+Chave de tradução faltando: trendsReport.byOccupancy
+i18next::translator: missingKey pt-PT translation trendsReport.period Período
+Chave de tradução faltando: trendsReport.period
+i18next::translator: missingKey pt-PT translation trendsReport.granularity Granularidade
+Chave de tradução faltando: trendsReport.granularity
+i18next::translator: missingKey pt-PT translation trendsReport.yearOverYear Comparação Interanual
+Chave de tradução faltando: trendsReport.yearOverYear
+i18next::translator: missingKey pt-PT translation trendsReport.revenueAndProfit Receita e Lucro
+Chave de tradução faltando: trendsReport.revenueAndProfit
+i18next::translator: missingKey pt-PT translation trendsReport.overTime Evolução ao longo do tempo
+Chave de tradução faltando: trendsReport.overTime
+i18next::translator: missingKey pt-PT translation trendsReport.filters Filtros
+Chave de tradução faltando: trendsReport.filters
+i18next::translator: missingKey pt-PT translation trendsReport.comingSoon Em breve
+Chave de tradução faltando: trendsReport.comingSoon
+i18next::translator: missingKey pt-PT translation trendsReport.occupancyAndReservations Ocupação e Reservas
+Chave de tradução faltando: trendsReport.occupancyAndReservations
+i18next::translator: missingKey pt-PT translation trendsReport.relatedMetrics Métricas relacionadas
+Chave de tradução faltando: trendsReport.relatedMetrics
+i18next::translator: missingKey pt-PT translation trendsReport.occupancy Ocupação (%)
+Chave de tradução faltando: trendsReport.occupancy
+i18next::translator: missingKey pt-PT translation trendsReport.reservations Reservas (quantidade)
+Chave de tradução faltando: trendsReport.reservations
+The width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
