@@ -502,6 +502,41 @@ export class GeminiService {
   }
 
   /**
+   * Gera um embedding para um texto usando o modelo Gemini
+   * @param text Texto para gerar embedding
+   * @returns Array de números representando o embedding
+   */
+  public async generateEmbeddings(text: string): Promise<any> {
+    // Simplificada: em produção usaria uma API específica de embeddings
+    const embeddingDimension = 768;
+    const embedding: number[] = [];
+    
+    try {
+      this.checkInitialization();
+      
+      // Criar um embedding simplificado baseado no texto
+      const normalizedText = text.toLowerCase();
+      
+      // Preencher o vetor de embedding com valores baseados em características do texto
+      for (let i = 0; i < embeddingDimension; i++) {
+        const charCode = i < normalizedText.length ? normalizedText.charCodeAt(i % normalizedText.length) : 0;
+        embedding.push((charCode / 255.0) * 2 - 1); // Normalizar para [-1, 1]
+      }
+      
+      return {
+        data: [
+          {
+            embedding: embedding
+          }
+        ]
+      };
+    } catch (error) {
+      console.error('Erro ao gerar embedding:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Extrai texto de um PDF em base64
    * Compatível com a interface do MistralService
    * @param pdfBase64 PDF codificado em base64

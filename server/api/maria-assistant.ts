@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { Mistral } from "@mistralai/mistralai";
 import { storage } from '../storage';
 import { ragService } from '../services/rag-enhanced.service';
 import { insertReservationSchema } from '../../shared/schema';
@@ -737,7 +736,7 @@ Timestamp: ${Date.now()}`;
       errorMessage = "Chave API inválida ou expirada. Por favor, verifique as configurações.";
       errorCode = 401;
     } else if (error.message?.includes("timeout") || error.message?.includes("ECONNREFUSED")) {
-      errorMessage = "Não foi possível conectar ao serviço Mistral. Verifique sua conexão.";
+      errorMessage = "Não foi possível conectar ao serviço de IA. Verifique sua conexão.";
       errorCode = 503;
     } else if (error.message?.includes("rate limit")) {
       errorMessage = "Limite de requisições excedido. Por favor, aguarde alguns segundos e tente novamente.";

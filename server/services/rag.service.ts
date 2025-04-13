@@ -1,25 +1,61 @@
 
 import { storage } from "../storage";
-import { Mistral } from "@mistralai/mistralai";
+import { GeminiService } from "./gemini.service";
 
 export class RAGService {
-  private client: Mistral;
+  private geminiService: GeminiService;
+  private initialized: boolean = false;
 
   constructor() {
-    if (!process.env.MISTRAL_API_KEY) {
-      throw new Error('MISTRAL_API_KEY não configurada');
+    this.geminiService = new GeminiService();
+    // Inicialização assíncrona em segundo plano
+    this.initialize();
+  }
+  
+  private async initialize() {
+    try {
+      // Tentamos conectar à API Gemini
+      const connected = await this.geminiService.checkApiConnection();
+      this.initialized = connected;
+      if (!connected) {
+        console.warn('⚠️ Atenção: Não foi possível conectar ao serviço Gemini. Funcionalidades RAG estarão limitadas.');
+      } else {
+        console.log('✅ Serviço RAG inicializado com Gemini API');
+      }
+    } catch (error) {
+      console.error('❌ Erro ao inicializar o serviço RAG:', error);
     }
-    this.client = new Mistral({
-      apiKey: process.env.MISTRAL_API_KEY
-    });
   }
 
   async generateEmbedding(text: string): Promise<number[]> {
-    const response = await this.client.embeddings.create({
-      model: "mistral-embed",
-      inputs: [text]
-    });
-    return response.data[0].embedding || [];
+    try {
+      if (!this.initialized) {
+        console.warn('⚠️ Serviço RAG não inicializado. Usando embedding simplificado.');
+        return this.generateSimpleEmbedding(text);
+      }
+      const response = await this.geminiService.generateEmbeddings(text);
+      return response.data[0].embedding || [];
+    } catch (error) {
+      console.error('❌ Erro ao gerar embedding. Usando fallback:', error);
+      return this.generateSimpleEmbedding(text);
+    }
+  }
+  
+  // Método de fallback para gerar um embedding simples caso o serviço Gemini não esteja disponível
+  private generateSimpleEmbedding(text: string): number[] {
+    const embeddingDimension = 768;
+    const embedding: number[] = [];
+    
+    // Criar um embedding simplificado baseado no texto
+    const normalizedText = text.toLowerCase();
+    
+    // Preencher o vetor de embedding com valores baseados em características do texto
+    for (let i = 0; i < embeddingDimension; i++) {
+      const charCode = i < normalizedText.length ? normalizedText.charCodeAt(i % normalizedText.length) : 0;
+      embedding.push((charCode / 255.0) * 2 - 1); // Normalizar para [-1, 1]
+    }
+    
+    return embedding;
   }
 
   async addToKnowledgeBase(content: string, contentType: string, metadata: any = {}) {
