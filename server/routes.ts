@@ -528,6 +528,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log('Foram encontradas questões de esclarecimento:', clarificationQuestions.length);
         }
         
+        // Padronizar campos para compatibilidade com outras partes do sistema
+        // Isso garante consistência entre importação por texto e pelo assistente
+        if (reservationDataWithProperty.guest_name && !reservationDataWithProperty.guestName) {
+          reservationDataWithProperty.guestName = reservationDataWithProperty.guest_name;
+        }
+        
+        if (reservationDataWithProperty.check_in_date && !reservationDataWithProperty.checkInDate) {
+          reservationDataWithProperty.checkInDate = reservationDataWithProperty.check_in_date;
+        }
+        
+        if (reservationDataWithProperty.check_out_date && !reservationDataWithProperty.checkOutDate) {
+          reservationDataWithProperty.checkOutDate = reservationDataWithProperty.check_out_date;
+        }
+        
+        if (reservationDataWithProperty.total_guests && !reservationDataWithProperty.numGuests) {
+          reservationDataWithProperty.numGuests = reservationDataWithProperty.total_guests;
+        }
+        
+        if (reservationDataWithProperty.guest_email && !reservationDataWithProperty.guestEmail) {
+          reservationDataWithProperty.guestEmail = reservationDataWithProperty.guest_email;
+        }
+        
+        if (reservationDataWithProperty.guest_phone && !reservationDataWithProperty.guestPhone) {
+          reservationDataWithProperty.guestPhone = reservationDataWithProperty.guest_phone;
+        }
+        
+        if (reservationDataWithProperty.booking_source && !reservationDataWithProperty.platform) {
+          reservationDataWithProperty.platform = reservationDataWithProperty.booking_source;
+        }
+        
+        // Se não houver status, definir como 'confirmed' por padrão
+        if (!reservationDataWithProperty.status) {
+          reservationDataWithProperty.status = 'confirmed';
+        }
+        
         // Se um propertyId foi enviado, vamos associar à propriedade
         if (propertyId && !isNaN(Number(propertyId))) {
           console.log('Associando à propriedade com ID:', propertyId);
