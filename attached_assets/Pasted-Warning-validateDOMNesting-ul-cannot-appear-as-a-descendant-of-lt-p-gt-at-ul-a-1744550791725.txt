@@ -1,0 +1,80 @@
+Warning: validateDOMNesting(...): <ul> cannot appear as a descendant of &lt;p&gt;.
+    at ul
+    at p
+    at div
+    at https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tremor_react.js?v=7eca6e07:10719:18
+    at div
+    at https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tremor_react.js?v=7eca6e07:10557:21
+    at div
+    at https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tremor_react.js?v=7eca6e07:10502:23
+    at div
+    at https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tremor_react.js?v=7eca6e07:10502:23
+    at div
+    at https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tremor_react.js?v=7eca6e07:10395:21
+    at div
+    at He4 (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tremor_react.js?v=7eca6e07:9845:32)
+    at https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tremor_react.js?v=7eca6e07:10404:21
+    at div
+    at f24 (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tremor_react.js?v=7eca6e07:9707:26)
+    at he2 (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tremor_react.js?v=7eca6e07:9774:23)
+    at https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tremor_react.js?v=7eca6e07:10386:25
+    at div
+    at MotionComponent (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/framer-motion.js?v=7eca6e07:945:40)
+    at div
+    at MotionComponent (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/framer-motion.js?v=7eca6e07:945:40)
+    at PresenceChild (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/framer-motion.js?v=7eca6e07:121:24)
+    at AnimatePresence (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/framer-motion.js?v=7eca6e07:210:26)
+    at TrendsReport (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/components/reports/trends-report.tsx:74:3)
+    at div
+    at TrendsReportPage (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/reports/trends/index.tsx:45:17)
+    at Route (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=7eca6e07:323:16)
+    at Switch (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=7eca6e07:379:17)
+    at Router
+    at main
+    at div
+    at div
+    at Layout (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/components/layout/layout.tsx:23:26)
+    at QueryClientProvider (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=7eca6e07:2805:3)
+    at App
+Warning: validateDOMNesting(...): <p> cannot appear as a descendant of &lt;p&gt;.
+    at p
+    at p
+    at div
+    at https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tremor_react.js?v=7eca6e07:10719:18
+    at div
+    at https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tremor_react.js?v=7eca6e07:10557:21
+    at div
+    at https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tremor_react.js?v=7eca6e07:10502:23
+    at div
+    at https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tremor_react.js?v=7eca6e07:10502:23
+    at div
+    at https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tremor_react.js?v=7eca6e07:10395:21
+    at div
+    at He4 (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tremor_react.js?v=7eca6e07:9845:32)
+    at https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tremor_react.js?v=7eca6e07:10404:21
+    at div
+    at f24 (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tremor_react.js?v=7eca6e07:9707:26)
+    at he2 (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tremor_react.js?v=7eca6e07:9774:23)
+    at https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tremor_react.js?v=7eca6e07:10386:25
+    at div
+    at MotionComponent (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/framer-motion.js?v=7eca6e07:945:40)
+    at div
+    at MotionComponent (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/framer-motion.js?v=7eca6e07:945:40)
+    at PresenceChild (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/framer-motion.js?v=7eca6e07:121:24)
+    at AnimatePresence (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/framer-motion.js?v=7eca6e07:210:26)
+    at TrendsReport (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/components/reports/trends-report.tsx:74:3)
+    at div
+    at TrendsReportPage (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/reports/trends/index.tsx:45:17)
+    at Route (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=7eca6e07:323:16)
+    at Switch (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=7eca6e07:379:17)
+    at Router
+    at main
+    at div
+    at div
+    at Layout (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/components/layout/layout.tsx:23:26)
+    at QueryClientProvider (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=7eca6e07:2805:3)
+    at App
+The width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.

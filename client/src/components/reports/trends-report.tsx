@@ -814,22 +814,28 @@ export function TrendsReport({
                             icon={TrendingUp}
                             color="emerald"
                           >
-                            <ul className="space-y-2 list-disc pl-4">
-                              <li>
-                                {t("trendsReport.opportunityText1", 
-                                  "A propriedade {{property}} mostra o maior potencial de crescimento com {{growth}}%.", 
-                                  { 
-                                    property: performanceInsights[3].description,
-                                    growth: Math.abs(performanceInsights[3].trend).toFixed(1)
-                                  }
-                                )}
-                              </li>
-                              <li>
-                                {t("trendsReport.opportunityText2", 
-                                  "Períodos de baixa ocupação representam oportunidades para estratégias promocionais."
-                                )}
-                              </li>
-                            </ul>
+                            <div className="space-y-2 text-sm mt-2">
+                              <div className="flex">
+                                <span className="mr-2">•</span>
+                                <span>
+                                  {t("trendsReport.opportunityText1", 
+                                    "A propriedade {{property}} mostra o maior potencial de crescimento com {{growth}}%.", 
+                                    { 
+                                      property: performanceInsights[3].description,
+                                      growth: Math.abs(performanceInsights[3].trend).toFixed(1)
+                                    }
+                                  )}
+                                </span>
+                              </div>
+                              <div className="flex">
+                                <span className="mr-2">•</span>
+                                <span>
+                                  {t("trendsReport.opportunityText2", 
+                                    "Períodos de baixa ocupação representam oportunidades para estratégias promocionais."
+                                  )}
+                                </span>
+                              </div>
+                            </div>
                           </Callout>
                         </Grid>
                       </Card>
@@ -1144,7 +1150,7 @@ export function TrendsReport({
                             icon={Calendar}
                             color="amber"
                           >
-                            <p className="text-sm mt-2">
+                            <div className="text-sm mt-2">
                               {t("trendsReport.seasonalityText", 
                                 "Os meses de {{highSeason}} mostram os melhores desempenhos, com taxas de ocupação {{occupancyRate}}% superiores à média anual.",
                                 { 
@@ -1152,7 +1158,7 @@ export function TrendsReport({
                                   occupancyRate: "20-30"
                                 }
                               )}
-                            </p>
+                            </div>
                           </Callout>
                           
                           <Callout
@@ -1160,7 +1166,7 @@ export function TrendsReport({
                             icon={CreditCard}
                             color="blue"
                           >
-                            <p className="text-sm mt-2">
+                            <div className="text-sm mt-2">
                               {t("trendsReport.pricingText", 
                                 "A tarifa média diária tem {{trend}} de {{percentage}}% ao longo do período analisado, indicando {{indicator}}.",
                                 { 
@@ -1169,7 +1175,7 @@ export function TrendsReport({
                                   indicator: "valorização das propriedades"
                                 }
                               )}
-                            </p>
+                            </div>
                           </Callout>
                           
                           <Callout
@@ -1177,7 +1183,7 @@ export function TrendsReport({
                             icon={Users}
                             color="indigo"
                           >
-                            <p className="text-sm mt-2">
+                            <div className="text-sm mt-2">
                               {t("trendsReport.guestsText", 
                                 "O número de reservas {{trend}} em {{percentage}}%, com uma média de {{average}} noites por estadia.",
                                 { 
@@ -1186,7 +1192,7 @@ export function TrendsReport({
                                   average: "3.5"
                                 }
                               )}
-                            </p>
+                            </div>
                           </Callout>
                         </Grid>
                       </Card>
