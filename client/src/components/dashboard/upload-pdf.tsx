@@ -40,7 +40,8 @@ export function UploadPDF() {
   const [isMultiResultsDialogOpen, setIsMultiResultsDialogOpen] = useState(false);
   
   // Estados de modo e visualização
-  const [isMultiUploadMode, setIsMultiUploadMode] = useState(true); // Agora o modo múltiplo é o padrão
+  // Sempre usar modo múltiplo por padrão e sem opção de alterar
+  const [isMultiUploadMode] = useState(true);
   const [showRawText, setShowRawText] = useState(false);
   
   // Estado de disponibilidade da API Gemini
@@ -281,23 +282,15 @@ export function UploadPDF() {
   return (
     <>
       <Card className="bg-white shadow">
-        <CardHeader className="px-4 py-5 sm:px-6 flex flex-row justify-between items-center">
+        <CardHeader className="px-4 py-5 sm:px-6">
           <div>
             <CardTitle className="text-lg leading-6 font-medium text-secondary-900">
-              Processar {isMultiUploadMode ? "Múltiplas Reservas" : "Nova Reserva"}
+              Processamento Inteligente de Documentos
             </CardTitle>
             <p className="mt-1 text-sm text-secondary-500">
-              Faça upload de {isMultiUploadMode ? "múltiplos PDFs" : "um PDF"} de reservas para processamento automático.
+              Faça upload de arquivos PDF de reservas para processamento automático com IA.
             </p>
           </div>
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={toggleMultiUploadMode}
-            className="shrink-0"
-          >
-            {isMultiUploadMode ? "Modo Único" : "Modo Múltiplo"}
-          </Button>
         </CardHeader>
         <CardContent className="px-4 py-5 sm:px-6 space-y-6">
           <div 
