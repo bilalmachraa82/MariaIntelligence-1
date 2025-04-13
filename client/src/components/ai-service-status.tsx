@@ -106,17 +106,7 @@ export function AIServiceStatus() {
                 </Badge>
               </div>
               
-              <div className="flex items-start justify-between border p-3 rounded-md opacity-70">
-                <div>
-                  <h4 className="font-medium flex items-center">
-                    Mistral AI <Badge variant="outline" className="ml-2">{t("aiServices.deprecated", "Descontinuado")}</Badge>
-                  </h4>
-                  <p className="text-sm text-muted-foreground">{t("aiServices.mistralDescription", "Serviço substituído pelo Google Gemini")}</p>
-                </div>
-                <Badge variant="outline">
-                  {t("aiServices.deprecated", "Descontinuado")}
-                </Badge>
-              </div>
+
             </div>
           </div>
         ) : (
