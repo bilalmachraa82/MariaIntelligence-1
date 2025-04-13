@@ -1863,10 +1863,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Testar a chave para garantir que funciona
       try {
-        // Se o adaptador estiver disponível, tente reinicializá-lo com a nova chave
-        if (aiService && typeof aiService.reinitialize === 'function') {
-          await aiService.reinitialize();
-        }
+        // Configurar o serviço Gemini com a nova chave API
+        aiService.geminiService.initializeWithKey(apiKey.trim());
         
         // Verificar se o serviço está disponível após configuração
         const hasGeminiKey = process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
@@ -3978,7 +3976,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Verificar configuração do Gemini
       // Obtém informações do adaptador de IA
-      const currentService = aiService.getCurrentServiceName();
+      const currentService = aiService.getCurrentService();
       const anyServiceAvailable = geminiConnected;
       
       // Retorna o status completo
