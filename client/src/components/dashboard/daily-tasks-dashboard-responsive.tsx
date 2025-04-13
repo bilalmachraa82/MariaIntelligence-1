@@ -191,18 +191,18 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative bg-background/70 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-border/30 shadow-lg"
+        className="relative bg-background/70 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-border/30 shadow-md sm:shadow-lg"
       >
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary">
+            <h1 className="text-lg sm:text-2xl md:text-3xl font-bold text-primary">
               {t("dailyTasks.title", "Tarefas do Dia")}
             </h1>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 sm:mt-1">
               {t("dailyTasks.todayDate", "Hoje")}: {new Date().toLocaleDateString()}
             </p>
           </motion.div>
@@ -216,7 +216,7 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
             <Button 
               variant="outline" 
               onClick={() => setLocation("/assistant")}
-              className="whitespace-nowrap text-sm sm:text-base"
+              className="whitespace-nowrap text-xs sm:text-sm md:text-base h-8 sm:h-10"
               size="sm"
             >
               <Bell className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
@@ -225,7 +225,7 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
             
             <Button 
               variant="default"
-              className="whitespace-nowrap text-sm sm:text-base"
+              className="whitespace-nowrap text-xs sm:text-sm md:text-base h-8 sm:h-10"
               size="sm"
               onClick={() => setLocation(t("routes.reports", "/relatorios"))}
             >
