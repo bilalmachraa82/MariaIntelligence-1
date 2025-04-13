@@ -1,0 +1,29 @@
+Chave de tradução faltando: settings.manual.properties.import.desc
+i18next::translator: missingKey pt-PT translation settings.manual.properties.import.downloadTemplate Baixar modelo de importação
+Chave de tradução faltando: settings.manual.properties.import.downloadTemplate
+i18next::translator: missingKey pt-PT translation settings.manual.badges.revenue Receita
+Chave de tradução faltando: settings.manual.badges.revenue
+i18next::translator: missingKey pt-PT translation settings.manual.reservations.description Controle completo de todas as reservas do seu negócio
+Chave de tradução faltando: settings.manual.reservations.description
+i18next::translator: missingKey pt-PT translation settings.manual.reservations.overview Visão Geral
+Chave de tradução faltando: settings.manual.reservations.overview
+i18next::translator: missingKey pt-PT translation settings.manual.content.reservationsIntro O sistema de Reservas facilita o gerenciamento completo dos aluguéis:
+Chave de tradução faltando: settings.manual.content.reservationsIntro
+i18next::translator: missingKey pt-PT translation settings.manual.content.reservationsBullet1 Processamento automático de PDFs de reservas
+Chave de tradução faltando: settings.manual.content.reservationsBullet1
+i18next::translator: missingKey pt-PT translation settings.manual.content.reservationsBullet2 Controle financeiro com receitas e despesas
+Chave de tradução faltando: settings.manual.content.reservationsBullet2
+i18next::translator: missingKey pt-PT translation settings.manual.content.reservationsBullet3 Gestão de check-in e check-out
+Chave de tradução faltando: settings.manual.content.reservationsBullet3
+i18next::translator: missingKey pt-PT translation settings.manual.content.reservationsBullet4 Calendário integrado com visão mensal
+Chave de tradução faltando: settings.manual.content.reservationsBullet4
+i18next::translator: missingKey pt-PT translation settings.manual.content.reservationsBullet5 Relatórios detalhados por período
+Chave de tradução faltando: settings.manual.content.reservationsBullet5
+i18next::translator: missingKey pt-PT translation settings.manual.reservations.ai.title Processamento Automático
+Chave de tradução faltando: settings.manual.reservations.ai.title
+i18next::translator: missingKey pt-PT translation settings.manual.reservations.ai.description O Maria Faz utiliza inteligência artificial para extrair automaticamente dados de PDFs de reservas de várias plataformas como Airbnb, Booking e VRBO.
+Chave de tradução faltando: settings.manual.reservations.ai.description
+i18next::translator: missingKey pt-PT translation settings.manual.badges.ai Inteligência Artificial
+Chave de tradução faltando: settings.manual.badges.ai
+i18next::translator: missingKey pt-PT translation settings.manual.content.documentsIntro O Processamento de Documentos automatiza tarefas através de IA:
+Chave de tradução faltando: settings.manual.content.documentsIntro

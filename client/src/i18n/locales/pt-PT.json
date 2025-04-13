@@ -1149,10 +1149,60 @@
         "generateButton": "Gerar Manual em PDF",
         "viewOnlineButton": "Ver Manual Online",
         "onlySelectedSections": "Apenas seções selecionadas",
+        "badges": {
+          "revenue": "Receita",
+          "ai": "Inteligência Artificial",
+          "core": "Funcionalidade Principal"
+        },
+        "properties": {
+          "description": "Gerencie todas as suas propriedades em um só lugar",
+          "import": {
+            "title": "Importação em Massa",
+            "desc": "Importe múltiplas propriedades de uma vez usando nossa planilha modelo",
+            "downloadTemplate": "Baixar modelo de importação"
+          },
+          "bullet1": {
+            "desc": "Cadastro completo de imóveis com fotos e detalhes"
+          },
+          "bullet2": {
+            "desc": "Controle de inventário e manutenção"
+          },
+          "bullet3": {
+            "desc": "Vinculação com proprietários para prestação de contas"
+          },
+          "bullet4": {
+            "desc": "Análise de rentabilidade e ocupação"
+          },
+          "bullet5": {
+            "desc": "Importação em massa de propriedades"
+          }
+        },
+        "reservations": {
+          "description": "Controle completo de todas as reservas do seu negócio",
+          "overview": "Visão Geral",
+          "ai": {
+            "title": "Processamento Automático",
+            "description": "O Maria Faz utiliza inteligência artificial para extrair automaticamente dados de PDFs de reservas de várias plataformas como Airbnb, Booking e VRBO."
+          }
+        },
+        "content": {
+          "propertiesIntro": "O módulo de Propriedades permite gerenciar todos os seus imóveis:",
+          "propertiesBullet1": "Cadastro detalhado com informações completas",
+          "propertiesBullet2": "Gestão de inventário e equipamentos",
+          "propertiesBullet3": "Associação com proprietários",
+          "propertiesBullet4": "Estatísticas de rentabilidade",
+          "propertiesBullet5": "Importação em massa de imóveis",
+          "reservationsIntro": "O sistema de Reservas facilita o gerenciamento completo dos aluguéis:",
+          "reservationsBullet1": "Processamento automático de PDFs de reservas",
+          "reservationsBullet2": "Controle financeiro com receitas e despesas",
+          "reservationsBullet3": "Gestão de check-in e check-out",
+          "reservationsBullet4": "Calendário integrado com visão mensal",
+          "reservationsBullet5": "Relatórios detalhados por período"
+        },
         "documents": {
           "description": "Aprenda a processar documentos com nosso sistema integrado",
           "content": {
-            "documentsIntro": "Nosso sistema permite processar vários tipos de documentos automaticamente"
+            "documentsIntro": "O Processamento de Documentos automatiza tarefas através de IA:"
           },
           "types": {
             "title": "Tipos de Documentos",
