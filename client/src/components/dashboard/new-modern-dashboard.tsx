@@ -48,6 +48,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 
@@ -681,12 +682,12 @@ export default function NewModernDashboard({ minimal = false }: { minimal?: bool
                       {t("reservations.recentReservationsSubtitle", "As reservas mais recentes em todas as propriedades")}
                     </Text>
                     <Separator className="mb-2" />
-                    <div className="overflow-auto h-[380px] px-2">
+                    <ScrollArea className="h-[380px] px-1">
                       <RecentReservations 
                         reservations={recentReservations} 
                         isLoading={isLoadingReservations} 
                       />
-                    </div>
+                    </ScrollArea>
                   </Card>
                 </motion.div>
                 
@@ -702,12 +703,12 @@ export default function NewModernDashboard({ minimal = false }: { minimal?: bool
                       {t("activities.recentActivitySubtitle", "Registro de ações e eventos no sistema")}
                     </Text>
                     <Separator className="mb-2" />
-                    <div className="overflow-auto h-[380px] px-2">
+                    <ScrollArea className="h-[380px] px-1">
                       <RecentActivity 
                         activities={activities} 
                         isLoading={isLoadingActivities} 
                       />
-                    </div>
+                    </ScrollArea>
                   </Card>
                 </motion.div>
               </div>
