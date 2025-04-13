@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import multer from "multer";
 import bodyParser from "body-parser";
 import { ZodError, z } from "zod";
-// Removemos o Mistral e usamos apenas o Gemini agora
+// Usamos exclusivamente Google Gemini API para todas as funcionalidades de IA
 import { aiService, AIServiceType } from "./services/ai-adapter.service";
 import { AIAdapter } from "./services/ai-adapter.service";
 import { hasGeminiApiKey, checkGeminiApiKey } from "./services/check-gemini-key";
@@ -2317,7 +2317,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Rota para processar mensagens com o Mistral AI
+  // Rota para processar mensagens com o Google Gemini AI
   app.post("/api/assistant", async (req: Request, res: Response) => {
     try {
       // Importação dinâmica para resolver problema de ciclo de dependência
