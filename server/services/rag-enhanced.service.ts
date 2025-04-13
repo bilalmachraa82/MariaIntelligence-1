@@ -159,7 +159,7 @@ export class RagEnhancedService {
   private async generateEmbedding(text: string): Promise<number[]> {
     try {
       // Usar o serviço Gemini para gerar embeddings
-      const geminiService = aiService.getInstance().geminiService;
+      const geminiService = aiService.geminiService;
       const embeddingResponse = await geminiService.generateEmbeddings(text);
       
       // Verificar se temos uma resposta válida
