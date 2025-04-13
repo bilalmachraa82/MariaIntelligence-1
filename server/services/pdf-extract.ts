@@ -81,16 +81,16 @@ export interface ValidationResult {
 }
 
 /**
- * Tenta extrair texto de um PDF usando o cliente Mistral AI
+ * Tenta extrair texto de um PDF usando o cliente Gemini AI
  * Esta função é mantida para compatibilidade com o código existente
  * Na implementação atual, sempre retorna um erro 'VISION_MODEL_UNAVAILABLE'
  * para que o fluxo use o método alternativo (pdf-parse)
  * 
  * @param pdfBase64 PDF em base64
- * @param apiKey Chave API do Mistral
+ * @param apiKey Chave API do Gemini
  */
-export async function extractTextFromPdfWithMistral(pdfBase64: string, apiKey: string): Promise<string> {
-  log('Tentando extrair texto com Mistral Vision...', 'pdf-extract');
+export async function extractTextFromPdfWithGemini(pdfBase64: string, apiKey: string): Promise<string> {
+  log('Tentando extrair texto com Gemini Vision...', 'pdf-extract');
   throw new Error('VISION_MODEL_UNAVAILABLE');
 }
 
@@ -127,7 +127,7 @@ export async function extractTextWithPdfParse(pdfBuffer: Buffer): Promise<string
 /**
  * Processa texto já extraído para obter informações estruturadas de reserva
  * @param text Texto extraído do documento
- * @param apiKey Chave API do Mistral
+ * @param apiKey Chave API do Gemini
  * @param timeout Tempo limite em milissegundos (padrão: 25 segundos)
  */
 export async function parseReservationFromText(
@@ -422,9 +422,9 @@ export function validateReservationData(data: ExtractedReservationData): Validat
 
 /**
  * Processa um documento PDF para extrair dados de reserva
- * Utiliza pdf-parse para extração de texto e Mistral AI para a análise estruturada
+ * Utiliza pdf-parse para extração de texto e Gemini AI para a análise estruturada
  * @param pdfPath Caminho do arquivo PDF
- * @param apiKey Chave API do Mistral
+ * @param apiKey Chave API do Gemini
  * @param options Opções de processamento (skipQualityCheck, useCache)
  */
 export async function processPdf(

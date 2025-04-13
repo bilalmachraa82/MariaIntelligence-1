@@ -112,7 +112,7 @@ export async function identifyDocumentType(filePath: string): Promise<DocumentIn
  * conteúdo e nome, e caso falhe, atribui o primeiro como check-in e o segundo como check-out.
  * 
  * @param files Lista de caminhos para os arquivos PDF (um ou dois arquivos)
- * @param apiKey Chave da API Mistral para processamento de texto
+ * @param apiKey Chave da API Gemini para processamento de texto
  * @returns Resultado do processamento com informações da reserva
  */
 export async function processPdfPair(

@@ -154,7 +154,7 @@ export class RagService {
     metadata: Record<string, any> = {}
   ): Promise<number> {
     try {
-      // Gera o embedding usando Mistral (simplificado temporariamente)
+      // Gera o embedding usando Gemini (simplificado temporariamente)
       // Quando pgvector estiver habilitado, o embedding será armazenado corretamente
       const embeddingJson = await this.generateEmbedding(content);
       
@@ -195,7 +195,7 @@ export class RagService {
    */
   async saveQuery(query: string, response: string): Promise<number> {
     try {
-      // Gera o embedding usando Mistral (simplificado temporariamente)
+      // Gera o embedding usando Gemini (simplificado temporariamente)
       const embeddingJson = await this.generateEmbedding(query);
       
       // Verifica se já existe uma consulta similar

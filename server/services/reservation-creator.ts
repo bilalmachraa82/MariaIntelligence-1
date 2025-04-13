@@ -190,7 +190,7 @@ export async function createReservationFromExtractedData(
 /**
  * Processa um PDF e cria uma reserva a partir dos dados extraídos
  * @param pdfPath Caminho do arquivo PDF
- * @param apiKey Chave da API Mistral
+ * @param apiKey Chave da API Gemini
  * @returns Resultado do processo de criação da reserva
  */
 export async function processPdfAndCreateReservation(
@@ -239,7 +239,7 @@ export async function processPdfAndCreateReservation(
 /**
  * Processa uma imagem usando OCR e cria uma reserva
  * @param imagePath Caminho da imagem
- * @param apiKey Chave da API Mistral
+ * @param apiKey Chave da API Gemini
  * @returns Resultado do processo de criação da reserva
  */
 export async function processImageAndCreateReservation(
@@ -258,7 +258,7 @@ export async function processImageAndCreateReservation(
       ? 'image/png' 
       : 'image/jpeg';
     
-    // Usar o serviço de IA para OCR (Mistral ou Gemini, conforme disponibilidade)
+    // Usar o serviço de IA para OCR (Gemini)
     
     // Extrair texto da imagem usando o adaptador de IA
     const extractedText = await aiService.extractTextFromImage(base64Image, mimeType);
@@ -308,7 +308,7 @@ export async function processImageAndCreateReservation(
 /**
  * Processa um arquivo (PDF ou imagem) e cria uma reserva
  * @param filePath Caminho do arquivo
- * @param apiKey Chave da API Mistral
+ * @param apiKey Chave da API Gemini
  * @returns Resultado do processo de criação da reserva
  */
 export async function processFileAndCreateReservation(

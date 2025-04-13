@@ -1456,7 +1456,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Verificamos se temos alguma das chaves de API disponíveis (Mistral ou Gemini)
+      // Verificamos se temos a chave da API Gemini disponível
       if (!process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) {
         return res.status(500).json({ 
           success: false,
@@ -1474,7 +1474,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const useCache = false;
         
         // Usar o serviço que processa qualquer tipo de arquivo e cria reserva
-        // Passamos a chave Mistral por compatibilidade, mas o adaptador usará Gemini se disponível
+        // Usamos a chave Gemini para todos os serviços de IA
         const result = await processFileAndCreateReservation(
           req.file.path, 
           process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "",
@@ -1891,7 +1891,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   /**
    * Endpoint para verificar as chaves de API de IA disponíveis
-   * Retorna informações sobre os serviços disponíveis (Mistral e Gemini)
+   * Retorna informações sobre os serviços disponíveis (Google Gemini)
    */
   app.get("/api/check-ai-services", async (_req: Request, res: Response) => {
     try {
@@ -1938,7 +1938,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   /**
    * Endpoint para definir qual serviço de IA usar
-   * Permite alternar entre Mistral, Gemini ou auto-detecção
+   * Permite configurar o serviço Gemini
    */
   app.post("/api/set-ai-service", async (req: Request, res: Response) => {
     try {
@@ -1966,7 +1966,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           aiService.setService(serviceTypeMap[newService]);
           return res.json({
             success: true,
-            message: `Serviço Mistral não é mais suportado. Alterado para Gemini automaticamente.`,
+            message: `Serviço configurado para usar Gemini.`,
             currentService: aiService.getCurrentService()
           });
         }
@@ -2519,11 +2519,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Verificar se a chave da API Mistral está disponível
+      // Verificar se a chave da API Gemini está disponível
       if (!process.env.GOOGLE_GEMINI_API_KEY && !process.env.GOOGLE_API_KEY) {
         return res.status(400).json({ 
           success: false,
-          message: "Chave da API Mistral não configurada. Configure a chave nas definições." 
+          message: "Chave da API Gemini não configurada. Configure a chave nas definições." 
         });
       }
       
@@ -3372,11 +3372,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Verificar se a chave da API Mistral está disponível
+      // Verificar se a chave da API Gemini está disponível
       if (!process.env.GOOGLE_GEMINI_API_KEY && !process.env.GOOGLE_API_KEY) {
         return res.status(400).json({ 
           success: false,
-          message: "Chave da API Mistral não configurada. Configure a chave nas definições." 
+          message: "Chave da API Gemini não configurada. Configure a chave nas definições." 
         });
       }
       
@@ -3976,7 +3976,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      // Verificar se o Mistral estava configurado anteriormente
+      // Verificar configuração do Gemini
       // Nota: Este serviço foi descontinuado, estamos apenas verificando se ele estava configurado
       const mistralKeyConfigured = !!process.env.MISTRAL_API_KEY;
       
