@@ -708,8 +708,8 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
           {minimal && (
             <Button 
               variant="outline" 
-              onClick={() => setLocation("/dashboard")}
-              className="whitespace-nowrap text-sm sm:text-base"
+              onClick={() => setLocation("/dashboard-full")}
+              className="whitespace-nowrap text-sm sm:text-base font-medium"
               size="sm"
             >
               <ArrowRight className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />

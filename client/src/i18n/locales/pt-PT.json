@@ -29,7 +29,8 @@
       "pendingStatus": "Pendente",
       "scheduleClean": "Agendar Limpeza",
       "attentionStatus": "Urgente",
-      "upcomingStatus": "Agendado"
+      "upcomingStatus": "Agendado",
+      "viewDashboard": "Ver Dashboard Completo"
     },
     "_dashboardBackup": {
       "welcome": "Olá Maria!",
