@@ -31,7 +31,8 @@
       "viewProperty": "Ver Imóvel",
       "markResolved": "Marcar Resolvido",
       "otherTasks": "Outras Tarefas",
-      "viewAllTasks": "Ver Todas as Tarefas"
+      "viewAllTasks": "Ver Todas as Tarefas",
+      "viewReports": "Ver Relatórios"
     },
     "voiceInput": {
       "temporaryDisabled": "Entrada por voz temporariamente indisponível",
