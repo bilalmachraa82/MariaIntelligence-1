@@ -283,6 +283,11 @@
       "noData": "Sem informações disponíveis",
       "ready": "Pronto para uso"
     },
+    "maintenance": {
+      "noTasks": "Sem tarefas de manutenção",
+      "createFirst": "Crie sua primeira tarefa de manutenção para começar",
+      "newRequest": "Nova Solicitação"
+    },
     "trendsReport": {
       "title": "Relatório de Tendências",
       "description": "Análise de tendências e performance dos imóveis",
