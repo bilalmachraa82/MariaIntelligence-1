@@ -207,6 +207,8 @@ export default function AssistantPage() {
     checkApiKey();
   }, [t]);
   
+
+  
   // Adicionar alerta sobre funcionalidade de voz desabilitada
   useEffect(() => {
     // Mostrar notificação toast sobre a funcionalidade de entrada por voz desabilitada
@@ -441,7 +443,7 @@ export default function AssistantPage() {
     setIsSavingApiKey(true);
     
     try {
-      const response = await fetch("/api/set-gemini-key", {
+      const response = await fetch("/api/configure-gemini-key", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -463,6 +465,7 @@ export default function AssistantPage() {
         });
         setHasGeminiKey(true);
         setApiKeyConfigVisible(false);
+        setApiKey(''); // Limpar o campo após salvar
         
         // Adicionar uma mensagem do assistente confirmando
         const assistantMessage: Message = { 

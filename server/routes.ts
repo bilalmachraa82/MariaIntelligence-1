@@ -1739,6 +1739,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   /**
+   * Endpoint para verificar a disponibilidade da chave da API Gemini
+   */
+  app.get("/api/check-gemini-key", (_req: Request, res: Response) => {
+    try {
+      const hasGeminiKey = process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
+                          process.env.GOOGLE_GEMINI_API_KEY !== '' || 
+                          process.env.GOOGLE_API_KEY !== undefined && 
+                          process.env.GOOGLE_API_KEY !== '';
+      res.json({ available: hasGeminiKey });
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+  
+  /**
+   * Endpoint para configurar a chave da API Gemini
+   * Salva a chave em uma variável de ambiente e inicializa o serviço Gemini
+   */
+  app.post("/api/configure-gemini-key", async (req: Request, res: Response) => {
+    try {
+      const { apiKey } = req.body;
+      
+      if (!apiKey || typeof apiKey !== 'string' || apiKey.trim() === '') {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Chave de API inválida"
+        });
+      }
+      
+      // Salvar a chave na variável de ambiente
+      process.env.GOOGLE_GEMINI_API_KEY = apiKey.trim();
+      
+      // Testar a chave para garantir que funciona
+      try {
+        // Se o adaptador estiver disponível, tente reinicializá-lo com a nova chave
+        if (aiService && typeof aiService.reinitialize === 'function') {
+          await aiService.reinitialize();
+        }
+        
+        // Verificar se o serviço está disponível após configuração
+        const hasGeminiKey = process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
+                            process.env.GOOGLE_GEMINI_API_KEY !== '';
+                            
+        return res.json({ 
+          success: true, 
+          message: "Chave da API Gemini configurada com sucesso",
+          available: hasGeminiKey
+        });
+      } catch (error) {
+        console.error("Erro ao testar a chave da API Gemini:", error);
+        return res.status(400).json({ 
+          success: false, 
+          message: "A chave da API Gemini parece ser inválida"
+        });
+      }
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+  
+  /**
    * Endpoint para verificar as chaves de API de IA disponíveis
    * Retorna informações sobre os serviços disponíveis (Mistral e Gemini)
    */
