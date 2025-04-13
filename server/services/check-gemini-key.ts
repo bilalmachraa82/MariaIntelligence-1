@@ -1,5 +1,14 @@
 /**
- * Verificar se a chave da API Gemini está configurada e é válida
+ * Verificar de forma síncrona se a chave da API Google Gemini está configurada
+ * @returns True se a chave estiver disponível nas variáveis de ambiente
+ */
+export function hasGeminiApiKey(): boolean {
+  const apiKey = process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+  return apiKey !== undefined && apiKey !== '';
+}
+
+/**
+ * Verificar se a chave da API Google Gemini está configurada e é válida
  * @returns True se a chave estiver disponível e válida
  */
 export async function checkGeminiApiKey(): Promise<boolean> {
@@ -12,31 +21,26 @@ export async function checkGeminiApiKey(): Promise<boolean> {
   }
   
   try {
-    // Fazer uma chamada de teste para listar modelos disponíveis
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+    // Fazer uma chamada de teste básica à API Gemini
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${apiKey}`);
     
-    // Verificar se a resposta é válida
-    if (response.ok) {
-      const data = await response.json();
-      const modelsCount = data?.models?.length || 0;
-      console.log(`✅ API Gemini válida - ${modelsCount} modelos disponíveis`);
+    if (!response.ok) {
+      console.error(`Erro na API Gemini: ${response.status} - ${response.statusText}`);
+      return false;
+    }
+    
+    const data = await response.json();
+    
+    // Verificar se a resposta contém modelos
+    if (data && data.models && data.models.length > 0) {
+      console.log(`✅ API Gemini válida - ${data.models.length} modelos disponíveis`);
       return true;
     } else {
-      const errorData = await response.json().catch(() => ({ error: { message: "Erro desconhecido" } }));
-      console.error(`Erro na API Gemini: ${response.status} - ${errorData?.error?.message || response.statusText}`);
+      console.error("Resposta da API Gemini não contém modelos");
       return false;
     }
   } catch (error) {
     console.error("Erro ao verificar a chave da API Gemini:", error);
     return false;
   }
-}
-
-/**
- * Verificar se a chave da API Gemini está configurada
- * @returns True se a chave estiver disponível
- */
-export function hasGeminiApiKey(): boolean {
-  const apiKey = process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
-  return !!apiKey;
 }

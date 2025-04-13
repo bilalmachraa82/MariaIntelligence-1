@@ -31,6 +31,26 @@ interface GenerationConfig {
   candidateCount?: number;
 }
 
+// Interface para geração de texto
+interface TextGenerationParams {
+  systemPrompt?: string;
+  userPrompt: string;
+  model?: GeminiModel;
+  temperature?: number;
+  maxOutputTokens?: number;
+}
+
+// Interface para processamento de imagem
+interface ImageProcessingParams {
+  textPrompt: string;
+  imageBase64: string;
+  mimeType: string;
+  model?: GeminiModel;
+  temperature?: number;
+  maxOutputTokens?: number;
+  responseFormat?: 'text' | 'json';
+}
+
 // Simulação de tipos para desenvolvimento sem a biblioteca instalada
 interface GenerativeModelMock {
   generateContent(params: any): Promise<any>;
@@ -1212,20 +1232,37 @@ export class GeminiService {
   }
   
   /**
-   * Gera texto a partir de um prompt
-   * Método utilizado principalmente para testes
+   * Gera texto a partir de um prompt simples
    * @param prompt Texto do prompt 
    * @param temperature Temperatura para controlar aleatoriedade (0.0 a 1.0)
+   * @param maxTokens Número máximo de tokens de saída
    * @returns Texto gerado
    */
-  async generateText(prompt: string, temperature: number = 0.3, maxTokens?: number): Promise<string> {
+  async generateText(prompt: string | TextGenerationParams, temperature: number = 0.3, maxTokens?: number): Promise<string> {
     this.checkInitialization();
+    
+    // Verificar se o parâmetro é um objeto ou uma string
+    let systemPrompt: string | undefined;
+    let userPrompt: string;
+    let modelType: GeminiModel = GeminiModel.TEXT;
+    let tempValue = temperature;
+    let maxOutputTokens = maxTokens || 1024;
+    
+    if (typeof prompt === 'object') {
+      systemPrompt = prompt.systemPrompt;
+      userPrompt = prompt.userPrompt;
+      modelType = prompt.model || GeminiModel.TEXT;
+      tempValue = prompt.temperature || temperature;
+      maxOutputTokens = prompt.maxOutputTokens || maxTokens || 1024;
+    } else {
+      userPrompt = prompt;
+    }
     
     // Criar a função que fará a chamada à API
     const generateTextFn = async (): Promise<string> => {
       try {
         // Remover qualquer timestamp existente para evitar conflitos
-        const cleanPrompt = prompt.replace(/\nTimestamp: \d+$/g, '');
+        const cleanPrompt = userPrompt.replace(/\nTimestamp: \d+$/g, '');
         
         const result = await this.withRetry(async () => {
           return await this.defaultModel.generateContent({
@@ -1251,9 +1288,10 @@ export class GeminiService {
     
     // Gerar um identificador único baseado nos detalhes da solicitação, mas com o prompt limpo de timestamps
     // Este identificador será usado como parte da chave de cache
+    const promptString = typeof prompt === 'string' ? prompt : prompt.userPrompt;
     const querySignature = crypto
       .createHash('md5')
-      .update(prompt.replace(/\nTimestamp: \d+$/g, '') + temperature + (maxTokens || 2048))
+      .update(promptString.replace(/\nTimestamp: \d+$/g, '') + temperature + (maxTokens || 2048))
       .digest('hex')
       .substring(0, 8);
     
@@ -1262,6 +1300,195 @@ export class GeminiService {
     const rateLimitedGenerate = rateLimiter.rateLimitedFunction(
       generateTextFn,
       `generateText-${querySignature}`,
+      5 * 60 * 1000 // 5 minutos de TTL no cache
+    );
+    
+    // Executar a função com controle de taxa
+    return rateLimitedGenerate();
+  }
+  
+  /**
+   * Processa conteúdo de imagem usando o modelo de visão
+   * @param params Parâmetros para processamento de imagem
+   * @returns Texto ou JSON extraído da imagem
+   */
+  async processImageContent(params: ImageProcessingParams): Promise<any> {
+    this.checkInitialization();
+    
+    const {
+      textPrompt,
+      imageBase64,
+      mimeType,
+      model = GeminiModel.VISION,
+      temperature = 0.2,
+      maxOutputTokens = 1024,
+      responseFormat = 'text'
+    } = params;
+    
+    // Truncar a imagem se for muito grande
+    const truncatedImage = imageBase64.length > 1000000 ? imageBase64.substring(0, 1000000) : imageBase64;
+    
+    // Criar a função que fará a chamada à API
+    const processImageFn = async (): Promise<string> => {
+      try {
+        const generationConfig = {
+          temperature,
+          maxOutputTokens: maxOutputTokens || 1024,
+          ...(responseFormat === 'json' ? { responseFormat: { type: "json_object" } } : {})
+        };
+        
+        const targetModel = model === GeminiModel.VISION ? this.visionModel : this.defaultModel;
+        
+        const result = await this.withRetry(async () => {
+          return await targetModel.generateContent({
+            contents: [
+              {
+                role: 'user',
+                parts: [
+                  { text: textPrompt },
+                  { 
+                    inlineData: { 
+                      mimeType: mimeType, 
+                      data: truncatedImage
+                    } 
+                  }
+                ]
+              }
+            ],
+            generationConfig
+          });
+        });
+        
+        const responseText = result.response.text();
+        
+        // Se o formato de resposta for JSON, tentar fazer o parse
+        if (responseFormat === 'json') {
+          try {
+            // Tentar extrair apenas a parte JSON da resposta
+            const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+            const jsonString = jsonMatch ? jsonMatch[0] : responseText;
+            return JSON.parse(jsonString);
+          } catch (jsonError) {
+            console.error("Erro ao analisar JSON de resposta de imagem:", jsonError);
+            // Retornar o texto original se falhar
+            return responseText;
+          }
+        }
+        
+        return responseText;
+      } catch (error: any) {
+        console.error("Erro ao processar imagem com Gemini:", error);
+        throw new Error(`Falha no processamento de imagem: ${error.message}`);
+      }
+    };
+    
+    // Calcular hash MD5 da imagem para usar como parte da chave de cache
+    const imageHash = crypto
+      .createHash('md5')
+      .update(truncatedImage.substring(0, 5000)) // Usar apenas os primeiros 5KB para o hash
+      .digest('hex')
+      .substring(0, 8);
+    
+    // Calcular hash do prompt para diferenciar diferentes prompts na mesma imagem
+    const promptHash = crypto
+      .createHash('md5')
+      .update(textPrompt)
+      .digest('hex')
+      .substring(0, 8);
+    
+    // Usar o rate limiter para controlar as chamadas à API
+    const rateLimitedProcess = rateLimiter.rateLimitedFunction(
+      processImageFn,
+      `processImage-${imageHash}-${promptHash}`,
+      10 * 60 * 1000 // 10 minutos de TTL no cache
+    );
+    
+    // Executar a função com controle de taxa
+    return rateLimitedProcess();
+  }
+  
+  /**
+   * Gera saída estruturada a partir de um prompt
+   * @param params Parâmetros para geração de texto estruturado
+   * @returns Objeto estruturado extraído do texto
+   */
+  async generateStructuredOutput(params: TextGenerationParams): Promise<any> {
+    this.checkInitialization();
+    
+    const {
+      systemPrompt,
+      userPrompt,
+      model = GeminiModel.FLASH,
+      temperature = 0.1,
+      maxOutputTokens = 1024
+    } = params;
+    
+    // Criar a função que fará a chamada à API
+    const generateStructuredFn = async (): Promise<any> => {
+      try {
+        let contents = [];
+        
+        // Adicionar prompt do sistema se fornecido
+        if (systemPrompt) {
+          contents.push({
+            role: 'system',
+            parts: [{ text: systemPrompt }]
+          });
+        }
+        
+        // Adicionar prompt do usuário
+        contents.push({
+          role: 'user',
+          parts: [{ text: userPrompt }]
+        });
+        
+        const targetModel = model === GeminiModel.VISION ? this.visionModel : 
+                           model === GeminiModel.FLASH ? this.flashModel : 
+                           this.defaultModel;
+        
+        const result = await this.withRetry(async () => {
+          return await targetModel.generateContent({
+            contents,
+            generationConfig: {
+              temperature,
+              maxOutputTokens,
+              responseFormat: { type: "json_object" }
+            }
+          });
+        });
+        
+        const responseText = result.response.text();
+        
+        try {
+          // Tentar extrair apenas a parte JSON da resposta
+          const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+          const jsonString = jsonMatch ? jsonMatch[0] : responseText;
+          return JSON.parse(jsonString);
+        } catch (jsonError) {
+          console.error("Erro ao analisar JSON de resposta estruturada:", jsonError);
+          // Retornar um objeto vazio com a resposta em texto
+          return { 
+            error: "Falha ao analisar resposta JSON", 
+            rawResponse: responseText 
+          };
+        }
+      } catch (error: any) {
+        console.error("Erro ao gerar saída estruturada com Gemini:", error);
+        throw new Error(`Falha na geração de saída estruturada: ${error.message}`);
+      }
+    };
+    
+    // Calcular hash do prompt para usar como parte da chave de cache
+    const promptHash = crypto
+      .createHash('md5')
+      .update(userPrompt + (systemPrompt || ''))
+      .digest('hex')
+      .substring(0, 12);
+    
+    // Usar o rate limiter para controlar as chamadas à API
+    const rateLimitedGenerate = rateLimiter.rateLimitedFunction(
+      generateStructuredFn,
+      `generateStructured-${promptHash}`,
       5 * 60 * 1000 // 5 minutos de TTL no cache
     );
     

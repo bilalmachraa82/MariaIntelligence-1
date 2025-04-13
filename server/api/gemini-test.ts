@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-// Função para testar a integração com Google Gemini AI
+// Função para testar a integração com Google Gemini API
 export async function testGeminiIntegration(req: Request, res: Response) {
   try {
     // Verificar se a chave API está disponível
@@ -9,7 +9,7 @@ export async function testGeminiIntegration(req: Request, res: Response) {
     if (!GEMINI_API_KEY) {
       return res.status(400).json({
         success: false,
-        error: 'Gemini API key not found in environment variables',
+        error: 'Google Gemini API key not found in environment variables',
         tests: []
       });
     }
@@ -17,42 +17,41 @@ export async function testGeminiIntegration(req: Request, res: Response) {
     // Array para armazenar resultados dos testes
     const testResults = [];
     
-    // Teste 1: Conexão básica e listagem de modelos
+    // Teste 1: Listar modelos disponíveis
     try {
-      console.log("Testing basic connectivity with model list...");
-      const modelsResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${GEMINI_API_KEY}`);
+      console.log("Testing Gemini API connectivity...");
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${GEMINI_API_KEY}`);
       
-      if (!modelsResponse.ok) {
-        throw new Error(`API returned ${modelsResponse.status}: ${modelsResponse.statusText}`);
+      if (!response.ok) {
+        throw new Error(`API returned status ${response.status}: ${response.statusText}`);
       }
       
-      const modelsData = await modelsResponse.json();
+      const data = await response.json();
       
-      const basicResult = {
-        name: "Conexão Básica",
+      const modelsResult = {
+        name: "Listar Modelos",
         success: true,
-        response: `Modelos disponíveis: ${modelsData?.models?.length || 0}`,
-        models: modelsData?.models?.map((model: any) => model.name) || [],
+        response: `${data.models?.length || 0} modelos disponíveis`,
+        models: data.models?.map((model: any) => model.name) || [],
         error: null
       };
       
-      testResults.push(basicResult);
-      console.log("Basic connectivity test passed");
+      testResults.push(modelsResult);
+      console.log("Models listing test passed");
     } catch (error: any) {
       testResults.push({
-        name: "Conexão Básica",
+        name: "Listar Modelos",
         success: false,
         response: null,
         error: error.message || "Unknown error"
       });
-      console.error("Basic connectivity test failed:", error);
+      console.error("Models listing test failed:", error);
     }
     
     // Teste 2: Geração de texto simples
     try {
-      console.log("Testing text generation capability...");
+      console.log("Testing text generation...");
       
-      // Configura a solicitação para geração de texto
       const requestBody = {
         contents: [
           {
@@ -63,12 +62,12 @@ export async function testGeminiIntegration(req: Request, res: Response) {
         ],
         generationConfig: {
           temperature: 0.2,
-          maxOutputTokens: 10
+          maxOutputTokens: 100
         }
       };
       
-      const generationResponse = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=${GEMINI_API_KEY}`,
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
         {
           method: 'POST',
           headers: {
@@ -78,22 +77,23 @@ export async function testGeminiIntegration(req: Request, res: Response) {
         }
       );
       
-      if (!generationResponse.ok) {
-        throw new Error(`API returned ${generationResponse.status}: ${generationResponse.statusText}`);
+      if (!response.ok) {
+        throw new Error(`API returned status ${response.status}: ${response.statusText}`);
       }
       
-      const generationData = await generationResponse.json();
+      const data = await response.json();
       
-      // Extrair o texto gerado
-      const generatedText = generationData?.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
+      // Extrair o texto da resposta
+      const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response text';
       
-      testResults.push({
+      const generationResult = {
         name: "Geração de Texto",
         success: true,
-        response: generatedText,
+        response: responseText,
         error: null
-      });
+      };
       
+      testResults.push(generationResult);
       console.log("Text generation test passed");
     } catch (error: any) {
       testResults.push({
