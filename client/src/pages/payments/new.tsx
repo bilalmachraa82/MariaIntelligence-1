@@ -15,6 +15,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { useToast } from "@/hooks/use-toast";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { useProperties } from "@/hooks/use-properties";
+import { useCreateFinancialDocument } from "@/hooks/use-financial-documents";
+import { queryClient } from "@/lib/queryClient";
 
 // Esquema de validação
 const paymentFormSchema = z.object({
@@ -34,16 +37,13 @@ export default function NewPaymentPage() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const [date, setDate] = useState<Date>();
-  const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Mock de propriedades que viria de uma API
-  const mockProperties = [
-    { id: 1, name: "Apartamento Ajuda" },
-    { id: 2, name: "Vila SJ Estoril" },
-    { id: 3, name: "Apartamento Cascais" },
-    { id: 4, name: "Moradia Sintra" },
-  ];
+  // Obter propriedades do banco de dados
+  const { properties = [], isLoading: isLoadingProperties } = useProperties();
+  
+  // Mutation para criar documento financeiro
+  const createFinancialDocument = useCreateFinancialDocument();
 
   const form = useForm<PaymentFormValues>({
     resolver: zodResolver(paymentFormSchema),
@@ -64,8 +64,36 @@ export default function NewPaymentPage() {
     try {
       console.log("Valores do formulário:", values);
       
-      // Aqui iria a lógica para enviar os dados para a API
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulação de requisição
+      // Criar documento financeiro (despesa)
+      const documentData = {
+        documentType: "expense",
+        documentNumber: values.invoiceNumber || `EXP-${Date.now().toString().slice(-6)}`,
+        amount: values.amount,
+        issueDate: new Date().toISOString().split('T')[0],
+        dueDate: values.dueDate.toISOString().split('T')[0],
+        status: values.status,
+        description: values.description || `Despesa: ${values.type}`,
+        relatedEntityType: "property",
+        relatedEntityId: parseInt(values.propertyId),
+        pdfUrl: null,
+        items: [
+          {
+            description: `${values.type === "cleaning" ? "Limpeza" : 
+                          values.type === "maintenance" ? "Manutenção" : 
+                          values.type === "commission" ? "Comissão" : 
+                          values.type === "travel" ? "Deslocações" : "Outro"}`,
+            quantity: 1,
+            unitPrice: values.amount,
+            totalPrice: values.amount,
+            notes: values.description || ""
+          }
+        ]
+      };
+      
+      await createFinancialDocument.mutateAsync(documentData);
+      
+      // Invalidar queries para atualizar a interface
+      queryClient.invalidateQueries({ queryKey: ["/api/financial-documents"] });
       
       toast({
         title: "Pagamento registrado com sucesso!",
@@ -126,11 +154,17 @@ export default function NewPaymentPage() {
                     <SelectValue placeholder="Selecione uma propriedade" />
                   </SelectTrigger>
                   <SelectContent>
-                    {mockProperties.map(property => (
-                      <SelectItem key={property.id} value={property.id.toString()}>
-                        {property.name}
-                      </SelectItem>
-                    ))}
+                    {isLoadingProperties ? (
+                      <SelectItem value="loading" disabled>Carregando propriedades...</SelectItem>
+                    ) : properties.length === 0 ? (
+                      <SelectItem value="empty" disabled>Nenhuma propriedade encontrada</SelectItem>
+                    ) : (
+                      properties.map(property => (
+                        <SelectItem key={property.id} value={property.id.toString()}>
+                          {property.name}
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
                 {form.formState.errors.propertyId && (
