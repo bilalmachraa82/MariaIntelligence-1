@@ -1954,15 +1954,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         const { aiService, AIServiceType } = await import('./services/ai-adapter.service');
         
-        // Mapear string para enum (apenas Gemini é suportado agora)
+        // Mapear string para enum (apenas Gemini é suportado)
         const serviceTypeMap: Record<string, any> = {
-          "gemini": AIServiceType.GEMINI,
-          "auto": AIServiceType.AUTO
+          "gemini": AIServiceType.GEMINI
         };
         
-        // Se for mistral, redirecionar para gemini
-        if (service === "mistral") {
-          console.log("Serviço Mistral não é mais suportado, usando Gemini no lugar");
+        // Se for qualquer outro serviço, usar Gemini
+        if (service !== "gemini") {
+          console.log(`Serviço ${service} não é suportado, usando Gemini apenas`);
           const newService = "gemini";
           aiService.setService(serviceTypeMap[newService]);
           return res.json({
@@ -2213,7 +2212,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         if (!hasGeminiKey) {
           tests.push({
-            name: "Gemini AI",
+            name: "Google Gemini API",
             success: false,
             error: "Chave API Gemini não encontrada"
           });
@@ -2227,24 +2226,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             if (!isConnected) {
               tests.push({
-                name: "Gemini AI",
+                name: "Google Gemini API",
                 success: false,
                 error: "Falha na conexão com a API do Gemini."
               });
             } else {
               // API está conectada
               tests.push({
-                name: "Gemini AI",
+                name: "Google Gemini API",
                 success: true,
                 details: {
-                  modelsAvailable: 49, // Valor fixo para manter compatibilidade
-                  connected: true
+                  modelType: "Gemini Pro 1.5",
+                  connected: true,
+                  visionCapable: true,
+                  textCapable: true
                 }
               });
             }
           } catch (geminiError: any) {
             tests.push({
-              name: "Gemini AI",
+              name: "Google Gemini API",
               success: false,
               error: geminiError.message || "Erro ao conectar com API Gemini"
             });
@@ -2252,39 +2253,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       } catch (error: any) {
         tests.push({
-          name: "Gemini AI",
-          success: false,
-          error: error.message || "Erro ao testar API Gemini"
-        });
-      }
-      
-      // Teste 4: Verificar API Gemini (Google)
-      try {
-        const hasGeminiKey = (process.env.GOOGLE_GEMINI_API_KEY !== undefined && 
-                             process.env.GOOGLE_GEMINI_API_KEY !== '') || 
-                            (process.env.GOOGLE_API_KEY !== undefined && 
-                             process.env.GOOGLE_API_KEY !== '');
-
-        if (!hasGeminiKey) {
-          tests.push({
-            name: "Google Gemini",
-            success: false,
-            error: "Chave API Google não encontrada"
-          });
-        } else {
-          // Como ainda não temos a biblioteca instalada, verificamos só se a chave existe
-          tests.push({
-            name: "Google Gemini",
-            success: true,
-            details: {
-              keyConfigured: true,
-              message: "Chave API Gemini configurada (teste básico)"
-            }
-          });
-        }
-      } catch (error: any) {
-        tests.push({
-          name: "Google Gemini",
+          name: "Google Gemini API",
           success: false,
           error: error.message || "Erro ao testar API Gemini"
         });

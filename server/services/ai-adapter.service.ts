@@ -1,15 +1,14 @@
 /**
- * Serviço adaptador para APIs de IA
- * Fornece uma camada de abstração para acessar o serviço Gemini
+ * Serviço adaptador para a API Google Gemini de IA
+ * Fornece uma camada de abstração para acessar os diferentes serviços do Gemini
  */
 
 import { GeminiService } from './gemini.service';
 import { ragService } from './rag-enhanced.service';
 
-// Enum para definir qual serviço de IA usar (apenas Gemini é suportado agora)
+// Enum para definir qual serviço de IA usar (apenas Gemini é suportado)
 export enum AIServiceType {
-  GEMINI = 'gemini',
-  AUTO = 'auto' // Mantido por compatibilidade
+  GEMINI = 'gemini'
 }
 
 // Singleton para garantir que usamos a mesma instância em toda a aplicação
@@ -45,9 +44,11 @@ export class AIAdapter {
    * @param serviceType Tipo de serviço de IA a ser usado
    */
   public setService(serviceType: AIServiceType): void {
-    // Apenas Gemini é suportado agora
-    if (serviceType !== AIServiceType.GEMINI && serviceType !== AIServiceType.AUTO) {
-      console.warn("Apenas o serviço Gemini é suportado. Usando Gemini automaticamente.");
+    // Confirmando que estamos usando Gemini
+    if (serviceType === AIServiceType.GEMINI) {
+      console.log("Configurando para usar serviço Gemini.");
+    } else {
+      console.warn("Apenas o serviço Gemini é suportado. Configurando para usar Gemini.");
     }
     
     // Verificar se temos chave API configurada
@@ -361,14 +362,13 @@ export class AIAdapter {
   }
   
   /**
-   * Acesso ao cliente Mistral para casos específicos
-   * (isto permite compatibilidade com código existente)
-   * @returns Cliente Mistral
-   * @deprecated Substituído pelo Gemini
+   * Este método foi completamente removido.
+   * Todos os serviços devem usar diretamente os métodos do Gemini.
+   * @returns nunca
+   * @throws Erro indicando que o método foi removido
    */
-  public getMistralClient() {
-    console.warn('getMistralClient foi descontinuado - usando Gemini em vez disso');
-    throw new Error('Método não suportado: getMistralClient foi deprecado e removido');
+  public getMistralClient(): never {
+    throw new Error('Método não suportado: todas as funcionalidades agora usam exclusivamente o Gemini');
   }
   
   /**
