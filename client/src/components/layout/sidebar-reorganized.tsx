@@ -389,46 +389,40 @@ export function SidebarReorganized({
     }
   ];
 
-  // Finanças - Menu simplificado para melhor usabilidade
+  // Finanças - Menu simplificado com itens diretos, sem aninhamento duplo
   const financeNavItems = [
-    // Despesas e Pagamentos como primeiro item por ser o mais utilizado
+    // Item de pagamentos
     {
-      name: t("navigation.payments.title", "Finanças"),
-      href: "/pagamentos",
-      altHref: "/payments",
-      icon: BadgeDollarSign,
-      iconColor: "text-green-500",
-      submenu: [
-        {
-          name: t("navigation.payments.expenses", "Despesas"),
-          href: "/pagamentos/saida",
-          altHref: "/payments/outgoing",
-          icon: CreditCard,
-          iconColor: "text-red-500"
-        },
-        {
-          name: t("navigation.payments.income", "Recebimentos"),
-          href: "/pagamentos/entrada",
-          altHref: "/payments/incoming",
-          icon: PiggyBank,
-          iconColor: "text-green-500"
-        },
-        {
-          name: t("navigation.quotations", "Orçamentos"),
-          href: "/quotations",
-          altHref: "/orcamentos",
-          icon: FileText,
-          iconColor: "text-blue-500"
-        },
-        {
-          name: t("navigation.reports.financial", "Relatórios"),
-          href: isPortuguese ? "/relatorios" : "/reports",
-          altHref: isPortuguese ? "/reports" : "/relatorios",
-          icon: BarChart3,
-          iconColor: "text-emerald-500"
-        }
-      ]
+      name: t("navigation.payments.expenses", "Despesas"),
+      href: "/pagamentos/saida",
+      altHref: "/payments/outgoing",
+      icon: CreditCard,
+      iconColor: "text-red-500"
     },
+    // Item de recebimentos
+    {
+      name: t("navigation.payments.income", "Recebimentos"),
+      href: "/pagamentos/entrada",
+      altHref: "/payments/incoming",
+      icon: PiggyBank,
+      iconColor: "text-green-500"
+    },
+    // Item de orçamentos
+    {
+      name: t("navigation.quotations", "Orçamentos"),
+      href: "/quotations",
+      altHref: "/orcamentos",
+      icon: FileText,
+      iconColor: "text-blue-500"
+    },
+    // Item de relatórios
+    {
+      name: t("navigation.reports.financial", "Relatórios"),
+      href: isPortuguese ? "/relatorios" : "/reports",
+      altHref: isPortuguese ? "/reports" : "/relatorios",
+      icon: BarChart3,
+      iconColor: "text-emerald-500"
+    }
   ];
 
   // Operações - Serviços e manutenção
@@ -564,7 +558,7 @@ export function SidebarReorganized({
               {/* Finance icon - navegação quando colapsado */}
               <div className="relative">
                 <Button
-                  variant={financeNavItems.some(item => checkIfActive(item.href)) ? "secondary" : "ghost"}
+                  variant={financeNavItems.some(item => checkIfActive(item.href, item.altHref)) ? "secondary" : "ghost"}
                   size="icon"
                   className="w-full h-10"
                   onClick={() => {
@@ -581,7 +575,7 @@ export function SidebarReorganized({
               {/* Operation icon - navegação quando colapsado  */}
               <div className="relative">
                 <Button
-                  variant={operationsNavItems.some(item => checkIfActive(item.href)) ? "secondary" : "ghost"}
+                  variant={operationsNavItems.some(item => checkIfActive(item.href, item.altHref)) ? "secondary" : "ghost"}
                   size="icon"
                   className="w-full h-10"
                   onClick={() => {
@@ -601,7 +595,7 @@ export function SidebarReorganized({
               {toolsNavItems.map((item) => (
                 <Button
                   key={item.href}
-                  variant={checkIfActive(item.href) ? "secondary" : "ghost"}
+                  variant={checkIfActive(item.href, item.altHref) ? "secondary" : "ghost"}
                   size="icon"
                   className="w-full h-10"
                   onClick={() => navigate(item.href)}
@@ -620,7 +614,7 @@ export function SidebarReorganized({
               {otherNavItems.map((item) => (
                 <Button
                   key={item.href}
-                  variant={checkIfActive(item.href) ? "secondary" : "ghost"}
+                  variant={checkIfActive(item.href, item.altHref) ? "secondary" : "ghost"}
                   size="icon"
                   className="w-full h-10"
                   onClick={() => navigate(item.href)}
@@ -692,53 +686,20 @@ export function SidebarReorganized({
             <Separator className="my-3" />
             
             <SidebarSection title={t("navigation.categories.finances", "Finanças")}>
-              <Collapsible 
-                open={openSections.finances}
-                onOpenChange={() => toggleSection('finances')}
-                className="space-y-1"
-              >
-                <CollapsibleTrigger asChild>
-                  <div className="flex items-center">
-                    {/* Este wrapper permite clicar no ícone separadamente do texto */}
-                    <button 
-                      className={cn(
-                        "flex-grow flex items-center w-full gap-3 px-3 rounded-md transition-colors",
-                        isMobile ? "py-3 text-base" : "py-2 text-sm",
-                        "text-foreground hover:bg-accent hover:text-accent-foreground",
-                        isMobile && "font-medium"
-                      )}
-                    >
-                      <BadgeDollarSign className={cn(
-                        isMobile ? "h-6 w-6" : "h-5 w-5", 
-                        "text-green-500"
-                      )} />
-                      <span className="flex-1 truncate">{t("navigation.categories.finances", "Finanças")}</span>
-                      <ChevronRight className={cn(
-                        "transition-transform", 
-                        openSections.finances ? "rotate-90" : "",
-                        isMobile ? "h-5 w-5" : "h-4 w-4"
-                      )} />
-                    </button>
-                  </div>
-                </CollapsibleTrigger>
-                <CollapsibleContent className="pt-1">
-                  <div className="space-y-1">
-                    {financeNavItems.map((item) => (
-                      <SidebarItem
-                        key={item.href}
-                        icon={item.icon}
-                        label={item.name}
-                        href={item.href}
-                        isActive={checkIfActive(item.href)}
-                        onClick={() => navigate(item.href)}
-                        iconColor={item.iconColor}
-                        isSubItem
-                        submenu={item.submenu}
-                      />
-                    ))}
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
+              <div className="space-y-1">
+                {financeNavItems.map((item) => (
+                  <SidebarItem
+                    key={item.href}
+                    icon={item.icon}
+                    label={item.name}
+                    href={item.href}
+                    altHref={item.altHref}
+                    isActive={checkIfActive(item.href, item.altHref)}
+                    onClick={() => navigate(item.href)}
+                    iconColor={item.iconColor}
+                  />
+                ))}
+              </div>
             </SidebarSection>
             
             <SidebarSection title={t("navigation.categories.operations", "Operações")}>
