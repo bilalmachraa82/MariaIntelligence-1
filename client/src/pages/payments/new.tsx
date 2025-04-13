@@ -199,6 +199,7 @@ export default function NewPaymentPage() {
                     <SelectItem value="cleaning">Limpeza</SelectItem>
                     <SelectItem value="maintenance">Manutenção</SelectItem>
                     <SelectItem value="commission">Comissão</SelectItem>
+                    <SelectItem value="travel">Deslocações</SelectItem>
                     <SelectItem value="other">Outro</SelectItem>
                   </SelectContent>
                 </Select>
@@ -220,7 +221,7 @@ export default function NewPaymentPage() {
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {date ? (
-                          formatDate(date)
+                          formatDate(date.toISOString().split('T')[0])
                         ) : (
                           <span>Selecione uma data</span>
                         )}
@@ -232,7 +233,9 @@ export default function NewPaymentPage() {
                         selected={date}
                         onSelect={(date) => {
                           setDate(date);
-                          form.setValue("dueDate", date as Date);
+                          if (date) {
+                            form.setValue("dueDate", date);
+                          }
                         }}
                         initialFocus
                       />
