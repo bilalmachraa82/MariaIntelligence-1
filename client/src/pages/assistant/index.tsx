@@ -128,6 +128,11 @@ export default function AssistantPage() {
   // Estado para a mensagem de feedback
   const [showFeedback, setShowFeedback] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState("");
+  
+  // Estados para configuração de API
+  const [apiKeyConfigVisible, setApiKeyConfigVisible] = useState(false);
+  const [apiKey, setApiKey] = useState("");
+  const [isSavingApiKey, setIsSavingApiKey] = useState(false);
   const [hasGeminiKey, setHasGeminiKey] = useState(false);
   
   // Voz sempre desabilitada
@@ -422,6 +427,69 @@ export default function AssistantPage() {
     }
   };
   
+  // Salvar chave da API Gemini
+  const handleSaveApiKey = async () => {
+    if (!apiKey.trim()) {
+      toast({
+        title: t("aiAssistant.error", "Erro"),
+        description: t("aiAssistant.emptyApiKey", "A chave da API não pode estar vazia."),
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setIsSavingApiKey(true);
+    
+    try {
+      const response = await fetch("/api/set-gemini-key", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ apiKey }),
+        credentials: "include"
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Erro ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        toast({
+          title: t("aiAssistant.success", "Sucesso"),
+          description: t("aiAssistant.apiKeySaved", "Chave da API salva com sucesso."),
+        });
+        setHasGeminiKey(true);
+        setApiKeyConfigVisible(false);
+        
+        // Adicionar uma mensagem do assistente confirmando
+        const assistantMessage: Message = { 
+          role: "assistant" as const, 
+          content: t(
+            "aiAssistant.apiKeyConfigured", 
+            "✅ Chave da API configurada com sucesso! Agora eu posso ajudar você com todas as funcionalidades."
+          ), 
+          timestamp: new Date(),
+          id: generateId()
+        };
+        setMessages(prev => [...prev, assistantMessage]);
+      } else {
+        throw new Error(data.message || "Erro ao salvar a chave da API");
+      }
+    } catch (error) {
+      console.error("Erro ao salvar a chave da API:", error);
+      toast({
+        title: t("aiAssistant.error", "Erro"),
+        description: t("aiAssistant.apiKeyError", "Não foi possível salvar a chave da API. Tente novamente."),
+        variant: "destructive"
+      });
+    } finally {
+      setIsSavingApiKey(false);
+    }
+  };
+
   // Processar upload de arquivo
   const handleFileUpload = async (file: File) => {
     if (!file) return;
