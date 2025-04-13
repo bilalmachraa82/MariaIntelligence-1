@@ -153,7 +153,7 @@ export default function DashboardPage() {
             <Button 
               variant="ghost" 
               size="sm" 
-              onClick={() => setLocation("/reports")}
+              onClick={() => setLocation(t("routes.reports", "/relatorios"))}
               className="text-muted-foreground hover:text-primary"
             >
               {t("dashboard.viewDetails", "Ver Detalhes")}
