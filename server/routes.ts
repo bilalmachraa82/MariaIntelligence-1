@@ -461,6 +461,151 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  /**
+   * Endpoint para importação de texto de reserva
+   * Permite extrair dados de reserva a partir de texto não estruturado usando IA
+   */
+  app.post("/api/reservations/import-text", async (req: Request, res: Response) => {
+    try {
+      const { text, propertyId, userAnswers } = req.body;
+      
+      if (!text || typeof text !== 'string' || text.trim() === '') {
+        return res.status(400).json({
+          success: false,
+          message: "Texto vazio ou inválido."
+        });
+      }
+      
+      // Verificar se temos a API Gemini disponível
+      if (!process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) {
+        return res.status(400).json({
+          success: false,
+          message: "Chave da API Google Gemini não configurada",
+          needsApiKey: true
+        });
+      }
+      
+      // Registrar atividade
+      await storage.createActivity({
+        type: "text_import_attempt",
+        description: `Tentativa de importação de texto para reserva`
+      });
+      
+      // Criar contexto para a IA processar o texto
+      const prompt = `
+        Você é um especialista em extrair informações de reservas de alojamento local a partir de textos não estruturados.
+        Analise o seguinte texto que pode conter informações de uma reserva (e-mail, mensagem, etc.) 
+        e extraia os dados relevantes para a criação de uma reserva.
+        
+        Retorne APENAS um objeto JSON com as seguintes propriedades:
+        - property_name: nome da propriedade (string)
+        - check_in_date: data de check-in no formato YYYY-MM-DD (string)
+        - check_in_time: hora de check-in (string, opcional)
+        - check_out_date: data de check-out no formato YYYY-MM-DD (string) 
+        - check_out_time: hora de check-out (string, opcional)
+        - guest_name: nome do hóspede (string)
+        - total_guests: número total de hóspedes (número)
+        - adults: número de adultos (número, opcional)
+        - children: número de crianças (número, opcional)
+        - infants: número de bebês (número, opcional)
+        - guest_country: país de origem do hóspede (string, opcional)
+        - guest_email: email do hóspede (string, opcional)
+        - guest_phone: telefone do hóspede (string, opcional)
+        - booking_source: fonte da reserva (exemplo: "Airbnb", "Booking.com", "Direct", etc.) (string, opcional)
+        - special_requests: pedidos especiais (string, opcional)
+        - booking_reference: referência da reserva (string, opcional)
+        
+        Se não conseguir identificar alguma informação com certeza, deixe a propriedade correspondente como null.
+        Se houver ambiguidade ou incerteza sobre alguma informação, inclua uma propriedade adicional 
+        chamada 'clarification_questions' com um array de perguntas específicas que precisam ser respondidas.
+      `;
+      
+      // Processar o texto com a IA
+      let reservationData;
+      let needsClarification = false;
+      let clarificationQuestions = [];
+      
+      try {
+        // Inicializar o serviço de importação
+        const importerService = new ReservationImporterService();
+        const apiKey = process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "";
+        await importerService.initialize(apiKey);
+        
+        // Importar dados da reserva do texto
+        const importOptions = {
+          originalText: text,
+          userAnswers: userAnswers || {}
+        };
+        
+        const result = await importerService.importFromText(text, importOptions);
+        
+        // Extrair dados da resposta
+        if (result.reservation_data) {
+          reservationData = result.reservation_data;
+          
+          if (result.clarification_questions && result.clarification_questions.length > 0) {
+            needsClarification = true;
+            clarificationQuestions = result.clarification_questions;
+          }
+        } else {
+          throw new Error("Não foi possível extrair dados estruturados do texto");
+        }
+        
+        // Já temos os dados de reserva extraídos no result.reservation_data
+        
+        // Se um propertyId foi enviado, vamos associar à propriedade
+        if (propertyId && !isNaN(Number(propertyId))) {
+          const property = await storage.getProperty(Number(propertyId));
+          if (property) {
+            reservationData.propertyId = property.id;
+            reservationData.property_name = property.name;
+          }
+        } else if (reservationData && reservationData.property_name) {
+          // Tentar encontrar a propriedade pelo nome
+          const properties = await storage.getProperties();
+          const matchingProperty = properties.find(p => 
+            p.name && reservationData.property_name && 
+            p.name.toLowerCase() === reservationData.property_name.toLowerCase()
+          );
+          
+          if (matchingProperty) {
+            reservationData.propertyId = matchingProperty.id;
+          }
+        }
+        
+        // Registrar atividade de sucesso
+        await storage.createActivity({
+          type: "text_import_success",
+          description: `Dados extraídos com sucesso do texto para reserva`
+        });
+        
+        return res.json({
+          success: true,
+          needsClarification,
+          clarificationQuestions: needsClarification ? clarificationQuestions : undefined,
+          reservationData
+        });
+      } catch (error) {
+        console.error("Erro ao processar texto da reserva com IA:", error);
+        
+        // Registrar atividade de falha
+        await storage.createActivity({
+          type: "text_import_failed",
+          description: `Falha ao extrair dados de texto para reserva: ${error instanceof Error ? error.message : 'Erro desconhecido'}`
+        });
+        
+        return res.status(500).json({
+          success: false,
+          message: "Não foi possível extrair dados do texto. Tente novamente ou insira manualmente.",
+          error: error instanceof Error ? error.message : "Erro desconhecido"
+        });
+      }
+    } catch (err) {
+      console.error("Erro no endpoint de importação de texto:", err);
+      handleError(err, res);
+    }
+  });
+
   app.patch("/api/reservations/:id", async (req: Request, res: Response) => {
     try {
       const id = Number(req.params.id);
@@ -524,124 +669,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Importação de reservas via texto com IA
-  app.post("/api/reservations/import-text", async (req: Request, res: Response) => {
-    try {
-      console.log('Iniciando importação de reserva a partir de texto...');
-      
-      if (!process.env.GOOGLE_GEMINI_API_KEY && !process.env.GOOGLE_API_KEY) {
-        return res.status(400).json({
-          success: false,
-          message: "Chave da API Google Gemini não configurada",
-          needsApiKey: true
-        });
-      }
-
-      const { text, propertyId, userAnswers } = req.body;
-      
-      if (!text || text.trim() === '') {
-        return res.status(400).json({
-          success: false,
-          message: "Texto vazio. Por favor, forneça informações da reserva para análise."
-        });
-      }
-
-      // Inicializar o serviço de importação
-      const importerService = new ReservationImporterService();
-      const apiKey = process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "";
-      await importerService.initialize(apiKey);
-      
-      // Importar dados da reserva do texto
-      const importOptions = {
-        originalText: text,
-        userAnswers: userAnswers || {}
-      };
-      
-      const result = await importerService.importFromText(text, importOptions);
-      
-      // Se temos perguntas de clarificação, retorná-las para o cliente
-      if (result.clarification_questions && result.clarification_questions.length > 0) {
-        return res.json({
-          success: true,
-          needsClarification: true,
-          reservationData: result.reservation_data,
-          clarificationQuestions: result.clarification_questions
-        });
-      }
-      
-      // Se temos um propertyId, converter para o formato de inserção e criar a reserva
-      if (propertyId) {
-        try {
-          const property = await storage.getProperty(Number(propertyId));
-          
-          if (!property) {
-            return res.status(400).json({
-              success: false,
-              message: "Propriedade não encontrada"
-            });
-          }
-          
-          // Converter dados importados para o formato de inserção
-          const insertData = await importerService.convertToInsertReservation(
-            result.reservation_data, 
-            Number(propertyId)
-          );
-          
-          // Adicionar informações financeiras
-          insertData.totalAmount = '0'; // Valor padrão, deve ser atualizado pelo usuário
-          insertData.cleaningFee = (property.cleaningCost || '0').toString();
-          insertData.checkInFee = (property.checkInFee || '0').toString();
-          insertData.commission = '0'; // Será calculado quando o valor total for definido
-          insertData.teamPayment = (property.teamPayment || '0').toString();
-          insertData.platformFee = '0'; // Deve ser atualizado pelo usuário
-          insertData.netAmount = '0'; // Será calculado quando o valor total for definido
-          
-          // Criar a reserva no sistema
-          const reservation = await storage.createReservation(insertData);
-          
-          // Registrar atividade
-          await storage.createActivity({
-            type: 'reservation_imported',
-            description: `Reserva importada via IA: ${result.reservation_data.guest_name} - ${result.reservation_data.check_in_date} a ${result.reservation_data.check_out_date}`,
-            entityId: reservation.id,
-            entityType: 'reservation'
-          });
-          
-          return res.status(201).json({
-            success: true,
-            message: "Reserva importada e criada com sucesso",
-            reservationData: result.reservation_data,
-            reservation: reservation,
-            needsClarification: false
-          });
-        } catch (error) {
-          console.error('Erro ao criar reserva a partir dos dados importados:', error);
-          return res.status(500).json({
-            success: false,
-            message: "Erro ao criar reserva a partir dos dados importados",
-            reservationData: result.reservation_data,
-            error: error instanceof Error ? error.message : "Erro desconhecido"
-          });
-        }
-      }
-      
-      // Se não temos propertyId, apenas retornar os dados importados
-      return res.json({
-        success: true,
-        message: "Dados da reserva extraídos com sucesso",
-        reservationData: result.reservation_data,
-        needsClarification: false
-      });
-      
-    } catch (error) {
-      console.error('Erro na importação de reserva via texto:', error);
-      return res.status(500).json({
-        success: false,
-        message: "Erro na importação de reserva via texto",
-        error: error instanceof Error ? error.message : "Erro desconhecido"
-      });
-    }
-  });
+  // A implementação do endpoint /api/reservations/import-text foi movida para cima
 
   // Activities routes
   app.get("/api/activities", async (req: Request, res: Response) => {
