@@ -185,10 +185,17 @@ export default function AssistantPage() {
         if (!data.available) {
           setShowFeedback(true);
           setFeedbackMessage(t("aiAssistant.configureApiKey", "Configure a chave da API Gemini nas configurações para acessar todos os recursos do assistente."));
+          // Adiciona botão para configurar a chave diretamente
+          setApiKeyConfigVisible(true);
+        } else {
+          setApiKeyConfigVisible(false);
         }
       } catch (error) {
         console.error("Erro ao verificar a chave da API Gemini:", error);
         setHasGeminiKey(false);
+        setShowFeedback(true);
+        setFeedbackMessage(t("aiAssistant.apiKeyError", "Não foi possível verificar a chave da API. Tente configurar uma nova chave."));
+        setApiKeyConfigVisible(true);
       }
     };
     
