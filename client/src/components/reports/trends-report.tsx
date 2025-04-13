@@ -1168,7 +1168,7 @@ export function TrendsReport({
                             icon={CreditCard}
                             color="blue"
                           >
-                            <div className="text-sm mt-2">
+                            <span className="text-sm mt-2 block">
                               {t("trendsReport.pricingText", 
                                 "A tarifa média diária tem {{trend}} de {{percentage}}% ao longo do período analisado, indicando {{indicator}}.",
                                 { 
@@ -1177,7 +1177,7 @@ export function TrendsReport({
                                   indicator: "valorização das propriedades"
                                 }
                               )}
-                            </div>
+                            </span>
                           </Callout>
                           
                           <Callout
@@ -1185,7 +1185,7 @@ export function TrendsReport({
                             icon={Users}
                             color="indigo"
                           >
-                            <div className="text-sm mt-2">
+                            <span className="text-sm mt-2 block">
                               {t("trendsReport.guestsText", 
                                 "O número de reservas {{trend}} em {{percentage}}%, com uma média de {{average}} noites por estadia.",
                                 { 
@@ -1194,7 +1194,7 @@ export function TrendsReport({
                                   average: "3.5"
                                 }
                               )}
-                            </div>
+                            </span>
                           </Callout>
                         </Grid>
                       </Card>
