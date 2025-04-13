@@ -44,7 +44,7 @@ export function UploadPDF() {
   const [showRawText, setShowRawText] = useState(false);
   
   // Estado de disponibilidade da API Gemini
-  const [mistralAvailable, setMistralAvailable] = useState<boolean | null>(null);
+  const [geminiAvailable, setGeminiAvailable] = useState<boolean | null>(null);
   
   // Estado para feedback visual do processamento
   const [processingProgress, setProcessingProgress] = useState<{

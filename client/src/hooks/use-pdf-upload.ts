@@ -2,7 +2,7 @@ import { useState } from "react";
 import { 
   uploadAndProcessPDF, 
   createReservationFromExtractedData, 
-  processPDFWithMistralOCR,
+  processPDFWithOCR,
   processMultiplePDFs,
   processReservationFile,
   ExtractedData,
@@ -113,14 +113,14 @@ export function usePdfUpload() {
       } catch (advancedError) {
         console.warn("Falha ao processar com sistema avançado, tentando métodos alternativos:", advancedError);
         
-        // Tenta processar com Mistral diretamente como fallback
+        // Tenta processar com Gemini diretamente como fallback
         try {
           dispatchProgressEvent(30, 1, file.name);
           
           // Método legado para PDFs
           if (file.type.includes('pdf')) {
             const skipQualityCheck = options?.skipQualityCheck !== undefined ? options.skipQualityCheck : processingOptions.skipQualityCheck;
-            const result = await processPDFWithMistralOCR(file, { skipQualityCheck });
+            const result = await processPDFWithOCR(file, { skipQualityCheck });
             setExtractedData(result.extractedData);
           } 
           // Método alternativo como último recurso

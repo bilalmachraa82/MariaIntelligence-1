@@ -24,6 +24,13 @@
       "refreshing": "A atualizar...",
       "refresh": "Atualizar"
     },
+    "dailyTasks": {
+      "cleaning": "Limpeza",
+      "pendingStatus": "Pendente",
+      "scheduleClean": "Agendar Limpeza",
+      "attentionStatus": "Urgente",
+      "upcomingStatus": "Agendado"
+    },
     "_dashboardBackup": {
       "welcome": "Olá Maria!",
       "checkins": "Check-ins de Hoje",

@@ -280,10 +280,10 @@ export async function fileToBase64(file: File): Promise<string> {
 }
 
 /**
- * Processar PDF com o Mistral AI usando a SDK oficial
+ * Processar PDF com a API Gemini usando OCR
  * @param file Arquivo PDF
  */
-export async function processPDFWithMistralOCR(
+export async function processPDFWithOCR(
   file: File, 
   options: { skipQualityCheck?: boolean, useCache?: boolean } = {}
 ): Promise<any> {
@@ -298,7 +298,7 @@ export async function processPDFWithMistralOCR(
     console.log("Iniciando processamento do PDF no servidor...");
     
     // Em vez de usar o código de processamento direto no cliente, vamos usar o endpoint do servidor
-    // que utiliza pdf-parse + análise de texto Mistral
+    // que utiliza pdf-parse + análise de texto com o Gemini
     const formData = new FormData();
     formData.append("pdf", file);
     
@@ -340,7 +340,7 @@ export async function processPDFWithMistralOCR(
     };
     
   } catch (error) {
-    console.error("Erro ao processar PDF com Mistral AI:", error);
+    console.error("Erro ao processar PDF com Google Gemini:", error);
     throw error;
   }
 }
@@ -423,7 +423,7 @@ export async function processReservationFile(
     
     // Processar o PDF usando a implementação otimizada
     onProgress && onProgress(30);
-    const result = await processPDFWithMistralOCR(file, { skipQualityCheck, useCache });
+    const result = await processPDFWithOCR(file, { skipQualityCheck, useCache });
     onProgress && onProgress(80);
     
     // Verificar se temos dados extraídos válidos
@@ -560,12 +560,12 @@ export async function processMultiplePDFs(
     }
     
     // Verificar se temos uma chave API válida no ambiente
-    const hasApiKey = await fetch('/api/check-mistral-key').then(res => res.json())
+    const hasApiKey = await fetch('/api/check-gemini-key').then(res => res.json())
       .then(data => data.available)
       .catch(() => false);
       
     if (!hasApiKey) {
-      throw new Error("Chave da API Mistral não configurada no servidor. Entre em contato com o administrador.");
+      throw new Error("Chave da API Gemini não configurada no servidor. Entre em contato com o administrador.");
     }
     
     // Processar cada PDF em série (para evitar sobrecarga do servidor)
@@ -614,7 +614,7 @@ export async function processMultiplePDFs(
         }
         
         // Processar o PDF usando a API do servidor
-        // Esta chamada usa o endpoint que executa pdf-parse + processamento Mistral
+        // Esta chamada usa o endpoint que executa pdf-parse + processamento Gemini
         const formData = new FormData();
         formData.append("pdf", file);
         formData.append("skipQualityCheck", skipQualityCheck ? "true" : "false");
