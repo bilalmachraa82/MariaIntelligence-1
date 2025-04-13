@@ -463,23 +463,23 @@ export function TrendsReport({
   const renderTrend = (value: number) => {
     if (value > 0) {
       return (
-        <div className="flex items-center text-emerald-500 text-xs font-medium">
+        <span className="flex items-center text-emerald-500 text-xs font-medium">
           <ArrowUpRight className="h-3 w-3 mr-1" />
           +{value.toFixed(1)}%
-        </div>
+        </span>
       );
     } else if (value < 0) {
       return (
-        <div className="flex items-center text-rose-500 text-xs font-medium">
+        <span className="flex items-center text-rose-500 text-xs font-medium">
           <ArrowDownRight className="h-3 w-3 mr-1" />
           {value.toFixed(1)}%
-        </div>
+        </span>
       );
     }
     return (
-      <div className="flex items-center text-gray-500 text-xs font-medium">
+      <span className="flex items-center text-gray-500 text-xs font-medium">
         {value.toFixed(1)}%
-      </div>
+      </span>
     );
   };
   
@@ -988,9 +988,9 @@ export function TrendsReport({
                                         {t("trendsReport.revenue", "Receita")}
                                       </Text>
                                       <Flex alignItems="center" justifyContent="between">
-                                        <p className="text-lg font-semibold">
+                                        <span className="text-lg font-semibold">
                                           {formatCurrency(property.totals.totalRevenue)}
-                                        </p>
+                                        </span>
                                         {renderTrend(property.totals.revenueGrowth)}
                                       </Flex>
                                     </Col>
@@ -999,12 +999,12 @@ export function TrendsReport({
                                         {t("trendsReport.profit", "Lucro")}
                                       </Text>
                                       <Flex alignItems="center" justifyContent="between">
-                                        <p className={cn(
+                                        <span className={cn(
                                           "text-lg font-semibold",
                                           property.totals.totalProfit >= 0 ? "text-emerald-600" : "text-rose-600"
                                         )}>
                                           {formatCurrency(property.totals.totalProfit)}
-                                        </p>
+                                        </span>
                                         {renderTrend(property.totals.profitGrowth)}
                                       </Flex>
                                     </Col>
