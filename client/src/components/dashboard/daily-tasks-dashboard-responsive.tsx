@@ -72,7 +72,11 @@ interface DailyTask {
   priority: "high" | "medium" | "low";
 }
 
-export default function DailyTasksDashboard() {
+interface DailyTasksDashboardProps {
+  minimal?: boolean;
+}
+
+export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashboardProps) {
   const { t } = useTranslation();
   const [location, setLocation] = useLocation();
   
@@ -180,8 +184,9 @@ export default function DailyTasksDashboard() {
   };
 
   return (
-    <div className="mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6 max-w-[1600px]">
+    <div className={`mx-auto ${minimal ? 'p-0' : 'px-3 sm:px-6 lg:px-8 py-4 sm:py-6'} space-y-4 sm:space-y-6 max-w-[1600px]`}>
       {/* Header - Otimizado para mobile */}
+      {!minimal ? (
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -230,8 +235,10 @@ export default function DailyTasksDashboard() {
           </motion.div>
         </div>
       </motion.div>
+      ) : null}
 
       {/* Task Statistics - Otimizado para mobile */}
+      {!minimal ? (
       <motion.div 
         variants={fadeIn}
         initial="hidden"
@@ -295,8 +302,10 @@ export default function DailyTasksDashboard() {
           </CardContent>
         </Card>
       </motion.div>
+      ) : null}
 
       {/* Main Content - Otimizado para mobile */}
+      {!minimal ? (
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Check-ins Column */}
         <motion.div
@@ -694,6 +703,21 @@ export default function DailyTasksDashboard() {
           </Card>
         </motion.div>
       </div>
+      ) : (
+        <div className="p-4 flex justify-center items-center">
+          {minimal && (
+            <Button 
+              variant="outline" 
+              onClick={() => setLocation("/dashboard")}
+              className="whitespace-nowrap text-sm sm:text-base"
+              size="sm"
+            >
+              <ArrowRight className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+              {t("dailyTasks.viewDashboard", "Ver Dashboard Completo")}
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
