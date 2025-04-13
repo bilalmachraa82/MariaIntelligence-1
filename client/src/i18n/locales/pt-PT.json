@@ -805,6 +805,8 @@
       "generate": "Gerar",
       "sending": "A enviar...",
       "nif": "NIF",
+      "refresh": "Atualizar",
+      "refreshing": "A atualizar...",
       "backToDashboard": "Voltar ao Painel"
     },
     "reports": {
