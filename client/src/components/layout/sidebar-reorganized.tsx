@@ -45,7 +45,7 @@ import {
   SheetClose
 } from "@/components/ui/sheet";
 
-// Interface para itens com submenu
+// Interface para itens de navegação
 interface NavItem {
   name: string;
   href: string;
@@ -206,7 +206,7 @@ export function SidebarReorganized({
     return false;
   };
 
-  // Componente para cada item da barra lateral
+  // Componente simplificado para cada item da barra lateral
   const SidebarItem = ({ 
     icon: Icon, 
     label, 
@@ -217,24 +217,9 @@ export function SidebarReorganized({
     iconColor = "text-gray-500 dark:text-gray-400",
     children,
     isSubItem = false,
-    submenu,
     showPendingBadge = false
   }: SidebarItemProps) => {
     const { count } = showPendingBadge ? usePendingApprovals() : { count: 0 };
-    const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
-    
-    // Verificar se o submenu deve estar aberto baseado na navegação atual
-    useEffect(() => {
-      if (submenu && submenu.some((item) => {
-        // Verificar se o item está ativo
-        const itemIsActive = checkIfActive(item.href, item.altHref);
-        return itemIsActive;
-      })) {
-        setIsSubmenuOpen(true);
-      }
-    }, [location, submenu]);
-    
-    const hasSubmenu = submenu && submenu.length > 0;
     
     return (
       <>
@@ -253,7 +238,7 @@ export function SidebarReorganized({
               // Fonte mais forte em mobile
               isMobile && "font-medium"
             )}
-            onClick={hasSubmenu ? () => setIsSubmenuOpen(!isSubmenuOpen) : onClick}
+            onClick={onClick}
           >
             {!isSubItem && (
               <Icon className={cn(
@@ -269,36 +254,9 @@ export function SidebarReorganized({
                     {count}
                   </Badge>
                 )}
-                {hasSubmenu && (
-                  <ChevronRight className={cn(
-                    "transition-transform", 
-                    isSubmenuOpen ? "rotate-90" : "",
-                    isMobile ? "h-5 w-5" : "h-4 w-4"
-                  )} />
-                )}
               </>
             )}
           </button>
-          
-          {hasSubmenu && isSubmenuOpen && !collapsed && (
-            <div className={cn(
-              "mt-1 space-y-1",
-              isMobile ? "pl-6" : "pl-4"
-            )}>
-              {submenu.map((subItem) => (
-                <SidebarItem
-                  key={subItem.href}
-                  icon={subItem.icon}
-                  label={subItem.name}
-                  href={subItem.href}
-                  isActive={checkIfActive(subItem.href, subItem.altHref)}
-                  onClick={() => navigate(subItem.href)}
-                  iconColor={subItem.iconColor || iconColor}
-                  isSubItem
-                />
-              ))}
-            </div>
-          )}
         </div>
         {children}
       </>
@@ -553,7 +511,7 @@ export function SidebarReorganized({
                   size="icon"
                   className="w-full h-10"
                   onClick={() => {
-                    // Navega para o primeiro item do submenu quando em modo colapsado
+                    // Navega para o primeiro item da categoria finanças quando em modo colapsado
                     if (financeNavItems.length > 0) {
                       navigate(financeNavItems[0].href);
                     }
@@ -570,7 +528,7 @@ export function SidebarReorganized({
                   size="icon"
                   className="w-full h-10"
                   onClick={() => {
-                    // Navega para o primeiro item do submenu quando em modo colapsado
+                    // Navega para o primeiro item da categoria operações quando em modo colapsado
                     if (operationsNavItems.length > 0) {
                       navigate(operationsNavItems[0].href);
                     }
