@@ -8,11 +8,6 @@ import { Button } from "@/components/ui/button";
 type AIServiceStatus = {
   success: boolean;
   services: {
-    mistral: {
-      available: boolean;
-      keyConfigured: boolean;
-      deprecated: boolean;
-    };
     gemini: {
       available: boolean;
       keyConfigured: boolean;
@@ -78,7 +73,6 @@ export function AIServiceStatus() {
               <span className="font-medium">{t("aiServices.currentService", "Serviço atual")}:</span>
               <Badge variant={status.anyServiceAvailable ? "default" : "destructive"}>
                 {status.currentService === "gemini" ? "Google Gemini" : 
-                 status.currentService === "mistral" ? "Mistral AI (Descontinuado)" : 
                  status.currentService === "auto" ? "Detecção automática" : "Indisponível"}
               </Badge>
             </div>
@@ -105,8 +99,6 @@ export function AIServiceStatus() {
                   )}
                 </Badge>
               </div>
-              
-
             </div>
           </div>
         ) : (

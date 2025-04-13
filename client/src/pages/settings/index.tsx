@@ -3,8 +3,7 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings, ArrowLeft, HelpCircle, BellRing, User, Globe, Key, AlertCircle, CheckCircle, Activity, Building2, Users, PaintBucket, BarChart3, CalendarDays, BookOpen, FileDown, FileText } from "lucide-react";
-import UserManualDownload from "@/components/settings/user-manual-download";
+import { Settings, ArrowLeft, HelpCircle, BellRing, User, Globe, Key, AlertCircle, CheckCircle, Activity, Building2, Users, PaintBucket, BarChart3, CalendarDays, FileDown, FileText } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -893,19 +892,7 @@ export default function SettingsPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="manual" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("settings.manual.title", "Manual do Usuário")}</CardTitle>
-              <CardDescription>
-                {t("settings.manual.description", "Baixe o manual completo para referência offline")}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <UserManualDownload />
-            </CardContent>
-          </Card>
-        </TabsContent>
+
       </Tabs>
     </div>
   );
