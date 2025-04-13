@@ -854,16 +854,7 @@ export default function AssistantPage() {
                   {t("aiAssistant.uploadDocument", "Anexar ficheiro")}
                 </DropdownMenuItem>
                 
-                {/* Opção para controle de voz no menu dropdown para usuários não móveis */}
-                {speechSynthesis.isVoiceSupported() && (
-                  <DropdownMenuItem onClick={toggleVoice}>
-                    <Mic className={`h-4 w-4 mr-2 ${voiceEnabled ? 'text-primary' : 'text-muted-foreground'}`} />
-                    {voiceEnabled 
-                      ? t("aiAssistant.disableVoice", "Desativar voz") 
-                      : t("aiAssistant.enableVoice", "Ativar voz")
-                    }
-                  </DropdownMenuItem>
-                )}
+                {/* Opção de voz removida */}
               </DropdownMenuContent>
             </DropdownMenu>
           )}
@@ -967,29 +958,7 @@ export default function AssistantPage() {
                     <CardDescription>{t("aiAssistant.chatDescription", "Tira as tuas dúvidas sobre imóveis, reservas e relatórios")}</CardDescription>
                   </div>
                   <div className="flex items-center gap-2">
-                    {/* Controle de voz - apenas mostrado se a síntese de voz for suportada */}
-                    {speechSynthesis.isVoiceSupported() && (
-                      <div className="flex items-center gap-2">
-                        <div className="flex items-center space-x-2">
-                          <Label htmlFor="voice-mode" className="text-xs text-muted-foreground mr-0">
-                            <Mic className={`h-4 w-4 ${voiceEnabled ? 'text-primary' : 'text-muted-foreground'}`} />
-                          </Label>
-                          <Switch
-                            id="voice-mode"
-                            checked={voiceEnabled}
-                            onCheckedChange={toggleVoice}
-                            title={t(
-                              voiceEnabled 
-                                ? "aiAssistant.disableVoice" 
-                                : "aiAssistant.enableVoice", 
-                              voiceEnabled 
-                                ? "Desativar voz" 
-                                : "Ativar voz"
-                            )}
-                          />
-                        </div>
-                      </div>
-                    )}
+                    {/* Controle de voz removido */}
                     
                     {isMobile && (
                       <Button 
@@ -1244,20 +1213,7 @@ export default function AssistantPage() {
                     {t("aiAssistant.uploadDocument", "Enviar ficheiro")}
                   </Button>
                   
-                  {/* Controle de síntese de voz - disponível apenas se o recurso for suportado pelo navegador */}
-                  {speechSynthesis.isVoiceSupported() && (
-                    <Button 
-                      variant="outline" 
-                      className={`w-full justify-start ${voiceEnabled ? 'border-primary/50' : ''}`}
-                      onClick={toggleVoice}
-                    >
-                      <Mic className={`h-4 w-4 mr-2 ${voiceEnabled ? 'text-primary' : 'text-muted-foreground'}`} />
-                      {voiceEnabled 
-                        ? t("aiAssistant.disableVoice", "Desativar voz") 
-                        : t("aiAssistant.enableVoice", "Ativar voz")
-                      }
-                    </Button>
-                  )}
+                  {/* Opção de voz removida */}
                 </CardContent>
               </Card>
             </TabsContent>
