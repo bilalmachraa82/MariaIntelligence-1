@@ -1064,7 +1064,7 @@ export function TrendsReport({
                       <Grid numItemsMd={2} className="gap-6">
                         <Card>
                           <Title>{t("trendsReport.revenueAndProfitMargin", "Receita e Margem de Lucro")}</Title>
-                          <div className="h-[280px] mt-4">
+                          <div className="h-[280px] mt-4" style={{ minHeight: "280px", width: "100%" }}>
                             <BarChart
                               data={aggregatedData}
                               index="date"
@@ -1084,7 +1084,7 @@ export function TrendsReport({
                         
                         <Card>
                           <Title>{t("trendsReport.reservationsAndAverageRate", "Reservas e Tarifa Média")}</Title>
-                          <div className="h-[280px] mt-4">
+                          <div className="h-[280px] mt-4" style={{ minHeight: "280px", width: "100%" }}>
                             <BarChart
                               data={aggregatedData}
                               index="date"
