@@ -919,6 +919,51 @@ export default function AssistantPage() {
         </motion.div>
       )}
       
+      {/* Formulário de configuração da API Gemini */}
+      {apiKeyConfigVisible && (
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }} 
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-4 p-4 bg-card border rounded-lg shadow-sm"
+        >
+          <div className="flex flex-col space-y-3">
+            <h3 className="text-sm font-medium flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              {t("aiAssistant.configureKey", "Configurar Chave da API Gemini")}
+            </h3>
+            <div className="text-sm text-muted-foreground mb-2">
+              {t("aiAssistant.getKeyInstructions", "Obtenha sua chave em https://ai.google.dev/ e cole-a abaixo para ativar todas as funcionalidades do assistente.")}
+            </div>
+            <div className="flex gap-2">
+              <Input 
+                type="password"
+                placeholder={t("aiAssistant.enterApiKey", "Insira a chave da API Gemini")} 
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                className="flex-1"
+              />
+              <Button 
+                onClick={handleSaveApiKey} 
+                disabled={isSavingApiKey || !apiKey.trim()}
+                className="whitespace-nowrap"
+              >
+                {isSavingApiKey ? (
+                  <>
+                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                    {t("common.saving", "A salvar...")}
+                  </>
+                ) : (
+                  t("common.save", "Guardar")
+                )}
+              </Button>
+            </div>
+            <div className="text-xs text-muted-foreground mt-2">
+              {t("aiAssistant.secureStorage", "A chave será armazenada com segurança no servidor e não será compartilhada com terceiros.")}
+            </div>
+          </div>
+        </motion.div>
+      )}
+      
       {/* Interface Principal - Layout responsivo */}
       <div className="grid grid-cols-1 gap-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
