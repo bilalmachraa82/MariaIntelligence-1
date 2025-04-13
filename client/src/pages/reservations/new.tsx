@@ -416,8 +416,9 @@ export default function ReservationNewPage() {
         
         <Tabs defaultValue="manual" className="w-full">
           <div className="px-6">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="manual">Formulário Manual</TabsTrigger>
+              <TabsTrigger value="text">Importar Texto</TabsTrigger>
               <TabsTrigger value="pdf">Processar PDF</TabsTrigger>
               <TabsTrigger value="image">Processar Imagem</TabsTrigger>
             </TabsList>
