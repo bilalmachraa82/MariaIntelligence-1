@@ -70,6 +70,7 @@ import { cn, calculateNetAmount, formatCurrency } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { usePdfUpload } from "@/hooks/use-pdf-upload";
 import { processReservationFile } from "@/lib/ocr";
+import { TextImportPanel } from "@/components/reservations/text-import-panel";
 
 export default function ReservationNewPage() {
   const [_, navigate] = useLocation();
@@ -350,6 +351,53 @@ export default function ReservationNewPage() {
       handleFileUpload(files[0]);
     }
   };
+  
+  // Função para processar os dados importados de texto
+  const handleTextImportComplete = (reservationData: any) => {
+    if (!reservationData) return;
+    
+    try {
+      // Preencher o formulário com os dados extraídos do texto
+      form.reset({
+        propertyId: reservationData.propertyId || 0,
+        guestName: reservationData.guest_name || "",
+        guestEmail: reservationData.guest_email || "",
+        guestPhone: reservationData.guest_phone || "",
+        checkInDate: reservationData.check_in_date ? new Date(reservationData.check_in_date) : new Date(),
+        checkOutDate: reservationData.check_out_date ? new Date(reservationData.check_out_date) : new Date(Date.now() + 86400000),
+        numGuests: reservationData.total_guests || 1,
+        totalAmount: "0", // Geralmente não vem do texto
+        status: "confirmed",
+        platform: reservationData.booking_source?.toLowerCase() || "direct",
+        platformFee: "0",
+        cleaningFee: "0",
+        checkInFee: "0",
+        commissionFee: "0",
+        teamPayment: "0",
+        netAmount: "0",
+        notes: reservationData.special_requests ? `Pedidos especiais: ${reservationData.special_requests}` : "Criado via importação de texto",
+      });
+      
+      // Se tiver um propertyId válido, atualizar os custos
+      if (reservationData.propertyId) {
+        setSelectedPropertyId(reservationData.propertyId);
+        updatePropertyCosts(reservationData.propertyId);
+      }
+      
+      toast({
+        title: "Dados importados com sucesso",
+        description: "Os dados da reserva foram extraídos do texto com sucesso.",
+      });
+    } catch (error) {
+      console.error("Erro ao processar dados de texto:", error);
+      
+      toast({
+        title: "Erro ao processar dados",
+        description: "Não foi possível preencher o formulário com os dados extraídos. Verifique os dados e tente novamente.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const isPending = createReservation.isPending;
   const isLoading = isLoadingProperties || isLoadingEnums;
@@ -423,6 +471,38 @@ export default function ReservationNewPage() {
               <TabsTrigger value="image">Processar Imagem</TabsTrigger>
             </TabsList>
           </div>
+          
+          <TabsContent value="text">
+            <CardContent>
+              <TextImportPanel onImportComplete={handleTextImportComplete} />
+            </CardContent>
+            <CardFooter className="flex justify-between">
+              <Button 
+                variant="outline" 
+                onClick={() => form.reset()} 
+                disabled={isPending}
+              >
+                Limpar
+              </Button>
+              <Button 
+                type="submit"
+                onClick={form.handleSubmit(onSubmit)}
+                disabled={isPending}
+              >
+                {isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Salvando...
+                  </>
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" />
+                    Salvar Reserva
+                  </>
+                )}
+              </Button>
+            </CardFooter>
+          </TabsContent>
           
           <TabsContent value="manual">
             <Form {...form}>
