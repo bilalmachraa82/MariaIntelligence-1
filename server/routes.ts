@@ -15,6 +15,7 @@ import {
   processFileAndCreateReservation,
   processPdfAndCreateReservation 
 } from "./services/reservation-creator";
+import ReservationImporterService from "./services/reservation-importer.service";
 import { registerQuotationRoutes } from "./api/quotation-routes";
 import { registerSpeechRoutes } from "./api/speech-routes";
 import uploadControlFileRouter from "./api/upload-control-file";
