@@ -28,6 +28,9 @@ export default function DashboardFullPage() {
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-primary">
               {t("dashboard.fullDashboard", "Dashboard Completo")}
+              <span className="text-base sm:text-xl ml-2 font-normal text-muted-foreground">
+                {t("dashboard.welcomeName", "Olá Carina")}
+              </span>
             </h1>
             <p className="text-muted-foreground text-sm">
               {t("dashboard.fullDashboardDescription", "Visualização detalhada de todas as atividades")}

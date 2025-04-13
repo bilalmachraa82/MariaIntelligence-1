@@ -49,7 +49,7 @@ export default function DashboardPage() {
         >
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-primary">
-              {t("dashboard.welcome", "Olá Maria!")}
+              {t("dashboard.welcome", "Olá Carina!")}
             </h1>
             <p className="text-muted-foreground text-sm">
               {new Date().toLocaleDateString('pt-PT', { weekday: 'long', day: 'numeric', month: 'long' })}
