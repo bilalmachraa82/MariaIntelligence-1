@@ -7,8 +7,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReactMarkdown from "react-markdown";
 import { ChatBubble, Message } from "@/components/chat/chat-bubble";
-import { VoiceRecorderButton } from "@/components/chat/voice-recorder-button";
-import { speechSynthesis } from "@/lib/speech-synthesis";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { 
@@ -135,8 +133,7 @@ export default function AssistantPage() {
   const [isSavingApiKey, setIsSavingApiKey] = useState(false);
   const [hasGeminiKey, setHasGeminiKey] = useState(false);
   
-  // Voz sempre desabilitada
-  const [voiceEnabled, setVoiceEnabled] = useState<boolean>(false);
+  // Funcionalidade de voz completamente removida
   
   // ID único para as mensagens
   const generateId = () => Math.random().toString(36).substring(2, 9);
@@ -209,24 +206,10 @@ export default function AssistantPage() {
   
 
   
-  // Adicionar alerta sobre funcionalidade de voz desabilitada
+  // Não há mais funcionalidade de voz, então não é necessário alertar
   useEffect(() => {
-    // Mostrar notificação toast sobre a funcionalidade de entrada por voz desabilitada
-    // Exibir apenas uma vez por sessão
-    const voiceDisabledNoticeShown = sessionStorage.getItem('voice-disabled-notice-shown');
-    
-    if (!voiceDisabledNoticeShown) {
-      toast({
-        title: t("voiceInput.temporaryDisabled", "Entrada por voz temporariamente indisponível"),
-        description: t("voiceInput.useTextInput", "A entrada de voz está temporariamente indisponível devido a limitações técnicas. Por favor, digite sua mensagem no campo de texto."),
-        variant: "default",
-        duration: 7000 // Mostrar por 7 segundos
-      });
-      
-      // Marcar que a notificação já foi mostrada nesta sessão
-      sessionStorage.setItem('voice-disabled-notice-shown', 'true');
-    }
-  }, [t]);
+    // Nada a fazer, funcionalidade de voz completamente removida
+  }, []);
 
   // Rolar para a última mensagem quando novas mensagens são adicionadas
   // E salvar as mensagens no localStorage
@@ -250,15 +233,7 @@ export default function AssistantPage() {
     }
   }, [messages]);
   
-  // Efeito para salvar a preferência de voz quando mudar
-  useEffect(() => {
-    localStorage.setItem('voice-enabled', voiceEnabled.toString());
-    
-    // Se a voz foi desabilitada, parar qualquer síntese em andamento
-    if (!voiceEnabled) {
-      speechSynthesis.stop();
-    }
-  }, [voiceEnabled]);
+  // Funcionalidade de voz removida
   
   // Funcionalidade de introdução por voz removida
   useEffect(() => {
@@ -850,14 +825,7 @@ export default function AssistantPage() {
   };
   
   // Funcionalidade de voz removida
-  const toggleVoice = () => {
-    // Apenas para informar ao usuário que a funcionalidade foi removida
-    toast({
-      title: t("aiAssistant.voiceRemoved", "Funcionalidade removida"),
-      description: t("aiAssistant.voiceRemovedDesc", "A funcionalidade de voz foi removida do sistema."),
-      duration: 3000
-    });
-  };
+  // Função de toggle de voz removida
 
   return (
     <div className="container mx-auto py-6 max-w-6xl">
