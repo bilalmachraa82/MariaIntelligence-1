@@ -251,7 +251,7 @@ export default function AssistantPage() {
     // Nada a fazer, funcionalidade removida
   }, []);
 
-  // Função para enviar mensagem ao assistente com Mistral AI
+  // Função para enviar mensagem ao assistente com Google Gemini
   const sendMessage = async (messageToSend?: string | React.MouseEvent<HTMLButtonElement>) => {
     // Se for um evento (click do botão), usamos o estado atual da mensagem
     // Se for uma string, usamos o valor passado
@@ -281,13 +281,13 @@ export default function AssistantPage() {
     
     try {
       // Se não tiver a chave da API, use uma mensagem padrão
-      if (!hasMistralKey) {
+      if (!hasGeminiKey) {
         setTimeout(() => {
           const assistantMessage: Message = { 
             role: "assistant" as const, 
             content: t(
               "aiAssistant.noApiKeyMessage", 
-              "Para usar todas as funcionalidades do assistente, por favor configure a chave da API Mistral nas configurações."
+              "Para usar todas as funcionalidades do assistente, por favor configure a chave da API Gemini nas configurações."
             ), 
             timestamp: new Date(),
             id: generateId()
@@ -361,7 +361,7 @@ export default function AssistantPage() {
       
       // Funcionalidade de síntese de voz removida
     } catch (error) {
-      console.error("Erro ao processar a mensagem com Mistral AI:", error);
+      console.error("Erro ao processar a mensagem com Google Gemini:", error);
       toast({
         title: t("aiAssistant.error", "Erro"),
         description: t("aiAssistant.errorDescription", "Não foi possível conectar ao assistente. Tente novamente."),
