@@ -461,10 +461,6 @@ export default function SettingsPage() {
             <Key className="h-4 w-4 mr-1" />
             <span className="whitespace-nowrap">{t("settings.tabs.integrations")}</span>
           </TabsTrigger>
-          <TabsTrigger value="manual" className="min-w-fit">
-            <BookOpen className="h-4 w-4 mr-1" />
-            <span className="whitespace-nowrap">{t("settings.tabs.manual", "Manual")}</span>
-          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="space-y-4">

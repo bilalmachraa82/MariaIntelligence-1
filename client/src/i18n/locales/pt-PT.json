@@ -1152,7 +1152,10 @@
         "badges": {
           "revenue": "Receita",
           "ai": "Inteligência Artificial",
-          "core": "Funcionalidade Principal"
+          "core": "Funcionalidade Principal",
+          "reports": "Análise de Dados",
+          "overview": "Visão geral",
+          "essential": "Essencial"
         },
         "properties": {
           "description": "Gerencie todas as suas propriedades em um só lugar",
@@ -1185,7 +1188,69 @@
             "description": "O Maria Faz utiliza inteligência artificial para extrair automaticamente dados de PDFs de reservas de várias plataformas como Airbnb, Booking e VRBO."
           }
         },
+        "dashboard": {
+          "description": "Visão unificada do desempenho do seu negócio",
+          "overview": "Centro de Controle",
+          "reservations": {
+            "desc": "Informações de próximas reservas e ocupação"
+          },
+          "stats": {
+            "desc": "Métricas financeiras e operacionais em tempo real"
+          },
+          "activities": {
+            "desc": "Registro de atividades recentes e próximos eventos"
+          },
+          "tasks": {
+            "desc": "Tarefas prioritárias e gerenciamento operacional"
+          },
+          "tips": {
+            "title": "Dicas de Uso",
+            "content": "Personalize seu dashboard utilizando os filtros de período no topo da página"
+          },
+          "shortcuts": {
+            "title": "Atalhos Rápidos",
+            "reservations": "Ver todas as reservas",
+            "properties": "Gerenciar propriedades"
+          }
+        },
+        "reports": {
+          "description": "Análises financeiras e operacionais para tomada de decisões"
+        },
+        "intro": {
+          "description": "Conheça o Maria Faz e suas principais funcionalidades",
+          "welcome": "Bem-vindo ao Sistema Maria Faz",
+          "tagline": "A plataforma completa para gestão de propriedades",
+          "stats": {
+            "properties": "Propriedades Gerenciadas",
+            "reservations": "Reservas Processadas",
+            "accuracy": "Precisão na Extração de Dados"
+          },
+          "features": {
+            "interface": "Interface Intuitiva",
+            "interface.desc": "Design moderno e responsivo para desktop e mobile",
+            "reservations": "Processamento Automático",
+            "reservations.desc": "Extração de dados de PDFs com IA",
+            "ai": "Inteligência Artificial",
+            "ai.desc": "Análise e reconhecimento avançado de documentos",
+            "reports": "Relatórios Detalhados",
+            "reports.desc": "Insights financeiros e operacionais completos"
+          },
+          "getStarted": "Primeiros Passos",
+          "steps": {
+            "first": "Cadastre suas propriedades",
+            "second": "Importe seus documentos",
+            "third": "Acompanhe seu desempenho"
+          }
+        },
+        "ai": {
+          "title": "Tecnologia Avançada de IA"
+        },
         "content": {
+          "dashboardIntro": "O Painel Principal oferece uma visão unificada do seu negócio:",
+          "dashboardBullet1": "Resumo de ocupação e receitas",
+          "dashboardBullet2": "Próximos check-ins e check-outs",
+          "dashboardBullet3": "Agenda de limpezas e manutenções",
+          "dashboardBullet4": "Alertas e notificações importantes",
           "propertiesIntro": "O módulo de Propriedades permite gerenciar todos os seus imóveis:",
           "propertiesBullet1": "Cadastro detalhado com informações completas",
           "propertiesBullet2": "Gestão de inventário e equipamentos",
@@ -1197,7 +1262,8 @@
           "reservationsBullet2": "Controle financeiro com receitas e despesas",
           "reservationsBullet3": "Gestão de check-in e check-out",
           "reservationsBullet4": "Calendário integrado com visão mensal",
-          "reservationsBullet5": "Relatórios detalhados por período"
+          "reservationsBullet5": "Relatórios detalhados por período",
+          "reportsIntro": "O sistema oferece relatórios detalhados para análise do negócio:"
         },
         "documents": {
           "description": "Aprenda a processar documentos com nosso sistema integrado",
@@ -1236,6 +1302,15 @@
           "title": "Informação Visual",
           "hint": "Para visualizar capturas de tela detalhadas de cada módulo, acesse a visualização online do manual ou utilize o sistema diretamente. A interface apresenta um design moderno, responsivo e adaptado para uso em dispositivos móveis e desktop.",
           "tips": "Dicas de Uso:"
+        },
+        "progress": {
+          "title": "Progresso de Aprendizado",
+          "description": "60% do manual consultado"
+        },
+        "recommendation": {
+          "title": "Recomendado",
+          "text": "Aprenda como processar PDFs de check-in e check-out automaticamente com nossa IA.",
+          "cta": "Consultar documentação"
         },
         "sections": {
           "intro": "Introdução",
