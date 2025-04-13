@@ -52,7 +52,6 @@ interface NavItem {
   altHref?: string;
   icon: React.FC<{ className?: string }>;
   iconColor?: string;
-  submenu?: NavItem[];
 }
 
 interface SidebarItemProps {
@@ -65,7 +64,7 @@ interface SidebarItemProps {
   iconColor?: string;
   children?: React.ReactNode;
   isSubItem?: boolean;
-  submenu?: NavItem[];
+
   showPendingBadge?: boolean;
 }
 
@@ -461,38 +460,41 @@ export function SidebarReorganized({
     }
   ];
 
-  // Configurações - Apenas as configurações de sistema
+  // Utilidades - Simplificado com links diretos
   const otherNavItems = [
+    // Configurações gerais
     {
-      name: t("navigation.settings", "Configurações"),
+      name: t("navigation.settings", "Configurações Gerais"),
       href: "/configuracoes",
       altHref: "/settings",
       icon: Settings,
-      iconColor: "text-gray-500",
-      submenu: [
-        {
-          name: t("settings.tabs.notifications", "Notificações"),
-          href: "/configuracoes?tab=notifications",
-          altHref: "/settings?tab=notifications",
-          icon: BellRing,
-          iconColor: "text-amber-400"
-        },
-        {
-          name: t("settings.tabs.language", "Idioma"),
-          href: "/configuracoes?tab=language",
-          altHref: "/settings?tab=language",
-          icon: Globe,
-          iconColor: "text-blue-500"
-        },
-        {
-          name: t("settings.tabs.integrations", "Integrações"),
-          href: "/configuracoes?tab=api",
-          altHref: "/settings?tab=api",
-          icon: Key,
-          iconColor: "text-teal-500"
-        },
-      ]
+      iconColor: "text-gray-500"
     },
+    // Notificações
+    {
+      name: t("settings.tabs.notifications", "Notificações"),
+      href: "/configuracoes?tab=notifications",
+      altHref: "/settings?tab=notifications",
+      icon: BellRing,
+      iconColor: "text-amber-400"
+    },
+    // Idioma
+    {
+      name: t("settings.tabs.language", "Idioma"),
+      href: "/configuracoes?tab=language",
+      altHref: "/settings?tab=language",
+      icon: Globe,
+      iconColor: "text-blue-500"
+    },
+    // Integrações
+    {
+      name: t("settings.tabs.integrations", "Integrações"),
+      href: "/configuracoes?tab=api",
+      altHref: "/settings?tab=api",
+      icon: Key,
+      iconColor: "text-teal-500"
+    },
+    // Dados Demo
     {
       name: t("navigation.demoData", "Dados Demo"),
       href: "/dados-demo",
@@ -730,69 +732,18 @@ export function SidebarReorganized({
             
             <SidebarSection title={t("navigation.categories.utilities", "Utilidades")}>
               <div className="space-y-1">
-                {/* Para o item Configurações, usamos o Collapsible para suportar submenus */}
-                {otherNavItems.map((item) => 
-                  item.submenu ? (
-                    <Collapsible 
-                      key={item.href}
-                      open={openSections.settings}
-                      onOpenChange={() => toggleSection('settings')}
-                      className="space-y-1"
-                    >
-                      <CollapsibleTrigger asChild>
-                        <div className="flex items-center">
-                          <button 
-                            className={cn(
-                              "flex-grow flex items-center w-full gap-3 px-3 rounded-md transition-colors",
-                              isMobile ? "py-3 text-base" : "py-2 text-sm",
-                              "text-foreground hover:bg-accent hover:text-accent-foreground",
-                              isMobile && "font-medium",
-                              checkIfActive(item.href) && "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-foreground font-semibold"
-                            )}
-                          >
-                            <item.icon className={cn(
-                              isMobile ? "h-6 w-6" : "h-5 w-5", 
-                              checkIfActive(item.href) ? "text-primary dark:text-primary-foreground" : item.iconColor
-                            )} />
-                            <span className="flex-1 truncate">{item.name}</span>
-                            <ChevronRight className={cn(
-                              "transition-transform", 
-                              openSections.settings ? "rotate-90" : "",
-                              isMobile ? "h-5 w-5" : "h-4 w-4"
-                            )} />
-                          </button>
-                        </div>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent className="pt-1">
-                        <div className="space-y-1">
-                          {item.submenu.map((subItem) => (
-                            <SidebarItem
-                              key={subItem.href}
-                              icon={subItem.icon}
-                              label={subItem.name}
-                              href={subItem.href}
-                              altHref={subItem.altHref}
-                              isActive={checkIfActive(subItem.href, subItem.altHref)}
-                              onClick={() => navigate(subItem.href)}
-                              iconColor={subItem.iconColor || item.iconColor}
-                              isSubItem
-                            />
-                          ))}
-                        </div>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  ) : (
-                    <SidebarItem
-                      key={item.href}
-                      icon={item.icon}
-                      label={item.name}
-                      href={item.href}
-                      isActive={checkIfActive(item.href)}
-                      onClick={() => navigate(item.href)}
-                      iconColor={item.iconColor}
-                    />
-                  )
-                )}
+                {otherNavItems.map((item) => (
+                  <SidebarItem
+                    key={item.href}
+                    icon={item.icon}
+                    label={item.name}
+                    href={item.href}
+                    altHref={item.altHref}
+                    isActive={checkIfActive(item.href, item.altHref)}
+                    onClick={() => navigate(item.href)}
+                    iconColor={item.iconColor}
+                  />
+                ))}
               </div>
             </SidebarSection>
           </div>
