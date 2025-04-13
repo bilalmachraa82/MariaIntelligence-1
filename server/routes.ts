@@ -3962,7 +3962,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/check-ai-services", async (req: Request, res: Response) => {
     try {
       // Verificar o serviço Gemini
-      const geminiService = aiService.getGeminiService();
+      const geminiService = aiService.geminiService;
       const geminiAvailable = geminiService.isConfigured();
       const geminiKeyConfigured = !!process.env.GOOGLE_GEMINI_API_KEY || !!process.env.GOOGLE_API_KEY;
       
@@ -3977,9 +3977,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Verificar configuração do Gemini
-      // Nota: Este serviço foi descontinuado, estamos apenas verificando se ele estava configurado
-      const mistralKeyConfigured = !!process.env.MISTRAL_API_KEY;
-      
       // Obtém informações do adaptador de IA
       const currentService = aiService.getCurrentServiceName();
       const anyServiceAvailable = geminiConnected;
@@ -3988,10 +3985,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({
         success: true,
         services: {
+          // Mantemos esta estrutura por compatibilidade com o frontend
           mistral: {
-            available: false, // Sempre falso, pois o serviço foi descontinuado
-            keyConfigured: mistralKeyConfigured,
-            deprecated: true // Marcamos como descontinuado
+            available: false, 
+            keyConfigured: false,
+            deprecated: true // Serviço descontinuado
           },
           gemini: {
             available: geminiConnected,
