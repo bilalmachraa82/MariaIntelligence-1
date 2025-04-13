@@ -1790,9 +1790,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   async function extractTextFromPDFWithGemini(pdfBase64: string): Promise<string> {
     try {
       // Usar o adaptador de serviço AI
-      const aiAdapter = AIAdapter.getInstance();
-      return await aiAdapter.geminiService.extractTextFromPDF(pdfBase64);
-    } catch (error) {
+      return await aiService.extractTextFromPDF(pdfBase64);
+    } catch (error: any) {
       console.error("Erro ao extrair texto do PDF com Gemini:", error);
       throw new Error(`Falha na extração de texto: ${error.message}`);
     }
@@ -1802,9 +1801,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   async function parseReservationDataWithGemini(extractedText: string): Promise<any> {
     try {
       // Usar o adaptador de serviço AI
-      const aiAdapter = AIAdapter.getInstance();
-      return await aiAdapter.geminiService.parseReservationData(extractedText);
-    } catch (error) {
+      return await aiService.parseReservationData(extractedText);
+    } catch (error: any) {
       console.error("Erro ao analisar dados da reserva com Gemini:", error);
       throw new Error(`Falha na extração de dados estruturados: ${error.message}`);
     }

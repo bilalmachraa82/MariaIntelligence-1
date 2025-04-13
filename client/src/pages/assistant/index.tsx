@@ -75,7 +75,7 @@ interface ContextCardProps {
   className?: string;
 }
 
-const MISTRAL_API_ENDPOINT = "https://api.mistral.ai/v1/chat/completions";
+// Utiliza API interna que acessa o Gemini
 
 // Componente para sugestões aprimorado
 const SuggestionCard = ({ icon, title, description, onClick, gradient = "from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/30" }: SuggestionCardProps) => {
@@ -110,7 +110,7 @@ const ContextCard = ({ title, icon, children, className }: ContextCardProps) => 
   );
 };
 
-// Componente de página do assistente IA com integração Mistral
+// Componente de página do assistente IA com integração Gemini
 export default function AssistantPage() {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
