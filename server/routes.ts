@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 import { ZodError, z } from "zod";
 // Removemos o Mistral e usamos apenas o Gemini agora
 import { aiService, AIServiceType } from "./services/ai-adapter.service";
+import { AIAdapter } from "./services/ai-adapter.service";
 import { RAGService } from "./services/rag.service";
 import { RagService } from "./services/rag-service";
 import { ragService as enhancedRagService } from "./services/rag-enhanced.service";
@@ -1785,100 +1786,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Função auxiliar para extrair texto de um PDF usando a API Mistral
-  async function extractTextFromPDFWithMistral(pdfBase64: string): Promise<string> {
-    const MISTRAL_API_URL = "https://api.mistral.ai/v1/chat/completions";
-
-    const prompt = `
-      Você é um especialista em OCR (Reconhecimento Óptico de Caracteres). 
-      O conteúdo fornecido é um PDF de uma reserva de alojamento local em base64.
-      Por favor, extraia todo o texto visível neste documento sem interpretações adicionais.
-      Retorne apenas o texto extraído, sem comentários ou formatação adicional.
-    `;
-
-    const response = await fetch(MISTRAL_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: 'mistral-large-latest',
-        messages: [
-          { role: 'system', content: 'Você é um assistente especializado em OCR (Optical Character Recognition).' },
-          { role: 'user', content: `${prompt}\n\nPDF Base64: ${pdfBase64}` }
-        ],
-        temperature: 0.1,
-        max_tokens: 4000
-      })
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Mistral API error: ${errorText}`);
+  // Função auxiliar para extrair texto de um PDF usando a API Gemini
+  async function extractTextFromPDFWithGemini(pdfBase64: string): Promise<string> {
+    try {
+      // Usar o adaptador de serviço AI
+      const aiAdapter = AIAdapter.getInstance();
+      return await aiAdapter.geminiService.extractTextFromPDF(pdfBase64);
+    } catch (error) {
+      console.error("Erro ao extrair texto do PDF com Gemini:", error);
+      throw new Error(`Falha na extração de texto: ${error.message}`);
     }
-
-    const data = await response.json();
-    return data.choices[0].message.content.trim();
   }
 
   // Função auxiliar para analisar texto extraído e extrair informações estruturadas sobre a reserva
-  async function parseReservationDataWithMistral(extractedText: string): Promise<any> {
-    const MISTRAL_API_URL = "https://api.mistral.ai/v1/chat/completions";
-
-    const prompt = `
-      Você é um especialista em extrair dados estruturados de textos de reservas para alojamento local.
-      Analise o texto extraído de um documento de reserva a seguir e extraia as seguintes informações em formato JSON:
-
-      - Nome da propriedade (propertyName)
-      - Nome do hóspede (guestName)
-      - Email do hóspede (guestEmail)
-      - Telefone do hóspede (guestPhone)
-      - Data de check-in (formato YYYY-MM-DD)
-      - Data de check-out (formato YYYY-MM-DD)
-      - Número de hóspedes (numGuests)
-      - Valor total da reserva (totalAmount) - apenas o número
-      - Plataforma de reserva (platform): "airbnb", "booking", "direct", ou "other"
-      - Taxa da plataforma (platformFee) - apenas o número
-      - Taxa de limpeza (cleaningFee) - apenas o número
-      - Taxa de check-in (checkInFee) - apenas o número
-      - Taxa de comissão (commission) - apenas o número
-      - Pagamento à equipe (teamPayment) - apenas o número
-
-      Se alguma informação não estiver disponível, use valores nulos ou vazios.
-      Responda APENAS com o objeto JSON, sem explicações ou texto adicional.
-    `;
-
-    const response = await fetch(MISTRAL_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: 'mistral-large-latest',
-        messages: [
-          { role: 'system', content: 'Você é um assistente especializado em extrair dados estruturados.' },
-          { role: 'user', content: `${prompt}\n\nTexto extraído:\n${extractedText}` }
-        ],
-        temperature: 0.1,
-        response_format: { type: "json_object" }
-      })
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Mistral API error: ${errorText}`);
-    }
-
-    const data = await response.json();
-    const jsonContent = data.choices[0].message.content;
-
+  async function parseReservationDataWithGemini(extractedText: string): Promise<any> {
     try {
-      return JSON.parse(jsonContent);
-    } catch (e) {
-      console.error("Error parsing JSON from Mistral API:", e);
-      return jsonContent; // Retorna o texto bruto se não conseguir analisar como JSON
+      // Usar o adaptador de serviço AI
+      const aiAdapter = AIAdapter.getInstance();
+      return await aiAdapter.geminiService.parseReservationData(extractedText);
+    } catch (error) {
+      console.error("Erro ao analisar dados da reserva com Gemini:", error);
+      throw new Error(`Falha na extração de dados estruturados: ${error.message}`);
     }
   }
 
