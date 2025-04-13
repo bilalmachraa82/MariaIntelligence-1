@@ -374,13 +374,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Categorizar as reservas
       reservations.forEach((reservation: any) => {
         // Check-ins para hoje e amanhã
-        if (reservation.checkInDate.split('T')[0] === today || 
-            reservation.checkInDate.split('T')[0] === tomorrowStr) {
+        const checkInStr = reservation.checkInDate instanceof Date 
+          ? reservation.checkInDate.toISOString().split('T')[0] 
+          : String(reservation.checkInDate).split('T')[0];
+          
+        if (checkInStr === today || checkInStr === tomorrowStr) {
           checkIns.push(reservation);
         }
         
         // Check-outs para hoje
-        if (reservation.checkOutDate.split('T')[0] === today) {
+        const checkOutStr = reservation.checkOutDate instanceof Date 
+          ? reservation.checkOutDate.toISOString().split('T')[0] 
+          : String(reservation.checkOutDate).split('T')[0];
+          
+        if (checkOutStr === today) {
           checkOuts.push(reservation);
           
           // Cada check-out gera uma tarefa de limpeza

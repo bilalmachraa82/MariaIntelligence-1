@@ -394,27 +394,27 @@ export function SidebarReorganized({
     // Relatórios financeiros
     {
       name: t("navigation.reports.financial", "Relatórios"),
-      href: "/relatorios",
-      altHref: "/reports",
+      href: isPortuguese ? "/relatorios" : "/reports",
+      altHref: isPortuguese ? "/reports" : "/relatorios",
       icon: FileSpreadsheet,
       iconColor: "text-emerald-500",
       submenu: [
         {
           name: t("navigation.reports.owner", "Proprietários"),
-          href: "/relatorios/proprietario",
-          altHref: "/reports/owner-report",
+          href: isPortuguese ? "/relatorios/proprietario" : "/reports/owner-report",
+          altHref: isPortuguese ? "/reports/owner-report" : "/relatorios/proprietario",
           icon: FileSpreadsheet,
         },
         {
           name: t("navigation.reports.monthly", "Faturas Mensais"),
-          href: "/relatorios/faturacao-mensal",
-          altHref: "/reports/monthly-invoice",
+          href: isPortuguese ? "/relatorios/faturacao-mensal" : "/reports/monthly-invoice",
+          altHref: isPortuguese ? "/reports/monthly-invoice" : "/relatorios/faturacao-mensal",
           icon: FileSpreadsheet,
         },
         {
           name: t("navigation.reports.trends", "Tendências"),
-          href: "/relatorios/tendencias",
-          altHref: "/reports/trends",
+          href: isPortuguese ? "/relatorios/tendencias" : "/reports/trends",
+          altHref: isPortuguese ? "/reports/trends" : "/relatorios/tendencias",
           icon: BarChart3,
         }
       ]
