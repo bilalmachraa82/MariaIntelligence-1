@@ -1151,6 +1151,9 @@
         "onlySelectedSections": "Apenas seções selecionadas",
         "documents": {
           "description": "Aprenda a processar documentos com nosso sistema integrado",
+          "content": {
+            "documentsIntro": "Nosso sistema permite processar vários tipos de documentos automaticamente"
+          },
           "types": {
             "title": "Tipos de Documentos",
             "pdfs": "PDFs de reservas",
