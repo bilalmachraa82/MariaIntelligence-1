@@ -1,0 +1,78 @@
+Podes considerar o link com os ficheiro que te partilhei I need to implement a feature that allows users to import reservation data from various, often unstructured or semi-structured, sources. The application should use the Google Gemini API (specifically aiming for Gemini 2.0 Flash or similar) to parse the input, extract key reservation details, handle ambiguities by asking clarifying questions, and finally allow the user to confirm and save the structured data into the application's database.
+
+**Input Data Sources & Formats (See `/attached_assets` folder for examples):**
+The system must be able to handle input data provided via text paste or potentially file upload, derived from sources like:
+1.  **Spreadsheet Exports/Tables:** Images or data copied from tables (like `EXCITING LISBON 5 DE OUTUBRO.png`, `EXCITING LISBON AROEIRA I.png`, `EXCITING LISBON GRAÇA I.png`, `EXCITING LISBON AROEIRA II.png`, `EXCITING LISBON SETE RIOS.png`, `CAPARICA R_C.png`, `CAPARICA 1 ANDAR.png`). These contain columns such as `Data entrada`, `Data saída`, `N.º noites`, `Nome`, `N.º hóspedes`, `País`, `Site`, `Info`.
+2.  **PMS Screenshots/Exports:** Data from Property Management Systems like Innkeeper (`Innkeeper Entradas P1.png` to `P4.png`, `Innkeeper Saidas P1.png` to `P4.png`). These often include fields like `Referência`, `Alojamento`, `Check in`, `Check out`, `Adultos`, `Crianças`, `Bebés`, `Idades crianças`, `Cliente`, `Hóspede`, `Guest Email`, `País`, `Estado` (like Confirmada/Pendente), check-in/out status.
+3.  **Calendar Views:** Images showing booked dates with guest names (`Aroeira, Caparica_entre....png`). The AI needs to interpret the date range and associated name.
+4.  **Simple Notes & Lists:** Text notes or handwritten lists summarizing guest numbers and requests (`LIMPEZA COM HÓSPEDES_ ABRIL 2025.png`, potentially others). These might specify adults/children counts, specific dates, and special requests like baby cots (`cama bebé`) or sofa beds (`Sofá-cama no quarto`, `Sofá-cama na sala`).
+5.  **Direct Text Input:** Users might paste simple text like "Booking for John Doe, Aroeira II, Aug 9-16, 3 guests (2 adults, 1 child age 7), needs baby cot".
+
+*(Note: For image files, the primary goal is to process the textual information within them. Assume OCR might be a preliminary step or the user might paste the text content derived from the image).*
+
+**Target Data Fields to Extract (Structured JSON Output):**
+The Gemini API should extract the following information into a consistent JSON structure:
+*   `property_name`: (String) Name or identifier of the property (e.g., "EXCITING LISBON 5 DE OUTUBRO", "Aroeira I", "Casa dos Barcos T1 (47)"). *Needs clarification if ambiguous.*
+*   `check_in_date`: (String ISO 8601 YYYY-MM-DD) Arrival date. Infer year (likely 2025 based on examples).
+*   `check_in_time`: (String HH:MM, optional) Arrival time (e.g., "16:00", "13:00"). Default to "16:00" if unspecified.
+*   `check_out_date`: (String ISO 8601 YYYY-MM-DD) Departure date.
+*   `check_out_time`: (String HH:MM, optional) Departure time (e.g., "11:00", "00:00"). Default to "11:00" if unspecified.
+*   `guest_name`: (String) Main guest/booker name (e.g., "Ricardo", "Verena", "Calado Jose", "Jasper Huijbregts").
+*   `total_guests`: (Integer) Total number of guests.
+*   `adults`: (Integer) Number of adults. *Needs clarification if only total_guests is available.*
+*   `children`: (Integer, optional) Number of children.
+*   `infants`: (Integer, optional) Number of infants/babies.
+*   `children_ages`: (Array of Integers, optional) List of children's ages if provided (e.g., [14], [6]).
+*   `guest_country`: (String, optional) Guest's country (e.g., "França", "Portugal", "Espanha").
+*   `guest_email`: (String, optional) Guest's email, if available.
+*   `guest_phone`: (String, optional) Guest's phone number, if available.
+*   `booking_source`: (String) Origin of the booking (e.g., "Airbnb", "Booking.com", "Pessoal", "Directo", "Innkeeper"). Infer from context like 'Site' column or PMS source. *Needs clarification if ambiguous.*
+*   `special_requests`: (String) All relevant notes, requests, and additional info (e.g., "Deixar dois conjuntos toalhas...", "Querem berço", "Sofá-cama na sala para 2 crianças", "Limpeza a meio", "Check-in às 13h", "Estadia longa: roupas extra"). Concatenate info from 'Info', 'Pedidos especiais', notes columns/sections.
+*   `booking_reference`: (String, optional) Booking ID or reference code from PMS/Platform.
+*   `booking_status`: (String, optional) Status like "Confirmada", "Pendente", "De proprietário". Default to "Confirmada" if unspecified.
+
+**Core Logic & Gemini Interaction:**
+1.  User provides input (paste text or potentially upload file).
+2.  The backend preprocesses the input if necessary (e.g., basic text extraction from known formats, potentially OCR for images).
+3.  The backend sends the processed text content to the Gemini API with a detailed prompt (see below for prompt structure guidance).
+4.  **Gemini Task:**
+    *   Analyze the text.
+    *   Extract the target fields into the specified JSON structure.
+    *   **Crucially: Apply Clarification Rules:** If essential information is missing or ambiguous, **DO NOT GUESS**. Instead, include an array `clarification_questions` in the JSON response alongside the partially extracted `reservation_data`.
+        *   *Rule:* If `property_name` is unclear -> Ask "A qual propriedade pertence esta reserva?"
+        *   *Rule:* If dates are unclear/missing -> Ask "Podes confirmar as datas de check-in e check-out (DD/MM/AAAA)?"
+        *   *Rule:* If only `total_guests` is available -> Ask "Podes especificar a distribuição dos [total_guests] hóspedes (quantos Adultos, Crianças, Bebés)?"
+        *   *Rule:* If `booking_source` is unclear -> Ask "Qual foi a plataforma/origem desta reserva (Airbnb, Booking, Directo, etc.)?"
+        *   *Rule:* Add other relevant questions for critical missing fields.
+5.  **Application Logic:**
+    *   Receive the JSON response from Gemini.
+    *   If `clarification_questions` is present and not empty:
+        *   Display the questions to the user.
+        *   Collect the user's answers.
+        *   Re-submit the original data PLUS the user's answers to Gemini for a final extraction attempt.
+    *   If no clarification questions are needed (or after clarification):
+        *   Display the extracted `reservation_data` to the user for final confirmation.
+    *   Upon user confirmation, save the structured data to the application's database.
+
+**Example Gemini Output JSON (with Clarification):**
+```json
+{
+  "reservation_data": {
+    "property_name": "Aroeira I", // Extracted
+    "check_in_date": "2025-05-09",
+    "check_out_date": "2025-05-13",
+    "guest_name": "Clément",
+    "total_guests": 5, // Extracted
+    "adults": null, // Missing breakdown
+    "children": null,
+    "infants": null,
+    "guest_country": "França",
+    "booking_source": "Airbnb",
+    "special_requests": "Deixar 2 conjuntos toalhas banho por pessoa, casa de banho, tapete e pano e loiça da cozinha.",
+    // ... other fields might be null or extracted
+     "booking_status": "Confirmada"
+  },
+  "clarification_questions": [
+    "Podes especificar a distribuição dos 5 hóspedes (quantos Adultos, Crianças, Bebés)?"
+  ]
+}
