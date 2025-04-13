@@ -1,5 +1,5 @@
 import { apiRequest } from "./queryClient";
-import { Mistral } from "@mistralai/mistralai";
+// Removido importação do Mistral, substituído por Gemini
 
 /**
  * Enum para status de validação

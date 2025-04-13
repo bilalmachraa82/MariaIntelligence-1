@@ -83,7 +83,7 @@ export function UploadPDF() {
         });
         if (response.ok) {
           const data = await response.json();
-          setMistralAvailable(data.anyServiceAvailable);
+          setGeminiAvailable(data.anyServiceAvailable);
           
           if (!data.anyServiceAvailable) {
             toast({
@@ -95,7 +95,7 @@ export function UploadPDF() {
         }
       } catch (error) {
         console.error("Erro ao verificar chave da API Gemini:", error);
-        setMistralAvailable(false);
+        setGeminiAvailable(false);
       }
     }
     
@@ -463,12 +463,12 @@ export function UploadPDF() {
                   <h3 className="text-sm font-medium text-blue-800">
                     Processamento com Inteligência Artificial
                   </h3>
-                  {mistralAvailable !== null && (
+                  {geminiAvailable !== null && (
                     <Badge 
                       variant="outline" 
-                      className={`ml-2 ${mistralAvailable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+                      className={`ml-2 ${geminiAvailable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
                     >
-                      {mistralAvailable ? (
+                      {geminiAvailable ? (
                         <>
                           <CheckCircle2 className="mr-1 h-3 w-3" />
                           API Gemini Ativa
