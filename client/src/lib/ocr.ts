@@ -67,8 +67,8 @@ export interface UploadResponse {
   warning?: string;
 }
 
-// Configure cliente Mistral AI com a chave API
-export const MISTRAL_API_KEY = import.meta.env.VITE_MISTRAL_API_KEY;
+// Configure cliente Google Gemini com a chave API
+export const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 /**
  * Função de utilidade para fazer parse seguro de argumentos Function Call
@@ -92,36 +92,35 @@ function safeParseArguments(args: any): any {
 }
 
 /**
- * Getter para obter uma instância do cliente Mistral
- * Lazy initialization para garantir que só criamos quando necessário
+ * Função para processar respostas da API Gemini
+ * Substitui as funções anteriores do Mistral que foram removidas
  */
-function getMistralClient(): Mistral {
-  return new Mistral({
-    apiKey: MISTRAL_API_KEY || ""
-  });
-}
-
-/**
- * Função auxiliar para processar de forma segura argumentos de uma função call Mistral
- * @param functionCall Objeto de chamada de função retornado pela API Mistral
- * @returns Dados extraídos ou null se houver falha
- */
-function processFunctionCallArguments(functionCall: any): any {
+function processGeminiResponse(response: any): any {
   try {
-    if (!functionCall || 
-        functionCall.type !== 'function' || 
-        functionCall.function.name !== 'extract_reservation_data') {
+    if (!response || !response.candidates || !response.candidates[0]) {
       return null;
     }
     
-    // Garantir que o argumento é uma string antes de fazer o parse
-    const args = typeof functionCall.function.arguments === 'string' 
-      ? functionCall.function.arguments 
-      : JSON.stringify(functionCall.function.arguments);
-      
-    return JSON.parse(args);
+    // Extrair texto da resposta
+    const content = response.candidates[0].content;
+    if (!content || !content.parts || !content.parts[0]) {
+      return null;
+    }
+    
+    // Tentar extrair dados estruturados (se for JSON)
+    const text = content.parts[0].text || '';
+    try {
+      // Verificar se a resposta é um JSON
+      if (text.trim().startsWith('{') && text.trim().endsWith('}')) {
+        return JSON.parse(text);
+      }
+    } catch (jsonError) {
+      console.warn("Resposta não é um JSON válido, retornando texto bruto");
+    }
+    
+    return text;
   } catch (err) {
-    console.error("Erro ao processar argumentos da chamada de função:", err);
+    console.error("Erro ao processar resposta da API Gemini:", err);
     return null;
   }
 }

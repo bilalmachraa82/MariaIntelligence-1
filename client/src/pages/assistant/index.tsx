@@ -128,7 +128,7 @@ export default function AssistantPage() {
   // Estado para a mensagem de feedback
   const [showFeedback, setShowFeedback] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState("");
-  const [hasMistralKey, setHasMistralKey] = useState(false);
+  const [hasGeminiKey, setHasGeminiKey] = useState(false);
   
   // Voz sempre desabilitada
   const [voiceEnabled, setVoiceEnabled] = useState<boolean>(false);
@@ -170,7 +170,7 @@ export default function AssistantPage() {
     const checkApiKey = async () => {
       try {
         // Use o método GET explicitamente para a verificação da chave
-        const response = await fetch("/api/check-mistral-key", {
+        const response = await fetch("/api/check-gemini-key", {
           method: "GET",
           credentials: "include"
         });
@@ -180,15 +180,15 @@ export default function AssistantPage() {
         }
         
         const data = await response.json();
-        setHasMistralKey(data.available);
+        setHasGeminiKey(data.available);
         
         if (!data.available) {
           setShowFeedback(true);
-          setFeedbackMessage(t("aiAssistant.configureApiKey", "Configure a chave da API Mistral nas configurações para acessar todos os recursos do assistente."));
+          setFeedbackMessage(t("aiAssistant.configureApiKey", "Configure a chave da API Gemini nas configurações para acessar todos os recursos do assistente."));
         }
       } catch (error) {
-        console.error("Erro ao verificar a chave da API Mistral:", error);
-        setHasMistralKey(false);
+        console.error("Erro ao verificar a chave da API Gemini:", error);
+        setHasGeminiKey(false);
       }
     };
     
