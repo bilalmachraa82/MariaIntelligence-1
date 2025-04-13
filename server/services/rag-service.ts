@@ -297,44 +297,68 @@ export class RagService {
   }
   
   /**
-   * Gera um embedding para o texto usando Mistral
+   * Gera um embedding para o texto usando Gemini
    * Temporariamente armazena como JSON, até habilitar pgvector
    */
   private async generateEmbedding(text: string): Promise<Record<string, any>> {
     try {
-      if (!process.env.MISTRAL_API_KEY) {
+      if (!(process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
         // Fallback para quando não temos a API key
-        console.warn("Usando fallback para embeddings (sem Mistral API)");
+        console.warn("⚠️ Usando fallback para embeddings (sem Google Gemini API)");
         return { fallback: true, text: text.slice(0, 50) };
       }
       
-      // Gera embedding real usando Mistral API
-      const embeddingResponse = await this.mistral.embeddings.create({
-        model: "mistral-embed",
-        inputs: [text],
-      });
-      
-      if (!embeddingResponse || !embeddingResponse.data || embeddingResponse.data.length === 0) {
-        throw new Error("Resposta de embedding inválida da API Mistral");
+      // Gera embedding usando Gemini Service
+      try {
+        const embeddingResponse = await this.geminiService.generateEmbeddings(text);
+        
+        if (!embeddingResponse || !embeddingResponse.data || embeddingResponse.data.length === 0) {
+          throw new Error("Resposta de embedding inválida da API Gemini");
+        }
+        
+        // Extrai o vetor de embedding
+        const embedding = embeddingResponse.data[0]?.embedding;
+        
+        // Para armazenar como JSON temporariamente (até habilitar pgvector)
+        if (!embedding || !Array.isArray(embedding)) {
+          throw new Error("Embedding inválido da API Gemini");
+        }
+        
+        console.log("✅ Embedding gerado com sucesso usando Gemini");
+        
+        return { 
+          vector: embedding.slice(0, 10), // Armazena apenas os primeiros 10 valores como exemplo
+          full_length: embedding.length,
+          text_sample: text.slice(0, 50),
+          provider: "gemini"
+        };
+      } catch (embeddingError) {
+        console.error("❌ Erro ao gerar embedding com Gemini:", embeddingError);
+        throw embeddingError; // Propagar o erro para usar o fallback determinístico
       }
+    } catch (error) {
+      console.error("❌ Erro ao gerar embedding:", error);
       
-      // Extrai o vetor de embedding
-      const embedding = embeddingResponse.data[0]?.embedding;
+      // Fallback determinístico em caso de erro
+      console.warn("⚠️ Usando fallback determinístico para embedding");
       
-      // Para armazenar como JSON temporariamente (até habilitar pgvector)
-      if (!embedding || !Array.isArray(embedding)) {
-        throw new Error("Embedding inválido da API Mistral");
+      // Criar um embedding simplificado baseado no texto
+      const embeddingDimension = 768; // Dimensão padrão
+      const embedding: number[] = [];
+      const normalizedText = text.toLowerCase();
+      
+      // Gerar valores determinísticos baseados nas características do texto
+      for (let i = 0; i < embeddingDimension; i++) {
+        const charCode = i < normalizedText.length ? normalizedText.charCodeAt(i % normalizedText.length) : 0;
+        embedding.push((charCode / 255.0) * 2 - 1); // Normalizar para [-1, 1]
       }
       
       return { 
         vector: embedding.slice(0, 10), // Armazena apenas os primeiros 10 valores como exemplo
         full_length: embedding.length,
-        text_sample: text.slice(0, 50)
+        text_sample: text.slice(0, 50),
+        provider: "fallback_deterministic"
       };
-    } catch (error) {
-      console.error("Erro ao gerar embedding:", error);
-      // Fallback em caso de erro
-      return { error: true, fallback: true, text: text.slice(0, 50) };
     }
   }
   
