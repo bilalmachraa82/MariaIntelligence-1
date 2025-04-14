@@ -647,46 +647,89 @@ export async function resetDemoData(): Promise<{success: boolean, removedItems: 
     
     console.log(`Entidades recuperadas: ${tasks.length} tarefas, ${activities.length} atividades, ${reservations.length} reservas, ${properties.length} propriedades, ${owners.length} proprietários`);
     
-    // Filtrar as que possuem [DEMO] no nome ou descrição
-    const demoTasks = tasks.filter(task => 
-      task.description?.includes('[DEMO]') || 
-      task.notes?.includes('[DEMO]') ||
-      task.title?.includes('[DEMO]') ||
-      // Tarefas demo conhecidas
-      task.description?.includes('Verificar aquecedor') ||
-      task.description?.includes('Reparar chuveiro') ||
-      task.description?.includes('exemplo') ||
-      task.description?.toLowerCase().includes('example')
-    );
+    // Palavras-chave para identificar dados de demonstração
+    const demoKeywords = ['[DEMO]', 'exemplo', 'example', 'demo', 'test', 'fictício', 'ficticio', 'fake'];
+    
+    // Filtrar tarefas de manutenção de demonstração com critérios ampliados
+    const demoTasks = tasks.filter(task => {
+      // Verificar nome, descrição e notas para referências de demonstração
+      if (task.description && demoKeywords.some(keyword => task.description.toLowerCase().includes(keyword.toLowerCase()))) return true;
+      if (task.notes && demoKeywords.some(keyword => task.notes.toLowerCase().includes(keyword.toLowerCase()))) return true;
+      if (task.title && demoKeywords.some(keyword => task.title.toLowerCase().includes(keyword.toLowerCase()))) return true;
+      
+      // Tarefas específicas conhecidas que são de demonstração
+      const knownDemoTaskDescriptions = [
+        'verificar aquecedor', 
+        'reparar chuveiro', 
+        'problema na torneira', 
+        'ar condicionado',
+        'fechadura',
+        'problema com internet'
+      ];
+      
+      return task.description && knownDemoTaskDescriptions.some(demo => 
+        task.description.toLowerCase().includes(demo.toLowerCase())
+      );
+    });
     
     console.log(`Identificadas ${demoTasks.length} tarefas de manutenção demo`);
     
+    // Filtrar atividades de demonstração
     const demoActivities = activities.filter(a => 
-      a.description?.includes('[DEMO]') || 
+      (a.description && demoKeywords.some(keyword => a.description.toLowerCase().includes(keyword.toLowerCase()))) ||
       a.type === DEMO_DATA_FLAG
     );
     
     console.log(`Identificadas ${demoActivities.length} atividades demo`);
     
-    const demoReservations = reservations.filter(r => 
-      r.guestName?.includes('[DEMO]') || 
-      r.notes?.includes('[DEMO]')
-    );
+    // Filtrar reservas de demonstração
+    const demoReservations = reservations.filter(r => {
+      // Verificar nome de hóspede e notas
+      if (r.guestName && demoKeywords.some(keyword => r.guestName.toLowerCase().includes(keyword.toLowerCase()))) return true;
+      if (r.notes && demoKeywords.some(keyword => r.notes.toLowerCase().includes(keyword.toLowerCase()))) return true;
+      
+      // Verificar email de hóspede (exemplo.com, example.com, teste.com, test.com)
+      if (r.guestEmail && 
+          (r.guestEmail.includes('example.com') || 
+           r.guestEmail.includes('exemplo.com') || 
+           r.guestEmail.includes('test.com') || 
+           r.guestEmail.includes('teste.com'))) return true;
+      
+      // Nomes frequentes em reservas de demonstração
+      const demoGuestNames = ['John Smith', 'Emma Johnson', 'David Brown', 'Michael Davis', 'Sophie Miller'];
+      return r.guestName && demoGuestNames.some(name => r.guestName.includes(name));
+    });
     
     console.log(`Identificadas ${demoReservations.length} reservas demo`);
     
-    const demoProperties = properties.filter(p => 
-      p.name?.includes('[DEMO]') || 
-      p.description?.includes('[DEMO]')
-    );
+    // Filtrar propriedades de demonstração
+    const demoProperties = properties.filter(p => {
+      // Verificar nome e descrição
+      if (p.name && demoKeywords.some(keyword => p.name.toLowerCase().includes(keyword.toLowerCase()))) return true;
+      if (p.description && demoKeywords.some(keyword => p.description.toLowerCase().includes(keyword.toLowerCase()))) return true;
+      
+      // Nomes frequentes em propriedades de demonstração
+      const demoPropertyNames = ['Casa da Praia', 'Apartamento no Centro', 'Villa Aroeira', 'Loft Moderno', 'Chalé nas Montanhas'];
+      return p.name && demoPropertyNames.some(name => p.name.includes(name));
+    });
     
     console.log(`Identificadas ${demoProperties.length} propriedades demo`);
     
-    const demoOwners = owners.filter(o => 
-      o.name?.includes('[DEMO]') || 
-      o.notes?.includes('[DEMO]') ||
-      o.email?.includes('example.com')
-    );
+    // Filtrar proprietários de demonstração
+    const demoOwners = owners.filter(o => {
+      // Verificar nome e notas
+      if (o.name && demoKeywords.some(keyword => o.name.toLowerCase().includes(keyword.toLowerCase()))) return true;
+      if (o.notes && demoKeywords.some(keyword => o.notes.toLowerCase().includes(keyword.toLowerCase()))) return true;
+      
+      // Verificar email
+      if (o.email && 
+          (o.email.includes('example.com') || 
+           o.email.includes('exemplo.com') || 
+           o.email.includes('test.com') || 
+           o.email.includes('teste.com'))) return true;
+      
+      return false;
+    });
     
     console.log(`Identificados ${demoOwners.length} proprietários demo`);
     
@@ -785,7 +828,41 @@ export async function resetDemoData(): Promise<{success: boolean, removedItems: 
 // Handler for API endpoint to reset demo data
 export async function resetDemoDataHandler(req: Request, res: Response) {
   try {
+    console.log('Recebida solicitação para remover todos os dados de demonstração');
+    
+    // Registrar a atividade de remoção de dados demo
+    try {
+      await storage.createActivity({
+        type: 'demo_data_removal',
+        description: 'Solicitação para remover todos os dados de demonstração do sistema'
+      });
+    } catch (activityError) {
+      console.error('Erro ao registrar atividade de remoção de dados demo:', activityError);
+      // Continuar mesmo com erro no registro de atividade
+    }
+    
+    // Executar a remoção completa dos dados
     const result = await resetDemoData();
+    
+    // Registrar o resultado da remoção
+    if (result.success) {
+      console.log(`Remoção de dados demo concluída: ${result.removedItems} itens removidos`);
+      
+      // Se algum item foi removido, registrar a atividade de sucesso
+      if (result.removedItems > 0) {
+        try {
+          await storage.createActivity({
+            type: 'demo_data_removed',
+            description: `${result.removedItems} itens de demonstração foram removidos com sucesso`
+          });
+        } catch (activityError) {
+          console.error('Erro ao registrar atividade de conclusão:', activityError);
+          // Continuar mesmo com erro no registro de atividade
+        }
+      }
+    }
+    
+    // Retornar resposta para o cliente
     res.status(200).json({
       success: result.success,
       message: `${result.removedItems} itens de demonstração removidos com sucesso`,

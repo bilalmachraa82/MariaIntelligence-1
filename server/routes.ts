@@ -798,8 +798,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const activities = await storage.getActivities(limit);
       
       // Verificar se devemos mostrar as tarefas de demonstração
-      // Se tiver o parâmetro hideDemoTasks=true, não mostramos tarefas de demonstração
-      const showDemoTasks = req.query.hideDemoTasks !== 'true';
+      // Lógica refinada: Verificamos múltiplas fontes para garantir consistência
+      
+      // 1. Verificar parâmetro de consulta da requisição
+      const hideFromQueryParam = req.query.hideDemoTasks === 'true';
+      
+      // 2. Verificar se tem flag demoDataRemoved na query
+      const demoDataRemovedFromParam = req.query.demoDataRemoved === 'true';
+      
+      // 3. Verificar configuração do sistema no storage (se disponível)
+      let demoRemovedFromSystem = false;
+      try {
+        // Aqui poderíamos implementar um método para obter a configuração persistente
+        // Por enquanto, assumimos sempre false para compatibilidade
+        demoRemovedFromSystem = false;
+      } catch (configError) {
+        console.error('Erro ao verificar configurações de demonstração:', configError);
+      }
+      
+      // Se qualquer uma das flags indicar que os dados demo devem ser removidos, respeitamos
+      const hideDemoTasks = hideFromQueryParam || demoDataRemovedFromParam || demoRemovedFromSystem;
+      const showDemoTasks = !hideDemoTasks;
+      
+      console.log(`Status de dados demo: hideDemoTasks=${hideDemoTasks}, showDemoTasks=${showDemoTasks}`);
       
       // Obter tarefas de manutenção reais do banco de dados (pode ser uma lista vazia)
       let realMaintenanceTasks = [];
@@ -812,7 +833,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Verificar a configuração para inclusão de tarefas demo de manutenção
-      // A flag demo_mode pode estar no storage como configuração do sistema
+      // Só mostrar tarefas de demonstração se:
+      // 1. A flag de mostrar demos está ativa E
+      // 2. Não existem tarefas reais de manutenção
       const shouldShowDemoMaintenance = showDemoTasks && (realMaintenanceTasks.length === 0);
       
       let maintenance = [];

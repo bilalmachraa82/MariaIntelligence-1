@@ -90,9 +90,18 @@ export function DemoDataManager() {
         description: t("demoData.successDescription", `${response.itemsCreated || 'Múltiplos'} itens foram criados com sucesso.`),
       });
       
-      // Remover flag do localStorage quando dados são carregados novamente
+      // Configurar flags do localStorage quando dados são carregados novamente
       if (typeof window !== 'undefined') {
+        // Remover a flag que indica que os dados de demonstração foram removidos
         localStorage.removeItem('demoDataRemoved');
+        
+        // Garantir que os dados de demonstração serão exibidos no dashboard
+        localStorage.setItem('showDemoDataInDashboard', 'true');
+        
+        // Garantir que as tarefas de demonstração não são ocultadas
+        localStorage.setItem('hideDemoTasks', 'false');
+        
+        console.log('Flags do localStorage configuradas para mostrar dados de demonstração');
       }
       
       // Invalidate all queries to refresh data
@@ -143,9 +152,18 @@ export function DemoDataManager() {
         description: t("demoData.resetDescription", "Todos os dados de demonstração foram removidos com sucesso."),
       });
       
-      // Definir flag no localStorage para indicar que dados de demonstração foram removidos
+      // Configurar todas as flags no localStorage para ocultar dados de demonstração
       if (typeof window !== 'undefined') {
+        // Marcar que os dados de demonstração foram removidos
         localStorage.setItem('demoDataRemoved', 'true');
+        
+        // Ocultar tarefas de demonstração
+        localStorage.setItem('hideDemoTasks', 'true');
+        
+        // Não mostrar dados de demonstração no dashboard
+        localStorage.setItem('showDemoDataInDashboard', 'false');
+        
+        console.log('Flags do localStorage configuradas para ocultar dados de demonstração');
       }
       
       // Invalidate all queries to refresh data
