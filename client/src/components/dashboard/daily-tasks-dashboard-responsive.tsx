@@ -138,7 +138,10 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
     // Verificar se os dados de demonstração foram removidos
     try {
       const hideDemoTasks = localStorage.getItem('hideDemoTasks') === 'true';
-      if (hideDemoTasks) {
+      const showDemoData = localStorage.getItem('showDemoDataInDashboard') === 'true';
+      
+      // Se hideDemoTasks for true OU showDemoData for false, ocultar tarefas demo
+      if (hideDemoTasks || showDemoData === false) {
         console.log('Tarefas de manutenção demo foram ocultadas');
         return []; // Retorna array vazio quando dados demo estão ocultos
       }
@@ -177,7 +180,10 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
     // Verificar se os dados de demonstração foram removidos
     try {
       const hideDemoTasks = localStorage.getItem('hideDemoTasks') === 'true';
-      if (hideDemoTasks) {
+      const showDemoData = localStorage.getItem('showDemoDataInDashboard') === 'true';
+      
+      // Se hideDemoTasks for true OU showDemoData for false, ocultar tarefas demo
+      if (hideDemoTasks || showDemoData === false) {
         console.log('Tarefas administrativas demo foram ocultadas');
         return []; // Retorna array vazio quando dados demo estão ocultos
       }

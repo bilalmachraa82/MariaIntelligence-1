@@ -59,6 +59,16 @@ export default function DemoDataPage() {
     setResult(null);
     
     try {
+      // Configurar localStorage para exibir dados demo
+      try {
+        localStorage.setItem('hideDemoTasks', 'false');
+        localStorage.setItem('demoDataRemoved', 'false');
+        localStorage.setItem('showDemoDataInDashboard', 'true');
+        console.log('Flags do localStorage configuradas para mostrar dados demo');
+      } catch (storageError) {
+        console.error('Erro ao configurar localStorage:', storageError);
+      }
+      
       // Simular progresso para feedback visual
       const progressTimer = setInterval(() => {
         setProgress((prevProgress) => {
@@ -146,6 +156,16 @@ export default function DemoDataPage() {
           return newProgress;
         });
       }, 100);
+      
+      // Configurar localStorage para ocultar dados demo
+      try {
+        localStorage.setItem('hideDemoTasks', 'true');
+        localStorage.setItem('demoDataRemoved', 'true');
+        localStorage.setItem('showDemoDataInDashboard', 'false');
+        console.log('Flags do localStorage configuradas para ocultar dados demo');
+      } catch (storageError) {
+        console.error('Erro ao configurar localStorage:', storageError);
+      }
       
       // Buscar e remover entidades de demonstração
       const response = await findAndRemoveDemoEntities();
