@@ -5,6 +5,7 @@
  */
 
 import { GeminiService, GeminiModel } from './gemini.service';
+import { AIAdapter, aiService } from './ai-adapter.service';
 import { InsertReservation } from '../../shared/schema';
 import fs from 'fs';
 import path from 'path';
@@ -46,27 +47,19 @@ export class ReservationImporterService {
   private geminiService: GeminiService;
 
   constructor() {
-    this.geminiService = new GeminiService();
+    // Usar o serviço Gemini já inicializado via aiService
+    this.geminiService = aiService.geminiService;
   }
 
   /**
    * Initialize the Gemini service using the provided API key
    * @param apiKey Google Gemini API key
+   * @deprecated Use aiService.geminiService
    */
   async initialize(apiKey: string): Promise<boolean> {
-    // Instead of trying to initialize the service directly, we'll just
-    // initialize our instance and check if the API key is valid
-    if (!apiKey) {
-      return false;
-    }
-    
-    try {
-      this.geminiService = new GeminiService();
-      return true;
-    } catch (error) {
-      console.error('Erro ao inicializar o serviço Gemini:', error);
-      return false;
-    }
+    // Método mantido para compatibilidade com código existente
+    console.log('Método initialize() está obsoleto. O serviço Gemini já está inicializado via aiService');
+    return aiService.isServiceAvailable();
   }
 
   /**
@@ -129,15 +122,11 @@ export class ReservationImporterService {
     const prompt = this.createReservationImportPrompt(context.text);
     
     try {
-      // Use the standard generateContent method instead
-      const result = await this.geminiService.generateText(
-        prompt,
-        {
-          model: GeminiModel.FLASH,
-          temperature: 0.1,
-          maxOutputTokens: 1024,
-        }
-      );
+      // Use a API Gemini para gerar o texto
+      const result = await aiService.generateText({
+        systemPrompt: "Tu és um assistente especializado em extrair informações de reservas para propriedades.",
+        userPrompt: prompt
+      });
       
       if (!result || typeof result !== 'string') {
         throw new Error('Invalid response from AI service');
