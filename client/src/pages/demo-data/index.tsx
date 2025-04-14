@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { generateAllDemoData, findAndRemoveDemoEntities } from "@/lib/demo-data-service";
+import { Link } from "wouter";
 
 // Layout components
 import { Card, CardHeader, CardContent, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
@@ -481,6 +482,22 @@ export default function DemoDataPage() {
                   <p className="text-sm text-gray-600">
                     {t("demoData.removeInfo", "O sistema identificará automaticamente todos os registros de demonstração pelo sufixo [DEMO] em seus nomes. A remoção é feita com segurança, preservando a integridade dos dados reais.")}
                   </p>
+                </div>
+                
+                <div className="border-t border-gray-200 pt-4 mt-2">
+                  <div className="flex flex-col">
+                    <h4 className="text-sm font-medium mb-2 text-gray-700">Opções avançadas:</h4>
+                    <Link to="/demo-data/force-reset">
+                      <Button variant="outline" className="w-full justify-start text-left bg-red-50 hover:bg-red-100 border-red-200">
+                        <AlertTriangle className="h-4 w-4 text-red-600 mr-2" />
+                        <span>Remover <strong>forçadamente</strong> todos os dados de demonstração</span>
+                      </Button>
+                    </Link>
+                    <div className="text-xs text-gray-500 mt-1 ml-1">
+                      Usar apenas se a remoção normal não estiver funcionando corretamente.
+                      Este método utiliza técnicas avançadas para garantir a remoção completa.
+                    </div>
+                  </div>
                 </div>
                 
                 {isRemoving && (
