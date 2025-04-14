@@ -339,7 +339,7 @@ export default function SettingsPage() {
       if (data && data.tests && Array.isArray(data.tests)) {
         // Extrai os resultados de cada teste pelo nome
         const aiTest = data.tests.find((test: TestResult) => 
-          test.name === "Google Gemini" // Apenas Gemini é usado como serviço de IA
+          test.name === "Google Gemini API" // Apenas Gemini é usado como serviço de IA
         );
         const dbTest = data.tests.find((test: TestResult) => test.name === "Base de Dados");
         const ocrTest = data.tests.find((test: TestResult) => test.name === "OCR (Processamento de PDFs)");
