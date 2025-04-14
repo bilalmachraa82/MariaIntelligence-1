@@ -4,8 +4,17 @@
  * que sinalizam que dados de demonstração devem ser removidos em todas as requisições
  */
 
-export function installDemoDataRemover() {
-  console.log('Instalando interceptor avançado de requisições para remover dados demo...');
+/**
+ * Instala um interceptor de requisições que adiciona parâmetros para remover dados demo
+ * em todas as requisições API. Esta função modifica o objeto XMLHttpRequest para
+ * adicionar parâmetros de query que sinalizam ao backend que os dados de demo
+ * devem ser removidos ou filtrados.
+ * 
+ * @param {boolean} forceCleanMode - Se verdadeiro, adiciona parâmetro para limpeza forçada
+ * @returns {boolean} - Verdadeiro se o interceptor foi instalado com sucesso
+ */
+export function installDemoDataRemover(forceCleanMode: boolean = false) {
+  console.log(`Instalando interceptor avançado de requisições para remover dados demo${forceCleanMode ? ' (MODO FORÇADO)' : ''}...`);
   
   try {
     // Guarda referência original
@@ -24,9 +33,16 @@ export function installDemoDataRemover() {
       
       // Verifica se é uma requisição para API
       if (urlString.includes('/api/')) {
-        // Adiciona parâmetros para remoção completa de dados demo
+        // Adiciona parâmetros base para remoção de dados demo
         const separator = urlString.includes('?') ? '&' : '?';
-        urlString = `${urlString}${separator}demoDataRemoved=true&hideDemoTasks=true&forceCleanMode=true`;
+        let params = `demoDataRemoved=true&hideDemoTasks=true`;
+        
+        // Adiciona parâmetro de modo forçado se solicitado
+        if (forceCleanMode) {
+          params += `&forceCleanMode=true`;
+        }
+        
+        urlString = `${urlString}${separator}${params}`;
         console.log(`Requisição modificada para remoção demo: ${urlString}`);
       }
       
@@ -46,8 +62,13 @@ export function installDemoDataRemover() {
     localStorage.setItem('hideDemoTasks', 'true');
     localStorage.setItem('showDemoDataInDashboard', 'false');
     
+    // Adiciona flag de forceCleanMode ao localStorage se necessário
+    if (forceCleanMode) {
+      localStorage.setItem('forceCleanMode', 'true');
+    }
+    
     console.log('✅ Interceptor de requisições avançado instalado com sucesso!');
-    console.log('✅ Parâmetros adicionados a todas as requisições API: demoDataRemoved=true, hideDemoTasks=true, forceCleanMode=true');
+    console.log(`✅ Parâmetros adicionados a todas as requisições API: demoDataRemoved=true, hideDemoTasks=true${forceCleanMode ? ', forceCleanMode=true' : ''}`);
     console.log('✅ Flags no localStorage configuradas para remover dados demo');
     
     return true;
@@ -57,8 +78,31 @@ export function installDemoDataRemover() {
   }
 }
 
-export function isDemoDataRemoved() {
-  return localStorage.getItem('demoDataRemoved') === 'true' ||
-         localStorage.getItem('hideDemoTasks') === 'true' ||
-         localStorage.getItem('showDemoDataInDashboard') === 'false';
+/**
+ * Verifica se os dados de demonstração estão configurados para serem removidos
+ * baseado nas flags armazenadas no localStorage
+ * 
+ * @param {boolean} checkForceMode - Se verdadeiro, também verifica o modo forçado
+ * @returns {boolean} - Verdadeiro se os dados demo estão configurados para serem removidos
+ */
+export function isDemoDataRemoved(checkForceMode: boolean = false) {
+  const basicCheck = 
+    localStorage.getItem('demoDataRemoved') === 'true' ||
+    localStorage.getItem('hideDemoTasks') === 'true' ||
+    localStorage.getItem('showDemoDataInDashboard') === 'false';
+  
+  if (checkForceMode) {
+    return basicCheck && localStorage.getItem('forceCleanMode') === 'true';
+  }
+  
+  return basicCheck;
+}
+
+/**
+ * Verifica se o modo forçado de limpeza está ativo
+ * 
+ * @returns {boolean} - Verdadeiro se o modo forçado está ativo
+ */
+export function isForceCleanMode() {
+  return localStorage.getItem('forceCleanMode') === 'true';
 }

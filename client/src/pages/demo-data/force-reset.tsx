@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
-import { installDemoDataRemover } from "../../force-disable-demo";
+import { installDemoDataRemover, isForceCleanMode } from "../../force-disable-demo";
 
 export default function ForceResetDemoData() {
   const { t } = useTranslation();
@@ -25,7 +25,8 @@ export default function ForceResetDemoData() {
   const [currentStatus, setCurrentStatus] = useState({
     demoDataRemoved: localStorage.getItem('demoDataRemoved') === 'true',
     hideDemoTasks: localStorage.getItem('hideDemoTasks') === 'true',
-    showDemoDataInDashboard: localStorage.getItem('showDemoDataInDashboard') === 'true'
+    showDemoDataInDashboard: localStorage.getItem('showDemoDataInDashboard') === 'true',
+    forceCleanMode: localStorage.getItem('forceCleanMode') === 'true'
   });
   
   useEffect(() => {
@@ -34,7 +35,8 @@ export default function ForceResetDemoData() {
       setCurrentStatus({
         demoDataRemoved: localStorage.getItem('demoDataRemoved') === 'true',
         hideDemoTasks: localStorage.getItem('hideDemoTasks') === 'true',
-        showDemoDataInDashboard: localStorage.getItem('showDemoDataInDashboard') === 'true'
+        showDemoDataInDashboard: localStorage.getItem('showDemoDataInDashboard') === 'true',
+        forceCleanMode: localStorage.getItem('forceCleanMode') === 'true'
       });
     }, 2000);
     
@@ -53,12 +55,14 @@ export default function ForceResetDemoData() {
       localStorage.setItem('demoDataRemoved', 'true');
       localStorage.setItem('hideDemoTasks', 'true');
       localStorage.setItem('showDemoDataInDashboard', 'false');
+      localStorage.setItem('forceCleanMode', 'true');
       
       // Atualizar status
       setCurrentStatus({
         demoDataRemoved: true,
         hideDemoTasks: true,
-        showDemoDataInDashboard: false
+        showDemoDataInDashboard: false,
+        forceCleanMode: true
       });
       
       // Passo 2: Chamar API para resetar dados
@@ -72,12 +76,15 @@ export default function ForceResetDemoData() {
       setProgress(60);
       
       // Passo 3: Instalar interceptor para adicionar parâmetros em todas as requisições
+      // Passar true para habilitar o modo forçado
       setProgress(80);
-      const interceptorInstalled = installDemoDataRemover();
+      const interceptorInstalled = installDemoDataRemover(true);
       
       if (!interceptorInstalled) {
         throw new Error("Falha ao instalar interceptor de requisições");
       }
+      
+      console.log('Interceptor instalado com parâmetro forceCleanMode=true');
       
       setProgress(90);
       
