@@ -609,11 +609,19 @@ export async function generateDemoData(req: Request, res: Response) {
 }
 
 // Reset all demo data
-export async function resetDemoData(): Promise<{success: boolean, removedItems: number}> {
+export async function resetDemoData(): Promise<{success: boolean, removedItems: number, removed?: any}> {
   try {
     console.log('Iniciando reset completo de dados de demonstração...');
-    let removedCount = 0;
+    
+    // Criar contadores para rastrear remoções
     let totalEntitiesRemoved = 0;
+    let removedTasks = 0;
+    let removedActivities = 0;
+    let removedReservations = 0;
+    let removedProperties = 0;
+    let removedOwners = 0;
+    let removedFinancialDocs = 0;
+    let removedPayments = 0;
     
     // Parte 1: Remover entidades com marcadores no banco
     const demoMarkers = await getDemoDataMarkers();
@@ -737,84 +745,112 @@ export async function resetDemoData(): Promise<{success: boolean, removedItems: 
     
     // 1. Primeiro remover tarefas de manutenção
     console.log('Removendo tarefas de manutenção demo...');
+    let tasksRemoved = 0;
     for (const task of demoTasks) {
       try {
         const success = await storage.deleteMaintenanceTask(task.id);
         if (success) {
-          removedCount++;
-          console.log(`Tarefa de manutenção removida: ${task.id} - ${task.title || task.description}`);
+          tasksRemoved++;
+          console.log(`Tarefa de manutenção removida: ${task.id} - ${task.description || ''}`);
         }
       } catch (error) {
         console.error(`Erro ao remover tarefa de manutenção ${task.id}:`, error);
       }
     }
+    removedTasks = tasksRemoved;
     
     // 2. Depois remover atividades
     console.log('Removendo atividades demo...');
+    let activitiesRemoved = 0;
     for (const activity of demoActivities) {
       try {
         const success = await storage.deleteActivity(activity.id);
         if (success) {
-          removedCount++;
+          activitiesRemoved++;
           console.log(`Atividade removida: ${activity.id} - ${activity.description}`);
         }
       } catch (error) {
         console.error(`Erro ao remover atividade ${activity.id}:`, error);
       }
     }
+    removedActivities = activitiesRemoved;
     
     // 3. Depois remover reservas
     console.log('Removendo reservas demo...');
+    let reservationsRemoved = 0;
     for (const reservation of demoReservations) {
       try {
         const success = await storage.deleteReservation(reservation.id);
         if (success) {
-          removedCount++;
+          reservationsRemoved++;
           console.log(`Reserva removida: ${reservation.id} - ${reservation.guestName}`);
         }
       } catch (error) {
         console.error(`Erro ao remover reserva ${reservation.id}:`, error);
       }
     }
+    removedReservations = reservationsRemoved;
     
     // 4. Depois remover propriedades
     console.log('Removendo propriedades demo...');
+    let propertiesRemoved = 0;
     for (const property of demoProperties) {
       try {
         const success = await storage.deleteProperty(property.id);
         if (success) {
-          removedCount++;
+          propertiesRemoved++;
           console.log(`Propriedade removida: ${property.id} - ${property.name}`);
         }
       } catch (error) {
         console.error(`Erro ao remover propriedade ${property.id}:`, error);
       }
     }
+    removedProperties = propertiesRemoved;
     
     // 5. Por último remover proprietários
     console.log('Removendo proprietários demo...');
+    let ownersRemoved = 0;
     for (const owner of demoOwners) {
       try {
         const success = await storage.deleteOwner(owner.id);
         if (success) {
-          removedCount++;
+          ownersRemoved++;
           console.log(`Proprietário removido: ${owner.id} - ${owner.name}`);
         }
       } catch (error) {
         console.error(`Erro ao remover proprietário ${owner.id}:`, error);
       }
     }
+    removedOwners = ownersRemoved;
     
+    // Atualizar contadores totais
+    removedTasks = demoTasks.length;
+    removedActivities = demoActivities.length;
+    removedReservations = demoReservations.length;
+    removedProperties = demoProperties.length;
+    removedOwners = demoOwners.length;
+    totalEntitiesRemoved = removedTasks + removedActivities + removedReservations + removedProperties + removedOwners + removedFinancialDocs + removedPayments;
+
     // Verificar se algo foi removido
-    if (removedCount === 0) {
+    if (totalEntitiesRemoved === 0) {
       console.log('Nenhum dado demo foi encontrado ou todos já foram removidos anteriormente.');
     } else {
-      console.log(`Total de ${removedCount} entidades demo removidas com sucesso!`);
+      console.log(`Total de ${totalEntitiesRemoved} entidades demo removidas com sucesso!`);
     }
     
+    // Retornar detalhes da remoção
     return {
       success: true,
-      removedItems: removedCount
+      removedItems: totalEntitiesRemoved,
+      removed: {
+        tasks: removedTasks,
+        activities: removedActivities,
+        reservations: removedReservations,
+        properties: removedProperties,
+        owners: removedOwners,
+        financialDocs: removedFinancialDocs,
+        payments: removedPayments
+      }
     };
   } catch (error) {
     console.error('Erro ao resetar dados de demonstração:', error);
