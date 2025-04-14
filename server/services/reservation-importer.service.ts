@@ -124,8 +124,9 @@ export class ReservationImporterService {
     try {
       // Use a API Gemini para gerar o texto
       const result = await aiService.generateText({
-        systemPrompt: "Tu és um assistente especializado em extrair informações de reservas para propriedades.",
-        userPrompt: prompt
+        prompt: prompt,
+        temperature: 0.1,
+        maxTokens: 1024
       });
       
       if (!result || typeof result !== 'string') {
