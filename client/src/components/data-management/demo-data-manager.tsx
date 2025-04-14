@@ -90,6 +90,11 @@ export function DemoDataManager() {
         description: t("demoData.successDescription", `${response.itemsCreated || 'Múltiplos'} itens foram criados com sucesso.`),
       });
       
+      // Remover flag do localStorage quando dados são carregados novamente
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('demoDataRemoved');
+      }
+      
       // Invalidate all queries to refresh data
       await queryClient.invalidateQueries();
       
@@ -137,6 +142,11 @@ export function DemoDataManager() {
         title: t("demoData.resetSuccess", "Dados de demonstração removidos"),
         description: t("demoData.resetDescription", "Todos os dados de demonstração foram removidos com sucesso."),
       });
+      
+      // Definir flag no localStorage para indicar que dados de demonstração foram removidos
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('demoDataRemoved', 'true');
+      }
       
       // Invalidate all queries to refresh data
       await queryClient.invalidateQueries();

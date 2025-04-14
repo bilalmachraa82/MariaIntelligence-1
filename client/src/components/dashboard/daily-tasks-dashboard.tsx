@@ -5,6 +5,14 @@ import { useQuery } from "@tanstack/react-query";
 import { type Property, type Reservation, type Activity } from "@shared/schema";
 import { motion } from "framer-motion";
 
+// Verificar se os dados de demonstração foram removidos usando localStorage
+const isDemoDataRemoved = () => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('demoDataRemoved') === 'true';
+  }
+  return false;
+};
+
 // UI Components
 import {
   Card,
@@ -164,8 +172,37 @@ export default function DailyTasksDashboard() {
     staleTime: 5 * 60 * 1000, // 5 minutos de cache
   });
 
+  // Memoizar o estado de demo data removido para evitar recálculos
+  const demoDataRemoved = useMemo(() => isDemoDataRemoved(), []);
+  
   // Converter tarefas de manutenção para o formato DailyTask
   const maintenanceTasks: DailyTask[] = useMemo(() => {
+    // Se os dados de demonstração foram removidos, não exibir tarefas de manutenção simuladas
+    if (demoDataRemoved) {
+      // Verificar se temos tarefas reais de manutenção (não demo)
+      // Se o array existe e tem tarefas, filtramos apenas as reais
+      if (maintenanceTasksData && Array.isArray(maintenanceTasksData) && maintenanceTasksData.length > 0) {
+        // Filtrar apenas tarefas reais (não demo)
+        return maintenanceTasksData
+          .filter(task => !task.isDemo && (task.status === "pending" || task.status === "scheduled"))
+          .map(task => ({
+            id: `maintenance-${task.id}`,
+            title: task.description.split(' - ')[0] || t("maintenance.task", "Tarefa de manutenção"),
+            description: task.description.split(' - ')[1] || task.description,
+            propertyName: task.propertyName,
+            propertyId: task.propertyId,
+            status: task.priority === "high" ? "attention" : "pending",
+            type: "maintenance",
+            icon: task.priority === "high" 
+              ? <AlertTriangle className="h-5 w-5 text-red-500" />
+              : <Wrench className="h-5 w-5 text-amber-500" />,
+            priority: task.priority
+          }));
+      }
+      return []; // Se não há tarefas ou se o array não existe, retornar vazio
+    }
+    
+    // Caso contrário, exibir todas as tarefas incluindo demo
     if (!maintenanceTasksData || !Array.isArray(maintenanceTasksData)) return [];
     
     return maintenanceTasksData
@@ -183,29 +220,37 @@ export default function DailyTasksDashboard() {
           : <Wrench className="h-5 w-5 text-amber-500" />,
         priority: task.priority
       }));
-  }, [maintenanceTasksData, t]);
+  }, [maintenanceTasksData, t, demoDataRemoved]);
 
-  // Create other tasks com useMemo
-  const otherTasks: DailyTask[] = useMemo(() => [
-    {
-      id: "task-1",
-      title: t("dashboard.contactSupplier", "Contatar fornecedor"),
-      description: t("dashboard.supplierDescription", "Confirmar entrega dos novos lençóis"),
-      status: "upcoming",
-      type: "task",
-      icon: <Phone className="h-5 w-5 text-blue-500" />,
-      priority: "medium"
-    },
-    {
-      id: "task-2",
-      title: t("dashboard.monthlyInvoices", "Preparar faturas mensais"),
-      description: t("dashboard.invoicesDescription", "Enviar para proprietários até amanhã"),
-      status: "upcoming",
-      type: "task",
-      icon: <FileText className="h-5 w-5 text-purple-500" />,
-      priority: "medium"
+  // Create other tasks com useMemo - agora verifica se os dados de demonstração foram removidos
+  const otherTasks: DailyTask[] = useMemo(() => {
+    // Se os dados de demonstração foram removidos, retornar array vazio
+    if (demoDataRemoved) {
+      return [];
     }
-  ], [t]);
+    
+    // Caso contrário, retornar tarefas de demonstração
+    return [
+      {
+        id: "task-1",
+        title: t("dashboard.contactSupplier", "Contatar fornecedor"),
+        description: t("dashboard.supplierDescription", "Confirmar entrega dos novos lençóis"),
+        status: "upcoming",
+        type: "task",
+        icon: <Phone className="h-5 w-5 text-blue-500" />,
+        priority: "medium"
+      },
+      {
+        id: "task-2",
+        title: t("dashboard.monthlyInvoices", "Preparar faturas mensais"),
+        description: t("dashboard.invoicesDescription", "Enviar para proprietários até amanhã"),
+        status: "upcoming",
+        type: "task",
+        icon: <FileText className="h-5 w-5 text-purple-500" />,
+        priority: "medium"
+      }
+    ];
+  }, [t, demoDataRemoved]);
 
   // Combine all tasks com useMemo para evitar recálculos desnecessários
   const allTasks: DailyTask[] = useMemo(() => {
