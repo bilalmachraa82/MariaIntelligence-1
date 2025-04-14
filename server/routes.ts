@@ -803,13 +803,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // PATCH DE EMERGÊNCIA: BLOQUEAR SEMPRE OS DADOS DEMO
       // Definir parâmetros para bloquear permanentemente os dados de demonstração
       
-      // 1. Verificar parâmetro de consulta da requisição
-      const hideFromQueryParam = true; // Forçar true independente do valor real
+      // 1. Verificar parâmetros vindos do cliente
+      const hideFromQueryParam = req.query.hideDemoTasks === 'true';
+      const demoDataRemovedFromParam = req.query.demoDataRemoved === 'true';
+      const disableDemoData = req.query.disableDemoData === 'true';
+      const forceCleanMode = req.query.forceCleanMode === 'true';
       
-      // 2. Verificar se tem flag demoDataRemoved na query
-      const demoDataRemovedFromParam = true; // Forçar true independente do valor real
+      // 2. Verificar se algum dos parâmetros de limpeza está ativo
+      const cleanModeDetected = hideFromQueryParam || demoDataRemovedFromParam || disableDemoData || forceCleanMode;
       
-      // 3. Verificar configuração do sistema no storage (se disponível)
+      // 3. Se modo de limpeza forçada estiver ativo, remover todos os dados demo
+      if (forceCleanMode) {
+        console.log('⚠️ MODO DE LIMPEZA FORÇADA DETECTADO - Executando limpeza completa dos dados demo');
+        try {
+          // Executar limpeza
+          const cleanupResult = await import('./api/demo-data').then(m => m.resetDemoData());
+          if (cleanupResult.success) {
+            console.log(`✅ Limpeza forçada concluída! ${cleanupResult.removedItems} itens removidos`);
+          }
+        } catch (cleanupError) {
+          console.error('❌ Erro durante limpeza forçada:', cleanupError);
+        }
+      }
+      
+      // 4. Verificar configuração do sistema no storage (se disponível)
       let demoRemovedFromSystem = true; // Forçar true independente do valor real
       
       // Se qualquer uma das flags indicar que os dados demo devem ser removidos, respeitamos
