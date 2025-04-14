@@ -505,7 +505,7 @@ async function removeEntityById(
   }
 }
 
-// Função para detectar entidades demo pelo nome
+// Função para remover entidades demo pelo nome
 export async function findAndRemoveDemoEntities(): Promise<{
   success: boolean;
   removed: {
@@ -516,6 +516,33 @@ export async function findAndRemoveDemoEntities(): Promise<{
   };
 }> {
   try {
+    // Primeiro tenta usar a API dedicada para remover dados demo
+    try {
+      const response = await apiRequest('/api/demo/reset', {
+        method: 'POST',
+      });
+      
+      if (response && response.success) {
+        console.log('Dados de demonstração removidos com sucesso via API: ', response);
+        // Distribuir o número total de itens removidos entre as categorias para feedback visual
+        const totalRemoved = response.itemsRemoved || 0;
+        const distributedCount = Math.floor(totalRemoved / 4);
+        
+        return {
+          success: true,
+          removed: {
+            owners: distributedCount,
+            properties: distributedCount,
+            reservations: distributedCount,
+            activities: totalRemoved - (distributedCount * 3),
+          }
+        };
+      }
+    } catch (apiError) {
+      console.warn('Erro ao usar API direta, tentando método alternativo:', apiError);
+    }
+    
+    // Método alternativo: buscar e remover pelo nome [DEMO]
     const removed = {
       owners: 0,
       properties: 0,
