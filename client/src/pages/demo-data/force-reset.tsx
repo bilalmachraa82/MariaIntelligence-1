@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
-import { AlertTriangle, RefreshCw, CheckCircle2, Database } from "lucide-react";
+import { AlertTriangle, RefreshCw, CheckCircle2, Database, Shield } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
@@ -134,7 +134,7 @@ export default function ForceResetDemoData() {
           {/* Status atual */}
           <div className="space-y-4">
             <h3 className="text-lg font-medium">Status Atual</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className={`p-4 rounded-lg border ${currentStatus.demoDataRemoved ? 'bg-green-50 border-green-200' : 'bg-amber-50 border-amber-200'}`}>
                 <div className="flex gap-2 items-center">
                   {currentStatus.demoDataRemoved ? (
@@ -188,8 +188,37 @@ export default function ForceResetDemoData() {
                   )}
                 </div>
               </div>
+              
+              <div className={`p-4 rounded-lg border ${currentStatus.forceCleanMode ? 'bg-purple-50 border-purple-200' : 'bg-amber-50 border-amber-200'}`}>
+                <div className="flex gap-2 items-center">
+                  {currentStatus.forceCleanMode ? (
+                    <Shield className="h-5 w-5 text-purple-600" />
+                  ) : (
+                    <AlertTriangle className="h-5 w-5 text-amber-600" />
+                  )}
+                  <span className="font-medium">forceCleanMode</span>
+                </div>
+                <div className="mt-1 text-sm">
+                  {currentStatus.forceCleanMode ? (
+                    <span className="text-purple-700">Ativo (limpeza forçada habilitada)</span>
+                  ) : (
+                    <span className="text-amber-700">Inativo (limpeza normal)</span>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
+          
+          {/* Banner de status do modo forçado */}
+          {currentStatus.forceCleanMode && (
+            <Alert className="bg-purple-50 border-purple-200 text-purple-800">
+              <Shield className="h-4 w-4" />
+              <AlertTitle>Modo de Limpeza Forçada ATIVO</AlertTitle>
+              <AlertDescription>
+                O sistema está atualmente no modo de limpeza forçada. Todos os dados de demonstração estão sendo bloqueados em todas as requisições e visualizações.
+              </AlertDescription>
+            </Alert>
+          )}
           
           {/* Informações */}
           <Alert variant="destructive" className="bg-red-50 border-red-200 text-red-800">
