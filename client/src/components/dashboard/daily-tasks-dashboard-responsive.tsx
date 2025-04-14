@@ -86,16 +86,17 @@ interface DailyTasksDashboardProps {
 export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashboardProps) {
   const { t } = useTranslation();
   const [location, setLocation] = useLocation();
+  const forceCleanMode = true; // Forçar modo de limpeza para remover dados de demonstração
   
   // Obtendo as reservas do dashboard através de API específica
   const { data: dashboardData, isLoading: isLoadingReservations } = useQuery({
-    queryKey: ['/api/reservations/dashboard'],
+    queryKey: ['/api/reservations/dashboard', { forceCleanMode }],
     retry: 2
   });
   
   // Obtendo tarefas e atividades
   const { data: activitiesData, isLoading: isLoadingActivities } = useQuery({
-    queryKey: ['/api/activities'],
+    queryKey: ['/api/activities', { forceCleanMode }],
     retry: 1
   });
   
@@ -135,104 +136,94 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
   }, [dashboardData]);
   
   const maintenanceTasks = useMemo(() => {
-    // Verificar se os dados de demonstração foram removidos
-    try {
-      // Verificar múltiplas flags para garantir consistência
-      const demoDataRemoved = localStorage.getItem('demoDataRemoved') === 'true';
-      const hideDemoTasks = localStorage.getItem('hideDemoTasks') === 'true';
-      const showDemoData = localStorage.getItem('showDemoDataInDashboard') === 'true';
-      
-      // Se qualquer flag indicar remoção de dados demo, ocultar as tarefas
-      if (demoDataRemoved || hideDemoTasks || showDemoData === false) {
-        console.log('Tarefas de manutenção demo foram ocultadas');
-        return []; // Retorna array vazio quando dados demo estão ocultos
-      }
-      
-      // Verificar se já temos dados reais de manutenção do backend
-      if (activitiesData?.maintenance && activitiesData.maintenance.length > 0) {
-        console.log('Usando tarefas de manutenção reais do backend');
-        return activitiesData.maintenance;
-      }
-    } catch (e) {
-      console.log('Erro ao verificar localStorage para tarefas demo', e);
-      return []; // Em caso de erro, não mostrar tarefas demo
+    // Verificar se o modo de limpeza está ativado
+    if (forceCleanMode) {
+      console.log('Tarefas de manutenção demo foram ocultadas');
+      return []; // Não mostrar tarefas de demonstração quando o modo de limpeza estiver ativado
     }
     
-    // Gerando algumas tarefas de manutenção fictícias para o dashboard
-    console.log('Gerando tarefas de manutenção fictícias para demonstração');
-    return [
-      {
-        id: "maintenance-1",
-        title: "Verificar aquecedor",
-        description: "Cliente reportou problema com o aquecedor central",
-        propertyName: "Vila Mar Azul",
-        propertyId: 155,
-        status: "pending",
-        priority: "medium",
-        type: "maintenance",
-        icon: <Wrench className="h-3 w-3 text-amber-700" />
-      },
-      {
-        id: "maintenance-2",
-        title: "Reparar chuveiro",
-        description: "Água não está aquecendo adequadamente no banheiro principal",
-        propertyName: "Apartamento Floresta",
-        propertyId: 156,
-        status: "attention",
-        priority: "high",
-        type: "maintenance",
-        icon: <Wrench className="h-3 w-3 text-amber-700" />
-      }
-    ];
-  }, [activitiesData]);
+    // Verificar se já temos dados reais de manutenção do backend
+    if (activitiesData?.maintenance && activitiesData.maintenance.length > 0) {
+      console.log('Usando tarefas de manutenção reais do backend');
+      return activitiesData.maintenance;
+    }
+    
+    // Somente usar tarefas fictícias se não estiver no modo de limpeza
+    if (!forceCleanMode) {
+      // Gerando algumas tarefas de manutenção fictícias para o dashboard
+      console.log('Gerando tarefas de manutenção fictícias para demonstração');
+      return [
+        {
+          id: "maintenance-1",
+          title: "Verificar aquecedor",
+          description: "Cliente reportou problema com o aquecedor central",
+          propertyName: "Vila Mar Azul",
+          propertyId: 155,
+          status: "pending",
+          priority: "medium",
+          type: "maintenance",
+          icon: <Wrench className="h-3 w-3 text-amber-700" />
+        },
+        {
+          id: "maintenance-2",
+          title: "Reparar chuveiro",
+          description: "Água não está aquecendo adequadamente no banheiro principal",
+          propertyName: "Apartamento Floresta",
+          propertyId: 156,
+          status: "attention",
+          priority: "high",
+          type: "maintenance",
+          icon: <Wrench className="h-3 w-3 text-amber-700" />
+        }
+      ];
+    }
+    
+    // Por padrão, retornar array vazio
+    return [];
+  }, [activitiesData, forceCleanMode]);
   
   const otherTasks = useMemo(() => {
-    // Verificar se os dados de demonstração foram removidos
-    try {
-      // Verificar múltiplas flags para garantir consistência
-      const demoDataRemoved = localStorage.getItem('demoDataRemoved') === 'true';
-      const hideDemoTasks = localStorage.getItem('hideDemoTasks') === 'true';
-      const showDemoData = localStorage.getItem('showDemoDataInDashboard') === 'true';
-      
-      // Se qualquer flag indicar remoção de dados demo, ocultar as tarefas
-      if (demoDataRemoved || hideDemoTasks || showDemoData === false) {
-        console.log('Tarefas administrativas demo foram ocultadas');
-        return []; // Retorna array vazio quando dados demo estão ocultos
-      }
-      
-      // Verificar se já temos dados reais de tarefas do backend
-      if (activitiesData?.tasks && activitiesData.tasks.length > 0) {
-        console.log('Usando tarefas administrativas reais do backend');
-        return activitiesData.tasks;
-      }
-    } catch (e) {
-      console.log('Erro ao verificar localStorage para tarefas administrativas demo', e);
-      return []; // Em caso de erro, não mostrar tarefas demo
+    // Verificar se o modo de limpeza está ativado
+    if (forceCleanMode) {
+      console.log('Tarefas administrativas demo foram ocultadas');
+      return []; // Não mostrar tarefas de demonstração quando o modo de limpeza estiver ativado
     }
     
-    // Gerando algumas tarefas administrativas fictícias para o dashboard
-    console.log('Gerando tarefas administrativas fictícias para demonstração');
-    return [
-      {
-        id: "task-1",
-        title: "Atualizar calendário",
-        description: "Verificar e atualizar disponibilidade no calendário do Airbnb",
-        status: "upcoming",
-        priority: "medium",
-        type: "task",
-        icon: <CalendarCheck className="h-3 w-3 text-purple-700" />
-      },
-      {
-        id: "task-2",
-        title: "Pagamento mensal",
-        description: "Processar pagamento mensal para proprietário",
-        status: "pending",
-        priority: "high",
-        type: "task",
-        icon: <FileText className="h-3 w-3 text-purple-700" />
-      }
-    ];
-  }, [activitiesData]);
+    // Verificar se já temos dados reais de tarefas do backend
+    if (activitiesData?.tasks && activitiesData.tasks.length > 0) {
+      console.log('Usando tarefas administrativas reais do backend');
+      return activitiesData.tasks;
+    }
+    
+    // Somente usar tarefas fictícias se não estiver no modo de limpeza
+    if (!forceCleanMode) {
+      // Gerando algumas tarefas administrativas fictícias para o dashboard
+      console.log('Gerando tarefas administrativas fictícias para demonstração');
+      return [
+        {
+          id: "task-1",
+          title: "Atualizar calendário",
+          description: "Verificar e atualizar disponibilidade no calendário do Airbnb",
+          status: "upcoming",
+          priority: "medium",
+          type: "task",
+          icon: <CalendarCheck className="h-3 w-3 text-purple-700" />
+        },
+        {
+          id: "task-2",
+          title: "Pagamento mensal",
+          description: "Processar pagamento mensal para proprietário",
+          status: "pending",
+          priority: "high",
+          type: "task",
+          icon: <FileText className="h-3 w-3 text-purple-700" />
+        }
+      ];
+    }
+    
+    // Por padrão, retornar array vazio
+    return [];
+  }, [activitiesData, forceCleanMode]);
   
   // Contagem de estatísticas para exibição nos cards
   const taskStatistics = useMemo(() => {
@@ -615,8 +606,8 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
                       );
                     })}
 
-                    {/* Limpezas adicionais */}
-                    {cleaningTasks.length > todayCheckOuts.length && (
+                    {/* Limpezas adicionais - somente exibidas se não estiver com forceCleanMode ativado */}
+                    {cleaningTasks.length > todayCheckOuts.length && !forceCleanMode && (
                       <>
                         <div className="flex items-center gap-2 my-3">
                           <div className="h-px flex-1 bg-gray-100"></div>
@@ -725,8 +716,8 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
                   </div>
                 ) : (
                   <div className="space-y-3 py-2">
-                    {/* Manutenção */}
-                    {maintenanceTasks.length > 0 && (
+                    {/* Manutenção - somente exibida se não estiver com forceCleanMode ativado */}
+                    {maintenanceTasks.length > 0 && !forceCleanMode && (
                       <>
                         <div className="flex items-center gap-2 mb-3">
                           <div className="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center">
@@ -788,8 +779,8 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
                       </>
                     )}
                     
-                    {/* Outras tarefas */}
-                    {otherTasks.length > 0 && (
+                    {/* Outras tarefas - somente exibidas se não estiver com forceCleanMode ativado */}
+                    {otherTasks.length > 0 && !forceCleanMode && (
                       <>
                         <div className="flex items-center gap-2 my-3">
                           <div className="h-px flex-1 bg-gray-100"></div>
