@@ -119,21 +119,39 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
     }
   };
   
-  // Extraindo dados do resultado da query
+  // Extraindo dados do resultado da query com bloqueio total de dados fictícios
   const todayCheckIns = useMemo(() => {
+    // Force modo completamente limpo - sem dados demo
+    if (forceCleanMode) {
+      console.log('Forçando remoção completa de dados demo: check-ins');
+      return [];
+    }
+    
     if (!dashboardData || !dashboardData.checkIns) return [];
     return dashboardData.checkIns as ExtendedReservation[];
-  }, [dashboardData]);
+  }, [dashboardData, forceCleanMode]);
   
   const todayCheckOuts = useMemo(() => {
+    // Force modo completamente limpo - sem dados demo
+    if (forceCleanMode) {
+      console.log('Forçando remoção completa de dados demo: check-outs');
+      return [];
+    }
+    
     if (!dashboardData || !dashboardData.checkOuts) return [];
     return dashboardData.checkOuts as ExtendedReservation[];
-  }, [dashboardData]);
+  }, [dashboardData, forceCleanMode]);
   
   const cleaningTasks = useMemo(() => {
+    // Force modo completamente limpo - sem dados demo
+    if (forceCleanMode) {
+      console.log('Forçando remoção completa de dados demo: limpezas');
+      return [];
+    }
+    
     if (!dashboardData || !dashboardData.cleaningTasks) return [];
     return dashboardData.cleaningTasks as DailyTask[];
-  }, [dashboardData]);
+  }, [dashboardData, forceCleanMode]);
   
   const maintenanceTasks = useMemo(() => {
     // Verificar se o modo de limpeza está ativado
