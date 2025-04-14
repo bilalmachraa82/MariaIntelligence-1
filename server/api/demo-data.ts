@@ -611,9 +611,13 @@ export async function generateDemoData(req: Request, res: Response) {
 // Reset all demo data
 export async function resetDemoData(): Promise<{success: boolean, removedItems: number}> {
   try {
+    console.log('Iniciando reset completo de dados de demonstração...');
+    let removedCount = 0;
+    let totalEntitiesRemoved = 0;
+    
     // Parte 1: Remover entidades com marcadores no banco
     const demoMarkers = await getDemoDataMarkers();
-    let removedCount = 0;
+    console.log(`Encontrados ${demoMarkers.length} marcadores de dados demo no banco`);
     
     // Group markers by entity type for efficient processing
     const markersByType: {[key: string]: number[]} = {};
@@ -627,104 +631,142 @@ export async function resetDemoData(): Promise<{success: boolean, removedItems: 
       markerIds.push(marker.markerId);
     });
     
-    // Delete demo entities by type
-    if (markersByType['financial_document']) {
-      for (const id of markersByType['financial_document']) {
-        const success = await storage.deleteFinancialDocument(id);
-        if (success) removedCount++;
-      }
-    }
+    console.log('Removendo dados demo por tipo de entidade...');
     
-    if (markersByType['reservation']) {
-      for (const id of markersByType['reservation']) {
-        const success = await storage.deleteReservation(id);
-        if (success) removedCount++;
-      }
-    }
-    
-    if (markersByType['property']) {
-      for (const id of markersByType['property']) {
-        const success = await storage.deleteProperty(id);
-        if (success) removedCount++;
-      }
-    }
-    
-    if (markersByType['owner']) {
-      for (const id of markersByType['owner']) {
-        const success = await storage.deleteOwner(id);
-        if (success) removedCount++;
-      }
-    }
-    
-    // Delete the markers themselves
-    for (const markerId of markerIds) {
-      const success = await storage.deleteActivity(markerId);
-      if (success) removedCount++;
-    }
-    
-    // Parte 2: Remover entidades adicionais pelo nome [DEMO] ou outras marcações de exemplo
-    console.log('Removendo dados por conteúdo [DEMO] no nome...');
+    // Parte 2: Remover TODAS as entidades pelo nome [DEMO] ou outras marcações de exemplo
+    // Garantir que todos os dados demo sejam removidos mesmo que não tenham marcador
     
     // Buscar todas as entidades
-    const owners = await storage.getOwners();
-    const properties = await storage.getProperties();
-    const reservations = await storage.getReservations();
+    console.log('Buscando todas as entidades para verificar dados demo...');
+    
+    const tasks = await storage.getMaintenanceTasks();
     const activities = await storage.getActivities();
+    const reservations = await storage.getReservations();
+    const properties = await storage.getProperties();
+    const owners = await storage.getOwners();
     
-    // Buscar tarefas de manutenção
-    const maintenanceTasks = await storage.getMaintenanceTasks();
+    console.log(`Entidades recuperadas: ${tasks.length} tarefas, ${activities.length} atividades, ${reservations.length} reservas, ${properties.length} propriedades, ${owners.length} proprietários`);
     
-    // Filtrar as que possuem [DEMO] no nome ou são exemplos
-    const demoOwners = owners.filter(o => o.name?.includes('[DEMO]'));
-    const demoProperties = properties.filter(p => p.name?.includes('[DEMO]'));
-    const demoReservations = reservations.filter(r => r.guestName?.includes('[DEMO]'));
-    const demoActivities = activities.filter(a => a.description?.includes('[DEMO]'));
-    
-    // Considerar tarefas de manutenção de exemplo - aquelas sem [DEMO] no nome, mas que são exemplos
-    // como "Problema na torneira do banheiro", "Ar condicionado com problema", etc.
-    const demoMaintenanceTasks = maintenanceTasks.filter(task => 
+    // Filtrar as que possuem [DEMO] no nome ou descrição
+    const demoTasks = tasks.filter(task => 
       task.description?.includes('[DEMO]') || 
-      task.description?.includes('Problema na torneira') ||
-      task.description?.includes('Ar condicionado com problema') ||
+      task.notes?.includes('[DEMO]') ||
+      task.title?.includes('[DEMO]') ||
+      // Tarefas demo conhecidas
+      task.description?.includes('Verificar aquecedor') ||
+      task.description?.includes('Reparar chuveiro') ||
       task.description?.includes('exemplo') ||
-      task.description?.toLowerCase().includes('example') ||
-      task.notes?.includes('[DEMO]')
+      task.description?.toLowerCase().includes('example')
     );
     
-    console.log(`Identificados: ${demoOwners.length} proprietários, ${demoProperties.length} propriedades, ${demoReservations.length} reservas, ${demoActivities.length} atividades e ${demoMaintenanceTasks.length} tarefas de manutenção com [DEMO] ou que parecem ser exemplos`);
+    console.log(`Identificadas ${demoTasks.length} tarefas de manutenção demo`);
     
-    // Remover tarefas de manutenção primeiro
-    for (const task of demoMaintenanceTasks) {
+    const demoActivities = activities.filter(a => 
+      a.description?.includes('[DEMO]') || 
+      a.type === DEMO_DATA_FLAG
+    );
+    
+    console.log(`Identificadas ${demoActivities.length} atividades demo`);
+    
+    const demoReservations = reservations.filter(r => 
+      r.guestName?.includes('[DEMO]') || 
+      r.notes?.includes('[DEMO]')
+    );
+    
+    console.log(`Identificadas ${demoReservations.length} reservas demo`);
+    
+    const demoProperties = properties.filter(p => 
+      p.name?.includes('[DEMO]') || 
+      p.description?.includes('[DEMO]')
+    );
+    
+    console.log(`Identificadas ${demoProperties.length} propriedades demo`);
+    
+    const demoOwners = owners.filter(o => 
+      o.name?.includes('[DEMO]') || 
+      o.notes?.includes('[DEMO]') ||
+      o.email?.includes('example.com')
+    );
+    
+    console.log(`Identificados ${demoOwners.length} proprietários demo`);
+    
+    // Remover na ordem correta para evitar conflitos de chave estrangeira
+    
+    // 1. Primeiro remover tarefas de manutenção
+    console.log('Removendo tarefas de manutenção demo...');
+    for (const task of demoTasks) {
       try {
         const success = await storage.deleteMaintenanceTask(task.id);
-        if (success) removedCount++;
+        if (success) {
+          removedCount++;
+          console.log(`Tarefa de manutenção removida: ${task.id} - ${task.title || task.description}`);
+        }
       } catch (error) {
         console.error(`Erro ao remover tarefa de manutenção ${task.id}:`, error);
       }
     }
     
-    // Remover atividades (evitar conflitos de chave estrangeira)
+    // 2. Depois remover atividades
+    console.log('Removendo atividades demo...');
     for (const activity of demoActivities) {
-      const success = await storage.deleteActivity(activity.id);
-      if (success) removedCount++;
+      try {
+        const success = await storage.deleteActivity(activity.id);
+        if (success) {
+          removedCount++;
+          console.log(`Atividade removida: ${activity.id} - ${activity.description}`);
+        }
+      } catch (error) {
+        console.error(`Erro ao remover atividade ${activity.id}:`, error);
+      }
     }
     
-    // Remover reservas
+    // 3. Depois remover reservas
+    console.log('Removendo reservas demo...');
     for (const reservation of demoReservations) {
-      const success = await storage.deleteReservation(reservation.id);
-      if (success) removedCount++;
+      try {
+        const success = await storage.deleteReservation(reservation.id);
+        if (success) {
+          removedCount++;
+          console.log(`Reserva removida: ${reservation.id} - ${reservation.guestName}`);
+        }
+      } catch (error) {
+        console.error(`Erro ao remover reserva ${reservation.id}:`, error);
+      }
     }
     
-    // Remover propriedades
+    // 4. Depois remover propriedades
+    console.log('Removendo propriedades demo...');
     for (const property of demoProperties) {
-      const success = await storage.deleteProperty(property.id);
-      if (success) removedCount++;
+      try {
+        const success = await storage.deleteProperty(property.id);
+        if (success) {
+          removedCount++;
+          console.log(`Propriedade removida: ${property.id} - ${property.name}`);
+        }
+      } catch (error) {
+        console.error(`Erro ao remover propriedade ${property.id}:`, error);
+      }
     }
     
-    // Remover proprietários
+    // 5. Por último remover proprietários
+    console.log('Removendo proprietários demo...');
     for (const owner of demoOwners) {
-      const success = await storage.deleteOwner(owner.id);
-      if (success) removedCount++;
+      try {
+        const success = await storage.deleteOwner(owner.id);
+        if (success) {
+          removedCount++;
+          console.log(`Proprietário removido: ${owner.id} - ${owner.name}`);
+        }
+      } catch (error) {
+        console.error(`Erro ao remover proprietário ${owner.id}:`, error);
+      }
+    }
+    
+    // Verificar se algo foi removido
+    if (removedCount === 0) {
+      console.log('Nenhum dado demo foi encontrado ou todos já foram removidos anteriormente.');
+    } else {
+      console.log(`Total de ${removedCount} entidades demo removidas com sucesso!`);
     }
     
     return {
@@ -732,7 +774,7 @@ export async function resetDemoData(): Promise<{success: boolean, removedItems: 
       removedItems: removedCount
     };
   } catch (error) {
-    console.error('Error resetting demo data:', error);
+    console.error('Erro ao resetar dados de demonstração:', error);
     return {
       success: false,
       removedItems: 0
