@@ -526,12 +526,22 @@ export async function findAndRemoveDemoEntities(): Promise<{
       if (response && response.success) {
         console.log('Dados de demonstração removidos com sucesso via API: ', response);
         
-        // Solicitar especificamente a remoção de tarefas de manutenção de demonstração
-        // Fazemos isso configurando um parâmetro hideDemoTasks=true ao chamar a API de atividades
+        // Definir flag no localStorage para indicar que os dados demo foram removidos
+        // Isso será usado para ocultar as tarefas de manutenção demo
         try {
-          // Chamar API activities com hideDemoTasks=true para ocultar tarefas demo
-          await apiRequest('/api/activities?hideDemoTasks=true');
+          localStorage.setItem('hideDemoTasks', 'true');
+          localStorage.setItem('demoDataRemoved', 'true');
+          localStorage.setItem('demoDataRemovedAt', new Date().toISOString());
+          console.log('Flag de ocultação de tarefas demo armazenada no localStorage');
+          
+          // Chamar API activities para forçar recarregamento
+          await apiRequest('/api/activities');
           console.log('Tarefas de manutenção demo ocultadas com sucesso');
+          
+          // Recarregar a página para assegurar que tudo foi atualizado
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
         } catch (maintenanceError) {
           console.error('Erro ao ocultar tarefas de manutenção demo:', maintenanceError);
         }
@@ -570,13 +580,20 @@ export async function findAndRemoveDemoEntities(): Promise<{
     const reservations = await apiRequest('/api/reservations');
     const activities = await apiRequest('/api/activities');
     
-    // Solicitar explicitamente a ocultação de tarefas de manutenção demo
+    // Definir flag no localStorage para ocultar tarefas de manutenção de demonstração
     try {
-      await apiRequest('/api/activities?hideDemoTasks=true');
+      localStorage.setItem('hideDemoTasks', 'true');
+      localStorage.setItem('demoDataRemoved', 'true');
+      localStorage.setItem('demoDataRemovedAt', new Date().toISOString());
       removed.maintenance = 2; // Assumimos pelo menos 2 tarefas ocultadas
-      console.log('Tarefas de manutenção demo ocultadas com sucesso (método alternativo)');
+      console.log('Flag de ocultação de tarefas demo armazenada no localStorage (método alternativo)');
+      
+      // Forçar reload da página após remover os dados
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (maintenanceError) {
-      console.error('Erro ao ocultar tarefas de manutenção demo:', maintenanceError);
+      console.error('Erro ao definir flag para ocultar tarefas de manutenção demo:', maintenanceError);
     }
     
     // Filtrar entidades demo pelo nome
