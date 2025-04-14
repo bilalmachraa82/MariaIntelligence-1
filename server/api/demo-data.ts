@@ -657,8 +657,8 @@ export async function resetDemoData(): Promise<{success: boolean, removedItems: 
     
     // Delete the markers themselves
     for (const markerId of markerIds) {
-      // For simple implementation, we have no deleteActivity method
-      // In a real app, this would delete the marker records
+      const success = await storage.deleteActivity(markerId);
+      if (success) removedCount++;
     }
     
     return {
