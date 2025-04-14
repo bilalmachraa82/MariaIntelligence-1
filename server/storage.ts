@@ -95,6 +95,7 @@ export interface IStorage {
   // Activity methods
   getActivities(limit?: number): Promise<Activity[]>;
   createActivity(activity: InsertActivity): Promise<Activity>;
+  deleteActivity(id: number): Promise<boolean>;
   
   // Statistics methods
   getTotalRevenue(startDate?: Date, endDate?: Date): Promise<number>;
@@ -468,6 +469,11 @@ export class MemStorage implements IStorage {
     const newActivity: Activity = { ...activity, id, createdAt: now };
     this.activitiesMap.set(id, newActivity);
     return newActivity;
+  }
+  
+  async deleteActivity(id: number): Promise<boolean> {
+    if (!this.activitiesMap.has(id)) return false;
+    return this.activitiesMap.delete(id);
   }
 
   // Statistics methods
@@ -2182,6 +2188,19 @@ export class DatabaseStorage implements IStorage {
     }
     const [result] = await db.insert(activities).values(activity).returning();
     return result;
+  }
+  
+  async deleteActivity(id: number): Promise<boolean> {
+    if (!db) {
+      throw new Error("Database not available");
+    }
+    try {
+      const result = await db.delete(activities).where(eq(activities.id, id));
+      return result.rowCount > 0;
+    } catch (error) {
+      console.error(`Error deleting activity ${id}:`, error);
+      return false;
+    }
   }
 
   // Statistics methods
