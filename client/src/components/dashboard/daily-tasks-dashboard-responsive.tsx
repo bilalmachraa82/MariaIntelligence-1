@@ -137,19 +137,29 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
   const maintenanceTasks = useMemo(() => {
     // Verificar se os dados de demonstração foram removidos
     try {
+      // Verificar múltiplas flags para garantir consistência
+      const demoDataRemoved = localStorage.getItem('demoDataRemoved') === 'true';
       const hideDemoTasks = localStorage.getItem('hideDemoTasks') === 'true';
       const showDemoData = localStorage.getItem('showDemoDataInDashboard') === 'true';
       
-      // Se hideDemoTasks for true OU showDemoData for false, ocultar tarefas demo
-      if (hideDemoTasks || showDemoData === false) {
+      // Se qualquer flag indicar remoção de dados demo, ocultar as tarefas
+      if (demoDataRemoved || hideDemoTasks || showDemoData === false) {
         console.log('Tarefas de manutenção demo foram ocultadas');
         return []; // Retorna array vazio quando dados demo estão ocultos
       }
+      
+      // Verificar se já temos dados reais de manutenção do backend
+      if (activitiesData?.maintenance && activitiesData.maintenance.length > 0) {
+        console.log('Usando tarefas de manutenção reais do backend');
+        return activitiesData.maintenance;
+      }
     } catch (e) {
       console.log('Erro ao verificar localStorage para tarefas demo', e);
+      return []; // Em caso de erro, não mostrar tarefas demo
     }
     
     // Gerando algumas tarefas de manutenção fictícias para o dashboard
+    console.log('Gerando tarefas de manutenção fictícias para demonstração');
     return [
       {
         id: "maintenance-1",
@@ -174,24 +184,34 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
         icon: <Wrench className="h-3 w-3 text-amber-700" />
       }
     ];
-  }, []);
+  }, [activitiesData]);
   
   const otherTasks = useMemo(() => {
     // Verificar se os dados de demonstração foram removidos
     try {
+      // Verificar múltiplas flags para garantir consistência
+      const demoDataRemoved = localStorage.getItem('demoDataRemoved') === 'true';
       const hideDemoTasks = localStorage.getItem('hideDemoTasks') === 'true';
       const showDemoData = localStorage.getItem('showDemoDataInDashboard') === 'true';
       
-      // Se hideDemoTasks for true OU showDemoData for false, ocultar tarefas demo
-      if (hideDemoTasks || showDemoData === false) {
+      // Se qualquer flag indicar remoção de dados demo, ocultar as tarefas
+      if (demoDataRemoved || hideDemoTasks || showDemoData === false) {
         console.log('Tarefas administrativas demo foram ocultadas');
         return []; // Retorna array vazio quando dados demo estão ocultos
       }
+      
+      // Verificar se já temos dados reais de tarefas do backend
+      if (activitiesData?.tasks && activitiesData.tasks.length > 0) {
+        console.log('Usando tarefas administrativas reais do backend');
+        return activitiesData.tasks;
+      }
     } catch (e) {
       console.log('Erro ao verificar localStorage para tarefas administrativas demo', e);
+      return []; // Em caso de erro, não mostrar tarefas demo
     }
     
     // Gerando algumas tarefas administrativas fictícias para o dashboard
+    console.log('Gerando tarefas administrativas fictícias para demonstração');
     return [
       {
         id: "task-1",
@@ -212,7 +232,7 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
         icon: <FileText className="h-3 w-3 text-purple-700" />
       }
     ];
-  }, []);
+  }, [activitiesData]);
   
   // Contagem de estatísticas para exibição nos cards
   const taskStatistics = useMemo(() => {
