@@ -408,6 +408,108 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       });
       
+      // Adicionar reservas de demonstração para testes
+      // Dados de teste para check-ins hoje
+      if (checkIns.length === 0) {
+        const demoProperties = await storage.getProperties();
+        if (demoProperties && demoProperties.length > 0) {
+          // Selecionar 2-3 propriedades aleatórias para adicionar check-ins
+          const selectedProperties = demoProperties
+            .sort(() => 0.5 - Math.random())
+            .slice(0, Math.min(3, demoProperties.length));
+          
+          for (let i = 0; i < selectedProperties.length; i++) {
+            const property = selectedProperties[i];
+            const isToday = i % 2 === 0; // Alternar entre hoje e amanhã
+            
+            // Criar horário check-in aleatório
+            const checkInHour = 13 + Math.floor(Math.random() * 5);
+            const checkInDate = new Date(isToday ? today : tomorrowStr);
+            checkInDate.setHours(checkInHour, 0, 0, 0);
+            
+            // Criar check-out 2-7 dias depois
+            const stayDays = 2 + Math.floor(Math.random() * 6);
+            const checkOutDate = new Date(checkInDate);
+            checkOutDate.setDate(checkOutDate.getDate() + stayDays);
+            
+            // Gerar nome de hóspede
+            const names = ["João Silva", "Maria Santos", "Carlos Oliveira", "Ana Pereira", "Pedro Costa"];
+            const randomName = names[Math.floor(Math.random() * names.length)];
+            
+            // Adicionar check-in
+            checkIns.push({
+              id: 1000 + i,
+              propertyId: property.id,
+              propertyName: property.name,
+              guestName: randomName,
+              checkInDate: checkInDate.toISOString(),
+              checkOutDate: checkOutDate.toISOString(),
+              status: "confirmed",
+              totalCost: 500 + Math.floor(Math.random() * 1000),
+              guestsCount: 1 + Math.floor(Math.random() * 4)
+            });
+          }
+        }
+      }
+      
+      // Dados de teste para check-outs hoje (se não houver nenhum)
+      if (checkOuts.length === 0) {
+        const demoProperties = await storage.getProperties();
+        if (demoProperties && demoProperties.length > 0) {
+          // Selecionar 1-2 propriedades aleatórias para check-outs
+          const selectedProperties = demoProperties
+            .sort(() => 0.5 - Math.random())
+            .slice(0, Math.min(2, demoProperties.length));
+          
+          for (let i = 0; i < selectedProperties.length; i++) {
+            const property = selectedProperties[i];
+            
+            // Criar horário check-out aleatório
+            const checkOutHour = 10 + Math.floor(Math.random() * 2);
+            const checkOutDate = new Date(today);
+            checkOutDate.setHours(checkOutHour, 0, 0, 0);
+            
+            // Criar check-in alguns dias antes
+            const stayDays = 2 + Math.floor(Math.random() * 5);
+            const checkInDate = new Date(checkOutDate);
+            checkInDate.setDate(checkInDate.getDate() - stayDays);
+            
+            // Gerar nome de hóspede
+            const names = ["Roberto Almeida", "Fernanda Lima", "Luciana Mendes", "Bruno Castro", "Teresa Sousa"];
+            const randomName = names[Math.floor(Math.random() * names.length)];
+            
+            const checkOut = {
+              id: 2000 + i,
+              propertyId: property.id,
+              propertyName: property.name,
+              guestName: randomName,
+              checkInDate: checkInDate.toISOString(),
+              checkOutDate: checkOutDate.toISOString(),
+              status: "confirmed",
+              totalCost: 500 + Math.floor(Math.random() * 1000),
+              guestsCount: 1 + Math.floor(Math.random() * 4)
+            };
+            
+            // Adicionar check-out
+            checkOuts.push(checkOut);
+            
+            // Adicionar tarefa de limpeza correspondente
+            cleaningTasks.push({
+              id: `cleaning-${2000 + i}`,
+              propertyId: property.id,
+              propertyName: property.name,
+              title: `Limpeza após saída`,
+              description: `Limpeza necessária após saída do hóspede ${randomName}`,
+              status: 'pending',
+              priority: 'medium',
+              type: 'cleaning',
+              icon: null,
+              date: checkOutDate.toISOString()
+            });
+          }
+        }
+      }
+      
       // Retornar dados estruturados
       res.json({
         checkIns,
