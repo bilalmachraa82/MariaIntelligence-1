@@ -135,13 +135,55 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
   }, [dashboardData]);
   
   const maintenanceTasks = useMemo(() => {
-    // Retornando um array vazio para remover as tarefas de manutenção fictícias
-    return [];
+    // Gerando algumas tarefas de manutenção fictícias para o dashboard
+    return [
+      {
+        id: "maintenance-1",
+        title: "Verificar aquecedor",
+        description: "Cliente reportou problema com o aquecedor central",
+        propertyName: "Vila Mar Azul",
+        propertyId: 155,
+        status: "pending",
+        priority: "medium",
+        type: "maintenance",
+        icon: <Wrench className="h-3 w-3 text-amber-700" />
+      },
+      {
+        id: "maintenance-2",
+        title: "Reparar chuveiro",
+        description: "Água não está aquecendo adequadamente no banheiro principal",
+        propertyName: "Apartamento Floresta",
+        propertyId: 156,
+        status: "attention",
+        priority: "high",
+        type: "maintenance",
+        icon: <Wrench className="h-3 w-3 text-amber-700" />
+      }
+    ];
   }, []);
   
   const otherTasks = useMemo(() => {
-    // Retornando um array vazio para remover as tarefas administrativas fictícias
-    return [];
+    // Gerando algumas tarefas administrativas fictícias para o dashboard
+    return [
+      {
+        id: "task-1",
+        title: "Atualizar calendário",
+        description: "Verificar e atualizar disponibilidade no calendário do Airbnb",
+        status: "upcoming",
+        priority: "medium",
+        type: "task",
+        icon: <CalendarCheck className="h-3 w-3 text-purple-700" />
+      },
+      {
+        id: "task-2",
+        title: "Pagamento mensal",
+        description: "Processar pagamento mensal para proprietário",
+        status: "pending",
+        priority: "high",
+        type: "task",
+        icon: <FileText className="h-3 w-3 text-purple-700" />
+      }
+    ];
   }, []);
   
   // Contagem de estatísticas para exibição nos cards
