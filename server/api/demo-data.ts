@@ -611,6 +611,7 @@ export async function generateDemoData(req: Request, res: Response) {
 // Reset all demo data
 export async function resetDemoData(): Promise<{success: boolean, removedItems: number}> {
   try {
+    // Parte 1: Remover entidades com marcadores no banco
     const demoMarkers = await getDemoDataMarkers();
     let removedCount = 0;
     
@@ -658,6 +659,47 @@ export async function resetDemoData(): Promise<{success: boolean, removedItems: 
     // Delete the markers themselves
     for (const markerId of markerIds) {
       const success = await storage.deleteActivity(markerId);
+      if (success) removedCount++;
+    }
+    
+    // Parte 2: Remover entidades adicionais pelo nome [DEMO]
+    console.log('Removendo dados por conteúdo [DEMO] no nome...');
+    
+    // Buscar todas as entidades
+    const owners = await storage.getOwners();
+    const properties = await storage.getProperties();
+    const reservations = await storage.getReservations();
+    const activities = await storage.getActivities();
+    
+    // Filtrar as que possuem [DEMO] no nome
+    const demoOwners = owners.filter(o => o.name?.includes('[DEMO]'));
+    const demoProperties = properties.filter(p => p.name?.includes('[DEMO]'));
+    const demoReservations = reservations.filter(r => r.guestName?.includes('[DEMO]'));
+    const demoActivities = activities.filter(a => a.description?.includes('[DEMO]'));
+    
+    console.log(`Identificados: ${demoOwners.length} proprietários, ${demoProperties.length} propriedades, ${demoReservations.length} reservas e ${demoActivities.length} atividades com [DEMO]`);
+    
+    // Remover atividades primeiro (evitar conflitos de chave estrangeira)
+    for (const activity of demoActivities) {
+      const success = await storage.deleteActivity(activity.id);
+      if (success) removedCount++;
+    }
+    
+    // Remover reservas
+    for (const reservation of demoReservations) {
+      const success = await storage.deleteReservation(reservation.id);
+      if (success) removedCount++;
+    }
+    
+    // Remover propriedades
+    for (const property of demoProperties) {
+      const success = await storage.deleteProperty(property.id);
+      if (success) removedCount++;
+    }
+    
+    // Remover proprietários
+    for (const owner of demoOwners) {
+      const success = await storage.deleteOwner(owner.id);
       if (success) removedCount++;
     }
     
