@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Dashboard from "@/pages/dashboard";
 import DashboardFull from "@/pages/dashboard-full";
+import { enforceCleanMode } from "./enforce-clean-mode";
 import PropertiesPage from "@/pages/properties";
 import PropertyDetailPage from "@/pages/properties/[id]";
 import PropertyEditPage from "@/pages/properties/edit";
@@ -270,6 +271,14 @@ function Router() {
 }
 
 function App() {
+  // Forçar limpeza de dados demo na inicialização
+  // Este código é executado sempre que o aplicativo é iniciado/recarregado
+  useEffect(() => {
+    // Forçar o modo limpo (sem dados demo) uma única vez na inicialização
+    enforceCleanMode();
+    console.log('Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados');
+  }, []);
+  
   return (
     <QueryClientProvider client={queryClient}>
       <Layout>

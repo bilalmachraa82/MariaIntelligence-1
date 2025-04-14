@@ -800,25 +800,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Verificar se devemos mostrar as tarefas de demonstração
       // Lógica refinada: Verificamos múltiplas fontes para garantir consistência
       
+      // PATCH DE EMERGÊNCIA: BLOQUEAR SEMPRE OS DADOS DEMO
+      // Definir parâmetros para bloquear permanentemente os dados de demonstração
+      
       // 1. Verificar parâmetro de consulta da requisição
-      const hideFromQueryParam = req.query.hideDemoTasks === 'true';
+      const hideFromQueryParam = true; // Forçar true independente do valor real
       
       // 2. Verificar se tem flag demoDataRemoved na query
-      const demoDataRemovedFromParam = req.query.demoDataRemoved === 'true';
+      const demoDataRemovedFromParam = true; // Forçar true independente do valor real
       
       // 3. Verificar configuração do sistema no storage (se disponível)
-      let demoRemovedFromSystem = false;
-      try {
-        // Aqui poderíamos implementar um método para obter a configuração persistente
-        // Por enquanto, assumimos sempre false para compatibilidade
-        demoRemovedFromSystem = false;
-      } catch (configError) {
-        console.error('Erro ao verificar configurações de demonstração:', configError);
-      }
+      let demoRemovedFromSystem = true; // Forçar true independente do valor real
       
       // Se qualquer uma das flags indicar que os dados demo devem ser removidos, respeitamos
-      const hideDemoTasks = hideFromQueryParam || demoDataRemovedFromParam || demoRemovedFromSystem;
-      const showDemoTasks = !hideDemoTasks;
+      const hideDemoTasks = true; // Sempre true para bloquear demos
+      const showDemoTasks = false; // Sempre false para bloquear demos
       
       console.log(`Status de dados demo: hideDemoTasks=${hideDemoTasks}, showDemoTasks=${showDemoTasks}`);
       
