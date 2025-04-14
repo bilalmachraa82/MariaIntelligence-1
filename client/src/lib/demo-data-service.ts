@@ -517,7 +517,18 @@ export async function findAndRemoveDemoEntities(): Promise<{
   };
 }> {
   try {
-    // Primeiro tenta usar a API dedicada para remover dados demo
+    // Primeiro limpar o localStorage para garantir que os dados demo frontends serão ocultados
+    try {
+      localStorage.setItem('hideDemoTasks', 'true');
+      localStorage.setItem('demoDataRemoved', 'true');
+      localStorage.setItem('demoDataRemovedAt', new Date().toISOString());
+      localStorage.setItem('showDemoDataInDashboard', 'false');
+      console.log('Flag de ocultação de tarefas demo armazenada no localStorage');
+    } catch (localStorageError) {
+      console.error('Erro ao configurar localStorage:', localStorageError);
+    }
+    
+    // Agora chamar a API para remover dados do backend
     try {
       const response = await apiRequest('/api/demo/reset', {
         method: 'POST',
@@ -538,10 +549,18 @@ export async function findAndRemoveDemoEntities(): Promise<{
           await apiRequest('/api/activities');
           console.log('Tarefas de manutenção demo ocultadas com sucesso');
           
+          // Chamar API de reservations para recarregar dados
+          await apiRequest('/api/reservations');
+          console.log('Dados de reservas atualizados');
+          
+          // Chamar API de dashboard para recarregar dados
+          await apiRequest('/api/reservations/dashboard');
+          console.log('Dados do dashboard atualizados');
+          
           // Recarregar a página para assegurar que tudo foi atualizado
           setTimeout(() => {
             window.location.reload();
-          }, 2000);
+          }, 1500);
         } catch (maintenanceError) {
           console.error('Erro ao ocultar tarefas de manutenção demo:', maintenanceError);
         }
@@ -585,13 +604,18 @@ export async function findAndRemoveDemoEntities(): Promise<{
       localStorage.setItem('hideDemoTasks', 'true');
       localStorage.setItem('demoDataRemoved', 'true');
       localStorage.setItem('demoDataRemovedAt', new Date().toISOString());
+      localStorage.setItem('showDemoDataInDashboard', 'false');
       removed.maintenance = 2; // Assumimos pelo menos 2 tarefas ocultadas
       console.log('Flag de ocultação de tarefas demo armazenada no localStorage (método alternativo)');
+      
+      // Chamar API de dashboard para recarregar dados
+      await apiRequest('/api/reservations/dashboard');
+      console.log('Dados do dashboard atualizados');
       
       // Forçar reload da página após remover os dados
       setTimeout(() => {
         window.location.reload();
-      }, 2000);
+      }, 1500);
     } catch (maintenanceError) {
       console.error('Erro ao definir flag para ocultar tarefas de manutenção demo:', maintenanceError);
     }
