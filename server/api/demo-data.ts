@@ -608,10 +608,43 @@ export async function generateDemoData(req: Request, res: Response) {
   }
 }
 
-// Reset all demo data
-export async function resetDemoData(): Promise<{success: boolean, removedItems: number, removed?: any}> {
+/**
+ * Função aprimorada para resetar TODOS os dados de demonstração do sistema
+ * Inclui rastreamento detalhado dos itens removidos e contadores por tipo de entidade
+ * Também adiciona verificação de forceCleanMode quando solicitado
+ * 
+ * @returns Objeto com detalhes sobre o resultado da operação
+ */
+export async function resetDemoData(forceCleanMode: boolean = false): Promise<{
+  success: boolean, 
+  removedItems: number, 
+  forcedMode?: boolean,
+  removed?: any,
+  details?: any
+}> {
   try {
-    console.log('Iniciando reset completo de dados de demonstração...');
+    console.log(`Iniciando reset completo de dados de demonstração${forceCleanMode ? ' (MODO FORÇADO)' : ''}...`);
+    
+    // Estrutura para armazenar detalhes mais aprofundados da remoção
+    const removalDetails: {
+      taskIds: number[],
+      activityIds: number[],
+      reservationIds: number[],
+      propertyIds: number[],
+      ownerIds: number[],
+      financialDocIds: number[],
+      paymentIds: number[],
+      errors: {entityType: string, id: number, error: string}[]
+    } = {
+      taskIds: [],
+      activityIds: [],
+      reservationIds: [],
+      propertyIds: [],
+      ownerIds: [],
+      financialDocIds: [],
+      paymentIds: [],
+      errors: []
+    };
     
     // Criar contadores para rastrear remoções
     let totalEntitiesRemoved = 0;
@@ -624,6 +657,7 @@ export async function resetDemoData(): Promise<{success: boolean, removedItems: 
     let removedPayments = 0;
     
     // Parte 1: Remover entidades com marcadores no banco
+    const startTime = new Date().getTime();
     const demoMarkers = await getDemoDataMarkers();
     console.log(`Encontrados ${demoMarkers.length} marcadores de dados demo no banco`);
     
@@ -653,10 +687,30 @@ export async function resetDemoData(): Promise<{success: boolean, removedItems: 
     const properties = await storage.getProperties();
     const owners = await storage.getOwners();
     
+    // Também buscar documentos financeiros e pagamentos se estivermos no modo forçado
+    let financialDocs: any[] = [];
+    let payments: any[] = [];
+    
+    if (forceCleanMode) {
+      console.log('MODO FORÇADO: Buscando documentos financeiros e pagamentos...');
+      try {
+        financialDocs = await storage.getFinancialDocuments();
+        payments = await storage.getPaymentRecords();
+        console.log(`Encontrados ${financialDocs.length} documentos financeiros e ${payments.length} pagamentos.`);
+      } catch (error) {
+        console.error('Erro ao buscar documentos financeiros ou pagamentos:', error);
+      }
+    }
+    
     console.log(`Entidades recuperadas: ${tasks.length} tarefas, ${activities.length} atividades, ${reservations.length} reservas, ${properties.length} propriedades, ${owners.length} proprietários`);
     
     // Palavras-chave para identificar dados de demonstração
     const demoKeywords = ['[DEMO]', 'exemplo', 'example', 'demo', 'test', 'fictício', 'ficticio', 'fake'];
+    
+    // Critérios mais rígidos se estiver em modo forçado
+    if (forceCleanMode) {
+      demoKeywords.push('teste', 'simulação', 'simulation', 'dummy', 'amostra', 'modelo');
+    }
     
     // Filtrar tarefas de manutenção de demonstração com critérios ampliados
     const demoTasks = tasks.filter(task => {
@@ -741,9 +795,81 @@ export async function resetDemoData(): Promise<{success: boolean, removedItems: 
     
     console.log(`Identificados ${demoOwners.length} proprietários demo`);
     
+    // Filtrar documentos financeiros e pagamentos (apenas no modo forçado)
+    let demoFinancialDocs: any[] = [];
+    let demoPayments: any[] = [];
+    
+    if (forceCleanMode && financialDocs.length > 0) {
+      demoFinancialDocs = financialDocs.filter(doc => {
+        if (doc.description && demoKeywords.some(keyword => doc.description.toLowerCase().includes(keyword.toLowerCase()))) return true;
+        if (doc.documentNumber && demoKeywords.some(keyword => doc.documentNumber.toLowerCase().includes(keyword.toLowerCase()))) return true;
+        return false;
+      });
+      console.log(`Identificados ${demoFinancialDocs.length} documentos financeiros demo`);
+      
+      if (payments.length > 0) {
+        demoPayments = payments.filter(payment => {
+          if (payment.notes && demoKeywords.some(keyword => payment.notes.toLowerCase().includes(keyword.toLowerCase()))) return true;
+          if (payment.reference && demoKeywords.some(keyword => payment.reference.toLowerCase().includes(keyword.toLowerCase()))) return true;
+          
+          // Verificar se o pagamento está relacionado a um documento financeiro demo
+          return demoFinancialDocs.some(doc => doc.id === payment.documentId);
+        });
+        console.log(`Identificados ${demoPayments.length} pagamentos demo`);
+      }
+    }
+    
     // Remover na ordem correta para evitar conflitos de chave estrangeira
     
-    // 1. Primeiro remover tarefas de manutenção
+    // 0. Primeiro remover pagamentos (se estiver em modo forçado)
+    if (forceCleanMode && demoPayments.length > 0) {
+      console.log('Removendo pagamentos demo...');
+      let paymentsRemoved = 0;
+      for (const payment of demoPayments) {
+        try {
+          const success = await storage.deletePaymentRecord(payment.id);
+          if (success) {
+            paymentsRemoved++;
+            removalDetails.paymentIds.push(payment.id);
+            console.log(`Pagamento removido: ${payment.id} - ${payment.amount}`);
+          }
+        } catch (error) {
+          console.error(`Erro ao remover pagamento ${payment.id}:`, error);
+          removalDetails.errors.push({
+            entityType: 'payment',
+            id: payment.id,
+            error: error.message || 'Erro desconhecido'
+          });
+        }
+      }
+      removedPayments = paymentsRemoved;
+    }
+    
+    // 0.1. Remover documentos financeiros (se estiver em modo forçado)
+    if (forceCleanMode && demoFinancialDocs.length > 0) {
+      console.log('Removendo documentos financeiros demo...');
+      let docsRemoved = 0;
+      for (const doc of demoFinancialDocs) {
+        try {
+          const success = await storage.deleteFinancialDocument(doc.id);
+          if (success) {
+            docsRemoved++;
+            removalDetails.financialDocIds.push(doc.id);
+            console.log(`Documento financeiro removido: ${doc.id} - ${doc.documentNumber || ''}`);
+          }
+        } catch (error) {
+          console.error(`Erro ao remover documento financeiro ${doc.id}:`, error);
+          removalDetails.errors.push({
+            entityType: 'financialDocument',
+            id: doc.id,
+            error: error.message || 'Erro desconhecido'
+          });
+        }
+      }
+      removedFinancialDocs = docsRemoved;
+    }
+    
+    // 1. Depois remover tarefas de manutenção
     console.log('Removendo tarefas de manutenção demo...');
     let tasksRemoved = 0;
     for (const task of demoTasks) {
@@ -751,10 +877,16 @@ export async function resetDemoData(): Promise<{success: boolean, removedItems: 
         const success = await storage.deleteMaintenanceTask(task.id);
         if (success) {
           tasksRemoved++;
+          removalDetails.taskIds.push(task.id);
           console.log(`Tarefa de manutenção removida: ${task.id} - ${task.description || ''}`);
         }
       } catch (error) {
         console.error(`Erro ao remover tarefa de manutenção ${task.id}:`, error);
+        removalDetails.errors.push({
+          entityType: 'maintenanceTask',
+          id: task.id,
+          error: error.message || 'Erro desconhecido'
+        });
       }
     }
     removedTasks = tasksRemoved;
@@ -767,10 +899,16 @@ export async function resetDemoData(): Promise<{success: boolean, removedItems: 
         const success = await storage.deleteActivity(activity.id);
         if (success) {
           activitiesRemoved++;
+          removalDetails.activityIds.push(activity.id);
           console.log(`Atividade removida: ${activity.id} - ${activity.description}`);
         }
       } catch (error) {
         console.error(`Erro ao remover atividade ${activity.id}:`, error);
+        removalDetails.errors.push({
+          entityType: 'activity',
+          id: activity.id,
+          error: error.message || 'Erro desconhecido'
+        });
       }
     }
     removedActivities = activitiesRemoved;
@@ -783,10 +921,16 @@ export async function resetDemoData(): Promise<{success: boolean, removedItems: 
         const success = await storage.deleteReservation(reservation.id);
         if (success) {
           reservationsRemoved++;
+          removalDetails.reservationIds.push(reservation.id);
           console.log(`Reserva removida: ${reservation.id} - ${reservation.guestName}`);
         }
       } catch (error) {
         console.error(`Erro ao remover reserva ${reservation.id}:`, error);
+        removalDetails.errors.push({
+          entityType: 'reservation',
+          id: reservation.id,
+          error: error.message || 'Erro desconhecido'
+        });
       }
     }
     removedReservations = reservationsRemoved;
@@ -799,10 +943,16 @@ export async function resetDemoData(): Promise<{success: boolean, removedItems: 
         const success = await storage.deleteProperty(property.id);
         if (success) {
           propertiesRemoved++;
+          removalDetails.propertyIds.push(property.id);
           console.log(`Propriedade removida: ${property.id} - ${property.name}`);
         }
       } catch (error) {
         console.error(`Erro ao remover propriedade ${property.id}:`, error);
+        removalDetails.errors.push({
+          entityType: 'property',
+          id: property.id,
+          error: error.message || 'Erro desconhecido'
+        });
       }
     }
     removedProperties = propertiesRemoved;
@@ -815,33 +965,42 @@ export async function resetDemoData(): Promise<{success: boolean, removedItems: 
         const success = await storage.deleteOwner(owner.id);
         if (success) {
           ownersRemoved++;
+          removalDetails.ownerIds.push(owner.id);
           console.log(`Proprietário removido: ${owner.id} - ${owner.name}`);
         }
       } catch (error) {
         console.error(`Erro ao remover proprietário ${owner.id}:`, error);
+        removalDetails.errors.push({
+          entityType: 'owner',
+          id: owner.id,
+          error: error.message || 'Erro desconhecido'
+        });
       }
     }
     removedOwners = ownersRemoved;
     
-    // Atualizar contadores totais
-    removedTasks = demoTasks.length;
-    removedActivities = demoActivities.length;
-    removedReservations = demoReservations.length;
-    removedProperties = demoProperties.length;
-    removedOwners = demoOwners.length;
-    totalEntitiesRemoved = removedTasks + removedActivities + removedReservations + removedProperties + removedOwners + removedFinancialDocs + removedPayments;
+    // Atualizar contadores totais com base nos itens realmente removidos
+    totalEntitiesRemoved = removedTasks + removedActivities + removedReservations + 
+                           removedProperties + removedOwners + removedFinancialDocs + 
+                           removedPayments;
 
     // Verificar se algo foi removido
     if (totalEntitiesRemoved === 0) {
       console.log('Nenhum dado demo foi encontrado ou todos já foram removidos anteriormente.');
     } else {
-      console.log(`Total de ${totalEntitiesRemoved} entidades demo removidas com sucesso!`);
+      const endTime = new Date().getTime();
+      const executionTime = (endTime - startTime) / 1000;
+      
+      console.log(`Total de ${totalEntitiesRemoved} entidades demo removidas com sucesso em ${executionTime.toFixed(2)}s!`);
+      console.log(`Detalhes: ${removedTasks} tarefas, ${removedActivities} atividades, ${removedReservations} reservas, ${removedProperties} propriedades, ${removedOwners} proprietários, ${removedFinancialDocs} docs financeiros, ${removedPayments} pagamentos`);
+      console.log(`Erros encontrados: ${removalDetails.errors.length}`);
     }
     
-    // Retornar detalhes da remoção
+    // Retornar detalhes da remoção com dados aprimorados
     return {
       success: true,
       removedItems: totalEntitiesRemoved,
+      forcedMode: forceCleanMode,
       removed: {
         tasks: removedTasks,
         activities: removedActivities,
@@ -850,7 +1009,8 @@ export async function resetDemoData(): Promise<{success: boolean, removedItems: 
         owners: removedOwners,
         financialDocs: removedFinancialDocs,
         payments: removedPayments
-      }
+      },
+      details: removalDetails
     };
   } catch (error) {
     console.error('Erro ao resetar dados de demonstração:', error);
@@ -861,35 +1021,44 @@ export async function resetDemoData(): Promise<{success: boolean, removedItems: 
   }
 }
 
-// Handler for API endpoint to reset demo data
+/**
+ * Handler para API endpoint de resetar dados demo
+ * Suporta parâmetro forceCleanMode para limpeza mais agressiva
+ */
 export async function resetDemoDataHandler(req: Request, res: Response) {
   try {
-    console.log('Recebida solicitação para remover todos os dados de demonstração');
+    // Verificar se solicitou modo de limpeza forçada
+    const forceCleanMode = req.query.forceCleanMode === 'true';
+    console.log(`Recebida solicitação para remover todos os dados de demonstração${forceCleanMode ? ' (MODO FORÇADO)' : ''}`);
     
     // Registrar a atividade de remoção de dados demo
     try {
       await storage.createActivity({
         type: 'demo_data_removal',
-        description: 'Solicitação para remover todos os dados de demonstração do sistema'
+        description: `Solicitação para remover todos os dados de demonstração do sistema${forceCleanMode ? ' em modo forçado' : ''}`
       });
     } catch (activityError) {
       console.error('Erro ao registrar atividade de remoção de dados demo:', activityError);
       // Continuar mesmo com erro no registro de atividade
     }
     
-    // Executar a remoção completa dos dados
-    const result = await resetDemoData();
+    // Executar a remoção completa dos dados com o parâmetro forceCleanMode
+    const result = await resetDemoData(forceCleanMode);
     
     // Registrar o resultado da remoção
     if (result.success) {
       console.log(`Remoção de dados demo concluída: ${result.removedItems} itens removidos`);
       
-      // Se algum item foi removido, registrar a atividade de sucesso
+      // Se algum item foi removido, registrar a atividade de sucesso com detalhes
       if (result.removedItems > 0) {
         try {
+          const detailsStr = Object.entries(result.removed || {})
+            .map(([key, val]) => `${key}: ${val}`)
+            .join(', ');
+            
           await storage.createActivity({
             type: 'demo_data_removed',
-            description: `${result.removedItems} itens de demonstração foram removidos com sucesso`
+            description: `${result.removedItems} itens de demonstração foram removidos com sucesso (${detailsStr})`
           });
         } catch (activityError) {
           console.error('Erro ao registrar atividade de conclusão:', activityError);

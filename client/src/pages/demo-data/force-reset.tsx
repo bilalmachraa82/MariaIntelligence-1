@@ -63,10 +63,12 @@ export default function ForceResetDemoData() {
       
       // Passo 2: Chamar API para resetar dados
       setProgress(30);
-      const resetResponse = await apiRequest("/api/demo/reset", {
+      // Chamar API explicitamente com parâmetro forceCleanMode=true
+      const resetResponse = await apiRequest("/api/demo/reset?forceCleanMode=true", {
         method: "POST",
       });
       
+      console.log('Resultado da remoção forçada:', resetResponse);
       setProgress(60);
       
       // Passo 3: Instalar interceptor para adicionar parâmetros em todas as requisições
