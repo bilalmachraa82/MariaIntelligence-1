@@ -135,6 +135,17 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
   }, [dashboardData]);
   
   const maintenanceTasks = useMemo(() => {
+    // Verificar se os dados de demonstração foram removidos
+    try {
+      const hideDemoTasks = localStorage.getItem('hideDemoTasks') === 'true';
+      if (hideDemoTasks) {
+        console.log('Tarefas de manutenção demo foram ocultadas');
+        return []; // Retorna array vazio quando dados demo estão ocultos
+      }
+    } catch (e) {
+      console.log('Erro ao verificar localStorage para tarefas demo', e);
+    }
+    
     // Gerando algumas tarefas de manutenção fictícias para o dashboard
     return [
       {
@@ -163,6 +174,17 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
   }, []);
   
   const otherTasks = useMemo(() => {
+    // Verificar se os dados de demonstração foram removidos
+    try {
+      const hideDemoTasks = localStorage.getItem('hideDemoTasks') === 'true';
+      if (hideDemoTasks) {
+        console.log('Tarefas administrativas demo foram ocultadas');
+        return []; // Retorna array vazio quando dados demo estão ocultos
+      }
+    } catch (e) {
+      console.log('Erro ao verificar localStorage para tarefas administrativas demo', e);
+    }
+    
     // Gerando algumas tarefas administrativas fictícias para o dashboard
     return [
       {
