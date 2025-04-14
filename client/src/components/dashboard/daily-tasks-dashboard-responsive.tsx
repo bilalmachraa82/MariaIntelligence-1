@@ -135,14 +135,14 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
   }, [dashboardData]);
   
   const maintenanceTasks = useMemo(() => {
-    if (!activitiesData?.maintenance) return [];
-    return activitiesData.maintenance as DailyTask[];
-  }, [activitiesData]);
+    // Retornando um array vazio para remover as tarefas de manutenção fictícias
+    return [];
+  }, []);
   
   const otherTasks = useMemo(() => {
-    if (!activitiesData?.tasks) return [];
-    return activitiesData.tasks as DailyTask[];
-  }, [activitiesData]);
+    // Retornando um array vazio para remover as tarefas administrativas fictícias
+    return [];
+  }, []);
   
   // Contagem de estatísticas para exibição nos cards
   const taskStatistics = useMemo(() => {
