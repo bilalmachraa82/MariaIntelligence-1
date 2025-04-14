@@ -662,7 +662,7 @@ export async function resetDemoData(): Promise<{success: boolean, removedItems: 
       if (success) removedCount++;
     }
     
-    // Parte 2: Remover entidades adicionais pelo nome [DEMO]
+    // Parte 2: Remover entidades adicionais pelo nome [DEMO] ou outras marcações de exemplo
     console.log('Removendo dados por conteúdo [DEMO] no nome...');
     
     // Buscar todas as entidades
@@ -671,15 +671,39 @@ export async function resetDemoData(): Promise<{success: boolean, removedItems: 
     const reservations = await storage.getReservations();
     const activities = await storage.getActivities();
     
-    // Filtrar as que possuem [DEMO] no nome
+    // Buscar tarefas de manutenção
+    const maintenanceTasks = await storage.getMaintenanceTasks();
+    
+    // Filtrar as que possuem [DEMO] no nome ou são exemplos
     const demoOwners = owners.filter(o => o.name?.includes('[DEMO]'));
     const demoProperties = properties.filter(p => p.name?.includes('[DEMO]'));
     const demoReservations = reservations.filter(r => r.guestName?.includes('[DEMO]'));
     const demoActivities = activities.filter(a => a.description?.includes('[DEMO]'));
     
-    console.log(`Identificados: ${demoOwners.length} proprietários, ${demoProperties.length} propriedades, ${demoReservations.length} reservas e ${demoActivities.length} atividades com [DEMO]`);
+    // Considerar tarefas de manutenção de exemplo - aquelas sem [DEMO] no nome, mas que são exemplos
+    // como "Problema na torneira do banheiro", "Ar condicionado com problema", etc.
+    const demoMaintenanceTasks = maintenanceTasks.filter(task => 
+      task.description?.includes('[DEMO]') || 
+      task.description?.includes('Problema na torneira') ||
+      task.description?.includes('Ar condicionado com problema') ||
+      task.description?.includes('exemplo') ||
+      task.description?.toLowerCase().includes('example') ||
+      task.notes?.includes('[DEMO]')
+    );
     
-    // Remover atividades primeiro (evitar conflitos de chave estrangeira)
+    console.log(`Identificados: ${demoOwners.length} proprietários, ${demoProperties.length} propriedades, ${demoReservations.length} reservas, ${demoActivities.length} atividades e ${demoMaintenanceTasks.length} tarefas de manutenção com [DEMO] ou que parecem ser exemplos`);
+    
+    // Remover tarefas de manutenção primeiro
+    for (const task of demoMaintenanceTasks) {
+      try {
+        const success = await storage.deleteMaintenanceTask(task.id);
+        if (success) removedCount++;
+      } catch (error) {
+        console.error(`Erro ao remover tarefa de manutenção ${task.id}:`, error);
+      }
+    }
+    
+    // Remover atividades (evitar conflitos de chave estrangeira)
     for (const activity of demoActivities) {
       const success = await storage.deleteActivity(activity.id);
       if (success) removedCount++;
