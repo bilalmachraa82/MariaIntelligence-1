@@ -695,51 +695,96 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const limit = req.query.limit ? Number(req.query.limit) : undefined;
       const activities = await storage.getActivities(limit);
       
-      // Adicionar tarefas estruturadas para o dashboard
-      // Obter propriedades para definir as tarefas em algumas delas
-      const properties = await storage.getProperties();
-      const activeProperties = properties.filter(p => p.active).slice(0, 3);
+      // Verificar se devemos mostrar as tarefas de demonstração
+      // Se tiver o parâmetro hideDemoTasks=true, não mostramos tarefas de demonstração
+      const showDemoTasks = req.query.hideDemoTasks !== 'true';
       
-      // Criar tarefas de manutenção para o dashboard
-      const maintenance = activeProperties.map((property, index) => ({
-        id: `maintenance-${property.id}`,
-        propertyId: property.id,
-        propertyName: property.name,
-        title: index === 0 ? 'Problema na torneira do banheiro' : 
-               index === 1 ? 'Ar condicionado com problema' :
-               'Manutenção da fechadura',
-        description: index === 0 ? 'Cliente reportou vazamento na torneira do banheiro principal' :
-                    index === 1 ? 'Unidade interna do ar condicionado fazendo barulho' :
-                    'Fechadura da porta principal necessita manutenção',
-        status: index === 0 ? 'attention' : 'pending',
-        priority: index === 0 ? 'high' : 'medium',
-        type: 'maintenance',
-        date: new Date().toISOString()
-      }));
+      // Obter tarefas de manutenção reais do banco de dados (pode ser uma lista vazia)
+      let realMaintenanceTasks = [];
+      try {
+        realMaintenanceTasks = await storage.getMaintenanceTasks();
+        console.log(`Obtidas ${realMaintenanceTasks.length} tarefas reais de manutenção`);
+      } catch (dbError) {
+        console.error('Erro ao obter tarefas de manutenção reais:', dbError);
+        // Continue mesmo se houver erro, usando array vazio
+      }
       
-      // Criar outras tarefas gerais para o dashboard
-      const tasks = [
-        {
-          id: 'task-1',
-          title: 'Contatar fornecedor de produtos',
-          description: 'Refazer pedido de amenities para os próximos meses',
-          status: 'pending',
-          priority: 'medium',
-          type: 'task',
-          icon: 'Phone',
-          date: new Date().toISOString()
-        },
-        {
-          id: 'task-2',
-          title: 'Atualizar preços no site',
-          description: 'Revisar tarifas para o período de alta temporada',
-          status: 'upcoming',
-          priority: 'low',
-          type: 'task',
-          icon: 'Calendar',
-          date: new Date().toISOString()
-        }
-      ];
+      // Verificar a configuração para inclusão de tarefas demo de manutenção
+      // A flag demo_mode pode estar no storage como configuração do sistema
+      const shouldShowDemoMaintenance = showDemoTasks && (realMaintenanceTasks.length === 0);
+      
+      let maintenance = [];
+      let tasks = [];
+      
+      // Se devemos mostrar as tarefas de demonstração ou não há tarefas reais, adicionar as demo
+      if (shouldShowDemoMaintenance) {
+        // Obter propriedades para definir as tarefas em algumas delas
+        const properties = await storage.getProperties();
+        const activeProperties = properties.filter(p => p.active).slice(0, 3);
+        
+        console.log(`Gerando tarefas de demonstração para ${activeProperties.length} propriedades ativas`);
+        
+        // Criar tarefas de manutenção para o dashboard
+        maintenance = activeProperties.map((property, index) => ({
+          id: `maintenance-${property.id}`,
+          propertyId: property.id,
+          propertyName: property.name,
+          title: index === 0 ? 'Problema na torneira do banheiro' : 
+                 index === 1 ? 'Ar condicionado com problema' :
+                 'Manutenção da fechadura',
+          description: index === 0 ? 'Cliente reportou vazamento na torneira do banheiro principal' :
+                      index === 1 ? 'Unidade interna do ar condicionado fazendo barulho' :
+                      'Fechadura da porta principal necessita manutenção',
+          status: index === 0 ? 'attention' : 'pending',
+          priority: index === 0 ? 'high' : 'medium',
+          type: 'maintenance',
+          date: new Date().toISOString(),
+          isDemo: true
+        }));
+        
+        // Criar outras tarefas gerais para o dashboard
+        tasks = [
+          {
+            id: 'task-1',
+            title: 'Contatar fornecedor de produtos',
+            description: 'Refazer pedido de amenities para os próximos meses',
+            status: 'pending',
+            priority: 'medium',
+            type: 'task',
+            icon: 'Phone',
+            date: new Date().toISOString(),
+            isDemo: true
+          },
+          {
+            id: 'task-2',
+            title: 'Atualizar preços no site',
+            description: 'Revisar tarifas para o período de alta temporada',
+            status: 'upcoming',
+            priority: 'low',
+            type: 'task',
+            icon: 'Calendar',
+            date: new Date().toISOString(),
+            isDemo: true
+          }
+        ];
+      } else {
+        // Caso contrário, usar as tarefas reais de manutenção do banco
+        maintenance = realMaintenanceTasks.map(task => ({
+          id: `maintenance-${task.id}`,
+          propertyId: task.propertyId,
+          propertyName: task.propertyName || `Propriedade #${task.propertyId}`,
+          title: task.description.split(' - ')[0] || task.description,
+          description: task.description.split(' - ')[1] || task.description,
+          status: task.status === 'pending' ? 'pending' : 
+                 task.status === 'scheduled' ? 'upcoming' : 'completed',
+          priority: task.priority,
+          type: 'maintenance',
+          date: task.reportedAt
+        }));
+        
+        // Se não houver tarefas de manutenção, deixamos a lista vazia
+        console.log(`Usando ${maintenance.length} tarefas reais de manutenção (modo demonstração desativado)`);
+      }
       
       // Retornar resposta estruturada para dashboard
       res.json({

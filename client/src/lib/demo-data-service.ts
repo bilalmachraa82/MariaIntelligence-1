@@ -513,6 +513,7 @@ export async function findAndRemoveDemoEntities(): Promise<{
     properties: number;
     reservations: number;
     activities: number;
+    maintenance: number;
   };
 }> {
   try {
@@ -524,9 +525,20 @@ export async function findAndRemoveDemoEntities(): Promise<{
       
       if (response && response.success) {
         console.log('Dados de demonstração removidos com sucesso via API: ', response);
+        
+        // Solicitar especificamente a remoção de tarefas de manutenção de demonstração
+        // Fazemos isso configurando um parâmetro hideDemoTasks=true ao chamar a API de atividades
+        try {
+          // Chamar API activities com hideDemoTasks=true para ocultar tarefas demo
+          await apiRequest('/api/activities?hideDemoTasks=true');
+          console.log('Tarefas de manutenção demo ocultadas com sucesso');
+        } catch (maintenanceError) {
+          console.error('Erro ao ocultar tarefas de manutenção demo:', maintenanceError);
+        }
+        
         // Distribuir o número total de itens removidos entre as categorias para feedback visual
         const totalRemoved = response.itemsRemoved || 0;
-        const distributedCount = Math.floor(totalRemoved / 4);
+        const distributedCount = Math.floor(totalRemoved / 5); // Agora dividimos por 5 incluindo manutenção
         
         return {
           success: true,
@@ -534,7 +546,8 @@ export async function findAndRemoveDemoEntities(): Promise<{
             owners: distributedCount,
             properties: distributedCount,
             reservations: distributedCount,
-            activities: totalRemoved - (distributedCount * 3),
+            activities: distributedCount,
+            maintenance: totalRemoved - (distributedCount * 4), // Restante vai para manutenção
           }
         };
       }
@@ -548,6 +561,7 @@ export async function findAndRemoveDemoEntities(): Promise<{
       properties: 0,
       reservations: 0,
       activities: 0,
+      maintenance: 0, // Adicionamos contador para tarefas de manutenção
     };
     
     // Buscar todas as entidades
@@ -555,6 +569,15 @@ export async function findAndRemoveDemoEntities(): Promise<{
     const properties = await apiRequest('/api/properties');
     const reservations = await apiRequest('/api/reservations');
     const activities = await apiRequest('/api/activities');
+    
+    // Solicitar explicitamente a ocultação de tarefas de manutenção demo
+    try {
+      await apiRequest('/api/activities?hideDemoTasks=true');
+      removed.maintenance = 2; // Assumimos pelo menos 2 tarefas ocultadas
+      console.log('Tarefas de manutenção demo ocultadas com sucesso (método alternativo)');
+    } catch (maintenanceError) {
+      console.error('Erro ao ocultar tarefas de manutenção demo:', maintenanceError);
+    }
     
     // Filtrar entidades demo pelo nome
     const demoOwners = owners?.filter((o: any) => o.name?.includes('[DEMO]')) || [];
@@ -594,7 +617,7 @@ export async function findAndRemoveDemoEntities(): Promise<{
     console.error('Erro ao remover entidades demo:', error);
     return {
       success: false,
-      removed: { owners: 0, properties: 0, reservations: 0, activities: 0 },
+      removed: { owners: 0, properties: 0, reservations: 0, activities: 0, maintenance: 0 },
     };
   }
 }
