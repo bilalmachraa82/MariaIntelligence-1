@@ -21,6 +21,7 @@ import ReservationImporterService from "./services/reservation-importer.service"
 import { registerQuotationRoutes } from "./api/quotation-routes";
 import { registerSpeechRoutes } from "./api/speech-routes";
 import uploadControlFileRouter from "./api/upload-control-file";
+import reservationAssistantRouter from "./api/reservation-assistant";
 import { generateDemoData, resetDemoDataHandler } from "./api/demo-data";
 import { 
   insertPropertySchema, 
@@ -3937,6 +3938,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Registrar a rota de upload de arquivos de controle
   app.use('/api', uploadControlFileRouter);
+  
+  // Registrar rotas do assistente de reservas com Gemini 2.5 Flash
+  app.use('/api/reservation-assistant', reservationAssistantRouter);
 
   // Rotas de teste para desenvolvimento
   
