@@ -4,23 +4,60 @@
  */
 
 import { Router } from 'express';
-import { GeminiService } from '../services/gemini.service';
-import { ReservationAssistantService } from '../services/reservation-assistant.service';
 import multer from 'multer';
-import fs from 'fs';
 import path from 'path';
-import { z } from 'zod';
+import fs from 'fs';
+import { ReservationAssistantService } from '../services/reservation-assistant.service';
+import { GeminiService } from '../services/gemini.service';
+import { extractTextFromPDF } from '../utils/pdf-parser';
 
-// Configuração do multer para processamento de arquivos
-const upload = multer({ 
-  dest: 'uploads/',
-  limits: { fileSize: 10 * 1024 * 1024 } // 10MB
+const router = Router();
+
+// Configuração do multer para upload de arquivos
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadsDir = path.join(process.cwd(), 'uploads');
+    
+    // Criar diretório de uploads se não existir
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+    
+    cb(null, uploadsDir);
+  },
+  filename: (req, file, cb) => {
+    // Nome do arquivo: timestamp + nome original
+    const timestamp = Date.now();
+    const originalName = file.originalname;
+    const extension = path.extname(originalName);
+    const baseName = path.basename(originalName, extension);
+    
+    cb(null, `${baseName}-${timestamp}${extension}`);
+  }
 });
 
-// Criação do router e inicialização dos serviços
-const router = Router();
+// Filtro para validar tipos de arquivo
+const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+  // Aceitar PDFs e imagens
+  if (file.mimetype === 'application/pdf' || file.mimetype.startsWith('image/')) {
+    cb(null, true);
+  } else {
+    cb(new Error('Formato de arquivo não suportado. Apenas PDFs e imagens são aceitos.'));
+  }
+};
+
+// Configuração do multer
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB
+  }
+});
+
+// Inicializar serviços
 const geminiService = new GeminiService();
-const reservationAssistant = new ReservationAssistantService(geminiService);
+const reservationAssistantService = new ReservationAssistantService(geminiService);
 
 /**
  * Rota para processar texto de reserva
@@ -28,42 +65,29 @@ const reservationAssistant = new ReservationAssistantService(geminiService);
  */
 router.post('/process', async (req, res) => {
   try {
-    // Validação do corpo da requisição
-    const schema = z.object({
-      text: z.string().min(1, "Texto não pode estar vazio")
-    });
-
-    const validationResult = schema.safeParse(req.body);
-    if (!validationResult.success) {
-      return res.status(400).json({
-        success: false,
-        message: "Dados inválidos",
-        errors: validationResult.error.errors
-      });
-    }
-
-    const { text } = validationResult.data;
+    const { text } = req.body;
     
-    // Verificar se a chave da API Gemini está disponível
-    if (!process.env.GOOGLE_GEMINI_API_KEY) {
+    if (!text || typeof text !== 'string') {
       return res.status(400).json({
         success: false,
-        message: "Chave da API Gemini não configurada. Configure a chave nas definições."
+        message: "Texto da reserva é obrigatório"
       });
     }
     
-    // Processar o texto com o assistente de reservas
-    const result = await reservationAssistant.processReservationText(text);
+    console.log(`Processando texto de reserva (${text.length} caracteres)...`);
+    
+    // Processar texto com o assistente de reservas
+    const result = await reservationAssistantService.processReservationText(text);
     
     return res.json({
       success: true,
       data: result
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Erro ao processar texto de reserva:", error);
     return res.status(500).json({
       success: false,
-      message: error.message || "Erro interno do servidor"
+      message: error instanceof Error ? error.message : "Erro ao processar texto de reserva"
     });
   }
 });
@@ -74,58 +98,60 @@ router.post('/process', async (req, res) => {
  */
 router.post('/upload', upload.single('file'), async (req, res) => {
   try {
-    if (!req.file) {
+    const file = req.file;
+    
+    if (!file) {
       return res.status(400).json({
         success: false,
         message: "Nenhum arquivo enviado"
       });
     }
     
-    // Verificar se a chave da API Gemini está disponível
-    if (!process.env.GOOGLE_GEMINI_API_KEY) {
+    console.log(`Processando arquivo de reserva: ${file.originalname} (${file.size} bytes)`);
+    
+    let text = '';
+    
+    // Extrair texto dependendo do tipo de arquivo
+    if (file.mimetype === 'application/pdf') {
+      text = await extractTextFromPDF(file.path);
+    } else if (file.mimetype.startsWith('image/')) {
+      // A extração de texto de imagens seria implementada aqui
+      // Usando OCR (Tesseract.js, Google Cloud Vision, etc.)
       return res.status(400).json({
         success: false,
-        message: "Chave da API Gemini não configurada. Configure a chave nas definições."
+        message: "Processamento de imagens ainda não está implementado"
       });
     }
     
-    // Ler o arquivo enviado
-    const filePath = req.file.path;
-    const fileData = fs.readFileSync(filePath);
-    const fileBase64 = fileData.toString('base64');
-    const mimeType = req.file.mimetype;
-    
-    // Processar o arquivo com o assistente de reservas
-    let extractedText = '';
-    
-    // Extrair texto com base no tipo do arquivo
-    if (mimeType.includes('pdf')) {
-      extractedText = await geminiService.extractTextFromPDF(fileBase64);
-    } else if (mimeType.includes('image')) {
-      extractedText = await geminiService.extractTextFromImage(fileBase64, mimeType);
-    } else {
+    if (!text || text.trim().length === 0) {
       return res.status(400).json({
         success: false,
-        message: "Tipo de arquivo não suportado. Envie um PDF ou uma imagem."
+        message: "Não foi possível extrair texto do arquivo enviado"
       });
     }
     
-    // Processar o texto extraído
-    const result = await reservationAssistant.processReservationText(extractedText);
+    console.log(`Texto extraído (${text.length} caracteres)`);
     
-    // Remover o arquivo temporário
-    fs.unlinkSync(filePath);
+    // Processar texto com o assistente de reservas
+    const result = await reservationAssistantService.processReservationText(text);
     
     return res.json({
       success: true,
       data: result
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Erro ao processar arquivo de reserva:", error);
     return res.status(500).json({
       success: false,
-      message: error.message || "Erro interno do servidor"
+      message: error instanceof Error ? error.message : "Erro ao processar arquivo de reserva"
     });
+  } finally {
+    // Limpar arquivo temporário após processamento
+    if (req.file) {
+      fs.unlink(req.file.path, (err) => {
+        if (err) console.error("Erro ao remover arquivo temporário:", err);
+      });
+    }
   }
 });
 
@@ -135,43 +161,31 @@ router.post('/upload', upload.single('file'), async (req, res) => {
  */
 router.post('/save', async (req, res) => {
   try {
-    // Validação do corpo da requisição
-    const schema = z.object({
-      reservations: z.array(z.any()).min(1, "É necessário pelo menos uma reserva para salvar")
+    const { reservations } = req.body;
+    
+    if (!reservations || !Array.isArray(reservations) || reservations.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Nenhuma reserva para salvar"
+      });
+    }
+    
+    console.log(`Salvando ${reservations.length} reservas...`);
+    
+    // Salvar reservas no banco de dados
+    const result = await reservationAssistantService.saveReservations(reservations);
+    
+    return res.json({
+      success: result.success,
+      savedCount: result.savedCount,
+      message: result.message,
+      errors: result.errors
     });
-
-    const validationResult = schema.safeParse(req.body);
-    if (!validationResult.success) {
-      return res.status(400).json({
-        success: false,
-        message: "Dados inválidos",
-        errors: validationResult.error.errors
-      });
-    }
-
-    const { reservations } = validationResult.data;
-    
-    // Salvar as reservas no banco de dados
-    const result = await reservationAssistant.saveReservations(reservations);
-    
-    if (result.success) {
-      return res.json({
-        success: true,
-        message: `${result.savedCount} reserva(s) salva(s) com sucesso`,
-        data: result
-      });
-    } else {
-      return res.status(400).json({
-        success: false,
-        message: `Erro ao salvar ${result.failedCount} reserva(s)`,
-        data: result
-      });
-    }
-  } catch (error: any) {
+  } catch (error) {
     console.error("Erro ao salvar reservas:", error);
     return res.status(500).json({
       success: false,
-      message: error.message || "Erro interno do servidor"
+      message: error instanceof Error ? error.message : "Erro ao salvar reservas"
     });
   }
 });

@@ -19,6 +19,7 @@ import ReportsPage from "@/pages/reports";
 import SettingsPage from "@/pages/settings";
 import DocumentScanPage from "@/pages/pdf-upload";
 import AssistantPage from "@/pages/assistant";
+import ReservationAssistantPage from "@/pages/reservation-assistant";
 import DemoDataPage from "@/pages/demo-data";
 import ForceResetDemoData from "@/pages/demo-data/force-reset";
 import { Layout } from "@/components/layout/layout";
@@ -183,6 +184,7 @@ function Router() {
       <Route path="/reports/trends" component={TrendsReportPage} />
       <Route path="/settings" component={SettingsPage} />
       <Route path="/assistant" component={AssistantPage} />
+      <Route path="/reservation-assistant" component={ReservationAssistantPage} />
       <Route path="/demo-data" component={DemoDataPage} />
       <Route path="/demo-data/force-reset" component={ForceResetDemoData} />
       <Route path="/maintenance/pending" component={MaintenancePending} />
@@ -237,6 +239,7 @@ function Router() {
       <Route path="/relatorios/tendencias" component={TrendsReportPage} />
       <Route path="/configuracoes" component={SettingsPage} />
       <Route path="/assistente" component={AssistantPage} />
+      <Route path="/assistente-reservas" component={ReservationAssistantPage} />
       <Route path="/dados-demo" component={DemoDataPage} />
       <Route path="/dados-demo/remocao-forcada" component={ForceResetDemoData} />
       <Route path="/manutencao/pendentes" component={MaintenancePending} />
