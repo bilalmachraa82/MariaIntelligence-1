@@ -38,6 +38,8 @@ interface TextGenerationParams {
   model?: GeminiModel;
   temperature?: number;
   maxOutputTokens?: number;
+  functionDefinitions?: any[];
+  functionCallBehavior?: 'auto' | 'none';
 }
 
 // Interface para processamento de imagem
@@ -1420,7 +1422,9 @@ export class GeminiService {
       userPrompt,
       model = GeminiModel.FLASH,
       temperature = 0.1,
-      maxOutputTokens = 1024
+      maxOutputTokens = 1024,
+      functionDefinitions = [],
+      functionCallBehavior = 'auto'
     } = params;
     
     // Criar a função que fará a chamada à API
@@ -1446,18 +1450,77 @@ export class GeminiService {
                            model === GeminiModel.FLASH ? this.flashModel : 
                            this.defaultModel;
         
+        // Preparar configuração de requisição
+        const requestConfig: any = {
+          contents,
+          generationConfig: {
+            temperature,
+            maxOutputTokens
+          }
+        };
+        
+        // Adicionar configuração de function calling se fornecida
+        if (functionDefinitions && functionDefinitions.length > 0) {
+          requestConfig.tools = [{
+            functionDeclarations: functionDefinitions
+          }];
+          
+          if (functionCallBehavior) {
+            requestConfig.toolConfig = {
+              functionCallingConfig: {
+                mode: functionCallBehavior
+              }
+            };
+          }
+        } else {
+          // Se não houver function definitions, usar responseFormat JSON
+          requestConfig.generationConfig.responseFormat = { type: "json_object" };
+        }
+        
+        // Fazer a chamada à API
         const result = await this.withRetry(async () => {
-          return await targetModel.generateContent({
-            contents,
-            generationConfig: {
-              temperature,
-              maxOutputTokens,
-              responseFormat: { type: "json_object" }
-            }
+          // Chamar API usando fetch diretamente para suportar function calling
+          const apiUrl = 'https://generativelanguage.googleapis.com/v1/models/' + 
+            (model || 'gemini-1.5-flash') + ':generateContent' + 
+            '?key=' + this.apiKey;
+          
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestConfig)
           });
+          
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`API Gemini erro ${response.status}: ${errorText}`);
+          }
+          
+          return await response.json();
         });
         
-        const responseText = result.response.text();
+        // Processar function calling se existir
+        if (result.candidates && result.candidates[0] && 
+            result.candidates[0].content && 
+            result.candidates[0].content.parts && 
+            result.candidates[0].content.parts[0] && 
+            result.candidates[0].content.parts[0].functionCall) {
+          
+          // Extrair dados da chamada de função
+          const functionCall = result.candidates[0].content.parts[0].functionCall;
+          return {
+            functionCalls: [{
+              name: functionCall.name,
+              args: functionCall.args
+            }]
+          };
+        }
+        
+        // Processar resposta como texto
+        const responseText = result.candidates && result.candidates[0] && 
+                             result.candidates[0].content && 
+                             result.candidates[0].content.parts ? 
+                             result.candidates[0].content.parts.map((part: any) => 
+                               part.text || '').join('') : '';
         
         try {
           // Tentar extrair apenas a parte JSON da resposta
