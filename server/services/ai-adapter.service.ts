@@ -29,6 +29,9 @@ export class AIAdapter {
     rolm: new RolmService(),
   };
   
+  // Valor padrão para o serviço de IA
+  private static defaultName = process.env.PRIMARY_AI ?? "openrouter";
+  
   // Detector de manuscritos
   private handwritingDetector = new HandwritingDetector();
   
@@ -283,15 +286,15 @@ export class AIAdapter {
    * @param name Nome do serviço a ser usado (opcional, usa o serviço padrão se não informado)
    * @returns O serviço apropriado
    */
-  public getService(name: string = ''): GeminiService | OpenRouterService | RolmService {
+  public getService(name: string = AIAdapter.defaultName): GeminiService | OpenRouterService | RolmService {
     // Se um nome for especificado, usar esse serviço
     if (name && name in AIAdapter.services) {
       return AIAdapter.services[name as keyof typeof AIAdapter.services];
     }
     
     // Se estiver no modo AUTO, determinar o melhor serviço
-    if (this.currentService === AIServiceType.AUTO) {
-      // Prioridade: OpenRouter > Gemini > Rolm
+    if (this.currentService === AIServiceType.AUTO || !name) {
+      // Prioridade: OpenRouter > Gemini > Rolm (conforme configuração PRIMARY_AI)
       if (process.env.OPENROUTER_API_KEY) {
         return AIAdapter.services.openrouter;
       } else if (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY) {
