@@ -69,6 +69,13 @@ export async function parseReservationData(text: string): Promise<ParseResult> {
     
     // Extração de propriedade
     const propertyRegex = [
+      // Regex específicos para propriedades conhecidas
+      /(?:EXCITING\s+LISBON\s+)?(AROEIRA\s+[IV]+)/i,
+      /(?:EXCITING\s+LISBON\s+)?(AROEIRA\s+\d+)/i,
+      /(?:LISBON\s+)?(AROEIRA\s+[IV]+)/i,
+      /(?:LISBON\s+)?(AROEIRA\s+\d+)/i,
+      
+      // Regex genéricos para propriedades
       /propriedade[\s:]+([^\n\.]+)/i,
       /property[\s:]+([^\n\.]+)/i,
       /alojamento[\s:]+([^\n\.]+)/i,
@@ -92,7 +99,43 @@ export async function parseReservationData(text: string): Promise<ParseResult> {
       }
     }
     
-    // Se não encontrou o nome da propriedade, tentar extrair qualquer linha que pareça endereço
+    // Se não encontrou o nome da propriedade, procurar por nomes de propriedades específicas em qualquer parte do texto
+    if (!reservation.propertyName) {
+      // Procurar por menções de propriedades conhecidas em qualquer lugar do texto
+      const knownProperties = [
+        /AROEIRA\s+[IV]+/i,
+        /AROEIRA\s+\d+/i,
+        /EXCITING\s+LISBON\s+AROEIRA/i,
+        /LISBON\s+AROEIRA/i
+      ];
+      
+      for (const regex of knownProperties) {
+        const match = text.match(regex);
+        if (match) {
+          reservation.propertyName = match[0].trim();
+          const index = missingInThisReservation.indexOf('propertyName');
+          if (index !== -1) missingInThisReservation.splice(index, 1);
+          break;
+        }
+      }
+    }
+    
+    // Se ainda não encontrou o nome da propriedade, tentar obter a primeira linha não vazia
+    // que possa representar um título ou cabeçalho do documento
+    if (!reservation.propertyName) {
+      const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+      if (lines.length > 0 && lines[0].length > 3) {
+        // Verificar se a primeira linha parece um título
+        const firstLine = lines[0];
+        if (firstLine.toUpperCase() === firstLine || /^[A-Z]/.test(firstLine)) {
+          reservation.propertyName = firstLine;
+          const index = missingInThisReservation.indexOf('propertyName');
+          if (index !== -1) missingInThisReservation.splice(index, 1);
+        }
+      }
+    }
+    
+    // Se ainda não encontrou o nome da propriedade, tentar extrair qualquer linha que pareça endereço
     if (!reservation.propertyName) {
       const addressLines = text.split('\n').filter(line => 
         (line.includes('Rua') || line.includes('Av.') || line.includes('Avenida') || 
@@ -300,7 +343,21 @@ export async function parseReservationData(text: string): Promise<ParseResult> {
     reservation.notes = `Extraído via OCR nativo (${new Date().toLocaleDateString()})`;
     
     // Se temos dados suficientes, adicionar a reserva
-    if (missingInThisReservation.length <= 3) { // Permitir até 3 campos ausentes para maior flexibilidade
+    // Dar prioridade à extração do nome da propriedade, que é o mais importante 
+    // para a funcionalidade de aliases
+    if (reservation.propertyName) {
+      console.log(`✅ Propriedade identificada: "${reservation.propertyName}"`);
+      
+      // Sempre adicionar a reserva se tivermos o nome da propriedade
+      reservations.push(reservation);
+      
+      // Adicionar os campos em falta à lista geral
+      for (const field of missingInThisReservation) {
+        if (!missing.includes(field)) {
+          missing.push(field);
+        }
+      }
+    } else if (missingInThisReservation.length <= 3) { // Permitir até 3 campos ausentes para maior flexibilidade
       reservations.push(reservation);
       
       // Adicionar os campos em falta à lista geral
