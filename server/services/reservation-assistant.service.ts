@@ -49,8 +49,8 @@ export class ReservationAssistantService {
     try {
       console.log("Processando texto para extração de reservas...");
       
-      // Extrair reservas usando function calling com Gemini 2.5 Flash
-      const reservationsData = await this.extractReservationsWithFunctionCalling(text);
+      // Extrair reservas usando formato JSON padrão (evita problemas de function calling)
+      const reservationsData = await this.extractReservationsWithJsonFormat(text);
       
       // Normalizar dados
       const normalizedReservations = reservationsData.map(reservation => 
@@ -72,6 +72,90 @@ export class ReservationAssistantService {
     } catch (error) {
       console.error("Erro ao processar texto de reserva:", error);
       throw new Error(`Erro ao processar texto de reserva: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+  
+  /**
+   * Método alternativo para extrair reservas usando formato JSON padrão
+   * Este método não usa function calling que estava causando problemas de compatibilidade
+   * @param text Texto da reserva
+   * @returns Array de reservas extraídas
+   */
+  private async extractReservationsWithJsonFormat(text: string): Promise<ReservationData[]> {
+    try {
+      console.log("Usando Gemini 1.5 Flash para extrair reservas com formato JSON padrão...");
+      
+      // Construir o prompt para extração de reservas
+      const prompt = `
+      # Instruções para Extração de Dados de Reserva
+
+      Analise cuidadosamente o texto a seguir que contém informações sobre reservas de alojamentos.
+      Extraia TODAS as reservas mencionadas e formate-as como um array JSON com a seguinte estrutura:
+
+      \`\`\`json
+      {
+        "reservations": [
+          {
+            "alojamento": "Nome do alojamento",
+            "nome_hospede": "Nome do hóspede",
+            "email_hospede": "Email (se disponível)",
+            "telefone_hospede": "Telefone (se disponível)",
+            "data_check_in": "YYYY-MM-DD",
+            "data_check_out": "YYYY-MM-DD",
+            "total_hospedes": 2,
+            "valor_total": "100€",
+            "canal_reserva": "Airbnb, Booking, etc",
+            "notas": "Observações adicionais"
+          }
+        ]
+      }
+      \`\`\`
+
+      Importante:
+      - Extraia TODAS as reservas encontradas no texto
+      - Formate datas no padrão YYYY-MM-DD
+      - Se não encontrar alguma informação, use valores vazios (string vazia ou 0)
+      - A resposta deve ser APENAS o objeto JSON sem texto adicional
+
+      Texto a analisar:
+      ${text}`;
+      
+      // Chamar o modelo com resposta em formato JSON
+      const result = await this.geminiService.generateText({
+        userPrompt: prompt,
+        model: GeminiModel.FLASH,
+        temperature: 0.1,
+        maxOutputTokens: 4096
+      });
+      
+      // Processar o resultado
+      try {
+        // Limpar a resposta para extrair apenas o JSON
+        let cleanedResult = result.trim();
+        // Remover delimitadores de código json se presentes
+        if (cleanedResult.includes('```json')) {
+          cleanedResult = cleanedResult.replace(/```json/g, '').replace(/```/g, '').trim();
+        }
+        
+        // Converter resultado em objeto
+        const parsedResult = JSON.parse(cleanedResult);
+        
+        // Verificar se temos um array de reservas
+        if (parsedResult && parsedResult.reservations && Array.isArray(parsedResult.reservations)) {
+          console.log(`Extraídas ${parsedResult.reservations.length} reservas do texto`);
+          return parsedResult.reservations;
+        } else {
+          console.error("Resposta não contém um array de reservas válido:", parsedResult);
+          return [];
+        }
+      } catch (parseError) {
+        console.error("Erro ao processar resposta JSON:", parseError);
+        console.log("Resposta bruta:", result);
+        throw new Error(`Falha ao processar JSON da resposta: ${parseError.message}`);
+      }
+    } catch (error) {
+      console.error("Erro ao extrair reservas com formato JSON:", error);
+      throw new Error(`Erro ao extrair reservas: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
