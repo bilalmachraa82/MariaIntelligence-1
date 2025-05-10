@@ -152,40 +152,31 @@ export async function postOcr(req: Request, res: Response) {
         for (const reservation of reservations) {
           if (reservation.propertyName) {
             try {
-              // Buscar todas as propriedades e fazer matching manual pelo nome
+              // Buscar todas as propriedades
               const properties = await storage.getProperties();
               
-              // Normalizar o nome para facilitar a comparação
-              const normalizedPropertyName = reservation.propertyName.toLowerCase().trim();
+              // Utilizar função de correspondência de propriedade por alias
+              const matchedProperty = matchPropertyByAlias(reservation.propertyName, properties);
               
-              // Tentar encontrar uma correspondência exata ou parcial
-              const exactMatch = properties.find(p => 
-                p.name.toLowerCase() === normalizedPropertyName
-              );
-              
-              // Se encontrou correspondência exata, usar essa
-              if (exactMatch) {
-                reservation.propertyId = exactMatch.id;
-                console.log(`✅ Propriedade encontrada exata: ${exactMatch.name} (ID: ${exactMatch.id})`);
-              } else {
-                // Tentar correspondência parcial
-                const partialMatches = properties.filter(p => 
-                  normalizedPropertyName.includes(p.name.toLowerCase()) || 
-                  p.name.toLowerCase().includes(normalizedPropertyName)
-                );
+              if (matchedProperty) {
+                // Propriedade encontrada (seja por nome exato, alias ou correspondência parcial)
+                reservation.propertyId = matchedProperty.id;
                 
-                if (partialMatches.length > 0) {
-                  // Usar a primeira correspondência parcial
-                  const bestMatch = partialMatches[0];
-                  reservation.propertyId = bestMatch.id;
-                  console.log(`✅ Propriedade encontrada parcial: ${bestMatch.name} (ID: ${bestMatch.id})`);
+                // Registrar como a propriedade foi encontrada (para diagnóstico)
+                if (matchedProperty.name.toLowerCase() === reservation.propertyName.toLowerCase().trim()) {
+                  console.log(`✅ Propriedade encontrada por nome exato: ${matchedProperty.name} (ID: ${matchedProperty.id})`);
+                } else if (matchedProperty.aliases && Array.isArray(matchedProperty.aliases) && 
+                           matchedProperty.aliases.some(alias => alias.toLowerCase() === reservation.propertyName.toLowerCase().trim())) {
+                  console.log(`✅ Propriedade encontrada por alias: ${matchedProperty.name} (ID: ${matchedProperty.id})`);
                 } else {
-                  // Se não encontrou correspondência, adicionar aos campos ausentes
-                  if (!missingFields.includes('propertyId')) {
-                    missingFields.push('propertyId');
-                  }
-                  console.log(`⚠️ Propriedade não encontrada: ${reservation.propertyName}`);
+                  console.log(`✅ Propriedade encontrada por correspondência parcial: ${matchedProperty.name} (ID: ${matchedProperty.id})`);
                 }
+              } else {
+                // Se não encontrou correspondência, adicionar aos campos ausentes
+                if (!missingFields.includes('propertyId')) {
+                  missingFields.push('propertyId');
+                }
+                console.log(`⚠️ Propriedade não encontrada: ${reservation.propertyName}`);
               }
             } catch (propertyError) {
               console.error('Erro ao buscar propriedade:', propertyError);
@@ -371,40 +362,31 @@ export async function processOCR(req: Request, res: Response) {
         for (const reservation of reservations) {
           if (reservation.propertyName) {
             try {
-              // Buscar todas as propriedades e fazer matching manual pelo nome
+              // Buscar todas as propriedades
               const properties = await storage.getProperties();
               
-              // Normalizar o nome para facilitar a comparação
-              const normalizedPropertyName = reservation.propertyName.toLowerCase().trim();
+              // Utilizar função de correspondência de propriedade por alias
+              const matchedProperty = matchPropertyByAlias(reservation.propertyName, properties);
               
-              // Tentar encontrar uma correspondência exata ou parcial
-              const exactMatch = properties.find(p => 
-                p.name.toLowerCase() === normalizedPropertyName
-              );
-              
-              // Se encontrou correspondência exata, usar essa
-              if (exactMatch) {
-                reservation.propertyId = exactMatch.id;
-                console.log(`✅ Propriedade encontrada exata: ${exactMatch.name} (ID: ${exactMatch.id})`);
-              } else {
-                // Tentar correspondência parcial
-                const partialMatches = properties.filter(p => 
-                  normalizedPropertyName.includes(p.name.toLowerCase()) || 
-                  p.name.toLowerCase().includes(normalizedPropertyName)
-                );
+              if (matchedProperty) {
+                // Propriedade encontrada (seja por nome exato, alias ou correspondência parcial)
+                reservation.propertyId = matchedProperty.id;
                 
-                if (partialMatches.length > 0) {
-                  // Usar a primeira correspondência parcial
-                  const bestMatch = partialMatches[0];
-                  reservation.propertyId = bestMatch.id;
-                  console.log(`✅ Propriedade encontrada parcial: ${bestMatch.name} (ID: ${bestMatch.id})`);
+                // Registrar como a propriedade foi encontrada (para diagnóstico)
+                if (matchedProperty.name.toLowerCase() === reservation.propertyName.toLowerCase().trim()) {
+                  console.log(`✅ Propriedade encontrada por nome exato: ${matchedProperty.name} (ID: ${matchedProperty.id})`);
+                } else if (matchedProperty.aliases && Array.isArray(matchedProperty.aliases) && 
+                           matchedProperty.aliases.some(alias => alias.toLowerCase() === reservation.propertyName.toLowerCase().trim())) {
+                  console.log(`✅ Propriedade encontrada por alias: ${matchedProperty.name} (ID: ${matchedProperty.id})`);
                 } else {
-                  // Se não encontrou correspondência, adicionar aos campos ausentes
-                  if (!missingFields.includes('propertyId')) {
-                    missingFields.push('propertyId');
-                  }
-                  console.log(`⚠️ Propriedade não encontrada: ${reservation.propertyName}`);
+                  console.log(`✅ Propriedade encontrada por correspondência parcial: ${matchedProperty.name} (ID: ${matchedProperty.id})`);
                 }
+              } else {
+                // Se não encontrou correspondência, adicionar aos campos ausentes
+                if (!missingFields.includes('propertyId')) {
+                  missingFields.push('propertyId');
+                }
+                console.log(`⚠️ Propriedade não encontrada: ${reservation.propertyName}`);
               }
             } catch (propertyError) {
               console.error('Erro ao buscar propriedade:', propertyError);
@@ -434,7 +416,6 @@ export async function processOCR(req: Request, res: Response) {
       return res.status(500).json({
         success: false,
         error: 'Erro ao extrair dados estruturados',
-        rawText: extractedText,
         details: parseError instanceof Error ? parseError.message : 'Erro desconhecido'
       });
     }
@@ -454,212 +435,106 @@ export async function processOCR(req: Request, res: Response) {
  * @param res Resposta Express
  */
 export async function processWithService(req: Request, res: Response) {
-  console.log('📑 Iniciando processamento OCR com serviço específico...');
+  console.log('📑 Processando OCR com serviço específico...');
   
   try {
+    // Verificar os parâmetros
+    const serviceParam = req.params.service;
+    if (!serviceParam) {
+      return res.status(400).json({
+        success: false,
+        error: 'Parâmetro de serviço não especificado'
+      });
+    }
+    
+    // Verificar se o serviço é válido
+    let serviceType: AIServiceType;
+    const service = serviceParam.toLowerCase() as OCRService;
+    
+    if (service in serviceTypeMap) {
+      serviceType = serviceTypeMap[service];
+    } else {
+      return res.status(400).json({
+        success: false,
+        error: `Serviço inválido: ${serviceParam}. Opções válidas: mistral, openrouter, rolm, native, auto`
+      });
+    }
+    
     // Validar se recebemos um arquivo
     if (!req.file) {
       return res.status(422).json({
         success: false,
-        message: 'Nenhum arquivo enviado'
+        error: 'Nenhum arquivo enviado'
       });
     }
     
-    // Obter o serviço especificado
-    const serviceParam = req.params.service?.toLowerCase() as OCRService;
-    
-    if (!serviceParam) {
-      return res.status(400).json({
+    // Validar tipo MIME
+    if (!req.file.mimetype || !req.file.mimetype.startsWith('application/')) {
+      // Remover arquivo inválido
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch (unlinkError) {
+        console.error('Erro ao remover arquivo inválido:', unlinkError);
+      }
+      
+      return res.status(422).json({
         success: false,
-        message: 'Serviço não especificado'
+        error: 'Tipo de arquivo inválido. Apenas arquivos de documento são aceitos.'
       });
     }
     
-    // Validar se o serviço é suportado
-    const validServices: OCRService[] = ['mistral', 'openrouter', 'rolm', 'native', 'auto'];
-    
-    if (!validServices.includes(serviceParam)) {
-      return res.status(400).json({
-        success: false,
-        message: `Serviço inválido: ${serviceParam}. Serviços suportados: ${validServices.join(', ')}`
-      });
-    }
-    
-    // Obter o service type conforme a enumeração AIServiceType
-    let serviceType: AIServiceType;
-    
-    switch (serviceParam) {
-      case 'mistral':
-      case 'openrouter':
-        serviceType = AIServiceType.OPENROUTER;
-        break;
-      case 'rolm':
-        serviceType = AIServiceType.ROLM;
-        break;
-      case 'native':
-        serviceType = AIServiceType.AUTO; // Usamos AUTO para o modo nativo
-        break;
-      case 'auto':
-      default:
-        serviceType = AIServiceType.AUTO;
-        break;
-    }
-    
-    // Verificar se o serviço está disponível
-    let serviceAvailable = true;
-    
-    if (serviceParam === 'mistral' || serviceParam === 'openrouter') {
-      serviceAvailable = !!process.env.OPENROUTER_API_KEY;
-    } else if (serviceParam === 'rolm') {
-      serviceAvailable = !!process.env.HF_TOKEN;
-    } else if (serviceParam === 'native') {
-      serviceAvailable = true; // O modo nativo está sempre disponível
-    }
-    
-    if (!serviceAvailable && serviceParam !== 'auto') {
-      return res.status(400).json({
-        success: false,
-        message: `Serviço ${serviceParam} não está configurado. Verifique se a chave API correspondente foi fornecida.`
-      });
-    }
-    
-    // Caminho do arquivo
-    const filePath = req.file.path;
-    const mimeType = req.file.mimetype;
-    
-    // Verificar se o arquivo é uma imagem ou PDF
-    let isImage = false;
-    
-    if (mimeType.startsWith('image/')) {
-      isImage = true;
-    } else if (mimeType !== 'application/pdf') {
-      return res.status(400).json({
-        success: false,
-        message: `Tipo de arquivo não suportado: ${mimeType}. Apenas PDFs e imagens são permitidos.`
-      });
-    }
-    
-    // Carregar arquivo
-    let fileData: Buffer | string;
-    let base64Data: string;
-    
+    // Ler o arquivo
+    let fileBuffer: Buffer;
     try {
-      fileData = fs.readFileSync(filePath);
-      base64Data = isImage 
-        ? fileData.toString('base64')
-        : fileData.toString('base64');
+      fileBuffer = fs.readFileSync(req.file.path);
     } catch (readError) {
       console.error('Erro ao ler arquivo:', readError);
       return res.status(500).json({
         success: false,
-        message: 'Erro ao ler arquivo',
-        error: readError instanceof Error ? readError.message : 'Erro desconhecido'
+        error: 'Erro ao ler o arquivo'
       });
     }
     
-    // Extrair o texto do arquivo usando o serviço especificado
-    console.log(`Processando arquivo usando serviço: ${serviceParam}`);
+    // Converter para base64
+    const fileBase64 = fileBuffer.toString('base64');
     
+    // Iniciar métricas
     const startTime = Date.now();
+    
+    // Extrair texto usando o serviço especificado
     let extractedText = '';
-    let provider = serviceParam;
-    
     try {
-      let extractedResult = '';
-      
-      if (isImage) {
-        extractedResult = await aiAdapter.extractTextFromImage(base64Data, serviceType);
-      } else {
-        extractedResult = await aiAdapter.extractTextFromPDF(base64Data, serviceType);
-      }
-      
-      extractedText = extractedResult;
-      provider = serviceParam; // Usamos o serviço solicitado como provider
+      extractedText = await aiAdapter.extractTextFromPDF(fileBase64, serviceType);
+      console.log(`✅ Texto extraído com sucesso (${extractedText.length} caracteres)`);
     } catch (extractError) {
-      console.error('Erro na extração de dados:', extractError);
+      console.error(`Erro ao extrair texto via ${service}:`, extractError);
       return res.status(500).json({
         success: false,
-        message: 'Erro na extração de dados',
-        error: extractError instanceof Error ? extractError.message : 'Erro desconhecido'
+        error: `Erro ao extrair texto via ${service}`,
+        details: extractError instanceof Error ? extractError.message : 'Erro desconhecido'
       });
     }
     
-    const latencyMs = Date.now() - startTime;
+    // Finalizar métricas
+    const endTime = Date.now();
+    const latencyMs = endTime - startTime;
     
-    // Extrair dados estruturados do texto
-    try {
-      const { reservations, boxes: boxesData, missing: missingFields } = await parseReservationData(extractedText);
-      
-      // Para cada reserva, tentar encontrar a propriedade correspondente
-      for (const reservation of reservations) {
-        if (reservation.propertyName) {
-          try {
-            // Buscar todas as propriedades e fazer matching manual pelo nome
-            const properties = await storage.getProperties();
-            
-            // Normalizar o nome para facilitar a comparação
-            const normalizedPropertyName = reservation.propertyName.toLowerCase().trim();
-            
-            // Tentar encontrar uma correspondência exata ou parcial
-            const exactMatch = properties.find(p => 
-              p.name.toLowerCase() === normalizedPropertyName
-            );
-            
-            // Se encontrou correspondência exata, usar essa
-            if (exactMatch) {
-              reservation.propertyId = exactMatch.id;
-              console.log(`✅ Propriedade encontrada exata: ${exactMatch.name} (ID: ${exactMatch.id})`);
-            } else {
-              // Tentar correspondência parcial
-              const partialMatches = properties.filter(p => 
-                normalizedPropertyName.includes(p.name.toLowerCase()) || 
-                p.name.toLowerCase().includes(normalizedPropertyName)
-              );
-              
-              if (partialMatches.length > 0) {
-                // Usar a primeira correspondência parcial
-                const bestMatch = partialMatches[0];
-                reservation.propertyId = bestMatch.id;
-                console.log(`✅ Propriedade encontrada parcial: ${bestMatch.name} (ID: ${bestMatch.id})`);
-              } else {
-                // Se não encontrou correspondência, adicionar aos campos ausentes
-                if (!missingFields.includes('propertyId')) {
-                  missingFields.push('propertyId');
-                }
-                console.log(`⚠️ Propriedade não encontrada: ${reservation.propertyName}`);
-              }
-            }
-          } catch (propertyError) {
-            console.error('Erro ao buscar propriedade:', propertyError);
-          }
-        }
+    // Registrar métricas
+    console.log(`⏱️ OCR processado em ${latencyMs}ms via ${service}`);
+    
+    // Retornar resultado
+    return res.json({
+      success: true,
+      service,
+      rawText: extractedText,
+      metrics: {
+        latencyMs,
+        service,
+        textLength: extractedText.length
       }
-      
-      return res.json({
-        success: true,
-        provider,
-        reservations,
-        boxes: boxesData,
-        missing: missingFields,
-        rawText: extractedText,
-        metrics: {
-          latencyMs,
-          provider,
-          textLength: extractedText.length,
-          service: serviceParam
-        }
-      });
-    } catch (parseError) {
-      console.error('Erro ao extrair dados estruturados:', parseError);
-      return res.status(500).json({
-        success: false,
-        error: 'Erro ao extrair dados estruturados',
-        rawText: extractedText,
-        details: parseError instanceof Error ? parseError.message : 'Erro desconhecido'
-      });
-    }
+    });
   } catch (error) {
-    console.error('Erro no processamento OCR específico:', error);
+    console.error('Erro no processamento OCR:', error);
     return res.status(500).json({
       success: false,
       error: 'Erro interno no processamento OCR',
@@ -667,6 +542,3 @@ export async function processWithService(req: Request, res: Response) {
     });
   }
 }
-
-// Exportar os métodos do controlador
-export default { processOCR, processWithService };
