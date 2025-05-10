@@ -24,7 +24,7 @@ export class OpenRouterService {
    * Testa a conexão com o OpenRouter
    * @returns Resultado do teste de conexão
    */
-  public async testConnection(): Promise<{success: boolean, error?: string}> {
+  public async testConnection(): Promise<{success: boolean, message: string}> {
     try {
       if (!this.apiKey) {
         return { success: false, error: 'Chave API não configurada' };

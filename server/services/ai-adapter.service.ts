@@ -198,7 +198,7 @@ export class AIAdapter {
               process.env.GOOGLE_API_KEY = '';
               return { 
                 success: false, 
-                message: `Erro ao configurar Gemini: ${testResult.error || 'Chave inválida'}` 
+                message: `Erro ao configurar Gemini: ${testResult.message}` 
               };
             }
           } catch (error) {

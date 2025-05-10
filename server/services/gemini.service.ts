@@ -175,6 +175,30 @@ export class GeminiService {
    * @param apiKey Chave API do Google Gemini
    * @returns Promise<boolean> indicando se a chave é válida
    */
+  /**
+   * Método público para testar a conexão com a API Gemini
+   * @returns Resultado do teste contendo success e message
+   */
+  public async testConnection(): Promise<{success: boolean, message: string}> {
+    try {
+      const isValid = await this.validateApiKey(this.apiKey);
+      return {
+        success: isValid,
+        message: isValid ? 'Conectado com sucesso' : 'Chave de API inválida'
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : 'Erro desconhecido'
+      };
+    }
+  }
+
+  /**
+   * Valida se uma chave de API Gemini é válida
+   * @param apiKey Chave API do Google Gemini
+   * @returns Promise<boolean> indicando se a chave é válida
+   */
   private async validateApiKey(apiKey: string): Promise<boolean> {
     try {
       return await this.withRetry(async () => {
