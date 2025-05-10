@@ -19,6 +19,7 @@ export const financialDocumentStatusEnum = pgEnum("financial_document_status", [
 export const properties = pgTable("properties", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
+  aliases: text("aliases").array(), // Lista de aliases/apelidos para a propriedade
   ownerId: integer("owner_id").notNull(),
   cleaningCost: text("cleaning_cost"), // Custo de limpeza em euros
   checkInFee: text("check_in_fee"), // Taxa de check-in em euros

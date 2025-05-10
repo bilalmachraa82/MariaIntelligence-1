@@ -10,6 +10,7 @@ import { AIAdapter, AIServiceType } from '../services/ai-adapter.service';
 import { HandwritingDetector } from '../services/handwriting-detector';
 import { parseReservationData } from '../parsers/parseReservations';
 import { storage } from '../storage';
+import { matchPropertyByAlias } from '../utils/matchPropertyByAlias';
 
 // Serviços necessários
 const aiAdapter = AIAdapter.getInstance();
