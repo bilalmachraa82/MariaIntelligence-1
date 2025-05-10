@@ -17,7 +17,7 @@ import crypto from 'crypto';
 export enum GeminiModel {
   TEXT = 'gemini-1.5-pro',          // Para processamento de texto
   VISION = 'gemini-1.5-pro-vision', // Para processamento de imagens
-  FLASH = 'gemini-1.5-flash',       // Versão mais rápida e mais barata
+  FLASH = 'gemini-2.0-flash',       // Versão 2.0 mais rápida e mais barata
   AUDIO = 'gemini-2.5-pro-exp-03-25' // Experimental - Para processamento de áudio (inclui voz)
 }
 
@@ -1461,16 +1461,34 @@ export class GeminiService {
         
         // Adicionar configuração de function calling se fornecida
         if (functionDefinitions && functionDefinitions.length > 0) {
-          requestConfig.tools = [{
-            functionDeclarations: functionDefinitions
-          }];
-          
-          if (functionCallBehavior) {
-            requestConfig.toolConfig = {
-              functionCallingConfig: {
-                mode: functionCallBehavior
-              }
+          // Verificar se estamos usando Gemini 2.0 ou mais recente
+          if (model && model.includes('2.0')) {
+            // Configuração para Gemini 2.0
+            requestConfig.systemInstruction = {
+              parts: [{ text: systemPrompt || "Você é um assistente útil." }]
             };
+            
+            requestConfig.tools = [{
+              functionDeclarations: functionDefinitions
+            }];
+            
+            // Remover systemPrompt do contents para evitar duplicação
+            if (contents.length > 0 && contents[0].role === 'system') {
+              contents.shift();
+            }
+          } else {
+            // Configuração para Gemini 1.x (legada)
+            requestConfig.tools = [{
+              functionDeclarations: functionDefinitions
+            }];
+            
+            if (functionCallBehavior) {
+              requestConfig.toolConfig = {
+                functionCallingConfig: {
+                  mode: functionCallBehavior
+                }
+              };
+            }
           }
         } else {
           // Se não houver function definitions, usar responseFormat JSON
@@ -1501,18 +1519,33 @@ export class GeminiService {
         // Processar function calling se existir
         if (result.candidates && result.candidates[0] && 
             result.candidates[0].content && 
-            result.candidates[0].content.parts && 
-            result.candidates[0].content.parts[0] && 
-            result.candidates[0].content.parts[0].functionCall) {
+            result.candidates[0].content.parts) {
           
-          // Extrair dados da chamada de função
-          const functionCall = result.candidates[0].content.parts[0].functionCall;
-          return {
-            functionCalls: [{
-              name: functionCall.name,
-              args: functionCall.args
-            }]
-          };
+          // Procurar por chamada de função nas partes da resposta
+          for (const part of result.candidates[0].content.parts) {
+            if (part.functionCall) {
+              // Encontrou chamada de função
+              const functionCall = part.functionCall;
+              return {
+                functionCalls: [{
+                  name: functionCall.name,
+                  args: functionCall.args
+                }]
+              };
+            }
+          }
+          
+          // Verificar se há chamada de função no formato do Gemini 2.0 
+          if (result.candidates[0].content.functionCalls && 
+              result.candidates[0].content.functionCalls.length > 0) {
+            
+            const functionCalls = result.candidates[0].content.functionCalls.map(call => ({
+              name: call.name,
+              args: call.args
+            }));
+            
+            return { functionCalls };
+          }
         }
         
         // Processar resposta como texto
