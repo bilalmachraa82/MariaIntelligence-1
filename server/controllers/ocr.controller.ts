@@ -149,16 +149,40 @@ export async function processOCR(req: Request, res: Response) {
         for (const reservation of reservations) {
           if (reservation.propertyName) {
             try {
-              const matchedProperty = await storage.matchPropertyByName(reservation.propertyName);
-              if (matchedProperty) {
-                reservation.propertyId = matchedProperty.id;
-                console.log(`✅ Propriedade encontrada: ${matchedProperty.name} (ID: ${matchedProperty.id})`);
+              // Buscar todas as propriedades e fazer matching manual pelo nome
+              const properties = await storage.getProperties();
+              
+              // Normalizar o nome para facilitar a comparação
+              const normalizedPropertyName = reservation.propertyName.toLowerCase().trim();
+              
+              // Tentar encontrar uma correspondência exata ou parcial
+              const exactMatch = properties.find(p => 
+                p.name.toLowerCase() === normalizedPropertyName
+              );
+              
+              // Se encontrou correspondência exata, usar essa
+              if (exactMatch) {
+                reservation.propertyId = exactMatch.id;
+                console.log(`✅ Propriedade encontrada exata: ${exactMatch.name} (ID: ${exactMatch.id})`);
               } else {
-                // Se não encontrou a propriedade, adicionar aos campos ausentes
-                if (!missingFields.includes('propertyId')) {
-                  missingFields.push('propertyId');
+                // Tentar correspondência parcial
+                const partialMatches = properties.filter(p => 
+                  normalizedPropertyName.includes(p.name.toLowerCase()) || 
+                  p.name.toLowerCase().includes(normalizedPropertyName)
+                );
+                
+                if (partialMatches.length > 0) {
+                  // Usar a primeira correspondência parcial
+                  const bestMatch = partialMatches[0];
+                  reservation.propertyId = bestMatch.id;
+                  console.log(`✅ Propriedade encontrada parcial: ${bestMatch.name} (ID: ${bestMatch.id})`);
+                } else {
+                  // Se não encontrou correspondência, adicionar aos campos ausentes
+                  if (!missingFields.includes('propertyId')) {
+                    missingFields.push('propertyId');
+                  }
+                  console.log(`⚠️ Propriedade não encontrada: ${reservation.propertyName}`);
                 }
-                console.log(`⚠️ Propriedade não encontrada: ${reservation.propertyName}`);
               }
             } catch (propertyError) {
               console.error('Erro ao buscar propriedade:', propertyError);

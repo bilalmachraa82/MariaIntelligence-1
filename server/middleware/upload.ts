@@ -48,37 +48,20 @@ const storage = multer.diskStorage({
   }
 });
 
-// Filtro para validar tipos MIME
-const fileFilter = function(req: any, file: any, cb: any) {
-  // Lista de tipos MIME permitidos
-  const allowedMimeTypes = [
-    'application/pdf', // PDF
-    'image/jpeg',      // JPEG/JPG
-    'image/png',       // PNG
-    'image/webp',      // WebP
-    'image/heic',      // HEIC (iOS)
-    'image/heif'       // HEIF (iOS)
-  ];
-  
-  if (allowedMimeTypes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error(`Tipo de arquivo não suportado: ${file.mimetype}. Apenas PDFs e imagens comuns são permitidos.`), false);
-  }
-};
-
 // Configuração do multer para upload de PDFs
 export const pdfUpload = multer({
   storage,
   limits: {
     fileSize: MAX_UPLOAD_SIZE,
   },
-  fileFilter: function(req, file, cb) {
+  fileFilter: (req: any, file: any, cb: any) => {
     // Aceitar apenas PDFs
     if (file.mimetype === 'application/pdf') {
       cb(null, true);
     } else {
-      cb(new Error('Apenas arquivos PDF são permitidos!'), false);
+      // Armazenar erro na requisição para tratamento posterior
+      req.fileValidationError = 'Apenas arquivos PDF são permitidos!';
+      cb(null, false);
     }
   }
 });
@@ -89,12 +72,14 @@ export const imageUpload = multer({
   limits: {
     fileSize: MAX_UPLOAD_SIZE / 2, // Metade do tamanho máximo para imagens
   },
-  fileFilter: function(req, file, cb) {
+  fileFilter: (req: any, file: any, cb: any) => {
     // Aceitar apenas imagens
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
     } else {
-      cb(new Error('Apenas imagens são permitidas (JPG, PNG, WebP)!'), false);
+      // Armazenar erro na requisição para tratamento posterior
+      req.fileValidationError = 'Apenas imagens são permitidas (JPG, PNG, WebP)!';
+      cb(null, false);
     }
   }
 });
@@ -105,7 +90,25 @@ export const anyFileUpload = multer({
   limits: {
     fileSize: MAX_UPLOAD_SIZE,
   },
-  fileFilter
+  fileFilter: (req: any, file: any, cb: any) => {
+    // Lista de tipos MIME permitidos
+    const allowedMimeTypes = [
+      'application/pdf', // PDF
+      'image/jpeg',      // JPEG/JPG
+      'image/png',       // PNG
+      'image/webp',      // WebP
+      'image/heic',      // HEIC (iOS)
+      'image/heif'       // HEIF (iOS)
+    ];
+    
+    if (allowedMimeTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      // Armazenar erro na requisição para tratamento posterior
+      req.fileValidationError = `Tipo de arquivo não suportado: ${file.mimetype}. Apenas PDFs e imagens comuns são permitidos.`;
+      cb(null, false);
+    }
+  }
 });
 
 // Exportar configurações

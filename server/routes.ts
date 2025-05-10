@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import multer from "multer";
 import bodyParser from "body-parser";
 import { ZodError, z } from "zod";
-// Usamos exclusivamente Google Gemini API para todas as funcionalidades de IA
+// Suporte para múltiplos serviços de IA: OpenRouter (Mistral OCR), Gemini, RolmOCR
 import { aiService, AIServiceType } from "./services/ai-adapter.service";
 import { AIAdapter } from "./services/ai-adapter.service";
 import { hasGeminiApiKey, checkGeminiApiKey } from "./services/check-gemini-key";
@@ -23,6 +23,9 @@ import { registerSpeechRoutes } from "./api/speech-routes";
 import uploadControlFileRouter from "./api/upload-control-file";
 import reservationAssistantRouter from "./api/reservation-assistant";
 import { generateDemoData, resetDemoDataHandler } from "./api/demo-data";
+// Importar o novo controlador OCR e middleware de upload configurável
+import ocrController from "./controllers/ocr.controller";
+import { pdfUpload as configuredPdfUpload, imageUpload as configuredImageUpload, anyFileUpload as configuredAnyFileUpload } from "./middleware/upload";
 import { 
   insertPropertySchema, 
   insertOwnerSchema,
