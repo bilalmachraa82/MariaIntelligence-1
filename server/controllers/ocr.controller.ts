@@ -1,6 +1,6 @@
 /**
  * Controlador para OCR de documentos
- * Suporta múltiplos fornecedores: OpenRouter (Mistral OCR), RolmOCR e fallback para Gemini
+ * Suporta múltiplos fornecedores: OpenRouter (Mistral OCR), RolmOCR e fallback com extrator nativo (pdf-parse)
  */
 
 import { Request, Response } from 'express';
@@ -509,8 +509,8 @@ export async function processWithService(req: Request, res: Response) {
       serviceAvailable = !!process.env.OPENROUTER_API_KEY;
     } else if (serviceParam === 'rolm') {
       serviceAvailable = !!process.env.HF_TOKEN;
-    } else if (serviceParam === 'gemini') {
-      serviceAvailable = !!process.env.GEMINI_API_KEY;
+    } else if (serviceParam === 'native') {
+      serviceAvailable = true; // O modo nativo está sempre disponível
     }
     
     if (!serviceAvailable && serviceParam !== 'auto') {
