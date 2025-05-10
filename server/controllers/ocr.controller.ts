@@ -155,18 +155,22 @@ export async function postOcr(req: Request, res: Response) {
               // Buscar todas as propriedades
               const properties = await storage.getProperties();
               
-              // Utilizar função de correspondência de propriedade por alias
-              const matchedProperty = matchPropertyByAlias(reservation.propertyName, properties);
+              // Garantir que a propriedade nome é válida
+              const propertyName = reservation.propertyName || '';
+              const matchedProperty = matchPropertyByAlias(propertyName, properties);
               
               if (matchedProperty) {
                 // Propriedade encontrada (seja por nome exato, alias ou correspondência parcial)
                 reservation.propertyId = matchedProperty.id;
                 
+                // Normalizar o nome da propriedade para diagnóstico
+                const normalizedPropertyName = propertyName.toLowerCase().trim();
+                
                 // Registrar como a propriedade foi encontrada (para diagnóstico)
-                if (matchedProperty.name.toLowerCase() === reservation.propertyName.toLowerCase().trim()) {
+                if (matchedProperty.name.toLowerCase() === normalizedPropertyName) {
                   console.log(`✅ Propriedade encontrada por nome exato: ${matchedProperty.name} (ID: ${matchedProperty.id})`);
                 } else if (matchedProperty.aliases && Array.isArray(matchedProperty.aliases) && 
-                           matchedProperty.aliases.some(alias => alias.toLowerCase() === reservation.propertyName.toLowerCase().trim())) {
+                           matchedProperty.aliases.some(alias => alias.toLowerCase() === normalizedPropertyName)) {
                   console.log(`✅ Propriedade encontrada por alias: ${matchedProperty.name} (ID: ${matchedProperty.id})`);
                 } else {
                   console.log(`✅ Propriedade encontrada por correspondência parcial: ${matchedProperty.name} (ID: ${matchedProperty.id})`);
@@ -176,7 +180,7 @@ export async function postOcr(req: Request, res: Response) {
                 if (!missingFields.includes('propertyId')) {
                   missingFields.push('propertyId');
                 }
-                console.log(`⚠️ Propriedade não encontrada: ${reservation.propertyName}`);
+                console.log(`⚠️ Propriedade não encontrada: ${propertyName}`);
               }
             } catch (propertyError) {
               console.error('Erro ao buscar propriedade:', propertyError);
@@ -365,18 +369,22 @@ export async function processOCR(req: Request, res: Response) {
               // Buscar todas as propriedades
               const properties = await storage.getProperties();
               
-              // Utilizar função de correspondência de propriedade por alias
-              const matchedProperty = matchPropertyByAlias(reservation.propertyName, properties);
+              // Garantir que a propriedade nome é válida
+              const propertyName = reservation.propertyName || '';
+              const matchedProperty = matchPropertyByAlias(propertyName, properties);
               
               if (matchedProperty) {
                 // Propriedade encontrada (seja por nome exato, alias ou correspondência parcial)
                 reservation.propertyId = matchedProperty.id;
                 
+                // Normalizar o nome da propriedade para diagnóstico
+                const normalizedPropertyName = propertyName.toLowerCase().trim();
+                
                 // Registrar como a propriedade foi encontrada (para diagnóstico)
-                if (matchedProperty.name.toLowerCase() === reservation.propertyName.toLowerCase().trim()) {
+                if (matchedProperty.name.toLowerCase() === normalizedPropertyName) {
                   console.log(`✅ Propriedade encontrada por nome exato: ${matchedProperty.name} (ID: ${matchedProperty.id})`);
                 } else if (matchedProperty.aliases && Array.isArray(matchedProperty.aliases) && 
-                           matchedProperty.aliases.some(alias => alias.toLowerCase() === reservation.propertyName.toLowerCase().trim())) {
+                           matchedProperty.aliases.some(alias => alias.toLowerCase() === normalizedPropertyName)) {
                   console.log(`✅ Propriedade encontrada por alias: ${matchedProperty.name} (ID: ${matchedProperty.id})`);
                 } else {
                   console.log(`✅ Propriedade encontrada por correspondência parcial: ${matchedProperty.name} (ID: ${matchedProperty.id})`);
@@ -386,7 +394,7 @@ export async function processOCR(req: Request, res: Response) {
                 if (!missingFields.includes('propertyId')) {
                   missingFields.push('propertyId');
                 }
-                console.log(`⚠️ Propriedade não encontrada: ${reservation.propertyName}`);
+                console.log(`⚠️ Propriedade não encontrada: ${propertyName}`);
               }
             } catch (propertyError) {
               console.error('Erro ao buscar propriedade:', propertyError);

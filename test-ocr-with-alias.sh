@@ -12,7 +12,7 @@ test_ocr() {
   
   # Enviar requisição para a API OCR
   curl -s -X POST \
-    -F "file=@$file_path" \
+    -F "pdf=@$file_path" \
     "http://localhost:5000/api/ocr?provider=$service" > ocr_response.json
   
   # Extrair propriedade encontrada
