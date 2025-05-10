@@ -468,11 +468,22 @@ export async function processReservationFile(
     const validationResult = validateExtractedData(result.extractedData);
     const { isValid, errors } = validationResult;
     
-    if (!isValid && errors.length > 0) {
+    // Permitir a criação da reserva mesmo com campos ausentes, desde que
+  // tenha pelo menos a propriedade identificada, para aproveitar a funcionalidade
+  // de aliases de propriedade
+  if (!isValid && errors.length > 0) {
+    // Caso especial: se temos o propertyId/propertyName, permitimos a reserva mesmo sem todos os campos
+    // Esta mudança é crítica para a funcionalidade de aliases funcionar corretamente
+    if (result.extractedData.propertyId || result.extractedData.propertyName) {
+      console.log(`✅ Propriedade identificada: ${result.extractedData.propertyName} (ID: ${result.extractedData.propertyId}), continuando mesmo com campos ausentes`);
+      // Não lançar erro, continuar com o processamento
+    } else {
+      // Se não temos nem a propriedade, aí sim lançamos um erro
       throw new Error(
         `Dados extraídos inválidos ou incompletos: ${errors.map(e => e.message).join(", ")}`
       );
     }
+  }
     
     // Formatar a resposta
     const response: UploadResponse = {
