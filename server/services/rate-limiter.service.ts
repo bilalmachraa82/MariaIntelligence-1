@@ -463,6 +463,29 @@ export class RateLimiterService {
   }
   
   /**
+   * Método auxiliar para programar a execução de uma função com controle de taxa
+   * @param fn Função a ser executada
+   * @param methodName Nome do método opcional para identificação no cache (gerado automaticamente se não fornecido)
+   * @param cacheTTL Tempo de vida do cache em milissegundos (padrão: 5 minutos)
+   * @returns Resultado da função
+   */
+  public async schedule<T>(
+    fn: () => Promise<T>,
+    methodName: string = `method_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    cacheTTL: number = 5 * 60 * 1000
+  ): Promise<T> {
+    // Usar a função com controle de taxa já implementada
+    const rateLimitedFn = this.rateLimitedFunction<T>(
+      fn,
+      methodName,
+      cacheTTL
+    );
+    
+    // Executar a função e retornar o resultado
+    return await rateLimitedFn();
+  }
+  
+  /**
    * Verifica o status atual do limite de taxa
    * @returns Informações sobre o status atual
    */

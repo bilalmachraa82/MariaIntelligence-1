@@ -1,31 +1,78 @@
 /**
- * Serviço adaptador para a API Google Gemini de IA
- * Fornece uma camada de abstração para acessar os diferentes serviços do Gemini
+ * Serviço adaptador para múltiplas APIs de IA
+ * Fornece uma camada de abstração para acessar os diferentes serviços de IA
+ * Suporta OpenRouter (Mistral-OCR), Gemini e RolmOCR
  */
 
 import { GeminiService } from './gemini.service';
+import { OpenRouterService } from './openrouter.service';
+import { RolmService } from './rolm.service';
+import { HandwritingDetector } from './handwriting-detector';
 import { ragService } from './rag-enhanced.service';
 
-// Enum para definir qual serviço de IA usar (apenas Gemini é suportado)
+// Enum para definir qual serviço de IA usar
 export enum AIServiceType {
-  GEMINI = 'gemini'
+  GEMINI = 'gemini',
+  OPENROUTER = 'openrouter',
+  ROLM = 'rolm',
+  AUTO = 'auto'
 }
 
 // Singleton para garantir que usamos a mesma instância em toda a aplicação
 export class AIAdapter {
   private static instance: AIAdapter;
+  
+  // Serviços disponíveis
+  private static services = {
+    openrouter: new OpenRouterService(),
+    gemini: new GeminiService(),
+    rolm: new RolmService(),
+  };
+  
+  // Detector de manuscritos
+  private handwritingDetector = new HandwritingDetector();
+  
+  // Referências para fácil acesso
   public geminiService: GeminiService;
-  private currentService: AIServiceType = AIServiceType.GEMINI;
+  public openRouterService: OpenRouterService;
+  public rolmService: RolmService;
+  
+  private currentService: AIServiceType = AIServiceType.AUTO;
   
   private constructor() {
-    this.geminiService = new GeminiService();
+    // Inicializar referências aos serviços
+    this.geminiService = AIAdapter.services.gemini;
+    this.openRouterService = AIAdapter.services.openrouter;
+    this.rolmService = AIAdapter.services.rolm;
     
-    // Verificar se temos chave do Gemini configurada
+    // Definir serviço primário com base na variável de ambiente
+    const primaryAI = process.env.PRIMARY_AI || 'openrouter';
+    if (primaryAI in AIServiceType) {
+      this.currentService = primaryAI as AIServiceType;
+    } else {
+      this.currentService = AIServiceType.AUTO;
+    }
+    
+    // Verificar configuração dos serviços
+    if (process.env.OPENROUTER_API_KEY) {
+      console.log("✅ OpenRouter API configurada corretamente");
+    } else {
+      console.warn("⚠️ OPENROUTER_API_KEY não está configurada. OCR via OpenRouter não funcionará.");
+    }
+    
     if (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY) {
       console.log("✅ Gemini API configurada corretamente");
     } else {
-      console.warn("⚠️ Nenhuma chave de API do Gemini configurada. Funcionalidades de IA estarão limitadas.");
+      console.warn("⚠️ Nenhuma chave de API do Gemini configurada. Funcionalidades de IA Gemini estarão limitadas.");
     }
+    
+    if (process.env.HF_TOKEN) {
+      console.log("✅ Hugging Face Token configurado corretamente");
+    } else {
+      console.warn("⚠️ HF_TOKEN não está configurado. Processamento de manuscritos via RolmOCR não funcionará.");
+    }
+    
+    console.log(`🤖 Serviço de IA primário configurado para: ${this.currentService}`);
   }
 
   /**
@@ -44,19 +91,32 @@ export class AIAdapter {
    * @param serviceType Tipo de serviço de IA a ser usado
    */
   public setService(serviceType: AIServiceType): void {
-    // Confirmando que estamos usando Gemini
-    if (serviceType === AIServiceType.GEMINI) {
-      console.log("Configurando para usar serviço Gemini.");
-    } else {
-      console.warn("Apenas o serviço Gemini é suportado. Configurando para usar Gemini.");
+    // Verificar se o serviço está disponível
+    switch (serviceType) {
+      case AIServiceType.GEMINI:
+        if (!(process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
+          throw new Error("GOOGLE_GEMINI_API_KEY não configurada. Não é possível usar o Gemini.");
+        }
+        break;
+      case AIServiceType.OPENROUTER:
+        if (!process.env.OPENROUTER_API_KEY) {
+          throw new Error("OPENROUTER_API_KEY não configurada. Não é possível usar o OpenRouter.");
+        }
+        break;
+      case AIServiceType.ROLM:
+        if (!process.env.HF_TOKEN) {
+          throw new Error("HF_TOKEN não configurado. Não é possível usar o RolmOCR.");
+        }
+        break;
+      case AIServiceType.AUTO:
+        // Verificar se pelo menos um serviço está disponível
+        if (!this.isServiceAvailable()) {
+          throw new Error("Nenhum serviço de IA está configurado. Configure pelo menos um serviço.");
+        }
+        break;
     }
     
-    // Verificar se temos chave API configurada
-    if (!(process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
-      throw new Error("GOOGLE_GEMINI_API_KEY não configurada. Não é possível usar o Gemini.");
-    }
-    
-    this.currentService = AIServiceType.GEMINI;
+    this.currentService = serviceType;
     console.log(`Serviço de IA configurado para: ${this.currentService}`);
   }
   
@@ -69,13 +129,46 @@ export class AIAdapter {
   }
   
   /**
+   * Obtém o serviço apropriado com base no nome ou configuração atual
+   * @param name Nome do serviço a ser usado (opcional, usa o serviço padrão se não informado)
+   * @returns O serviço apropriado
+   */
+  public getService(name: string = ''): GeminiService | OpenRouterService | RolmService {
+    // Se um nome for especificado, usar esse serviço
+    if (name && name in AIAdapter.services) {
+      return AIAdapter.services[name as keyof typeof AIAdapter.services];
+    }
+    
+    // Se estiver no modo AUTO, determinar o melhor serviço
+    if (this.currentService === AIServiceType.AUTO) {
+      // Prioridade: OpenRouter > Gemini > Rolm
+      if (process.env.OPENROUTER_API_KEY) {
+        return AIAdapter.services.openrouter;
+      } else if (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY) {
+        return AIAdapter.services.gemini;
+      } else if (process.env.HF_TOKEN) {
+        return AIAdapter.services.rolm;
+      }
+      
+      // Se nenhum serviço estiver configurado, usar Gemini como fallback
+      console.warn("⚠️ Nenhum serviço de IA configurado. Tentando usar Gemini como fallback.");
+      return AIAdapter.services.gemini;
+    }
+    
+    // Usar o serviço configurado
+    return AIAdapter.services[this.currentService as keyof typeof AIAdapter.services] || AIAdapter.services.gemini;
+  }
+  
+  /**
    * Verifica se algum serviço de IA está disponível
    * @returns True se tiver ao menos um serviço disponível
    */
   public isServiceAvailable(): boolean {
     return (
       (process.env.GOOGLE_GEMINI_API_KEY !== undefined && process.env.GOOGLE_GEMINI_API_KEY !== '') ||
-      (process.env.GOOGLE_API_KEY !== undefined && process.env.GOOGLE_API_KEY !== '')
+      (process.env.GOOGLE_API_KEY !== undefined && process.env.GOOGLE_API_KEY !== '') ||
+      (process.env.OPENROUTER_API_KEY !== undefined && process.env.OPENROUTER_API_KEY !== '') ||
+      (process.env.HF_TOKEN !== undefined && process.env.HF_TOKEN !== '')
     );
   }
   
@@ -84,13 +177,88 @@ export class AIAdapter {
   /**
    * Extrai texto de um PDF em base64
    * @param pdfBase64 PDF codificado em base64
+   * @param provider Provedor específico a ser usado (opcional)
    * @returns Texto extraído do documento
    */
-  public async extractTextFromPDF(pdfBase64: string): Promise<string> {
+  public async extractTextFromPDF(pdfBase64: string, provider?: string): Promise<string> {
     try {
-      return await this.geminiService.extractTextFromPDF(pdfBase64);
+      // Converter base64 para buffer se necessário
+      const pdfBuffer = Buffer.from(pdfBase64, 'base64');
+      
+      // Verificar se o documento contém manuscritos
+      let handwritingScore = 0;
+      try {
+        handwritingScore = await this.handwritingDetector.analyzePdf(pdfBuffer);
+        console.log(`📝 Pontuação de manuscrito: ${handwritingScore.toFixed(2)}`);
+      } catch (detectorError) {
+        console.warn('⚠️ Erro no detector de manuscritos:', detectorError);
+        // Continuar mesmo se o detector falhar
+      }
+      
+      // Determinar o provedor com base no conteúdo e configuração
+      let selectedProvider = provider || '';
+      
+      // Se não especificado, escolher o melhor provedor com base no conteúdo
+      if (!selectedProvider) {
+        if (handwritingScore > 0.4 && process.env.HF_TOKEN) {
+          selectedProvider = 'rolm'; // Usar Rolm para manuscritos
+          console.log('🔍 Detectado texto manuscrito, usando RolmOCR');
+        } else if (process.env.OPENROUTER_API_KEY) {
+          selectedProvider = 'openrouter'; // Usar OpenRouter para PDFs normais
+          console.log('🔍 Usando OpenRouter como provedor principal para OCR');
+        } else {
+          selectedProvider = 'gemini'; // Fallback para Gemini
+          console.log('🔍 Fallback para Gemini para extração de texto');
+        }
+      }
+      
+      // Usar o provedor selecionado
+      switch (selectedProvider) {
+        case 'openrouter':
+          try {
+            const result = await this.openRouterService.ocrPdf(pdfBuffer);
+            if (result.error) {
+              throw new Error(result.error);
+            }
+            return result.full_text;
+          } catch (openRouterError: any) {
+            console.error('❌ Erro com OpenRouter, tentando fallback para Gemini:', openRouterError);
+            return await this.geminiService.extractTextFromPDF(pdfBase64);
+          }
+          
+        case 'rolm':
+          try {
+            const result = await this.rolmService.processHandwriting(pdfBuffer);
+            if (result.error) {
+              throw new Error(result.error);
+            }
+            return result.text;
+          } catch (rolmError: any) {
+            console.error('❌ Erro com RolmOCR, tentando fallback para OpenRouter:', rolmError);
+            
+            // Tentar OpenRouter como fallback
+            if (process.env.OPENROUTER_API_KEY) {
+              try {
+                const result = await this.openRouterService.ocrPdf(pdfBuffer);
+                if (result.error) {
+                  throw new Error(result.error);
+                }
+                return result.full_text;
+              } catch (openRouterError) {
+                console.error('❌ Erro com OpenRouter, tentando fallback para Gemini:', openRouterError);
+              }
+            }
+            
+            // Último recurso: Gemini
+            return await this.geminiService.extractTextFromPDF(pdfBase64);
+          }
+          
+        case 'gemini':
+        default:
+          return await this.geminiService.extractTextFromPDF(pdfBase64);
+      }
     } catch (error: any) {
-      console.error(`Erro ao extrair texto do PDF com Gemini:`, error);
+      console.error(`❌ Erro ao extrair texto do PDF:`, error);
       throw new Error(`Falha ao extrair texto do PDF: ${error.message || 'Erro desconhecido'}`);
     }
   }
