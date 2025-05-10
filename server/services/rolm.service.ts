@@ -72,20 +72,20 @@ export class RolmService {
           
           return { 
             success: false, 
-            error: modelError.response?.data?.error || modelError.message || 'Erro ao acessar modelo' 
+            message: modelError.response?.data?.error || modelError.message || 'Erro ao acessar modelo' 
           };
         }
       } else {
         return { 
           success: false, 
-          error: `Erro na resposta da API: ${response.status} - ${response.statusText}` 
+          message: `Erro na resposta da API: ${response.status} - ${response.statusText}` 
         };
       }
     } catch (error: any) {
       console.error('❌ Erro ao testar conexão com RolmOCR:', error);
       return { 
         success: false, 
-        error: error.response?.data?.error || error.message || 'Erro desconhecido' 
+        message: error.response?.data?.error || error.message || 'Erro desconhecido' 
       };
     }
   }
