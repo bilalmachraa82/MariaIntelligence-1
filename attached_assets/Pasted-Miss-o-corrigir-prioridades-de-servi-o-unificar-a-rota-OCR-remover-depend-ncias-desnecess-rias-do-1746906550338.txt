@@ -1,0 +1,131 @@
+Missão: corrigir prioridades de serviço, unificar a rota OCR, remover dependências desnecessárias do Gemini no parser, criar componentes de UI em falta e ajustar testes.
+Resultado esperado: upload de PDF ➜ highlights ➜ validação ➜ reserva gravada, sem erros 500 e sem quota Gemini.
+Markdown
+# 🚀 Sprint "Mistral OCR FINAL"
+
+## 1. Variáveis de Ambiente
+- [ ] Em `.env`, garantir:  PRIMARY_AI=openrouter
+OR_MODEL=mistral-ocr
+Yaml
+- [ ] Remover/renomear `GOOGLE_GEMINI_API_KEY` se não for usar Gemini no OCR.
+
+---
+
+## 2. Back‑end
+
+### 2.1 AI Adapter
+- [ ] **/server/services/ai-adapter.service.ts**  
+```ts
+private static defaultName = process.env.PRIMARY_AI ?? "openrouter";
+static get(name = AiAdapter.defaultName) { … }
+Remove fallback implícito para Gemini.
+2.2 Rota OCR
+ /server/routes.ts
+
+Converge para /api/ocr (DELETE /api/ocr/process para evitar confusão).
+
+ ocr.controller.ts
+
+Exporta postOcr para /api/ocr.
+
+Recebe multipart/form-data, decide provider e devolve {reservations[], boxes, missing[]}.
+
+2.3 Parser
+ /server/parsers/parseReservations.ts
+
+Eliminar qualquer chamada a GeminiService.
+
+Fluxo: se JSON faltam campos → regex heurística → retorna missing[].
+
+2.4 Propriedades
+ Prisma schema:
+ model Property {
+  id        Int      @id @default(autoincrement())
+  name      String
+  aliases   String[] @default([])
+  // …
+}
+npx prisma migrate dev -n add_aliases_to_property
+
+ property.service.ts
+static matchByAlias(rawName: string): { id: number; score: number } | null
+Usa StringSimilarity.compareTwoStrings().
+3. Front‑end
+3.1 UploadPDF
+ /client/src/pages/pdf-upload/index.tsx
+
+Usa fetch("/api/ocr?provider=auto") e aguarda JSON.
+
+3.2 ValidationDrawer
+ /client/src/components/validation-drawer.tsx (novo)
+
+import { pdfjs } from "pdfjs-dist/legacy/build/pdf"
+
+Desenha <rect> com boxes (page coords).
+
+Renderiza form dinâmico para missing[].
+
+3.3 Hook use-pdf-upload
+ Ajustar handleFileUpload para usar rota nova e setar extractedData, missing.
+
+3.4 ReservationsService
+ saveReservation() faz POST /api/reservations com status: missing.length ? "pending":"confirmed".
+
+4. Testes
+ Adaptar jest.config.js a ESM.
+
+ Criar tests/ocr.spec.ts:
+ 
+it("processa PDF de Sete Rios", async () => {
+   const res = await request(app)
+      .post("/api/ocr")
+      .attach("pdf", "__tests__/data/Controlo_Sete Rios.pdf");
+   expect(res.status).toBe(200);
+   expect(res.body.reservations[0].propertyId).toBeDefined();
+});
+ Atualizar scripts test-ai-adapter* → remover Gemini paths.
+
+Scripts utilitários
+ scripts/ocr-benchmark.ts (usando axios & cli-table3).
+
+6. Lint & Build
+ pnpm dlx eslint . --fix
+
+ tsc --noEmit sem erros.
+
+7. QA Manual
+ Upload 3 PDFs (Aroeira I, Sete Rios, manuscrito de teste) → verificar highlights.
+
+ Reserva com nome diferente → UI pede <Select property> e grava.
+
+ Logs exibem provider:"openrouter" latency_ms < 5000.
+
+8. Documentação
+ Atualizar README.md > seção OCR Workflow.
+
+ Incluir tabela de env vars obrigatórias.
+
+🟢 Critério de aceite final
+pnpm dev ➜ GUI permite importar PDF, validar e gravar.
+
+npm test ➜ 0 falhas.
+
+node scripts/ocr-benchmark.js ➜ CER médio ≤ 10 %, p95 latência ≤ 6 s.
+
+Gemini quota error não aparece mais nos logs.
+
+Boa implementação! Qualquer 500 ou 422 que apareça, imprime stack trace e chama ChatGPT para debug rápido.
+
+yaml
+
+---
+
+### 🛑 Possíveis armadilhas finais (não esquecer!)
+
+1. **Limite 20 MB** no OpenRouter – se algum PDF exceder, dividir em páginas.  
+2. **CORS** – se o front em `vite` e API no mesmo domínio ‑ ok; caso contrário, configurar `cors()` middleware.  
+3. **PDF.js & Vite** – precisa de `define: { 'process.env': {} }` no `vite.config.ts` para evitar erro de build.  
+4. **Prisma migrate** no Replit demora → usar `npx prisma migrate deploy` no boot.  
+
+Cumprindo o prompt acima, o sistema deve entrar em “verde” e o Gemini deixa de interferir no OCR. Se algo estourar, manda o log!
+
