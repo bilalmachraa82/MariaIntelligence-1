@@ -17,7 +17,7 @@ import crypto from 'crypto';
 export enum GeminiModel {
   TEXT = 'gemini-1.5-pro',          // Para processamento de texto
   VISION = 'gemini-1.5-pro-vision', // Para processamento de imagens
-  FLASH = 'gemini-2.0-flash',       // Versão 2.0 mais rápida e mais barata
+  FLASH = 'gemini-1.5-flash',       // Versão mais rápida e mais barata
   AUDIO = 'gemini-2.5-pro-exp-03-25' // Experimental - Para processamento de áudio (inclui voz)
 }
 
@@ -1461,34 +1461,17 @@ export class GeminiService {
         
         // Adicionar configuração de function calling se fornecida
         if (functionDefinitions && functionDefinitions.length > 0) {
-          // Verificar se estamos usando Gemini 2.0 ou mais recente
-          if (model && model.includes('2.0')) {
-            // Configuração para Gemini 2.0
-            requestConfig.systemInstruction = {
-              parts: [{ text: systemPrompt || "Você é um assistente útil." }]
+          // Usar a configuração para Gemini 1.5 Flash que sabemos que funciona
+          requestConfig.tools = [{
+            functionDeclarations: functionDefinitions
+          }];
+          
+          if (functionCallBehavior) {
+            requestConfig.toolConfig = {
+              functionCallingConfig: {
+                mode: functionCallBehavior
+              }
             };
-            
-            requestConfig.tools = [{
-              functionDeclarations: functionDefinitions
-            }];
-            
-            // Remover systemPrompt do contents para evitar duplicação
-            if (contents.length > 0 && contents[0].role === 'system') {
-              contents.shift();
-            }
-          } else {
-            // Configuração para Gemini 1.x (legada)
-            requestConfig.tools = [{
-              functionDeclarations: functionDefinitions
-            }];
-            
-            if (functionCallBehavior) {
-              requestConfig.toolConfig = {
-                functionCallingConfig: {
-                  mode: functionCallBehavior
-                }
-              };
-            }
           }
         } else {
           // Se não houver function definitions, usar responseFormat JSON
@@ -1498,8 +1481,9 @@ export class GeminiService {
         // Fazer a chamada à API
         const result = await this.withRetry(async () => {
           // Chamar API usando fetch diretamente para suportar function calling
+          // Garantir que usamos Gemini 1.5 Flash que sabemos suportar function calling
           const apiUrl = 'https://generativelanguage.googleapis.com/v1/models/' + 
-            (model || 'gemini-1.5-flash') + ':generateContent' + 
+            'gemini-1.5-flash' + ':generateContent' + 
             '?key=' + this.apiKey;
           
           const response = await fetch(apiUrl, {
@@ -1539,7 +1523,7 @@ export class GeminiService {
           if (result.candidates[0].content.functionCalls && 
               result.candidates[0].content.functionCalls.length > 0) {
             
-            const functionCalls = result.candidates[0].content.functionCalls.map(call => ({
+            const functionCalls = result.candidates[0].content.functionCalls.map((call: any) => ({
               name: call.name,
               args: call.args
             }));
