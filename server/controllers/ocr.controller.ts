@@ -88,13 +88,28 @@ export async function postOcr(req: Request, res: Response) {
           provider = 'openrouter';
           console.log('📄 Usando OpenRouter para processamento do PDF');
         } else {
-          provider = 'gemini';
-          console.log('📄 Fallback para Gemini para processamento do PDF');
+          // Verificar se o Gemini atingiu o limite (através de uma variável de ambiente ou cache)
+          const isGeminiRateLimited = process.env.GEMINI_RATE_LIMITED === 'true';
+          
+          if (isGeminiRateLimited) {
+            provider = 'native';
+            console.log('📄 Gemini atingiu limite, usando extrator nativo (pdf-parse)');
+          } else {
+            provider = 'gemini';
+            console.log('📄 Fallback para Gemini para processamento do PDF');
+          }
         }
       } catch (detectorError) {
         console.error('Erro no detector de manuscritos:', detectorError);
-        // Em caso de erro, usar OpenRouter se disponível, ou Gemini como fallback
-        provider = process.env.OPENROUTER_API_KEY ? 'openrouter' : 'gemini';
+        // Em caso de erro, usar OpenRouter se disponível, ou o extrator nativo como último recurso
+        if (process.env.OPENROUTER_API_KEY) {
+          provider = 'openrouter';
+        } else if (process.env.GEMINI_RATE_LIMITED !== 'true') {
+          provider = 'gemini';
+        } else {
+          provider = 'native';
+          console.log('📄 Usando extrator nativo como último recurso');
+        }
       }
     }
     
@@ -299,13 +314,28 @@ export async function processOCR(req: Request, res: Response) {
           provider = 'openrouter';
           console.log('📄 Usando OpenRouter para processamento do PDF');
         } else {
-          provider = 'gemini';
-          console.log('📄 Fallback para Gemini para processamento do PDF');
+          // Verificar se o Gemini atingiu o limite (através de uma variável de ambiente ou cache)
+          const isGeminiRateLimited = process.env.GEMINI_RATE_LIMITED === 'true';
+          
+          if (isGeminiRateLimited) {
+            provider = 'native';
+            console.log('📄 Gemini atingiu limite, usando extrator nativo (pdf-parse)');
+          } else {
+            provider = 'gemini';
+            console.log('📄 Fallback para Gemini para processamento do PDF');
+          }
         }
       } catch (detectorError) {
         console.error('Erro no detector de manuscritos:', detectorError);
-        // Em caso de erro, usar OpenRouter se disponível, ou Gemini como fallback
-        provider = process.env.OPENROUTER_API_KEY ? 'openrouter' : 'gemini';
+        // Em caso de erro, usar OpenRouter se disponível, ou o extrator nativo como último recurso
+        if (process.env.OPENROUTER_API_KEY) {
+          provider = 'openrouter';
+        } else if (process.env.GEMINI_RATE_LIMITED !== 'true') {
+          provider = 'gemini';
+        } else {
+          provider = 'native';
+          console.log('📄 Usando extrator nativo como último recurso');
+        }
       }
     }
     

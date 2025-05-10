@@ -360,10 +360,27 @@ export class AIAdapter {
           selectedProvider = 'openrouter'; // Usar OpenRouter para PDFs normais
           console.log('🔍 Usando OpenRouter como provedor principal para OCR');
         } else {
-          selectedProvider = 'gemini'; // Fallback para Gemini
-          console.log('🔍 Fallback para Gemini para extração de texto');
+          selectedProvider = 'native'; // Usar extrator nativo como fallback (sem IA)
+          console.log('🔍 Usando extrator nativo de PDF como fallback (sem IA)');
         }
       }
+      
+      // Criar uma função para extrair texto usando pdf-parse
+      const extractWithPdfParse = async (): Promise<string> => {
+        console.log('📝 Extraindo texto com pdf-parse (método nativo)');
+        try {
+          // Usar biblioteca pdf-parse para extração básica
+          const pdfjs = require('pdf-parse');
+          const data = await pdfjs(pdfBuffer);
+          return data.text || '';
+        } catch (pdfParseError: any) {
+          console.error('❌ Erro ao extrair texto com pdf-parse:', pdfParseError);
+          throw new Error(`Falha na extração básica de texto: ${pdfParseError.message || 'Erro desconhecido'}`);
+        }
+      };
+      
+      // Armazenar falhas para relatório completo
+      const failures: string[] = [];
       
       // Usar o provedor selecionado
       switch (selectedProvider) {
@@ -375,8 +392,26 @@ export class AIAdapter {
             }
             return result.full_text;
           } catch (openRouterError: any) {
-            console.error('❌ Erro com OpenRouter, tentando fallback para Gemini:', openRouterError);
-            return await this.geminiService.extractTextFromPDF(pdfBase64);
+            console.error('❌ Erro com OpenRouter:', openRouterError);
+            failures.push(`OpenRouter: ${openRouterError.message}`);
+            
+            // Tentar Rolm se disponível
+            if (process.env.HF_TOKEN) {
+              try {
+                const result = await this.rolmService.processHandwriting(pdfBuffer);
+                if (result.error) {
+                  throw new Error(result.error);
+                }
+                return result.text;
+              } catch (rolmError: any) {
+                console.error('❌ Erro com RolmOCR:', rolmError);
+                failures.push(`RolmOCR: ${rolmError.message}`);
+              }
+            }
+            
+            // Último recurso: pdf-parse nativo
+            console.log('📄 Usando extrator nativo como último recurso após falhas em outros serviços');
+            return await extractWithPdfParse();
           }
           
         case 'rolm':
@@ -387,7 +422,8 @@ export class AIAdapter {
             }
             return result.text;
           } catch (rolmError: any) {
-            console.error('❌ Erro com RolmOCR, tentando fallback para OpenRouter:', rolmError);
+            console.error('❌ Erro com RolmOCR:', rolmError);
+            failures.push(`RolmOCR: ${rolmError.message}`);
             
             // Tentar OpenRouter como fallback
             if (process.env.OPENROUTER_API_KEY) {
@@ -397,22 +433,57 @@ export class AIAdapter {
                   throw new Error(result.error);
                 }
                 return result.full_text;
-              } catch (openRouterError) {
-                console.error('❌ Erro com OpenRouter, tentando fallback para Gemini:', openRouterError);
+              } catch (openRouterError: any) {
+                console.error('❌ Erro com OpenRouter:', openRouterError);
+                failures.push(`OpenRouter: ${openRouterError.message}`);
               }
             }
             
-            // Último recurso: Gemini
-            return await this.geminiService.extractTextFromPDF(pdfBase64);
+            // Último recurso: pdf-parse nativo
+            console.log('📄 Usando extrator nativo como último recurso após falhas em outros serviços');
+            return await extractWithPdfParse();
           }
           
-        case 'gemini':
+        case 'native':
+          // Extração direta com pdf-parse (sem OCR)
+          return await extractWithPdfParse();
+          
         default:
-          return await this.geminiService.extractTextFromPDF(pdfBase64);
+          // Tentar todos os serviços em ordem de prioridade
+          
+          // 1. Tentar OpenRouter se disponível
+          if (process.env.OPENROUTER_API_KEY) {
+            try {
+              const result = await this.openRouterService.ocrPdf(pdfBuffer);
+              if (!result.error) {
+                return result.full_text;
+              }
+              failures.push(`OpenRouter: ${result.error}`);
+            } catch (error: any) {
+              failures.push(`OpenRouter: ${error.message}`);
+            }
+          }
+          
+          // 2. Tentar RolmOCR se disponível
+          if (process.env.HF_TOKEN) {
+            try {
+              const result = await this.rolmService.processHandwriting(pdfBuffer);
+              if (!result.error) {
+                return result.text;
+              }
+              failures.push(`RolmOCR: ${result.error}`);
+            } catch (error: any) {
+              failures.push(`RolmOCR: ${error.message}`);
+            }
+          }
+          
+          // 3. Último recurso: pdf-parse nativo
+          console.log('📄 Todos os serviços OCR falharam, usando extrator nativo');
+          return await extractWithPdfParse();
       }
     } catch (error: any) {
       console.error(`❌ Erro ao extrair texto do PDF:`, error);
-      throw new Error(`Falha ao extrair texto do PDF: ${error.message || 'Erro desconhecido'}`);
+      throw new Error(`Falha na extração de texto: ${error.message || 'Erro desconhecido'}`);
     }
   }
   
