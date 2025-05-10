@@ -157,6 +157,77 @@ export class OpenRouterService {
       };
     }
   }
+  
+  /**
+   * Processa uma imagem para extração de texto e dados estruturados usando o OpenRouter
+   * @param imageBuffer Buffer da imagem
+   * @param mimeType Tipo MIME da imagem
+   * @returns Resultado do processamento com texto extraído e caixas delimitadoras
+   */
+  public async ocrImage(imageBuffer: Buffer, mimeType: string): Promise<{
+    full_text: string;
+    bounding_boxes?: Record<string, any>[];
+    error?: string;
+  }> {
+    this.checkInitialization();
+    
+    // Converter buffer para base64
+    const imageBase64 = imageBuffer.toString('base64');
+    
+    try {
+      // Usar rate limiter para controlar chamadas à API
+      const startTime = Date.now();
+      
+      // Criar função que faz a requisição
+      const makeRequest = async () => axios.post(
+        `${this.baseUrl}/vision`,
+        {
+          model: this.model,
+          mime_type: mimeType,
+          data: imageBase64
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${this.apiKey}`,
+            'HTTP-Referer': 'https://replit.com',
+            'X-Title': 'Maria Faz - Mistral OCR',
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      // Usar o método schedule do rate limiter com a função criada
+      const response = await rateLimiter.schedule(
+        makeRequest,
+        'openrouter_ocr_image',
+        60 * 1000 // Cache por 1 minuto
+      );
+      
+      const endTime = Date.now();
+      const latencyMs = endTime - startTime;
+      
+      // Registrar métricas de uso
+      console.log(`✅ OpenRouter OCR (imagem): concluído em ${latencyMs}ms, modelo: ${this.model}`);
+      
+      // Verificar resposta e extrair dados
+      if (response.data && response.data.text) {
+        return {
+          full_text: response.data.text,
+          bounding_boxes: response.data.bounding_boxes || []
+        };
+      } else {
+        throw new Error('Resposta vazia ou inválida do OpenRouter');
+      }
+    } catch (error: any) {
+      console.error('❌ Erro na API OpenRouter (imagem):', error.response?.data || error.message);
+      
+      // Retornar erro formatado
+      return {
+        full_text: '',
+        error: error.response?.data?.error?.message || error.message
+      };
+    }
+  }
 }
 
 export default OpenRouterService;

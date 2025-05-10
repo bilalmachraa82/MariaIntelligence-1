@@ -495,10 +495,101 @@ export class AIAdapter {
    */
   public async extractTextFromImage(imageBase64: string, mimeType: string): Promise<string> {
     try {
-      return await this.geminiService.extractTextFromImage(imageBase64, mimeType);
+      const failures: string[] = [];
+      
+      // Converter base64 para buffer
+      const imageBuffer = Buffer.from(imageBase64, 'base64');
+      
+      // Determinar o serviço a ser usado com base na configuração atual
+      switch (this.getCurrentService()) {
+        case AIServiceType.OPENROUTER:
+          if (!process.env.OPENROUTER_API_KEY) {
+            throw new Error("OpenRouter API Key não configurada");
+          }
+          
+          try {
+            const result = await this.openRouterService.ocrImage(imageBuffer, mimeType);
+            if (result.error) {
+              throw new Error(result.error);
+            }
+            return result.full_text;
+          } catch (error: any) {
+            console.error('❌ Erro com OpenRouter:', error);
+            failures.push(`OpenRouter: ${error.message}`);
+            
+            // Falhar para processamento nativo (não temos nativo para imagens)
+            throw new Error(`OpenRouter falhou: ${error.message}`);
+          }
+          
+        case AIServiceType.ROLM:
+          if (!process.env.HF_TOKEN) {
+            throw new Error("Hugging Face Token não configurado");
+          }
+          
+          try {
+            const result = await this.rolmService.processHandwritingImage(imageBuffer, mimeType);
+            if (result.error) {
+              throw new Error(result.error);
+            }
+            return result.text;
+          } catch (error: any) {
+            console.error('❌ Erro com RolmOCR:', error);
+            failures.push(`RolmOCR: ${error.message}`);
+            
+            // Tentar OpenRouter como fallback
+            if (process.env.OPENROUTER_API_KEY) {
+              try {
+                const result = await this.openRouterService.ocrImage(imageBuffer, mimeType);
+                if (result.error) {
+                  throw new Error(result.error);
+                }
+                return result.full_text;
+              } catch (openRouterError: any) {
+                console.error('❌ Erro com OpenRouter:', openRouterError);
+                failures.push(`OpenRouter: ${openRouterError.message}`);
+              }
+            }
+            
+            // Não temos extrator nativo para imagens, falhar com erro
+            throw new Error(`Todos os serviços OCR falharam: ${failures.join(', ')}`);
+          }
+        
+        case AIServiceType.AUTO:
+        default:
+          // Tentar todos os serviços em ordem de prioridade
+          
+          // 1. Tentar OpenRouter se disponível
+          if (process.env.OPENROUTER_API_KEY) {
+            try {
+              const result = await this.openRouterService.ocrImage(imageBuffer, mimeType);
+              if (!result.error) {
+                return result.full_text;
+              }
+              failures.push(`OpenRouter: ${result.error}`);
+            } catch (error: any) {
+              failures.push(`OpenRouter: ${error.message}`);
+            }
+          }
+          
+          // 2. Tentar RolmOCR se disponível
+          if (process.env.HF_TOKEN) {
+            try {
+              const result = await this.rolmService.processHandwritingImage(imageBuffer, mimeType);
+              if (!result.error) {
+                return result.text;
+              }
+              failures.push(`RolmOCR: ${result.error}`);
+            } catch (error: any) {
+              failures.push(`RolmOCR: ${error.message}`);
+            }
+          }
+          
+          // Não temos extrator nativo para imagens, falhar com erro
+          throw new Error(`Todos os serviços OCR falharam: ${failures.join(', ')}`);
+      }
     } catch (error: any) {
-      console.error(`Erro ao extrair texto da imagem com Gemini:`, error);
-      throw new Error(`Falha ao extrair texto da imagem: ${error.message || 'Erro desconhecido'}`);
+      console.error(`❌ Erro ao extrair texto da imagem:`, error);
+      throw new Error(`Falha na extração de texto da imagem: ${error.message || 'Erro desconhecido'}`);
     }
   }
   

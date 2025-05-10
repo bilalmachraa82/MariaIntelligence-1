@@ -158,6 +158,20 @@ export class RolmService {
       };
     }
   }
+  
+  /**
+   * Alias para processHandwriting, específico para imagens
+   * @param imageBuffer Buffer da imagem com texto
+   * @param mimeType Tipo MIME da imagem (não usado atualmente pelo Rolm)
+   * @returns Texto extraído da imagem
+   */
+  public async processHandwritingImage(imageBuffer: Buffer, mimeType: string): Promise<{
+    text: string;
+    error?: string;
+  }> {
+    // Apenas repassa para o método principal - o Rolm processa qualquer tipo de imagem independente do MIME
+    return this.processHandwriting(imageBuffer);
+  }
 }
 
 export default RolmService;
