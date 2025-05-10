@@ -120,42 +120,203 @@ export class ReservationAssistantService {
       Texto a analisar:
       ${text}`;
       
-      // Chamar o modelo com resposta em formato JSON
-      const result = await this.geminiService.generateText({
-        userPrompt: prompt,
-        model: GeminiModel.FLASH,
-        temperature: 0.1,
-        maxOutputTokens: 4096
-      });
-      
-      // Processar o resultado
       try {
-        // Limpar a resposta para extrair apenas o JSON
-        let cleanedResult = result.trim();
-        // Remover delimitadores de código json se presentes
-        if (cleanedResult.includes('```json')) {
-          cleanedResult = cleanedResult.replace(/```json/g, '').replace(/```/g, '').trim();
-        }
+        // Chamar o modelo com resposta em formato JSON
+        const result = await this.geminiService.generateText({
+          userPrompt: prompt,
+          model: GeminiModel.FLASH,
+          temperature: 0.1,
+          maxOutputTokens: 4096
+        });
         
-        // Converter resultado em objeto
-        const parsedResult = JSON.parse(cleanedResult);
-        
-        // Verificar se temos um array de reservas
-        if (parsedResult && parsedResult.reservations && Array.isArray(parsedResult.reservations)) {
-          console.log(`Extraídas ${parsedResult.reservations.length} reservas do texto`);
-          return parsedResult.reservations;
-        } else {
-          console.error("Resposta não contém um array de reservas válido:", parsedResult);
-          return [];
+        // Processar o resultado
+        try {
+          // Limpar a resposta para extrair apenas o JSON
+          let cleanedResult = result.trim();
+          // Remover delimitadores de código json se presentes
+          if (cleanedResult.includes('```json')) {
+            cleanedResult = cleanedResult.replace(/```json/g, '').replace(/```/g, '').trim();
+          }
+          
+          // Converter resultado em objeto
+          const parsedResult = JSON.parse(cleanedResult);
+          
+          // Verificar se temos um array de reservas
+          if (parsedResult && parsedResult.reservations && Array.isArray(parsedResult.reservations)) {
+            console.log(`Extraídas ${parsedResult.reservations.length} reservas do texto`);
+            return parsedResult.reservations;
+          } else {
+            console.error("Resposta não contém um array de reservas válido:", parsedResult);
+            // Tentar extração manual como fallback
+            console.log("Tentando extração manual como fallback...");
+            return this.extractReservationsManually(text);
+          }
+        } catch (error) {
+          console.error("Erro ao processar resposta JSON:", error);
+          console.log("Resposta bruta:", result);
+          console.log("Tentando extração manual como fallback...");
+          return this.extractReservationsManually(text);
         }
-      } catch (parseError) {
-        console.error("Erro ao processar resposta JSON:", parseError);
-        console.log("Resposta bruta:", result);
-        throw new Error(`Falha ao processar JSON da resposta: ${parseError.message}`);
+      } catch (apiError) {
+        // Se falhar na chamada API, usar extração manual como fallback
+        console.error("Erro na API Gemini:", apiError);
+        console.log("Usando extração manual devido a erro na API...");
+        return this.extractReservationsManually(text);
       }
     } catch (error) {
-      console.error("Erro ao extrair reservas com formato JSON:", error);
-      throw new Error(`Erro ao extrair reservas: ${error instanceof Error ? error.message : String(error)}`);
+      console.error("Erro ao extrair reservas:", error);
+      // Última tentativa com extração manual
+      try {
+        return this.extractReservationsManually(text);
+      } catch (fallbackError) {
+        console.error("Erro na extração manual:", fallbackError);
+        throw new Error(`Erro ao extrair reservas: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }
+  }
+  
+  /**
+   * Método de fallback para extrair reservas manualmente usando heurísticas
+   * @param text Texto para extrair reservas
+   * @returns Array de dados de reservas extraídos
+   */
+  private extractReservationsManually(text: string): ReservationData[] {
+    console.log("Executando extração manual de reservas...");
+    const reservations: ReservationData[] = [];
+    
+    try {
+      // Identificar possíveis nomes de propriedades/alojamentos
+      // Esta é uma implementação básica - em produção seria preciso uma base de dados de propriedades
+      const propertyNames = [
+        "Aroeira", "Aroeira I", "Aroeira II", "Ajuda", "Graça", "Feira da Ladra",
+        "Sete Rios", "5 de Outubro", "Saldanha", "Belém", "Alfama", "Lapa"
+      ];
+      
+      // Simplificar texto para processamento
+      const normalizedText = text.replace(/\s+/g, ' ').toLowerCase();
+      
+      // Encontrar trechos com nomes de propriedades
+      for (const propertyName of propertyNames) {
+        if (normalizedText.includes(propertyName.toLowerCase())) {
+          // Tentar encontrar padrões de datas
+          const datePattern = /(\d{1,2})[\/\.-](\d{1,2})[\/\.-](\d{2,4})/g;
+          const dates: string[] = [];
+          
+          let match;
+          while ((match = datePattern.exec(text)) !== null) {
+            const day = match[1].padStart(2, '0');
+            const month = match[2].padStart(2, '0');
+            // Lidar com formatos de ano de 2 ou 4 dígitos
+            const year = match[3].length === 2 ? `20${match[3]}` : match[3];
+            dates.push(`${year}-${month}-${day}`);
+          }
+          
+          // Se encontrou pelo menos 2 datas, assumir que são check-in e check-out
+          if (dates.length >= 2) {
+            // Procurar por nome de hóspede
+            let guestName = "Hóspede desconhecido";
+            
+            // Padrões comuns para nomes de hóspedes
+            const namePatterns = [
+              /(?:nome|cliente|guest|sr\.?|sra\.?|mr\.?|mrs\.?|ms\.?)\s*[:\.\-]?\s*([A-Z][a-zçãõáéíóúâêîôûàèìòù]+ [A-Z][a-zçãõáéíóúâêîôûàèìòù]+(?:\s+[A-Z][a-zçãõáéíóúâêîôûàèìòù]+)*)/i,
+              /([A-Z][a-zçãõáéíóúâêîôûàèìòù]+ [A-Z][a-zçãõáéíóúâêîôûàèìòù]+(?:\s+[A-Z][a-zçãõáéíóúâêîôûàèìòù]+)*)\s+(?:check-in|chegada|entrada|reserva)/i
+            ];
+            
+            for (const pattern of namePatterns) {
+              const nameMatch = text.match(pattern);
+              if (nameMatch && nameMatch[1]) {
+                guestName = nameMatch[1].trim();
+                break;
+              }
+            }
+            
+            // Procurar por número de pessoas/hóspedes
+            let guestCount = 0;
+            const guestCountPatterns = [
+              /(\d+)\s*(?:pessoas|hóspedes|adultos|guests|people)/i,
+              /(?:pessoas|hóspedes|adultos|guests|people)\s*:\s*(\d+)/i
+            ];
+            
+            for (const pattern of guestCountPatterns) {
+              const countMatch = text.match(pattern);
+              if (countMatch && countMatch[1]) {
+                guestCount = parseInt(countMatch[1], 10);
+                break;
+              }
+            }
+            
+            // Procurar por valor/preço
+            let amount = "";
+            const amountPatterns = [
+              /(?:valor|total|price|preço|montante|€|EUR)\s*[:\.\-]?\s*(\d+[.,]?\d*)/i,
+              /(\d+[.,]?\d*)\s*(?:€|EUR|euros)/i
+            ];
+            
+            for (const pattern of amountPatterns) {
+              const amountMatch = text.match(pattern);
+              if (amountMatch && amountMatch[1]) {
+                amount = amountMatch[1].replace(',', '.');
+                break;
+              }
+            }
+            
+            // Procurar por canal de reserva
+            let channel = "";
+            if (normalizedText.includes("airbnb")) channel = "Airbnb";
+            else if (normalizedText.includes("booking")) channel = "Booking.com";
+            else if (normalizedText.includes("direct") || normalizedText.includes("direto")) channel = "Direto";
+            else channel = "Desconhecido";
+            
+            // Criar objeto de reserva
+            reservations.push({
+              alojamento: propertyName,
+              nome_hospede: guestName,
+              email_hospede: "",
+              telefone_hospede: "",
+              data_check_in: dates[0],
+              data_check_out: dates[1],
+              total_hospedes: guestCount,
+              valor_total: amount,
+              canal_reserva: channel,
+              notas: "Extraído manualmente devido a indisponibilidade da API"
+            });
+          }
+        }
+      }
+      
+      if (reservations.length === 0) {
+        console.log("Nenhuma reserva encontrada na extração manual.");
+        
+        // Criar reserva com dados mínimos como último recurso
+        // Procurar datas no formato DD/MM/YYYY
+        const datePattern = /(\d{1,2})[\/\.-](\d{1,2})[\/\.-](\d{2,4})/g;
+        const dates: string[] = [];
+        
+        let match;
+        while ((match = datePattern.exec(text)) !== null) {
+          const day = match[1].padStart(2, '0');
+          const month = match[2].padStart(2, '0');
+          const year = match[3].length === 2 ? `20${match[3]}` : match[3];
+          dates.push(`${year}-${month}-${day}`);
+        }
+        
+        if (dates.length >= 2) {
+          reservations.push({
+            alojamento: "Propriedade não identificada",
+            nome_hospede: "Hóspede não identificado",
+            data_check_in: dates[0],
+            data_check_out: dates[1],
+            total_hospedes: 0,
+            canal_reserva: "Desconhecido",
+            notas: "Dados extraídos parcialmente - verificar manualmente"
+          });
+        }
+      }
+      
+      return reservations;
+    } catch (error) {
+      console.error("Erro na extração manual:", error);
+      return [];
     }
   }
 

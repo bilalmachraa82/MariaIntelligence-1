@@ -1260,28 +1260,73 @@ export class GeminiService {
       userPrompt = prompt;
     }
     
-    // Criar a função que fará a chamada à API
+    // Implementação simplificada usando fetch diretamente
+    // Esta versão não usa function calling nem ferramentas avançadas
     const generateTextFn = async (): Promise<string> => {
       try {
         // Remover qualquer timestamp existente para evitar conflitos
         const cleanPrompt = userPrompt.replace(/\nTimestamp: \d+$/g, '');
         
-        const result = await this.withRetry(async () => {
-          return await this.defaultModel.generateContent({
-            contents: [
-              {
-                role: 'user',
-                parts: [{ text: cleanPrompt }]
-              }
-            ],
-            generationConfig: { 
-              temperature,
-              maxOutputTokens: maxTokens || 2048
-            }
+        // Preparar conteúdo da requisição
+        let contents = [];
+        
+        // Adicionar prompt do sistema se fornecido
+        if (systemPrompt) {
+          contents.push({
+            role: 'system',
+            parts: [{ text: systemPrompt }]
           });
+        }
+        
+        // Adicionar prompt do usuário
+        contents.push({
+          role: 'user',
+          parts: [{ text: cleanPrompt }]
         });
         
-        return result.response.text();
+        // Configurar requisição sem function calling
+        const requestConfig = {
+          contents,
+          generationConfig: {
+            temperature: tempValue,
+            maxOutputTokens: maxOutputTokens,
+            responseFormat: { type: "text" }
+          }
+        };
+        
+        const result = await this.withRetry(async () => {
+          // Usar apenas o nome do modelo sem versão para compatibilidade
+          const modelName = 'gemini-1.5-flash';
+          
+          // Montar URL da API
+          const apiUrl = `https://generativelanguage.googleapis.com/v1/models/${modelName}:generateContent?key=${this.apiKey}`;
+          
+          // Fazer requisição usando fetch
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestConfig)
+          });
+          
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`API Gemini erro ${response.status}: ${errorText}`);
+          }
+          
+          return await response.json();
+        });
+        
+        // Processar resposta como texto simples
+        if (result.candidates && result.candidates[0] && 
+            result.candidates[0].content && 
+            result.candidates[0].content.parts) {
+          
+          return result.candidates[0].content.parts
+            .map((part: any) => part.text || '')
+            .join('');
+        }
+        
+        return '';
       } catch (error: any) {
         console.error("Erro ao gerar texto com Gemini:", error);
         throw new Error(`Falha na geração de texto: ${error.message}`);
