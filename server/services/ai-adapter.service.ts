@@ -9,6 +9,7 @@ import { OpenRouterService } from './openrouter.service';
 import { RolmService } from './rolm.service';
 import { HandwritingDetector } from './handwriting-detector';
 import { ragService } from './rag-enhanced.service';
+import pdfParse from 'pdf-parse';
 
 // Enum para definir qual serviço de IA usar
 export enum AIServiceType {
@@ -369,9 +370,8 @@ export class AIAdapter {
       const extractWithPdfParse = async (): Promise<string> => {
         console.log('📝 Extraindo texto com pdf-parse (método nativo)');
         try {
-          // Usar biblioteca pdf-parse para extração básica
-          const pdfjs = require('pdf-parse');
-          const data = await pdfjs(pdfBuffer);
+          // Usar biblioteca pdf-parse importada no topo do arquivo
+          const data = await pdfParse(pdfBuffer);
           return data.text || '';
         } catch (pdfParseError: any) {
           console.error('❌ Erro ao extrair texto com pdf-parse:', pdfParseError);
