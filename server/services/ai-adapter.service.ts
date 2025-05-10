@@ -272,7 +272,7 @@ export class AIAdapter {
       
       return testResult.success 
         ? { success: true, message: 'Conexão com OpenRouter bem-sucedida' }
-        : { success: false, message: `Erro na conexão com OpenRouter: ${testResult.error}` };
+        : { success: false, message: `Erro na conexão com OpenRouter: ${testResult.message}` };
     } catch (error) {
       return { 
         success: false, 

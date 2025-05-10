@@ -22,10 +22,10 @@ export class RolmService {
    * Testa a conexão com o Hugging Face / RolmOCR
    * @returns Resultado do teste de conexão
    */
-  public async testConnection(): Promise<{success: boolean, error?: string}> {
+  public async testConnection(): Promise<{success: boolean, message: string}> {
     try {
       if (!this.apiKey) {
-        return { success: false, error: 'HF_TOKEN não configurado' };
+        return { success: false, message: 'HF_TOKEN não configurado' };
       }
       
       // Para testar a conexão, fazemos uma requisição simples para verificar o status do modelo
@@ -53,11 +53,11 @@ export class RolmService {
           
           if (modelResponse.status === 200) {
             console.log('✅ RolmOCR conectado com sucesso');
-            return { success: true };
+            return { success: true, message: 'RolmOCR conectado com sucesso' };
           } else {
             return { 
               success: false, 
-              error: `Erro na resposta do modelo: ${modelResponse.status} - ${modelResponse.statusText}` 
+              message: `Erro na resposta do modelo: ${modelResponse.status} - ${modelResponse.statusText}` 
             };
           }
         } catch (modelError: any) {
@@ -67,7 +67,7 @@ export class RolmService {
               modelError.message.includes('timeout') || 
               modelError.response?.data?.error?.includes('loading')) {
             console.log('⚠️ RolmOCR está sendo carregado ou em fila - conexão bem-sucedida, modelo disponível');
-            return { success: true };
+            return { success: true, message: 'RolmOCR está sendo carregado - conexão bem-sucedida' };
           }
           
           return { 
