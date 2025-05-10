@@ -49,8 +49,24 @@ export class ReservationAssistantService {
     try {
       console.log("Processando texto para extração de reservas...");
       
-      // Extrair reservas usando formato JSON padrão (evita problemas de function calling)
-      const reservationsData = await this.extractReservationsWithJsonFormat(text);
+      let reservationsData: ReservationData[] = [];
+      
+      try {
+        // Tentar extrair reservas usando a API Gemini
+        console.log("Tentando extrair reservas com a API Gemini...");
+        reservationsData = await this.extractReservationsWithJsonFormat(text);
+      } catch (apiError) {
+        // Se API falhar, usar extração manual diretamente
+        console.error("Falha na extração via API Gemini:", apiError);
+        console.log("Usando extração manual como alternativa...");
+        reservationsData = this.extractReservationsManually(text);
+      }
+      
+      // Se ambos os métodos acima falharem ou não encontrarem reservas, usamos extração manual básica
+      if (!reservationsData || reservationsData.length === 0) {
+        console.log("Nenhuma reserva encontrada, tentando extração manual básica...");
+        reservationsData = this.extractReservationsManually(text);
+      }
       
       // Normalizar dados
       const normalizedReservations = reservationsData.map(reservation => 
@@ -70,9 +86,55 @@ export class ReservationAssistantService {
         missingCrucialInfo: hasMissingCrucialInfo
       };
     } catch (error) {
-      console.error("Erro ao processar texto de reserva:", error);
-      throw new Error(`Erro ao processar texto de reserva: ${error instanceof Error ? error.message : String(error)}`);
+      console.error("Erro crítico ao processar texto de reserva:", error);
+      // Como último recurso, tentar criar pelo menos uma reserva básica
+      try {
+        const basicReservation = this.createBasicReservation(text);
+        const missingInfo = this.checkMissingCrucialInfo([basicReservation]);
+        const message = "⚠️ Extração limitada devido a erros. Verifique e corrija os dados manualmente.";
+        
+        return {
+          reservations: [basicReservation],
+          responseMessage: message,
+          missingCrucialInfo: true
+        };
+      } catch (lastError) {
+        throw new Error(`Erro ao processar texto de reserva: ${error instanceof Error ? error.message : String(error)}`);
+      }
     }
+  }
+  
+  /**
+   * Cria uma reserva básica com dados mínimos extraídos do texto
+   * Serve como último recurso quando todos os outros métodos falham
+   */
+  private createBasicReservation(text: string): ReservationData {
+    // Tentar encontrar datas no formato DD/MM/YYYY ou similar
+    const datePattern = /(\d{1,2})[\/\.-](\d{1,2})[\/\.-](\d{2,4})/g;
+    const dates: string[] = [];
+    
+    let match;
+    while ((match = datePattern.exec(text)) !== null) {
+      const day = match[1].padStart(2, '0');
+      const month = match[2].padStart(2, '0');
+      const year = match[3].length === 2 ? `20${match[3]}` : match[3];
+      dates.push(`${year}-${month}-${day}`);
+    }
+    
+    // Usar as primeiras duas datas encontradas como check-in e check-out
+    const checkIn = dates.length > 0 ? dates[0] : format(new Date(), 'yyyy-MM-dd');
+    const checkOut = dates.length > 1 ? dates[1] : format(new Date(Date.now() + 86400000), 'yyyy-MM-dd');
+    
+    return {
+      alojamento: "Não identificado",
+      nome_hospede: "Hóspede não identificado",
+      data_check_in: checkIn,
+      data_check_out: checkOut,
+      total_hospedes: 1,
+      valor_total: "",
+      canal_reserva: "",
+      notas: "Extração manual de emergência devido a falhas na API - verificar dados"
+    };
   }
   
   /**

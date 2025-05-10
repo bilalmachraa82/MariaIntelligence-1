@@ -1289,8 +1289,8 @@ export class GeminiService {
           contents,
           generationConfig: {
             temperature: tempValue,
-            maxOutputTokens: maxOutputTokens,
-            responseFormat: { type: "text" }
+            maxOutputTokens: maxOutputTokens
+            // Removido responseFormat que estava causando erro
           }
         };
         
