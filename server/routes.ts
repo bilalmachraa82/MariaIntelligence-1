@@ -1632,6 +1632,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
    * Endpoint para processamento de qualquer arquivo (PDF ou imagem)
    * Detecta automaticamente o tipo e executa o processamento apropriado
    */
+  /**
+   * Endpoint para processamento OCR aprimorado com múltiplos serviços
+   * Usa prioridade: Mistral OCR (OpenRouter) -> RolmOCR -> Gemini
+   * Detecta automaticamente conteúdo manuscrito e otimiza o processamento
+   */
+  app.post("/api/ocr/process", anyFileUpload.single('file'), ocrController.processOCR);
+  
+  /**
+   * Endpoint para processamento de documentos via OCR usando diferentes serviços
+   * Permite o cliente especificar qual serviço deseja usar
+   */
+  app.post("/api/ocr/process/:service", anyFileUpload.single('file'), ocrController.processWithService);
+  
+  /**
+   * Endpoint para upload e processamento geral de arquivos (versão legada)
+   */
   app.post("/api/upload-file", anyFileUpload.single('file'), async (req: Request, res: Response) => {
     try {
       console.log('Iniciando processamento de upload de arquivo (PDF/imagem)...');
@@ -2015,11 +2031,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Redirecionamento da rota antiga (mantido para compatibilidade)
+  // Verificar se a chave API OpenRouter está configurada para o Mistral
   app.get("/api/check-mistral-key", (_req: Request, res: Response) => {
     try {
+      // Verificar a presença da variável de ambiente OPENROUTER_API_KEY
+      const hasOpenRouterKey = !!process.env.OPENROUTER_API_KEY;
+      
+      // Verificar também a disponibilidade do Gemini como fallback
       const hasGeminiKey = hasGeminiApiKey();
-      res.json({ available: hasGeminiKey });
+      
+      res.json({ 
+        available: hasOpenRouterKey,
+        fallbackAvailable: hasGeminiKey,
+        primaryService: hasOpenRouterKey ? 'mistral' : (hasGeminiKey ? 'gemini' : null)
+      });
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+  
+  /**
+   * Endpoint para configurar a chave da API OpenRouter
+   * Salva a chave em uma variável de ambiente e inicializa o serviço
+   */
+  app.post("/api/configure-openrouter-key", async (req: Request, res: Response) => {
+    try {
+      const { apiKey } = req.body;
+      
+      if (!apiKey) {
+        return res.status(400).json({
+          success: false,
+          message: "Chave API não fornecida"
+        });
+      }
+      
+      // Definir a chave na variável de ambiente
+      process.env.OPENROUTER_API_KEY = apiKey;
+      
+      // Reinicializar o serviço de IA para usar a nova chave
+      await aiService.setApiKey('openrouter', apiKey);
+      
+      console.log("✅ Chave API OpenRouter configurada com sucesso");
+      
+      // Testar a chave realizando uma solicitação simples
+      const testResult = await aiService.testOpenRouterConnection();
+      
+      if (testResult.success) {
+        return res.json({
+          success: true,
+          message: "Chave API OpenRouter configurada e testada com sucesso",
+          models: testResult.models || []
+        });
+      } else {
+        return res.status(400).json({
+          success: false,
+          message: "Chave API OpenRouter configurada, mas o teste falhou",
+          error: testResult.error
+        });
+      }
     } catch (err) {
       handleError(err, res);
     }

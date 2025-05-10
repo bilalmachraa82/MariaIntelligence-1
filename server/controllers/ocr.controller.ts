@@ -6,7 +6,7 @@
 import { Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
-import { AIAdapter } from '../services/ai-adapter.service';
+import { AIAdapter, AIServiceType } from '../services/ai-adapter.service';
 import { HandwritingDetector } from '../services/handwriting-detector';
 import { parseReservationData } from '../parsers/parseReservations';
 import { storage } from '../storage';
@@ -14,6 +14,18 @@ import { storage } from '../storage';
 // Serviços necessários
 const aiAdapter = AIAdapter.getInstance();
 const handwritingDetector = new HandwritingDetector();
+
+// Definição de tipos para serviços OCR
+type OCRService = 'mistral' | 'openrouter' | 'rolm' | 'gemini' | 'auto';
+
+// Mapeamento entre tipos OCRService e AIServiceType
+const serviceTypeMap: Record<OCRService, AIServiceType> = {
+  mistral: AIServiceType.OPENROUTER, // Mistral é fornecido via OpenRouter
+  openrouter: AIServiceType.OPENROUTER,
+  rolm: AIServiceType.ROLM,
+  gemini: AIServiceType.GEMINI,
+  auto: AIServiceType.AUTO
+};
 
 /**
  * Processa um arquivo PDF e extrai texto e dados estruturados usando OCR
@@ -226,4 +238,225 @@ export async function processOCR(req: Request, res: Response) {
   }
 }
 
-export default { processOCR };
+/**
+ * Processa um arquivo usando um serviço OCR específico
+ * @param req Requisição Express com parâmetro service e arquivo via multer
+ * @param res Resposta Express
+ */
+export async function processWithService(req: Request, res: Response) {
+  console.log('📑 Iniciando processamento OCR com serviço específico...');
+  
+  try {
+    // Validar se recebemos um arquivo
+    if (!req.file) {
+      return res.status(422).json({
+        success: false,
+        message: 'Nenhum arquivo enviado'
+      });
+    }
+    
+    // Obter o serviço especificado
+    const serviceParam = req.params.service?.toLowerCase() as OCRService;
+    
+    if (!serviceParam) {
+      return res.status(400).json({
+        success: false,
+        message: 'Serviço não especificado'
+      });
+    }
+    
+    // Validar se o serviço é suportado
+    const validServices: OCRService[] = ['mistral', 'openrouter', 'rolm', 'gemini', 'auto'];
+    
+    if (!validServices.includes(serviceParam)) {
+      return res.status(400).json({
+        success: false,
+        message: `Serviço inválido: ${serviceParam}. Serviços suportados: ${validServices.join(', ')}`
+      });
+    }
+    
+    // Obter o service type conforme a enumeração AIServiceType
+    let serviceType: AIServiceType;
+    
+    switch (serviceParam) {
+      case 'mistral':
+      case 'openrouter':
+        serviceType = AIServiceType.OPENROUTER;
+        break;
+      case 'rolm':
+        serviceType = AIServiceType.ROLM;
+        break;
+      case 'gemini':
+        serviceType = AIServiceType.GEMINI;
+        break;
+      case 'auto':
+      default:
+        serviceType = AIServiceType.AUTO;
+        break;
+    }
+    
+    // Verificar se o serviço está disponível
+    let serviceAvailable = true;
+    
+    if (serviceParam === 'mistral' || serviceParam === 'openrouter') {
+      serviceAvailable = !!process.env.OPENROUTER_API_KEY;
+    } else if (serviceParam === 'rolm') {
+      serviceAvailable = !!process.env.HF_TOKEN;
+    } else if (serviceParam === 'gemini') {
+      serviceAvailable = !!process.env.GEMINI_API_KEY;
+    }
+    
+    if (!serviceAvailable && serviceParam !== 'auto') {
+      return res.status(400).json({
+        success: false,
+        message: `Serviço ${serviceParam} não está configurado. Verifique se a chave API correspondente foi fornecida.`
+      });
+    }
+    
+    // Caminho do arquivo
+    const filePath = req.file.path;
+    const mimeType = req.file.mimetype;
+    
+    // Verificar se o arquivo é uma imagem ou PDF
+    let isImage = false;
+    
+    if (mimeType.startsWith('image/')) {
+      isImage = true;
+    } else if (mimeType !== 'application/pdf') {
+      return res.status(400).json({
+        success: false,
+        message: `Tipo de arquivo não suportado: ${mimeType}. Apenas PDFs e imagens são permitidos.`
+      });
+    }
+    
+    // Carregar arquivo
+    let fileData: Buffer | string;
+    let base64Data: string;
+    
+    try {
+      fileData = fs.readFileSync(filePath);
+      base64Data = isImage 
+        ? fileData.toString('base64')
+        : fileData.toString('base64');
+    } catch (readError) {
+      console.error('Erro ao ler arquivo:', readError);
+      return res.status(500).json({
+        success: false,
+        message: 'Erro ao ler arquivo',
+        error: readError instanceof Error ? readError.message : 'Erro desconhecido'
+      });
+    }
+    
+    // Extrair o texto do arquivo usando o serviço especificado
+    console.log(`Processando arquivo usando serviço: ${serviceParam}`);
+    
+    const startTime = Date.now();
+    let extractedText = '';
+    let provider = serviceParam;
+    
+    try {
+      let result;
+      
+      if (isImage) {
+        result = await aiAdapter.extractDataFromImage(base64Data, serviceType);
+      } else {
+        result = await aiAdapter.extractDataFromPdf(base64Data, serviceType);
+      }
+      
+      extractedText = result.text;
+      provider = result.provider;
+    } catch (extractError) {
+      console.error('Erro na extração de dados:', extractError);
+      return res.status(500).json({
+        success: false,
+        message: 'Erro na extração de dados',
+        error: extractError instanceof Error ? extractError.message : 'Erro desconhecido'
+      });
+    }
+    
+    const latencyMs = Date.now() - startTime;
+    
+    // Extrair dados estruturados do texto
+    try {
+      const { reservations, boxes: boxesData, missing: missingFields } = await parseReservationData(extractedText);
+      
+      // Para cada reserva, tentar encontrar a propriedade correspondente
+      for (const reservation of reservations) {
+        if (reservation.propertyName) {
+          try {
+            // Buscar todas as propriedades e fazer matching manual pelo nome
+            const properties = await storage.getProperties();
+            
+            // Normalizar o nome para facilitar a comparação
+            const normalizedPropertyName = reservation.propertyName.toLowerCase().trim();
+            
+            // Tentar encontrar uma correspondência exata ou parcial
+            const exactMatch = properties.find(p => 
+              p.name.toLowerCase() === normalizedPropertyName
+            );
+            
+            // Se encontrou correspondência exata, usar essa
+            if (exactMatch) {
+              reservation.propertyId = exactMatch.id;
+              console.log(`✅ Propriedade encontrada exata: ${exactMatch.name} (ID: ${exactMatch.id})`);
+            } else {
+              // Tentar correspondência parcial
+              const partialMatches = properties.filter(p => 
+                normalizedPropertyName.includes(p.name.toLowerCase()) || 
+                p.name.toLowerCase().includes(normalizedPropertyName)
+              );
+              
+              if (partialMatches.length > 0) {
+                // Usar a primeira correspondência parcial
+                const bestMatch = partialMatches[0];
+                reservation.propertyId = bestMatch.id;
+                console.log(`✅ Propriedade encontrada parcial: ${bestMatch.name} (ID: ${bestMatch.id})`);
+              } else {
+                // Se não encontrou correspondência, adicionar aos campos ausentes
+                if (!missingFields.includes('propertyId')) {
+                  missingFields.push('propertyId');
+                }
+                console.log(`⚠️ Propriedade não encontrada: ${reservation.propertyName}`);
+              }
+            }
+          } catch (propertyError) {
+            console.error('Erro ao buscar propriedade:', propertyError);
+          }
+        }
+      }
+      
+      return res.json({
+        success: true,
+        provider,
+        reservations,
+        boxes: boxesData,
+        missing: missingFields,
+        rawText: extractedText,
+        metrics: {
+          latencyMs,
+          provider,
+          textLength: extractedText.length,
+          service: serviceParam
+        }
+      });
+    } catch (parseError) {
+      console.error('Erro ao extrair dados estruturados:', parseError);
+      return res.status(500).json({
+        success: false,
+        error: 'Erro ao extrair dados estruturados',
+        rawText: extractedText,
+        details: parseError instanceof Error ? parseError.message : 'Erro desconhecido'
+      });
+    }
+  } catch (error) {
+    console.error('Erro no processamento OCR específico:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Erro interno no processamento OCR',
+      details: error instanceof Error ? error.message : 'Erro desconhecido'
+    });
+  }
+}
+
+// Exportar os métodos do controlador
+export default { processOCR, processWithService };
