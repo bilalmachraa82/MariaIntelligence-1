@@ -1,0 +1,144 @@
+Meta: reactivar o Mistral OCR via Open Router (primário), manter Gemini para análise de BD, corrigir problemas pendentes e garantir deploy 100 % funcional.
+Como usar: cola este markdown no chat do Replit AI. Ele deverá executar cada passo sequencialmente e confirmar com “✅ Done” ou reportar erro.
+
+0 | Pré‑condições
+Branch nova: feat/mistral-ocr
+
+Node: v20
+
+pnpm: ≥ 8
+
+Banco de dados: já configurado (Prisma + PostgreSQL)
+
+1 | Ambiente .env
+dotenv
+Copiar
+Editar
+# Open Router
+OPENROUTER_API_KEY=<TUA_KEY>
+OR_MODEL=mistral-ocr
+PRIMARY_AI=openrouter          # "openrouter" | "gemini" | "mistral" | "qwen"
+
+# Manuscrito opcional (RolmOCR)
+HF_TOKEN=<TUA_HF_TOKEN>
+
+# Limites upload
+MAX_UPLOAD_MB=20
+Confirma que DATABASE_URL já existe.
+
+2 | Dependências
+bash
+Copiar
+Editar
+pnpm add axios pdfjs-dist @pdf-lib/pdf-lib onnxruntime-node
+pnpm add -D jest supertest @types/jest ts-node
+3 | Back‑end – checklist detalhado
+Arquivo/Directório	Tarefa
+server/services/openrouter.service.ts	Novo. Implementar ocrPdf(buf):
+- endpoint: https://openrouter.ai/api/v1/vision
+- headers: Authorization, HTTP-Referer, X-Title
+- body: { model: process.env.OR_MODEL, mime_type: "application/pdf", data: base64 }
+- retorna full_text + bounding_boxes se existirem
+server/services/mistral.service.ts	Remover (duplicado/obsoleto)
+server/services/rolm.service.ts	Novo (opcional). Chama https://api-inference.huggingface.co/models/reducto/RolmOCR para manuscrito
+server/services/handwriting-detector.ts	Novo (opcional). Carrega modelo ONNX (<2 MB) e devolve score 0..1
+server/services/ai-adapter.service.ts	 Refactor:
+ts<br>private static services = {<br> openrouter: new OpenRouterService(),<br> gemini: new GeminiService(),<br> rolm: new RolmService(),<br>}<br>static get(name = process.env.PRIMARY_AI) { … }<br>
+server/controllers/ocr.controller.ts	1. Aceitar multipart/form-data.
+2. Se handwritingScore>0.4 → provider=rolm, senão openrouter.
+3. Normalizar resposta: { reservations[], boxes, missing[] }.
+4. Enviar 422 se buffer vazio ou MIME inválido.
+server/routes.ts	Adicionar router.post("/api/ocr", upload.single("pdf"), ocrController)
+server/middleware/upload.ts	Aumentar limite para process.env.MAX_UPLOAD_MB
+server/parsers/parseReservations.ts	Recebe JSON OCR → valida tipos, devolve campos prontos; usar regex apenas se campo em falta
+server/models/property.ts	Acrescentar campo aliases: string[] (Prisma migrate)
+server/services/property.service.ts	Função matchByAlias(name) devolve (propertyId, score)
+Logging	Winston: logar (provider, latency_ms, pages, score)
+Tests	tests/ocr.spec.ts: 3 PDFs → expect 200 e missing.length<=1
+
+4 | Front‑end – checklist detalhado
+Componente	Tarefas
+UploadPDF.tsx	- loop até 10 ficheiros
+- axios.post("/api/ocr?provider=auto", formData)
+- spinner “A reconhecer…”
+ValidationDrawer.tsx (novo)	- Carregar PDF via PDF.js
+- Desenhar <rect> para cada boxes[key] (cor semi‑transparente)
+- Form dinâmico: renderizar campos de missing[]
+- Dropdown <Select propertyId> com search (React‑Select)
+ReservationsService.ts	saveReservation(data, status) → POST /api/reservations
+i18next	- Executar i18next-scanner e gerar pt-PT.json
+- Activar fallbackLng:"pt-PT"
+React Query	Definir staleTime: 60_000 p/ reservas; evita chamadas duplicadas
+
+5 | Scripts utilitários
+Script	Função
+scripts/ocr-benchmark.ts	Mede latência & CER entre Mistral e Qwen num lote de PDFs
+scripts/db-insights.ts	Mantém Gemini – KPIs de ocupação, receita, etc.
+scripts/alias-generator.ts	Cria aliases a partir de nomes existentes ("5 de Outubro" → "05-Oct")
+
+6 | Configuração Replit
+ini
+Copiar
+Editar
+run = "pnpm start"                  # garante uso de pnpm
+language = "nodejs"
+entrypoint = "server/index.ts"
+Secrets → add: OPENROUTER_API_KEY, HF_TOKEN, DATABASE_URL.
+
+Nix: inclui onnxruntime se usares detector manuscrito.
+
+7 | Testes & QA
+Unit – pnpm test (Jest) → 0 falhas
+
+E2E (dev)
+
+bash
+Copiar
+Editar
+pnpm dev
+# upload 7 PDFs (anexos)
+# confirmar propertyId, datas, amount
+Benchmark –
+
+bash
+Copiar
+Editar
+node scripts/ocr-benchmark.js --providers=openrouter --pdf-dir=tests
+# CER < 10 %, p95 latência < 6 s
+Manual – simular PDF com nome de propriedade desconhecido → UI pede selecção.
+
+8 | Limpeza & segurança
+ Remover pasta server/archive/ (código morto)
+
+ Converter scripts CJS → ESM ou "type":"module"
+
+ Verificar multer sanitização MIME (application/pdf, image/jpeg, image/png)
+
+ Activar helmet & rate‑limit 100 req/min
+
+ Lint: pnpm dlx eslint . --fix
+
+9 | Deploy & documentação
+Deploy via botão Run do Replit → verifica logs “Server listening on :3000”.
+
+README.md:
+
+Secção OCR: env vars, endpoint /api/ocr, formatos suportados
+
+Secção AI Analytics: script Gemini
+
+FAQ sobre limite 20 MB, campos obrigatórios, fallback manual
+
+10 | Checklist final de verificação
+Passo	OK?
+Ambiente .env preenchido	☐
+Todos os serviços compilam sem tsc erros	☐
+Upload de PDF devolve JSON com boxes	☐
+Drawer mostra highlights e salva reserva	☐
+PDF > 10 MB recebe erro amigável	☐
+Property alias funciona (“5 de Outubro”)	☐
+Scripts benchmark & insights executam	☐
+Lint & tests verdes no CI do Replit	☐
+
+Quando todos os quadrados estiverem verdes, a integração do Mistral OCR estará concluída.
+Se surgirem erros, reporta logs ao ChatGPT para análise imediata.
