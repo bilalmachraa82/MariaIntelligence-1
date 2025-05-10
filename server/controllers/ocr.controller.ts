@@ -355,16 +355,16 @@ export async function processWithService(req: Request, res: Response) {
     let provider = serviceParam;
     
     try {
-      let result;
+      let extractedResult = '';
       
       if (isImage) {
-        result = await aiAdapter.extractDataFromImage(base64Data, serviceType);
+        extractedResult = await aiAdapter.extractTextFromImage(base64Data, serviceType);
       } else {
-        result = await aiAdapter.extractDataFromPdf(base64Data, serviceType);
+        extractedResult = await aiAdapter.extractTextFromPDF(base64Data, serviceType);
       }
       
-      extractedText = result.text;
-      provider = result.provider;
+      extractedText = extractedResult;
+      provider = serviceParam; // Usamos o serviço solicitado como provider
     } catch (extractError) {
       console.error('Erro na extração de dados:', extractError);
       return res.status(500).json({

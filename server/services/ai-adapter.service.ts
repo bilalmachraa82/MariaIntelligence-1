@@ -129,6 +129,156 @@ export class AIAdapter {
   }
   
   /**
+   * Define uma chave de API para um serviço específico
+   * @param service Nome do serviço ('openrouter', 'gemini', 'rolm')
+   * @param apiKey Chave de API
+   * @returns Resultado da operação
+   */
+  public async setApiKey(service: string, apiKey: string): Promise<{success: boolean, message: string}> {
+    try {
+      if (!service || !apiKey) {
+        return { 
+          success: false, 
+          message: 'Serviço e chave de API são obrigatórios' 
+        };
+      }
+      
+      service = service.toLowerCase();
+      
+      // Verificar qual serviço está sendo configurado
+      switch (service) {
+        case 'openrouter':
+        case 'mistral':
+          // Verificar se a chave é válida
+          try {
+            process.env.OPENROUTER_API_KEY = apiKey;
+            // Testar a conexão
+            const openRouterService = AIAdapter.services.openrouter;
+            const testResult = await openRouterService.testConnection();
+            
+            if (testResult.success) {
+              console.log('✅ OpenRouter API configurada com sucesso');
+              return { 
+                success: true, 
+                message: 'OpenRouter API configurada com sucesso' 
+              };
+            } else {
+              process.env.OPENROUTER_API_KEY = '';
+              return { 
+                success: false, 
+                message: `Erro ao configurar OpenRouter: ${testResult.error || 'Chave inválida'}` 
+              };
+            }
+          } catch (error) {
+            process.env.OPENROUTER_API_KEY = '';
+            return { 
+              success: false, 
+              message: `Erro ao configurar OpenRouter: ${error instanceof Error ? error.message : 'Erro desconhecido'}` 
+            };
+          }
+          
+        case 'gemini':
+          // Verificar se a chave é válida
+          try {
+            process.env.GOOGLE_API_KEY = apiKey;
+            // Testar a conexão
+            const geminiService = AIAdapter.services.gemini;
+            const testResult = await geminiService.testConnection();
+            
+            if (testResult.success) {
+              console.log('✅ Gemini API configurada com sucesso');
+              return { 
+                success: true, 
+                message: 'Gemini API configurada com sucesso' 
+              };
+            } else {
+              process.env.GOOGLE_API_KEY = '';
+              return { 
+                success: false, 
+                message: `Erro ao configurar Gemini: ${testResult.error || 'Chave inválida'}` 
+              };
+            }
+          } catch (error) {
+            process.env.GOOGLE_API_KEY = '';
+            return { 
+              success: false, 
+              message: `Erro ao configurar Gemini: ${error instanceof Error ? error.message : 'Erro desconhecido'}` 
+            };
+          }
+          
+        case 'rolm':
+        case 'huggingface':
+          // Verificar se a chave é válida
+          try {
+            process.env.HF_TOKEN = apiKey;
+            // Testar a conexão
+            const rolmService = AIAdapter.services.rolm;
+            const testResult = await rolmService.testConnection();
+            
+            if (testResult.success) {
+              console.log('✅ RolmOCR API configurada com sucesso');
+              return { 
+                success: true, 
+                message: 'RolmOCR API configurada com sucesso' 
+              };
+            } else {
+              process.env.HF_TOKEN = '';
+              return { 
+                success: false, 
+                message: `Erro ao configurar RolmOCR: ${testResult.error || 'Token inválido'}` 
+              };
+            }
+          } catch (error) {
+            process.env.HF_TOKEN = '';
+            return { 
+              success: false, 
+              message: `Erro ao configurar RolmOCR: ${error instanceof Error ? error.message : 'Erro desconhecido'}` 
+            };
+          }
+          
+        default:
+          return { 
+            success: false, 
+            message: `Serviço desconhecido: ${service}. Serviços suportados: openrouter, gemini, rolm` 
+          };
+      }
+    } catch (error) {
+      console.error('Erro ao definir chave de API:', error);
+      return { 
+        success: false, 
+        message: `Erro ao definir chave de API: ${error instanceof Error ? error.message : 'Erro desconhecido'}` 
+      };
+    }
+  }
+  
+  /**
+   * Testa a conexão com OpenRouter 
+   * @returns Resultado do teste de conexão
+   */
+  public async testOpenRouterConnection(): Promise<{success: boolean, message: string}> {
+    try {
+      if (!process.env.OPENROUTER_API_KEY) {
+        return { 
+          success: false, 
+          message: 'OPENROUTER_API_KEY não está configurada' 
+        };
+      }
+      
+      const openRouterService = AIAdapter.services.openrouter;
+      const testResult = await openRouterService.testConnection();
+      
+      return testResult.success 
+        ? { success: true, message: 'Conexão com OpenRouter bem-sucedida' }
+        : { success: false, message: `Erro na conexão com OpenRouter: ${testResult.error}` };
+    } catch (error) {
+      return { 
+        success: false, 
+        message: `Erro ao testar conexão com OpenRouter: ${error instanceof Error ? error.message : 'Erro desconhecido'}` 
+      };
+    }
+  }
+  
+  /**
    * Obtém o serviço apropriado com base no nome ou configuração atual
    * @param name Nome do serviço a ser usado (opcional, usa o serviço padrão se não informado)
    * @returns O serviço apropriado

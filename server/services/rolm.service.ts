@@ -17,6 +17,78 @@ export class RolmService {
       console.warn('⚠️ HF_TOKEN não está configurado. O serviço RolmOCR não funcionará para manuscritos.');
     }
   }
+  
+  /**
+   * Testa a conexão com o Hugging Face / RolmOCR
+   * @returns Resultado do teste de conexão
+   */
+  public async testConnection(): Promise<{success: boolean, error?: string}> {
+    try {
+      if (!this.apiKey) {
+        return { success: false, error: 'HF_TOKEN não configurado' };
+      }
+      
+      // Para testar a conexão, fazemos uma requisição simples para verificar o status do modelo
+      const response = await axios.get('https://api-inference.huggingface.co/status', {
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`
+        }
+      });
+      
+      if (response.status === 200) {
+        // Verificar disponibilidade específica do modelo RolmOCR
+        try {
+          const modelResponse = await axios.post(
+            this.baseUrl,
+            { inputs: 'test' },
+            {
+              headers: {
+                'Authorization': `Bearer ${this.apiKey}`,
+                'Content-Type': 'application/json'
+              },
+              // Timeout curto apenas para testar a conexão
+              timeout: 5000
+            }
+          );
+          
+          if (modelResponse.status === 200) {
+            console.log('✅ RolmOCR conectado com sucesso');
+            return { success: true };
+          } else {
+            return { 
+              success: false, 
+              error: `Erro na resposta do modelo: ${modelResponse.status} - ${modelResponse.statusText}` 
+            };
+          }
+        } catch (modelError: any) {
+          // Se o erro for de timeout ou o modelo estiver sendo carregado, ainda consideramos um sucesso
+          // pois o token é válido e o serviço está acessível
+          if (modelError.response?.status === 503 || 
+              modelError.message.includes('timeout') || 
+              modelError.response?.data?.error?.includes('loading')) {
+            console.log('⚠️ RolmOCR está sendo carregado ou em fila - conexão bem-sucedida, modelo disponível');
+            return { success: true };
+          }
+          
+          return { 
+            success: false, 
+            error: modelError.response?.data?.error || modelError.message || 'Erro ao acessar modelo' 
+          };
+        }
+      } else {
+        return { 
+          success: false, 
+          error: `Erro na resposta da API: ${response.status} - ${response.statusText}` 
+        };
+      }
+    } catch (error: any) {
+      console.error('❌ Erro ao testar conexão com RolmOCR:', error);
+      return { 
+        success: false, 
+        error: error.response?.data?.error || error.message || 'Erro desconhecido' 
+      };
+    }
+  }
 
   /**
    * Verifica se o serviço está corretamente inicializado

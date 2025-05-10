@@ -19,6 +19,58 @@ export class OpenRouterService {
       console.warn('⚠️ OPENROUTER_API_KEY não está configurada. O serviço OpenRouter não funcionará.');
     }
   }
+  
+  /**
+   * Testa a conexão com o OpenRouter
+   * @returns Resultado do teste de conexão
+   */
+  public async testConnection(): Promise<{success: boolean, error?: string}> {
+    try {
+      if (!this.apiKey) {
+        return { success: false, error: 'Chave API não configurada' };
+      }
+      
+      // Testar a conexão com um request simples que liste modelos
+      const response = await axios.get(`${this.baseUrl}/models`, {
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.status === 200 && response.data) {
+        // Verificar se há modelos disponíveis
+        const models = response.data.data || [];
+        
+        if (models.length > 0) {
+          // Verificar se o Mistral OCR está disponível
+          const mistralModel = models.find((m: any) => 
+            m.id?.toLowerCase().includes('mistral') && 
+            (m.id?.toLowerCase().includes('ocr') || m.capabilities?.includes('vision'))
+          );
+          
+          if (mistralModel) {
+            console.log(`✅ OpenRouter conectado com sucesso - Modelo Mistral OCR disponível: ${mistralModel.id}`);
+            return { success: true };
+          } else {
+            console.log('⚠️ OpenRouter conectado, mas Mistral OCR não encontrado nos modelos disponíveis');
+            // Ainda consideramos sucesso, pois a conexão funciona
+            return { success: true };
+          }
+        } else {
+          return { success: false, error: 'Nenhum modelo disponível no OpenRouter' };
+        }
+      } else {
+        return { success: false, error: `Erro na resposta: ${response.status} - ${response.statusText}` };
+      }
+    } catch (error: any) {
+      console.error('❌ Erro ao testar conexão com OpenRouter:', error);
+      return { 
+        success: false, 
+        error: error.response?.data?.error?.message || error.message || 'Erro desconhecido'
+      };
+    }
+  }
 
   /**
    * Verifica se o serviço está corretamente inicializado
