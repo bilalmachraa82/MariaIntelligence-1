@@ -3885,6 +3885,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Rota de teste para verificar os serviços OCR disponíveis
+  app.get("/api/test/ocr-services", async (_req: Request, res: Response) => {
+    try {
+      const { AIAdapter } = await import('./services/ai-adapter.service');
+      const aiAdapter = AIAdapter.getInstance();
+      const availableServices = {
+        openrouter: !!process.env.OPENROUTER_API_KEY,
+        rolm: !!process.env.HF_TOKEN,
+        native: true,
+        primary: process.env.PRIMARY_AI || "openrouter"
+      };
+      
+      res.json({
+        success: true,
+        services: availableServices,
+        currentService: aiAdapter.getCurrentService()
+      });
+    } catch (error: any) {
+      console.error("Erro ao verificar serviços OCR:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Erro ao verificar serviços OCR",
+        error: error.message || "Erro desconhecido"
+      });
+    }
+  });
+  
   app.post("/api/test/gemini/generate-text", async (req: Request, res: Response) => {
     const { prompt, temperature = 0.3, maxTokens } = req.body;
     

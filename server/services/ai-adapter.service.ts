@@ -572,7 +572,8 @@ export class AIAdapter {
    */
   public async processReservationDocument(fileBase64: string, mimeType: string): Promise<any> {
     try {
-      console.log(`📄 Processando documento ${mimeType} usando serviço: Gemini`);
+      const serviceName = this.getCurrentService() === AIServiceType.AUTO ? 'automático' : this.getCurrentService();
+      console.log(`📄 Processando documento ${mimeType} usando serviço: ${serviceName}`);
       
       // Implementação unificada para processamento de documentos
       const isPDF = mimeType.includes('pdf');
