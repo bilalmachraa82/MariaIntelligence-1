@@ -324,8 +324,8 @@ export async function processPDFWithOCR(
     formData.append("skipQualityCheck", skipQualityCheck ? "true" : "false");
     formData.append("useCache", useCache ? "true" : "false");
     
-    // Enviar para o endpoint de processamento de PDF no servidor
-    const response = await fetch('/api/upload-pdf', {
+    // Enviar para o novo endpoint unificado de OCR no servidor
+    const response = await fetch('/api/ocr?provider=auto', {
       method: 'POST',
       body: formData
     });
@@ -638,7 +638,7 @@ export async function processMultiplePDFs(
         formData.append("skipQualityCheck", skipQualityCheck ? "true" : "false");
         formData.append("useCache", useCache ? "true" : "false");
         
-        const response = await fetch('/api/upload-pdf', {
+        const response = await fetch('/api/ocr?provider=auto', {
           method: 'POST',
           body: formData
         });
