@@ -113,7 +113,7 @@ export function usePdfUpload() {
       } catch (advancedError) {
         console.warn("Falha ao processar com sistema avançado, tentando métodos alternativos:", advancedError);
         
-        // Tenta processar com Gemini diretamente como fallback
+        // Tenta processar com OCR nativo como fallback
         try {
           dispatchProgressEvent(30, 1, file.name);
           

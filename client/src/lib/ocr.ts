@@ -358,7 +358,7 @@ export async function processPDFWithOCR(
     };
     
   } catch (error) {
-    console.error("Erro ao processar PDF com Google Gemini:", error);
+    console.error("Erro ao processar PDF com OCR:", error);
     throw error;
   }
 }
