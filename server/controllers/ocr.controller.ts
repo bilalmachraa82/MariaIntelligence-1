@@ -201,6 +201,8 @@ export async function postOcr(req: Request, res: Response) {
         provider,
         reservations,
         boxes: boxesData,
+        // Adicionar extractedData para compatibilidade com a interface antiga
+        extractedData: reservations.length > 0 ? reservations[0] : undefined,
         missing: missingFields,
         rawText: extractedText,
         metrics: {
