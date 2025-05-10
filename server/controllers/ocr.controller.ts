@@ -16,14 +16,14 @@ const aiAdapter = AIAdapter.getInstance();
 const handwritingDetector = new HandwritingDetector();
 
 // Definição de tipos para serviços OCR
-type OCRService = 'mistral' | 'openrouter' | 'rolm' | 'gemini' | 'auto';
+type OCRService = 'mistral' | 'openrouter' | 'rolm' | 'native' | 'auto';
 
 // Mapeamento entre tipos OCRService e AIServiceType
 const serviceTypeMap: Record<OCRService, AIServiceType> = {
   mistral: AIServiceType.OPENROUTER, // Mistral é fornecido via OpenRouter
   openrouter: AIServiceType.OPENROUTER,
   rolm: AIServiceType.ROLM,
-  gemini: AIServiceType.GEMINI,
+  native: AIServiceType.AUTO, // Usando AUTO como equivalente para o modo nativo
   auto: AIServiceType.AUTO
 };
 
@@ -88,24 +88,15 @@ export async function postOcr(req: Request, res: Response) {
           provider = 'openrouter';
           console.log('📄 Usando OpenRouter para processamento do PDF');
         } else {
-          // Verificar se o Gemini atingiu o limite (através de uma variável de ambiente ou cache)
-          const isGeminiRateLimited = process.env.GEMINI_RATE_LIMITED === 'true';
-          
-          if (isGeminiRateLimited) {
-            provider = 'native';
-            console.log('📄 Gemini atingiu limite, usando extrator nativo (pdf-parse)');
-          } else {
-            provider = 'gemini';
-            console.log('📄 Fallback para Gemini para processamento do PDF');
-          }
+          // Sem serviços de IA disponíveis, usar o extrator nativo
+          provider = 'native';
+          console.log('📄 Nenhum serviço OCR disponível, usando extrator nativo (pdf-parse)');
         }
       } catch (detectorError) {
         console.error('Erro no detector de manuscritos:', detectorError);
         // Em caso de erro, usar OpenRouter se disponível, ou o extrator nativo como último recurso
         if (process.env.OPENROUTER_API_KEY) {
           provider = 'openrouter';
-        } else if (process.env.GEMINI_RATE_LIMITED !== 'true') {
-          provider = 'gemini';
         } else {
           provider = 'native';
           console.log('📄 Usando extrator nativo como último recurso');
@@ -314,24 +305,15 @@ export async function processOCR(req: Request, res: Response) {
           provider = 'openrouter';
           console.log('📄 Usando OpenRouter para processamento do PDF');
         } else {
-          // Verificar se o Gemini atingiu o limite (através de uma variável de ambiente ou cache)
-          const isGeminiRateLimited = process.env.GEMINI_RATE_LIMITED === 'true';
-          
-          if (isGeminiRateLimited) {
-            provider = 'native';
-            console.log('📄 Gemini atingiu limite, usando extrator nativo (pdf-parse)');
-          } else {
-            provider = 'gemini';
-            console.log('📄 Fallback para Gemini para processamento do PDF');
-          }
+          // Sem serviços de IA disponíveis, usar o extrator nativo
+          provider = 'native';
+          console.log('📄 Nenhum serviço OCR disponível, usando extrator nativo (pdf-parse)');
         }
       } catch (detectorError) {
         console.error('Erro no detector de manuscritos:', detectorError);
         // Em caso de erro, usar OpenRouter se disponível, ou o extrator nativo como último recurso
         if (process.env.OPENROUTER_API_KEY) {
           provider = 'openrouter';
-        } else if (process.env.GEMINI_RATE_LIMITED !== 'true') {
-          provider = 'gemini';
         } else {
           provider = 'native';
           console.log('📄 Usando extrator nativo como último recurso');
@@ -491,7 +473,7 @@ export async function processWithService(req: Request, res: Response) {
     }
     
     // Validar se o serviço é suportado
-    const validServices: OCRService[] = ['mistral', 'openrouter', 'rolm', 'gemini', 'auto'];
+    const validServices: OCRService[] = ['mistral', 'openrouter', 'rolm', 'native', 'auto'];
     
     if (!validServices.includes(serviceParam)) {
       return res.status(400).json({
@@ -511,8 +493,8 @@ export async function processWithService(req: Request, res: Response) {
       case 'rolm':
         serviceType = AIServiceType.ROLM;
         break;
-      case 'gemini':
-        serviceType = AIServiceType.GEMINI;
+      case 'native':
+        serviceType = AIServiceType.AUTO; // Usamos AUTO para o modo nativo
         break;
       case 'auto':
       default:

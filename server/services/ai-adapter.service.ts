@@ -759,8 +759,13 @@ export class AIAdapter {
    * @returns nunca
    * @throws Erro indicando que o método foi removido
    */
-  public getMistralClient(): never {
-    throw new Error('Método não suportado: todas as funcionalidades agora usam exclusivamente o Gemini');
+  /**
+   * Retorna o cliente Gemini para uso em análise de dados
+   * NOTA: Este método NÃO deve ser usado para OCR, apenas para análise de dados e interação com a IA
+   * @returns Instância do serviço Gemini
+   */
+  public getGeminiClient(): GeminiService {
+    return this.geminiService;
   }
   
   /**
