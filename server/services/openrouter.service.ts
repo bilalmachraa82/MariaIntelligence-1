@@ -27,7 +27,7 @@ export class OpenRouterService {
   public async testConnection(): Promise<{success: boolean, message: string}> {
     try {
       if (!this.apiKey) {
-        return { success: false, error: 'Chave API não configurada' };
+        return { success: false, message: 'Chave API não configurada' };
       }
       
       // Testar a conexão com um request simples que liste modelos
@@ -51,23 +51,29 @@ export class OpenRouterService {
           
           if (mistralModel) {
             console.log(`✅ OpenRouter conectado com sucesso - Modelo Mistral OCR disponível: ${mistralModel.id}`);
-            return { success: true };
+            return { 
+              success: true,
+              message: `OpenRouter conectado com sucesso - Modelo Mistral OCR disponível: ${mistralModel.id}`
+            };
           } else {
             console.log('⚠️ OpenRouter conectado, mas Mistral OCR não encontrado nos modelos disponíveis');
             // Ainda consideramos sucesso, pois a conexão funciona
-            return { success: true };
+            return { 
+              success: true,
+              message: 'OpenRouter conectado, mas Mistral OCR não encontrado nos modelos disponíveis'
+            };
           }
         } else {
-          return { success: false, error: 'Nenhum modelo disponível no OpenRouter' };
+          return { success: false, message: 'Nenhum modelo disponível no OpenRouter' };
         }
       } else {
-        return { success: false, error: `Erro na resposta: ${response.status} - ${response.statusText}` };
+        return { success: false, message: `Erro na resposta: ${response.status} - ${response.statusText}` };
       }
     } catch (error: any) {
       console.error('❌ Erro ao testar conexão com OpenRouter:', error);
       return { 
         success: false, 
-        error: error.response?.data?.error?.message || error.message || 'Erro desconhecido'
+        message: error.response?.data?.error?.message || error.message || 'Erro desconhecido'
       };
     }
   }

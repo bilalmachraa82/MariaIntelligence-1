@@ -169,7 +169,7 @@ export class AIAdapter {
               process.env.OPENROUTER_API_KEY = '';
               return { 
                 success: false, 
-                message: `Erro ao configurar OpenRouter: ${testResult.error || 'Chave inválida'}` 
+                message: `Erro ao configurar OpenRouter: ${testResult.message || 'Chave inválida'}` 
               };
             }
           } catch (error) {
@@ -228,7 +228,7 @@ export class AIAdapter {
               process.env.HF_TOKEN = '';
               return { 
                 success: false, 
-                message: `Erro ao configurar RolmOCR: ${testResult.error || 'Token inválido'}` 
+                message: `Erro ao configurar RolmOCR: ${testResult.message || 'Token inválido'}` 
               };
             }
           } catch (error) {
