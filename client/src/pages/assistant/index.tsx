@@ -569,7 +569,7 @@ export default function AssistantPage() {
         const regularFormData = new FormData();
         regularFormData.append('pdf', file);
         
-        const response = await fetch("/api/upload-pdf", {
+        const response = await fetch("/api/ocr", {
           method: "POST",
           body: regularFormData,
           credentials: "include"
