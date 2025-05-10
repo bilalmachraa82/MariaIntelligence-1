@@ -1,5 +1,5 @@
 import { apiRequest } from "./queryClient";
-// Removido importação do Mistral, substituído por Gemini
+// Utiliza apenas o OCR nativo ou Mistral via OpenRouter
 
 /**
  * Enum para status de validação
@@ -67,79 +67,23 @@ export interface UploadResponse {
   warning?: string;
 }
 
-// Configure cliente Google Gemini com a chave API
-export const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+// Não é necessário configuração de cliente para OCR
+// O processamento é feito pelo servidor via API OCR unificada
 
 /**
- * Função de utilidade para fazer parse seguro de argumentos Function Call
- * @param args Argumentos da chamada de função (string ou objeto)
+ * Função de utilidade para fazer parse seguro de JSON
+ * @param jsonStr String JSON a ser parseada
  * @returns Objeto parseado ou null se falhar
  */
-function safeParseArguments(args: any): any {
-  if (!args) return null;
+function safeJsonParse(jsonStr: string): any {
+  if (!jsonStr) return null;
   
   try {
-    if (typeof args === 'string') {
-      return JSON.parse(args);
-    } else if (typeof args === 'object') {
-      return args;
-    }
-    return null;
+    return JSON.parse(jsonStr);
   } catch (err) {
-    console.error("Erro ao fazer parse de argumentos:", err);
+    console.error("Erro ao fazer parse de JSON:", err);
     return null;
   }
-}
-
-/**
- * Função para processar respostas da API Gemini
- * Substitui as funções anteriores do Mistral que foram removidas
- */
-function processGeminiResponse(response: any): any {
-  try {
-    if (!response || !response.candidates || !response.candidates[0]) {
-      return null;
-    }
-    
-    // Extrair texto da resposta
-    const content = response.candidates[0].content;
-    if (!content || !content.parts || !content.parts[0]) {
-      return null;
-    }
-    
-    // Tentar extrair dados estruturados (se for JSON)
-    const text = content.parts[0].text || '';
-    try {
-      // Verificar se a resposta é um JSON
-      if (text.trim().startsWith('{') && text.trim().endsWith('}')) {
-        return JSON.parse(text);
-      }
-    } catch (jsonError) {
-      console.warn("Resposta não é um JSON válido, retornando texto bruto");
-    }
-    
-    return text;
-  } catch (err) {
-    console.error("Erro ao processar resposta da API Gemini:", err);
-    return null;
-  }
-}
-
-/**
- * Função auxiliar para processar conteúdo de texto, garantindo que seja string
- * @param content Conteúdo textual da resposta da API Gemini
- * @returns Conteúdo como string, vazio se for inválido
- */
-function extractTextContent(content: any): string {
-  if (!content) return '';
-  if (typeof content === 'string') return content;
-  if (Array.isArray(content)) {
-    return content
-      .filter(chunk => typeof chunk === 'object' && chunk.type === 'text')
-      .map(chunk => chunk.text)
-      .join('\n');
-  }
-  return '';
 }
 
 /**
@@ -298,7 +242,78 @@ export async function fileToBase64(file: File): Promise<string> {
 }
 
 /**
- * Processar PDF com a API Gemini usando OCR
+ * Valida os dados extraídos de um PDF
+ * @param data Dados extraídos a serem validados
+ * @returns Resultado da validação com erros e status
+ */
+export function validateExtractedData(data: ExtractedData): { 
+  isValid: boolean; 
+  errors: ValidationError[];
+  missingFields: string[];
+  warningFields: string[];
+  status: ValidationStatus;
+} {
+  const errors: ValidationError[] = [];
+  const missingFields: string[] = [];
+  const warningFields: string[] = [];
+  
+  // Campos obrigatórios
+  const requiredFields = [
+    { field: 'propertyName', label: 'Nome da Propriedade' },
+    { field: 'guestName', label: 'Nome do Hóspede' },
+    { field: 'checkInDate', label: 'Data de Check-in' },
+    { field: 'checkOutDate', label: 'Data de Check-out' }
+  ];
+  
+  // Verificar campos obrigatórios
+  for (const field of requiredFields) {
+    if (!data[field.field as keyof ExtractedData]) {
+      errors.push({
+        field: field.field,
+        message: `Campo obrigatório ausente: ${field.label}`,
+        severity: 'error'
+      });
+      missingFields.push(field.field);
+    }
+  }
+  
+  // Verificar campos opcionais mas importantes
+  const optionalFields = [
+    { field: 'numGuests', label: 'Número de Hóspedes' },
+    { field: 'totalAmount', label: 'Valor Total' },
+    { field: 'platform', label: 'Plataforma' }
+  ];
+  
+  for (const field of optionalFields) {
+    if (!data[field.field as keyof ExtractedData]) {
+      warningFields.push(field.field);
+    }
+  }
+  
+  // Determinar status baseado nos erros
+  let status = ValidationStatus.VALID;
+  
+  if (errors.length > 0) {
+    if (missingFields.length >= requiredFields.length / 2) {
+      status = ValidationStatus.FAILED;
+    } else {
+      status = ValidationStatus.INCOMPLETE;
+    }
+  } else if (warningFields.length > 0) {
+    status = ValidationStatus.NEEDS_REVIEW;
+  }
+  
+  return {
+    isValid: errors.length === 0,
+    errors,
+    missingFields,
+    warningFields,
+    status
+  };
+}
+
+/**
+ * Processar PDF com OCR usando o serviço do servidor
  * @param file Arquivo PDF
  */
 export async function processPDFWithOCR(
@@ -315,8 +330,7 @@ export async function processPDFWithOCR(
     
     console.log("Iniciando processamento do PDF no servidor...");
     
-    // Em vez de usar o código de processamento direto no cliente, vamos usar o endpoint do servidor
-    // que utiliza pdf-parse + análise de texto com o Gemini
+    // Usar o endpoint unificado de OCR no servidor
     const formData = new FormData();
     formData.append("pdf", file);
     
@@ -324,7 +338,8 @@ export async function processPDFWithOCR(
     formData.append("skipQualityCheck", skipQualityCheck ? "true" : "false");
     formData.append("useCache", useCache ? "true" : "false");
     
-    // Enviar para o novo endpoint unificado de OCR no servidor
+    // Enviar para o endpoint unificado de OCR com o provider auto
+    // que seleciona o melhor serviço disponível (Mistral ou nativo)
     const response = await fetch('/api/ocr?provider=auto', {
       method: 'POST',
       body: formData
@@ -362,9 +377,6 @@ export async function processPDFWithOCR(
     throw error;
   }
 }
-
-// Função removida: processImageWithGeminiVision não é necessária
-// pois não estamos utilizando esse recurso do Gemini
 
 /**
  * Processa um PDF de reserva com o sistema aprimorado
@@ -453,10 +465,12 @@ export async function processReservationFile(
     }
     
     // Validação dos dados extraídos
-    const validationErrors = validateExtractedData(result.extractedData);
-    if (validationErrors.length > 0) {
+    const validationResult = validateExtractedData(result.extractedData);
+    const { isValid, errors } = validationResult;
+    
+    if (!isValid && errors.length > 0) {
       throw new Error(
-        `Dados extraídos inválidos ou incompletos: ${validationErrors.join(", ")}`
+        `Dados extraídos inválidos ou incompletos: ${errors.map(e => e.message).join(", ")}`
       );
     }
     
@@ -506,49 +520,9 @@ export async function processReservationFile(
   }
 }
 
-// Função removida: checkImageQuality não é necessária
-// pois não suportamos processamento de imagens
-
-/**
- * Valida os dados extraídos para garantir completude mínima
- * @param data Dados extraídos
- * @returns Array de erros, vazio se não houver erros
- */
-function validateExtractedData(data: any): string[] {
-  const errors: string[] = [];
-  
-  // Verificar campos essenciais
-  if (!data.checkInDate) errors.push("Data de check-in não encontrada");
-  if (!data.checkOutDate) errors.push("Data de check-out não encontrada");
-  if (!data.guestName) errors.push("Nome do hóspede não encontrado");
-  if (!data.totalAmount || isNaN(data.totalAmount)) errors.push("Valor total não encontrado ou inválido");
-  
-  // Verificar formatos de data
-  const datePattern = /^\d{4}-\d{2}-\d{2}$/;
-  if (data.checkInDate && !datePattern.test(data.checkInDate)) {
-    errors.push("Formato de data de check-in inválido (deve ser YYYY-MM-DD)");
-  }
-  if (data.checkOutDate && !datePattern.test(data.checkOutDate)) {
-    errors.push("Formato de data de check-out inválido (deve ser YYYY-MM-DD)");
-  }
-  
-  // Verificar lógica de datas
-  if (data.checkInDate && data.checkOutDate) {
-    const checkIn = new Date(data.checkInDate);
-    const checkOut = new Date(data.checkOutDate);
-    
-    if (checkIn > checkOut) {
-      errors.push("Data de check-in é posterior à data de check-out");
-    }
-    
-    const diffDays = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
-    if (diffDays > 60) {
-      errors.push(`Duração da estadia é muito longa (${diffDays} dias)`);
-    }
-  }
-  
-  return errors;
-}
+// Funções removidas que não são mais necessárias:
+// - checkImageQuality: não suportamos processamento de imagens
+// - versão anterior de validateExtractedData: substituída por implementação mais completa acima
 
 /**
  * Processa múltiplos PDFs usando o endpoint do servidor
@@ -655,9 +629,9 @@ export async function processMultiplePDFs(
         }
         
         // Validar os dados extraídos
-        const validationErrors = validateExtractedData(result.extractedData);
-        if (validationErrors.length > 0) {
-          throw new Error(`Dados extraídos inválidos ou incompletos: ${validationErrors.join(", ")}`);
+        const validationResult = validateExtractedData(result.extractedData);
+        if (!validationResult.isValid && validationResult.errors.length > 0) {
+          throw new Error(`Dados extraídos inválidos ou incompletos: ${validationResult.errors.map(e => e.message).join(", ")}`);
         }
         
         // Salvar no cache para uso futuro
