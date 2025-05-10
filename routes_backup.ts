@@ -24,7 +24,7 @@ import uploadControlFileRouter from "./api/upload-control-file";
 import reservationAssistantRouter from "./api/reservation-assistant";
 import { generateDemoData, resetDemoDataHandler } from "./api/demo-data";
 // Importar o novo controlador OCR e middleware de upload configurável
-import * as ocrController from "./controllers/ocr.controller";
+import ocrController from "./controllers/ocr.controller";
 import { pdfUpload as configuredPdfUpload, imageUpload as configuredImageUpload, anyFileUpload as configuredAnyFileUpload } from "./middleware/upload";
 import { 
   insertPropertySchema, 
@@ -1274,8 +1274,268 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // PDF Upload e Processamento
-  // Rota removida em favor da rota unificada /api/ocr
+  // SUBSTITUÍDA PELA ROTA UNIFICADA /api/ocr
+  // app.post("/api/upload-pdf", pdfUpload.single('pdf'), async (req: Request, res: Response) => {
+    try {
+      console.log('Iniciando processamento de upload de PDF...');
+      
+      if (!req.file) {
+        return res.status(400).json({ 
+          success: false,
+          message: "Nenhum arquivo enviado" 
+        });
+      }
 
+      // Verificar se temos a chave de API do Google Gemini disponível
+      if (!process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) {
+        return res.status(500).json({ 
+          success: false,
+          message: "Nenhuma chave de API do Google Gemini configurada" 
+        });
+      }
+
+      try {
+        console.log(`Processando PDF: ${req.file.path}`);
+        
+        // Configurar para criar reservas automaticamente por padrão
+        const autoCreateReservation = req.query.autoCreate !== 'false'; // Por padrão sempre cria
+        
+        // Sempre usar alta qualidade para processamento
+        const skipQualityCheck = false;
+        const useCache = false;
+        
+        console.log(`Processando PDF com máxima qualidade (skipQualityCheck=${skipQualityCheck}, useCache=${useCache}, autoCreateReservation=${autoCreateReservation})`);
+        
+        // Primeiro, verificar se o arquivo é um PDF de controle (com múltiplas reservas)
+        const controlResult = await processControlFile(req.file.path);
+        
+        // Se for um arquivo de controle, processar de forma especializada
+        if (controlResult.success && controlResult.isControlFile) {
+          console.log('Arquivo identificado como PDF de controle de reservas');
+          
+          let reservationsCreated = [];
+          
+          // Se usuário solicitou criação automática, criar as reservas
+          if (autoCreateReservation) {
+            console.log('Criando reservas automaticamente a partir do arquivo de controle');
+            reservationsCreated = await createReservationsFromControlFile(controlResult);
+          }
+          
+          // Adicionar o texto extraído à base de conhecimento RAG
+          await ragService.addToKnowledgeBase(controlResult.rawText, 'control_file_pdf', {
+            filename: req.file.filename,
+            uploadDate: new Date(),
+            isControlFile: true,
+            reservationsCount: controlResult.reservations.length
+          });
+          
+          // Criar atividade no sistema
+          await storage.createActivity({
+            activityType: 'pdf_processed',
+            description: `PDF de controle processado: ${controlResult.propertyName} - ${controlResult.reservations.length} reservas`,
+            resourceId: null,
+            resourceType: 'property'
+          });
+          
+          // Retornar resultado específico para arquivos de controle
+          return res.json({
+            success: true,
+            isControlFile: true,
+            message: `Arquivo de controle processado: ${controlResult.reservations.length} reservas encontradas`,
+            reservations: controlResult.reservations,
+            reservationsCreated: reservationsCreated,
+            propertyName: controlResult.propertyName,
+            file: {
+              filename: req.file.filename,
+              path: req.file.path
+            }
+          });
+        }
+        
+        // Usar o novo serviço de processamento que pode criar reservas
+        let result;
+        
+        if (autoCreateReservation) {
+          // Usar o serviço completo que processa o PDF e cria uma reserva
+          result = await processPdfAndCreateReservation(req.file.path, process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "", { skipQualityCheck, useCache });
+          console.log('Processamento e criação de reserva concluídos:', result.success);
+          
+          // Adicionar atividade ao sistema se a reserva foi criada
+          if (result.success && result.reservation) {
+            await storage.createActivity({
+              activityType: 'reservation_created',
+              description: `Reserva criada automaticamente via PDF: ${result.reservation.propertyId} - ${result.reservation.guestName}`,
+              resourceId: result.reservation.id,
+              resourceType: 'reservation'
+            });
+          }
+          
+          // Adicionar o texto extraído à base de conhecimento RAG
+          if (result.extractedData && result.extractedData.rawText) {
+            await ragService.addToKnowledgeBase(result.extractedData.rawText, 'reservation_pdf', {
+              filename: req.file.filename,
+              uploadDate: new Date(),
+              reservationId: result.reservation?.id,
+              status: result.success ? 'created' : 'failed'
+            });
+          }
+          
+          // Retornar resultado com a reserva criada e dados extraídos
+          return res.json({
+            success: result.success,
+            message: result.message,
+            reservation: result.reservation,
+            extractedData: result.extractedData,
+            validation: result.validationResult,
+            file: {
+              filename: req.file.filename,
+              path: req.file.path
+            }
+          });
+        } else {
+          // Processar apenas o PDF sem criar reserva (comportamento antigo)
+          console.log('Processando PDF sem criação automática de reserva');
+          
+          // Usar o serviço de extração e validação
+          const validationResult = await processPdf(req.file.path, process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "", { 
+            skipQualityCheck, 
+            useCache 
+          });
+          console.log('Validação concluída:', validationResult.status);
+          
+          // Extrair os dados validados com valores padrão
+          const extractedData = validationResult.dataWithDefaults;
+          
+          // Adicionar o texto extraído à base de conhecimento RAG
+          if (extractedData && extractedData.rawText) {
+            await ragService.addToKnowledgeBase(extractedData.rawText, 'reservation_pdf', {
+              filename: req.file.filename,
+              uploadDate: new Date(),
+              validationStatus: validationResult.status
+            });
+          }
+
+          // Encontrar a propriedade correspondente pelo nome (com lógica mais flexível)
+          const properties = await storage.getProperties();
+          console.log(`Buscando correspondência para propriedade: ${extractedData?.propertyName}`);
+          
+          // Lógica de matching de propriedade mais flexível
+          let matchedProperty = null;
+          
+          if (extractedData && extractedData.propertyName) {
+            // Primeiro tenta match exato (case insensitive)
+            matchedProperty = properties.find(p => 
+              p.name.toLowerCase() === extractedData.propertyName.toLowerCase()
+            );
+            
+            // Se não encontrar, usa matching mais flexível
+            if (!matchedProperty) {
+              // Define uma função de similaridade
+              const calculateSimilarity = (str1: string, str2: string): number => {
+                const words1 = str1.toLowerCase().split(/\s+/);
+                const words2 = str2.toLowerCase().split(/\s+/);
+                const commonWords = words1.filter((word: string) => words2.includes(word));
+                return commonWords.length / Math.max(words1.length, words2.length);
+              };
+              
+              // Encontrar a propriedade com maior similaridade
+              let bestMatch = null;
+              let highestSimilarity = 0;
+              
+              for (const property of properties) {
+                const similarity = calculateSimilarity(
+                  extractedData.propertyName, 
+                  property.name
+                );
+                
+                if (similarity > highestSimilarity && similarity > 0.6) {
+                  highestSimilarity = similarity;
+                  bestMatch = property;
+                }
+              }
+              
+              matchedProperty = bestMatch;
+            }
+          }
+          
+          // Se não encontrar propriedade, define valores padrão
+          if (!matchedProperty) {
+            matchedProperty = { id: null, cleaningCost: 0, checkInFee: 0, commission: 0, teamPayment: 0 };
+            
+            // Adicionar erro de validação se não encontrou a propriedade
+            if (extractedData && extractedData.propertyName) {
+              validationResult.errors.push({
+                field: 'propertyName',
+                message: 'Propriedade não encontrada no sistema',
+                severity: 'warning'
+              });
+              
+              validationResult.warningFields.push('propertyName');
+            }
+          }
+
+          // Calcular taxas e valores baseados na propriedade encontrada
+          const totalAmount = extractedData?.totalAmount || 0;
+          const platformFee = extractedData?.platformFee || (
+            (extractedData?.platform === "airbnb" || extractedData?.platform === "booking") 
+              ? Math.round(totalAmount * 0.1) 
+              : 0
+          );
+
+          // Adicionar atividade ao sistema
+          await storage.createActivity({
+            activityType: 'pdf_processed',
+            description: `PDF processado: ${extractedData?.propertyName || 'Propriedade desconhecida'} - ${extractedData?.guestName || 'Hóspede desconhecido'} (${validationResult.status})`,
+            resourceId: matchedProperty.id,
+            resourceType: 'property'
+          });
+
+          // Criar resultados enriquecidos
+          const enrichedData = {
+            ...extractedData,
+            propertyId: matchedProperty.id,
+            platformFee: platformFee,
+            cleaningFee: extractedData?.cleaningFee || Number(matchedProperty.cleaningCost || 0),
+            checkInFee: extractedData?.checkInFee || Number(matchedProperty.checkInFee || 0),
+            commission: extractedData?.commission || (totalAmount * Number(matchedProperty.commission || 0) / 100),
+            teamPayment: extractedData?.teamPayment || Number(matchedProperty.teamPayment || 0)
+          };
+
+          // Retorna os dados extraídos com as informações da propriedade e status de validação
+          return res.json({
+            success: true,
+            extractedData: enrichedData,
+            validation: {
+              status: validationResult.status,
+              isValid: validationResult.isValid,
+              errors: validationResult.errors,
+              missingFields: validationResult.missingFields,
+              warningFields: validationResult.warningFields
+            },
+            file: {
+              filename: req.file.filename,
+              path: req.file.path
+            }
+          });
+        }
+      } catch (processError) {
+        console.error('Erro no processamento do PDF:', processError);
+        // Retornar erro formatado
+        return res.status(500).json({ 
+          success: false,
+          message: "Falha ao processar PDF", 
+          error: processError instanceof Error ? processError.message : "Erro desconhecido no processamento"
+        });
+      }
+    } catch (err) {
+      console.error('Erro ao processar upload de PDF:', err);
+      return res.status(500).json({
+        success: false,
+        message: "Erro interno no servidor",
+        error: err instanceof Error ? err.message : "Erro desconhecido"
+      });
+    }
+  });
   
   /**
    * Endpoint para processamento de imagens usando OCR

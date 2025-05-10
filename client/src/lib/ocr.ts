@@ -156,8 +156,8 @@ export async function uploadAndProcessPDF(file: File, options: { useCache?: bool
   console.log(`Enviando PDF para servidor: ${file.name} (${file.size} bytes)`);
   
   try {
-    // Fazer a requisição ao servidor
-    const response = await fetch("/api/upload-pdf", {
+    // Fazer a requisição ao servidor usando a nova rota unificada
+    const response = await fetch("/api/ocr?provider=auto", {
       method: "POST",
       body: formData,
       credentials: "include",
@@ -178,12 +178,16 @@ export async function uploadAndProcessPDF(file: File, options: { useCache?: bool
     console.log("Dados extraídos do PDF:", result);
     
     // Verificação de segurança
-    if (!result.success && !result.extractedData) {
+    if (!result.success && !result.reservations) {
       throw new Error(result.message || "Falha no processamento do PDF");
     }
     
+    // Na nova API, a resposta contém reservations em vez de extractedData
+    if (result.reservations && result.reservations.length > 0) {
+      result.extractedData = result.reservations[0];
+    }
     // Se não houver extractedData ou estiver vazio
-    if (!result.extractedData) {
+    else if (!result.extractedData) {
       // Criar estrutura para não quebrar o fluxo na interface
       console.warn("Resposta sem dados extraídos, criando estrutura mínima");
       
@@ -200,6 +204,21 @@ export async function uploadAndProcessPDF(file: File, options: { useCache?: bool
       
       // Adicionar aviso ao componente do resultado
       result.warning = "Não foi possível extrair todos os dados do PDF. Por favor, preencha manualmente os campos em branco.";
+    }
+    
+    // Incluir informações sobre campos ausentes (missing)
+    if (result.missing && result.missing.length > 0) {
+      if (!result.validation) {
+        result.validation = {
+          status: ValidationStatus.NEEDS_REVIEW,
+          isValid: false,
+          errors: [],
+          missingFields: result.missing,
+          warningFields: []
+        };
+      } else {
+        result.validation.missingFields = result.missing;
+      }
     }
     
     return result;

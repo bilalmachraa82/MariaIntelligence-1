@@ -44,9 +44,6 @@ interface ParseResult {
 export async function parseReservationData(text: string): Promise<ParseResult> {
   console.log('🔍 Iniciando extração de dados de reserva a partir do texto OCR');
   
-  // Instanciar o adaptador de IA
-  const aiAdapter = AIAdapter.getInstance();
-  
   // Lista de reservas extraídas
   const reservations: ReservationData[] = [];
   
@@ -57,207 +54,272 @@ export async function parseReservationData(text: string): Promise<ParseResult> {
   const boxes: Record<string, any> = {};
   
   try {
-    // Usar o Gemini para interpretação de dados estruturados
-    // O Gemini é mais adequado para este tipo de tarefa de parsing complexo
-    const structuredData = await aiAdapter.geminiService.parseReservationData(text);
+    // Parser nativo sem depender do Gemini
+    console.log('🔍 Usando parser nativo sem IA');
     
-    // Verificar se temos reservas
-    if (structuredData && 
-        (Array.isArray(structuredData.reservations) || 
-         Array.isArray(structuredData.results) || 
-         typeof structuredData === 'object')
-    ) {
-      // Normalizar os dados
-      let dataArray: any[] = [];
+    // Campos obrigatórios
+    const requiredFields = [
+      'propertyName', 'guestName', 'checkInDate', 'checkOutDate', 
+      'numGuests', 'totalAmount'
+    ];
+    
+    // Tentar extrair dados diretamente do texto usando regex
+    const reservation: ReservationData = {};
+    const missingInThisReservation: string[] = [...requiredFields];
+    
+    // Extração de propriedade
+    const propertyRegex = [
+      /propriedade[\s:]+([^\n\.]+)/i,
+      /property[\s:]+([^\n\.]+)/i,
+      /alojamento[\s:]+([^\n\.]+)/i,
+      /imóvel[\s:]+([^\n\.]+)/i,
+      /localização[\s:]+([^\n\.]+)/i,
+      /localização ([^,\.\n]+)/i,
+      /location[\s:]+([^\n\.]+)/i,
+      /apartamento[\s:]+([^\n\.]+)/i,
+      /apartment[\s:]+([^\n\.]+)/i,
+      /morada[\s:]+([^\n\.]+)/i,
+      /address[\s:]+([^\n\.]+)/i
+    ];
+    
+    for (const regex of propertyRegex) {
+      const match = text.match(regex);
+      if (match) {
+        reservation.propertyName = match[1].trim();
+        const index = missingInThisReservation.indexOf('propertyName');
+        if (index !== -1) missingInThisReservation.splice(index, 1);
+        break;
+      }
+    }
+    
+    // Se não encontrou o nome da propriedade, tentar extrair qualquer linha que pareça endereço
+    if (!reservation.propertyName) {
+      const addressLines = text.split('\n').filter(line => 
+        (line.includes('Rua') || line.includes('Av.') || line.includes('Avenida') || 
+         line.includes('R.') || line.includes('Praça') || line.includes('Travessa') ||
+         line.includes('Lisboa') || line.includes('Porto')) &&
+        !line.toLowerCase().includes('email') && !line.toLowerCase().includes('telefone')
+      );
       
-      if (Array.isArray(structuredData.reservations)) {
-        dataArray = structuredData.reservations;
-      } else if (Array.isArray(structuredData.results)) {
-        dataArray = structuredData.results;
-      } else if (structuredData.propertyName || structuredData.guestName) {
-        // É uma única reserva no formato direto
-        dataArray = [structuredData];
-      } else if (typeof structuredData === 'object') {
-        // Tentar encontrar objeto de reserva
-        for (const key in structuredData) {
-          if (typeof structuredData[key] === 'object' && 
-              (structuredData[key].propertyName || structuredData[key].guestName)) {
-            dataArray.push(structuredData[key]);
-          }
+      if (addressLines.length > 0) {
+        reservation.propertyName = addressLines[0].trim();
+        const index = missingInThisReservation.indexOf('propertyName');
+        if (index !== -1) missingInThisReservation.splice(index, 1);
+      }
+    }
+    
+    // Extração de hóspede
+    const guestRegex = [
+      /hóspede[\s:]+([^\n\.]+)/i,
+      /hospede[\s:]+([^\n\.]+)/i,
+      /cliente[\s:]+([^\n\.]+)/i,
+      /guest[\s:]+([^\n\.]+)/i,
+      /nome do cliente[\s:]+([^\n\.]+)/i,
+      /nome[\s:]+([^\n\.]+)/i,
+      /name[\s:]+([^\n\.]+)/i,
+      /guest name[\s:]+([^\n\.]+)/i,
+      /nome:[\s]*([^\n\.]+)/i,
+      /name:[\s]*([^\n\.]+)/i
+    ];
+    
+    for (const regex of guestRegex) {
+      const match = text.match(regex);
+      if (match) {
+        reservation.guestName = match[1].trim();
+        const index = missingInThisReservation.indexOf('guestName');
+        if (index !== -1) missingInThisReservation.splice(index, 1);
+        break;
+      }
+    }
+    
+    // Extração de email
+    const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+    const emailMatch = text.match(emailRegex);
+    if (emailMatch) {
+      reservation.guestEmail = emailMatch[0];
+    }
+    
+    // Extração de telefone
+    const phoneRegex = [
+      /telefone[\s:]+([+\d\s()-]{7,})/i,
+      /phone[\s:]+([+\d\s()-]{7,})/i,
+      /tel[\s\.:]+([+\d\s()-]{7,})/i,
+      /contacto[\s:]+([+\d\s()-]{7,})/i,
+      /contact[\s:]+([+\d\s()-]{7,})/i,
+      /telemovel[\s:]+([+\d\s()-]{7,})/i,
+      /telemóvel[\s:]+([+\d\s()-]{7,})/i,
+      /mobile[\s:]+([+\d\s()-]{7,})/i,
+      /\+\d{2,3}[\s\d]{8,}/
+    ];
+    
+    for (const regex of phoneRegex) {
+      const match = text.match(regex);
+      if (match) {
+        reservation.guestPhone = match[1] ? match[1].trim() : match[0].trim();
+        break;
+      }
+    }
+    
+    // Extração de datas
+    // Primeiro procurar por padrões com etiquetas
+    const checkInRegex = [
+      /check[ -]?in[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i,
+      /entrada[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i,
+      /arrival[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i,
+      /chegada[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i,
+      /data de entrada[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i,
+      /data de check-in[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i,
+      /begin[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i,
+      /início[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i,
+      /from[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i,
+      /de[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i
+    ];
+    
+    for (const regex of checkInRegex) {
+      const match = text.match(regex);
+      if (match) {
+        reservation.checkInDate = normalizeDateString(match[1]);
+        const index = missingInThisReservation.indexOf('checkInDate');
+        if (index !== -1) missingInThisReservation.splice(index, 1);
+        break;
+      }
+    }
+    
+    const checkOutRegex = [
+      /check[ -]?out[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i,
+      /saída[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i,
+      /saida[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i,
+      /departure[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i,
+      /data de saída[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i,
+      /data de check-out[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i,
+      /end[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i,
+      /fim[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i,
+      /to[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i,
+      /até[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i,
+      /a[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i
+    ];
+    
+    for (const regex of checkOutRegex) {
+      const match = text.match(regex);
+      if (match) {
+        reservation.checkOutDate = normalizeDateString(match[1]);
+        const index = missingInThisReservation.indexOf('checkOutDate');
+        if (index !== -1) missingInThisReservation.splice(index, 1);
+        break;
+      }
+    }
+    
+    // Se não encontrou datas específicas, procurar por padrões de data em geral
+    if (!reservation.checkInDate || !reservation.checkOutDate) {
+      // Encontrar todas as datas no documento
+      const dateMatches = text.match(/\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4}/g) || [];
+      
+      if (dateMatches.length >= 2) {
+        // Assumir que as duas primeiras são check-in e check-out
+        if (!reservation.checkInDate) {
+          reservation.checkInDate = normalizeDateString(dateMatches[0]);
+          const index = missingInThisReservation.indexOf('checkInDate');
+          if (index !== -1) missingInThisReservation.splice(index, 1);
         }
         
-        // Se não encontrou nada, tratar como uma única reserva
-        if (dataArray.length === 0) {
-          dataArray = [structuredData];
+        if (!reservation.checkOutDate) {
+          reservation.checkOutDate = normalizeDateString(dateMatches[1]);
+          const index = missingInThisReservation.indexOf('checkOutDate');
+          if (index !== -1) missingInThisReservation.splice(index, 1);
         }
       }
-      
-      // Processar cada reserva
-      for (const data of dataArray) {
-        // Reserva normalizada
-        const reservation: ReservationData = {};
-        
-        // Campos obrigatórios
-        const requiredFields = [
-          'propertyName', 'guestName', 'checkInDate', 'checkOutDate', 
-          'numGuests', 'totalAmount'
-        ];
-        
-        // Lista de campos em falta nesta reserva
-        const missingInThisReservation: string[] = [];
-        
-        // Mapear os campos
-        const fieldMappings: Record<string, string[]> = {
-          propertyName: ['propertyName', 'property', 'propertyId', 'accommodation', 'alojamento', 'propriedade'],
-          guestName: ['guestName', 'guest', 'hospede', 'cliente', 'name', 'nome'],
-          guestEmail: ['guestEmail', 'email', 'contacto', 'contato', 'contact'],
-          guestPhone: ['guestPhone', 'phone', 'telefone', 'telemovel', 'telemóvel', 'contacto', 'contato', 'contact'],
-          checkInDate: ['checkInDate', 'checkin', 'entrada', 'arrival', 'startDate', 'dataEntrada', 'dataInicio'],
-          checkOutDate: ['checkOutDate', 'checkout', 'saida', 'saída', 'departure', 'endDate', 'dataSaida', 'dataFim'],
-          numGuests: ['numGuests', 'guests', 'hospedes', 'numberOfGuests', 'pax', 'persons', 'pessoas'],
-          totalAmount: ['totalAmount', 'amount', 'valor', 'price', 'preco', 'preço', 'total'],
-          platformFee: ['platformFee', 'fee', 'taxa', 'comissao', 'comissão'],
-          cleaningFee: ['cleaningFee', 'cleaning', 'limpeza', 'taxaLimpeza'],
-          checkInFee: ['checkInFee', 'checkinFee', 'entradaFee', 'recepção', 'recepcao', 'reception'],
-          commissionFee: ['commissionFee', 'commission', 'comissao', 'comissão'],
-          teamPayment: ['teamPayment', 'team', 'equipe', 'equipa', 'pagamentoEquipe'],
-          platform: ['platform', 'plataforma', 'source', 'origem', 'canal'],
-          reservationId: ['reservationId', 'id', 'bookingId', 'booking', 'reserva']
-        };
-        
-        // Normalizar cada campo
-        for (const [targetField, sourceFields] of Object.entries(fieldMappings)) {
-          // Tentar encontrar o campo na reserva
-          for (const sourceField of sourceFields) {
-            if (data[sourceField] !== undefined && data[sourceField] !== null && data[sourceField] !== '') {
-              reservation[targetField] = data[sourceField];
-              break;
-            }
-          }
-          
-          // Verificar se é um campo obrigatório e está faltando
-          if (requiredFields.includes(targetField) && reservation[targetField] === undefined) {
-            missingInThisReservation.push(targetField);
-          }
-        }
-        
-        // Normalizar valores para garantir tipos corretos
-        if (reservation.checkInDate) {
-          reservation.checkInDate = normalizeDateString(reservation.checkInDate);
-        }
-        
-        if (reservation.checkOutDate) {
-          reservation.checkOutDate = normalizeDateString(reservation.checkOutDate);
-        }
-        
-        if (reservation.numGuests !== undefined) {
-          reservation.numGuests = normalizeNumber(reservation.numGuests);
-        }
-        
-        if (reservation.totalAmount !== undefined) {
-          reservation.totalAmount = normalizeAmount(reservation.totalAmount);
-        }
-        
-        if (reservation.platformFee !== undefined) {
-          reservation.platformFee = normalizeAmount(reservation.platformFee);
-        }
-        
-        if (reservation.cleaningFee !== undefined) {
-          reservation.cleaningFee = normalizeAmount(reservation.cleaningFee);
-        }
-        
-        if (reservation.checkInFee !== undefined) {
-          reservation.checkInFee = normalizeAmount(reservation.checkInFee);
-        }
-        
-        if (reservation.commissionFee !== undefined) {
-          reservation.commissionFee = normalizeAmount(reservation.commissionFee);
-        }
-        
-        if (reservation.teamPayment !== undefined) {
-          reservation.teamPayment = normalizeAmount(reservation.teamPayment);
-        }
-        
-        // Definir valores padrão para campos opcionais
-        if (reservation.platform === undefined) {
-          // Tentar inferir a plataforma pelo formato do documento
-          if (text.toLowerCase().includes('airbnb')) {
-            reservation.platform = 'airbnb';
-          } else if (text.toLowerCase().includes('booking.com')) {
-            reservation.platform = 'booking';
-          } else {
-            reservation.platform = 'other';
-          }
-        }
-        
-        // Status padrão
-        reservation.status = 'confirmed';
-        
-        // Notas
-        reservation.notes = `Extraído via OCR (${new Date().toLocaleDateString()})`;
-        
-        // Se há dados obrigatórios suficientes, adicionar a reserva
-        if (missingInThisReservation.length <= 2) { // Permitir até 2 campos ausentes
-          reservations.push(reservation);
-          
-          // Adicionar os campos em falta à lista geral
-          for (const field of missingInThisReservation) {
-            if (!missing.includes(field)) {
-              missing.push(field);
-            }
-          }
-        }
+    }
+    
+    // Extração de número de hóspedes
+    const guestsRegex = [
+      /(\d+)[\s]*(?:hóspedes|hospedes|guests|adultos|adults|pessoas|persons|pax|people)/i,
+      /(?:hóspedes|hospedes|guests|adultos|adults|pessoas|persons|pax|people)[\s:]*(\d+)/i,
+      /total de (?:hóspedes|hospedes|guests|adultos|adults|pessoas|persons|pax|people)[\s:]*(\d+)/i,
+      /number of (?:guests|adults|people|persons)[\s:]*(\d+)/i,
+      /número de (?:hóspedes|hospedes|adultos|pessoas|pessoas|pax)[\s:]*(\d+)/i,
+      /ocupação[\s:]*(\d+)/i,
+      /occupancy[\s:]*(\d+)/i,
+      /máximo de pessoas[\s:]*(\d+)/i,
+      /max (?:guests|people|persons)[\s:]*(\d+)/i
+    ];
+    
+    for (const regex of guestsRegex) {
+      const match = text.match(regex);
+      if (match) {
+        reservation.numGuests = parseInt(match[1]);
+        const index = missingInThisReservation.indexOf('numGuests');
+        if (index !== -1) missingInThisReservation.splice(index, 1);
+        break;
       }
+    }
+    
+    // Extração de valor total
+    const amountRegex = [
+      /total[\s:]*([€$£]?[\s]*[\d.,]+)/i,
+      /valor total[\s:]*([€$£]?[\s]*[\d.,]+)/i,
+      /total amount[\s:]*([€$£]?[\s]*[\d.,]+)/i,
+      /valor[\s:]*([€$£]?[\s]*[\d.,]+)/i,
+      /amount[\s:]*([€$£]?[\s]*[\d.,]+)/i,
+      /price[\s:]*([€$£]?[\s]*[\d.,]+)/i,
+      /preço[\s:]*([€$£]?[\s]*[\d.,]+)/i,
+      /custo[\s:]*([€$£]?[\s]*[\d.,]+)/i,
+      /cost[\s:]*([€$£]?[\s]*[\d.,]+)/i,
+      /[€$£][\s]*[\d.,]+/
+    ];
+    
+    for (const regex of amountRegex) {
+      const match = text.match(regex);
+      if (match) {
+        // Limpar e normalizar o valor
+        const rawAmount = match[1] || match[0];
+        const cleanedAmount = rawAmount.replace(/[^0-9.,]/g, '');
+        reservation.totalAmount = normalizeAmount(cleanedAmount);
+        const index = missingInThisReservation.indexOf('totalAmount');
+        if (index !== -1) missingInThisReservation.splice(index, 1);
+        break;
+      }
+    }
+    
+    // Plataforma
+    if (text.toLowerCase().includes('airbnb')) {
+      reservation.platform = 'airbnb';
+    } else if (text.toLowerCase().includes('booking.com') || text.toLowerCase().includes('booking')) {
+      reservation.platform = 'booking';
+    } else if (text.toLowerCase().includes('expedia')) {
+      reservation.platform = 'expedia';
+    } else if (text.toLowerCase().includes('direct') || text.toLowerCase().includes('direto')) {
+      reservation.platform = 'direct';
+    } else {
+      reservation.platform = 'other';
+    }
+    
+    // Status padrão
+    reservation.status = 'confirmed';
+    
+    // Notas
+    reservation.notes = `Extraído via OCR nativo (${new Date().toLocaleDateString()})`;
+    
+    // Se temos dados suficientes, adicionar a reserva
+    if (missingInThisReservation.length <= 3) { // Permitir até 3 campos ausentes para maior flexibilidade
+      reservations.push(reservation);
       
-      // Se temos retângulos delimitadores, salvar para visualização
-      if (structuredData.boxes || structuredData.boundingBoxes) {
-        Object.assign(boxes, structuredData.boxes || structuredData.boundingBoxes || {});
+      // Adicionar os campos em falta à lista geral
+      for (const field of missingInThisReservation) {
+        if (!missing.includes(field)) {
+          missing.push(field);
+        }
       }
     } else {
-      console.warn('⚠️ Não foi possível extrair dados estruturados do texto OCR');
+      console.warn('⚠️ Dados insuficientes para criar uma reserva válida');
+      console.warn(`⚠️ Campos em falta: ${missingInThisReservation.join(', ')}`);
       
-      // Tudo está faltando
-      missing.push(...['propertyName', 'guestName', 'checkInDate', 'checkOutDate', 'numGuests', 'totalAmount']);
-      
-      // Tentar extrair manualmente algo básico
-      const propertyMatch = text.match(/(?:propriedade|property|alojamento)[\s:]+([^\n]+)/i);
-      const guestMatch = text.match(/(?:cliente|guest|hospede|hóspede)[\s:]+([^\n]+)/i);
-      const dateMatch = text.match(/(?:data|date)[\s:]+(\d{1,2}[\/\.-]\d{1,2}[\/\.-]\d{2,4})/i);
-      
-      if (propertyMatch || guestMatch || dateMatch) {
-        const reservation: ReservationData = {};
-        
-        if (propertyMatch) {
-          reservation.propertyName = propertyMatch[1].trim();
-          const index = missing.indexOf('propertyName');
-          if (index !== -1) missing.splice(index, 1);
-        }
-        
-        if (guestMatch) {
-          reservation.guestName = guestMatch[1].trim();
-          const index = missing.indexOf('guestName');
-          if (index !== -1) missing.splice(index, 1);
-        }
-        
-        if (dateMatch) {
-          const dateStr = dateMatch[1];
-          // Tentar interpretar como check-in ou check-out
-          if (text.toLowerCase().includes('check-in') || text.toLowerCase().includes('entrada')) {
-            reservation.checkInDate = normalizeDateString(dateStr);
-            const index = missing.indexOf('checkInDate');
-            if (index !== -1) missing.splice(index, 1);
-          } else {
-            reservation.checkOutDate = normalizeDateString(dateStr);
-            const index = missing.indexOf('checkOutDate');
-            if (index !== -1) missing.splice(index, 1);
-          }
-        }
-        
-        // Status padrão
-        reservation.status = 'draft'; // Rascunho, pois está incompleto
-        
-        // Adicionar com dados parciais
+      // Mesmo que estejam faltando muitos campos, ainda adicionar a reserva parcial
+      // para permitir edição manual posterior
+      if (reservation.propertyName || reservation.guestName) {
         reservations.push(reservation);
+        missing.push(...missingInThisReservation);
+      } else {
+        missing.push(...requiredFields);
       }
     }
     
