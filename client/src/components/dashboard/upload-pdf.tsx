@@ -28,7 +28,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Link, useLocation } from "wouter";
-import { MissingDataForm } from "@/components/dashboard/missing-data-form";
+import { MissingDataForm } from "@/components/ocr/MissingDataForm";
 
 export function UploadPDF() {
   // Estados para arquivos selecionados

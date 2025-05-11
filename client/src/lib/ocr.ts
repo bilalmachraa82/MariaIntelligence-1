@@ -100,8 +100,19 @@ export async function uploadAndProcessPDF(file: File, options: { useCache?: bool
   console.log(`Enviando PDF para servidor: ${file.name} (${file.size} bytes)`);
   
   try {
-    // Fazer a requisição ao servidor usando a nova rota unificada
-    const response = await fetch("/api/ocr?provider=auto", {
+    // Fazer a requisição ao servidor usando a rota OCR unificada
+    // Parameter provider=auto seleciona automaticamente o melhor serviço disponível:
+    // 1. Mistral (OpenRouter) para OCR primário
+    // 2. RolmOCR (Hugging Face) para conteúdo manuscrito
+    // 3. PDF-parse (nativo) como fallback
+    let apiUrl = "/api/ocr?provider=auto";
+    
+    // Adicionar parâmetros adicionais para ajudar no debug
+    apiUrl += "&demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true";
+    
+    console.log("Fetch URL modificada:", apiUrl);
+    
+    const response = await fetch(apiUrl, {
       method: "POST",
       body: formData,
       credentials: "include",

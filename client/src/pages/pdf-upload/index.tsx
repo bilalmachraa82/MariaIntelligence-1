@@ -76,7 +76,7 @@ export default function DocumentScanPage() {
                   {t("documentScan.step2Title", "Processamento com IA")}
                 </h4>
                 <p className="text-sm text-secondary-600 mt-1">
-                  {t("documentScan.step2Description", "O sistema analisa automaticamente os dados com OCR e processamento Google Gemini AI, combinando informações quando disponíveis em pares")}
+                  {t("documentScan.step2Description", "O sistema analisa automaticamente os dados com OCR e processamento avançado de IA, priorizando Mistral OCR e extraindo informações de reservas")}
                 </p>
               </div>
             </div>
