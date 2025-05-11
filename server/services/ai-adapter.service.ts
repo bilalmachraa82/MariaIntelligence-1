@@ -295,17 +295,26 @@ export class AIAdapter {
     
     // Se estiver no modo AUTO, determinar o melhor serviço
     if (this.currentService === AIServiceType.AUTO || !name) {
-      // Prioridade: OpenRouter > Gemini > Rolm (conforme configuração PRIMARY_AI)
+      // Prioridade específica para OCR:
+      // 1. OpenRouter (Mistral) para OCR principal
+      // 2. RolmOCR para manuscritos 
+      // 3. Gemini apenas como fallback para análise (removido do pipeline OCR)
+      
       if (process.env.OPENROUTER_API_KEY) {
+        console.log("🔄 Usando OpenRouter (Mistral) como serviço primário de OCR");
         return AIAdapter.services.openrouter;
-      } else if (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY) {
-        return AIAdapter.services.gemini;
       } else if (process.env.HF_TOKEN) {
+        console.log("🔄 Usando RolmOCR como serviço primário de OCR");
         return AIAdapter.services.rolm;
+      } else if (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY) {
+        // Gemini é mantido apenas para análise de BD
+        console.warn("⚠️ OpenRouter e RolmOCR não configurados. Gemini disponível apenas para análise de BD");
+        return AIAdapter.services.gemini;
       }
       
-      // Se nenhum serviço estiver configurado, usar Gemini como fallback
-      console.warn("⚠️ Nenhum serviço de IA configurado. Tentando usar Gemini como fallback.");
+      // Se nenhum serviço estiver configurado, usar extração nativa
+      console.warn("⚠️ Nenhum serviço de IA configurado. Usando extrator nativo de PDF");
+      // Fallback para Gemini como última opção
       return AIAdapter.services.gemini;
     }
     
