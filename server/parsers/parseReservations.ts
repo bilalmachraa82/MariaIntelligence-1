@@ -162,16 +162,46 @@ export async function parseReservationData(text: string): Promise<ParseResult> {
       /name[\s:]+([^\n\.]+)/i,
       /guest name[\s:]+([^\n\.]+)/i,
       /nome:[\s]*([^\n\.]+)/i,
-      /name:[\s]*([^\n\.]+)/i
+      /name:[\s]*([^\n\.]+)/i,
+      /data.*saída.*noites.*Nome.*hóspedes.*país.*site.*info.*([A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ\s]+)[\d]/i,
+      /(\d{1,2}\/\d{1,2}\/\d{2,4})\s+(\d{1,2}\/\d{1,2}\/\d{2,4})\s+\d+\s+([A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ\s]+)\d+/i
     ];
     
     for (const regex of guestRegex) {
       const match = text.match(regex);
       if (match) {
-        reservation.guestName = match[1].trim();
+        // Se for um dos padrões específicos de tabela, pegar o terceiro grupo de captura
+        if (regex.toString().includes('data.*saída') || regex.toString().includes('\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}')) {
+          reservation.guestName = (match[3] || match[1]).trim();
+        } else {
+          reservation.guestName = match[1].trim();
+        }
+        
+        // Limpar o nome removendo qualquer dígito ou caracteres estranhos
+        reservation.guestName = reservation.guestName.replace(/\d+/g, '').trim();
+        
         const index = missingInThisReservation.indexOf('guestName');
         if (index !== -1) missingInThisReservation.splice(index, 1);
+        console.log(`✅ Nome do hóspede extraído: "${reservation.guestName}"`);
         break;
+      }
+    }
+    
+    // Se não encontrou o nome do hóspede, tentar extrair de um formato tabular específico
+    // Este padrão é frequentemente encontrado nos documentos de controle
+    if (!reservation.guestName) {
+      // Procurar por padrões tabulares comuns em documentos de controle
+      const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+      for (const line of lines) {
+        // Procurar por linhas que comecem com datas (DD/MM/YYYY) seguidas de palavras (nome)
+        const dateNameMatch = line.match(/(\d{1,2}\/\d{1,2}\/\d{2,4})\s+(\d{1,2}\/\d{1,2}\/\d{2,4})\s+\d+\s+([A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ\s]+?)(\d+|\s+[A-Za-zÀ-ÖØ-öø-ÿ])/);
+        if (dateNameMatch) {
+          reservation.guestName = dateNameMatch[3].trim();
+          const index = missingInThisReservation.indexOf('guestName');
+          if (index !== -1) missingInThisReservation.splice(index, 1);
+          console.log(`✅ Nome do hóspede extraído de formato tabular: "${reservation.guestName}"`);
+          break;
+        }
       }
     }
     
@@ -283,16 +313,44 @@ export async function parseReservationData(text: string): Promise<ParseResult> {
       /ocupação[\s:]*(\d+)/i,
       /occupancy[\s:]*(\d+)/i,
       /máximo de pessoas[\s:]*(\d+)/i,
-      /max (?:guests|people|persons)[\s:]*(\d+)/i
+      /max (?:guests|people|persons)[\s:]*(\d+)/i,
+      /n\.º\s+hóspedes[\s:]*(\d+)/i,
+      /(\d{1,2}\/\d{1,2}\/\d{2,4})\s+(\d{1,2}\/\d{1,2}\/\d{2,4})\s+\d+\s+[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ\s]+(\d+)/i
     ];
     
     for (const regex of guestsRegex) {
       const match = text.match(regex);
       if (match) {
-        reservation.numGuests = parseInt(match[1]);
+        // Se for o padrão tabular, usar o grupo de captura correto
+        if (regex.toString().includes('\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}')) {
+          reservation.numGuests = parseInt(match[3]);
+        } else {
+          reservation.numGuests = parseInt(match[1]);
+        }
+        
         const index = missingInThisReservation.indexOf('numGuests');
         if (index !== -1) missingInThisReservation.splice(index, 1);
+        console.log(`✅ Número de hóspedes extraído: ${reservation.numGuests}`);
         break;
+      }
+    }
+    
+    // Se não encontrou o número de hóspedes, tentar extrair de um formato tabular específico
+    if (!reservation.numGuests) {
+      // Procurar por padrões tabulares comuns em documentos de controle
+      const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+      for (const line of lines) {
+        // Se já temos o nome do hóspede, procurar na mesma linha o número logo após o nome
+        if (reservation.guestName && line.includes(reservation.guestName)) {
+          const guestNumberMatch = line.match(new RegExp(`${reservation.guestName}\\s*(\\d+)`));
+          if (guestNumberMatch) {
+            reservation.numGuests = parseInt(guestNumberMatch[1]);
+            const index = missingInThisReservation.indexOf('numGuests');
+            if (index !== -1) missingInThisReservation.splice(index, 1);
+            console.log(`✅ Número de hóspedes extraído próximo ao nome: ${reservation.numGuests}`);
+            break;
+          }
+        }
       }
     }
     
