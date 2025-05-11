@@ -1,7 +1,7 @@
 /**
  * Teste simples para o endpoint de orçamento
  */
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
 async function testBudgetEndpoint() {
   try {
