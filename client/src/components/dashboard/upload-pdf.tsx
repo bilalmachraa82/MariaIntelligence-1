@@ -28,6 +28,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Link, useLocation } from "wouter";
+import { MissingDataForm } from "@/components/dashboard/missing-data-form";
 
 export function UploadPDF() {
   // Estados para arquivos selecionados
@@ -68,11 +69,16 @@ export function UploadPDF() {
     multipleResults,
     isMultiMode,
     error, 
+    rawText,
+    missingFields,
+    showMissingDataForm,
     handleFileUpload,
     handleMultipleFilesUpload,
     confirmReservation,
     confirmMultipleReservations,
-    clearExtractedData
+    clearExtractedData,
+    handleMissingDataComplete,
+    closeMissingDataForm
   } = usePdfUpload();
 
   // Verificar se a chave da API Gemini está configurada
