@@ -42,7 +42,7 @@ export function UploadPDF() {
   
   // Estados de modo e visualização
   // Sempre usar modo múltiplo por padrão e sem opção de alterar
-  const [isMultiUploadMode] = useState(true);
+  const [isMultiUploadMode, setIsMultiUploadMode] = useState(true);
   const [showRawText, setShowRawText] = useState(false);
   
   // Estado de disponibilidade da API Gemini
@@ -287,6 +287,16 @@ export function UploadPDF() {
 
   return (
     <>
+      {/* Formulário para solicitar dados ausentes quando necessário */}
+      <MissingDataForm
+        open={showMissingDataForm}
+        onClose={closeMissingDataForm}
+        extractedData={extractedData}
+        missing={missingFields}
+        onSubmit={handleMissingDataComplete}
+        isLoading={isUploading}
+      />
+      
       <Card className="bg-white shadow">
         <CardHeader className="px-4 py-5 sm:px-6">
           <div>
