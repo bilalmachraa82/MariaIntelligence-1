@@ -30,19 +30,19 @@
 ---
 
 ### BLOCO 3: Back-end Sprint Fixes
-- [ ] Remover rota legacy upload-pdf de server/routes.ts
-- [ ] Atualizar ocr.controller para dual payload
-- [ ] Instalar bullmq, ioredis, winston
-- [ ] Criar/atualizar server/queues/ocr.ts
-- [ ] Commit (acp "feat: ocr retry queue + winston logs")
+- [X] Remover rota legacy upload-pdf de server/routes.ts (executado)
+- [X] Atualizar ocr.controller para dual payload (modificado server/controllers/ocr.controller.ts)
+- [X] Instalar bullmq, ioredis, winston (executado `pnpm add`)
+- [X] Criar/atualizar server/queues/ocr.ts (arquivo criado e erro de tipagem corrigido)
+- [X] Commit (acp "feat: ocr retry queue + refactor controller") (executado: git add, commit, push)
 
 ---
 
 ### BLOCO 4: Front-end Sprint Fixes
-- [ ] Atualizar hook client/src/hooks/use-pdf-upload.ts
-- [ ] Completar missing-data-form client/src/components/dashboard/missing-data-form.tsx
-- [ ] Corrigir cálculo nights em client/src/lib/utils.ts
-- [ ] Verificar chaves i18n (node scripts/i18n-check.js)
+- [X] Atualizar hook client/src/hooks/use-pdf-upload.ts (indiretamente, via client/src/lib/ocr.ts)
+- [X] Completar missing-data-form client/src/components/dashboard/missing-data-form.tsx
+- [X] Corrigir cálculo nights em client/src/lib/utils.ts
+- [ ] Verificar chaves i18n (node scripts/i18n-check.js) - Script não encontrado
 - [ ] Commit (acp "fix: front ocr flow + i18n")
 
 ---

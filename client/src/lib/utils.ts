@@ -33,21 +33,24 @@ export function formatDateTime(date: string): string {
 }
 
 // Calculation Functions
-export function calculateDays(checkIn: string, checkOut: string): number {
+export function calculateNights(checkIn: string, checkOut: string): number {
   const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
   const firstDate = new Date(checkIn);
   const secondDate = new Date(checkOut);
-  const diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime()) / oneDay));
-  return diffDays;
+  // As datas devem ser normalizadas para o início do dia para evitar problemas com fuso horário e horas.
+  const firstDateMidnight = new Date(firstDate.getFullYear(), firstDate.getMonth(), firstDate.getDate());
+  const secondDateMidnight = new Date(secondDate.getFullYear(), secondDate.getMonth(), secondDate.getDate());
+  const diffNights = Math.round(Math.abs((secondDateMidnight.getTime() - firstDateMidnight.getTime()) / oneDay));
+  return diffNights;
 }
 
 export function calculateDuration(startDate: string, endDate: string): string {
-  const days = calculateDays(startDate, endDate);
+  const nights = calculateNights(startDate, endDate);
   
-  if (days === 1) {
-    return "1 dia";
+  if (nights === 1) {
+    return "1 noite";
   }
-  return `${days} dias`;
+  return `${nights} noites`;
 }
 
 export function calculateNetAmount(

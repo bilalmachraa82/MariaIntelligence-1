@@ -93,22 +93,15 @@ function safeJsonParse(jsonStr: string): any {
 export async function uploadAndProcessPDF(file: File, options: { useCache?: boolean, skipQualityCheck?: boolean } = {}): Promise<UploadResponse> {
   const { useCache = false, skipQualityCheck = false } = options;
   const formData = new FormData();
-  formData.append("pdf", file);
+  formData.append("file", file); // Alterado de "pdf" para "file"
   formData.append("useCache", useCache ? "true" : "false");
   formData.append("skipQualityCheck", skipQualityCheck ? "true" : "false");
 
   console.log(`Enviando PDF para servidor: ${file.name} (${file.size} bytes)`);
   
   try {
-    // Fazer a requisição ao servidor usando a rota OCR unificada
-    // Parameter provider=auto seleciona automaticamente o melhor serviço disponível:
-    // 1. Mistral (OpenRouter) para OCR primário
-    // 2. RolmOCR (Hugging Face) para conteúdo manuscrito
-    // 3. PDF-parse (nativo) como fallback
-    let apiUrl = "/api/ocr?provider=auto";
-    
-    // Adicionar parâmetros adicionais para ajudar no debug
-    apiUrl += "&demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true";
+    // Fazer a requisição ao servidor usando a rota OCR atualizada
+    const apiUrl = "/api/ocr/process"; // Alterada a URL da API
     
     console.log("Fetch URL modificada:", apiUrl);
     
@@ -343,15 +336,14 @@ export async function processPDFWithOCR(
     
     // Usar o endpoint unificado de OCR no servidor
     const formData = new FormData();
-    formData.append("pdf", file);
+    formData.append("file", file); // Alterado de "pdf" para "file"
     
     // Adicionar opções de processamento ao formulário
     formData.append("skipQualityCheck", skipQualityCheck ? "true" : "false");
     formData.append("useCache", useCache ? "true" : "false");
     
-    // Enviar para o endpoint unificado de OCR com o provider auto
-    // que seleciona o melhor serviço disponível (Mistral ou nativo)
-    const response = await fetch('/api/ocr?provider=auto', {
+    // Enviar para o endpoint atualizado de OCR
+    const response = await fetch('/api/ocr/process', { // Alterada a URL da API
       method: 'POST',
       body: formData
     });
@@ -628,13 +620,12 @@ export async function processMultiplePDFs(
         }
         
         // Processar o PDF usando a API do servidor
-        // Esta chamada usa o endpoint que executa pdf-parse + processamento Gemini
         const formData = new FormData();
-        formData.append("pdf", file);
+        formData.append("file", file); // Alterado de "pdf" para "file"
         formData.append("skipQualityCheck", skipQualityCheck ? "true" : "false");
         formData.append("useCache", useCache ? "true" : "false");
         
-        const response = await fetch('/api/ocr?provider=auto', {
+        const response = await fetch('/api/ocr/process', { // Alterada a URL da API
           method: 'POST',
           body: formData
         });

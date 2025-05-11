@@ -119,6 +119,20 @@ export function MissingDataForm({
                           <option value="direct">Reserva Direta</option>
                           <option value="other">Outro</option>
                         </select>
+                      ) : field === 'guestEmail' ? (
+                        <Input 
+                          {...formField} 
+                          placeholder={fieldLabels[field] || 'Email do Hóspede'} 
+                          type="email" 
+                          required
+                        />
+                      ) : field === 'guestPhone' ? (
+                        <Input 
+                          {...formField} 
+                          placeholder={fieldLabels[field] || 'Telefone do Hóspede'} 
+                          type="tel" 
+                          required
+                        />
                       ) : (
                         <Input 
                           {...formField} 
