@@ -94,14 +94,14 @@ export function UploadPDF() {
           
           if (!data.anyServiceAvailable) {
             toast({
-              title: "API Gemini não configurada",
-              description: "O processamento de PDF será limitado. Contate o administrador para configurar a API Gemini.",
+              title: "Serviços de IA não configurados",
+              description: "O processamento de PDF será limitado ao OCR básico. Contate o administrador para configurar os serviços de IA (Mistral ou OpenRouter).",
               variant: "destructive",
             });
           }
         }
       } catch (error) {
-        console.error("Erro ao verificar chave da API Gemini:", error);
+        console.error("Erro ao verificar serviços de IA disponíveis:", error);
         setGeminiAvailable(false);
       }
     }

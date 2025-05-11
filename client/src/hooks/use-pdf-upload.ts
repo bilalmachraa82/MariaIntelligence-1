@@ -131,12 +131,12 @@ export function usePdfUpload() {
           } else {
             toast({
               title: "Arquivo Processado com Sucesso",
-              description: "Os dados foram extraídos com IA e estão prontos para revisão.",
+              description: "Os dados foram extraídos pelo Mistral OCR e estão prontos para revisão.",
             });
           }
         }
       } catch (advancedError) {
-        console.warn("Falha ao processar com sistema avançado, tentando métodos alternativos:", advancedError);
+        console.warn("Falha ao processar com Mistral OCR, tentando métodos alternativos:", advancedError);
         
         // Tenta processar com OCR nativo como fallback
         try {
