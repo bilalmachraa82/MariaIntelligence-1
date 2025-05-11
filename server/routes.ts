@@ -25,6 +25,7 @@ import reservationAssistantRouter from "./api/reservation-assistant";
 import { generateDemoData, resetDemoDataHandler } from "./api/demo-data";
 // Importar o novo controlador OCR e middleware de upload configurável
 import * as ocrController from "./controllers/ocr.controller";
+import * as budgetController from "./controllers/budget.controller";
 import { pdfUpload as configuredPdfUpload, imageUpload as configuredImageUpload, anyFileUpload as configuredAnyFileUpload } from "./middleware/upload";
 import { 
   insertPropertySchema, 
