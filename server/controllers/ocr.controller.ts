@@ -251,83 +251,97 @@ export async function processOCR(req: Request, res: Response) {
   console.log('📑 Iniciando processamento OCR...');
   
   try {
-    // Validar se recebemos um arquivo
-    if (!req.file) {
-      return res.status(422).json({
-        success: false,
-        error: 'Nenhum arquivo enviado'
-      });
-    }
-    
-    // Validar tipo MIME
-    if (!req.file.mimetype || req.file.mimetype !== 'application/pdf') {
-      // Remover arquivo inválido
+    let pdfBuffer: Buffer;
+    let originalFileName: string | undefined;
+
+    // Verificar se o payload é um arquivo enviado (multipart/form-data) ou JSON com base64
+    if (req.file) {
+      console.log('📄 Processando arquivo enviado via multipart/form-data.');
+      originalFileName = req.file.originalname;
+      // Validar tipo MIME para arquivo enviado
+      if (!req.file.mimetype || req.file.mimetype !== 'application/pdf') {
+        try {
+          fs.unlinkSync(req.file.path); // Remover arquivo inválido
+        } catch (unlinkError) {
+          console.error('Erro ao remover arquivo inválido:', unlinkError);
+        }
+        return res.status(422).json({
+          success: false,
+          error: 'Tipo de arquivo inválido. Apenas PDFs são aceitos via upload de arquivo.'
+        });
+      }
+      
+      try {
+        pdfBuffer = fs.readFileSync(req.file.path);
+      } catch (readError) {
+        console.error('Erro ao ler arquivo enviado:', readError);
+        return res.status(500).json({
+          success: false,
+          error: 'Erro ao ler o arquivo PDF enviado'
+        });
+      }
+      // Remover arquivo temporário após leitura
       try {
         fs.unlinkSync(req.file.path);
       } catch (unlinkError) {
-        console.error('Erro ao remover arquivo inválido:', unlinkError);
+        console.error('Erro ao remover arquivo temporário:', unlinkError);
       }
-      
+
+    } else if (req.body && req.body.fileBase64) {
+      console.log('📄 Processando arquivo enviado via JSON (base64).');
+      originalFileName = req.body.fileName || 'document.pdf'; // Usar nome fornecido ou padrão
+      try {
+        pdfBuffer = Buffer.from(req.body.fileBase64, 'base64');
+      } catch (decodeError) {
+        console.error('Erro ao decodificar PDF base64:', decodeError);
+        return res.status(400).json({
+          success: false,
+          error: 'Erro ao decodificar o PDF base64. Verifique se o encoding está correto.'
+        });
+      }
+    } else {
       return res.status(422).json({
         success: false,
-        error: 'Tipo de arquivo inválido. Apenas PDFs são aceitos.'
+        error: 'Nenhum arquivo PDF enviado (nem via upload, nem via JSON com fileBase64).'
       });
     }
     
-    // Ler o arquivo
-    let pdfBuffer: Buffer;
-    try {
-      pdfBuffer = fs.readFileSync(req.file.path);
-    } catch (readError) {
-      console.error('Erro ao ler arquivo:', readError);
-      return res.status(500).json({
-        success: false,
-        error: 'Erro ao ler o arquivo PDF'
-      });
-    }
-    
-    // Verificar tamanho do arquivo
+    // Verificar tamanho do arquivo (aplicável a ambos os payloads)
     const maxSizeMB = parseInt(process.env.MAX_UPLOAD_MB || '10');
     const fileSizeMB = pdfBuffer.length / (1024 * 1024);
     if (fileSizeMB > maxSizeMB) {
-      // Remover arquivo muito grande
-      try {
-        fs.unlinkSync(req.file.path);
-      } catch (unlinkError) {
-        console.error('Erro ao remover arquivo muito grande:', unlinkError);
-      }
-      
       return res.status(413).json({
         success: false,
-        error: `Arquivo muito grande. O tamanho máximo permitido é ${maxSizeMB}MB.`
+        error: `Arquivo PDF muito grande. O tamanho máximo permitido é ${maxSizeMB}MB.`
       });
     }
     
-    // Determinar o provedor a ser usado
-    let provider = (req.query.provider as string) || '';
+    // Determinar o provedor a ser usado (do query parameter ou body)
+    let provider = (req.query.provider as string) || req.body.provider || '';
     
-    // Se for "auto", verificar se o documento contém manuscritos
+    // Se for "auto" ou não especificado, verificar se o documento contém manuscritos
     // Nova ordem de prioridade: OpenRouter (Mistral) > RolmOCR > Extrator nativo
     if (!provider || provider === 'auto') {
+      console.log('🤖 Modo de provedor automático ativado.');
       try {
         // Verificar se o documento contém manuscritos
         const handwritingScore = await handwritingDetector.analyzePdf(pdfBuffer);
-        console.log(`📝 Pontuação de manuscrito: ${handwritingScore.toFixed(2)}`);
+        console.log(`📝 Pontuação de manuscrito para "${originalFileName}": ${handwritingScore.toFixed(2)}`);
         
         // 1. Se for manuscrito e tivermos HF_TOKEN, usar RolmOCR
         if (handwritingScore > 0.4 && process.env.HF_TOKEN) {
           provider = 'rolm';
-          console.log('🖋️ Detectado manuscrito, usando RolmOCR');
+          console.log(`🖋️ Detectado manuscrito em "${originalFileName}", usando RolmOCR.`);
         }
         // 2. Se tivermos OpenRouter, usar como primeira opção para texto normal
         else if (process.env.OPENROUTER_API_KEY) {
           provider = 'openrouter';
-          console.log('🔄 Usando OpenRouter (Mistral) como provedor primário OCR');
+          console.log(`🔄 Usando OpenRouter (Mistral) como provedor primário OCR para "${originalFileName}".`);
         }
         // 3. Fallback para RolmOCR mesmo para texto normal se OpenRouter não estiver disponível
         else if (process.env.HF_TOKEN) {
           provider = 'rolm';
-          console.log('🔄 OpenRouter indisponível, usando RolmOCR como fallback');
+          console.log(`🔄 OpenRouter indisponível, usando RolmOCR como fallback para "${originalFileName}".`);
         }
         // 4. Último recurso: extrator nativo
         else {

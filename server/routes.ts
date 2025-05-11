@@ -1419,7 +1419,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
    * Para pares, identifica o primeiro como check-in e o segundo como check-out
    * quando a identificação automática falha.
    */
-  app.post("/api/upload-pdf-pair", pdfUpload.array('pdfs', 2), async (req: Request, res: Response) => {
     try {
       console.log('Iniciando processamento de par de PDFs...');
       

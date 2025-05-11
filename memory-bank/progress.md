@@ -11,21 +11,21 @@
 ---
 
 ### BLOCO 1: Bootstrap
-- [ ] Clonar repositório e instalar dependências
-- [ ] Criar branch migration/windsurf
-- [ ] pnpm install
-- [ ] railway init --project mariafaz
-- [ ] railway add postgres
-- [ ] Definir DATABASE_URL e variáveis no Railway
-- [ ] pnpm run db:push
-- [ ] Commit inicial (acp "chore: bootstrap project on Railway")
+- [X] Clonar repositório e instalar dependências (projeto já clonado, `pnpm install` executado)
+- [X] Criar branch migration/windsurf (branch já ativa)
+- [X] pnpm install (executado, dependências atualizadas)
+- [X] railway init --project mariafaz (executado como `railway init` e projeto vinculado)
+- [X] railway add postgres (executado via `railway add` interativo)
+- [X] Definir DATABASE_URL e variáveis no Railway (DATABASE_URL atualizada no .env, outras chaves já presentes)
+- [X] pnpm run db:push (executado, schema sincronizado)
+- [X] Commit inicial (acp "chore: bootstrap project on Railway") (executado: git add, commit, push)
 
 ---
 
 ### BLOCO 2: MCP+Context7
-- [ ] Criar ~/.windsurf/mcp.json com config Context7 MCP
-- [ ] Verificar context7 ready
-- [ ] Commit config MCP (acp "chore: add context7 mcp")
+- [X] Criar ~/.windsurf/mcp.json com config Context7 MCP (arquivo C:/Users/Bilal/.windsurf/mcp.json criado)
+- [ ] Verificar context7 ready (ação manual do usuário: recarregar IDE)
+- [ ] Commit config MCP (acp "chore: add context7 mcp") (opcional, pulado conforme Runbook v1.4)
 
 ---
 
