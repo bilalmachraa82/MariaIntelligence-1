@@ -1851,21 +1851,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
                           (process.env.GOOGLE_API_KEY !== undefined && 
                            process.env.GOOGLE_API_KEY !== '');
       
+      // Verificar se OpenRouter está disponível (Mistral OCR)
+      const hasOpenRouterKey = process.env.OPENROUTER_API_KEY !== undefined && process.env.OPENROUTER_API_KEY !== '';
+      
+      // Verificar se RolmOCR está disponível
+      const hasRolmKey = process.env.HF_TOKEN !== undefined && process.env.HF_TOKEN !== '';
+      
       return res.json({
         success: true,
         services: {
           mistral: { 
-            available: false,
-            keyConfigured: false,
-            deprecated: true
+            available: hasOpenRouterKey,
+            keyConfigured: hasOpenRouterKey,
+            deprecated: false // Mistral agora é o serviço primário para OCR
           },
-          gemini: { 
+          rolm: {
+            available: hasRolmKey,
+            keyConfigured: hasRolmKey,
+            handwriting: true // RolmOCR é especialista em manuscritos
+          },
+          gemini: {
             available: hasGeminiKey,
-            keyConfigured: hasGeminiKey
+            keyConfigured: hasGeminiKey,
+            analysisOnly: true // Gemini é apenas para análise de BD
           }
         },
         currentService,
-        anyServiceAvailable: hasGeminiKey
+        anyServiceAvailable: hasOpenRouterKey || hasRolmKey || hasGeminiKey
       });
     } catch (err) {
       handleError(err, res);
