@@ -18,6 +18,7 @@ import {
   processPdfAndCreateReservation 
 } from "./services/reservation-creator";
 import ReservationImporterService from "./services/reservation-importer.service";
+import { BudgetController } from "./controllers/budget.controller";
 import { registerQuotationRoutes } from "./api/quotation-routes";
 import { registerSpeechRoutes } from "./api/speech-routes";
 import uploadControlFileRouter from "./api/upload-control-file";
@@ -1396,7 +1397,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
    * Endpoint para estimativa de orçamento
    * Calcula valor total e margem de lucro com base nas noites e taxa diária
    */
-  app.post("/api/budgets/estimate", budgetController.estimate);
+  app.post("/api/budgets/estimate", BudgetController.estimateBudget);
   
   /**
    * Endpoint para upload e processamento geral de arquivos (versão legada)

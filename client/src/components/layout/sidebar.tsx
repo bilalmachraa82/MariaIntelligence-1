@@ -13,6 +13,7 @@ import {
   Brush,
   UserCog,
   LogOut,
+  Calculator,
   Menu,
   Wrench,
   BadgeDollarSign,
@@ -84,6 +85,12 @@ export function Sidebar({ className }: SidebarProps) {
       href: isPortuguese ? "/upload-pdf" : "/pdf-upload",
       icon: FileUp,
       description: "Upload e processamento de PDFs",
+    },
+    {
+      title: t("navigation.budgetCalculator"),
+      href: isPortuguese ? "/calculadora-orcamento" : "/budget-calculator",
+      icon: Calculator,
+      description: "Calculadora de orçamentos",
     },
     {
       title: t("navigation.aiAssistant"),

@@ -1,253 +1,219 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Calculator, CalendarDays, Euro } from "lucide-react";
-import { useTranslation } from "react-i18next";
-import { useBudgetCalculator } from "@/hooks/use-budget-calculator";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { DatePicker } from "@/components/ui/date-picker";
+import { useBudgetCalculator } from "@/hooks/use-budget-calculator";
+import { BudgetEstimate } from "@/lib/budget";
+import { useTranslation } from "react-i18next";
+import { Separator } from "@/components/ui/separator";
 
 export function BudgetCalculator() {
   const { t } = useTranslation();
   const [checkInDate, setCheckInDate] = useState<Date | undefined>(undefined);
   const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(undefined);
-  const [nightlyRate, setNightlyRate] = useState<string>("");
-  const [nights, setNights] = useState<number | null>(null);
-  const [totalAmount, setTotalAmount] = useState<number | null>(null);
-  const [margin, setMargin] = useState<number | null>(null);
-  const [calculationMode, setCalculationMode] = useState<'dates' | 'nights'>('dates');
-  
-  const { 
-    getNights, 
-    calculateBudget, 
-    calculateBudgetFromDates, 
-    isLoading, 
-    error 
-  } = useBudgetCalculator();
-  
-  // Converter datas para string no formato YYYY-MM-DD
-  const formatDateString = (date?: Date): string => {
-    if (!date) return '';
-    return date.toISOString().split('T')[0];
-  };
-  
-  // Calcular noites quando as datas mudarem
-  const updateNightsFromDates = () => {
+  const [nightlyRate, setNightlyRate] = useState<string>("100");
+  const [nights, setNights] = useState<number>(0);
+  const [budgetEstimate, setBudgetEstimate] = useState<BudgetEstimate | null>(null);
+  const [isCalculating, setIsCalculating] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const { getNights, calculateBudget, calculateBudgetFromDates } = useBudgetCalculator();
+
+  useEffect(() => {
     if (checkInDate && checkOutDate) {
-      const calculatedNights = getNights(
-        formatDateString(checkInDate),
-        formatDateString(checkOutDate)
+      const nightsCount = getNights(
+        format(checkInDate, "yyyy-MM-dd"),
+        format(checkOutDate, "yyyy-MM-dd")
       );
-      setNights(calculatedNights);
+      setNights(nightsCount > 0 ? nightsCount : 0);
+    } else {
+      setNights(0);
     }
+  }, [checkInDate, checkOutDate, getNights]);
+
+  const handleNightlyRateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^0-9.,]/g, "").replace(",", ".");
+    setNightlyRate(value);
   };
-  
-  // Função para calcular orçamento baseado no modo selecionado
+
   const handleCalculate = async () => {
-    // Validar entrada
-    const rate = parseFloat(nightlyRate);
-    if (isNaN(rate) || rate <= 0) {
+    if (!checkInDate || !checkOutDate) {
+      setError(t("budgetCalculator.errors.missingDates", "Por favor, selecione as datas de check-in e check-out."));
       return;
     }
-    
-    if (calculationMode === 'dates') {
-      if (!checkInDate || !checkOutDate) {
-        return;
-      }
+
+    if (!nightlyRate || parseFloat(nightlyRate) <= 0) {
+      setError(t("budgetCalculator.errors.invalidRate", "Por favor, insira uma taxa diária válida."));
+      return;
+    }
+
+    setError(null);
+    setIsCalculating(true);
+
+    try {
+      const rate = parseFloat(nightlyRate);
       
-      // Calcular orçamento com base nas datas
-      const result = await calculateBudgetFromDates(
-        formatDateString(checkInDate),
-        formatDateString(checkOutDate),
+      const estimate = await calculateBudgetFromDates(
+        format(checkInDate, "yyyy-MM-dd"),
+        format(checkOutDate, "yyyy-MM-dd"),
         rate
       );
       
-      if (result) {
-        setNights(result.nights);
-        setTotalAmount(result.total);
-        setMargin(result.margin);
-      }
-    } else {
-      // Calcular orçamento com base no número de noites
-      if (!nights || nights <= 0) {
-        return;
-      }
-      
-      const result = await calculateBudget(nights, rate);
-      
-      if (result) {
-        setTotalAmount(result.total);
-        setMargin(result.margin);
-      }
+      setBudgetEstimate(estimate);
+    } catch (err) {
+      console.error("Erro ao calcular orçamento:", err);
+      setError(t("budgetCalculator.errors.calculationFailed", "Erro ao calcular orçamento. Tente novamente."));
+    } finally {
+      setIsCalculating(false);
     }
   };
-  
+
+  const handleReset = () => {
+    setCheckInDate(undefined);
+    setCheckOutDate(undefined);
+    setNightlyRate("100");
+    setNights(0);
+    setBudgetEstimate(null);
+    setError(null);
+  };
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat("pt-PT", {
+      style: "currency",
+      currency: "EUR",
+    }).format(value);
+  };
+
+  const handleCheckInDateSelect = (date: Date) => {
+    setCheckInDate(date);
+    // Se a data de check-out for anterior à nova data de check-in, limpe-a
+    if (checkOutDate && date > checkOutDate) {
+      setCheckOutDate(undefined);
+    }
+  };
+
+  const handleCheckOutDateSelect = (date: Date) => {
+    setCheckOutDate(date);
+  };
+
   return (
-    <Card className="w-full max-w-lg mx-auto">
+    <Card className="w-full max-w-3xl mx-auto">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Calculator className="h-5 w-5 text-primary" />
-          {t("budget.calculator.title", "Calculadora de Orçamento")}
-        </CardTitle>
+        <CardTitle>{t("budgetCalculator.title", "Calculadora de Orçamento")}</CardTitle>
         <CardDescription>
-          {t("budget.calculator.description", "Calcule o orçamento para uma reserva com base nas datas ou no número de noites")}
+          {t("budgetCalculator.instructions", "Insira as datas de check-in e check-out e a taxa diária para calcular o orçamento.")}
         </CardDescription>
       </CardHeader>
-      
-      <CardContent className="space-y-4">
-        {/* Seleção do modo de cálculo */}
-        <div className="flex space-x-2 mb-4">
-          <Button 
-            variant={calculationMode === 'dates' ? 'default' : 'outline'} 
-            size="sm"
-            onClick={() => setCalculationMode('dates')}
-            className="flex-1"
-          >
-            <CalendarDays className="h-4 w-4 mr-2" />
-            {t("budget.calculator.byDates", "Por Datas")}
-          </Button>
-          <Button 
-            variant={calculationMode === 'nights' ? 'default' : 'outline'} 
-            size="sm"
-            onClick={() => setCalculationMode('nights')}
-            className="flex-1"
-          >
-            <Calculator className="h-4 w-4 mr-2" />
-            {t("budget.calculator.byNights", "Por Noites")}
-          </Button>
-        </div>
-        
-        {/* Formulário de cálculo baseado em datas */}
-        {calculationMode === 'dates' ? (
-          <>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="check-in">
-                  {t("budget.calculator.checkIn", "Check-in")}
-                </Label>
-                <DatePicker
-                  id="check-in"
-                  selected={checkInDate}
-                  onSelect={(date) => {
-                    setCheckInDate(date);
-                    if (checkOutDate) {
-                      updateNightsFromDates();
-                    }
-                  }}
-                  placeholder={t("budget.calculator.selectDate", "Selecionar data")}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="check-out">
-                  {t("budget.calculator.checkOut", "Check-out")}
-                </Label>
-                <DatePicker
-                  id="check-out"
-                  selected={checkOutDate}
-                  onSelect={(date) => {
-                    setCheckOutDate(date);
-                    if (checkInDate) {
-                      updateNightsFromDates();
-                    }
-                  }}
-                  disabled={!checkInDate}
-                  fromDate={checkInDate ? new Date(checkInDate.getTime() + 86400000) : undefined}
-                  placeholder={t("budget.calculator.selectDate", "Selecionar data")}
-                />
-              </div>
-            </div>
-            
-            {nights !== null && (
-              <div className="rounded-md bg-muted p-3 text-sm">
-                <p>
-                  {t("budget.calculator.selectedNights", "Noites selecionadas")}: 
-                  <span className="font-semibold ml-1">{nights}</span>
-                </p>
-              </div>
-            )}
-          </>
-        ) : (
-          <div className="space-y-2">
-            <Label htmlFor="nights">
-              {t("budget.calculator.nights", "Número de Noites")}
-            </Label>
-            <Input
-              id="nights"
-              type="number"
-              min="1"
-              value={nights || ''}
-              onChange={(e) => setNights(parseInt(e.target.value) || 0)}
-              placeholder={t("budget.calculator.enterNights", "Insira o número de noites")}
-            />
-          </div>
-        )}
-        
-        {/* Taxa por noite (comum a ambos os modos) */}
-        <div className="space-y-2">
-          <Label htmlFor="nightly-rate">
-            {t("budget.calculator.nightlyRate", "Taxa por Noite (€)")}
-          </Label>
-          <div className="relative">
-            <Input
-              id="nightly-rate"
-              type="number"
-              min="0"
-              step="0.01"
-              value={nightlyRate}
-              onChange={(e) => setNightlyRate(e.target.value)}
-              placeholder={t("budget.calculator.enterRate", "Insira a taxa por noite")}
-              className="pl-8"
-            />
-            <Euro className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          </div>
-        </div>
-        
-        {/* Mensagem de erro */}
+      <CardContent>
         {error && (
-          <Alert variant="destructive">
+          <Alert variant="destructive" className="mb-4">
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
-        
-        {/* Resultados do cálculo */}
-        {totalAmount !== null && margin !== null && (
-          <div className="mt-6 space-y-3 p-4 border rounded-md bg-muted/30">
-            <h3 className="font-medium text-sm">{t("budget.calculator.results", "Resultados")}</h3>
-            
-            <div className="grid grid-cols-2 gap-2">
-              <div className="bg-background p-3 rounded border">
-                <p className="text-xs text-muted-foreground">{t("budget.calculator.totalAmount", "Valor Total")}</p>
-                <p className="text-lg font-semibold">{totalAmount.toFixed(2)} €</p>
-              </div>
-              
-              <div className="bg-background p-3 rounded border">
-                <p className="text-xs text-muted-foreground">{t("budget.calculator.margin", "Margem (10%)")}</p>
-                <p className="text-lg font-semibold">{margin.toFixed(2)} €</p>
-              </div>
+
+        <div className="grid gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="check-in-date">
+                {t("budgetCalculator.checkInDate", "Data de Check-in")}
+              </Label>
+              <DatePicker
+                id="check-in-date"
+                selected={checkInDate}
+                onSelect={handleCheckInDateSelect}
+                fromDate={new Date()}
+                placeholder={t("budgetCalculator.selectDate", "Selecionar data")}
+              />
             </div>
-            
-            <div className="bg-background p-3 rounded border">
-              <p className="text-xs text-muted-foreground">{t("budget.calculator.ownerRevenue", "Receita do Proprietário")}</p>
-              <p className="text-lg font-semibold">{(totalAmount - margin).toFixed(2)} €</p>
+            <div className="space-y-2">
+              <Label htmlFor="check-out-date">
+                {t("budgetCalculator.checkOutDate", "Data de Check-out")}
+              </Label>
+              <DatePicker
+                id="check-out-date"
+                selected={checkOutDate}
+                onSelect={handleCheckOutDateSelect}
+                fromDate={checkInDate || new Date()}
+                placeholder={t("budgetCalculator.selectDate", "Selecionar data")}
+                disabled={!checkInDate}
+              />
             </div>
           </div>
-        )}
+
+          <div className="space-y-2">
+            <Label htmlFor="nightly-rate">
+              {t("budgetCalculator.nightlyRate", "Taxa Diária (€)")}
+            </Label>
+            <Input
+              id="nightly-rate"
+              type="text"
+              value={nightlyRate}
+              onChange={handleNightlyRateChange}
+              className="max-w-xs"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>
+              {t("budgetCalculator.nights", "Noites")}
+            </Label>
+            <div className="text-2xl font-bold">{nights}</div>
+          </div>
+
+          {budgetEstimate && (
+            <>
+              <Separator className="my-2" />
+              
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">
+                  {t("budgetCalculator.estimateResults", "Resultado da Estimativa")}
+                </h3>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <div className="text-sm text-muted-foreground">
+                      {t("budgetCalculator.totalAmount", "Valor Total")}
+                    </div>
+                    <div className="text-2xl font-bold text-primary">
+                      {formatCurrency(budgetEstimate.total)}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="text-sm text-muted-foreground">
+                      {t("budgetCalculator.yourMargin", "Sua Margem")}
+                    </div>
+                    <div className="text-2xl font-bold text-green-600">
+                      {formatCurrency(budgetEstimate.margin)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
       </CardContent>
       
-      <CardFooter>
-        <Button 
-          className="w-full" 
+      <CardFooter className="flex flex-col sm:flex-row gap-2 sm:justify-between">
+        <Button
           onClick={handleCalculate}
-          disabled={isLoading || 
-            (calculationMode === 'dates' && (!checkInDate || !checkOutDate)) || 
-            (calculationMode === 'nights' && (!nights || nights <= 0)) || 
-            !nightlyRate || parseFloat(nightlyRate) <= 0
-          }
+          disabled={isCalculating || !checkInDate || !checkOutDate}
         >
-          {isLoading ? t("budget.calculator.calculating", "Calculando...") : t("budget.calculator.calculate", "Calcular")}
+          {isCalculating
+            ? t("budgetCalculator.calculating", "Calculando...")
+            : t("budgetCalculator.calculate", "Calcular Orçamento")}
+        </Button>
+        
+        <Button
+          variant="outline"
+          onClick={handleReset}
+        >
+          {t("budgetCalculator.reset", "Limpar")}
         </Button>
       </CardFooter>
     </Card>
