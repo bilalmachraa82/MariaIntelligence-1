@@ -77,30 +77,46 @@ export async function postOcr(req: Request, res: Response) {
     let provider = (req.query.provider as string) || 'auto';
     
     // Se for "auto", verificar se o documento contém manuscritos
+    // Nova ordem de prioridade: OpenRouter (Mistral) > RolmOCR > Extrator nativo
     if (provider === 'auto') {
       try {
+        // Verificar se o documento contém manuscritos
         const handwritingScore = await handwritingDetector.analyzePdf(pdfBuffer);
         console.log(`📝 Pontuação de manuscrito: ${handwritingScore.toFixed(2)}`);
         
+        // 1. Se for manuscrito e tivermos HF_TOKEN, usar RolmOCR
         if (handwritingScore > 0.4 && process.env.HF_TOKEN) {
           provider = 'rolm';
           console.log('🖋️ Detectado manuscrito, usando RolmOCR');
-        } else if (process.env.OPENROUTER_API_KEY) {
+        }
+        // 2. Se tivermos OpenRouter, usar como primeira opção para texto normal
+        else if (process.env.OPENROUTER_API_KEY) {
           provider = 'openrouter';
-          console.log('📄 Usando OpenRouter para processamento do PDF');
-        } else {
-          // Sem serviços de IA disponíveis, usar o extrator nativo
+          console.log('🔄 Usando OpenRouter (Mistral) como provedor primário OCR');
+        }
+        // 3. Fallback para RolmOCR mesmo para texto normal se OpenRouter não estiver disponível
+        else if (process.env.HF_TOKEN) {
+          provider = 'rolm';
+          console.log('🔄 OpenRouter indisponível, usando RolmOCR como fallback');
+        }
+        // 4. Último recurso: extrator nativo
+        else {
           provider = 'native';
           console.log('📄 Nenhum serviço OCR disponível, usando extrator nativo (pdf-parse)');
         }
       } catch (detectorError) {
         console.error('Erro no detector de manuscritos:', detectorError);
-        // Em caso de erro, usar OpenRouter se disponível, ou o extrator nativo como último recurso
+        
+        // Em caso de erro, seguir a mesma ordem de prioridade
         if (process.env.OPENROUTER_API_KEY) {
           provider = 'openrouter';
+          console.log('🔄 Erro no detector, usando OpenRouter (Mistral)');
+        } else if (process.env.HF_TOKEN) {
+          provider = 'rolm';
+          console.log('🔄 Erro no detector, usando RolmOCR');
         } else {
           provider = 'native';
-          console.log('📄 Usando extrator nativo como último recurso');
+          console.log('📄 Erro no detector, usando extrator nativo como último recurso');
         }
       }
     }
@@ -291,30 +307,46 @@ export async function processOCR(req: Request, res: Response) {
     let provider = (req.query.provider as string) || '';
     
     // Se for "auto", verificar se o documento contém manuscritos
+    // Nova ordem de prioridade: OpenRouter (Mistral) > RolmOCR > Extrator nativo
     if (!provider || provider === 'auto') {
       try {
+        // Verificar se o documento contém manuscritos
         const handwritingScore = await handwritingDetector.analyzePdf(pdfBuffer);
         console.log(`📝 Pontuação de manuscrito: ${handwritingScore.toFixed(2)}`);
         
+        // 1. Se for manuscrito e tivermos HF_TOKEN, usar RolmOCR
         if (handwritingScore > 0.4 && process.env.HF_TOKEN) {
           provider = 'rolm';
           console.log('🖋️ Detectado manuscrito, usando RolmOCR');
-        } else if (process.env.OPENROUTER_API_KEY) {
+        }
+        // 2. Se tivermos OpenRouter, usar como primeira opção para texto normal
+        else if (process.env.OPENROUTER_API_KEY) {
           provider = 'openrouter';
-          console.log('📄 Usando OpenRouter para processamento do PDF');
-        } else {
-          // Sem serviços de IA disponíveis, usar o extrator nativo
+          console.log('🔄 Usando OpenRouter (Mistral) como provedor primário OCR');
+        }
+        // 3. Fallback para RolmOCR mesmo para texto normal se OpenRouter não estiver disponível
+        else if (process.env.HF_TOKEN) {
+          provider = 'rolm';
+          console.log('🔄 OpenRouter indisponível, usando RolmOCR como fallback');
+        }
+        // 4. Último recurso: extrator nativo
+        else {
           provider = 'native';
           console.log('📄 Nenhum serviço OCR disponível, usando extrator nativo (pdf-parse)');
         }
       } catch (detectorError) {
         console.error('Erro no detector de manuscritos:', detectorError);
-        // Em caso de erro, usar OpenRouter se disponível, ou o extrator nativo como último recurso
+        
+        // Em caso de erro, seguir a mesma ordem de prioridade
         if (process.env.OPENROUTER_API_KEY) {
           provider = 'openrouter';
+          console.log('🔄 Erro no detector, usando OpenRouter (Mistral)');
+        } else if (process.env.HF_TOKEN) {
+          provider = 'rolm';
+          console.log('🔄 Erro no detector, usando RolmOCR');
         } else {
           provider = 'native';
-          console.log('📄 Usando extrator nativo como último recurso');
+          console.log('📄 Erro no detector, usando extrator nativo como último recurso');
         }
       }
     }

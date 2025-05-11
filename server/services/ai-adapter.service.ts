@@ -1,7 +1,12 @@
 /**
  * Serviço adaptador para múltiplas APIs de IA
  * Fornece uma camada de abstração para acessar os diferentes serviços de IA
- * Suporta OpenRouter (Mistral-OCR), Gemini e RolmOCR
+ * Nova estrutura de prioridade para OCR:
+ * 1. OpenRouter (Mistral-OCR) - serviço primário para OCR
+ * 2. RolmOCR - especialista em conteúdo manuscrito
+ * 3. Extrator nativo (pdf-parse) - fallback quando nenhum serviço de IA disponível
+ * 
+ * Gemini é mantido apenas para análise de BD, removido do pipeline OCR
  */
 
 import { GeminiService } from './gemini.service';
