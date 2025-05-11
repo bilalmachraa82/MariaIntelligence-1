@@ -484,6 +484,31 @@ export function usePdfUpload() {
     setMultipleResults([]);
     setIsMultiMode(false);
     setError(null);
+    setRawText(null);
+    setMissingFields([]);
+    setShowMissingDataForm(false);
+  };
+  
+  /**
+   * Processa os dados após o preenchimento manual dos campos ausentes
+   */
+  const handleMissingDataComplete = (completedData: any) => {
+    // Atualizar os dados extraídos com os dados complementados
+    setExtractedData(completedData);
+    // Fechar o formulário
+    setShowMissingDataForm(false);
+    
+    toast({
+      title: "Dados Complementados",
+      description: "Os dados da reserva foram atualizados com sucesso.",
+    });
+  };
+  
+  /**
+   * Fecha o formulário de dados ausentes sem processar
+   */
+  const closeMissingDataForm = () => {
+    setShowMissingDataForm(false);
   };
 
   return {
@@ -492,10 +517,15 @@ export function usePdfUpload() {
     multipleResults,
     error,
     isMultiMode,
+    rawText,
+    missingFields,
+    showMissingDataForm,
     handleFileUpload,
     handleMultipleFilesUpload,
     confirmReservation,
     confirmMultipleReservations,
     clearExtractedData: clearData,
+    handleMissingDataComplete,
+    closeMissingDataForm
   };
 }
