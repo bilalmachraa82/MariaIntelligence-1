@@ -18,7 +18,7 @@ export interface BudgetEstimate {
  */
 export async function estimateBudget(nights: number, nightlyRate: number): Promise<BudgetEstimate> {
   try {
-    const response = await apiRequest('/api/budgets/estimate', {
+    const response = await fetch('/api/budgets/estimate', {
       method: 'POST',
       body: JSON.stringify({ nights, nightlyRate }),
       headers: {
@@ -26,15 +26,21 @@ export async function estimateBudget(nights: number, nightlyRate: number): Promi
       }
     });
     
-    if (!response.success) {
-      throw new Error(response.message || 'Erro ao estimar orçamento');
+    if (!response.ok) {
+      throw new Error('Erro na requisição de orçamento');
+    }
+    
+    const data = await response.json();
+    
+    if (!data.success) {
+      throw new Error(data.message || 'Erro ao estimar orçamento');
     }
     
     return {
-      nights: response.nights,
-      nightlyRate: response.nightlyRate,
-      total: response.total,
-      margin: response.margin
+      nights: data.nights,
+      nightlyRate: data.nightlyRate,
+      total: data.total,
+      margin: data.margin
     };
   } catch (error) {
     console.error('Erro ao estimar orçamento:', error);

@@ -57,8 +57,14 @@ export function useBudgetCalculator() {
       return null;
     }
     
-    return calculateBudget(nights, nightlyRate);
-  }, [getNights, calculateBudget]);
+    try {
+      return await calculateBudget(nights, nightlyRate);
+    } catch (error) {
+      console.error('Erro ao calcular orçamento a partir das datas:', error);
+      setError('Erro ao calcular orçamento. Tente novamente.');
+      return null;
+    }
+  }, [getNights, calculateBudget, setError]);
   
   return {
     getNights,

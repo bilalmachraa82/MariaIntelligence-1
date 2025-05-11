@@ -33,6 +33,7 @@ import CleaningReportsPage from "@/pages/cleaning-reports";
 import OwnerReportPage from "@/pages/reports/owner-report";
 import TrendsReportPage from "@/pages/reports/trends";
 import MonthlyInvoicePage from "@/pages/reports/monthly-invoice";
+import BudgetCalculatorPage from "@/pages/budget-calculator";
 
 // Imports das novas páginas de manutenção e pagamentos
 import MaintenancePending from "@/pages/maintenance/pending";
@@ -170,6 +171,7 @@ function Router() {
       <Route path="/reservations/new" component={ReservationNewPage} />
       <Route path="/reservations/:id" component={ReservationDetailPage} />
       <Route path="/reservations/approval" component={ReservationApprovalPage} />
+      <Route path="/budget-calculator" component={BudgetCalculatorPage} />
       <Route path="/upload-pdf" component={DocumentScanPage} />
       <Route path="/scan" component={DocumentScanPage} />
       <Route path="/pdf-upload" component={DocumentScanPage} />
