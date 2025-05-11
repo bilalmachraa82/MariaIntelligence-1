@@ -86,12 +86,7 @@ export function Sidebar({ className }: SidebarProps) {
       icon: FileUp,
       description: "Upload e processamento de PDFs",
     },
-    {
-      title: t("navigation.budgetCalculator"),
-      href: isPortuguese ? "/calculadora-orcamento" : "/budget-calculator",
-      icon: Calculator,
-      description: "Calculadora de orçamentos",
-    },
+
     {
       title: t("navigation.aiAssistant"),
       href: isPortuguese ? "/assistente" : "/assistant",
