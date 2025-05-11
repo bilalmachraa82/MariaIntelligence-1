@@ -1,31 +1,35 @@
-import React, { ReactNode } from 'react';
-import { Separator } from './separator';
+import React from "react";
+import { cn } from "@/lib/utils";
 
 interface PageHeaderProps {
   title: string;
   description?: string;
-  icon?: ReactNode;
-  actions?: ReactNode;
+  icon?: React.ReactNode;
+  className?: string;
+  actions?: React.ReactNode;
 }
 
-export function PageHeader({ title, description, icon, actions }: PageHeaderProps) {
+export function PageHeader({
+  title,
+  description,
+  icon,
+  className,
+  actions,
+}: PageHeaderProps) {
   return (
-    <div className="space-y-4">
+    <div className={cn("flex flex-col gap-1", className)}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           {icon && <div className="text-primary">{icon}</div>}
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
-            {description && (
-              <p className="text-sm text-muted-foreground">
-                {description}
-              </p>
-            )}
-          </div>
+          <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
         </div>
-        {actions && <div>{actions}</div>}
+        {actions && <div className="flex items-center gap-2">{actions}</div>}
       </div>
-      <Separator />
+      {description && (
+        <p className="text-sm text-muted-foreground">
+          {description}
+        </p>
+      )}
     </div>
   );
 }

@@ -1397,7 +1397,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
    * Endpoint para estimativa de orçamento
    * Calcula valor total e margem de lucro com base nas noites e taxa diária
    */
-  app.post("/api/budgets/estimate", BudgetController.estimateBudget);
+  app.post("/api/budgets/estimate", budgetController.estimate);
   
   /**
    * Endpoint para upload e processamento geral de arquivos (versão legada)

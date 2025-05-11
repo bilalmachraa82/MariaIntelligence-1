@@ -1,51 +1,60 @@
 import { Request, Response } from 'express';
 
 /**
- * Controlador para cálculos de orçamento
+ * Estima o orçamento com base no número de noites e taxa diária
+ * Calcula o valor total e a margem (10% do total)
  * 
- * Este controlador gerencia as operações relacionadas a cálculos de orçamento,
- * como estimativa de valores para reservas com base em número de noites e taxa diária.
+ * @param req Request com nights e nightlyRate no body
+ * @param res Response com total e margin
  */
-export class BudgetController {
-  /**
-   * Calcula uma estimativa de orçamento baseada em noites e taxa diária
-   * 
-   * @param req Objeto de requisição Express
-   * @param res Objeto de resposta Express
-   */
-  public static async estimateBudget(req: Request, res: Response): Promise<void> {
-    try {
-      const { nights, nightlyRate } = req.body;
-      
-      // Validação de entrada
-      if (!nights || !nightlyRate || nights <= 0 || nightlyRate <= 0) {
-        res.status(400).json({
-          success: false,
-          message: 'Parâmetros inválidos. Informe o número de noites e taxa diária válidos.'
-        });
-        return;
-      }
-      
-      // Cálculo do total
-      const total = nights * nightlyRate;
-      
-      // Cálculo da margem (20% do total como exemplo)
-      const margin = total * 0.2;
-      
-      // Retorna o resultado
-      res.status(200).json({
-        success: true,
-        nights,
-        nightlyRate,
-        total,
-        margin
-      });
-    } catch (error) {
-      console.error('Erro ao calcular orçamento:', error);
-      res.status(500).json({
+export async function estimate(req: Request, res: Response) {
+  try {
+    // Extrair parâmetros do corpo da requisição
+    const { nights, nightlyRate } = req.body;
+    
+    // Validar se os parâmetros foram fornecidos
+    if (nights === undefined || nightlyRate === undefined) {
+      return res.status(400).json({
         success: false,
-        message: 'Erro ao processar a requisição de orçamento'
+        message: 'Parâmetros obrigatórios: nights e nightlyRate'
       });
     }
+    
+    // Validar se os parâmetros são numéricos e positivos
+    const nightsNum = Number(nights);
+    const rateNum = Number(nightlyRate);
+    
+    if (isNaN(nightsNum) || nightsNum <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'O número de noites deve ser um número positivo'
+      });
+    }
+    
+    if (isNaN(rateNum) || rateNum <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'A taxa diária deve ser um número positivo'
+      });
+    }
+    
+    // Calcular o valor total e a margem
+    const total = nightsNum * rateNum;
+    const margin = total * 0.1; // 10% de margem
+    
+    // Retornar a estimativa do orçamento
+    return res.json({
+      success: true,
+      nights: nightsNum,
+      nightlyRate: rateNum,
+      total,
+      margin
+    });
+  } catch (error) {
+    console.error('Erro ao calcular orçamento:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Erro interno ao calcular orçamento'
+    });
   }
 }

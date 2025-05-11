@@ -1,5 +1,5 @@
 import { differenceInDays } from 'date-fns';
-import { apiRequest } from '@/lib/queryClient';
+import axios from 'axios';
 
 /**
  * Interface para o resultado da estimativa de orçamento
@@ -47,13 +47,12 @@ export async function estimateBudget(nights: number, nightlyRate: number): Promi
   }
   
   try {
-    const response = await apiRequest<BudgetEstimate>({
-      url: '/api/budgets/estimate',
-      method: 'POST',
-      data: { nights, nightlyRate }
+    const response = await axios.post<BudgetEstimate>('/api/budgets/estimate', { 
+      nights, 
+      nightlyRate 
     });
     
-    return response;
+    return response.data;
   } catch (error) {
     console.error('Erro ao fazer requisição de orçamento:', error);
     throw new Error('Falha ao calcular orçamento. Tente novamente.');
