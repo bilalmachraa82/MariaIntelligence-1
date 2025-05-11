@@ -1,76 +1,72 @@
-import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
+/* ─── Carregar variáveis .env logo no arranque ───────── */
+import 'dotenv/config';
 
-console.log("Inicializando aplicação...");
+/* ─── Imports do servidor ────────────────────────────── */
+import express, { Request, Response, NextFunction } from 'express';
+import { registerRoutes } from './routes';
+import { setupVite, serveStatic, log } from './vite';
+
+/* ─── Inicialização da app ───────────────────────────── */
+console.log('Inicializando aplicação…');
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Adicionando rota de teste simples
-app.get('/api/health', (req, res) => {
+/* End‑point de saúde */
+app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', time: new Date().toISOString() });
-  console.log("Rota de saúde acessada");
 });
 
+/* Logger simples p/ rotas /api */
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
+  let captured: any;
 
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
+  const originalJson = res.json;
+  res.json = function (body, ...args) {
+    captured = body;
+    return originalJson.apply(res, [body, ...args]);
   };
 
-  res.on("finish", () => {
-    const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
-      }
-
-      log(logLine);
+  res.on('finish', () => {
+    if (path.startsWith('/api')) {
+      const dur = Date.now() - start;
+      let line = `${req.method} ${path} ${res.statusCode} in ${dur}ms`;
+      if (captured) line += ` :: ${JSON.stringify(captured)}`;
+      if (line.length > 120) line = line.slice(0, 119) + '…';
+      log(line);
     }
   });
 
   next();
 });
 
+/* ─── Bootstrap async ────────────────────────────────── */
 (async () => {
   const server = await registerRoutes(app);
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
+  /* Error‑handler */
+  app.use(
+    (err: any, _req: Request, res: Response, _next: NextFunction) => {
+      const status = err.status || err.statusCode || 500;
+      res.status(status).json({ message: err.message || 'Internal Error' });
+      console.error(err);
+    },
+  );
 
-    res.status(status).json({ message });
-    throw err;
-  });
-
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
+  /* Vite em dev, static em prod */
+  if (app.get('env') === 'development') {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
 
-  // Servindo a aplicação na porta 5000 para compatibilidade com o workflow
-  // esta porta serve tanto a API quanto o cliente
-  const port = 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
+  /* ─── Listen (host + port separados) ───────────────── */
+  const port = Number(process.env.PORT) || 5100;
+  const host = process.env.HOST || '0.0.0.0';
+
+  server.listen(port, host, () => {
+    console.log(`🚀  Server listening at http://${host}:${port}`);
   });
 })();

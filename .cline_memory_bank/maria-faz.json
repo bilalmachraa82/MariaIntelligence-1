@@ -1,0 +1,18 @@
+{
+    "name": "Maria Faz – MVP",
+    "summary": "App de gestão de alojamento local que processa reservas via OCR (Mistral‑OCR via OpenRouter primário, RolmOCR para manuscritos) e guarda em PostgreSQL. Front‑end React (Vite) mobile‑first, backend Node/Fastify.",
+    "goals": [
+      "Processar PDFs/imagens de reserva em menos de 5 segundos (até 10 ficheiros por lote)",
+      "Validar e pedir ao utilizador campos em falta antes de gravar",
+      "Interface totalmente mobile‑first",
+      "Deploy da API em Railway e do front em Netlify",
+      "Estrutura preparada para multi‑tenant (clientes independentes) na versão 2"
+    ],
+    "tech": {
+      "backend": "Node 18, Fastify, Drizzle ORM, PostgreSQL",
+      "frontend": "React 18, Vite, Tailwind, TanStack Query",
+      "ai": "OpenRouter/Mistral‑OCR, RolmOCR (HF), pdf‑parse fallback",
+      "dev": "Windsurf IDE + Cline, Context7 MCP"
+    }
+  }
+  

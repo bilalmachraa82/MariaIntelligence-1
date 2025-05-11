@@ -1,0 +1,132 @@
+````md
+# ——— CLINE CONFIG ———
+```json title=.cline_settings.json
+{
+  "planModel": "openrouter/google/gemini-2.5-pro-preview",
+  "actModel" : "openrouter/openai/gpt-4-1106-preview",
+  "maxContextTokens": 16000,
+  "maxOutputTokens" : 4096,
+  "autoGitPush": true,
+  "gitDefaultBranch": "migration/windsurf"
+}
+````
+
+# ——— MEMORY BANK SEEDS ———
+
+```json title=.cline_memory_bank/projectbrief.md
+Maria Faz é uma app de gestão de alojamento local. MVP = processar reservas PDF/IMG via OCR (Mistral‑OCR + RolmOCR manuscrito) → BD PostgreSQL → UI React mobile‑first. Multi‑tenant v2.
+```
+
+*(Adiciona `activeContext.md`, `progress.md` vazios.)*
+
+# ——— ALIASES ———
+
+```
+c  continue | i investigate | f fix | t add tests | a all tests | acp add‑commit‑push | rc reduce complexity
+```
+
+# ——— CHECKLIST INICIAL ———
+
+* [ ] `.env` completo
+* [ ] branch `migration/windsurf`
+* [ ] Railway + Postgres criados
+* [ ] Netlify site criado
+
+# ——— BLOCO 1 Bootstrap ———
+
+```bash
+### clone & deps
+pnpm create mariafaz && cd MariaIntelligence-1 && git checkout -b migration/windsurf
+pnpm i
+
+### railway provision
+db_url=$(railway add postgres --env production --json | jq -r .postgresConnectionString)
+railway variables set DATABASE_URL=$db_url OPENROUTER_API_KEY=$OPENROUTER_API_KEY HF_TOKEN=$HF_TOKEN PRIMARY_AI=openrouter
+
+pnpm migrate:db && pnpm seed:demo || true
+acp "chore: bootstrap railway"
+```
+
+`c`
+
+# ——— BLOCO 2 MCP & Context7 ———
+
+```bash
+mkdir -p ~/.windsurf && cat > ~/.windsurf/mcp.json <<'EOF'
+{"mcpServers":{"context7":{"command":"npx","args":["-y","@upstash/context7-mcp@latest"]}}}
+EOF
+```
+
+Reload IDE. `acp "chore: add MCP Context7"`  → `c`
+
+# ——— BLOCO 3 Back‑end Sprint Fixes ———
+
+```bash
+# remover rotas antigas e harmonizar OCR cascade
+sed -i '' '/upload-pdf/d' server/routes.ts || true
+npx tsx scripts/fix-upload-params.ts
+
+# queue robusta
+pnpm add bullmq ioredis winston
+code server/queues/ocr.ts  # implementar retry/backoff
+f
+acp "feat: ocr retry queue"
+```
+
+`c`
+
+# ——— BLOCO 4 Front‑end Sprint Fixes ———
+
+```bash
+# hook endpoint update
+code client/src/hooks/use-pdf-upload.ts
+f
+
+# MissingDataForm completo
+code client/src/components/dashboard/missing-data-form.tsx
+f
+
+# nights calc bug
+code client/src/lib/utils.ts
+f
+
+acp "fix: front OCR flow"
+```
+
+`c`
+
+# ——— BLOCO 5 Tests & QA ———
+
+```bash
+pnpm add -D jest ts-jest @types/jest supertest playwright @playwright/test
+npx ts-jest config:init && npx playwright install
+
+# unit OCR
+echo "describe('OCR',()=>{it('pdf→json',async()=>{expect(true).toBe(true)})})" > tests/ocr.spec.ts
+
+a
+acp "chore: jest + playwright"
+```
+
+`c`
+
+# ——— BLOCO 6 CI & Deploy ———
+
+```bash
+echo "name: CI\non: [push]\njobs:\n build:\n  runs-on: ubuntu-latest\n  steps:\n   - uses: actions/checkout@v4\n   - uses: pnpm/action-setup@v2\n   - run: pnpm i\n   - run: pnpm test" > .github/workflows/ci.yml
+
+pnpm --filter client run build
+netlify deploy --prod --dir=client/dist -m "v1.0.0-mvp"
+railway up
+acp "release: v1.0.0-mvp"
+```
+
+# ——— BLOCO 7 Handoff ———
+
+```bash
+pg_dump $DATABASE_URL > backup.sql && zip uploads.zip uploads/
+git tag v1.0.0-mvp -a -m "MVP pronto" && git push origin --tags
+echo "Staging: https://mariafaz.netlify.app (API $db_url)" | pbcopy
+```
+
+# ——— END ———
