@@ -1397,19 +1397,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
    * Endpoint para estimativa de orçamento
    * Calcula valor total e margem de lucro com base nas noites e taxa diária
    */
-  app.post("/api/budgets/estimate", async (req: Request, res: Response) => {
-    try {
-      // Importar o controlador de orçamento e usar sua função de estimativa
-      const { estimate } = await import('./controllers/budget.controller');
-      return estimate(req, res);
-    } catch (error) {
-      console.error('Erro ao estimar orçamento:', error);
-      return res.status(500).json({
-        success: false,
-        message: 'Erro interno ao calcular orçamento'
-      });
-    }
-  });
+  app.post("/api/budgets/estimate", budgetController.estimate);
   
   /**
    * Endpoint para upload e processamento geral de arquivos (versão legada)
