@@ -382,16 +382,31 @@ export class MemStorage implements IStorage {
     const tomorrowStr = tomorrow.toISOString().split('T')[0];
     
     // Filtrar reservas para check-ins e check-outs de hoje e amanhã
-    return Array.from(this.reservationsMap.values()).filter(
-      (reservation) => {
+    return Array.from(this.reservationsMap.values())
+      .filter(reservation => {
         const checkInDate = reservation.checkInDate.split('T')[0];
         const checkOutDate = reservation.checkOutDate.split('T')[0];
         
         return checkInDate === todayStr || 
                checkInDate === tomorrowStr || 
                checkOutDate === todayStr;
-      }
-    );
+      })
+      .map(reservation => {
+        // Calcular diferença em milissegundos e converter para dias
+        const checkInDate = new Date(reservation.checkInDate);
+        const checkOutDate = new Date(reservation.checkOutDate);
+        
+        const diffTime = checkOutDate.getTime() - checkInDate.getTime();
+        const diffDays = diffTime / (1000 * 60 * 60 * 24);
+        // Arredondar para cima para garantir que reservas parciais contem como uma noite completa
+        const nights = Math.ceil(diffDays);
+        
+        // Retornar a reserva com o cálculo de noites atualizado
+        return {
+          ...reservation,
+          nights: nights > 0 ? nights : 1 // Garantir mínimo de 1 noite
+        };
+      });
   }
 
   async createReservation(reservation: InsertReservation): Promise<Reservation> {
@@ -1979,30 +1994,43 @@ export class DatabaseStorage implements IStorage {
         const result = await this.poolInstance.query(query, [todayStr, tomorrowStr]);
         console.log(`Encontradas ${result.rows.length} reservas para o dashboard de hoje e amanhã`);
         
-        // Mapear resultado para o formato esperado pelo sistema
-        return result.rows.map(row => ({
-          id: row.id,
-          propertyId: row.property_id,
-          guestName: row.guest_name,
-          guestEmail: row.guest_email,
-          guestPhone: row.guest_phone,
-          checkInDate: row.check_in_date,
-          checkOutDate: row.check_out_date,
-          numGuests: row.num_guests,
-          totalAmount: row.total_amount,
-          platformFee: row.platform_fee,
-          cleaningFee: row.cleaning_fee,
-          checkInFee: row.check_in_fee,
-          commission: row.commission_fee, // Mapeando do campo DB commission_fee para campo da aplicação commission
-          teamPayment: row.team_payment,
-          ownerRevenue: row.owner_revenue,
-          source: row.platform, // Mapeando do campo DB platform para campo da aplicação source
-          status: row.status,
-          notes: row.notes,
-          netAmount: row.net_amount,
-          createdAt: row.created_at,
-          updatedAt: row.updated_at
-        }));
+        // Mapear resultado para o formato esperado pelo sistema e calcular noites corretamente
+        return result.rows.map(row => {
+          // Calcular diferença em milissegundos e converter para dias
+          const checkInDate = new Date(row.check_in_date);
+          const checkOutDate = new Date(row.check_out_date);
+          
+          // Calcular diferença em milissegundos e converter para dias
+          const diffTime = checkOutDate.getTime() - checkInDate.getTime();
+          const diffDays = diffTime / (1000 * 60 * 60 * 24);
+          // Arredondar para cima para garantir que reservas parciais contem como uma noite completa
+          const nights = Math.ceil(diffDays);
+          
+          return {
+            id: row.id,
+            propertyId: row.property_id,
+            guestName: row.guest_name,
+            guestEmail: row.guest_email,
+            guestPhone: row.guest_phone,
+            checkInDate: row.check_in_date,
+            checkOutDate: row.check_out_date,
+            numGuests: row.num_guests,
+            totalAmount: row.total_amount,
+            platformFee: row.platform_fee,
+            cleaningFee: row.cleaning_fee,
+            checkInFee: row.check_in_fee,
+            commission: row.commission_fee, // Mapeando do campo DB commission_fee para campo da aplicação commission
+            teamPayment: row.team_payment,
+            ownerRevenue: row.owner_revenue,
+            source: row.platform, // Mapeando do campo DB platform para campo da aplicação source
+            status: row.status,
+            notes: row.notes,
+            netAmount: row.net_amount,
+            createdAt: row.created_at,
+            updatedAt: row.updated_at,
+            nights: nights > 0 ? nights : 1 // Garantir mínimo de 1 noite
+          };
+        });
       }
       
       // Fallback para Drizzle caso o pool não esteja disponível
