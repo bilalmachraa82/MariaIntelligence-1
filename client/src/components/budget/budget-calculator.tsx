@@ -89,15 +89,15 @@ export function BudgetCalculator() {
     }).format(value);
   };
 
-  const handleCheckInDateSelect = (date: Date) => {
+  const handleCheckInDateSelect = (date: Date | undefined) => {
     setCheckInDate(date);
     // Se a data de check-out for anterior à nova data de check-in, limpe-a
-    if (checkOutDate && date > checkOutDate) {
+    if (checkOutDate && date && date > checkOutDate) {
       setCheckOutDate(undefined);
     }
   };
 
-  const handleCheckOutDateSelect = (date: Date) => {
+  const handleCheckOutDateSelect = (date: Date | undefined) => {
     setCheckOutDate(date);
   };
 
@@ -115,56 +115,59 @@ export function BudgetCalculator() {
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
-
-        <div className="grid gap-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="check-in-date">
+              <Label htmlFor="checkInDate">
                 {t("budgetCalculator.checkInDate", "Data de Check-in")}
               </Label>
               <DatePicker
-                id="check-in-date"
-                selected={checkInDate}
-                onSelect={handleCheckInDateSelect}
+                date={checkInDate}
+                setDate={handleCheckInDateSelect}
                 fromDate={new Date()}
-                placeholder={t("budgetCalculator.selectDate", "Selecionar data")}
               />
             </div>
+            
             <div className="space-y-2">
-              <Label htmlFor="check-out-date">
+              <Label htmlFor="checkOutDate">
                 {t("budgetCalculator.checkOutDate", "Data de Check-out")}
               </Label>
               <DatePicker
-                id="check-out-date"
-                selected={checkOutDate}
-                onSelect={handleCheckOutDateSelect}
+                date={checkOutDate}
+                setDate={handleCheckOutDateSelect}
                 fromDate={checkInDate || new Date()}
-                placeholder={t("budgetCalculator.selectDate", "Selecionar data")}
                 disabled={!checkInDate}
               />
             </div>
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="nightly-rate">
-              {t("budgetCalculator.nightlyRate", "Taxa Diária (€)")}
-            </Label>
-            <Input
-              id="nightly-rate"
-              type="text"
-              value={nightlyRate}
-              onChange={handleNightlyRateChange}
-              className="max-w-xs"
-            />
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="nights">
+                {t("budgetCalculator.nights", "Número de Noites")}
+              </Label>
+              <Input
+                id="nights"
+                value={nights}
+                readOnly
+                disabled
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="nightlyRate">
+                {t("budgetCalculator.nightlyRate", "Taxa Diária (EUR)")}
+              </Label>
+              <Input
+                id="nightlyRate"
+                value={nightlyRate}
+                onChange={handleNightlyRateChange}
+                placeholder="100"
+              />
+            </div>
           </div>
-
-          <div className="space-y-2">
-            <Label>
-              {t("budgetCalculator.nights", "Noites")}
-            </Label>
-            <div className="text-2xl font-bold">{nights}</div>
-          </div>
-
+          
           {budgetEstimate && (
             <>
               <Separator className="my-2" />
@@ -204,8 +207,8 @@ export function BudgetCalculator() {
           onClick={handleCalculate}
           disabled={isCalculating || !checkInDate || !checkOutDate}
         >
-          {isCalculating
-            ? t("budgetCalculator.calculating", "Calculando...")
+          {isCalculating 
+            ? t("budgetCalculator.calculating", "Calculando...") 
             : t("budgetCalculator.calculate", "Calcular Orçamento")}
         </Button>
         
