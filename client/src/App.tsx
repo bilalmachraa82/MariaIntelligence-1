@@ -172,6 +172,7 @@ function Router() {
       <Route path="/reservations/:id" component={ReservationDetailPage} />
       <Route path="/reservations/approval" component={ReservationApprovalPage} />
       <Route path="/budget-calculator" component={BudgetCalculatorPage} />
+      <Route path="/calculadora-orcamento" component={BudgetCalculatorPage} />
       <Route path="/upload-pdf" component={DocumentScanPage} />
       <Route path="/scan" component={DocumentScanPage} />
       <Route path="/pdf-upload" component={DocumentScanPage} />
