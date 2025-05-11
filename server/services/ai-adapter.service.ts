@@ -31,7 +31,7 @@ export class AIAdapter {
   };
   
   // Valor padrão para o serviço de IA
-  private static defaultName = process.env.PRIMARY_AI ?? "openrouter";
+  private static defaultName = process.env.PRIMARY_AI ?? "auto";
   
   // Detector de manuscritos
   private handwritingDetector = new HandwritingDetector();
