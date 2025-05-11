@@ -47,6 +47,8 @@ export function usePdfUpload() {
   const [error, setError] = useState<string | null>(null);
   const [isMultiMode, setIsMultiMode] = useState(false);
   const [rawText, setRawText] = useState<string | null>(null);
+  const [missingFields, setMissingFields] = useState<string[]>([]);
+  const [showMissingDataForm, setShowMissingDataForm] = useState(false);
   // Valores fixos de processamento: sempre máxima qualidade
   const processingOptions: ProcessingOptions = {
     useCache: false,
@@ -98,17 +100,40 @@ export function usePdfUpload() {
           setRawText(result.rawText);
         }
         
-        // Escolher a mensagem baseada em fonte dos dados (cache ou nova análise)
-        if (result.fromCache) {
-          toast({
-            title: "Arquivo Processado (Cache)",
-            description: "Os dados foram recuperados do cache e estão prontos para revisão.",
-          });
+        // Verificar se há campos ausentes
+        if (result.validation && result.validation.missingFields && result.validation.missingFields.length > 0) {
+          // Se conseguimos identificar a propriedade, permitir completar os dados manualmente
+          if (result.extractedData.propertyId || result.extractedData.propertyName) {
+            console.log("📋 Campos ausentes detectados:", result.validation.missingFields);
+            setMissingFields(result.validation.missingFields);
+            setShowMissingDataForm(true);
+            
+            toast({
+              title: "Propriedade Identificada",
+              description: `Propriedade: ${result.extractedData.propertyName}. Alguns dados estão ausentes e precisam ser preenchidos manualmente.`,
+              variant: "default",
+            });
+          } else {
+            // Se não conseguimos nem identificar a propriedade, mostrar erro
+            toast({
+              title: "Dados Incompletos",
+              description: "Não foi possível identificar a propriedade. Por favor, tente outro documento ou preencha manualmente.",
+              variant: "destructive",
+            });
+          }
         } else {
-          toast({
-            title: "Arquivo Processado com Sucesso",
-            description: "Os dados foram extraídos com IA e estão prontos para revisão.",
-          });
+          // Escolher a mensagem baseada em fonte dos dados (cache ou nova análise)
+          if (result.fromCache) {
+            toast({
+              title: "Arquivo Processado (Cache)",
+              description: "Os dados foram recuperados do cache e estão prontos para revisão.",
+            });
+          } else {
+            toast({
+              title: "Arquivo Processado com Sucesso",
+              description: "Os dados foram extraídos com IA e estão prontos para revisão.",
+            });
+          }
         }
       } catch (advancedError) {
         console.warn("Falha ao processar com sistema avançado, tentando métodos alternativos:", advancedError);
