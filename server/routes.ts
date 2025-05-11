@@ -1214,6 +1214,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Use the enhanced RAG service for additional capabilities
 
   // Upload e processamento de arquivos de controle
+  // 🔥 ROTA LEGADA - usar /api/ocr no lugar
+  /*
   app.post("/api/upload-control-file", pdfUpload.single('pdf'), async (req: Request, res: Response) => {
     try {
       console.log('Iniciando processamento de arquivo de controle...');
@@ -1272,6 +1274,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+  */
   
   // PDF Upload e Processamento
   // Rota removida em favor da rota unificada /api/ocr
@@ -1280,7 +1283,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   /**
    * Endpoint para processamento de imagens usando OCR
    * Extrai dados de reserva a partir de imagens de confirmações e comprovantes
+   * 🔥 ROTA LEGADA - usar /api/ocr no lugar
    */
+  /*
   app.post("/api/upload-image", imageUpload.single('image'), async (req: Request, res: Response) => {
     try {
       console.log('Iniciando processamento de upload de imagem para OCR...');
@@ -1388,96 +1393,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   /**
    * Endpoint para upload e processamento geral de arquivos (versão legada)
+   * 🔥 ROTA LEGADA - usar /api/ocr no lugar
    */
-  app.post("/api/upload-file", anyFileUpload.single('file'), async (req: Request, res: Response) => {
-    try {
-      console.log('Iniciando processamento de upload de arquivo (PDF/imagem)...');
-      
-      if (!req.file) {
-        return res.status(400).json({ 
-          success: false,
-          message: "Nenhum arquivo enviado" 
-        });
-      }
-
-      // Verificamos se temos a chave da API Gemini disponível
-      if (!process.env.GOOGLE_API_KEY && !process.env.GOOGLE_GEMINI_API_KEY) {
-        return res.status(500).json({ 
-          success: false,
-          message: "Nenhuma chave de API do Google Gemini configurada" 
-        });
-      }
-
-      try {
-        console.log(`Processando arquivo: ${req.file.path} (${req.file.mimetype})`);
-        // Parâmetros de controle
-        const autoCreateReservation = req.query.autoCreate !== 'false'; // Por padrão sempre cria
-        
-        // Sempre usar alta qualidade para processamento
-        const skipQualityCheck = false;
-        const useCache = false;
-        
-        // Usar o serviço que processa qualquer tipo de arquivo e cria reserva
-        // Usamos a chave Gemini para todos os serviços de IA
-        const result = await processFileAndCreateReservation(
-          req.file.path, 
-          process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "",
-          { skipQualityCheck, useCache }
-        );
-        console.log('Processamento e criação de reserva concluídos:', result.success);
-        
-        // Adicionar atividade ao sistema se a reserva foi criada
-        if (result.success && result.reservation) {
-          await storage.createActivity({
-            activityType: 'reservation_created',
-            description: `Reserva criada automaticamente via arquivo: ${result.reservation.propertyId} - ${result.reservation.guestName}`,
-            resourceId: result.reservation.id,
-            resourceType: 'reservation'
-          });
-        }
-        
-        // Adicionar o texto extraído à base de conhecimento RAG
-        if (result.extractedData && result.extractedData.rawText) {
-          await ragService.addToKnowledgeBase(result.extractedData.rawText, 'reservation_file', {
-            filename: req.file.filename,
-            uploadDate: new Date(),
-            reservationId: result.reservation?.id,
-            status: result.success ? 'created' : 'failed',
-            fileType: req.file.mimetype
-          });
-        }
-        
-        // Retornar resultado com a reserva criada e dados extraídos
-        return res.json({
-          success: result.success,
-          message: result.message,
-          reservation: result.reservation,
-          extractedData: result.extractedData,
-          validation: result.validationResult,
-          file: {
-            filename: req.file.filename,
-            path: req.file.path,
-            mimetype: req.file.mimetype
-          }
-        });
-      } catch (processError) {
-        console.error('Erro no processamento do arquivo:', processError);
-        // Retornar erro formatado
-        return res.status(500).json({ 
-          success: false,
-          message: "Falha ao processar arquivo", 
-          error: processError instanceof Error ? processError.message : "Erro desconhecido no processamento"
-        });
-      }
-    } catch (err) {
-      console.error('Erro ao processar upload de arquivo:', err);
-      return res.status(500).json({
-        success: false,
-        message: "Erro interno no servidor",
-        error: err instanceof Error ? err.message : "Erro desconhecido"
-      });
-    }
-  });
+  /* 
+   * A versão anterior desta rota foi removida. 
+   * Todo o processamento de OCR foi migrado para o endpoint unificado /api/ocr
+   */
 
   /**
    * Endpoint para upload e processamento de PDFs
