@@ -2046,29 +2046,42 @@ export class DatabaseStorage implements IStorage {
         `);
         
         if (Array.isArray(results)) {
-          return results.map((row: any) => ({
-            id: row.id,
-            propertyId: row.property_id,
-            guestName: row.guest_name,
-            guestEmail: row.guest_email,
-            guestPhone: row.guest_phone,
-            checkInDate: row.check_in_date,
-            checkOutDate: row.check_out_date,
-            numGuests: row.num_guests,
-            totalAmount: row.total_amount,
-            status: row.status,
-            notes: row.notes,
-            platformFee: row.platform_fee,
-            cleaningFee: row.cleaning_fee,
-            checkInFee: row.check_in_fee,
-            commission: row.commission_fee,
-            teamPayment: row.team_payment,
-            ownerRevenue: row.owner_revenue,
-            netAmount: row.net_amount,
-            source: row.platform,
-            createdAt: row.created_at,
-            updatedAt: row.updated_at
-          }));
+          return results.map((row: any) => {
+            // Calcular diferença em milissegundos e converter para dias
+            const checkInDate = new Date(row.check_in_date);
+            const checkOutDate = new Date(row.check_out_date);
+            
+            // Calcular diferença em milissegundos e converter para dias
+            const diffTime = checkOutDate.getTime() - checkInDate.getTime();
+            const diffDays = diffTime / (1000 * 60 * 60 * 24);
+            // Arredondar para cima para garantir que reservas parciais contem como uma noite completa
+            const nights = Math.ceil(diffDays);
+            
+            return {
+              id: row.id,
+              propertyId: row.property_id,
+              guestName: row.guest_name,
+              guestEmail: row.guest_email,
+              guestPhone: row.guest_phone,
+              checkInDate: row.check_in_date,
+              checkOutDate: row.check_out_date,
+              numGuests: row.num_guests,
+              totalAmount: row.total_amount,
+              status: row.status,
+              notes: row.notes,
+              platformFee: row.platform_fee,
+              cleaningFee: row.cleaning_fee,
+              checkInFee: row.check_in_fee,
+              commission: row.commission_fee,
+              teamPayment: row.team_payment,
+              ownerRevenue: row.owner_revenue,
+              netAmount: row.net_amount,
+              source: row.platform,
+              createdAt: row.created_at,
+              updatedAt: row.updated_at,
+              nights: nights > 0 ? nights : 1 // Garantir mínimo de 1 noite
+            };
+          });
         }
       } catch (sqlError) {
         console.error("Erro no fallback SQL para dashboard:", sqlError);
