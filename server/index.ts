@@ -9,6 +9,7 @@ import { setupVite, serveStatic, log } from './vite';
 /* ─── Inicialização da app ───────────────────────────── */
 console.log('Inicializando aplicação…');
 const app = express();
+export { app };
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
