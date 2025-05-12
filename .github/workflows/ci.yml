@@ -1,55 +1,92 @@
 name: CI Pipeline
+
 on:
   push:
-    branches: [main]
+    branches: [ main, migration/windsurf ] # Adicionada a branch migration/windsurf
+  pull_request:
+    branches: [ main ]
+
 jobs:
-  build:
+  build_and_test:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: pnpm
-      - run: pnpm install
-      - run: pnpm --filter client run build
-      - run: pnpm run db:push
 
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: pnpm
-      - run: pnpm install
-      - run: pnpm test
-      - run: pnpm run e2e
+    strategy:
+      matrix:
+        node-version: [18.x]
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: test
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: pnpm
-      - run: pnpm install
-      - name: Deploy to Netlify
-        run: |
-          netlify deploy --prod --dir=client/dist \
-            -m "v1.0.0-mvp" \
-            --headers "Cache-Control: no-cache" \
-            --functions "dist/functions"
-      - name: Deploy to Railway
-        run: railway up
-      - name: Create Git Tag
-        run: |
-          git tag v1.0.0-mvp
-          git push origin v1.0.0-mvp
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'pnpm'
+
+    - name: Install pnpm
+      run: npm install -g pnpm
+
+    - name: Install dependencies
+      run: pnpm install
+
+    - name: Run database migrations
+      run: pnpm run db:push
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL_CI }} # Necessário configurar este secret no GitHub
+
+    - name: Build client
+      run: pnpm --filter client run build # Assumindo que o client tem um script de build
+
+    - name: Run tests
+      run: pnpm run test
+
+    - name: Run E2E tests
+      run: pnpm run e2e
+      # Para E2E, pode ser necessário um servidor rodando.
+      # Considere usar 'start-server-and-test' ou iniciar o servidor em background.
+
+  # Adicionar job de deploy se necessário, após testes passarem
+  # deploy_staging:
+  #   needs: build_and_test
+  #   if: github.ref == 'refs/heads/migration/windsurf' # Exemplo: deploy para staging a partir desta branch
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18.x
+  #         cache: 'pnpm'
+  #     - run: npm install -g pnpm
+  #     - run: pnpm install
+  #     - name: Deploy to Staging (Railway)
+  #       run: railway up --service your-staging-service-name # Ajustar nome do serviço
+  #       env:
+  #         RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_STAGING }}
+
+  # deploy_production:
+  #   needs: build_and_test
+  #   if: github.ref == 'refs/heads/main' # Exemplo: deploy para produção a partir da main
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18.x
+  #         cache: 'pnpm'
+  #     - run: npm install -g pnpm
+  #     - run: pnpm install
+  #     - name: Build client for production
+  #       run: pnpm --filter client run build
+  #     - name: Deploy to Netlify (Frontend)
+  #       uses: netlify/actions/cli@master
+  #       with:
+  #         args: deploy --dir=client/dist --prod
+  #       env:
+  #         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+  #         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID_PROD }}
+  #     - name: Deploy to Railway (Backend)
+  #       run: railway up --service your-production-service-name # Ajustar nome do serviço
+  #       env:
+  #         RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_PROD }}

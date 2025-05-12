@@ -52,7 +52,7 @@
 - [X] npx ts-jest config:init && npx playwright install
 - [X] Criar tests/ocr.spec.ts
 - [X] Criar e2e/upload.spec.ts
-- [ ] Criar .github/workflows/ci.yml
+- [X] Criar .github/workflows/ci.yml
 - [ ] Commit (acp "chore: jest + playwright + CI")
 - [ ] Rodar todos os testes
 
