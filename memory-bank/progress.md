@@ -42,16 +42,16 @@
 - [X] Atualizar hook client/src/hooks/use-pdf-upload.ts (indiretamente, via client/src/lib/ocr.ts)
 - [X] Completar missing-data-form client/src/components/dashboard/missing-data-form.tsx
 - [X] Corrigir cálculo nights em client/src/lib/utils.ts
-- [ ] Verificar chaves i18n (node scripts/i18n-check.js) - Script não encontrado
-- [ ] Commit (acp "fix: front ocr flow + i18n")
+- [X] Verificar chaves i18n (node scripts/i18n-check.js) - Script não encontrado, etapa pulada
+- [X] Commit (acp "fix: front ocr flow + i18n")
 
 ---
 
 ### BLOCO 5: Tests & CI
-- [ ] Instalar jest, supertest, ts-jest, playwright, @playwright/test
-- [ ] npx ts-jest config:init && npx playwright install
-- [ ] Criar tests/ocr.spec.ts
-- [ ] Criar e2e/upload.spec.ts
+- [X] Instalar jest, supertest, ts-jest, playwright, @playwright/test
+- [X] npx ts-jest config:init && npx playwright install
+- [X] Criar tests/ocr.spec.ts
+- [X] Criar e2e/upload.spec.ts
 - [ ] Criar .github/workflows/ci.yml
 - [ ] Commit (acp "chore: jest + playwright + CI")
 - [ ] Rodar todos os testes
