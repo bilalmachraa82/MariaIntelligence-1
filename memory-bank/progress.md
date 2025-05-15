@@ -53,7 +53,7 @@
 - [X] Criar tests/ocr.spec.ts
 - [X] Criar e2e/upload.spec.ts
 - [X] Criar .github/workflows/ci.yml
-- [ ] Commit (acp "chore: jest + playwright + CI")
+- [X] Commit (acp "chore: jest + playwright + CI")
 - [ ] Rodar todos os testes
 
 ---

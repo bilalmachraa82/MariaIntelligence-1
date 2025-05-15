@@ -1558,88 +1558,6 @@ export class MemStorage implements IStorage {
       }
     });
     
-    // Seed maintenance tasks
-    const maintenanceTaskData = [
-      {
-        id: 1,
-        propertyId: 12,
-        description: "Reparação - Vazamento na pia da cozinha",
-        reportedAt: new Date(today.getTime() - (3 * oneDay)),
-        scheduledFor: new Date(today.getTime() + (1 * oneDay)),
-        completedAt: null,
-        status: "scheduled",
-        priority: "medium",
-        assignedTo: "João Silva",
-        estimatedCost: "75",
-        actualCost: null,
-        notes: "Cliente reportou vazamento constante sob a pia da cozinha."
-      },
-      {
-        id: 2,
-        propertyId: 19,
-        description: "Emergência - Aquecedor não funciona",
-        reportedAt: new Date(today.getTime() - (1 * oneDay)),
-        scheduledFor: new Date(today.getTime()),
-        completedAt: null,
-        status: "pending",
-        priority: "high",
-        assignedTo: "António Santos",
-        estimatedCost: "150",
-        actualCost: null,
-        notes: "Hóspedes reclamaram que o aquecedor parou de funcionar durante a noite. Verificar sistema elétrico."
-      },
-      {
-        id: 3,
-        propertyId: 5,
-        description: "Manutenção - Substituir lâmpadas queimadas",
-        reportedAt: new Date(today.getTime() - (5 * oneDay)),
-        scheduledFor: new Date(today.getTime() - (2 * oneDay)),
-        completedAt: new Date(today.getTime() - (2 * oneDay)),
-        status: "completed",
-        priority: "low",
-        assignedTo: "Maria Oliveira",
-        estimatedCost: "35",
-        actualCost: "30",
-        notes: "Substituídas 4 lâmpadas na sala e 2 no corredor."
-      },
-      {
-        id: 4,
-        propertyId: 16,
-        description: "Reparo - Persiana quebrada no quarto principal",
-        reportedAt: new Date(today.getTime() - (7 * oneDay)),
-        scheduledFor: new Date(today.getTime() + (3 * oneDay)),
-        completedAt: null,
-        status: "scheduled",
-        priority: "medium",
-        assignedTo: "Carlos Mendes",
-        estimatedCost: "90",
-        actualCost: null,
-        notes: "Persiana não abre/fecha corretamente. Necessário substituir o mecanismo."
-      },
-      {
-        id: 5,
-        propertyId: 3,
-        description: "Verificação - Problema com internet",
-        reportedAt: new Date(today.getTime() - (2 * oneDay)),
-        scheduledFor: new Date(today.getTime() + (1 * oneDay)),
-        completedAt: null,
-        status: "pending",
-        priority: "medium",
-        assignedTo: "Ricardo Pereira",
-        estimatedCost: "45",
-        actualCost: null,
-        notes: "Hóspedes reportaram conexão instável de internet. Verificar roteador e cabos."
-      }
-    ];
-    
-    // Add maintenance tasks to the map
-    maintenanceTaskData.forEach(task => {
-      this.maintenanceTasksMap.set(task.id, task);
-      if (task.id >= this.currentMaintenanceTaskId) {
-        this.currentMaintenanceTaskId = task.id + 1;
-      }
-    });
-    
     // Seed financial documents data
     seedFinancialDocuments.call(this);
   }
@@ -2546,7 +2464,7 @@ export class DatabaseStorage implements IStorage {
         const totalRevenue = reservations.reduce((sum, r) => sum + Number(r.total_amount || 0), 0);
         const cleaningCosts = reservations.reduce((sum, r) => sum + Number(r.cleaning_fee || 0), 0);
         const checkInFees = reservations.reduce((sum, r) => sum + Number(r.check_in_fee || 0), 0);
-        const commissions = reservations.reduce((sum, r) => sum + Number(r.commission || 0), 0);
+        const commissions = reservations.reduce((sum, r) => sum + Number(r.commission_fee || 0), 0);
         const teamPayments = reservations.reduce((sum, r) => sum + Number(r.team_payment || 0), 0);
         
         const totalCosts = cleaningCosts + checkInFees + commissions + teamPayments;
@@ -3297,7 +3215,7 @@ import { isDatabaseAvailable, checkDatabaseConnection } from './db';
 // Variável para armazenar a instância de armazenamento atual
 let storageInstance: IStorage;
 // Variável para armazenar a instância de memória para fallback
-let memStorage: MemStorage;
+let memStorage: MemStorage | undefined;
 // Variável para armazenar a instância de banco de dados
 let dbStorage: DatabaseStorage | null = null;
 
