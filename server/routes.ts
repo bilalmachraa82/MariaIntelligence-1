@@ -1191,6 +1191,104 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Rota para obter dados do dashboard (check-ins, check-outs, tarefas de limpeza)
+  app.get("/api/reservations/dashboard", async (req: Request, res: Response) => {
+    try {
+      const reservations = await storage.getReservationsForDashboard();
+      res.json(reservations);
+    } catch (error) {
+      handleError(error, res);
+    }
+  });
+
+  // Rota para obter atividades recentes do sistema
+  app.get("/api/activities", async (req: Request, res: Response) => {
+    try {
+      const limit = req.query.limit ? Number(req.query.limit) : undefined;
+      const activities = await storage.getActivities(limit);
+      res.json(activities);
+    } catch (error) {
+      handleError(error, res);
+    }
+  });
+
+  // Rota para obter estatísticas para o dashboard
+  app.get("/api/statistics", async (req: Request, res: Response) => {
+    try {
+      // Obter período de datas (opcional)
+      const startDate = req.query.startDate ? new Date(req.query.startDate as string) : undefined;
+      const endDate = req.query.endDate ? new Date(req.query.endDate as string) : undefined;
+      
+      // Obter estatísticas básicas
+      const totalRevenue = await storage.getTotalRevenue(startDate, endDate);
+      const netProfit = await storage.getNetProfit(startDate, endDate);
+      const occupancyRate = await storage.getOccupancyRate(undefined, startDate, endDate);
+      
+      // Obter contagens
+      const properties = await storage.getProperties();
+      const reservations = await storage.getReservations();
+      const owners = await storage.getOwners();
+      
+      // Calcular estatísticas adicionais
+      const activeProperties = properties.filter(p => p.active !== false).length;
+      const completedReservations = reservations.filter(r => r.status === 'completed').length;
+      const pendingReservations = reservations.filter(r => r.status === 'pending').length;
+      const confirmedReservations = reservations.filter(r => r.status === 'confirmed').length;
+      
+      res.json({
+        counts: {
+          properties: properties.length,
+          activeProperties,
+          reservations: reservations.length,
+          completedReservations,
+          pendingReservations,
+          confirmedReservations,
+          owners: owners.length
+        },
+        financial: {
+          totalRevenue,
+          netProfit,
+          occupancyRate
+        },
+        period: {
+          startDate: startDate?.toISOString() || null,
+          endDate: endDate?.toISOString() || null
+        }
+      });
+    } catch (error) {
+      handleError(error, res);
+    }
+  });
+
+  // Rota para criar uma nova atividade
+  app.post("/api/activities", async (req: Request, res: Response) => {
+    try {
+      const valid = insertActivitySchema.parse(req.body);
+      const activity = await storage.createActivity(valid);
+      res.status(201).json(activity);
+    } catch (error) {
+      handleError(error, res);
+    }
+  });
+
+  // Rota unificada para OCR - processa PDFs enviados e extrai dados de reserva
+  app.post("/api/ocr", pdfUpload.single("pdf"), async (req: Request, res: Response) => {
+    try {
+      await ocrController.postOcr(req, res);
+    } catch (error) {
+      handleError(error, res);
+    }
+  });
+  
+  // Rota para processamento OCR com serviço específico
+  app.post("/api/ocr/:service", pdfUpload.single("pdf"), async (req: Request, res: Response) => {
+    try {
+      await ocrController.processWithService(req, res);
+    } catch (error) {
+      handleError(error, res);
+    }
+  });
+
   app.post("/api/process-financial-document", anyFileUpload.single('document'), async (req: Request, res: Response) => {
     try {
       if (!req.file) {

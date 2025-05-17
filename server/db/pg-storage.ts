@@ -129,6 +129,46 @@ export class PgStorage implements IStorage {
       .orderBy(desc(reservations.checkInDate));
   }
 
+  /**
+   * Obtém reservas para o dashboard, incluindo check-ins e check-outs de hoje e amanhã
+   * @returns Lista de reservas para o dashboard
+   */
+  async getReservationsForDashboard(): Promise<Reservation[]> {
+    // Obter data atual e amanhã
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    const dayAfterTomorrow = new Date(tomorrow);
+    dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 1);
+    
+    // Formatar datas para string no formato ISO para compatibilidade com o banco
+    const todayStr = today.toISOString().split('T')[0];
+    const dayAfterTomorrowStr = dayAfterTomorrow.toISOString().split('T')[0];
+    
+    // Buscar check-ins de hoje e amanhã e check-outs de hoje e amanhã
+    return await this.db
+      .select()
+      .from(reservations)
+      .where(
+        or(
+          // Check-ins de hoje ou amanhã
+          and(
+            gte(reservations.checkInDate, todayStr),
+            sql`${reservations.checkInDate} < ${dayAfterTomorrowStr}`
+          ),
+          // Check-outs de hoje ou amanhã
+          and(
+            gte(reservations.checkOutDate, todayStr),
+            sql`${reservations.checkOutDate} < ${dayAfterTomorrowStr}`
+          )
+        )
+      )
+      .orderBy(asc(reservations.checkInDate));
+  }
+
   async createReservation(reservation: InsertReservation): Promise<Reservation> {
     // Convert string dates to Date objects if needed
     const formattedReservation = {

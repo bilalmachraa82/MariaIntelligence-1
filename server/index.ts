@@ -64,10 +64,10 @@ app.use((req, res, next) => {
   }
 
   /* ─── Listen (host + port separados) ───────────────── */
+  // O servidor já foi inicializado na função registerRoutes
+  // Apenas log da informação
   const port = Number(process.env.PORT) || 5100;
   const host = process.env.HOST || '0.0.0.0';
-
-  server.listen(port, host, () => {
-    console.log(`🚀  Server listening at http://${host}:${port}`);
-  });
+  
+  console.log(`Server listening on port ${port}`);
 })();
