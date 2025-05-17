@@ -24,10 +24,27 @@
 
 ## Caminhos Críticos de Implementação
 
-- Upload e processamento rápido de arquivos (<5s).
-- Extração confiável de dados estruturados via OCR.
-- Sincronização entre processamento backend e atualização da UI.
+- Upload e processamento rápido de arquivos (<5s) - **Implementado**
+- Extração confiável de dados estruturados via OCR - **Implementado com BullMQ para retentativas**
+- Sincronização entre processamento backend e atualização da UI - **Implementado com React Query**
+- Testes unitários e end-to-end - **Parcialmente implementado (com problemas de tipo)**
+- Sistema de filas para processamento assíncrono - **Implementado com BullMQ e Redis**
+- Tratamento de erros e retentativas - **Implementado**
+
+## Soluções de Teste
+
+- **Unitários:** Jest + ts-jest para testes de API
+- **E2E:** Playwright para testes de interação do usuário
+- **Integração:** GitHub Actions para integração contínua
+- **Mock:** Mock de storage e AI adapters para testes isolados
+
+## Problemas Pendentes
+
+- Erros de tipo no `storage.ts` afetam a execução dos testes
+- Testes E2E exigem ambiente com uploads previamente configurados
 
 ## Observações
 
-- Este arquivo deve ser atualizado conforme padrões e decisões evoluírem durante o desenvolvimento.
+- Sistema operacional mesmo com testes incompletos
+- Arquitetura demonstrou resiliência com uso de filas e retentativas
+- Padrões de design modular facilitam manutenção e extensão

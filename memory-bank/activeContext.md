@@ -1,23 +1,31 @@
 # activeContext.md
 
 ## Foco atual do trabalho
-- Inicialização do Memory Bank (protocolo de memória/documentação).
-- Estruturação dos arquivos principais de contexto do projeto.
-- Integração do Runbook Maria Faz v1.4 (Windows/PowerShell Edition) como referência operacional.
+- Finalização e correção dos testes unitários (BLOCO 5)
+- Backup do banco de dados e uploads (BLOCO 7)
+- Handoff e finalização do projeto (BLOCO 7)
+- Resolução de problemas de tipo no storage.ts
 
 ## Mudanças recentes
-- Criação dos arquivos projectbrief.md e productContext.md com base no escopo e objetivos do projeto.
-- Recebimento e integração do Runbook v1.4, que passa a orientar o fluxo de trabalho e automação.
+- Deploy completo do front-end no Netlify (https://maria-faz-1.netlify.app)
+- Deploy completo da API no Railway
+- Commit de release v1.0.0-mvp realizado
+- Testes unitários implementados com mocks (pendente correção)
 
 ## Próximos passos
-- Seguir os blocos do Runbook v1.4 para setup, fixes, testes, build e deploy.
-- Atualizar o Memory Bank a cada avanço ou decisão relevante.
-- Documentar padrões de arquitetura e decisões técnicas à medida que o desenvolvimento avança.
+- Corrigir os erros de tipo no storage.ts para finalizar os testes
+- Realizar backup do banco de dados (pg_dump)
+- Fazer backup dos uploads (zip)
+- Criar e publicar tag git v1.0.0-mvp
+- Documentar endpoints de staging
+- Verificar integração completa entre front e backend
 
 ## Decisões e considerações ativas
-- O Memory Bank é a fonte de verdade para todo o contexto e evolução do projeto.
-- O Runbook v1.4 é a referência operacional para execução e automação.
-- Toda alteração significativa deve ser refletida nos arquivos de contexto.
+- Os testes unitários não impedem a operação do sistema em produção
+- A documentação atualizada é essencial para a continuidade do projeto
+- Todos os passos do Runbook foram seguidos (exceto os testes que estão parcialmente completos)
+- O sistema está operacional mesmo com testes pendentes
 
 ## Observações
-- Protocolo de memória ativo e pronto para guiar o desenvolvimento conforme o Runbook.
+- Protocolo de memória mantido atualizado durante todo o processo de desenvolvimento
+- Prioridade atual: corrigir erros de tipo para finalizar os testes e completar o handoff
