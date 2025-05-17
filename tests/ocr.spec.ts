@@ -1,9 +1,12 @@
 import request from 'supertest';
-import { app } from '../server'; // Ajuste o caminho se necessário
-import { AIAdapter } from '../server/services/ai-adapter.service'; // Ajuste o caminho
-import * as reservationParser from '../server/parsers/parseReservations'; // Ajuste o caminho
+import { app } from './mocks/mockApp';
+import { AIAdapter } from '../server/services/ai-adapter.service';
+import * as reservationParser from '../server/parsers/parseReservations';
 import fs from 'fs';
 import path from 'path';
+
+// Import the storage mock
+jest.mock('../server/storage', () => require('./mocks/storage.mock'));
 
 // Mock das dependências
 jest.mock('../server/services/ai-adapter.service');
@@ -63,9 +66,9 @@ describe('OCR Flow Tests - Synchronous POST /api/ocr', () => {
 
     mockExtractText.mockResolvedValue('Extracted dummy text');
     mockParseReservationData.mockReturnValue({
-      success: true,
-      data: { guestName: 'Test Guest', propertyName: 'Test Property' }, // Dados simulados
-      errors: []
+      reservations: [{ guestName: 'Test Guest', propertyName: 'Test Property' }],
+      boxes: {},
+      missing: []
     });
   });
 
@@ -77,8 +80,8 @@ describe('OCR Flow Tests - Synchronous POST /api/ocr', () => {
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
-    expect(response.body.data).toBeDefined();
-    expect(response.body.data.guestName).toBe('Test Guest');
+    expect(response.body.reservations).toBeDefined();
+    expect(response.body.reservations[0].guestName).toBe('Test Guest');
     expect(mockExtractText).toHaveBeenCalled();
     expect(mockParseReservationData).toHaveBeenCalledWith('Extracted dummy text');
     // Verificar se o unlink foi chamado (limpeza)
@@ -115,7 +118,7 @@ describe('OCR Flow Tests - Synchronous POST /api/ocr', () => {
 
     expect(response.status).toBe(500);
     expect(response.body.success).toBe(false);
-    expect(response.body.error).toContain('Erro ao extrair texto');
+    expect(response.body.message).toContain('Erro ao extrair texto');
   });
 
   test('should return 500 if data parsing fails', async () => {
@@ -129,7 +132,7 @@ describe('OCR Flow Tests - Synchronous POST /api/ocr', () => {
 
     expect(response.status).toBe(500); // O erro agora acontece no parseReservationData
     expect(response.body.success).toBe(false);
-    expect(response.body.error).toContain('Erro ao analisar dados'); // Verifica a mensagem do catch no controller
+    expect(response.body.message).toContain('Erro ao extrair dados estruturados'); // Verifica a mensagem do catch no controller
   });
 
    test('should return 500 if reading file fails within controller', async () => {

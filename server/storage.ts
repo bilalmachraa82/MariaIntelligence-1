@@ -3271,7 +3271,10 @@ async function createStorage(): Promise<IStorage> {
     }
   } catch (error) {
     console.error('Erro ao inicializar armazenamento, usando MemStorage como fallback:', error);
-    storageInstance = memStorage || new MemStorage();
+    if (!memStorage) {
+      memStorage = new MemStorage(); // Inicializar se ainda não existir
+    }
+    storageInstance = memStorage; // Usar a instância agora garantidamente existente
     console.log('######### USANDO MemStorage (após erro) #########');
   }
 })();
