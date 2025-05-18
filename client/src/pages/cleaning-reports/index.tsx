@@ -367,7 +367,8 @@ export default function CleaningReportsPage() {
               </Button>
             }
           >
-              <Table>
+            <div className="rounded-lg overflow-hidden border border-white/10">
+              <Table className="border-collapse">
                 <TableHeader>
                   <TableRow>
                     <TableHead>{t("cleaningReports.date", "Data")}</TableHead>
