@@ -164,14 +164,24 @@ export async function parseReservationData(text: string): Promise<ParseResult> {
       /nome:[\s]*([^\n\.]+)/i,
       /name:[\s]*([^\n\.]+)/i,
       /data.*saída.*noites.*Nome.*hóspedes.*país.*site.*info.*([A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ\s]+)[\d]/i,
-      /(\d{1,2}\/\d{1,2}\/\d{2,4})\s+(\d{1,2}\/\d{1,2}\/\d{2,4})\s+\d+\s+([A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ\s]+)\d+/i
+      /(\d{1,2}\/\d{1,2}\/\d{2,4})\s+(\d{1,2}\/\d{1,2}\/\d{2,4})\s+\d+\s+([A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ\s]+)\d+/i,
+      // Padrões adicionais para extrair nomes do formato mais comum nos documentos
+      /N\.º noitesNomeN\.º hóspedes.*?(\d+)\s+([A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ\s]+?)\s+\d+/i,
+      /noites\s+Nome\s+.*?(\d+)\s+([A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ\s]+?)\s+\d+/i,
+      // Específico para o formato do documento com cabeçalho
+      /Data entradaData saídaN\.º noitesNomeN\.º hóspedes.*?\d{1,2}\/\d{1,2}\/\d{2,4}\s+\d{1,2}\/\d{1,2}\/\d{2,4}\s+\d+\s+([A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ\s]+?)\s+\d+/i
     ];
     
     for (const regex of guestRegex) {
       const match = text.match(regex);
       if (match) {
-        // Se for um dos padrões específicos de tabela, pegar o terceiro grupo de captura
-        if (regex.toString().includes('data.*saída') || regex.toString().includes('\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}')) {
+        // Verificar qual grupo contém o nome com base no padrão que deu match
+        if (regex.toString().includes('N\\.º noitesNomeN\\.º hóspedes') || 
+            regex.toString().includes('noites\\s+Nome\\s+')) {
+          reservation.guestName = match[2].trim();
+        } else if (regex.toString().includes('Data entradaData saídaN\\.º noitesNomeN\\.º hóspedes')) {
+          reservation.guestName = match[1].trim();
+        } else if (regex.toString().includes('data.*saída') || regex.toString().includes('\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}')) {
           reservation.guestName = (match[3] || match[1]).trim();
         } else {
           reservation.guestName = match[1].trim();
@@ -315,16 +325,35 @@ export async function parseReservationData(text: string): Promise<ParseResult> {
       /máximo de pessoas[\s:]*(\d+)/i,
       /max (?:guests|people|persons)[\s:]*(\d+)/i,
       /n\.º\s+hóspedes[\s:]*(\d+)/i,
-      /(\d{1,2}\/\d{1,2}\/\d{2,4})\s+(\d{1,2}\/\d{1,2}\/\d{2,4})\s+\d+\s+[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ\s]+(\d+)/i
+      /(\d{1,2}\/\d{1,2}\/\d{2,4})\s+(\d{1,2}\/\d{1,2}\/\d{2,4})\s+\d+\s+[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ\s]+(\d+)/i,
+      // Padrões específicos para o formato do documento de controle
+      /NomeN\.º hóspedes.*?([A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ\s]+?)(\d+)/i,
+      /Data entradaData saídaN\.º noitesNomeN\.º hóspedes.*?\d{1,2}\/\d{1,2}\/\d{2,4}\s+\d{1,2}\/\d{1,2}\/\d{2,4}\s+\d+\s+[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ\s]+?(\d+)/i,
+      // Formato específico encontrado no documento
+      /\s+(\d)\s+[a-zA-ZÀ-ÖØ-öø-ÿ]+Airbnb/i,
+      /[a-zA-ZÀ-ÖØ-öø-ÿ]+\s+(\d)\s+[a-zA-ZÀ-ÖØ-öø-ÿ]+\s+Airbnb/i,
+      /(\d{1,2}\/\d{1,2}\/\d{2,4})\s+(\d{1,2}\/\d{1,2}\/\d{2,4})\s+\d+\s+[a-zA-ZÀ-ÖØ-öø-ÿ]+\s+(\d+)/i,
+      /Nome\s+N.º hóspedes/i
     ];
     
     for (const regex of guestsRegex) {
       const match = text.match(regex);
       if (match) {
-        // Se for o padrão tabular, usar o grupo de captura correto
-        if (regex.toString().includes('\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}')) {
+        // Verificar o padrão que deu match para extrair corretamente
+        if (regex.toString().includes('NomeN\\.º hóspedes.*?([A-Za-zÀ-ÖØ-öø-ÿ]')) {
+          // Padrão específico para documentos de controle
+          reservation.numGuests = parseInt(match[2]);
+        } else if (regex.toString().includes('Data entradaData saídaN\\.º noitesNomeN\\.º hóspedes')) {
+          // Padrão específico para o cabeçalho seguido de dados
+          reservation.numGuests = parseInt(match[1]);
+        } else if (regex.toString().includes('\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}')) {
+          // Padrão com datas sequenciais seguidas de nome e número
           reservation.numGuests = parseInt(match[3]);
+        } else if (regex.toString().includes('\\s+(\\d)\\s+[a-zA-ZÀ-ÖØ-öø-ÿ]+Airbnb')) {
+          // Padrão específico para a linha formato: "Nome 3 PaísAirbnb"
+          reservation.numGuests = parseInt(match[1]);
         } else {
+          // Padrão genérico
           reservation.numGuests = parseInt(match[1]);
         }
         
@@ -332,6 +361,25 @@ export async function parseReservationData(text: string): Promise<ParseResult> {
         if (index !== -1) missingInThisReservation.splice(index, 1);
         console.log(`✅ Número de hóspedes extraído: ${reservation.numGuests}`);
         break;
+      }
+    }
+    
+    // Verificar padrão específico caso os regex anteriores falhem
+    if (!reservation.numGuests && reservation.guestName) {
+      // Para documentos onde o nome do hóspede já foi identificado, procurar por números próximos
+      const lines = text.split('\n');
+      for (const line of lines) {
+        if (line.includes(reservation.guestName)) {
+          // Procurar um número depois do nome do hóspede (comum em formatos tabulares)
+          const numMatch = line.match(new RegExp(`${reservation.guestName}\\s*(\\d+)`));
+          if (numMatch && numMatch[1]) {
+            reservation.numGuests = parseInt(numMatch[1]);
+            const index = missingInThisReservation.indexOf('numGuests');
+            if (index !== -1) missingInThisReservation.splice(index, 1);
+            console.log(`✅ Número de hóspedes extraído do contexto próximo ao nome: ${reservation.numGuests}`);
+            break;
+          }
+        }
       }
     }
     
