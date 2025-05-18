@@ -418,8 +418,14 @@ export async function parseReservationData(text: string): Promise<ParseResult> {
             checkInDate,
             checkOutDate,
             numGuests,
-            // Valor padrão para totalAmount
-            totalAmount: 95.0,
+            // Valor padrão para totalAmount (como string para compatibilidade com o esquema)
+            totalAmount: "95.00",
+            platformFee: "0",
+            cleaningFee: "0",
+            checkInFee: "0",
+            teamPayment: "0",
+            commission: "0",
+            netAmount: "95.00",
             platform,
             status: 'confirmed',
             countryOfOrigin,
