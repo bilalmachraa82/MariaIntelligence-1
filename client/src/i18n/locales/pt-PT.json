@@ -1,50 +1,196 @@
 {
-  "translation": {
+  "common": {
+    "exportPDF": "Exportar PDF",
+    "currency": "€"
+  },
+  "navigation": {
+    "mainMenu": "Menu",
+    "mainAppNav": "Navegação principal do aplicativo Maria Faz",
+    "home": "Início",
+    "bookings": "Reservas",
+    "properties": "Imóveis",
+    "owners": "Proprietários",
+    "documentScan": "Scanner",
+    "quotations": "Orçamentos",
+    "settings": "Configurações Gerais",
+    "mobileOptimized": "Mobile Otimizado",
+    "assistant": "Maria IA",
     "reports": {
-      "exportPDF": "Exportar PDF"
+      "financial": "Relatórios"
     },
-    "cleaningReports": {
-      "title": "Relatórios de Limpeza e Pagamentos",
-      "totalCleanings": "Total de Limpezas",
-      "completedCleanings": "concluídas",
-      "teamPayments": "Pagamentos às Equipas",
-      "pendingPayments": "Pagamentos Pendentes",
-      "pending": "pendentes",
-      "forAllTeams": "para todas as equipas",
-      "avgTeamScore": "Pontuação Média",
-      "outOf100": "de 100 pontos possíveis",
-      "filters": "Filtros",
-      "team": "Equipa",
-      "allTeams": "Todas as equipas",
-      "paymentStatus": "Estado do Pagamento",
-      "allStatuses": "Todos os estados",
-      "statusPending": "Pendente",
-      "statusPaid": "Pago",
-      "listView": "Lista de Limpezas",
-      "payments": "Pagamentos",
-      "dueDates": "Datas de Vencimento",
-      "cleanings": "Limpezas",
-      "cleaningsDescription": "Lista de todas as limpezas realizadas e suas informações",
-      "date": "Data",
-      "property": "Propriedade",
-      "duration": "Duração",
-      "status": "Estado",
-      "amount": "Valor",
-      "score": "Pontuação",
-      "minutes": "min",
-      "statusCompleted": "Concluída",
-      "statusFailed": "Falhada",
-      "paymentsDescription": "Resumo dos pagamentos por equipa",
-      "pendingAmount": "Valor Pendente",
-      "paidAmount": "Valor Pago",
-      "totalAmount": "Total",
-      "totals": "Totais",
-      "upcomingPayments": "Pagamentos Próximos",
-      "upcomingPaymentsDescription": "Pagamentos com vencimento nos próximos dias",
-      "dueDate": "Data de Vencimento",
-      "actions": "Ações",
-      "pay": "Pagar",
-      "noPaymentsDue": "Não há pagamentos pendentes no momento"
+    "cleaning": {
+      "title": "Limpeza",
+      "teams": "Equipas de Limpeza",
+      "schedules": "Agendamentos",
+      "reports": "Relatórios e Pagamentos"
+    },
+    "maintenance": {
+      "pending": "Manutenção Pendente",
+      "request": "Solicitar Manutenção"
+    },
+    "categories": {
+      "main": "Principal",
+      "finances": "Finanças",
+      "operations": "Operações",
+      "tools": "Ferramentas",
+      "utilities": "Utilidades"
+    },
+    "documentScan": {
+      "description": "Digitalizar e processar documentos"
+    },
+    "assistant": {
+      "description": "Assistente inteligente"
+    },
+    "payments": {
+      "expenses": "Despesas",
+      "income": "Recebimentos"
+    }
+  },
+  "settings": {
+    "tabs": {
+      "notifications": "Notificações",
+      "language": "Idioma",
+      "integrations": "Integrações"
+    }
+  },
+  "reports": {
+    "exportPDF": "Exportar PDF",
+    "revenue": "Receita",
+    "operationalCosts": "Custos Operacionais",
+    "occupied": "Ocupado",
+    "available": "Disponível",
+    "title": "Relatórios",
+    "period": "Período",
+    "property": "Propriedade",
+    "allProperties": "Todas as Propriedades",
+    "exportReport": "Exportar Relatório",
+    "overview": "Visão Geral",
+    "owner": "Proprietário",
+    "operational": "Operacional",
+    "overviewReport": "Relatório Geral",
+    "totalRevenue": "Receita Total",
+    "totalExpenses": "Despesas Totais",
+    "netProfit": "Lucro Líquido",
+    "revenueBreakdown": "Detalhamento da Receita",
+    "fixedPaymentIncome": "Pagamentos Fixos",
+    "commissionIncome": "Comissões",
+    "checkInFeesIncome": "Taxas de Check-in",
+    "expensesBreakdown": "Detalhamento de Despesas",
+    "cleaningExpenses": "Limpeza",
+    "maintenanceExpenses": "Manutenção",
+    "suppliesExpenses": "Suprimentos",
+    "ownerReport": "Relatório de Proprietário",
+    "viewFullReport": "Ver relatório completo",
+    "operationalReport": "Relatório Operacional"
+  },
+  "dailyTasks": {
+    "checkins": "Check-ins",
+    "checkinsDescription": "Chegadas de hóspedes para hoje e amanhã",
+    "viewAllReservations": "Ver Todas as Reservas",
+    "checkouts": "Check-outs",
+    "checkoutsDescription": "Saídas de hóspedes para hoje",
+    "viewAllCleanings": "Ver Todas as Limpezas",
+    "maintenance": "Manutenção & Tarefas",
+    "maintenanceDescription": "Reparos e tarefas pendentes",
+    "noMaintenanceTasks": "Não há tarefas de manutenção pendentes",
+    "viewAllTasks": "Ver Todas as Tarefas",
+    "title": "Tarefas do Dia",
+    "todayDate": "Hoje",
+    "assistant": "Assistente",
+    "viewReports": "Ver Relatórios",
+    "todayCheckins": "Check-ins Hoje",
+    "todayCheckouts": "Check-outs Hoje",
+    "pendingCleanings": "Limpezas",
+    "maintenanceIssues": "Manutenções",
+    "noCheckins": "Não há check-ins agendados para hoje",
+    "noCheckouts": "Não há check-outs agendados para hoje"
+  },
+  "cleaningReports": {
+    "title": "Relatórios de Limpeza e Pagamentos",
+    "totalCleanings": "Total de Limpezas",
+    "completedCleanings": "concluídas",
+    "teamPayments": "Pagamentos às Equipas",
+    "pendingPayments": "Pagamentos Pendentes",
+    "pending": "pendentes",
+    "forAllTeams": "para todas as equipas",
+    "avgTeamScore": "Pontuação Média",
+    "outOf100": "de 100 pontos possíveis",
+    "filters": "Filtros",
+    "team": "Equipa",
+    "allTeams": "Todas as equipas",
+    "paymentStatus": "Estado do Pagamento",
+    "allStatuses": "Todos os estados",
+    "statusPending": "Pendente",
+    "statusPaid": "Pago",
+    "listView": "Lista de Limpezas",
+    "payments": "Pagamentos",
+    "dueDates": "Datas de Vencimento",
+    "cleanings": "Limpezas",
+    "cleaningsDescription": "Lista de todas as limpezas realizadas e suas informações",
+    "date": "Data",
+    "property": "Propriedade",
+    "duration": "Duração",
+    "status": "Estado",
+    "amount": "Valor",
+    "score": "Pontuação",
+    "minutes": "min",
+    "statusCompleted": "Concluída",
+    "statusFailed": "Falhada",
+    "paymentsDescription": "Resumo dos pagamentos por equipa",
+    "pendingAmount": "Valor Pendente",
+    "paidAmount": "Valor Pago",
+    "totalAmount": "Total",
+    "totals": "Totais",
+    "upcomingPayments": "Pagamentos Próximos",
+    "upcomingPaymentsDescription": "Pagamentos com vencimento nos próximos dias",
+    "dueDate": "Data de Vencimento",
+    "actions": "Ações",
+    "pay": "Pagar",
+    "noPaymentsDue": "Não há pagamentos pendentes no momento"
+  },
+  "translation": {
+    "navigation": {
+      "mainMenu": "Menu",
+      "mainAppNav": "Navegação principal do aplicativo Maria Faz",
+      "home": "Início",
+      "bookings": "Reservas",
+      "properties": "Imóveis",
+      "owners": "Proprietários",
+      "documentScan": "Scanner",
+      "quotations": "Orçamentos",
+      "settings": "Configurações Gerais",
+      "mobileOptimized": "Mobile Otimizado",
+      "assistant": "Maria IA",
+      "reports": { 
+        "financial": "Relatórios"
+      },
+      "cleaning": {
+        "title": "Limpeza",
+        "teams": "Equipas de Limpeza",
+        "schedules": "Agendamentos",
+        "reports": "Relatórios e Pagamentos"
+      },
+      "maintenance": {
+        "pending": "Manutenção Pendente",
+        "request": "Solicitar Manutenção"
+      },
+      "categories": {
+        "main": "Principal",
+        "finances": "Finanças",
+        "operations": "Operações",
+        "tools": "Ferramentas",
+        "utilities": "Utilidades"
+      },
+      "documentScan": {
+        "description": "Digitalizar e processar documentos"
+      },
+      "assistant": {
+        "description": "Assistente inteligente"
+      },
+      "payments": {
+        "expenses": "Despesas",
+        "income": "Recebimentos"
+      }
     }
   }
 }
