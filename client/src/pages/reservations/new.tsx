@@ -102,8 +102,12 @@ export default function ReservationNewPage() {
       guestName: "",
       guestEmail: "",
       guestPhone: "",
+      country: "",
+      reference: "",
       checkInDate: new Date(),
       checkOutDate: new Date(Date.now() + 86400000), // tomorrow
+      numAdults: 1,
+      numChildren: 0,
       numGuests: 1,
       totalAmount: "0",
       status: "pending",
@@ -599,14 +603,86 @@ export default function ReservationNewPage() {
 
                 <FormField
                   control={form.control}
-                  name="numGuests"
+                  name="reference"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Número de Hóspedes</FormLabel>
+                      <FormLabel>Referência</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Referência ou código da reserva"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <FormField
+                  control={form.control}
+                  name="numAdults"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Adultos</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
                           min="1"
+                          placeholder="Número de adultos"
+                          {...field}
+                          onChange={(e) => {
+                            const adults = parseInt(e.target.value) || 1;
+                            field.onChange(adults);
+                            // Atualizar o total de hóspedes
+                            const children = form.getValues("numChildren") || 0;
+                            form.setValue("numGuests", adults + children);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="numChildren"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Crianças</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min="0"
+                          placeholder="Número de crianças"
+                          {...field}
+                          onChange={(e) => {
+                            const children = parseInt(e.target.value) || 0;
+                            field.onChange(children);
+                            // Atualizar o total de hóspedes
+                            const adults = form.getValues("numAdults") || 1;
+                            form.setValue("numGuests", adults + children);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="numGuests"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Total Hóspedes</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min="1"
+                          disabled
                           {...field}
                           onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
                         />
@@ -617,7 +693,7 @@ export default function ReservationNewPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormField
                   control={form.control}
                   name="guestEmail"
@@ -645,6 +721,23 @@ export default function ReservationNewPage() {
                       <FormControl>
                         <Input 
                           placeholder="Telefone para contato (opcional)"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="country"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>País de Origem</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="País do hóspede (opcional)"
                           {...field}
                         />
                       </FormControl>
