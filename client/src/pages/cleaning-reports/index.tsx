@@ -277,23 +277,26 @@ export default function CleaningReportsPage() {
       </div>
       
       <div className="mb-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle>{t("cleaningReports.filters", "Filtros")}</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-wrap gap-4">
+        <ModernDashboardCard 
+          title={t("cleaningReports.filters", "Filtros")}
+          icon={<Users size={18} />}
+          className="bg-gradient-to-br from-indigo-950/90 to-purple-900/90 backdrop-blur-lg"
+        >
+          <div className="flex flex-wrap gap-4">
             <div className="w-full sm:w-auto flex-1">
-              <label className="text-sm font-medium mb-1 block">
+              <label className="text-sm font-medium mb-2 block text-white/80">
                 {t("cleaningReports.team", "Equipa")}
               </label>
               <Select value={selectedTeam} onValueChange={setSelectedTeam}>
-                <SelectTrigger>
+                <SelectTrigger className="bg-white/10 border-white/20 text-white">
                   <SelectValue placeholder={t("cleaningReports.allTeams", "Todas as equipas")} />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{t("cleaningReports.allTeams", "Todas as equipas")}</SelectItem>
+                <SelectContent className="bg-indigo-950 border-white/20 text-white">
+                  <SelectItem value="all" className="focus:bg-white/20 hover:bg-white/10">
+                    {t("cleaningReports.allTeams", "Todas as equipas")}
+                  </SelectItem>
                   {teams.map((team) => (
-                    <SelectItem key={team.id} value={team.id.toString()}>
+                    <SelectItem key={team.id} value={team.id.toString()} className="focus:bg-white/20 hover:bg-white/10">
                       {team.name}
                     </SelectItem>
                   ))}
@@ -302,40 +305,68 @@ export default function CleaningReportsPage() {
             </div>
             
             <div className="w-full sm:w-auto flex-1">
-              <label className="text-sm font-medium mb-1 block">
+              <label className="text-sm font-medium mb-2 block text-white/80">
                 {t("cleaningReports.paymentStatus", "Estado do Pagamento")}
               </label>
               <Select value={selectedPaymentStatus} onValueChange={setSelectedPaymentStatus}>
-                <SelectTrigger>
+                <SelectTrigger className="bg-white/10 border-white/20 text-white">
                   <SelectValue placeholder={t("cleaningReports.allStatuses", "Todos os estados")} />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{t("cleaningReports.allStatuses", "Todos os estados")}</SelectItem>
-                  <SelectItem value="pending">{t("cleaningReports.statusPending", "Pendente")}</SelectItem>
-                  <SelectItem value="completed">{t("cleaningReports.statusPaid", "Pago")}</SelectItem>
+                <SelectContent className="bg-indigo-950 border-white/20 text-white">
+                  <SelectItem value="all" className="focus:bg-white/20 hover:bg-white/10">
+                    {t("cleaningReports.allStatuses", "Todos os estados")}
+                  </SelectItem>
+                  <SelectItem value="pending" className="focus:bg-white/20 hover:bg-white/10">
+                    {t("cleaningReports.statusPending", "Pendente")}
+                  </SelectItem>
+                  <SelectItem value="completed" className="focus:bg-white/20 hover:bg-white/10">
+                    {t("cleaningReports.statusPaid", "Pago")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </ModernDashboardCard>
       </div>
       
       <Tabs defaultValue="list" value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="list">{t("cleaningReports.listView", "Lista de Limpezas")}</TabsTrigger>
-          <TabsTrigger value="payments">{t("cleaningReports.payments", "Pagamentos")}</TabsTrigger>
-          <TabsTrigger value="dueDates">{t("cleaningReports.dueDates", "Datas de Vencimento")}</TabsTrigger>
+        <TabsList className="bg-gradient-to-r from-indigo-900/70 to-purple-900/70 p-1 rounded-xl">
+          <TabsTrigger 
+            value="list" 
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-indigo-600 data-[state=active]:text-white rounded-lg"
+          >
+            <FileCheck className="h-4 w-4 mr-2" />
+            {t("cleaningReports.listView", "Lista de Limpezas")}
+          </TabsTrigger>
+          <TabsTrigger 
+            value="payments" 
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-indigo-600 data-[state=active]:text-white rounded-lg"
+          >
+            <Banknote className="h-4 w-4 mr-2" />
+            {t("cleaningReports.payments", "Pagamentos")}
+          </TabsTrigger>
+          <TabsTrigger 
+            value="dueDates" 
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-indigo-600 data-[state=active]:text-white rounded-lg"
+          >
+            <Calendar className="h-4 w-4 mr-2" />
+            {t("cleaningReports.dueDates", "Datas de Vencimento")}
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="list" className="space-y-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle>{t("cleaningReports.cleanings", "Limpezas")}</CardTitle>
-              <CardDescription>
-                {t("cleaningReports.cleaningsDescription", "Lista de todas as limpezas realizadas e suas informações.")}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+          <ModernDashboardCard
+            title={t("cleaningReports.cleanings", "Limpezas")}
+            subtitle={t("cleaningReports.cleaningsDescription", "Lista de todas as limpezas realizadas e suas informações.")}
+            icon={<FileCheck size={18} />}
+            className="bg-gradient-to-br from-indigo-950/90 to-purple-900/90 backdrop-blur-lg"
+            headerAction={
+              <Button className="bg-white/10 hover:bg-white/20 text-white border-0 shadow-lg flex items-center gap-2">
+                <CheckCheck size={16} />
+                {t("cleaningReports.markAsPaid", "Marcar como Pago")}
+              </Button>
+            }
+          >
               <Table>
                 <TableHeader>
                   <TableRow>
