@@ -1,4 +1,4 @@
-import { useParams, Link, useLocation } from "wouter";
+import { useParams, useLocation } from "wouter";
 import { useReservation } from "@/hooks/use-reservations";
 import { useProperty } from "@/hooks/use-properties";
 import { 
@@ -81,12 +81,12 @@ export default function ReservationDetailPage() {
           </Badge>
         </div>
         <div className="mt-4 md:mt-0">
-          <Link href={`/reservations/edit/${reservation.id}`}>
-            <Button>
-              <Edit className="mr-2 h-4 w-4" />
-              Editar Reserva
-            </Button>
-          </Link>
+          <Button 
+            onClick={() => navigate(`/reservations/edit/${reservation.id}`)}
+          >
+            <Edit className="mr-2 h-4 w-4" />
+            Editar Reserva
+          </Button>
         </div>
       </div>
 
