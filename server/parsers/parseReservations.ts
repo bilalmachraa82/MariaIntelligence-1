@@ -355,6 +355,61 @@ export async function parseReservationData(text: string): Promise<ParseResult> {
           }
         }
         
+        // Extrair país de origem
+        let countryOfOrigin = '';
+        if (text.includes('França')) {
+          countryOfOrigin = 'França';
+        } else if (text.includes('Espanha')) {
+          countryOfOrigin = 'Espanha';
+        } else if (text.includes('Suécia')) {
+          countryOfOrigin = 'Suécia';
+        } else {
+          // Procurar países comuns após o número de hóspedes
+          const countryRegex = /(\d+)\s+([A-Za-zÀ-ÖØ-öø-ÿ]+)(Booking|Airbnb)/i;
+          const countryMatch = text.match(countryRegex);
+          if (countryMatch && countryMatch[2]) {
+            countryOfOrigin = countryMatch[2];
+          }
+        }
+        
+        // Calcular número de noites
+        let numNights = 0;
+        if (checkInDate && checkOutDate) {
+          const checkIn = new Date(checkInDate);
+          const checkOut = new Date(checkOutDate);
+          numNights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 3600 * 24));
+        } else {
+          // Se não conseguir calcular pelas datas, procurar no texto
+          const nightsRegex = /(\d+)\s*noites/i;
+          const nightsMatch = text.match(nightsRegex);
+          if (nightsMatch && nightsMatch[1]) {
+            numNights = parseInt(nightsMatch[1]);
+          }
+        }
+        
+        // Extrair informações adicionais/comentários
+        let additionalInfo = '';
+        const lines = text.split('\n').filter(line => line.trim().length > 0);
+        for (const line of lines) {
+          if (line.includes('Deixar') || line.includes('toalhas') || 
+              line.includes('berço') || line.includes('Quere')) {
+            additionalInfo = line.trim();
+            break;
+          }
+        }
+        
+        // Determinar plataforma
+        let platform = 'other';
+        if (text.toLowerCase().includes('booking')) {
+          platform = 'booking';
+        } else if (text.toLowerCase().includes('airbnb')) {
+          platform = 'airbnb';
+        } else if (text.toLowerCase().includes('expedia')) {
+          platform = 'expedia';
+        } else if (text.toLowerCase().includes('direct') || text.toLowerCase().includes('direto')) {
+          platform = 'direct';
+        }
+        
         // Criar objeto de reserva
         if (propertyName && (checkInDate || checkOutDate)) {
           const reservation: ReservationData = {
@@ -365,10 +420,11 @@ export async function parseReservationData(text: string): Promise<ParseResult> {
             numGuests,
             // Valor padrão para totalAmount
             totalAmount: 95.0,
-            platform: text.toLowerCase().includes('booking') ? 'booking' : 
-                      text.toLowerCase().includes('airbnb') ? 'airbnb' : 'other',
+            platform,
             status: 'confirmed',
-            notes: `Extraído via OCR nativo (${new Date().toLocaleDateString()})`
+            countryOfOrigin,
+            numNights,
+            notes: additionalInfo || `Extraído via OCR nativo (${new Date().toLocaleDateString()})`
           };
           
           // Verificar campos ausentes
