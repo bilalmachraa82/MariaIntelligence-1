@@ -452,14 +452,7 @@ export function SidebarReorganized({
       icon: Key,
       iconColor: "text-teal-500"
     },
-    // Dados Demo
-    {
-      name: t("navigation.demoData", "Dados Demo"),
-      href: "/dados-demo",
-      altHref: "/demo-data",
-      icon: ClipboardCheck,
-      iconColor: "text-blue-400"
-    }
+    // Opção de Dados Demo removida conforme solicitado
   ];
 
   // Se modo colapsado, apenas mostre ícones

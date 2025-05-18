@@ -23,6 +23,8 @@ export default function SettingsPage() {
   const [browserNotifications, setBrowserNotifications] = useState(false);
   const [browserNotificationsSupported, setBrowserNotificationsSupported] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language || "pt-PT");
+  // Removemos a variável isDarkMode, mas mantemos uma referência para compatibilidade
+  const setIsDarkMode = () => { /* Função vazia para compatibilidade */ };
   
   // Estado para testes de integração
   const [isTestingIntegrations, setIsTestingIntegrations] = useState(false);
@@ -137,47 +139,7 @@ export default function SettingsPage() {
     }
   };
 
-  const handleDarkModeToggle = (checked: boolean) => {
-    setIsDarkMode(checked);
-    
-    // Atualiza o localStorage para compatibilidade com código legado
-    localStorage.setItem("darkMode", checked.toString());
-    
-    // Atualiza a classe no elemento html
-    if (checked) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-    
-    // Cria o objeto do tema
-    const themeObject = {
-      appearance: checked ? "dark" : "light",
-      primary: "#E5A4A4",
-      variant: "professional",
-      radius: 0.8
-    };
-    
-    // Atualiza o localStorage
-    localStorage.setItem("theme", JSON.stringify(themeObject));
-    
-    // Atualiza também o arquivo theme.json via requisição ao servidor
-    fetch('/theme.json', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(themeObject)
-    }).catch(error => {
-      console.error('Erro ao atualizar theme.json:', error);
-      // Fallback silencioso - continuará usando o localStorage
-    });
-    
-    // Força atualização da página para aplicar o tema corretamente
-    setTimeout(() => {
-      window.location.reload();
-    }, 200);
-  };
+  // Função de controle de modo escuro removida
 
   const handleSaveGeneral = async () => {
     try {
