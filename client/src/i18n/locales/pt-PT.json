@@ -32,7 +32,8 @@
       "markResolved": "Marcar Resolvido",
       "otherTasks": "Outras Tarefas",
       "viewAllTasks": "Ver Todas as Tarefas",
-      "viewReports": "Ver Relatórios"
+      "viewReports": "Ver Relatórios",
+      "noMaintenanceTasks": "Não há tarefas de manutenção pendentes"
     },
     "voiceInput": {
       "temporaryDisabled": "Entrada por voz temporariamente indisponível",
@@ -130,6 +131,9 @@
       "basePrice": "Preço Base (€)",
       "totalPrice": "Preço Total (€)",
       "validUntil": "Válido Até",
+      "validUntilDescription": "Data de validade do orçamento",
+      "additionalFeatures": "Características Adicionais",
+      "additionalDetails": "Detalhes Adicionais",
       "notes": "Observações",
       "notesPlaceholder": "Adicione informações adicionais ou observações",
       "createButton": "Criar Orçamento",
@@ -180,6 +184,7 @@
       "propertyTypeApartmentT2": "Apartamento T2",
       "propertyTypeApartmentT3": "Apartamento T3",
       "propertyTypeApartmentT4": "Apartamento T4",
+      "propertyTypeApartmentT5": "Apartamento T5",
       "propertyTypeHouseV1": "Moradia V1",
       "propertyTypeHouseV2": "Moradia V2",
       "propertyTypeHouseV3": "Moradia V3",
@@ -192,6 +197,7 @@
       "apartmentT2": "Apartamento T2",
       "apartmentT3": "Apartamento T3",
       "apartmentT4": "Apartamento T4",
+      "apartmentT5": "Apartamento T5",
       "houseV1": "Moradia V1",
       "houseV2": "Moradia V2",
       "houseV3": "Moradia V3",
