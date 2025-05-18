@@ -56,7 +56,11 @@ export const reservations = pgTable("reservations", {
   cleaningFee: text("cleaning_fee"), // Taxa de limpeza em euros
   commission: text("commission_fee"), // Comissão do administrador em euros
   netAmount: text("net_amount"), // Valor líquido após taxas
-  numGuests: integer("num_guests").default(1), // Número de hóspedes
+  numGuests: integer("num_guests").default(1), // Número total de hóspedes
+  numAdults: integer("num_adults").default(1), // Número de adultos
+  numChildren: integer("num_children").default(0), // Número de crianças
+  country: text("country"), // País de origem do hóspede
+  reference: text("reference"), // Referência ou código da reserva
   guestEmail: text("guest_email"),
   guestPhone: text("guest_phone"),
   status: text("status").notNull().default("confirmed"), // confirmed, checked-in, checked-out, cancelled
@@ -326,8 +330,12 @@ export const extendedReservationSchema = z.object({
   guestName: z.string().min(2, { message: "O nome do hóspede deve ter pelo menos 2 caracteres" }),
   guestEmail: z.string().email({ message: "Email inválido" }).optional().or(z.literal("")),
   guestPhone: z.string().optional().or(z.literal("")),
+  country: z.string().optional().or(z.literal("")),
+  reference: z.string().optional().or(z.literal("")),
   checkInDate: z.date({ required_error: "Selecione a data de check-in" }),
   checkOutDate: z.date({ required_error: "Selecione a data de check-out" }),
+  numAdults: z.number().int().positive({ message: "Número de adultos deve ser maior que zero" }),
+  numChildren: z.number().int().nonnegative({ message: "Número de crianças não pode ser negativo" }),
   numGuests: z.number().int().positive({ message: "Número de hóspedes deve ser maior que zero" }),
   totalAmount: z.string(),
   status: z.string(),
