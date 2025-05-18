@@ -4,6 +4,16 @@
       "exportPDF": "Exportar PDF",
       "currency": "€"
     },
+    "dashboard": {
+      "fullDashboard": "Dashboard Completo",
+      "welcomeName": "Olá Carina",
+      "fullDashboardDescription": "Visualização detalhada de todas as atividades",
+      "backToOverview": "Voltar à Visão Geral",
+      "dailyTasks": "Tarefas do Dia",
+      "financialSummary": "Resumo Financeiro",
+      "todaysSchedule": "Agenda de Hoje",
+      "financialView": "Visão Financeira"
+    },
     "navigation": {
       "mainMenu": "Menu",
       "mainAppNav": "Navegação principal do aplicativo Maria Faz",
