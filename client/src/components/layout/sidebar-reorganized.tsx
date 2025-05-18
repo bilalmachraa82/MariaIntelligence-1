@@ -400,6 +400,14 @@ export function SidebarReorganized({
       icon: CalendarDays,
       iconColor: "text-cyan-500"
     },
+    // Relatório de limpezas e pagamentos
+    {
+      name: t("navigation.cleaning.reports", "Relatórios e Pagamentos"),
+      href: "/relatorios-limpeza",
+      altHref: "/cleaning-reports",
+      icon: FileSpreadsheet,
+      iconColor: "text-cyan-500"
+    },
     // Manutenção pendente
     {
       name: t("navigation.maintenance.pending", "Manutenção Pendente"),
