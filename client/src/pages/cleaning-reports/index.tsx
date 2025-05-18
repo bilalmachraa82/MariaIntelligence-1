@@ -6,7 +6,21 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, Download, FileCheck, Clock } from "lucide-react";
+import { 
+  Calendar, 
+  Download, 
+  FileCheck, 
+  Clock, 
+  DollarSign, 
+  Users, 
+  Star, 
+  CheckCircle, 
+  XCircle, 
+  AlertTriangle, 
+  BellRing, 
+  BarChart, 
+  Sparkles
+} from "lucide-react";
 
 // Estrutura de dados para relatórios de limpeza
 interface CleaningReport {
@@ -210,56 +224,77 @@ export default function CleaningReportsPage() {
   return (
     <div className="container mx-auto py-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">{t("cleaningReports.title", "Relatórios de Limpeza e Pagamentos")}</h1>
-        <Button variant="outline">
+        <div>
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 bg-clip-text text-transparent">{t("cleaningReports.title", "Relatórios de Limpeza e Pagamentos")}</h1>
+          <p className="text-sm text-muted-foreground italic mt-1 flex items-center">
+            <Sparkles className="h-4 w-4 mr-2 text-yellow-500" />
+            "Uma equipa limpa é o primeiro passo para um cliente satisfeito! ✨"
+          </p>
+        </div>
+        <Button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 border-0">
           <Download className="mr-2 h-4 w-4" />
-          {t("reports.exportPDF", "Exportar PDF")}
+          {"Exportar PDF"}
         </Button>
       </div>
       
       <div className="grid gap-6 mb-6 md:grid-cols-4">
-        <Card>
+        <Card className="border-l-4 border-l-blue-500 shadow-md hover:shadow-lg transition-shadow">
           <CardHeader className="pb-2">
-            <CardTitle>{t("cleaningReports.totalCleanings", "Total de Limpezas")}</CardTitle>
+            <CardTitle className="flex items-center">
+              <FileCheck className="h-5 w-5 mr-2 text-blue-500" />
+              {t("cleaningReports.totalCleanings", "Total de Limpezas")}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{cleaningReports.length}</div>
-            <p className="text-muted-foreground text-sm">
+            <div className="text-3xl font-bold text-blue-600">{cleaningReports.length}</div>
+            <p className="text-muted-foreground text-sm flex items-center">
+              <CheckCircle className="h-4 w-4 mr-1 text-green-500" />
               {cleaningReports.filter(r => r.status === "completed").length} {t("cleaningReports.completedCleanings", "concluídas")}
             </p>
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="border-l-4 border-l-purple-500 shadow-md hover:shadow-lg transition-shadow">
           <CardHeader className="pb-2">
-            <CardTitle>{t("cleaningReports.teamPayments", "Pagamentos às Equipas")}</CardTitle>
+            <CardTitle className="flex items-center">
+              <DollarSign className="h-5 w-5 mr-2 text-purple-500" />
+              {t("cleaningReports.teamPayments", "Pagamentos às Equipas")}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{totalPaymentAmount}€</div>
-            <p className="text-muted-foreground text-sm">
-              {totalPendingAmount}€ {t("cleaningReports.pending", "pendentes")}
+            <div className="text-3xl font-bold text-purple-600">{totalPaymentAmount}€</div>
+            <p className="text-muted-foreground text-sm flex items-center">
+              <AlertTriangle className="h-4 w-4 mr-1 text-amber-500" />
+              {totalPendingAmount}€ {"pendentes"}
             </p>
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="border-l-4 border-l-amber-500 shadow-md hover:shadow-lg transition-shadow">
           <CardHeader className="pb-2">
-            <CardTitle>{t("cleaningReports.pendingPayments", "Pagamentos Pendentes")}</CardTitle>
+            <CardTitle className="flex items-center">
+              <BellRing className="h-5 w-5 mr-2 text-amber-500" />
+              {t("cleaningReports.pendingPayments", "Pagamentos Pendentes")}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{pendingPaymentsCount}</div>
-            <p className="text-muted-foreground text-sm">
+            <div className="text-3xl font-bold text-amber-600">{pendingPaymentsCount}</div>
+            <p className="text-muted-foreground text-sm flex items-center">
+              <Users className="h-4 w-4 mr-1 text-blue-500" />
               {t("cleaningReports.forAllTeams", "para todas as equipas")}
             </p>
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="border-l-4 border-l-green-500 shadow-md hover:shadow-lg transition-shadow">
           <CardHeader className="pb-2">
-            <CardTitle>{t("cleaningReports.avgTeamScore", "Pontuação Média")}</CardTitle>
+            <CardTitle className="flex items-center">
+              <Star className="h-5 w-5 mr-2 text-green-500" />
+              {t("cleaningReports.avgTeamScore", "Pontuação Média")}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">
+            <div className="text-3xl font-bold text-green-600">
               {cleaningReports.filter(r => r.status === "completed").length 
                 ? (cleaningReports
                     .filter(r => r.status === "completed")
@@ -267,7 +302,8 @@ export default function CleaningReportsPage() {
                     cleaningReports.filter(r => r.status === "completed").length).toFixed(1)
                 : "—"}
             </div>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-muted-foreground text-sm flex items-center">
+              <BarChart className="h-4 w-4 mr-1 text-blue-500" />
               {t("cleaningReports.outOf100", "de 100 pontos possíveis")}
             </p>
           </CardContent>
@@ -275,21 +311,25 @@ export default function CleaningReportsPage() {
       </div>
       
       <div className="mb-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle>{t("cleaningReports.filters", "Filtros")}</CardTitle>
+        <Card className="bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 shadow-md">
+          <CardHeader className="pb-2 border-b border-slate-200">
+            <CardTitle className="flex items-center text-slate-800">
+              <Users className="h-5 w-5 mr-2 text-blue-500" />
+              {"Filtros"}
+            </CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-wrap gap-4">
+          <CardContent className="flex flex-wrap gap-4 pt-4">
             <div className="w-full sm:w-auto flex-1">
-              <label className="text-sm font-medium mb-1 block">
-                {t("cleaningReports.team", "Equipa")}
+              <label className="text-sm font-medium mb-2 block text-slate-700 flex items-center">
+                <Users className="h-4 w-4 mr-1 text-blue-500" />
+                {"Equipa"}
               </label>
               <Select value={selectedTeam} onValueChange={setSelectedTeam}>
-                <SelectTrigger>
-                  <SelectValue placeholder={t("cleaningReports.allTeams", "Todas as equipas")} />
+                <SelectTrigger className="border-slate-300 hover:border-slate-400 transition-colors">
+                  <SelectValue placeholder={"Todas as equipas"} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{t("cleaningReports.allTeams", "Todas as equipas")}</SelectItem>
+                  <SelectItem value="all">{"Todas as equipas"}</SelectItem>
                   {teams.map((team) => (
                     <SelectItem key={team.id} value={team.id.toString()}>
                       {team.name}
@@ -300,17 +340,18 @@ export default function CleaningReportsPage() {
             </div>
             
             <div className="w-full sm:w-auto flex-1">
-              <label className="text-sm font-medium mb-1 block">
-                {t("cleaningReports.paymentStatus", "Estado do Pagamento")}
+              <label className="text-sm font-medium mb-2 block text-slate-700 flex items-center">
+                <DollarSign className="h-4 w-4 mr-1 text-purple-500" />
+                {"Estado do Pagamento"}
               </label>
               <Select value={selectedPaymentStatus} onValueChange={setSelectedPaymentStatus}>
-                <SelectTrigger>
-                  <SelectValue placeholder={t("cleaningReports.allStatuses", "Todos os estados")} />
+                <SelectTrigger className="border-slate-300 hover:border-slate-400 transition-colors">
+                  <SelectValue placeholder={"Todos os estados"} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{t("cleaningReports.allStatuses", "Todos os estados")}</SelectItem>
-                  <SelectItem value="pending">{t("cleaningReports.statusPending", "Pendente")}</SelectItem>
-                  <SelectItem value="completed">{t("cleaningReports.statusPaid", "Pago")}</SelectItem>
+                  <SelectItem value="all">{"Todos os estados"}</SelectItem>
+                  <SelectItem value="pending">{"Pendente"}</SelectItem>
+                  <SelectItem value="completed">{"Pago"}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -319,94 +360,117 @@ export default function CleaningReportsPage() {
       </div>
       
       <Tabs defaultValue="list" value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="list">{t("cleaningReports.listView", "Lista de Limpezas")}</TabsTrigger>
-          <TabsTrigger value="payments">{t("cleaningReports.payments", "Pagamentos")}</TabsTrigger>
-          <TabsTrigger value="dueDates">{t("cleaningReports.dueDates", "Datas de Vencimento")}</TabsTrigger>
+        <TabsList className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 p-1 rounded-xl border border-slate-200">
+          <TabsTrigger value="list" className="flex items-center gap-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-blue-600 data-[state=active]:text-white">
+            <FileCheck className="h-4 w-4" />
+            {"Lista de Limpezas"}
+          </TabsTrigger>
+          <TabsTrigger value="payments" className="flex items-center gap-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-purple-600 data-[state=active]:text-white">
+            <DollarSign className="h-4 w-4" />
+            {"Pagamentos"}
+          </TabsTrigger>
+          <TabsTrigger value="dueDates" className="flex items-center gap-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-amber-600 data-[state=active]:text-white">
+            <Calendar className="h-4 w-4" />
+            {"Datas de Vencimento"}
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="list" className="space-y-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle>{t("cleaningReports.cleanings", "Limpezas")}</CardTitle>
+          <Card className="border-t-4 border-t-blue-500 shadow-lg overflow-hidden">
+            <CardHeader className="pb-2 bg-gradient-to-r from-blue-50 to-slate-50 border-b">
+              <CardTitle className="flex items-center text-blue-700">
+                <FileCheck className="h-5 w-5 mr-2 text-blue-500" />
+                {"Limpezas"}
+              </CardTitle>
               <CardDescription>
-                {t("cleaningReports.cleaningsDescription", "Lista de todas as limpezas realizadas e suas informações.")}
+                {"Lista de todas as limpezas realizadas e suas informações."}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-0">
               <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{t("cleaningReports.date", "Data")}</TableHead>
-                    <TableHead>{t("cleaningReports.property", "Propriedade")}</TableHead>
-                    <TableHead>{t("cleaningReports.team", "Equipa")}</TableHead>
-                    <TableHead>{t("cleaningReports.duration", "Duração")}</TableHead>
-                    <TableHead>{t("cleaningReports.status", "Estado")}</TableHead>
-                    <TableHead>{t("cleaningReports.paymentStatus", "Pagamento")}</TableHead>
-                    <TableHead>{t("cleaningReports.amount", "Valor")}</TableHead>
-                    <TableHead>{t("cleaningReports.score", "Pontuação")}</TableHead>
+                <TableHeader className="bg-slate-100">
+                  <TableRow className="hover:bg-slate-100">
+                    <TableHead className="font-semibold text-slate-700">{"Data"}</TableHead>
+                    <TableHead className="font-semibold text-slate-700">{"Propriedade"}</TableHead>
+                    <TableHead className="font-semibold text-slate-700">{"Equipa"}</TableHead>
+                    <TableHead className="font-semibold text-slate-700">{"Duração"}</TableHead>
+                    <TableHead className="font-semibold text-slate-700">{"Estado"}</TableHead>
+                    <TableHead className="font-semibold text-slate-700">{"Pagamento"}</TableHead>
+                    <TableHead className="font-semibold text-slate-700">{"Valor"}</TableHead>
+                    <TableHead className="font-semibold text-slate-700">{"Pontuação"}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredReports.map((report) => (
-                    <TableRow key={report.id}>
+                  {filteredReports.map((report, index) => (
+                    <TableRow key={report.id} className={index % 2 === 0 ? "bg-slate-50" : ""}>
                       <TableCell>
                         <div className="flex items-center">
-                          <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
+                          <Calendar className="h-4 w-4 mr-2 text-blue-500" />
                           {new Date(report.date).toLocaleDateString()}
                         </div>
                       </TableCell>
-                      <TableCell className="font-medium">{report.propertyName}</TableCell>
-                      <TableCell>{report.teamName}</TableCell>
+                      <TableCell className="font-medium text-slate-800">{report.propertyName}</TableCell>
+                      <TableCell className="text-slate-700">{report.teamName}</TableCell>
                       <TableCell>
                         {report.status === "completed" 
                           ? <div className="flex items-center">
-                              <Clock className="h-4 w-4 mr-1 text-muted-foreground" />
-                              {report.duration} {t("cleaningReports.minutes", "min")}
+                              <Clock className="h-4 w-4 mr-1 text-slate-500" />
+                              {report.duration} {"min"}
                             </div>
                           : "—"
                         }
                       </TableCell>
                       <TableCell>
-                        <Badge 
-                          className={
-                            report.status === "completed" ? "bg-green-100 text-green-800 hover:bg-green-200" :
-                            report.status === "pending" ? "bg-yellow-100 text-yellow-800 hover:bg-yellow-200" : 
-                            "bg-red-100 text-red-800 hover:bg-red-200"
-                          }
-                        >
+                        <div className={`px-2 py-1 rounded-full text-xs font-medium inline-flex items-center gap-1 ${
+                          report.status === "completed" ? "bg-green-100 text-green-800 border border-green-200" :
+                          report.status === "pending" ? "bg-amber-100 text-amber-800 border border-amber-200" : 
+                          "bg-red-100 text-red-800 border border-red-200"
+                        }`}>
+                          {report.status === "completed" ? <CheckCircle size={12} /> : 
+                           report.status === "pending" ? <Clock size={12} /> : 
+                           <XCircle size={12} />}
                           {report.status === "completed" 
-                            ? t("cleaningReports.statusCompleted", "Concluída") :
+                            ? "Concluída" :
                             report.status === "pending" 
-                              ? t("cleaningReports.statusPending", "Pendente")
-                              : t("cleaningReports.statusFailed", "Falhada")
+                              ? "Pendente"
+                              : "Falhada"
                           }
-                        </Badge>
+                        </div>
                       </TableCell>
                       <TableCell>
-                        <Badge 
-                          className={
-                            report.paymentStatus === "completed" ? "bg-blue-100 text-blue-800 hover:bg-blue-200" : 
-                            "bg-purple-100 text-purple-800 hover:bg-purple-200"
-                          }
-                        >
+                        <div className={`px-2 py-1 rounded-full text-xs font-medium inline-flex items-center gap-1 ${
+                          report.paymentStatus === "completed" ? "bg-blue-100 text-blue-800 border border-blue-200" : 
+                          "bg-purple-100 text-purple-800 border border-purple-200"
+                        }`}>
+                          {report.paymentStatus === "completed" ? <CheckCircle size={12} /> : <Clock size={12} />}
                           {report.paymentStatus === "completed" 
-                            ? t("cleaningReports.statusPaid", "Pago")
-                            : t("cleaningReports.statusPending", "Pendente")
+                            ? "Pago"
+                            : "Pendente"
                           }
-                        </Badge>
+                        </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="font-medium">
                         {report.paymentAmount > 0 ? `${report.paymentAmount}€` : "—"}
                       </TableCell>
                       <TableCell>
                         {report.status === "completed" 
-                          ? <span className={
-                              report.score >= 95 ? "text-green-600" :
-                              report.score >= 80 ? "text-amber-600" : "text-red-600"
-                            }>
-                              {report.score}/100
-                            </span>
+                          ? <div className="flex items-center gap-1">
+                              <div className="w-16 h-2 rounded-full bg-slate-200 overflow-hidden">
+                                <div 
+                                  className={`h-full rounded-full ${
+                                    report.score >= 95 ? "bg-green-500" :
+                                    report.score >= 80 ? "bg-amber-500" : "bg-red-500"
+                                  }`}
+                                  style={{ width: `${report.score}%` }}
+                                />
+                              </div>
+                              <span className={`text-xs font-medium ${
+                                report.score >= 95 ? "text-green-600" :
+                                report.score >= 80 ? "text-amber-600" : "text-red-600"
+                              }`}>
+                                {report.score}
+                              </span>
+                            </div>
                           : "—"
                         }
                       </TableCell>
