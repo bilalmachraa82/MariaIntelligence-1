@@ -23,7 +23,6 @@ export default function SettingsPage() {
   const [browserNotifications, setBrowserNotifications] = useState(false);
   const [browserNotificationsSupported, setBrowserNotificationsSupported] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language || "pt-PT");
-  const [isDarkMode, setIsDarkMode] = useState(false);
   
   // Estado para testes de integração
   const [isTestingIntegrations, setIsTestingIntegrations] = useState(false);
@@ -73,38 +72,8 @@ export default function SettingsPage() {
       }
     };
     
-    // Verifica tema atual
-    let isDark = false;
-    
-    // Verifica preferência no localStorage (legacy)
-    const darkModePreference = localStorage.getItem("darkMode");
-    if (darkModePreference === "true") {
-      isDark = true;
-    } else {
-      // Verifica no objeto de tema
-      try {
-        const themeStr = localStorage.getItem("theme");
-        if (themeStr) {
-          const theme = JSON.parse(themeStr);
-          if (theme.appearance === "dark") {
-            isDark = true;
-          } else if (theme.appearance === "system") {
-            // Se for "system", verifica a preferência do sistema
-            isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-          }
-        }
-      } catch (e) {
-        console.error("Erro ao processar tema:", e);
-      }
-    }
-    
-    // Atualiza o estado e aplica o tema
-    setIsDarkMode(isDark);
-    if (isDark) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    // Força modo claro (light mode) sempre
+    document.documentElement.classList.remove("dark");
     
     // Verifica suporte a notificações
     const notificationsSupported = 'Notification' in window;
@@ -486,14 +455,7 @@ export default function SettingsPage() {
                 </select>
               </div>
               
-              <div className="flex items-center space-x-2">
-                <Switch 
-                  id="dark-mode" 
-                  checked={isDarkMode}
-                  onCheckedChange={handleDarkModeToggle}
-                />
-                <Label htmlFor="dark-mode">{t("settings.general.darkMode")}</Label>
-              </div>
+              {/* Modo escuro removido conforme solicitado */}
               
               <Button onClick={handleSaveGeneral}>{t("common.save")}</Button>
             </CardContent>
