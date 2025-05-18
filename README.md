@@ -53,7 +53,8 @@ Maria Faz é uma plataforma avançada de gestão imobiliária com inteligência 
 ### DevOps
 - **Controle de Versão**: Git
 - **Banco de Dados**: Neon PostgreSQL (serverless)
-- **Deploy**: Replit
+- **Deploy**: Docker com CI/CD via GitHub Actions
+- **Segurança**: Helmet, Rate-limiting e Pino JSON para logs
 
 ## Estrutura do Projeto
 
@@ -157,9 +158,39 @@ Para limpar todos os dados de demonstração, use o script:
 node reset-all-demo-data.js
 ```
 
-## Migração do Serviço de IA
+## Melhorias Recentes
 
-Recentemente, o sistema foi migrado do Mistral AI para o Google Gemini. Detalhes completos sobre esta migração estão disponíveis na [documentação de migração](./docs/AI-SERVICE-MIGRATION.md).
+### Migração do Serviço de IA
+
+O sistema foi migrado do Mistral AI para o Google Gemini. Detalhes completos sobre esta migração estão disponíveis na [documentação de migração](./docs/AI-SERVICE-MIGRATION.md).
+
+### Consolidação do OCR
+
+O serviço de OCR foi consolidado em uma única rota `/api/ocr`, simplificando a API e melhorando a manutenção. Esta rota agora suporta a seleção de serviço via parâmetros de consulta.
+
+### Correções no PgStorage
+
+- Implementado o método `deleteActivity` que estava em falta
+- Corrigido o tratamento de datas nos métodos `createMaintenanceTask` e `updateMaintenanceTask`
+- Atualizado o método `getMaintenanceActivities` para usar SQL bruto e evitar problemas de tipagem
+
+### Melhorias de Segurança
+
+- Adicionado Helmet para proteção de headers HTTP
+- Implementado rate-limiting para proteção contra ataques de força bruta
+- Configurado Pino para logs em formato JSON com redacção de informações sensíveis
+
+### DevOps
+
+- Criado Dockerfile para containerização da aplicação
+- Configurado GitHub Actions para CI/CD
+- Adicionado docker-compose.yml para facilitar a execução em produção
+
+### Testes
+
+- Adicionados testes para o endpoint `/health`
+- Adicionados testes para o método `deleteActivity` e `getMaintenanceActivities`
+- Configurado Jest para garantir cobertura de testes superior a 80%
 
 ## Documentação Adicional
 

@@ -100,8 +100,8 @@ export async function uploadAndProcessPDF(file: File, options: { useCache?: bool
   console.log(`Enviando PDF para servidor: ${file.name} (${file.size} bytes)`);
   
   try {
-    // Fazer a requisição ao servidor usando a rota OCR atualizada
-    const apiUrl = "/api/ocr/process"; // Alterada a URL da API
+    // Fazer a requisição ao servidor usando a rota OCR unificada
+    const apiUrl = "/api/ocr"; // Rota unificada para OCR
     
     console.log("Fetch URL modificada:", apiUrl);
     
@@ -625,7 +625,7 @@ export async function processMultiplePDFs(
         formData.append("skipQualityCheck", skipQualityCheck ? "true" : "false");
         formData.append("useCache", useCache ? "true" : "false");
         
-        const response = await fetch('/api/ocr/process', { // Alterada a URL da API
+        const response = await fetch('/api/ocr', { // Usando a rota unificada para OCR
           method: 'POST',
           body: formData
         });

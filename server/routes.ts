@@ -1272,18 +1272,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Rota unificada para OCR - processa PDFs enviados e extrai dados de reserva
+  // Suporta seleção de serviço via query parameter ?provider=mistral|rolm|native|auto
   app.post("/api/ocr", pdfUpload.single("pdf"), async (req: Request, res: Response) => {
     try {
       await ocrController.postOcr(req, res);
-    } catch (error) {
-      handleError(error, res);
-    }
-  });
-  
-  // Rota para processamento OCR com serviço específico
-  app.post("/api/ocr/:service", pdfUpload.single("pdf"), async (req: Request, res: Response) => {
-    try {
-      await ocrController.processWithService(req, res);
     } catch (error) {
       handleError(error, res);
     }
@@ -1315,11 +1307,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   }); 
 
-  const port = process.env.PORT || 3000;
-  const server = createServer(app);
-  server.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
+  // Rota de saúde para monitorização
+  app.get("/health", async (_req: Request, res: Response) => {
+    try {
+      // Verificar conexão com o banco de dados
+      const dbStatus = await db.execute(sql`SELECT 1 as health_check`);
+      
+      res.json({
+        status: "ok",
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        database: dbStatus ? "connected" : "disconnected",
+        environment: process.env.NODE_ENV || "development"
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: "error",
+        timestamp: new Date().toISOString(),
+        error: error instanceof Error ? error.message : "Unknown error",
+        database: "disconnected"
+      });
+    }
   });
 
+  // Criar o servidor HTTP sem inicializar o listen (isso é feito no index.ts)
+  const server = createServer(app);
   return server; 
 }

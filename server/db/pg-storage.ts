@@ -230,6 +230,24 @@ export class PgStorage implements IStorage {
     return result[0];
   }
 
+  /**
+   * Remove uma atividade do sistema
+   * @param id ID da atividade a ser removida
+   * @returns Indicação de sucesso da operação
+   */
+  async deleteActivity(id: number): Promise<boolean> {
+    try {
+      const result = await this.db
+        .delete(activities)
+        .where(eq(activities.id, id))
+        .returning({ id: activities.id });
+      return result.length > 0;
+    } catch (error) {
+      console.error(`Erro ao excluir atividade #${id}:`, error);
+      return false;
+    }
+  }
+
   // Statistics methods
   async getTotalRevenue(startDate?: Date, endDate?: Date): Promise<number> {
     let query = this.db
@@ -512,27 +530,43 @@ export class PgStorage implements IStorage {
   // Método para obter atividades de manutenção por propriedade no período
   async getMaintenanceActivities(propertyId: number, startDate: Date, endDate: Date): Promise<any[]> {
     try {
-      // Consultar atividades de tipo 'maintenance_requested' para a propriedade no período
-      const query = `
-        SELECT a.*, CAST(COALESCE(
-          (SELECT value FROM jsonb_each_text(a.description::jsonb) WHERE key = 'cost'),
-          '0'
-        ) AS DECIMAL) AS maintenance_cost
-        FROM activities a
-        WHERE a.type = 'maintenance_requested'
-        AND a.entity_type = 'property'
-        AND a.entity_id = $1
-        AND a.created_at BETWEEN $2 AND $3
+      // Usar SQL bruto para evitar problemas de tipagem
+      const query = sql`
+        SELECT 
+          id, 
+          description, 
+          created_at, 
+          type, 
+          entity_type, 
+          entity_id 
+        FROM activities 
+        WHERE 
+          type = 'maintenance_requested' AND 
+          entity_type = 'property' AND 
+          entity_id = ${propertyId} AND 
+          created_at BETWEEN ${startDate.toISOString()} AND ${endDate.toISOString()}
       `;
       
-      const result = await this.db.query(query, [propertyId, startDate.toISOString(), endDate.toISOString()]);
+      const result = await this.db.execute(query);
       
-      return result.rows.map(row => ({
-        id: row.id,
-        description: row.description,
-        createdAt: row.created_at,
-        maintenanceCost: Number(row.maintenance_cost) || 0
-      }));
+      return result.map(row => {
+        // Tentar extrair o custo da manutenção da descrição
+        let maintenanceCost = 0;
+        try {
+          const descObj = typeof row.description === 'string' ? 
+            JSON.parse(row.description) : row.description;
+          maintenanceCost = Number(descObj?.cost || 0);
+        } catch (e) {
+          // Se não for um JSON válido, manter o custo como 0
+        }
+        
+        return {
+          id: row.id,
+          description: row.description,
+          createdAt: row.created_at,
+          maintenanceCost
+        };
+      });
     } catch (error) {
       console.error(`Erro ao obter atividades de manutenção para propriedade ${propertyId}:`, error);
       return [];
@@ -1004,13 +1038,13 @@ export class PgStorage implements IStorage {
    */
   async createMaintenanceTask(task: InsertMaintenanceTask): Promise<MaintenanceTask> {
     try {
-      // Formatar as datas se estiverem em string
+      // Formatar as datas se estiverem em formato Date
       const formattedTask = {
         ...task,
-        reportedAt: typeof task.reportedAt === 'string' ? task.reportedAt : task.reportedAt,
-        dueDate: typeof task.dueDate === 'string' ? task.dueDate : task.dueDate,
+        reportedAt: task.reportedAt instanceof Date ? task.reportedAt.toISOString().split('T')[0] : task.reportedAt,
+        dueDate: task.dueDate instanceof Date ? task.dueDate.toISOString().split('T')[0] : task.dueDate,
         completedAt: task.completedAt ? 
-          (typeof task.completedAt === 'string' ? task.completedAt : task.completedAt) : 
+          (task.completedAt instanceof Date ? task.completedAt.toISOString().split('T')[0] : task.completedAt) : 
           null
       };
 
@@ -1055,16 +1089,16 @@ export class PgStorage implements IStorage {
         return undefined;
       }
 
-      // Formatar as datas se estiverem em string
+      // Formatar as datas se estiverem em formato Date
       const updateData = { ...task };
-      if (updateData.reportedAt && typeof updateData.reportedAt === 'string') {
-        updateData.reportedAt = updateData.reportedAt;
+      if (updateData.reportedAt && updateData.reportedAt instanceof Date) {
+        updateData.reportedAt = updateData.reportedAt.toISOString().split('T')[0];
       }
-      if (updateData.dueDate && typeof updateData.dueDate === 'string') {
-        updateData.dueDate = updateData.dueDate;
+      if (updateData.dueDate && updateData.dueDate instanceof Date) {
+        updateData.dueDate = updateData.dueDate.toISOString().split('T')[0];
       }
-      if (updateData.completedAt && typeof updateData.completedAt === 'string') {
-        updateData.completedAt = updateData.completedAt;
+      if (updateData.completedAt && updateData.completedAt instanceof Date) {
+        updateData.completedAt = updateData.completedAt.toISOString().split('T')[0];
       }
 
       // Atualizar o campo updatedAt para a data atual

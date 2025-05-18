@@ -3,13 +3,75 @@ import 'dotenv/config';
 
 /* ─── Imports do servidor ────────────────────────────── */
 import express, { Request, Response, NextFunction } from 'express';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import pino from 'pino';
+import pinoHttp from 'pino-http';
 import { registerRoutes } from './routes';
 import { setupVite, serveStatic, log } from './vite';
 
-/* ─── Inicialização da app ───────────────────────────── */
+/* ─── Inicialização da app ─────────────────────────── */
 console.log('Inicializando aplicação…');
 const app = express();
 export { app };
+
+/* ─── Configuração de segurança ───────────────────── */
+// Helmet para proteção de headers HTTP
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "blob:"],
+      connectSrc: ["'self'", "https://*"],
+    },
+  },
+  crossOriginEmbedderPolicy: false,
+}));
+
+// Rate limiting para proteção contra ataques de força bruta
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // limite de 100 requisições por janela
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Demasiadas requisições, por favor tente novamente mais tarde.' }
+});
+
+// Aplicar rate limiting apenas às rotas da API
+app.use('/api/', apiLimiter);
+
+// Configurar Pino para logs em formato JSON
+const logger = pino({
+  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+  transport: process.env.NODE_ENV !== 'production' ? {
+    target: 'pino-pretty',
+    options: {
+      colorize: true,
+      translateTime: 'SYS:dd-mm-yyyy HH:MM:ss',
+      ignore: 'pid,hostname',
+    }
+  } : undefined,
+});
+
+// Middleware de logging HTTP com Pino
+app.use(pinoHttp({
+  logger,
+  customLogLevel: function (req, res, err) {
+    if (res.statusCode >= 400 && res.statusCode < 500) return 'warn';
+    if (res.statusCode >= 500 || err) return 'error';
+    if (req.method === 'POST') return 'info';
+    return 'debug';
+  },
+  // Excluir headers sensíveis dos logs
+  redact: {
+    paths: ['req.headers.authorization', 'req.headers.cookie'],
+    remove: true
+  }
+}));
+
+// Parsers para JSON e formulários
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -25,9 +87,9 @@ app.use((req, res, next) => {
   let captured: any;
 
   const originalJson = res.json;
-  res.json = function (body, ...args) {
+  res.json = function (body: any) {
     captured = body;
-    return originalJson.apply(res, [body, ...args]);
+    return originalJson.call(this, body);
   };
 
   res.on('finish', () => {
