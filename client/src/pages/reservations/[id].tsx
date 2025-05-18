@@ -120,6 +120,11 @@ export default function ReservationDetailPage() {
                   <div>
                     <h3 className="text-sm font-medium text-secondary-700">Hóspede</h3>
                     <p className="text-secondary-900">{reservation.guestName}</p>
+                    {reservation.country && (
+                      <p className="text-sm text-secondary-500">
+                        <span className="text-secondary-700">País:</span> {reservation.country}
+                      </p>
+                    )}
                     {reservation.guestEmail && (
                       <p className="text-sm text-secondary-500">
                         <a href={`mailto:${reservation.guestEmail}`} className="text-primary-600 hover:underline">
@@ -132,6 +137,11 @@ export default function ReservationDetailPage() {
                         <a href={`tel:${reservation.guestPhone}`} className="text-primary-600 hover:underline">
                           {reservation.guestPhone}
                         </a>
+                      </p>
+                    )}
+                    {reservation.reference && (
+                      <p className="text-sm text-secondary-500">
+                        <span className="text-secondary-700">Ref:</span> {reservation.reference}
                       </p>
                     )}
                   </div>
@@ -148,7 +158,12 @@ export default function ReservationDetailPage() {
                       Check-out: {formatDate(reservation.checkOutDate)}
                     </p>
                     <p className="text-sm text-secondary-500">
-                      {nights} {nights === 1 ? 'noite' : 'noites'}, {reservation.numGuests} {reservation.numGuests === 1 ? 'hóspede' : 'hóspedes'}
+                      {nights} {nights === 1 ? 'noite' : 'noites'}
+                    </p>
+                    <p className="text-sm text-secondary-500">
+                      {reservation.numGuests} {reservation.numGuests === 1 ? 'hóspede' : 'hóspedes'} total
+                      {reservation.numAdults ? ` (${reservation.numAdults} adulto${reservation.numAdults !== 1 ? 's' : ''})` : ''}
+                      {reservation.numChildren ? ` + ${reservation.numChildren} criança${reservation.numChildren !== 1 ? 's' : ''}` : ''}
                     </p>
                   </div>
                 </div>
