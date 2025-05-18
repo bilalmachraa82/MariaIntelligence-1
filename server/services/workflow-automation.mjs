@@ -246,7 +246,7 @@ async function calculateOwnerInvoice(ownerId, startDate, endDate) {
   }
 }
 
-module.exports = {
+export {
   updateReservationStatuses,
   scheduleCleanings,
   calculateOwnerInvoice
