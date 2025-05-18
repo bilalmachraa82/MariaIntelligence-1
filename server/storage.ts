@@ -1824,24 +1824,17 @@ export class DatabaseStorage implements IStorage {
   async getReservations(): Promise<Reservation[]> {
     if (!db) return [];
     try {
-      // Calcular data mínima (hoje + 3 dias)
-      const today = new Date();
-      const minDate = new Date();
-      minDate.setDate(today.getDate() + 3);
-      const minDateStr = minDate.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+      console.log(`Buscando todas as reservas (incluindo passadas e atuais)`);
       
-      console.log(`Buscando reservas a partir de ${minDateStr} (hoje + 3 dias)`);
-      
-      // Abordagem alternativa com SQL direto via pool de conexão para evitar problemas com o Drizzle ORM
+      // Abordagem com SQL direto via pool de conexão para evitar problemas com o Drizzle ORM
       if (this.poolInstance) {
         const query = `
           SELECT * FROM reservations 
-          WHERE check_in_date >= $1::DATE
-          ORDER BY created_at DESC
+          ORDER BY check_in_date DESC
         `;
         
-        const result = await this.poolInstance.query(query, [minDateStr]);
-        console.log(`Encontradas ${result.rows.length} reservas futuras a partir de ${minDateStr}`);
+        const result = await this.poolInstance.query(query);
+        console.log(`Encontradas ${result.rows.length} reservas no total`);
         
         // Mapear resultado para o formato esperado pelo sistema
         return result.rows.map(row => ({
