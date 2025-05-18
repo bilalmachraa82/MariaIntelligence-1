@@ -343,7 +343,7 @@ export async function processPDFWithOCR(
     formData.append("useCache", useCache ? "true" : "false");
     
     // Enviar para o endpoint atualizado de OCR
-    const response = await fetch('/api/ocr/process', { // Alterada a URL da API
+    const response = await fetch('/api/ocr', { // Usando a rota unificada para OCR
       method: 'POST',
       body: formData
     });

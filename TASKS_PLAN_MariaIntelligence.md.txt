@@ -1,0 +1,30 @@
+# Plano de Trabalho MariaIntelligence‑1
+
+## Objetivo geral
+
+Entregar um Pull Request que compila sem erros, cobre ≥ 80 % nos testes e gera uma imagem Docker pronta para produção.
+
+## To‑Do prioritário
+
+1. **Rotas Express** – corrigir vírgulas faltantes e duplicação; ajustar override `res.json`.
+2. **PgStorage** – implementar métodos em falta e criar testes unitários.
+3. **OCR unificado** – usar apenas `POST /api/ocr`; remover chamadas legacy no front‑end.
+4. **Datas** – alinhar Date/string em Drizzle + Zod (`z.coerce.date()`).
+5. **i18n** – preencher chaves PT‑PT / EN‑US; script falha build se `missingKey`.
+6. **CI/CD** – GitHub Actions: lint ➜ typecheck ➜ test ➜ build ➜ docker push.
+7. **Docker** – multi‑stage; expor `PORT=5000`; compose opcional para Postgres.
+8. **Segurança & Logs** – Helmet, rate‑limit, Pino JSON + rota `/health`.
+9. **Documentação** – atualizar README e criar `docs/api.md` com exemplos *curl*.
+10. **Performance & Indexes** – optimizar queries e criar índices nos campos mais consultados.
+11. **Testes Front‑end** – React Testing Library + Vitest para componentes críticos.
+12. **Code Style** – garantir ESLint + Prettier no CI; script `pnpm format`.
+
+## Feito
+
+* Removido `server.listen` duplicado.
+* Implementadas rotas `/api/activities`, `/api/reservations/dashboard`, `/api/ocr`, `/api/statistics`.
+
+## Observações
+
+* Não adicionar dependências runtime novas; apenas dev‑deps se necessário.
+* Comentários e docs sempre em português de Portugal.

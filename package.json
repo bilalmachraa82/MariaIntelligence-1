@@ -10,7 +10,9 @@
     "check": "tsc",
     "db:push": "drizzle-kit push",
     "test": "jest",
-    "e2e": "playwright test"
+    "test:coverage": "jest --coverage",
+    "e2e": "playwright test",
+    "lint": "eslint . --ext .ts,.tsx"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.37.0",
@@ -78,10 +80,12 @@
     "drizzle-zod": "^0.7.0",
     "embla-carousel-react": "^8.3.0",
     "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
     "express-session": "^1.18.1",
     "file-saver": "^2.0.5",
     "form-data": "^4.0.2",
     "framer-motion": "^11.18.2",
+    "helmet": "^8.1.0",
     "i18next": "^24.2.2",
     "i18next-browser-languagedetector": "^8.0.4",
     "input-otp": "^1.2.4",
@@ -101,6 +105,8 @@
     "pdfjs-dist": "^5.2.133",
     "pg": "^8.14.0",
     "pgvector": "^0.2.0",
+    "pino": "^9.6.0",
+    "pino-http": "^10.4.0",
     "postgres": "^3.4.5",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",

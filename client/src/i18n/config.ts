@@ -36,7 +36,18 @@ i18n
     // Garantir que as chaves de dashboard sejam corretamente acessadas
     keySeparator: '.',
     parseMissingKeyHandler: (key) => {
-      console.warn(`Chave de tradução faltando: ${key}`);
+      // Em ambiente de produção, registar erro para monitorização
+      if (process.env.NODE_ENV === 'production') {
+        console.error(`ERRO CRÍTICO: Chave de tradução em falta: ${key}`);
+        // Em produção, lançar erro para falhar o build se configurado
+        if (process.env.FAIL_ON_MISSING_TRANSLATION === 'true') {
+          throw new Error(`Chave de tradução em falta: ${key}`);
+        }
+      } else {
+        // Em desenvolvimento, apenas avisar
+        console.warn(`Chave de tradução em falta: ${key}`);
+      }
+      
       // Extrair valor padrão (texto após a última vírgula)
       const parts = key.split(',');
       if (parts.length > 1) {
@@ -48,12 +59,15 @@ i18n
 
 // Adicionar alguns registros para debug
 console.log('i18n inicializado com os seguintes recursos:', 
-  Object.keys(resources).map(lang => ({
-    lang,
-    hasTranslation: !!resources[lang],
-    dashboardKeys: resources[lang]?.translation?.dashboard ? 
-      Object.keys(resources[lang].translation.dashboard) : []
-  }))
+  Object.keys(resources).map(lang => {
+    const resourceLang = lang as keyof typeof resources;
+    return {
+      lang,
+      hasTranslation: !!resources[resourceLang],
+      dashboardKeys: resources[resourceLang]?.translation?.dashboard ? 
+        Object.keys(resources[resourceLang].translation.dashboard) : []
+    };
+  })
 );
 
 export default i18n;

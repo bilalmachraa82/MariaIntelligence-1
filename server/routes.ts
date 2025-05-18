@@ -779,9 +779,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // const ragService = new RAGService(); // Já definido globalmente
   // Use the enhanced RAG service for additional capabilities
 
-  app.post("/api/ocr", pdfUpload.single('pdf'), ocrController.postOcr);
-  app.post("/api/ocr/process", anyFileUpload.single('file'), ocrController.processOCR);
-  app.post("/api/ocr/process/:service", anyFileUpload.single('file'), ocrController.processWithService);
+  app.post("/api/ocr", pdfUpload.single('pdf'), (req: Request, res: Response) => {
+    try {
+      ocrController.postOcr(req, res);
+    } catch (error) {
+      handleError(error, res);
+    }
+  });
+  // Rota legada substituída pela rota unificada /api/ocr
+  app.post("/api/ocr/process", anyFileUpload.single('file'), (req: Request, res: Response) => {
+    try {
+      ocrController.postOcr(req, res);
+    } catch (error) {
+      handleError(error, res);
+    }
+  });
+  // Rota legada substituída pela rota unificada /api/ocr
+  app.post("/api/ocr/process/:service", anyFileUpload.single('file'), (req: Request, res: Response) => {
+    try {
+      // Passar o parâmetro service como query parameter
+      req.query.provider = req.params.service;
+      ocrController.postOcr(req, res);
+    } catch (error) {
+      handleError(error, res);
+    }
+  });
   app.post("/api/budgets/estimate", budgetController.estimate);
 
   app.post("/api/pdf/process-pair", pdfUpload.array('pdfs', 2), async (req: Request, res: Response) => {
@@ -1273,9 +1295,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Rota unificada para OCR - processa PDFs enviados e extrai dados de reserva
   // Suporta seleção de serviço via query parameter ?provider=mistral|rolm|native|auto
-  app.post("/api/ocr", pdfUpload.single("pdf"), async (req: Request, res: Response) => {
+  app.post("/api/ocr", pdfUpload.single("pdf"), (req: Request, res: Response) => {
     try {
-      await ocrController.postOcr(req, res);
+      ocrController.postOcr(req, res);
     } catch (error) {
       handleError(error, res);
     }
