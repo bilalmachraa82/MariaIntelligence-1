@@ -802,85 +802,194 @@ export default function ReportsPage() {
               <CardDescription>Próximos check-ins, check-outs e limpezas</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium">Hoje, {new Date().toLocaleDateString('pt-PT', { day: 'numeric', month: 'long' })}</h4>
-                  
-                  <div className="relative pl-6 border-l border-dashed border-secondary-200 pb-4">
-                    <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-green-500"></div>
-                    <div className="flex justify-between">
-                      <div>
-                        <p className="font-medium">Check-in: Apartamento Ajuda</p>
-                        <p className="text-sm text-muted-foreground">Maria Silva (2 adultos, 1 criança)</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium">14:00</p>
-                        <p className="text-sm text-green-600">Confirmado</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="relative pl-6 border-l border-dashed border-secondary-200 pb-4">
-                    <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-blue-500"></div>
-                    <div className="flex justify-between">
-                      <div>
-                        <p className="font-medium">Check-out: Apartamento Belém</p>
-                        <p className="text-sm text-muted-foreground">Carlos Mendes (2 adultos)</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium">11:00</p>
-                        <p className="text-sm text-blue-600">Concluído</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="relative pl-6 border-l border-dashed border-secondary-200">
-                    <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-purple-500"></div>
-                    <div className="flex justify-between">
-                      <div>
-                        <p className="font-medium">Limpeza: Apartamento Belém</p>
-                        <p className="text-sm text-muted-foreground">Equipa Limpezas Express</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium">12:30</p>
-                        <p className="text-sm text-purple-600">Em andamento</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              {(() => {
+                // Usar o hook useQuery para buscar os dados do dashboard
+                const { data: dashboardData, isLoading, error } = useQuery({
+                  queryKey: ['/api/reservations/dashboard'],
+                  retry: 1,
+                });
                 
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium">Amanhã, {new Date(Date.now() + 86400000).toLocaleDateString('pt-PT', { day: 'numeric', month: 'long' })}</h4>
-                  
-                  <div className="relative pl-6 border-l border-dashed border-secondary-200 pb-4">
-                    <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-green-500"></div>
-                    <div className="flex justify-between">
-                      <div>
-                        <p className="font-medium">Check-in: Apartamento Cascais</p>
-                        <p className="text-sm text-muted-foreground">João Pereira (2 adultos)</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium">15:00</p>
-                        <p className="text-sm text-yellow-600">Pendente</p>
-                      </div>
+                if (isLoading) {
+                  return (
+                    <div className="flex justify-center items-center py-8">
+                      <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                     </div>
-                  </div>
-                  
-                  <div className="relative pl-6 border-l border-dashed border-secondary-200">
-                    <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-purple-500"></div>
-                    <div className="flex justify-between">
-                      <div>
-                        <p className="font-medium">Limpeza: Apartamento Alfama</p>
-                        <p className="text-sm text-muted-foreground">Equipa CleanHome</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium">10:00</p>
-                        <p className="text-sm text-yellow-600">Pendente</p>
-                      </div>
+                  );
+                }
+                
+                if (error) {
+                  return (
+                    <Alert variant="destructive" className="my-4">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertTitle>Erro</AlertTitle>
+                      <AlertDescription>
+                        Não foi possível carregar as atividades agendadas.
+                      </AlertDescription>
+                    </Alert>
+                  );
+                }
+                
+                // Dados do dashboard (check-ins, check-outs, limpezas)
+                const { checkIns = [], checkOuts = [], cleanings = [] } = dashboardData || {};
+                
+                const today = new Date();
+                const tomorrow = new Date(Date.now() + 86400000);
+                
+                // Formatadores de data
+                const formatDay = (date: Date) => date.toLocaleDateString('pt-PT', { day: 'numeric', month: 'long' });
+                const todayLabel = formatDay(today);
+                const tomorrowLabel = formatDay(tomorrow);
+                
+                // Filtrar atividades de hoje
+                const todayCheckIns = checkIns.filter((item: any) => new Date(item.checkInDate).toDateString() === today.toDateString());
+                const todayCheckOuts = checkOuts.filter((item: any) => new Date(item.checkOutDate).toDateString() === today.toDateString());
+                const todayCleanings = cleanings.filter((item: any) => new Date(item.scheduledDate).toDateString() === today.toDateString());
+                
+                // Filtrar atividades de amanhã
+                const tomorrowCheckIns = checkIns.filter((item: any) => new Date(item.checkInDate).toDateString() === tomorrow.toDateString());
+                const tomorrowCheckOuts = checkOuts.filter((item: any) => new Date(item.checkOutDate).toDateString() === tomorrow.toDateString());
+                const tomorrowCleanings = cleanings.filter((item: any) => new Date(item.scheduledDate).toDateString() === tomorrow.toDateString());
+                
+                // Verificar se há atividades hoje ou amanhã
+                const hasTodayActivities = todayCheckIns.length > 0 || todayCheckOuts.length > 0 || todayCleanings.length > 0;
+                const hasTomorrowActivities = tomorrowCheckIns.length > 0 || tomorrowCheckOuts.length > 0 || tomorrowCleanings.length > 0;
+                
+                if (!hasTodayActivities && !hasTomorrowActivities) {
+                  return (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Calendar className="h-12 w-12 mx-auto mb-3 text-muted-foreground/50" />
+                      <p className="text-sm">Não há atividades agendadas para hoje ou amanhã.</p>
                     </div>
+                  );
+                }
+                
+                return (
+                  <div className="space-y-4">
+                    {hasTodayActivities && (
+                      <div className="space-y-3">
+                        <h4 className="text-sm font-medium">Hoje, {todayLabel}</h4>
+                        
+                        {todayCheckIns.map((checkIn: any, index: number) => (
+                          <div key={`checkin-${checkIn.id}-${index}`} className="relative pl-6 border-l border-dashed border-secondary-200 pb-4">
+                            <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-green-500"></div>
+                            <div className="flex justify-between">
+                              <div>
+                                <p className="font-medium">Check-in: {checkIn.propertyName}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {checkIn.guestName} ({checkIn.adults} adultos{checkIn.children > 0 && `, ${checkIn.children} criança${checkIn.children > 1 ? 's' : ''}`})
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <p className="font-medium">{new Date(checkIn.checkInDate).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }) || '14:00'}</p>
+                                <p className="text-sm text-green-600">{checkIn.status === 'confirmed' ? 'Confirmado' : 'Pendente'}</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                        
+                        {todayCheckOuts.map((checkOut: any, index: number) => (
+                          <div key={`checkout-${checkOut.id}-${index}`} className="relative pl-6 border-l border-dashed border-secondary-200 pb-4">
+                            <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-blue-500"></div>
+                            <div className="flex justify-between">
+                              <div>
+                                <p className="font-medium">Check-out: {checkOut.propertyName}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {checkOut.guestName} ({checkOut.adults} adultos{checkOut.children > 0 && `, ${checkOut.children} criança${checkOut.children > 1 ? 's' : ''}`})
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <p className="font-medium">{new Date(checkOut.checkOutDate).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }) || '11:00'}</p>
+                                <p className="text-sm text-blue-600">{checkOut.status === 'completed' ? 'Concluído' : 'Pendente'}</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                        
+                        {todayCleanings.map((cleaning: any, index: number) => (
+                          <div key={`cleaning-${cleaning.id}-${index}`} className="relative pl-6 border-l border-dashed border-secondary-200 pb-4">
+                            <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-purple-500"></div>
+                            <div className="flex justify-between">
+                              <div>
+                                <p className="font-medium">Limpeza: {cleaning.propertyName}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {cleaning.teamName || 'Equipe de limpeza'}
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <p className="font-medium">{new Date(cleaning.scheduledDate).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }) || '12:00'}</p>
+                                <p className="text-sm text-purple-600">
+                                  {cleaning.status === 'completed' ? 'Concluída' : 
+                                   cleaning.status === 'in-progress' ? 'Em andamento' : 'Pendente'}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {hasTomorrowActivities && (
+                      <div className="space-y-3">
+                        <h4 className="text-sm font-medium">Amanhã, {tomorrowLabel}</h4>
+                        
+                        {tomorrowCheckIns.map((checkIn: any, index: number) => (
+                          <div key={`checkin-tomorrow-${checkIn.id}-${index}`} className="relative pl-6 border-l border-dashed border-secondary-200 pb-4">
+                            <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-green-500"></div>
+                            <div className="flex justify-between">
+                              <div>
+                                <p className="font-medium">Check-in: {checkIn.propertyName}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {checkIn.guestName} ({checkIn.adults} adultos{checkIn.children > 0 && `, ${checkIn.children} criança${checkIn.children > 1 ? 's' : ''}`})
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <p className="font-medium">{new Date(checkIn.checkInDate).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }) || '14:00'}</p>
+                                <p className="text-sm text-yellow-600">Pendente</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                        
+                        {tomorrowCheckOuts.map((checkOut: any, index: number) => (
+                          <div key={`checkout-tomorrow-${checkOut.id}-${index}`} className="relative pl-6 border-l border-dashed border-secondary-200 pb-4">
+                            <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-blue-500"></div>
+                            <div className="flex justify-between">
+                              <div>
+                                <p className="font-medium">Check-out: {checkOut.propertyName}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {checkOut.guestName} ({checkOut.adults} adultos{checkOut.children > 0 && `, ${checkOut.children} criança${checkOut.children > 1 ? 's' : ''}`})
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <p className="font-medium">{new Date(checkOut.checkOutDate).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }) || '11:00'}</p>
+                                <p className="text-sm text-yellow-600">Pendente</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                        
+                        {tomorrowCleanings.map((cleaning: any, index: number) => (
+                          <div key={`cleaning-tomorrow-${cleaning.id}-${index}`} className="relative pl-6 border-l border-dashed border-secondary-200 pb-4">
+                            <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-purple-500"></div>
+                            <div className="flex justify-between">
+                              <div>
+                                <p className="font-medium">Limpeza: {cleaning.propertyName}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {cleaning.teamName || 'Equipe de limpeza'}
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <p className="font-medium">{new Date(cleaning.scheduledDate).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }) || '10:00'}</p>
+                                <p className="text-sm text-yellow-600">Pendente</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                </div>
-              </div>
+                );
+              })()}
             </CardContent>
           </Card>
         </TabsContent>
