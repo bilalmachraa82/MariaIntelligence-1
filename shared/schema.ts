@@ -88,6 +88,21 @@ export const cleaningTeams = pgTable("cleaning_teams", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Limpezas
+export const cleanings = pgTable("cleanings", {
+  id: serial("id").primaryKey(),
+  propertyId: integer("property_id").notNull(),
+  reservationId: integer("reservation_id"),
+  teamId: integer("team_id"),
+  status: text("status").notNull().default("pending"), // pending, completed, cancelled
+  scheduledDate: text("scheduled_date").notNull(), // Formato YYYY-MM-DD
+  completedDate: text("completed_date"), // Formato YYYY-MM-DD
+  notes: text("notes"),
+  type: text("type").notNull().default("standard"), // standard, deep, pre-checkin, post-checkout
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Tarefas de Manutenção
 export const maintenanceTasks = pgTable("maintenance_tasks", {
   id: serial("id").primaryKey(),
@@ -216,17 +231,19 @@ export const propertiesRelations = relations(properties, ({ one, many }) => ({
   }),
   reservations: many(reservations),
   maintenanceTasks: many(maintenanceTasks),
+  cleanings: many(cleanings),
 }));
 
 export const ownersRelations = relations(owners, ({ many }) => ({
   properties: many(properties),
 }));
 
-export const reservationsRelations = relations(reservations, ({ one }) => ({
+export const reservationsRelations = relations(reservations, ({ one, many }) => ({
   property: one(properties, {
     fields: [reservations.propertyId],
     references: [properties.id],
   }),
+  cleanings: many(cleanings)
 }));
 
 export const maintenanceTasksRelations = relations(maintenanceTasks, ({ one }) => ({
@@ -248,6 +265,17 @@ export const financialDocumentItemsRelations = relations(financialDocumentItems,
   }),
 }));
 
+export const cleaningsRelations = relations(cleanings, ({ one }) => ({
+  property: one(properties, {
+    fields: [cleanings.propertyId],
+    references: [properties.id],
+  }),
+  reservation: one(reservations, {
+    fields: [cleanings.reservationId],
+    references: [reservations.id],
+  }),
+}));
+
 export const paymentRecordsRelations = relations(paymentRecords, ({ one }) => ({
   document: one(financialDocuments, {
     fields: [paymentRecords.documentId],
@@ -261,6 +289,7 @@ export const insertOwnerSchema = createInsertSchema(owners).omit({ id: true });
 export const insertReservationSchema = createInsertSchema(reservations).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertActivitySchema = createInsertSchema(activities).omit({ id: true, createdAt: true });
 export const insertCleaningTeamSchema = createInsertSchema(cleaningTeams).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertCleaningSchema = createInsertSchema(cleanings).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertMaintenanceTaskSchema = createInsertSchema(maintenanceTasks).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertFinancialDocumentSchema = createInsertSchema(financialDocuments).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertFinancialDocumentItemSchema = createInsertSchema(financialDocumentItems).omit({ id: true, createdAt: true });
@@ -331,6 +360,7 @@ export type InsertConversationHistory = z.infer<typeof insertConversationHistory
 export type Property = typeof properties.$inferSelect;
 export type Owner = typeof owners.$inferSelect;
 export type Reservation = typeof reservations.$inferSelect;
+export type Cleaning = typeof cleanings.$inferSelect;
 export type Activity = typeof activities.$inferSelect;
 export type CleaningTeam = typeof cleaningTeams.$inferSelect;
 export type MaintenanceTask = typeof maintenanceTasks.$inferSelect;
