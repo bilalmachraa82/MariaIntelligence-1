@@ -3,10 +3,10 @@
  * Gerencia endpoints para automação de status de reservas, agendamento de limpezas e faturamento
  */
 
-const { updateReservationStatuses, scheduleCleanings, calculateOwnerInvoice } = require('../services/workflow-automation');
-const { db } = require('../db');
-const { properties, owners } = require('@shared/schema');
-const { eq } = require('drizzle-orm');
+import { updateReservationStatuses, scheduleCleanings, calculateOwnerInvoice } from '../services/workflow-automation.js';
+import { db } from '../db.js';
+import { properties, owners } from '@shared/schema.js';
+import { eq, and, gte, lte } from 'drizzle-orm';
 
 /**
  * Executa atualização de status de reservas e agendamento de limpezas
@@ -189,7 +189,7 @@ async function getPropertyManagementView(req, res) {
   }
 }
 
-module.exports = {
+export {
   runAutomations,
   generateOwnerInvoice,
   getPropertyManagementView

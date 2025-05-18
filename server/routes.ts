@@ -3983,6 +3983,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Rota para resetar/limpar dados de demonstração
   app.post("/api/demo/reset", resetDemoDataHandler);
 
+  // Rotas de automação de sistema
+  app.post("/api/automation/run", async (req: Request, res: Response) => {
+    try {
+      // @ts-ignore - Ignorando erro de tipagem temporário
+      await automationController.runAutomations(req, res);
+    } catch (error) {
+      handleError(error, res);
+    }
+  });
+  
+  // Rota para gerar fatura para proprietário
+  app.get("/api/automation/invoice/owner/:ownerId", async (req: Request, res: Response) => {
+    try {
+      // @ts-ignore - Ignorando erro de tipagem temporário
+      await automationController.generateOwnerInvoice(req, res);
+    } catch (error) {
+      handleError(error, res);
+    }
+  });
+  
+  // Rota para obter visão de gerenciamento de propriedades com reservas e limpezas
+  app.get("/api/automation/property-management", async (req: Request, res: Response) => {
+    try {
+      // @ts-ignore - Ignorando erro de tipagem temporário
+      await automationController.getPropertyManagementView(req, res);
+    } catch (error) {
+      handleError(error, res);
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

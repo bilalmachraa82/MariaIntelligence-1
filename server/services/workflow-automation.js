@@ -3,9 +3,9 @@
  * Gerencia a automação de status, agendamento de limpezas e cálculos de faturamento
  */
 
-const { db } = require('../db');
-const { reservations, maintenanceTasks } = require('@shared/schema');
-const { eq, and, gte, lte } = require('drizzle-orm');
+import { db } from '../db.js';
+import { reservations, maintenanceTasks } from '@shared/schema.js';
+import { eq, and, gte, lte } from 'drizzle-orm';
 
 /**
  * Atualiza automaticamente o status das reservas com base nas datas
