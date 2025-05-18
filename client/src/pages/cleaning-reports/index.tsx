@@ -483,39 +483,79 @@ export default function CleaningReportsPage() {
         </TabsContent>
         
         <TabsContent value="payments" className="space-y-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle>{t("cleaningReports.teamPayments", "Pagamentos por Equipa")}</CardTitle>
+          <Card className="border-t-4 border-t-purple-500 shadow-lg overflow-hidden">
+            <CardHeader className="pb-2 bg-gradient-to-r from-purple-50 to-slate-50 border-b">
+              <CardTitle className="flex items-center text-purple-700">
+                <DollarSign className="h-5 w-5 mr-2 text-purple-500" />
+                {"Pagamentos por Equipa"}
+              </CardTitle>
               <CardDescription>
-                {t("cleaningReports.paymentsDescription", "Resumo dos pagamentos por equipa")}
+                {"Resumo dos pagamentos por equipa"}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-0">
               <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{t("cleaningReports.team", "Equipa")}</TableHead>
-                    <TableHead>{t("cleaningReports.pendingAmount", "Valor Pendente")}</TableHead>
-                    <TableHead>{t("cleaningReports.paidAmount", "Valor Pago")}</TableHead>
-                    <TableHead>{t("cleaningReports.totalAmount", "Total")}</TableHead>
+                <TableHeader className="bg-slate-100">
+                  <TableRow className="hover:bg-slate-100">
+                    <TableHead className="font-semibold text-slate-700">{"Equipa"}</TableHead>
+                    <TableHead className="font-semibold text-slate-700">{"Valor Pendente"}</TableHead>
+                    <TableHead className="font-semibold text-slate-700">{"Valor Pago"}</TableHead>
+                    <TableHead className="font-semibold text-slate-700">{"Total"}</TableHead>
+                    <TableHead className="font-semibold text-slate-700">{"Percentual"}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {paymentSummaryByTeam.map((team) => (
-                    <TableRow key={team.teamId}>
-                      <TableCell className="font-medium">{team.teamName}</TableCell>
-                      <TableCell className="text-purple-600 font-medium">{team.totalPending}€</TableCell>
-                      <TableCell className="text-blue-600 font-medium">{team.totalPaid}€</TableCell>
-                      <TableCell className="font-bold">{team.total}€</TableCell>
+                  {paymentSummaryByTeam.map((team, index) => (
+                    <TableRow key={team.teamId} className={index % 2 === 0 ? "bg-slate-50" : ""}>
+                      <TableCell className="font-medium text-slate-800 border-l-4 border-l-purple-300">{team.teamName}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center">
+                          <AlertTriangle className="h-4 w-4 mr-1 text-amber-500" />
+                          <span className="text-purple-600 font-medium">{team.totalPending}€</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center">
+                          <CheckCircle className="h-4 w-4 mr-1 text-green-500" />
+                          <span className="text-blue-600 font-medium">{team.totalPaid}€</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-bold text-slate-800">{team.total}€</TableCell>
+                      <TableCell>
+                        {team.total > 0 && (
+                          <div className="flex items-center gap-2">
+                            <div className="w-16 h-3 rounded-full bg-slate-200 overflow-hidden">
+                              <div 
+                                className="h-full bg-gradient-to-r from-blue-500 to-purple-500"
+                                style={{ width: `${Math.round((team.total / totalPaymentAmount) * 100)}%` }}
+                              />
+                            </div>
+                            <span className="text-xs font-medium">
+                              {Math.round((team.total / totalPaymentAmount) * 100)}%
+                            </span>
+                          </div>
+                        )}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead>{t("cleaningReports.totals", "Totais")}</TableHead>
-                    <TableHead className="text-purple-600 font-medium">{totalPendingAmount}€</TableHead>
-                    <TableHead className="text-blue-600 font-medium">{totalPaidAmount}€</TableHead>
-                    <TableHead className="font-bold">{totalPaymentAmount}€</TableHead>
+                  <TableRow className="bg-gradient-to-r from-slate-100 to-slate-200 hover:bg-slate-200">
+                    <TableHead className="font-bold text-slate-800">{"Totais"}</TableHead>
+                    <TableHead>
+                      <div className="flex items-center">
+                        <AlertTriangle className="h-4 w-4 mr-1 text-amber-500" />
+                        <span className="text-purple-600 font-medium">{totalPendingAmount}€</span>
+                      </div>
+                    </TableHead>
+                    <TableHead>
+                      <div className="flex items-center">
+                        <CheckCircle className="h-4 w-4 mr-1 text-green-500" />
+                        <span className="text-blue-600 font-medium">{totalPaidAmount}€</span>
+                      </div>
+                    </TableHead>
+                    <TableHead className="font-bold text-lg">{totalPaymentAmount}€</TableHead>
+                    <TableHead className="font-bold">100%</TableHead>
                   </TableRow>
                 </TableHeader>
               </Table>
@@ -524,29 +564,32 @@ export default function CleaningReportsPage() {
         </TabsContent>
         
         <TabsContent value="dueDates" className="space-y-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle>{t("cleaningReports.upcomingPayments", "Pagamentos Próximos")}</CardTitle>
+          <Card className="border-t-4 border-t-amber-500 shadow-lg overflow-hidden">
+            <CardHeader className="pb-2 bg-gradient-to-r from-amber-50 to-slate-50 border-b">
+              <CardTitle className="flex items-center text-amber-700">
+                <BellRing className="h-5 w-5 mr-2 text-amber-500" />
+                {"Pagamentos Próximos"}
+              </CardTitle>
               <CardDescription>
-                {t("cleaningReports.upcomingPaymentsDescription", "Pagamentos com vencimento nos próximos dias")}
+                {"Pagamentos com vencimento nos próximos dias"}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-0">
               <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{t("cleaningReports.dueDate", "Data de Vencimento")}</TableHead>
-                    <TableHead>{t("cleaningReports.team", "Equipa")}</TableHead>
-                    <TableHead>{t("cleaningReports.property", "Propriedade")}</TableHead>
-                    <TableHead>{t("cleaningReports.amount", "Valor")}</TableHead>
-                    <TableHead>{t("cleaningReports.actions", "Ações")}</TableHead>
+                <TableHeader className="bg-slate-100">
+                  <TableRow className="hover:bg-slate-100">
+                    <TableHead className="font-semibold text-slate-700">{"Data de Vencimento"}</TableHead>
+                    <TableHead className="font-semibold text-slate-700">{"Equipa"}</TableHead>
+                    <TableHead className="font-semibold text-slate-700">{"Propriedade"}</TableHead>
+                    <TableHead className="font-semibold text-slate-700">{"Valor"}</TableHead>
+                    <TableHead className="font-semibold text-slate-700">{"Ações"}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredReports
                     .filter(r => r.paymentStatus === "pending")
                     .sort((a, b) => new Date(a.paymentDueDate).getTime() - new Date(b.paymentDueDate).getTime())
-                    .map((report) => {
+                    .map((report, index) => {
                       const dueDate = new Date(report.paymentDueDate);
                       const today = new Date();
                       const diffDays = Math.round((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
@@ -554,28 +597,48 @@ export default function CleaningReportsPage() {
                       const isDueSoon = diffDays >= 0 && diffDays <= 3;
                       
                       return (
-                        <TableRow key={report.id}>
+                        <TableRow key={report.id} className={index % 2 === 0 ? "bg-slate-50" : ""}>
                           <TableCell>
                             <div className="flex items-center">
-                              <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <div className={`w-2 h-2 rounded-full mr-2 ${
+                                isPastDue ? "bg-red-500" :
+                                isDueSoon ? "bg-amber-500" : "bg-green-500"
+                              }`}></div>
+                              <Calendar className={`h-4 w-4 mr-2 ${
+                                isPastDue ? "text-red-500" :
+                                isDueSoon ? "text-amber-500" : "text-green-500"
+                              }`} />
                               <span 
                                 className={
                                   isPastDue ? "text-red-600 font-medium" :
-                                  isDueSoon ? "text-amber-600 font-medium" : ""
+                                  isDueSoon ? "text-amber-600 font-medium" : "text-slate-600"
                                 }
                               >
                                 {new Date(report.paymentDueDate).toLocaleDateString()}
-                                {isPastDue && ` (${Math.abs(diffDays)} dias de atraso)`}
-                                {isDueSoon && !isPastDue && ` (em ${diffDays} dias)`}
+                                {isPastDue && (
+                                  <span className="ml-1 inline-flex items-center text-xs px-1.5 py-0.5 rounded-full bg-red-50 text-red-600 border border-red-200">
+                                    <AlertTriangle size={10} className="mr-0.5" /> 
+                                    {Math.abs(diffDays)} dias de atraso
+                                  </span>
+                                )}
+                                {isDueSoon && !isPastDue && (
+                                  <span className="ml-1 inline-flex items-center text-xs px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-600 border border-amber-200">
+                                    <BellRing size={10} className="mr-0.5" /> 
+                                    em {diffDays} dias
+                                  </span>
+                                )}
                               </span>
                             </div>
                           </TableCell>
-                          <TableCell>{report.teamName}</TableCell>
-                          <TableCell>{report.propertyName}</TableCell>
-                          <TableCell className="font-medium">{report.paymentAmount}€</TableCell>
+                          <TableCell className="font-medium text-slate-700">{report.teamName}</TableCell>
+                          <TableCell className="text-slate-700">{report.propertyName}</TableCell>
                           <TableCell>
-                            <Button size="sm" variant="outline">
-                              {t("cleaningReports.pay", "Pagar")}
+                            <span className="text-purple-600 font-medium text-base">{report.paymentAmount}€</span>
+                          </TableCell>
+                          <TableCell>
+                            <Button size="sm" className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white border-0">
+                              <DollarSign className="h-3.5 w-3.5 mr-1" />
+                              {"Pagar"}
                             </Button>
                           </TableCell>
                         </TableRow>
@@ -585,8 +648,12 @@ export default function CleaningReportsPage() {
               </Table>
               
               {filteredReports.filter(r => r.paymentStatus === "pending").length === 0 && (
-                <div className="p-6 text-center text-muted-foreground">
-                  <p>{t("cleaningReports.noPaymentsDue", "Não há pagamentos pendentes no momento.")}</p>
+                <div className="p-8 text-center bg-slate-50">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-100 mb-4">
+                    <CheckCircle className="h-6 w-6 text-green-600" />
+                  </div>
+                  <p className="text-slate-600 font-medium">{"Não há pagamentos pendentes no momento."}</p>
+                  <p className="text-slate-500 text-sm mt-1">Todos os pagamentos estão em dia! 🎉</p>
                 </div>
               )}
             </CardContent>
