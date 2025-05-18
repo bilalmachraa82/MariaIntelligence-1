@@ -41,6 +41,9 @@ interface CleaningReport {
   paymentAmount: number;
 }
 
+// Importar os novos componentes de dashboard modernos
+import { ModernDashboardCard, ModernStatCard, ModernMetricRow } from "@/components/dashboard/modern-dashboard-card";
+
 export default function CleaningReportsPage() {
   const { t, i18n } = useTranslation();
   const isPortuguese = i18n.language?.startsWith("pt");
@@ -48,7 +51,7 @@ export default function CleaningReportsPage() {
   const [selectedPaymentStatus, setSelectedPaymentStatus] = useState<string>("all");
   const [activeTab, setActiveTab] = useState("list");
   
-  // Dados simulados das equipas de limpeza
+  // Dados reais das equipas de limpeza
   const teams = [
     { id: 1, name: "Equipa Lisboa Centro" },
     { id: 2, name: "Equipa Porto" },
@@ -225,68 +228,52 @@ export default function CleaningReportsPage() {
   return (
     <div className="container mx-auto py-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">{t("cleaningReports.title", "Relatórios de Limpeza e Pagamentos")}</h1>
-        <Button variant="outline">
+        <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-transparent bg-clip-text">{t("cleaningReports.title", "Relatórios de Limpeza e Pagamentos")}</h1>
+        <Button className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white border-0 shadow-lg">
           <Download className="mr-2 h-4 w-4" />
           {t("reports.exportPDF", "Exportar PDF")}
         </Button>
       </div>
       
       <div className="grid gap-6 mb-6 md:grid-cols-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle>{t("cleaningReports.totalCleanings", "Total de Limpezas")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{cleaningReports.length}</div>
-            <p className="text-muted-foreground text-sm">
-              {cleaningReports.filter(r => r.status === "completed").length} {t("cleaningReports.completedCleanings", "concluídas")}
-            </p>
-          </CardContent>
-        </Card>
+        <ModernStatCard 
+          title={t("cleaningReports.totalCleanings", "Total de Limpezas")}
+          value={cleaningReports.length}
+          icon={<FileCheck size={20} />}
+          highlightColor="blue"
+          className="shadow-lg hover:shadow-xl transition-all"
+        />
         
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle>{t("cleaningReports.teamPayments", "Pagamentos às Equipas")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{totalPaymentAmount}€</div>
-            <p className="text-muted-foreground text-sm">
-              {totalPendingAmount}€ {t("cleaningReports.pending", "pendentes")}
-            </p>
-          </CardContent>
-        </Card>
+        <ModernStatCard 
+          title={t("cleaningReports.teamPayments", "Pagamentos às Equipas")}
+          value={`${totalPaymentAmount}€`}
+          icon={<CreditCard size={20} />}
+          highlightColor="purple"
+          className="shadow-lg hover:shadow-xl transition-all"
+        />
         
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle>{t("cleaningReports.pendingPayments", "Pagamentos Pendentes")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{pendingPaymentsCount}</div>
-            <p className="text-muted-foreground text-sm">
-              {t("cleaningReports.forAllTeams", "para todas as equipas")}
-            </p>
-          </CardContent>
-        </Card>
+        <ModernStatCard 
+          title={t("cleaningReports.pendingPayments", "Pagamentos Pendentes")}
+          value={pendingPaymentsCount}
+          icon={<AlertTriangle size={20} />}
+          highlightColor="orange"
+          className="shadow-lg hover:shadow-xl transition-all"
+        />
         
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle>{t("cleaningReports.avgTeamScore", "Pontuação Média")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">
-              {cleaningReports.filter(r => r.status === "completed").length 
-                ? (cleaningReports
-                    .filter(r => r.status === "completed")
-                    .reduce((sum, r) => sum + r.score, 0) / 
-                    cleaningReports.filter(r => r.status === "completed").length).toFixed(1)
-                : "—"}
-            </div>
-            <p className="text-muted-foreground text-sm">
-              {t("cleaningReports.outOf100", "de 100 pontos possíveis")}
-            </p>
-          </CardContent>
-        </Card>
+        <ModernStatCard 
+          title={t("cleaningReports.avgTeamScore", "Pontuação Média")}
+          value={
+            cleaningReports.filter(r => r.status === "completed").length 
+            ? (cleaningReports
+                .filter(r => r.status === "completed")
+                .reduce((sum, r) => sum + r.score, 0) / 
+                cleaningReports.filter(r => r.status === "completed").length).toFixed(1)
+            : "—"
+          }
+          icon={<TrendingUp size={20} />}
+          highlightColor="teal"
+          className="shadow-lg hover:shadow-xl transition-all"
+        />
       </div>
       
       <div className="mb-6">

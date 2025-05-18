@@ -1,0 +1,175 @@
+/* Tema de gradientes inspirado no design ASO */
+:root {
+  --gradient-primary: linear-gradient(135deg, #8a2387, #e94057, #f27121);
+  --gradient-secondary: linear-gradient(135deg, #4568dc, #b06ab3);
+  --gradient-tertiary: linear-gradient(135deg, #3a1c71, #d76d77, #ffaf7b);
+  
+  --card-bg-dark: rgba(30, 20, 50, 0.95);
+  --card-bg-highlight: rgba(50, 30, 80, 0.95);
+  --card-border-glow: rgba(255, 255, 255, 0.1);
+
+  --text-bright: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.7);
+  
+  --success-glow: rgba(0, 255, 170, 0.6);
+  --warning-glow: rgba(255, 191, 0, 0.6);
+  --error-glow: rgba(255, 63, 63, 0.6);
+
+  --highlight-pink: #ff6b98;
+  --highlight-purple: #a16bff;
+  --highlight-blue: #6b95ff;
+  --highlight-teal: #67e8c9;
+  --highlight-orange: #ff9d4a;
+}
+
+/* Classes reutilizáveis para aplicar gradientes */
+.gradient-bg {
+  background: var(--gradient-primary);
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+.gradient-bg-secondary {
+  background: var(--gradient-secondary);
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+.gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+}
+
+/* Cartões modernos com fundo escuro e bordas de glow */
+.modern-card {
+  background-color: var(--card-bg-dark);
+  border-radius: 12px;
+  border: 1px solid var(--card-border-glow);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+}
+
+.modern-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25), 0 0 15px var(--card-border-glow);
+}
+
+.modern-card-highlight {
+  background-color: var(--card-bg-highlight);
+  border-radius: 12px;
+  border: 1px solid var(--card-border-glow);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(5px);
+}
+
+/* Animação para gradientes dinâmicos */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Estilos para dados e gráficos */
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Progress bars estilizados */
+.modern-progress {
+  height: 0.6rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.modern-progress-bar {
+  height: 100%;
+  border-radius: 1rem;
+  background: var(--gradient-primary);
+  transition: width 1s ease;
+}
+
+/* Badges modernos */
+.modern-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 2rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.modern-badge-success {
+  background: rgba(0, 255, 170, 0.15);
+  color: #67e8c9;
+  border: 1px solid rgba(0, 255, 170, 0.2);
+}
+
+.modern-badge-warning {
+  background: rgba(255, 191, 0, 0.15);
+  color: #ffbf00;
+  border: 1px solid rgba(255, 191, 0, 0.2);
+}
+
+.modern-badge-error {
+  background: rgba(255, 63, 63, 0.15);
+  color: #ff3f3f;
+  border: 1px solid rgba(255, 63, 63, 0.2);
+}
+
+/* Botões modernos com gradiente */
+.gradient-button {
+  background: var(--gradient-primary);
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.gradient-button:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Ícones com glow */
+.glow-icon {
+  filter: drop-shadow(0 0 5px var(--highlight-blue));
+}
+
+.glow-icon-success {
+  filter: drop-shadow(0 0 5px var(--success-glow));
+}
+
+.glow-icon-warning {
+  filter: drop-shadow(0 0 5px var(--warning-glow));
+}
+
+.glow-icon-error {
+  filter: drop-shadow(0 0 5px var(--error-glow));
+}
