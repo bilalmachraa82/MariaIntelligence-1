@@ -8,7 +8,7 @@
 import axios from 'axios';
 import { db } from '../db';
 import { eq, and, lt, gte } from 'drizzle-orm';
-import { reservations } from '@shared/schema';
+import { reservations, cleanings } from '@shared/schema';
 
 // Intervalo de verificação em milissegundos (5 minutos)
 const CHECK_INTERVAL = 5 * 60 * 1000;
@@ -153,13 +153,21 @@ async function scheduleCleanings() {
     nextWeek.setDate(today.getDate() + 7);
     
     // Buscar reservas próximas (próximos 7 dias) que precisam de limpeza
+    // Selecionamos apenas os campos necessários para evitar problemas com colunas inexistentes
     const upcomingReservations = await db
-      .select()
+      .select({
+        id: reservations.id,
+        propertyId: reservations.propertyId,
+        guestName: reservations.guestName,
+        checkInDate: reservations.checkInDate,
+        checkOutDate: reservations.checkOutDate,
+        status: reservations.status
+      })
       .from(reservations)
       .where(
         and(
-          gte(reservations.checkInDate, today),
-          lt(reservations.checkInDate, nextWeek)
+          gte(reservations.checkInDate, today.toISOString().split('T')[0]),
+          lt(reservations.checkInDate, nextWeek.toISOString().split('T')[0])
         )
       );
     
@@ -167,10 +175,40 @@ async function scheduleCleanings() {
     
     // Para cada reserva, verifique se já existe uma limpeza agendada
     for (const reservation of upcomingReservations) {
-      // Verificar se já existe limpeza agendada para esta reserva (pré check-in)
-      // Implementar lógica para verificar e criar limpezas no sistema
-      
-      cleaningsScheduled++;
+      try {
+        // Verificar se já existe limpeza agendada para esta reserva (pré check-in)
+        const existingCleanings = await db
+          .select()
+          .from(cleanings)
+          .where(
+            and(
+              eq(cleanings.propertyId, reservation.propertyId),
+              eq(cleanings.reservationId, reservation.id)
+            )
+          );
+        
+        // Se não existir limpeza, criar uma nova para um dia antes do check-in
+        if (existingCleanings.length === 0) {
+          const checkInDate = new Date(reservation.checkInDate);
+          const cleaningDate = new Date(checkInDate);
+          cleaningDate.setDate(checkInDate.getDate() - 1); // Um dia antes do check-in
+          
+          // Criar limpeza pré check-in
+          await db.insert(cleanings).values({
+            propertyId: reservation.propertyId,
+            reservationId: reservation.id,
+            status: 'pending',
+            scheduledDate: cleaningDate.toISOString().split('T')[0],
+            notes: `Limpeza pré check-in para ${reservation.guestName}`,
+            type: 'pre-checkin',
+            teamId: null
+          });
+          
+          cleaningsScheduled++;
+        }
+      } catch (error) {
+        console.error(`Erro ao agendar limpeza para reserva ${reservation.id}:`, error);
+      }
     }
     
     console.log(`✅ Agendamento de limpezas concluído: ${cleaningsScheduled} limpezas agendadas`);
