@@ -73,13 +73,24 @@ export default function QuotationDetailPage() {
   // Format price - com tratamento de erro para garantir conversão correta
   const formatPrice = (price: any) => {
     try {
+      // Log para diagnóstico
+      console.log('Formatando preço:', price, typeof price);
+      
       // Garantir que é um número, tentando várias abordagens
-      const numericPrice = typeof price === 'string' 
-        ? parseFloat(price.replace(/[^\d.,]/g, '').replace(',', '.'))
-        : Number(price);
+      let numericPrice;
+      
+      if (typeof price === 'string') {
+        // Remove caracteres não numéricos, exceto ponto e vírgula
+        const cleanedPrice = price.replace(/[^\d.,]/g, '');
+        // Substitui vírgula por ponto para conversão correta
+        numericPrice = parseFloat(cleanedPrice.replace(',', '.'));
+      } else {
+        numericPrice = Number(price);
+      }
       
       // Verificar se é um número válido
       if (isNaN(numericPrice)) {
+        console.warn('Preço inválido após conversão:', price);
         // Fallback para casos onde a conversão falha
         return price + ' €';
       }
