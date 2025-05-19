@@ -47,6 +47,8 @@ const formSchema = z.object({
   ]),
   propertyAddress: z.string().optional().or(z.literal("")),
   propertyArea: z.coerce.number().min(1),
+  bedrooms: z.coerce.number().min(1),
+  bathrooms: z.coerce.number().min(1),
   exteriorArea: z.coerce.number().min(0).default(0),
   
   // Características
@@ -90,6 +92,8 @@ export function SimpleQuotationForm({ defaultValues, onSuccess, isEditing = fals
       propertyType: "apartment_t0t1",
       propertyAddress: "",
       propertyArea: 50,
+      bedrooms: 1,
+      bathrooms: 1,
       exteriorArea: 0,
       isDuplex: false,
       hasBBQ: false,
