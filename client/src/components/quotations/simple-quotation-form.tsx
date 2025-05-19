@@ -151,6 +151,8 @@ export function SimpleQuotationForm({ defaultValues, onSuccess, isEditing = fals
         propertyType: data.propertyType,
         propertyAddress: data.propertyAddress || "",
         propertyArea: data.propertyArea,
+        bedrooms: data.bedrooms,
+        bathrooms: data.bathrooms,
         exteriorArea: data.exteriorArea,
         
         // Características booleanas
@@ -437,6 +439,36 @@ export function SimpleQuotationForm({ defaultValues, onSuccess, isEditing = fals
                         <FormLabel>{t("quotation.exteriorArea")} (m²)</FormLabel>
                         <FormControl>
                           <Input type="number" min="0" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="bedrooms"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Quartos</FormLabel>
+                        <FormControl>
+                          <Input type="number" min="1" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="bathrooms"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Banheiros</FormLabel>
+                        <FormControl>
+                          <Input type="number" min="1" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
