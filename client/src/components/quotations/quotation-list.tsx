@@ -179,18 +179,18 @@ export function QuotationList() {
       // Verificar se é um número válido
       if (isNaN(numericPrice)) {
         // Fallback para casos onde a conversão falha
-        return price + ' €';
+        return `${price} €`;
       }
       
-      return new Intl.NumberFormat('pt-PT', {
-        style: 'currency',
-        currency: 'EUR',
-        minimumFractionDigits: 2
-      }).format(numericPrice);
+      // Formatar com separador de decimal como vírgula e o símbolo € no final
+      return numericPrice.toLocaleString('pt-PT', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }) + ' €';
     } catch (e) {
       // Garantir que mesmo com erro o preço aparece
       console.warn('Erro ao formatar preço:', e);
-      return price + ' €';
+      return `${price} €`;
     }
   };
   

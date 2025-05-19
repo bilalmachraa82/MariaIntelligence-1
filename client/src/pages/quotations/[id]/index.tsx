@@ -73,9 +73,6 @@ export default function QuotationDetailPage() {
   // Format price - com tratamento de erro para garantir conversão correta
   const formatPrice = (price: any) => {
     try {
-      // Log para diagnóstico
-      console.log('Formatando preço:', price, typeof price);
-      
       // Garantir que é um número, tentando várias abordagens
       let numericPrice;
       
@@ -90,20 +87,19 @@ export default function QuotationDetailPage() {
       
       // Verificar se é um número válido
       if (isNaN(numericPrice)) {
-        console.warn('Preço inválido após conversão:', price);
         // Fallback para casos onde a conversão falha
-        return price + ' €';
+        return `${price} €`;
       }
       
-      return new Intl.NumberFormat('pt-PT', {
-        style: 'currency',
-        currency: 'EUR',
-        minimumFractionDigits: 2
-      }).format(numericPrice);
+      // Formatar com separador de decimal como vírgula e o símbolo € no final
+      return numericPrice.toLocaleString('pt-PT', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }) + ' €';
     } catch (e) {
       // Garantir que mesmo com erro o preço aparece
       console.warn('Erro ao formatar preço:', e);
-      return price + ' €';
+      return `${price} €`;
     }
   };
   
