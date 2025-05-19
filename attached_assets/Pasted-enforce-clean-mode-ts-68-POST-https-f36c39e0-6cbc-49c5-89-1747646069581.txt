@@ -1,0 +1,94 @@
+enforce-clean-mode.ts:68 
+            
+            
+           POST https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/api/quotations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true 500 (Internal Server Error)
+window.fetch @ Network.js:219
+window.fetch @ enforce-clean-mode.ts:68
+apiRequest @ queryClient.ts:52
+onSubmit @ simple-quotation-form.tsx:188
+(anonymous) @ chunk-YABUFNLM.js?v=60f8d09c:1675
+await in (anonymous)
+callCallback2 @ chunk-RPCDYKBN.js?v=60f8d09c:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=60f8d09c:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=60f8d09c:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=60f8d09c:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=60f8d09c:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=60f8d09c:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=60f8d09c:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=60f8d09c:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=60f8d09c:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=60f8d09c:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=60f8d09c:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=60f8d09c:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5449
+Console.js:61 Erro ao enviar orçamento: Error: API request failed with status: 500
+    at apiRequest (queryClient.ts:67:13)
+    at async onSubmit (simple-quotation-form.tsx:188:9)
+    at async chunk-YABUFNLM.js?v=60f8d09c:1675:9
+Mt.forEach.n.<computed> @ Console.js:61
+onSubmit @ simple-quotation-form.tsx:230
+await in onSubmit
+(anonymous) @ chunk-YABUFNLM.js?v=60f8d09c:1675
+await in (anonymous)
+callCallback2 @ chunk-RPCDYKBN.js?v=60f8d09c:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=60f8d09c:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=60f8d09c:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=60f8d09c:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=60f8d09c:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=60f8d09c:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=60f8d09c:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=60f8d09c:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=60f8d09c:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=60f8d09c:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=60f8d09c:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=60f8d09c:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5449
+Console.js:61 Dados de formulário: {
+  "clientName": "bilal machraa",
+  "clientEmail": "bilal.machraa@gmail.com",
+  "clientPhone": "918911308",
+  "propertyType": "house_v4",
+  "propertyAddress": "Rua regueiro do tanque 3",
+  "propertyArea": 50,
+  "bedrooms": 1,
+  "bathrooms": 1,
+  "exteriorArea": 0,
+  "isDuplex": false,
+  "hasBBQ": true,
+  "hasGlassGarden": false,
+  "basePrice": "135.00",
+  "duplexSurcharge": "0.00",
+  "bbqSurcharge": "10.00",
+  "exteriorSurcharge": "0.00",
+  "glassGardenSurcharge": "0.00",
+  "additionalSurcharges": "10.00",
+  "totalPrice": "145.00",
+  "notes": "sdgfsd",
+  "internalNotes": "",
+  "validUntil": "2025-06-30",
+  "status": "draft"
+}
+Mt.forEach.n.<computed> @ Console.js:61
+onSubmit @ simple-quotation-form.tsx:231
+await in onSubmit
+(anonymous) @ chunk-YABUFNLM.js?v=60f8d09c:1675
+await in (anonymous)
+callCallback2 @ chunk-RPCDYKBN.js?v=60f8d09c:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=60f8d09c:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=60f8d09c:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=60f8d09c:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=60f8d09c:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=60f8d09c:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=60f8d09c:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=60f8d09c:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=60f8d09c:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=60f8d09c:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=60f8d09c:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=60f8d09c:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5449
