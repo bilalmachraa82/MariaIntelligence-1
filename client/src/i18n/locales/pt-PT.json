@@ -8,7 +8,9 @@
       "edit": "Editar",
       "delete": "Apagar",
       "cancel": "Cancelar",
-      "confirm": "Confirmar"
+      "confirm": "Confirmar",
+      "back": "Voltar",
+      "save": "Guardar"
     },
     "dashboard": {
       "fullDashboard": "Dashboard Completo",
@@ -34,6 +36,9 @@
       "assistant": "Maria IA",
       "reports": { 
         "financial": "Relatórios"
+      },
+      "quotations": {
+        "title": "Orçamentos"
       },
       "cleaning": {
         "title": "Limpeza",
@@ -170,7 +175,27 @@
       "listTitle": "Lista de Orçamentos",
       "create": "Criar Orçamento",
       "clientName": "Nome do Cliente",
+      "clientNamePlaceholder": "Insira o nome do cliente",
+      "clientEmail": "Email do Cliente",
+      "clientEmailPlaceholder": "Insira o email do cliente",
+      "clientPhone": "Telefone do Cliente",
+      "clientPhonePlaceholder": "Insira o telefone do cliente",
       "propertyType": "Tipo de Propriedade",
+      "selectPropertyType": "Selecione o tipo de propriedade",
+      "propertyTypeApartmentT0T1": "Apartamento T0/T1",
+      "propertyTypeApartmentT2": "Apartamento T2",
+      "propertyTypeApartmentT3": "Apartamento T3",
+      "propertyTypeApartmentT4": "Apartamento T4",
+      "propertyTypeApartmentT5": "Apartamento T5+",
+      "propertyTypeHouseV1": "Moradia V1",
+      "propertyTypeHouseV2": "Moradia V2",
+      "propertyTypeHouseV3": "Moradia V3",
+      "propertyTypeHouseV4": "Moradia V4",
+      "propertyTypeHouseV5": "Moradia V5+",
+      "propertyArea": "Área da Propriedade (m²)",
+      "exteriorArea": "Área Exterior (m²)",
+      "propertyAddress": "Morada da Propriedade",
+      "propertyAddressPlaceholder": "Insira a morada da propriedade",
       "totalPrice": "Preço Total",
       "status": "Estado",
       "validUntil": "Válido Até",
@@ -187,7 +212,21 @@
       "confirmDelete": "Confirmar Eliminação",
       "deleteWarning": "Esta ação não pode ser revertida. O orçamento será permanentemente eliminado.",
       "searchPlaceholder": "Pesquisar orçamentos...",
-      "filterByStatus": "Filtrar por estado"
+      "filterByStatus": "Filtrar por estado",
+      "newTitle": "Novo Orçamento",
+      "newDescription": "Crie um novo orçamento para serviços de limpeza",
+      "clientInfo": "Informações do Cliente",
+      "propertyDetails": "Detalhes da Propriedade",
+      "additionalFeatures": "Características Adicionais",
+      "additionalDetails": "Detalhes Adicionais",
+      "isDuplex": "Duplex",
+      "isDuplexDescription": "A propriedade tem mais de um piso",
+      "hasBBQ": "Churrasqueira",
+      "hasBBQDescription": "A propriedade tem churrasqueira",
+      "hasGlassGarden": "Jardim de Inverno",
+      "hasGlassGardenDescription": "A propriedade tem jardim de inverno",
+      "notes": "Notas Adicionais",
+      "notesPlaceholder": "Informações adicionais sobre o orçamento"
     }
   }
 }
