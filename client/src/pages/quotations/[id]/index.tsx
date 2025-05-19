@@ -120,6 +120,47 @@ export default function QuotationDetailPage() {
     }
   };
   
+  // Send Email with PDF
+  const handleSendEmail = async () => {
+    try {
+      // Verificar se o cliente tem e-mail cadastrado
+      if (!quotation.clientEmail) {
+        toast({
+          title: t('common.warning'),
+          description: t('quotation.noEmailProvided'),
+          variant: "default",
+        });
+        return;
+      }
+      
+      // Enviar e-mail com o orçamento anexado
+      const response = await apiRequest<{success: boolean}>({
+        url: `/api/quotations/${quotationId}/send-email`,
+        method: 'POST',
+        data: {
+          email: quotation.clientEmail,
+          subject: `Orçamento de Serviço para ${quotation.clientName}`,
+        }
+      });
+      
+      if (response && response.success) {
+        toast({
+          title: t('quotation.emailSent'),
+          description: t('quotation.emailSuccess'),
+          variant: "default",
+        });
+      } else {
+        throw new Error("Falha ao enviar e-mail");
+      }
+    } catch (error) {
+      toast({
+        title: t('common.error'),
+        description: t('quotation.emailError'),
+        variant: "destructive",
+      });
+    }
+  };
+  
   // Delete quotation
   const handleDelete = async () => {
     try {
@@ -295,6 +336,15 @@ export default function QuotationDetailPage() {
           <Button
             variant="outline"
             size="sm"
+            onClick={handleSendEmail}
+          >
+            <Mail className="h-4 w-4 mr-2" />
+            {t('quotation.sendByEmail')}
+          </Button>
+          
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => navigate(`/quotations/${quotationId}/edit`)}
           >
             <FileEdit className="h-4 w-4 mr-2" />
@@ -382,11 +432,11 @@ export default function QuotationDetailPage() {
             
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="font-medium">{t('quotation.totalArea')}</p>
-                <p className="text-muted-foreground">{quotation.totalArea} m²</p>
+                <p className="font-medium">{t('quotation.propertyArea')}</p>
+                <p className="text-muted-foreground">{quotation.propertyArea} m²</p>
               </div>
               
-              {quotation.hasExteriorSpace && (
+              {quotation.exteriorArea > 0 && (
                 <div>
                   <p className="font-medium">{t('quotation.exteriorArea')}</p>
                   <p className="text-muted-foreground">{quotation.exteriorArea} m²</p>
