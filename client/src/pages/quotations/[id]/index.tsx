@@ -425,7 +425,7 @@ export default function QuotationDetailPage() {
               <div>
                 <p className="font-medium">{t('quotation.propertyType')}</p>
                 <p className="text-muted-foreground">
-                  {t(`quotation.propertyType${quotation.propertyType.charAt(0).toUpperCase() + quotation.propertyType.slice(1)}`)}
+                  {quotation.propertyType}
                 </p>
               </div>
             </div>
