@@ -287,14 +287,14 @@ export function SidebarReorganized({
   // Itens principais da navegação - Foco nas tarefas diárias mais comuns
   const mainNavItems = [
     {
-      name: t("navigation.home", "Início"),
+      name: "Início",
       href: "/painel",
       altHref: "/dashboard",
       icon: Home,
       iconColor: "text-blue-500"
     },
     {
-      name: t("navigation.bookings", "Reservas"),
+      name: "Reservas",
       href: "/reservas",
       altHref: "/reservations",
       icon: CalendarDays,
@@ -302,7 +302,7 @@ export function SidebarReorganized({
     },
     // Propriedades movidas para o menu principal por ser uma funcionalidade central
     {
-      name: t("navigation.properties", "Imóveis"),
+      name: "Imóveis",
       href: "/propriedades",
       altHref: "/properties",
       icon: Building2,
@@ -310,7 +310,7 @@ export function SidebarReorganized({
     },
     // Proprietários movidos para o menu principal por ser uma entidade principal
     {
-      name: t("navigation.owners", "Proprietários"),
+      name: "Proprietários",
       href: "/proprietarios",
       altHref: "/owners",
       icon: Users,
