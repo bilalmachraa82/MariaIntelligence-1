@@ -1,0 +1,605 @@
+_app-1c9bfd8b161f10e5.js:9 WebSocket connection to 'wss://replit.com/graphql_subscriptions' failed: 
+(anonymous) @ _app-1c9bfd8b161f10e5.js:9
+(anonymous) @ _app-1c9bfd8b161f10e5.js:9
+R @ _app-1c9bfd8b161f10e5.js:9
+(anonymous) @ _app-1c9bfd8b161f10e5.js:9
+I @ _app-1c9bfd8b161f10e5.js:9
+(anonymous) @ _app-1c9bfd8b161f10e5.js:9
+e @ _app-1c9bfd8b161f10e5.js:9
+t.subscribe @ _app-1c9bfd8b161f10e5.js:9
+(anonymous) @ _app-1c9bfd8b161f10e5.js:9
+e @ _app-1c9bfd8b161f10e5.js:9
+t.subscribe @ _app-1c9bfd8b161f10e5.js:9
+e.try @ _app-1c9bfd8b161f10e5.js:9
+e.start @ _app-1c9bfd8b161f10e5.js:9
+t.request @ _app-1c9bfd8b161f10e5.js:9
+(anonymous) @ _app-1c9bfd8b161f10e5.js:9
+(anonymous) @ _app-1c9bfd8b161f10e5.js:9
+(anonymous) @ _app-1c9bfd8b161f10e5.js:9
+(anonymous) @ _app-1c9bfd8b161f10e5.js:9
+e.execute @ _app-1c9bfd8b161f10e5.js:9
+e.getObservableFromLink @ _app-1c9bfd8b161f10e5.js:6
+l @ _app-1c9bfd8b161f10e5.js:6
+e.startGraphQLSubscription @ _app-1c9bfd8b161f10e5.js:6
+e.subscribe @ _app-1c9bfd8b161f10e5.js:6
+(anonymous) @ _app-1c9bfd8b161f10e5.js:9
+l_ @ framework-04ed3ec2c185fd32.js:1
+t.useState @ framework-04ed3ec2c185fd32.js:1
+s @ _app-1c9bfd8b161f10e5.js:9
+n9 @ _app-1c9bfd8b161f10e5.js:40
+ld @ framework-04ed3ec2c185fd32.js:1
+i @ framework-04ed3ec2c185fd32.js:1
+uI @ framework-04ed3ec2c185fd32.js:1
+uM @ framework-04ed3ec2c185fd32.js:1
+uS @ framework-04ed3ec2c185fd32.js:1
+C @ framework-04ed3ec2c185fd32.js:1
+z @ framework-04ed3ec2c185fd32.js:1
+analytics.tiktok.com/i18n/pixel/events.js?sdkid=D004GE3C77U8PIVDSDJG&lib=ttq:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+_app-1c9bfd8b161f10e5.js:9 WebSocket connection to 'wss://replit.com/graphql_subscriptions' failed: 
+(anonymous) @ _app-1c9bfd8b161f10e5.js:9
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1745797532.1747312056&jid=1436237888&gjid=2022417948&_gid=1052171432.1747574575&_u=SCCAgEAjQAAAAGgCIAD~&z=1600963556:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+stats.g.doubleclick.net/g/collect?v=2&tid=G-MPJY3F1YEL&cid=1745797532.1747312056&gtm=45je55g2h1v9135634466za200&aip=1&dma=0&gcd=13l3l3l3l2l1&npa=0&frm=0&tag_exp=101509157~103116026~103130495~103130497~103136993~103136995~103200004~103207802~103233427~103252644~103252646~103263073~103301114~103301116:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+m.stripe.com/6:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+_app-1c9bfd8b161f10e5.js:9 WebSocket connection to 'wss://replit.com/graphql_subscriptions' failed: 
+(anonymous) @ _app-1c9bfd8b161f10e5.js:9
+_app-1c9bfd8b161f10e5.js:9 WebSocket connection to 'wss://replit.com/graphql_subscriptions' failed: 
+(anonymous) @ _app-1c9bfd8b161f10e5.js:9
+_app-1c9bfd8b161f10e5.js:9 WebSocket connection to 'wss://replit.com/graphql_subscriptions' failed: 
+(anonymous) @ _app-1c9bfd8b161f10e5.js:9
+clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_CLOSED
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1745797532.1747312056&jid=1676022347&gjid=2091817537&_gid=1052171432.1747574575&_u=SCCAgEAjQAAAAGgCIAD~&z=227292041:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1745797532.1747312056&jid=14724463&gjid=916641462&_gid=1052171432.1747574575&_u=SCCAgEAjQAAAAGgCIAD~&z=377308204:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1745797532.1747312056&jid=1611053554&gjid=1526439377&_gid=1052171432.1747574575&_u=SCCAgEAjQAAAAGgCIAD~&z=891126424:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+_app-1c9bfd8b161f10e5.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//pagamentos/saida' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+d @ main-7333f8f1574f49d0.js:1
+(anonymous) @ _app-1c9bfd8b161f10e5.js:6
+lU @ framework-04ed3ec2c185fd32.js:1
+t.useMemo @ framework-04ed3ec2c185fd32.js:1
+(anonymous) @ _app-1c9bfd8b161f10e5.js:6
+ld @ framework-04ed3ec2c185fd32.js:1
+ou @ framework-04ed3ec2c185fd32.js:1
+i @ framework-04ed3ec2c185fd32.js:1
+uI @ framework-04ed3ec2c185fd32.js:1
+uM @ framework-04ed3ec2c185fd32.js:1
+uS @ framework-04ed3ec2c185fd32.js:1
+C @ framework-04ed3ec2c185fd32.js:1
+z @ framework-04ed3ec2c185fd32.js:1
+_app-1c9bfd8b161f10e5.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//upload-pdf' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+d @ main-7333f8f1574f49d0.js:1
+(anonymous) @ _app-1c9bfd8b161f10e5.js:6
+lU @ framework-04ed3ec2c185fd32.js:1
+t.useMemo @ framework-04ed3ec2c185fd32.js:1
+(anonymous) @ _app-1c9bfd8b161f10e5.js:6
+ld @ framework-04ed3ec2c185fd32.js:1
+ou @ framework-04ed3ec2c185fd32.js:1
+i @ framework-04ed3ec2c185fd32.js:1
+uI @ framework-04ed3ec2c185fd32.js:1
+uM @ framework-04ed3ec2c185fd32.js:1
+uS @ framework-04ed3ec2c185fd32.js:1
+C @ framework-04ed3ec2c185fd32.js:1
+z @ framework-04ed3ec2c185fd32.js:1
+_app-1c9bfd8b161f10e5.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//assistente' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+d @ main-7333f8f1574f49d0.js:1
+(anonymous) @ _app-1c9bfd8b161f10e5.js:6
+lU @ framework-04ed3ec2c185fd32.js:1
+t.useMemo @ framework-04ed3ec2c185fd32.js:1
+(anonymous) @ _app-1c9bfd8b161f10e5.js:6
+ld @ framework-04ed3ec2c185fd32.js:1
+ou @ framework-04ed3ec2c185fd32.js:1
+i @ framework-04ed3ec2c185fd32.js:1
+uI @ framework-04ed3ec2c185fd32.js:1
+uM @ framework-04ed3ec2c185fd32.js:1
+uS @ framework-04ed3ec2c185fd32.js:1
+C @ framework-04ed3ec2c185fd32.js:1
+z @ framework-04ed3ec2c185fd32.js:1
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1745797532.1747312056&jid=1761768253&gjid=1348778490&_gid=1052171432.1747574575&_u=SCCAgEAjQAAAAGgCIAD~&z=53564386:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/diagnostic/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/diagnostic/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+_app-1c9bfd8b161f10e5.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//quotations' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+d @ main-7333f8f1574f49d0.js:1
+(anonymous) @ _app-1c9bfd8b161f10e5.js:6
+lU @ framework-04ed3ec2c185fd32.js:1
+t.useMemo @ framework-04ed3ec2c185fd32.js:1
+(anonymous) @ _app-1c9bfd8b161f10e5.js:6
+ld @ framework-04ed3ec2c185fd32.js:1
+ou @ framework-04ed3ec2c185fd32.js:1
+i @ framework-04ed3ec2c185fd32.js:1
+uI @ framework-04ed3ec2c185fd32.js:1
+uM @ framework-04ed3ec2c185fd32.js:1
+uS @ framework-04ed3ec2c185fd32.js:1
+C @ framework-04ed3ec2c185fd32.js:1
+z @ framework-04ed3ec2c185fd32.js:1
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1745797532.1747312056&jid=1381763711&gjid=1918750612&_gid=1052171432.1747574575&_u=SCCAgEAjQAAAAGgCIAD~&z=693941407:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+_app-1c9bfd8b161f10e5.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//painel' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+d @ main-7333f8f1574f49d0.js:1
+(anonymous) @ _app-1c9bfd8b161f10e5.js:6
+lU @ framework-04ed3ec2c185fd32.js:1
+t.useMemo @ framework-04ed3ec2c185fd32.js:1
+(anonymous) @ _app-1c9bfd8b161f10e5.js:6
+ld @ framework-04ed3ec2c185fd32.js:1
+ou @ framework-04ed3ec2c185fd32.js:1
+i @ framework-04ed3ec2c185fd32.js:1
+uI @ framework-04ed3ec2c185fd32.js:1
+uM @ framework-04ed3ec2c185fd32.js:1
+uS @ framework-04ed3ec2c185fd32.js:1
+C @ framework-04ed3ec2c185fd32.js:1
+z @ framework-04ed3ec2c185fd32.js:1
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1745797532.1747312056&jid=471367020&gjid=68561564&_gid=1052171432.1747574575&_u=SCCAgEAjQAAAAGgCIAD~&z=636591293:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/diagnostic/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/diagnostic/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1745797532.1747312056&jid=186149889&gjid=1815008220&_gid=1052171432.1747574575&_u=SCCAgEAjQAAAAGgCIAD~&z=54146412:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+manifest.json:1 
+            
+            
+           Failed to load resource: the server responded with a status of 403 ()
+workspace_iframe.html:142 Refused to load the script 'https://replit.com/public/js/beacon.js' because it violates the following Content Security Policy directive: "script-src 'self' 'unsafe-inline' 'unsafe-eval'". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback.
+
+onIframeLoad @ workspace_iframe.html?initialPath=%2F&id=%3Ar3mt%3A:142
+_app-1c9bfd8b161f10e5.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//assistente' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+a.JZ.<computed> @ _app-1c9bfd8b161f10e5.js:6
+d @ main-7333f8f1574f49d0.js:1
+(anonymous) @ _app-1c9bfd8b161f10e5.js:6
+lU @ framework-04ed3ec2c185fd32.js:1
+t.useMemo @ framework-04ed3ec2c185fd32.js:1
+(anonymous) @ _app-1c9bfd8b161f10e5.js:6
+ld @ framework-04ed3ec2c185fd32.js:1
+ou @ framework-04ed3ec2c185fd32.js:1
+i @ framework-04ed3ec2c185fd32.js:1
+uI @ framework-04ed3ec2c185fd32.js:1
+uM @ framework-04ed3ec2c185fd32.js:1
+uS @ framework-04ed3ec2c185fd32.js:1
+C @ framework-04ed3ec2c185fd32.js:1
+z @ framework-04ed3ec2c185fd32.js:1
+_app-1c9bfd8b161f10e5.js:38 
+            
+            
+           POST https://events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820 net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+(anonymous) @ _app-1c9bfd8b161f10e5.js:6
+o @ _app-1c9bfd8b161f10e5.js:6
+promise @ _app-1c9bfd8b161f10e5.js:1
+(anonymous) @ _app-1c9bfd8b161f10e5.js:1
+n.httpRequest @ _app-1c9bfd8b161f10e5.js:1
+t @ _app-1c9bfd8b161f10e5.js:1
+a.sendChunk @ _app-1c9bfd8b161f10e5.js:1
+a.sendEvents @ _app-1c9bfd8b161f10e5.js:1
+a.flush @ _app-1c9bfd8b161f10e5.js:1
+e @ _app-1c9bfd8b161f10e5.js:1
+r @ _app-1c9bfd8b161f10e5.js:38
+setTimeout
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+e @ _app-1c9bfd8b161f10e5.js:1
+r @ _app-1c9bfd8b161f10e5.js:38
+setTimeout
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+e @ _app-1c9bfd8b161f10e5.js:1
+r @ _app-1c9bfd8b161f10e5.js:38
+setTimeout
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+e @ _app-1c9bfd8b161f10e5.js:1
+r @ _app-1c9bfd8b161f10e5.js:38
+setTimeout
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+e @ _app-1c9bfd8b161f10e5.js:1
+r @ _app-1c9bfd8b161f10e5.js:38
+setTimeout
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+e @ _app-1c9bfd8b161f10e5.js:1
+r @ _app-1c9bfd8b161f10e5.js:38
+setTimeout
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+e @ _app-1c9bfd8b161f10e5.js:1
+r @ _app-1c9bfd8b161f10e5.js:38
+setTimeout
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+e @ _app-1c9bfd8b161f10e5.js:1
+r @ _app-1c9bfd8b161f10e5.js:38
+setTimeout
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+e @ _app-1c9bfd8b161f10e5.js:1
+r @ _app-1c9bfd8b161f10e5.js:38
+setTimeout
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+e @ _app-1c9bfd8b161f10e5.js:1
+r @ _app-1c9bfd8b161f10e5.js:38
+_app-1c9bfd8b161f10e5.js:38 
+            
+            
+           POST https://events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820 net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+(anonymous) @ _app-1c9bfd8b161f10e5.js:6
+o @ _app-1c9bfd8b161f10e5.js:6
+promise @ _app-1c9bfd8b161f10e5.js:1
+(anonymous) @ _app-1c9bfd8b161f10e5.js:1
+n.httpRequest @ _app-1c9bfd8b161f10e5.js:1
+t @ _app-1c9bfd8b161f10e5.js:1
+(anonymous) @ _app-1c9bfd8b161f10e5.js:1
+Promise.catch
+t @ _app-1c9bfd8b161f10e5.js:1
+a.sendChunk @ _app-1c9bfd8b161f10e5.js:1
+a.sendEvents @ _app-1c9bfd8b161f10e5.js:1
+a.flush @ _app-1c9bfd8b161f10e5.js:1
+e @ _app-1c9bfd8b161f10e5.js:1
+r @ _app-1c9bfd8b161f10e5.js:38
+setTimeout
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+e @ _app-1c9bfd8b161f10e5.js:1
+r @ _app-1c9bfd8b161f10e5.js:38
+setTimeout
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+e @ _app-1c9bfd8b161f10e5.js:1
+r @ _app-1c9bfd8b161f10e5.js:38
+setTimeout
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+e @ _app-1c9bfd8b161f10e5.js:1
+r @ _app-1c9bfd8b161f10e5.js:38
+setTimeout
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+e @ _app-1c9bfd8b161f10e5.js:1
+r @ _app-1c9bfd8b161f10e5.js:38
+setTimeout
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+e @ _app-1c9bfd8b161f10e5.js:1
+r @ _app-1c9bfd8b161f10e5.js:38
+setTimeout
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+e @ _app-1c9bfd8b161f10e5.js:1
+r @ _app-1c9bfd8b161f10e5.js:38
+setTimeout
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+e @ _app-1c9bfd8b161f10e5.js:1
+r @ _app-1c9bfd8b161f10e5.js:38
+setTimeout
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+e @ _app-1c9bfd8b161f10e5.js:1
+r @ _app-1c9bfd8b161f10e5.js:38
+setTimeout
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+e @ _app-1c9bfd8b161f10e5.js:1
+r @ _app-1c9bfd8b161f10e5.js:38
+_app-1c9bfd8b161f10e5.js:38 
+            
+            
+           POST https://stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1745797532.1747312056&jid=1916271910&gjid=1325467554&_gid=1052171432.1747574575&_u=SCCAgEAjQAAAAGgCIAD~&z=150016668 net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+(anonymous) @ _app-1c9bfd8b161f10e5.js:6
+o @ _app-1c9bfd8b161f10e5.js:6
+wd @ analytics.js:36
+pe @ analytics.js:35
+(anonymous) @ analytics.js:73
+Ha.D @ analytics.js:38
+pc.send @ analytics.js:77
+X.b.<computed> @ analytics.js:57
+Z.v @ analytics.js:93
+Z.D @ analytics.js:92
+N @ analytics.js:94
+g.track @ index.js:351
+track @ protos.js:372
+e.invoke @ protos.js:178
+(anonymous) @ index.ts:270
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+(anonymous) @ tslib.es6.js:76
+u @ tslib.es6.js:72
+t.send @ ajs-destination.bundle.8e6b895db75187c55313.js:1
+(anonymous) @ index.ts:286
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+t.track @ ajs-destination.bundle.8e6b895db75187c55313.js:1
+(anonymous) @ delivery.js:28
+(anonymous) @ delivery.js:11
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+(anonymous) @ delivery.js:4
+o @ delivery.js:27
+(anonymous) @ event-queue.js:325
+(anonymous) @ event-queue.js:323
+r @ _app-1c9bfd8b161f10e5.js:38
+setTimeout
+(anonymous) @ _app-1c9bfd8b161f10e5.js:38
+(anonymous) @ event-queue.js:321
+(anonymous) @ event-queue.js:320
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+(anonymous) @ tslib.es6.js:76
+u @ tslib.es6.js:72
+n.flushOne @ event-queue.js:273
+(anonymous) @ event-queue.js:181
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+(anonymous) @ tslib.es6.js:76
+u @ tslib.es6.js:72
+n.deliver @ event-queue.js:169
+(anonymous) @ event-queue.js:135
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+n.dispatchSingle @ event-queue.js:128
+(anonymous) @ dispatch.js:25
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+p @ dispatch.js:18
+(anonymous) @ index.ts:460
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+n._dispatch @ index.ts:454
+(anonymous) @ index.ts:253
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+n.track @ index.ts:241
+A @ _app-1c9bfd8b161f10e5.js:25
+(anonymous) @ 4182-23e31fa9cf2ccc4a.js:1
+(anonymous) @ replEnvironmentDesktop-352eb1677931b5c8.js:1
+(anonymous) @ main-7333f8f1574f49d0.js:1
+n @ main-7333f8f1574f49d0.js:1
+u @ main-7333f8f1574f49d0.js:1
+(anonymous) @ main-7333f8f1574f49d0.js:1
+(anonymous) @ main-7333f8f1574f49d0.js:1
+(anonymous) @ replEnvironmentDesktop-352eb1677931b5c8.js:1
+(anonymous) @ replEnvironmentDesktop-352eb1677931b5c8.js:1
+(anonymous) @ replEnvironmentDesktop-352eb1677931b5c8.js:1
+(anonymous) @ replEnvironmentDesktop-352eb1677931b5c8.js:1
+keydown @ replEnvironmentDesktop-352eb1677931b5c8.js:1
+(anonymous) @ _app-1c9bfd8b161f10e5.js:26
+runHandlers @ _app-1c9bfd8b161f10e5.js:26
+handleEvent @ _app-1c9bfd8b161f10e5.js:26
+r @ _app-1c9bfd8b161f10e5.js:38

@@ -158,10 +158,21 @@ export function Sidebar({ className }: SidebarProps) {
     },
   ];
 
+  // Normaliza URLs para evitar barras duplas
+  const normalizeUrl = (url: string): string => {
+    // Remove barras duplas do caminho (exceto para http:// ou https://)
+    return url.replace(/([^:])\/\//g, '$1/');
+  };
+
   // Determina se um link está ativo (considerando também rotas alternativas)
   const isLinkActive = (linkHref: string, altHref?: string) => {
-    if (location === linkHref) return true;
-    if (altHref && location === altHref) return true;
+    // Normaliza os URLs antes de comparar
+    const normalizedLocation = normalizeUrl(location);
+    const normalizedLinkHref = normalizeUrl(linkHref);
+    const normalizedAltHref = altHref ? normalizeUrl(altHref) : undefined;
+
+    if (normalizedLocation === normalizedLinkHref) return true;
+    if (normalizedAltHref && normalizedLocation === normalizedAltHref) return true;
     return false;
   };
 
@@ -174,6 +185,9 @@ export function Sidebar({ className }: SidebarProps) {
     if (href.startsWith('/')) {
       // Remove barras duplicadas, mas mantém uma única barra
       cleanHref = '/' + href.split('/').filter(Boolean).join('/');
+    } else if (href.includes('//')) {
+      // Para URLs completas, usa o regex de normalização
+      cleanHref = normalizeUrl(href);
     }
     
     setLocation(cleanHref);
