@@ -328,7 +328,11 @@ export function QuotationList() {
                           return propertyTypes[quotation.propertyType] || quotation.propertyType;
                         })()}
                       </TableCell>
-                      <TableCell className="text-right">{formatPrice(parseFloat(quotation.totalPrice))}</TableCell>
+                      <TableCell className="text-right">
+                        {quotation.totalPrice 
+                          ? formatPrice(parseFloat(quotation.totalPrice)) 
+                          : '€0,00'}
+                      </TableCell>
                       <TableCell>{getStatusBadge(quotation.status)}</TableCell>
                       <TableCell>{formatDate(quotation.validUntil)}</TableCell>
                       <TableCell className="text-right">

@@ -473,6 +473,7 @@ export default function QuotationDetailPage() {
                 <p className="font-medium">{t('quotation.propertyType')}</p>
                 <p className="text-muted-foreground">
                   {(() => {
+                    console.log('Tipo de propriedade do orçamento:', quotation.propertyType);
                     const propertyTypes: Record<string, string> = {
                       'apartment_t0t1': 'Apartamento T0/T1',
                       'apartment_t2': 'Apartamento T2',
@@ -485,7 +486,9 @@ export default function QuotationDetailPage() {
                       'house_v4': 'Moradia V4',
                       'house_v5': 'Moradia V5+'
                     };
-                    return propertyTypes[quotation.propertyType] || quotation.propertyType;
+                    const displayType = propertyTypes[quotation.propertyType] || quotation.propertyType;
+                    console.log('Tipo exibido:', displayType);
+                    return displayType;
                   })()}
                 </p>
               </div>
@@ -539,7 +542,9 @@ export default function QuotationDetailPage() {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">{t('quotation.basePrice')}:</span>
-                <span>{formatPrice(parseFloat(quotation.basePrice || "0"))}</span>
+                <span>{quotation.basePrice 
+                  ? formatPrice(parseFloat(quotation.basePrice)) 
+                  : '€0,00'}</span>
               </div>
               
               {quotation.duplexSurcharge && parseFloat(quotation.duplexSurcharge) > 0 && (
@@ -574,7 +579,9 @@ export default function QuotationDetailPage() {
               
               <div className="flex justify-between font-bold text-lg">
                 <span>{t('quotation.totalPrice')}:</span>
-                <span>{formatPrice(parseFloat(quotation.totalPrice || "0"))}</span>
+                <span>{quotation.totalPrice 
+                  ? formatPrice(parseFloat(quotation.totalPrice)) 
+                  : '€0,00'}</span>
               </div>
             </div>
             
