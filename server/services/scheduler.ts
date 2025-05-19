@@ -9,6 +9,7 @@ import axios from 'axios';
 import { db } from '../db';
 import { eq, and, lt, gte } from 'drizzle-orm';
 import { reservations, cleanings } from '@shared/schema';
+import { cleanupTempFiles } from './cleanup-service';
 
 // Intervalo de verificação em milissegundos (5 minutos)
 const CHECK_INTERVAL = 5 * 60 * 1000;
@@ -82,6 +83,9 @@ async function executeScheduledTasks() {
     
     // 3. Gerar faturas para proprietários (último dia do mês)
     await generateOwnerInvoices();
+    
+    // 4. Limpar arquivos temporários antigos (mais de 24 horas)
+    await cleanupTempFiles();
     
     console.log(`[${new Date().toISOString()}] Execução de tarefas agendadas concluída com sucesso`);
   } catch (error) {
