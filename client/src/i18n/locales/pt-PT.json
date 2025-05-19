@@ -192,6 +192,9 @@
       "pay": "Pagar",
       "noPaymentsDue": "Não há pagamentos pendentes no momento"
     },
+    "quotations": {
+      "title": "Gerencie orçamentos para serviços de limpeza"
+    },
     "quotation": {
       "title": "Orçamentos",
       "listTitle": "Lista de Orçamentos",
