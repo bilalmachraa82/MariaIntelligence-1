@@ -57,17 +57,31 @@ export function registerQuotationRoutes(app: any) {
         
         // Formata o preço para exibição em euros
         try {
-          const priceNumber = parseFloat(quotation.totalPrice);
+          // Usamos totalPrice como fonte para o priceNumber
+          let priceSource = quotation.totalPrice;
+          
+          // Se totalPrice não existe ou é inválido, tente totalAmount como alternativa
+          if (!priceSource && quotation.totalAmount) {
+            priceSource = quotation.totalAmount;
+          }
+          
+          // Converte para número
+          const priceNumber = parseFloat(priceSource);
+          
+          // Verifica se é um número válido
           if (!isNaN(priceNumber)) {
             quotation.totalPriceFormatted = new Intl.NumberFormat('pt-PT', {
               style: 'currency', 
               currency: 'EUR'
             }).format(priceNumber);
           } else {
-            quotation.totalPriceFormatted = quotation.totalPrice + ' €';
+            // Fallback para quando o preço é inválido
+            quotation.totalPriceFormatted = priceSource ? priceSource + ' €' : '0,00 €';
           }
         } catch (e) {
-          quotation.totalPriceFormatted = quotation.totalPrice + ' €';
+          console.error('Erro ao formatar preço:', e);
+          // Fallback para caso haja erro
+          quotation.totalPriceFormatted = quotation.totalPrice || quotation.totalAmount || '0,00 €';
         }
         
         return quotation;
