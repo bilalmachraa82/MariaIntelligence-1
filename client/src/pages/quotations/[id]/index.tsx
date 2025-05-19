@@ -70,12 +70,30 @@ export default function QuotationDetailPage() {
     }).format(date);
   };
   
-  // Format price
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('pt-PT', {
-      style: 'currency',
-      currency: 'EUR',
-    }).format(price);
+  // Format price - com tratamento de erro para garantir conversão correta
+  const formatPrice = (price: any) => {
+    try {
+      // Garantir que é um número, tentando várias abordagens
+      const numericPrice = typeof price === 'string' 
+        ? parseFloat(price.replace(/[^\d.,]/g, '').replace(',', '.'))
+        : Number(price);
+      
+      // Verificar se é um número válido
+      if (isNaN(numericPrice)) {
+        // Fallback para casos onde a conversão falha
+        return price + ' €';
+      }
+      
+      return new Intl.NumberFormat('pt-PT', {
+        style: 'currency',
+        currency: 'EUR',
+        minimumFractionDigits: 2
+      }).format(numericPrice);
+    } catch (e) {
+      // Garantir que mesmo com erro o preço aparece
+      console.warn('Erro ao formatar preço:', e);
+      return price + ' €';
+    }
   };
   
   // Get status badge
