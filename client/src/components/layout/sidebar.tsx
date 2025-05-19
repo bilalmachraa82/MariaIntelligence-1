@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { cn } from "@/lib/utils";
+import { normalizeUrl } from "@/lib/url-utils";
 import { 
   Home, 
   Building2, 
@@ -158,15 +159,9 @@ export function Sidebar({ className }: SidebarProps) {
     },
   ];
 
-  // Normaliza URLs para evitar barras duplas
-  const normalizeUrl = (url: string): string => {
-    // Remove barras duplas do caminho (exceto para http:// ou https://)
-    return url.replace(/([^:])\/\//g, '$1/');
-  };
-
   // Determina se um link está ativo (considerando também rotas alternativas)
   const isLinkActive = (linkHref: string, altHref?: string) => {
-    // Normaliza os URLs antes de comparar
+    // Normaliza os URLs antes de comparar usando nossa utilidade central
     const normalizedLocation = normalizeUrl(location);
     const normalizedLinkHref = normalizeUrl(linkHref);
     const normalizedAltHref = altHref ? normalizeUrl(altHref) : undefined;
@@ -178,19 +173,13 @@ export function Sidebar({ className }: SidebarProps) {
 
   // Função para fechar a sidebar em dispositivos móveis após clicar em um link
   const handleLinkClick = (href: string) => {
-    // Remover barras duplicadas, se houverem (considerando a URL base do Replit)
-    let cleanHref = href;
+    // Usa a função normalizeUrl do nosso utilitário para garantir URLs limpas
+    const cleanHref = normalizeUrl(href);
     
-    // Caso especial para URLs da API (deixar a barra após o domínio)
-    if (href.startsWith('/')) {
-      // Remove barras duplicadas, mas mantém uma única barra
-      cleanHref = '/' + href.split('/').filter(Boolean).join('/');
-    } else if (href.includes('//')) {
-      // Para URLs completas, usa o regex de normalização
-      cleanHref = normalizeUrl(href);
-    }
-    
+    // Navega para a URL normalizada
     setLocation(cleanHref);
+    
+    // Em dispositivos móveis, fecha a barra lateral após clicar
     if (isMobile) {
       setIsOpen(false);
     }
