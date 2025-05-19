@@ -10,7 +10,9 @@
       "cancel": "Cancelar",
       "confirm": "Confirmar",
       "back": "Voltar",
-      "save": "Guardar"
+      "save": "Guardar",
+      "saving": "A guardar...",
+      "error": "Erro"
     },
     "dashboard": {
       "fullDashboard": "Dashboard Completo",
@@ -39,6 +41,12 @@
       },
       "quotations": {
         "title": "Orçamentos"
+      },
+      "documentScan": {
+        "description": "Digitalizar e processar documentos"
+      },
+      "assistant": {
+        "description": "Assistente inteligente"
       },
       "categories": {
         "main": "Principal",
@@ -198,6 +206,7 @@
     "quotation": {
       "title": "Orçamentos",
       "listTitle": "Lista de Orçamentos",
+      "errorCreate": "Erro ao criar orçamento",
       "create": "Criar Orçamento",
       "clientName": "Nome do Cliente",
       "clientNamePlaceholder": "Insira o nome do cliente",
