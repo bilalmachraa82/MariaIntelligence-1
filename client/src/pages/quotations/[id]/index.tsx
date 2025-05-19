@@ -96,6 +96,24 @@ export default function QuotationDetailPage() {
     }
   };
   
+  // Função para obter a descrição do tipo de propriedade
+  const getPropertyTypeLabel = (propertyType: string) => {
+    const propertyTypes: Record<string, string> = {
+      'apartment_t0t1': 'Apartamento T0/T1',
+      'apartment_t2': 'Apartamento T2',
+      'apartment_t3': 'Apartamento T3',
+      'apartment_t4': 'Apartamento T4',
+      'apartment_t5': 'Apartamento T5+',
+      'house_v1': 'Moradia V1',
+      'house_v2': 'Moradia V2',
+      'house_v3': 'Moradia V3',
+      'house_v4': 'Moradia V4',
+      'house_v5': 'Moradia V5+'
+    };
+    
+    return propertyTypes[propertyType] || propertyType;
+  };
+  
   // Generate PDF
   const handleGeneratePdf = async () => {
     try {
@@ -425,7 +443,7 @@ export default function QuotationDetailPage() {
               <div>
                 <p className="font-medium">{t('quotation.propertyType')}</p>
                 <p className="text-muted-foreground">
-                  {quotation.propertyType}
+                  {getPropertyTypeLabel(quotation.propertyType)}
                 </p>
               </div>
             </div>

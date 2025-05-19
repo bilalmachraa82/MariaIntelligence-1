@@ -276,7 +276,7 @@ export function QuotationList() {
                     <TableRow key={quotation.id}>
                       <TableCell>{quotation.clientName}</TableCell>
                       <TableCell>
-                        {quotation.propertyType}
+                        {getPropertyTypeLabel(quotation.propertyType)}
                       </TableCell>
                       <TableCell className="text-right">{formatPrice(parseFloat(quotation.totalPrice))}</TableCell>
                       <TableCell>{getStatusBadge(quotation.status)}</TableCell>

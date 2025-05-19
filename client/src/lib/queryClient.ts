@@ -37,6 +37,11 @@ interface ApiRequestOptions {
 export async function apiRequest<T = unknown>(url: string, options: ApiRequestOptions = {}): Promise<T> {
   const { method = "GET", data, headers = {} } = options;
   
+  // Corrigir URLs com barras duplas
+  const cleanUrl = url.replace(/([^:]\/)\/+/g, "$1");
+  
+  console.log("Fetch URL modificada:", cleanUrl);
+  
   const fetchOptions: FetchOptions = {
     method,
     headers: {
@@ -49,7 +54,7 @@ export async function apiRequest<T = unknown>(url: string, options: ApiRequestOp
     fetchOptions.body = JSON.stringify(data);
   }
 
-  const response = await fetch(url, fetchOptions);
+  const response = await fetch(cleanUrl, fetchOptions);
 
   if (!response.ok) {
     // Handle specific HTTP errors here
