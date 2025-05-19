@@ -2,7 +2,13 @@
   "translation": {
     "common": {
       "exportPDF": "Exportar PDF",
-      "currency": "€"
+      "currency": "€",
+      "actions": "Ações",
+      "view": "Ver",
+      "edit": "Editar",
+      "delete": "Apagar",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar"
     },
     "dashboard": {
       "fullDashboard": "Dashboard Completo",
@@ -158,6 +164,30 @@
       "actions": "Ações",
       "pay": "Pagar",
       "noPaymentsDue": "Não há pagamentos pendentes no momento"
+    },
+    "quotation": {
+      "title": "Orçamentos",
+      "listTitle": "Lista de Orçamentos",
+      "create": "Criar Orçamento",
+      "clientName": "Nome do Cliente",
+      "propertyType": "Tipo de Propriedade",
+      "totalPrice": "Preço Total",
+      "status": "Estado",
+      "validUntil": "Válido Até",
+      "validUntilDescription": "Este orçamento é válido até a data indicada",
+      "statusDraft": "Rascunho",
+      "statusSent": "Enviado",
+      "statusAccepted": "Aceite",
+      "statusRejected": "Rejeitado",
+      "statusExpired": "Expirado",
+      "statusAll": "Todos",
+      "undefined": "Não definido",
+      "generatePdf": "Gerar PDF",
+      "markAsSent": "Marcar como Enviado",
+      "confirmDelete": "Confirmar Eliminação",
+      "deleteWarning": "Esta ação não pode ser revertida. O orçamento será permanentemente eliminado.",
+      "searchPlaceholder": "Pesquisar orçamentos...",
+      "filterByStatus": "Filtrar por estado"
     }
   }
 }
