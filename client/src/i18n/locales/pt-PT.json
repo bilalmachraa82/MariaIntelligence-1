@@ -40,6 +40,13 @@
       "quotations": {
         "title": "Orçamentos"
       },
+      "categories": {
+        "main": "Principal",
+        "finances": "Finanças",
+        "operations": "Operações",
+        "tools": "Ferramentas",
+        "utilities": "Utilidades"
+      },
       "cleaning": {
         "title": "Limpeza",
         "teams": "Equipas de Limpeza",
@@ -73,6 +80,21 @@
         "notifications": "Notificações",
         "language": "Idioma",
         "integrations": "Integrações"
+      },
+      "manual": {
+        "badges": {
+          "revenue": "Receita"
+        },
+        "documents": {
+          "types": {
+            "title": "Tipos de Documentos"
+          }
+        },
+        "properties": {
+          "import": {
+            "desc": "Importação de Propriedades"
+          }
+        }
       }
     },
     "reports": {
