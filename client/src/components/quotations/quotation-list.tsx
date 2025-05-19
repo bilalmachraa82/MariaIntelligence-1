@@ -194,6 +194,24 @@ export function QuotationList() {
     }
   };
   
+  // Função para obter a descrição do tipo de propriedade
+  const getPropertyTypeLabel = (propertyType: string) => {
+    const propertyTypes: Record<string, string> = {
+      'apartment_t0t1': 'Apartamento T0/T1',
+      'apartment_t2': 'Apartamento T2',
+      'apartment_t3': 'Apartamento T3',
+      'apartment_t4': 'Apartamento T4',
+      'apartment_t5': 'Apartamento T5+',
+      'house_v1': 'Moradia V1',
+      'house_v2': 'Moradia V2',
+      'house_v3': 'Moradia V3',
+      'house_v4': 'Moradia V4',
+      'house_v5': 'Moradia V5+'
+    };
+    
+    return propertyTypes[propertyType] || propertyType;
+  };
+  
   return (
     <>
       {/* List header with actions */}
