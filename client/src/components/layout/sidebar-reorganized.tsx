@@ -329,20 +329,20 @@ export function SidebarReorganized({
   // Ferramentas e Scanner - Acesso rápido às ferramentas de trabalho diário
   const toolsNavItems = [
     {
-      name: t("navigation.documentScan", "Scanner"),
+      name: "Scanner",
       href: "/upload-pdf",
       altHref: "/pdf-upload",
       icon: FileUp,
       iconColor: "text-rose-500",
-      description: t("navigation.documentScan.description", "Digitalizar e processar documentos")
+      description: "Digitalizar e processar documentos"
     },
     {
-      name: t("navigation.assistant", "Maria IA"),
+      name: "Maria IA",
       href: "/assistente",
       altHref: "/assistant",
       icon: Bot,
       iconColor: "text-violet-500",
-      description: t("navigation.assistant.description", "Assistente inteligente")
+      description: "Assistente inteligente"
     }
   ];
 
@@ -366,7 +366,7 @@ export function SidebarReorganized({
     },
     // Item de orçamentos
     {
-      name: t("navigation.quotations", "Orçamentos"),
+      name: "Orçamentos",
       href: "/quotations",
       altHref: "/orcamentos",
       icon: FileText,
