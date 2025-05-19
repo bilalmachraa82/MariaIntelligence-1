@@ -33,9 +33,49 @@ export function registerQuotationRoutes(app: any) {
       
       const quotations = await storage.getQuotations(Object.keys(options).length > 0 ? options : undefined);
       
+      // Mapeamento de tipos de propriedade para exibição
+      const propertyTypeMap = {
+        'apartment_t0t1': 'Apartamento T0/T1',
+        'apartment_t2': 'Apartamento T2',
+        'apartment_t3': 'Apartamento T3',
+        'apartment_t4': 'Apartamento T4',
+        'apartment_t5': 'Apartamento T5+',
+        'house_v1': 'Moradia V1',
+        'house_v2': 'Moradia V2',
+        'house_v3': 'Moradia V3',
+        'house_v4': 'Moradia V4',
+        'house_v5': 'Moradia V5+'
+      };
+      
+      // Processar os dados antes de responder
+      const processedQuotations = quotations.map(q => {
+        // Cria uma cópia segura do objeto para não modificar o original
+        const quotation = {...q};
+        
+        // Adiciona o tipo de propriedade formatado
+        quotation.propertyTypeDisplay = propertyTypeMap[quotation.propertyType] || quotation.propertyType;
+        
+        // Formata o preço para exibição em euros
+        try {
+          const priceNumber = parseFloat(quotation.totalPrice);
+          if (!isNaN(priceNumber)) {
+            quotation.totalPriceFormatted = new Intl.NumberFormat('pt-PT', {
+              style: 'currency', 
+              currency: 'EUR'
+            }).format(priceNumber);
+          } else {
+            quotation.totalPriceFormatted = quotation.totalPrice + ' €';
+          }
+        } catch (e) {
+          quotation.totalPriceFormatted = quotation.totalPrice + ' €';
+        }
+        
+        return quotation;
+      });
+      
       return res.json({
         success: true,
-        data: quotations
+        data: processedQuotations
       });
     } catch (error: any) {
       console.error("Erro ao listar orçamentos:", error);

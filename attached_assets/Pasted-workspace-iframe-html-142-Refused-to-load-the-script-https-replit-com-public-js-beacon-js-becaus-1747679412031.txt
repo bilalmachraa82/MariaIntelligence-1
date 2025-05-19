@@ -1,0 +1,1499 @@
+workspace_iframe.html:142 Refused to load the script 'https://replit.com/public/js/beacon.js' because it violates the following Content Security Policy directive: "script-src 'self' 'unsafe-inline' 'unsafe-eval'". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback.
+
+onIframeLoad @ workspace_iframe.html?initialPath=%2F&id=%3Ar189%3A:142
+_app-469d78abcda00912.js:38 
+            
+            
+           POST https://stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1745797532.1747312056&jid=820948405&gjid=1212018984&_gid=1052171432.1747574575&_u=SCCAgEAjQAAAAGgCIAD~&z=329830615 net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:38
+wd @ analytics.js:36
+pe @ analytics.js:35
+(anonymous) @ analytics.js:73
+Ha.D @ analytics.js:38
+pc.send @ analytics.js:77
+X.b.<computed> @ analytics.js:57
+Z.v @ analytics.js:93
+Z.D @ analytics.js:92
+N @ analytics.js:94
+g.track @ index.js:351
+track @ protos.js:372
+e.invoke @ protos.js:178
+(anonymous) @ index.ts:270
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+(anonymous) @ tslib.es6.js:76
+u @ tslib.es6.js:72
+t.send @ ajs-destination.bundle.8e6b895db75187c55313.js:1
+(anonymous) @ index.ts:286
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+t.track @ ajs-destination.bundle.8e6b895db75187c55313.js:1
+(anonymous) @ delivery.js:28
+(anonymous) @ delivery.js:11
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+(anonymous) @ delivery.js:4
+o @ delivery.js:27
+(anonymous) @ event-queue.js:325
+(anonymous) @ event-queue.js:323
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ event-queue.js:321
+(anonymous) @ event-queue.js:320
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+(anonymous) @ tslib.es6.js:76
+u @ tslib.es6.js:72
+n.flushOne @ event-queue.js:273
+(anonymous) @ event-queue.js:181
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+(anonymous) @ tslib.es6.js:76
+u @ tslib.es6.js:72
+n.deliver @ event-queue.js:169
+(anonymous) @ event-queue.js:135
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+n.dispatchSingle @ event-queue.js:128
+(anonymous) @ dispatch.js:25
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+p @ dispatch.js:18
+(anonymous) @ index.ts:460
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+n._dispatch @ index.ts:454
+(anonymous) @ index.ts:253
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+n.track @ index.ts:241
+A @ _app-469d78abcda00912.js:25
+(anonymous) @ replEnvironmentDesktop-e2b8f1f93f71b158.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ replEnvironmentDesktop-e2b8f1f93f71b158.js:1
+(anonymous) @ replEnvironmentDesktop-e2b8f1f93f71b158.js:1
+(anonymous) @ replEnvironmentDesktop-e2b8f1f93f71b158.js:1
+r @ _app-469d78abcda00912.js:38
+_app-469d78abcda00912.js:38 
+            
+            
+           GET https://replit.com/data/__reachability 403 (Forbidden)
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+b @ _app-469d78abcda00912.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+_app-469d78abcda00912.js:38 
+            
+            
+           GET https://replit.com/data/__reachability 403 (Forbidden)
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+b @ _app-469d78abcda00912.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+_app-469d78abcda00912.js:38 
+            
+            
+           GET https://replit.com/data/__reachability 403 (Forbidden)
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+b @ _app-469d78abcda00912.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+framework-9212ebbed4e4b182.js:1 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+_ @ framework-9212ebbed4e4b182.js:1
+(anonymous) @ framework-9212ebbed4e4b182.js:1
+uD @ framework-9212ebbed4e4b182.js:1
+uI @ framework-9212ebbed4e4b182.js:1
+uM @ framework-9212ebbed4e4b182.js:1
+uS @ framework-9212ebbed4e4b182.js:1
+C @ framework-9212ebbed4e4b182.js:1
+z @ framework-9212ebbed4e4b182.js:1
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Ar1jr%3A:32 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+_app-469d78abcda00912.js:38 
+            
+            
+           GET https://dotdevproxy.janeway.repl.co/__reachability net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+_app-469d78abcda00912.js:38 
+            
+            
+           GET https://dotdevproxy.janeway.repl.co/__reachability net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+c @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+MariaIntelligence-1:157 
+            
+            
+           GET https://clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ net::ERR_CONNECTION_CLOSED 200 (OK)
+workspace_iframe.html:142 Refused to load the script 'https://replit.com/public/js/beacon.js' because it violates the following Content Security Policy directive: "script-src 'self' 'unsafe-inline' 'unsafe-eval'". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback.
+
+onIframeLoad @ workspace_iframe.html?initialPath=%2F&id=%3Ar1jr%3A:142
+_app-469d78abcda00912.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//quotations' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-469d78abcda00912.js:38
+d @ main-e513452f23b4b8c3.js:1
+(anonymous) @ _app-469d78abcda00912.js:6
+useMemo @ framework-9212ebbed4e4b182.js:1
+t.useMemo @ framework-9212ebbed4e4b182.js:1
+(anonymous) @ _app-469d78abcda00912.js:6
+ld @ framework-9212ebbed4e4b182.js:1
+ou @ framework-9212ebbed4e4b182.js:1
+i @ framework-9212ebbed4e4b182.js:1
+uI @ framework-9212ebbed4e4b182.js:1
+uM @ framework-9212ebbed4e4b182.js:1
+uS @ framework-9212ebbed4e4b182.js:1
+C @ framework-9212ebbed4e4b182.js:1
+z @ framework-9212ebbed4e4b182.js:1
+framework-9212ebbed4e4b182.js:1 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+_ @ framework-9212ebbed4e4b182.js:1
+(anonymous) @ framework-9212ebbed4e4b182.js:1
+uD @ framework-9212ebbed4e4b182.js:1
+uI @ framework-9212ebbed4e4b182.js:1
+uM @ framework-9212ebbed4e4b182.js:1
+uS @ framework-9212ebbed4e4b182.js:1
+C @ framework-9212ebbed4e4b182.js:1
+z @ framework-9212ebbed4e4b182.js:1
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fquotations&id=%3Ar1ke%3A:32 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+workspace_iframe.html?initialPath=%2Fquotations&id=%3Ar1ke%3A:142 Refused to load the script 'https://replit.com/public/js/beacon.js' because it violates the following Content Security Policy directive: "script-src 'self' 'unsafe-inline' 'unsafe-eval'". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback.
+
+onIframeLoad @ workspace_iframe.html?initialPath=%2Fquotations&id=%3Ar1ke%3A:142
+_app-469d78abcda00912.js:38 
+            
+            
+           POST https://stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1745797532.1747312056&jid=412278929&gjid=375605471&_gid=1052171432.1747574575&_u=SCCAgEAjQAAAAGgCIAD~&z=987582312 net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:38
+wd @ analytics.js:36
+pe @ analytics.js:35
+(anonymous) @ analytics.js:73
+Ha.D @ analytics.js:38
+pc.send @ analytics.js:77
+X.b.<computed> @ analytics.js:57
+Z.v @ analytics.js:93
+Z.D @ analytics.js:92
+N @ analytics.js:94
+g.track @ index.js:351
+track @ protos.js:372
+e.invoke @ protos.js:178
+(anonymous) @ index.ts:270
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+(anonymous) @ tslib.es6.js:76
+u @ tslib.es6.js:72
+t.send @ ajs-destination.bundle.8e6b895db75187c55313.js:1
+(anonymous) @ index.ts:286
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+t.track @ ajs-destination.bundle.8e6b895db75187c55313.js:1
+(anonymous) @ delivery.js:28
+(anonymous) @ delivery.js:11
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+(anonymous) @ delivery.js:4
+o @ delivery.js:27
+(anonymous) @ event-queue.js:325
+(anonymous) @ event-queue.js:323
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ event-queue.js:321
+(anonymous) @ event-queue.js:320
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+(anonymous) @ tslib.es6.js:76
+u @ tslib.es6.js:72
+n.flushOne @ event-queue.js:273
+(anonymous) @ event-queue.js:181
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+(anonymous) @ tslib.es6.js:76
+u @ tslib.es6.js:72
+n.deliver @ event-queue.js:169
+(anonymous) @ event-queue.js:135
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+n.dispatchSingle @ event-queue.js:128
+(anonymous) @ dispatch.js:25
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+p @ dispatch.js:18
+(anonymous) @ index.ts:460
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+n._dispatch @ index.ts:454
+(anonymous) @ index.ts:253
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+n.track @ index.ts:241
+A @ _app-469d78abcda00912.js:25
+d @ 3481-0000e7f5398afb7b.js:1
+(anonymous) @ replEnvironmentDesktop-e2b8f1f93f71b158.js:1
+(anonymous) @ _app-469d78abcda00912.js:26
+t.trigger @ _app-469d78abcda00912.js:26
+(anonymous) @ _app-469d78abcda00912.js:26
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+_app-469d78abcda00912.js:38 
+            
+            
+           POST https://events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820 net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:38
+promise @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+n.httpRequest @ _app-469d78abcda00912.js:1
+t @ _app-469d78abcda00912.js:1
+a.sendChunk @ _app-469d78abcda00912.js:1
+a.sendEvents @ _app-469d78abcda00912.js:1
+a.flush @ _app-469d78abcda00912.js:1
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+_app-469d78abcda00912.js:38 
+            
+            
+           POST https://events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820 net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:38
+promise @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+n.httpRequest @ _app-469d78abcda00912.js:1
+t @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+Promise.catch
+t @ _app-469d78abcda00912.js:1
+a.sendChunk @ _app-469d78abcda00912.js:1
+a.sendEvents @ _app-469d78abcda00912.js:1
+a.flush @ _app-469d78abcda00912.js:1
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+_app-469d78abcda00912.js:38 
+            
+            
+           GET https://dotdevproxy.janeway.repl.co/__reachability net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+_app-469d78abcda00912.js:38 
+            
+            
+           GET https://dotdevproxy.picard.repl.co/__reachability net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+_app-469d78abcda00912.js:38 
+            
+            
+           GET https://dotdevproxy.picard.repl.co/__reachability net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+c @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ:1 
+            
+            
+           GET https://clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ net::ERR_CONNECTION_CLOSED 200 (OK)
+_app-469d78abcda00912.js:38 
+            
+            
+           GET https://dotdevproxy.picard.repl.co/__reachability net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+c @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+c @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+_app-469d78abcda00912.js:38 
+            
+            
+           GET https://dotdevproxy.riker.repl.co/__reachability net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+_app-469d78abcda00912.js:38 
+            
+            
+           POST https://events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820 net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:38
+promise @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+n.httpRequest @ _app-469d78abcda00912.js:1
+t @ _app-469d78abcda00912.js:1
+a.sendChunk @ _app-469d78abcda00912.js:1
+a.sendEvents @ _app-469d78abcda00912.js:1
+a.flush @ _app-469d78abcda00912.js:1
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+_app-469d78abcda00912.js:38 
+            
+            
+           POST https://events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820 net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:38
+promise @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+n.httpRequest @ _app-469d78abcda00912.js:1
+t @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+Promise.catch
+t @ _app-469d78abcda00912.js:1
+a.sendChunk @ _app-469d78abcda00912.js:1
+a.sendEvents @ _app-469d78abcda00912.js:1
+a.flush @ _app-469d78abcda00912.js:1
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+e @ _app-469d78abcda00912.js:1
+r @ _app-469d78abcda00912.js:38
+_app-469d78abcda00912.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//quotations/new' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-469d78abcda00912.js:38
+d @ main-e513452f23b4b8c3.js:1
+(anonymous) @ _app-469d78abcda00912.js:6
+lU @ framework-9212ebbed4e4b182.js:1
+t.useMemo @ framework-9212ebbed4e4b182.js:1
+(anonymous) @ _app-469d78abcda00912.js:6
+ld @ framework-9212ebbed4e4b182.js:1
+ou @ framework-9212ebbed4e4b182.js:1
+i @ framework-9212ebbed4e4b182.js:1
+uI @ framework-9212ebbed4e4b182.js:1
+uM @ framework-9212ebbed4e4b182.js:1
+uS @ framework-9212ebbed4e4b182.js:1
+C @ framework-9212ebbed4e4b182.js:1
+z @ framework-9212ebbed4e4b182.js:1
+_app-469d78abcda00912.js:38 
+            
+            
+           GET https://dotdevproxy.riker.repl.co/__reachability net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+c @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+_app-469d78abcda00912.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//quotations' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-469d78abcda00912.js:38
+d @ main-e513452f23b4b8c3.js:1
+(anonymous) @ _app-469d78abcda00912.js:6
+lU @ framework-9212ebbed4e4b182.js:1
+t.useMemo @ framework-9212ebbed4e4b182.js:1
+(anonymous) @ _app-469d78abcda00912.js:6
+ld @ framework-9212ebbed4e4b182.js:1
+ou @ framework-9212ebbed4e4b182.js:1
+i @ framework-9212ebbed4e4b182.js:1
+uI @ framework-9212ebbed4e4b182.js:1
+uM @ framework-9212ebbed4e4b182.js:1
+uS @ framework-9212ebbed4e4b182.js:1
+C @ framework-9212ebbed4e4b182.js:1
+z @ framework-9212ebbed4e4b182.js:1
+_app-469d78abcda00912.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//quotations/new' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-469d78abcda00912.js:38
+d @ main-e513452f23b4b8c3.js:1
+(anonymous) @ _app-469d78abcda00912.js:6
+lU @ framework-9212ebbed4e4b182.js:1
+t.useMemo @ framework-9212ebbed4e4b182.js:1
+(anonymous) @ _app-469d78abcda00912.js:6
+ld @ framework-9212ebbed4e4b182.js:1
+ou @ framework-9212ebbed4e4b182.js:1
+i @ framework-9212ebbed4e4b182.js:1
+uI @ framework-9212ebbed4e4b182.js:1
+uM @ framework-9212ebbed4e4b182.js:1
+uS @ framework-9212ebbed4e4b182.js:1
+C @ framework-9212ebbed4e4b182.js:1
+z @ framework-9212ebbed4e4b182.js:1
+_app-469d78abcda00912.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//quotations' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-469d78abcda00912.js:38
+d @ main-e513452f23b4b8c3.js:1
+(anonymous) @ _app-469d78abcda00912.js:6
+lU @ framework-9212ebbed4e4b182.js:1
+t.useMemo @ framework-9212ebbed4e4b182.js:1
+(anonymous) @ _app-469d78abcda00912.js:6
+ld @ framework-9212ebbed4e4b182.js:1
+ou @ framework-9212ebbed4e4b182.js:1
+i @ framework-9212ebbed4e4b182.js:1
+uI @ framework-9212ebbed4e4b182.js:1
+uM @ framework-9212ebbed4e4b182.js:1
+uS @ framework-9212ebbed4e4b182.js:1
+C @ framework-9212ebbed4e4b182.js:1
+z @ framework-9212ebbed4e4b182.js:1
+clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ:1 
+            
+            
+           GET https://clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ net::ERR_CONNECTION_CLOSED 200 (OK)
+_app-469d78abcda00912.js:38 
+            
+            
+           GET https://dotdevproxy.riker.repl.co/__reachability net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+c @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+c @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+_app-469d78abcda00912.js:38 
+            
+            
+           POST https://stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1745797532.1747312056&jid=700376803&gjid=273140553&_gid=1052171432.1747574575&_u=SCCAgEAjQAAAAGgCIAD~&z=968157080 net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:38
+wd @ analytics.js:36
+pe @ analytics.js:35
+(anonymous) @ analytics.js:73
+Ha.D @ analytics.js:38
+pc.send @ analytics.js:77
+X.b.<computed> @ analytics.js:57
+Z.v @ analytics.js:93
+Z.D @ analytics.js:92
+N @ analytics.js:94
+g.track @ index.js:351
+track @ protos.js:372
+e.invoke @ protos.js:178
+(anonymous) @ index.ts:270
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+(anonymous) @ tslib.es6.js:76
+u @ tslib.es6.js:72
+t.send @ ajs-destination.bundle.8e6b895db75187c55313.js:1
+(anonymous) @ index.ts:286
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+t.track @ ajs-destination.bundle.8e6b895db75187c55313.js:1
+(anonymous) @ delivery.js:28
+(anonymous) @ delivery.js:11
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+(anonymous) @ delivery.js:4
+o @ delivery.js:27
+(anonymous) @ event-queue.js:325
+(anonymous) @ event-queue.js:323
+r @ _app-469d78abcda00912.js:38
+setTimeout
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ event-queue.js:321
+(anonymous) @ event-queue.js:320
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+(anonymous) @ tslib.es6.js:76
+u @ tslib.es6.js:72
+n.flushOne @ event-queue.js:273
+(anonymous) @ event-queue.js:181
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+(anonymous) @ tslib.es6.js:76
+u @ tslib.es6.js:72
+n.deliver @ event-queue.js:169
+(anonymous) @ event-queue.js:135
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+n.dispatchSingle @ event-queue.js:128
+(anonymous) @ dispatch.js:25
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+p @ dispatch.js:18
+(anonymous) @ index.ts:460
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+n._dispatch @ index.ts:454
+(anonymous) @ index.ts:253
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+n.track @ index.ts:241
+A @ _app-469d78abcda00912.js:25
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+c @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+c @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+c @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+_app-469d78abcda00912.js:38 
+            
+            
+           GET https://dotdevproxy.sisko.repl.co/__reachability net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+_app-469d78abcda00912.js:38 
+            
+            
+           GET https://dotdevproxy.sisko.repl.co/__reachability net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+c @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+_app-469d78abcda00912.js:38 
+            
+            
+           GET https://dotdevproxy.sisko.repl.co/__reachability net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+c @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+c @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+_app-469d78abcda00912.js:38 
+            
+            
+           GET https://dotdevproxy.worf.repl.co/__reachability net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-469d78abcda00912.js:38
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+v @ _app-469d78abcda00912.js:1
+(anonymous) @ _app-469d78abcda00912.js:1
+(anonymous) @ main-e513452f23b4b8c3.js:1
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+Promise.then
+n @ main-e513452f23b4b8c3.js:1
+u @ main-e513452f23b4b8c3.js:1
+clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ:1 
+            
+            
+           GET https://clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ net::ERR_CONNECTION_CLOSED 200 (OK)
