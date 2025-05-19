@@ -8,6 +8,9 @@ import rateLimit from "express-rate-limit";
 console.log("Inicializando aplicação...");
 const app = express();
 
+// Configurar a aplicação para confiar em proxies
+app.set('trust proxy', 1);
+
 // Configuração de rate limiting para prevenir abusos
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
