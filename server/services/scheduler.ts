@@ -111,6 +111,9 @@ async function updateReservationStatuses() {
   try {
     console.log('Atualizando status de reservas...');
     
+    // Converter data para string no formato ISO para compatibilidade
+    const todayFormatted = today.toISOString().split('T')[0];
+    
     // 1. Atualizar para checked-in as reservas confirmadas que já passaram da data de check-in
     const checkInResult = await db
       .update(reservations)
@@ -118,7 +121,7 @@ async function updateReservationStatuses() {
       .where(
         and(
           eq(reservations.status, 'confirmed'),
-          lt(reservations.checkInDate, today)
+          lt(reservations.checkInDate, todayFormatted)
         )
       );
     
@@ -129,11 +132,14 @@ async function updateReservationStatuses() {
       .where(
         and(
           eq(reservations.status, 'checked-in'),
-          lt(reservations.checkOutDate, today)
+          lt(reservations.checkOutDate, todayFormatted)
         )
       );
     
-    console.log(`✅ Atualização de status concluída: ${checkInResult.length} check-ins, ${checkOutResult.length} check-outs processados`);
+    const checkInsCount = checkInResult?.count || 0;
+    const checkOutsCount = checkOutResult?.count || 0;
+    
+    console.log(`✅ Atualização de status concluída: ${checkInsCount} check-ins, ${checkOutsCount} check-outs processados`);
   } catch (error) {
     console.error('Erro ao atualizar status de reservas:', error);
   }
