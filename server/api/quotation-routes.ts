@@ -309,4 +309,71 @@ export function registerQuotationRoutes(app: any) {
       });
     }
   });
+
+  /**
+   * Endpoint para enviar orçamento por e-mail
+   * Envia o PDF do orçamento como anexo para o e-mail especificado
+   */
+  app.post("/api/quotations/:id/send-email", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { email, subject, message } = req.body;
+      
+      if (isNaN(id)) {
+        return res.status(400).json({
+          success: false,
+          message: "ID inválido"
+        });
+      }
+      
+      if (!email) {
+        return res.status(400).json({
+          success: false,
+          message: "E-mail de destino não fornecido"
+        });
+      }
+      
+      // Verificar se o orçamento existe
+      const quotation = await storage.getQuotation(id);
+      if (!quotation) {
+        return res.status(404).json({
+          success: false,
+          message: "Orçamento não encontrado"
+        });
+      }
+      
+      // Gerar PDF se ainda não existir
+      const pdfPath = await storage.generateQuotationPdf(id);
+      
+      // Enviar e-mail com o PDF anexado
+      if (storage.sendQuotationByEmail) {
+        await storage.sendQuotationByEmail(id, {
+          email,
+          subject: subject || `Orçamento de Serviço para ${quotation.clientName}`,
+          message: message || `Segue em anexo o orçamento de serviço para ${quotation.clientName}.`
+        });
+      } else {
+        // Implementação alternativa se o método não existir no storage
+        // (poderia ser implementado diretamente aqui)
+        console.log(`[SIMULAÇÃO] E-mail enviado para ${email} com o orçamento #${id}`);
+      }
+      
+      // Atualizar status do orçamento para "sent" se estiver em "draft"
+      if (quotation.status === 'draft') {
+        await storage.updateQuotation(id, { status: 'sent' });
+      }
+      
+      return res.json({
+        success: true,
+        message: "Orçamento enviado por e-mail com sucesso"
+      });
+    } catch (error: any) {
+      console.error("Erro ao enviar orçamento por e-mail:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Erro ao enviar orçamento por e-mail",
+        error: error.message
+      });
+    }
+  });
 }

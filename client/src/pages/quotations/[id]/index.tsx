@@ -458,12 +458,11 @@ export default function QuotationDetailPage() {
               <p className="font-medium">{t('quotation.additionalFeatures')}</p>
               <ul className="list-disc pl-5 text-muted-foreground space-y-1">
                 {quotation.isDuplex && <li>{t('quotation.isDuplex')}</li>}
-                {quotation.hasExteriorSpace && <li>{t('quotation.hasExteriorSpace')}</li>}
+                {quotation.exteriorArea > 0 && <li>{t('quotation.hasExteriorArea')}</li>}
                 {quotation.hasBBQ && <li>{t('quotation.hasBBQ')}</li>}
-                {quotation.hasGarden && <li>{t('quotation.hasGarden')}</li>}
-                {quotation.hasGlassSurfaces && <li>{t('quotation.hasGlassSurfaces')}</li>}
-                {!quotation.isDuplex && !quotation.hasExteriorSpace && !quotation.hasBBQ && 
-                 !quotation.hasGarden && !quotation.hasGlassSurfaces && 
+                {quotation.hasGlassGarden && <li>{t('quotation.hasGlassGarden')}</li>}
+                {!quotation.isDuplex && !(quotation.exteriorArea > 0) && !quotation.hasBBQ && 
+                 !quotation.hasGlassGarden && 
                  <li className="list-none text-center italic">{t('quotation.noAdditionalFeatures')}</li>}
               </ul>
             </div>
@@ -479,19 +478,42 @@ export default function QuotationDetailPage() {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">{t('quotation.basePrice')}:</span>
-                <span>{formatPrice(quotation.basePrice)}</span>
+                <span>{formatPrice(parseFloat(quotation.basePrice || "0"))}</span>
               </div>
               
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">{t('quotation.additionalPrice')}:</span>
-                <span>{formatPrice(quotation.additionalPrice)}</span>
-              </div>
+              {quotation.duplexSurcharge && parseFloat(quotation.duplexSurcharge) > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">{t('quotation.duplexSurcharge')}:</span>
+                  <span>{formatPrice(parseFloat(quotation.duplexSurcharge || "0"))}</span>
+                </div>
+              )}
+              
+              {quotation.bbqSurcharge && parseFloat(quotation.bbqSurcharge) > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">{t('quotation.bbqSurcharge')}:</span>
+                  <span>{formatPrice(parseFloat(quotation.bbqSurcharge || "0"))}</span>
+                </div>
+              )}
+              
+              {quotation.glassGardenSurcharge && parseFloat(quotation.glassGardenSurcharge) > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">{t('quotation.glassGardenSurcharge')}:</span>
+                  <span>{formatPrice(parseFloat(quotation.glassGardenSurcharge || "0"))}</span>
+                </div>
+              )}
+              
+              {quotation.additionalSurcharges && parseFloat(quotation.additionalSurcharges) > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">{t('quotation.additionalSurcharges')}:</span>
+                  <span>{formatPrice(parseFloat(quotation.additionalSurcharges || "0"))}</span>
+                </div>
+              )}
               
               <Separator className="my-2" />
               
               <div className="flex justify-between font-bold text-lg">
                 <span>{t('quotation.totalPrice')}:</span>
-                <span>{formatPrice(quotation.totalPrice)}</span>
+                <span>{formatPrice(parseFloat(quotation.totalPrice || "0"))}</span>
               </div>
             </div>
             
