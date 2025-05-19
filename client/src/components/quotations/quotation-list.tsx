@@ -312,7 +312,7 @@ export function QuotationList() {
                     <TableRow key={quotation.id}>
                       <TableCell>{quotation.clientName}</TableCell>
                       <TableCell>
-                        {(() => {
+                        {quotation.propertyTypeDisplay || (() => {
                           const propertyTypes: Record<string, string> = {
                             'apartment_t0t1': 'Apartamento T0/T1',
                             'apartment_t2': 'Apartamento T2',
@@ -329,9 +329,9 @@ export function QuotationList() {
                         })()}
                       </TableCell>
                       <TableCell className="text-right">
-                        {quotation.totalPrice 
+                        {quotation.totalPriceFormatted || (quotation.totalPrice 
                           ? formatPrice(parseFloat(quotation.totalPrice)) 
-                          : '€0,00'}
+                          : '€0,00')}
                       </TableCell>
                       <TableCell>{getStatusBadge(quotation.status)}</TableCell>
                       <TableCell>{formatDate(quotation.validUntil)}</TableCell>
