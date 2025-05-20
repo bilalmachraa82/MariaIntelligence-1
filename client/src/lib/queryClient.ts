@@ -29,27 +29,41 @@ interface FetchOptions {
 }
 
 interface ApiRequestOptions {
+  url?: string;
   method?: string;
   data?: unknown;
   headers?: Record<string, string>;
 }
 
-export async function apiRequest<T = unknown>(url: string | { url: string } | unknown, options: ApiRequestOptions = {}): Promise<T> {
-  // Verificar se url é um objeto com propriedade url
-  if (typeof url === 'object' && url !== null && 'url' in url) {
-    options = { ...(url as ApiRequestOptions) };
-    url = (url as { url: string }).url;
+export async function apiRequest<T = unknown>(urlOrOptions: string | ApiRequestOptions, extraOptions: ApiRequestOptions = {}): Promise<T> {
+  let url: string;
+  let options: ApiRequestOptions = { ...extraOptions };
+  
+  // Determinar se o primeiro argumento é uma string ou um objeto de opções
+  if (typeof urlOrOptions === 'string') {
+    url = urlOrOptions;
+  } else if (typeof urlOrOptions === 'object' && urlOrOptions !== null) {
+    options = { ...urlOrOptions, ...extraOptions };
+    url = options.url || '';
+  } else {
+    console.error('Tipo de URL inválido:', typeof urlOrOptions, urlOrOptions);
+    throw new Error(`URL inválida: ${JSON.stringify(urlOrOptions)}`);
+  }
+  
+  // Garantir que temos uma URL válida
+  if (!url) {
+    throw new Error('URL não fornecida');
   }
   
   const { method = "GET", data, headers = {} } = options;
   
-  // Garantir que url seja string
-  if (typeof url !== 'string') {
-    throw new Error(`URL inválida: ${JSON.stringify(url)}`);
+  // Corrigir URLs com barras duplas (de forma segura)
+  let cleanUrl = url;
+  try {
+    cleanUrl = url.replace(/([^:]\/)\/+/g, "$1");
+  } catch (error) {
+    console.error("Erro ao processar URL:", error);
   }
-  
-  // Corrigir URLs com barras duplas
-  const cleanUrl = url.replace(/([^:]\/)\/+/g, "$1");
   
   console.log("Fetch URL modificada:", cleanUrl);
   
@@ -79,7 +93,7 @@ export async function apiRequest<T = unknown>(url: string | { url: string } | un
     try {
       const errorData = await response.json();
       throw new Error(errorData.message || "API request failed");
-    } catch {
+    } catch (e) {
       throw new Error(`API request failed with status: ${response.status}`);
     }
   }
