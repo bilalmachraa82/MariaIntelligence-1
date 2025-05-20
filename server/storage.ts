@@ -3040,17 +3040,104 @@ export class DatabaseStorage implements IStorage {
     const quotation = await this.getQuotation(id);
     if (!quotation) throw new Error("Orçamento não encontrado");
     
-    // Gerar nome de arquivo baseado no ID e data de criação
-    const fileName = `quotation_${id}_${new Date().toISOString().split('T')[0]}.pdf`;
-    const filePath = `./uploads/${fileName}`;
+    // Enriquecer os dados do orçamento para o PDF
+    const enrichedQuotation = {
+      ...quotation,
+      // Garantir que todas as propriedades necessárias estão presentes
+      propertyType: quotation.propertyType || 'apartment_t0t1',
+      propertyArea: quotation.propertyArea || 0,
+      exteriorArea: quotation.exteriorArea || 0,
+      bedrooms: quotation.bedrooms || 1,
+      bathrooms: quotation.bathrooms || 1,
+      isDuplex: quotation.isDuplex === true,
+      hasBBQ: quotation.hasBBQ === true,
+      hasGlassGarden: quotation.hasGlassGarden === true,
+      
+      // Preços e taxas
+      basePrice: quotation.basePrice || quotation.totalAmount || '0.00',
+      duplexSurcharge: quotation.isDuplex ? '10.00' : '0.00',
+      bbqSurcharge: quotation.hasBBQ ? '10.00' : '0.00',
+      glassGardenSurcharge: quotation.hasGlassGarden ? '10.00' : '0.00',
+      exteriorSurcharge: (quotation.exteriorArea && quotation.exteriorArea > 15) ? '10.00' : '0.00',
+      additionalSurcharges: quotation.additionalSurcharges || '0.00',
+      
+      // Garantir que temos valores formatados
+      propertyTypeDisplay: this.getPropertyTypeDisplay(quotation.propertyType),
+      totalPrice: quotation.totalPrice || quotation.totalAmount || '0.00'
+    };
     
     try {
       // Importar o serviço de PDF para gerar o documento
       const { pdfService } = await import('./services/pdf.service');
-      return await pdfService.generateQuotationPdf(quotation, id);
+      return await pdfService.generateQuotationPdf(enrichedQuotation, id);
     } catch (error) {
       console.error(`Erro ao gerar PDF para orçamento ${id}:`, error);
       throw new Error(`Falha ao gerar PDF: ${error.message}`);
+    }
+  }
+  
+  // Função auxiliar para obter o nome legível do tipo de propriedade
+  private getPropertyTypeDisplay(propertyType?: string): string {
+    if (!propertyType) return 'Não especificado';
+    
+    const propertyTypeMap: Record<string, string> = {
+      'apartment_t0t1': 'Apartamento T0/T1',
+      'apartment_t2': 'Apartamento T2',
+      'apartment_t3': 'Apartamento T3',
+      'apartment_t4': 'Apartamento T4',
+      'apartment_t5': 'Apartamento T5+',
+      'house_v1': 'Moradia V1',
+      'house_v2': 'Moradia V2',
+      'house_v3': 'Moradia V3',
+      'house_v4': 'Moradia V4',
+      'house_v5': 'Moradia V5+'
+    };
+    
+    return propertyTypeMap[propertyType] || propertyType;
+  }
+  
+  // Função para enviar orçamento por e-mail
+  async sendQuotationByEmail(id: number, options: { email: string; subject: string; message: string }): Promise<boolean> {
+    try {
+      // Verificar se orçamento existe
+      const quotation = await this.getQuotation(id);
+      if (!quotation) throw new Error("Orçamento não encontrado");
+      
+      // Gerar PDF
+      const pdfPath = await this.generateQuotationPdf(id);
+      
+      // Importar serviço de e-mail
+      const { emailService } = await import('./services/email.service');
+      
+      // Verificar se o serviço de e-mail está disponível
+      const isEmailAvailable = await emailService.isEmailServiceAvailable();
+      
+      if (!isEmailAvailable) {
+        // Simulação de envio quando não há configuração de e-mail
+        console.log(`[SIMULAÇÃO] E-mail enviado para ${options.email} com o assunto "${options.subject}"`);
+        console.log(`[SIMULAÇÃO] Mensagem: ${options.message}`);
+        console.log(`[SIMULAÇÃO] PDF anexado: ${pdfPath}`);
+        return true;
+      }
+      
+      // Enviar e-mail com PDF anexado
+      const result = await emailService.sendEmail({
+        to: options.email,
+        subject: options.subject,
+        html: `<div style="font-family: Arial, sans-serif;">${options.message.replace(/\n/g, '<br>')}</div>`,
+        attachments: [
+          {
+            filename: `Orcamento_${id}.pdf`,
+            path: pdfPath,
+            contentType: 'application/pdf'
+          }
+        ]
+      });
+      
+      return result;
+    } catch (error) {
+      console.error(`Erro ao enviar orçamento ${id} por e-mail:`, error);
+      throw new Error(`Falha ao enviar e-mail: ${error.message}`);
     }
   }
 

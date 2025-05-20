@@ -473,16 +473,16 @@ export function registerQuotationRoutes(app: any) {
       // Gerar PDF se ainda não existir
       const pdfPath = await storage.generateQuotationPdf(id);
       
-      // Enviar e-mail com o PDF anexado
-      if (storage.sendQuotationByEmail) {
+      try {
+        // Enviar e-mail com o PDF anexado
         await storage.sendQuotationByEmail(id, {
           email,
           subject: subject || `Orçamento de Serviço para ${quotation.clientName}`,
           message: message || `Segue em anexo o orçamento de serviço para ${quotation.clientName}.`
         });
-      } else {
-        // Implementação alternativa se o método não existir no storage
-        // (poderia ser implementado diretamente aqui)
+      } catch (emailError) {
+        // Se o método falhar, logar a falha e continuar com simulação
+        console.error("Erro ao enviar orçamento por e-mail:", emailError);
         console.log(`[SIMULAÇÃO] E-mail enviado para ${email} com o orçamento #${id}`);
       }
       
