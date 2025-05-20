@@ -54,19 +54,39 @@ export default function QuotationDetailPage() {
     enabled: !!quotationId,
   });
   
-  // Format date
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('pt-PT', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    }).format(date);
+  // Format date com tratamento de erro
+  const formatDate = (dateString: string | Date | null) => {
+    if (!dateString) return '-';
+    
+    try {
+      // Tentar converter a string para data
+      const date = dateString instanceof Date ? dateString : new Date(dateString);
+      
+      // Verificar se a data é válida
+      if (isNaN(date.getTime())) {
+        console.warn('Data inválida:', dateString);
+        return '-';
+      }
+      
+      return new Intl.DateTimeFormat('pt-PT', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      }).format(date);
+    } catch (e) {
+      console.error('Erro ao formatar data:', e);
+      return dateString?.toString() || '-';
+    }
   };
   
   // Format price - com tratamento de erro para garantir conversão correta
   const formatPrice = (price: any) => {
     try {
+      // Se já temos um preço formatado, retorná-lo diretamente
+      if (typeof price === 'string' && price.includes('€')) {
+        return price;
+      }
+      
       // Garantir que é um número, tentando várias abordagens
       let numericPrice;
       
@@ -82,7 +102,7 @@ export default function QuotationDetailPage() {
       // Verificar se é um número válido
       if (isNaN(numericPrice)) {
         // Fallback para casos onde a conversão falha
-        return `${price} €`;
+        return `${price || '0,00'} €`;
       }
       
       // Formatar com separador de decimal como vírgula e o símbolo € no final
@@ -91,9 +111,9 @@ export default function QuotationDetailPage() {
         maximumFractionDigits: 2
       }) + ' €';
     } catch (e) {
+      console.error("Erro ao formatar preço:", e);
       // Garantir que mesmo com erro o preço aparece
-      console.warn('Erro ao formatar preço:', e);
-      return `${price} €`;
+      return typeof price === 'string' ? price : `${price || '0,00'} €`;
     }
   };
   
@@ -116,7 +136,7 @@ export default function QuotationDetailPage() {
   };
   
   // Função para obter a descrição do tipo de propriedade
-  const getPropertyTypeLabel = (propertyType: string) => {
+  const getPropertyTypeLabel = (propertyType: string = '') => {
     const propertyTypes: Record<string, string> = {
       'apartment_t0t1': 'Apartamento T0/T1',
       'apartment_t2': 'Apartamento T2',
@@ -136,7 +156,7 @@ export default function QuotationDetailPage() {
   // Generate PDF
   const handleGeneratePdf = async () => {
     try {
-      const response = await apiRequest<{success: boolean, pdfPath: string}>(`/api/quotations/${quotationId}/pdf`);
+      const response = await apiRequest(`/api/quotations/${quotationId}/pdf`);
       
       if (response && response.success) {
         // Em ambiente de produção, seria necessário incluir lógica para download do arquivo
@@ -160,8 +180,11 @@ export default function QuotationDetailPage() {
   // Send Email with PDF
   const handleSendEmail = async () => {
     try {
+      // Extrair dados do orçamento
+      const quotationData = quotation?.data || quotation;
+      
       // Verificar se o cliente tem e-mail cadastrado
-      if (!quotation.clientEmail) {
+      if (!quotationData?.clientEmail) {
         toast({
           title: t('common.warning'),
           description: t('quotation.noEmailProvided'),
@@ -171,12 +194,12 @@ export default function QuotationDetailPage() {
       }
       
       // Enviar e-mail com o orçamento anexado
-      const response = await apiRequest<{success: boolean}>({
+      const response = await apiRequest({
         url: `/api/quotations/${quotationId}/send-email`,
         method: 'POST',
         data: {
-          email: quotation.clientEmail,
-          subject: `Orçamento de Serviço para ${quotation.clientName}`,
+          email: quotationData.clientEmail,
+          subject: `Orçamento de Serviço para ${quotationData.clientName}`,
         }
       });
       
@@ -274,7 +297,7 @@ export default function QuotationDetailPage() {
   }
   
   // Log para depuração
-  console.log("Estado da consulta:", { error, isLoading, quotation });
+  console.log("Estado da consulta:", { error, isLoading, quotation: quotation ? (quotation.data || quotation) : null });
   
   if (error) {
     console.error("Erro ao buscar orçamento:", error);
@@ -302,7 +325,8 @@ export default function QuotationDetailPage() {
     );
   }
   
-  if (!quotation) {
+  // Se não houver quotation ou se for um objeto vazio/undefined
+  if (!quotation || (typeof quotation === 'object' && Object.keys(quotation).length === 0)) {
     return (
       <div className="container mx-auto py-6 space-y-6">
         <div className="flex items-center space-x-2">
@@ -325,6 +349,9 @@ export default function QuotationDetailPage() {
     );
   }
   
+  // Se quotation tem uma propriedade data, usá-la
+  const quotationData = quotation.data || quotation;
+  
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex items-center space-x-2">
@@ -340,13 +367,13 @@ export default function QuotationDetailPage() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <PageHeader
-          title={`${t('quotation.quotationFor')} ${quotation.clientName}`}
-          subtitle={`${t('quotation.createdOn')} ${formatDate(quotation.createdAt)}`}
+          title={`${t('quotation.quotationFor')} ${quotationData?.clientName || '-'}`}
+          subtitle={`${t('quotation.createdOn')} ${formatDate(quotationData?.createdAt)}`}
         />
         
         <div className="flex flex-wrap gap-2">
           {/* Status change buttons */}
-          {quotation.status === 'draft' && (
+          {quotationData?.status === 'draft' && (
             <Button
               variant="secondary"
               size="sm"
@@ -357,7 +384,7 @@ export default function QuotationDetailPage() {
             </Button>
           )}
           
-          {quotation.status === 'sent' && (
+          {quotationData?.status === 'sent' && (
             <>
               <Button
                 variant="default"
@@ -442,7 +469,7 @@ export default function QuotationDetailPage() {
               </div>
               <div>
                 <p className="font-medium">{t('quotation.clientEmail')}</p>
-                <p className="text-muted-foreground">{quotation.clientEmail || t('common.notProvided')}</p>
+                <p className="text-muted-foreground">{quotationData?.clientEmail || t('common.notProvided')}</p>
               </div>
             </div>
             
@@ -452,7 +479,7 @@ export default function QuotationDetailPage() {
               </div>
               <div>
                 <p className="font-medium">{t('quotation.clientPhone')}</p>
-                <p className="text-muted-foreground">{quotation.clientPhone || t('common.notProvided')}</p>
+                <p className="text-muted-foreground">{quotationData?.clientPhone || t('common.notProvided')}</p>
               </div>
             </div>
             
@@ -462,7 +489,7 @@ export default function QuotationDetailPage() {
               </div>
               <div>
                 <p className="font-medium">{t('quotation.validUntil')}</p>
-                <p className="text-muted-foreground">{formatDate(quotation.validUntil)}</p>
+                <p className="text-muted-foreground">{formatDate(quotationData?.validUntil)}</p>
               </div>
             </div>
             
@@ -472,7 +499,7 @@ export default function QuotationDetailPage() {
               </div>
               <div>
                 <p className="font-medium">{t('quotation.status')}</p>
-                <div className="mt-1">{getStatusBadge(quotation.status)}</div>
+                <div className="mt-1">{getStatusBadge(quotationData?.status || 'draft')}</div>
               </div>
             </div>
           </CardContent>
@@ -491,130 +518,201 @@ export default function QuotationDetailPage() {
               <div>
                 <p className="font-medium">{t('quotation.propertyType')}</p>
                 <p className="text-muted-foreground">
-                  {(() => {
-                    console.log('Tipo de propriedade do orçamento:', quotation.propertyType);
-                    const propertyTypes: Record<string, string> = {
-                      'apartment_t0t1': 'Apartamento T0/T1',
-                      'apartment_t2': 'Apartamento T2',
-                      'apartment_t3': 'Apartamento T3',
-                      'apartment_t4': 'Apartamento T4',
-                      'apartment_t5': 'Apartamento T5+',
-                      'house_v1': 'Moradia V1',
-                      'house_v2': 'Moradia V2',
-                      'house_v3': 'Moradia V3',
-                      'house_v4': 'Moradia V4',
-                      'house_v5': 'Moradia V5+'
-                    };
-                    const displayType = propertyTypes[quotation.propertyType] || quotation.propertyType;
-                    console.log('Tipo exibido:', displayType);
-                    return displayType;
-                  })()}
+                  {
+                    quotationData?.propertyTypeDisplay || 
+                    getPropertyTypeLabel(quotationData?.propertyType)
+                  }
                 </p>
               </div>
             </div>
             
-            <div className="grid grid-cols-2 gap-4">
+            <div className="flex items-start gap-2">
+              <div className="mt-0.5">
+                <svg className="h-5 w-5 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <path d="M3 9h18" />
+                </svg>
+              </div>
               <div>
                 <p className="font-medium">{t('quotation.propertyArea')}</p>
-                <p className="text-muted-foreground">{quotation.propertyArea} m²</p>
-              </div>
-              
-              {quotation.exteriorArea > 0 && (
-                <div>
-                  <p className="font-medium">{t('quotation.exteriorArea')}</p>
-                  <p className="text-muted-foreground">{quotation.exteriorArea} m²</p>
-                </div>
-              )}
-              
-              <div>
-                <p className="font-medium">{t('quotation.bedrooms')}</p>
-                <p className="text-muted-foreground">{quotation.bedrooms}</p>
-              </div>
-              
-              <div>
-                <p className="font-medium">{t('quotation.bathrooms')}</p>
-                <p className="text-muted-foreground">{quotation.bathrooms}</p>
+                <p className="text-muted-foreground">{quotationData?.propertyArea || 0} m²</p>
               </div>
             </div>
             
-            <div className="space-y-2">
-              <p className="font-medium">{t('quotation.additionalFeatures')}</p>
-              <ul className="list-disc pl-5 text-muted-foreground space-y-1">
-                {quotation.isDuplex && <li>{t('quotation.isDuplex')}</li>}
-                {quotation.exteriorArea > 0 && <li>{t('quotation.hasExteriorArea')}</li>}
-                {quotation.hasBBQ && <li>{t('quotation.hasBBQ')}</li>}
-                {quotation.hasGlassGarden && <li>{t('quotation.hasGlassGarden')}</li>}
-                {!quotation.isDuplex && !(quotation.exteriorArea > 0) && !quotation.hasBBQ && 
-                 !quotation.hasGlassGarden && 
-                 <li className="list-none text-center italic">{t('quotation.noAdditionalFeatures')}</li>}
-              </ul>
+            <div className="flex items-start gap-2">
+              <div className="mt-0.5">
+                <svg className="h-5 w-5 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 22v-8a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8" />
+                  <path d="M18 22H6" />
+                  <path d="M4 10V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8" />
+                  <path d="M11 18h2" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-medium">{t('quotation.bedrooms')}</p>
+                <p className="text-muted-foreground">{quotationData?.bedrooms || 0}</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-2">
+              <div className="mt-0.5">
+                <svg className="h-5 w-5 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1-.5C4.683 3 4 3.683 4 4.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5" />
+                  <line x1="8" y1="10" x2="16" y2="10" />
+                  <line x1="8" y1="14" x2="16" y2="14" />
+                  <path d="m16 6 2 2" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-medium">{t('quotation.bathrooms')}</p>
+                <p className="text-muted-foreground">{quotationData?.bathrooms || 0}</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-2">
+              <div className="mt-0.5">
+                <svg className="h-5 w-5 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-medium">{t('quotation.address')}</p>
+                <p className="text-muted-foreground">{quotationData?.propertyAddress || quotationData?.address || t('common.notProvided')}</p>
+              </div>
             </div>
           </CardContent>
         </Card>
         
-        {/* Price Summary */}
+        {/* Pricing Information */}
         <Card>
           <CardHeader>
-            <CardTitle>{t('quotation.priceSummary')}</CardTitle>
+            <CardTitle>{t('quotation.pricingInfo')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">{t('quotation.basePrice')}:</span>
-                <span>{quotation.basePrice 
-                  ? formatPrice(parseFloat(quotation.basePrice)) 
-                  : '€0,00'}</span>
+            <div className="flex items-start gap-2">
+              <div className="mt-0.5">
+                <svg className="h-5 w-5 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12" y2="16" />
+                </svg>
               </div>
-              
-              {quotation.duplexSurcharge && parseFloat(quotation.duplexSurcharge) > 0 && (
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">{t('quotation.duplexSurcharge')}:</span>
-                  <span>{formatPrice(parseFloat(quotation.duplexSurcharge || "0"))}</span>
-                </div>
-              )}
-              
-              {quotation.bbqSurcharge && parseFloat(quotation.bbqSurcharge) > 0 && (
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">{t('quotation.bbqSurcharge')}:</span>
-                  <span>{formatPrice(parseFloat(quotation.bbqSurcharge || "0"))}</span>
-                </div>
-              )}
-              
-              {quotation.glassGardenSurcharge && parseFloat(quotation.glassGardenSurcharge) > 0 && (
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">{t('quotation.glassGardenSurcharge')}:</span>
-                  <span>{formatPrice(parseFloat(quotation.glassGardenSurcharge || "0"))}</span>
-                </div>
-              )}
-              
-              {quotation.additionalSurcharges && parseFloat(quotation.additionalSurcharges) > 0 && (
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">{t('quotation.additionalSurcharges')}:</span>
-                  <span>{formatPrice(parseFloat(quotation.additionalSurcharges || "0"))}</span>
-                </div>
-              )}
-              
-              <Separator className="my-2" />
-              
-              <div className="flex justify-between font-bold text-lg">
-                <span>{t('quotation.totalPrice')}:</span>
-                <span>{quotation.totalPrice 
-                  ? formatPrice(parseFloat(quotation.totalPrice)) 
-                  : '€0,00'}</span>
+              <div>
+                <p className="font-medium">{t('quotation.basePrice')}</p>
+                <p className="text-muted-foreground">
+                  {quotationData?.basePrice 
+                    ? formatPrice(quotationData.basePrice) 
+                    : '0,00 €'}
+                </p>
               </div>
             </div>
             
-            {quotation.notes && (
-              <div className="mt-4">
+            {quotationData?.duplexSurcharge && parseFloat(quotationData.duplexSurcharge) > 0 && (
+              <div className="flex items-start gap-2">
+                <div className="mt-0.5">
+                  <svg className="h-5 w-5 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="18 15 12 9 6 15" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-medium">{t('quotation.duplexSurcharge')}</p>
+                  <p className="text-muted-foreground">{formatPrice(quotationData.duplexSurcharge)}</p>
+                </div>
+              </div>
+            )}
+            
+            {quotationData?.bbqSurcharge && parseFloat(quotationData.bbqSurcharge) > 0 && (
+              <div className="flex items-start gap-2">
+                <div className="mt-0.5">
+                  <svg className="h-5 w-5 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z" />
+                    <line x1="6" y1="17" x2="18" y2="17" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-medium">{t('quotation.bbqSurcharge')}</p>
+                  <p className="text-muted-foreground">{formatPrice(quotationData.bbqSurcharge)}</p>
+                </div>
+              </div>
+            )}
+            
+            {quotationData?.glassGardenSurcharge && parseFloat(quotationData.glassGardenSurcharge) > 0 && (
+              <div className="flex items-start gap-2">
+                <div className="mt-0.5">
+                  <svg className="h-5 w-5 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M2 9V5c0-1.1.9-2 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4" />
+                    <rect x="2" y="9" width="10" height="13" rx="2" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-medium">{t('quotation.glassGardenSurcharge')}</p>
+                  <p className="text-muted-foreground">{formatPrice(quotationData.glassGardenSurcharge)}</p>
+                </div>
+              </div>
+            )}
+            
+            {quotationData?.exteriorSurcharge && parseFloat(quotationData.exteriorSurcharge) > 0 && (
+              <div className="flex items-start gap-2">
+                <div className="mt-0.5">
+                  <svg className="h-5 w-5 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 20V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14" />
+                    <path d="M2 20h20" />
+                    <path d="M14 12v.01" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-medium">{t('quotation.exteriorSurcharge')}</p>
+                  <p className="text-muted-foreground">{formatPrice(quotationData.exteriorSurcharge)}</p>
+                </div>
+              </div>
+            )}
+            
+            {quotationData?.additionalSurcharges && parseFloat(String(quotationData.additionalSurcharges)) > 0 && (
+              <div className="flex items-start gap-2">
+                <div className="mt-0.5">
+                  <svg className="h-5 w-5 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2v20" />
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-medium">{t('quotation.additionalSurcharges')}</p>
+                  <p className="text-muted-foreground">{formatPrice(quotationData.additionalSurcharges)}</p>
+                </div>
+              </div>
+            )}
+            
+            <Separator />
+            
+            <div className="flex items-start gap-2">
+              <div className="mt-0.5">
+                <svg className="h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="1" x2="12" y2="23" />
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-medium text-lg">{t('quotation.totalPrice')}</p>
+                <p className="text-lg font-semibold text-primary">
+                  {quotationData?.totalPriceFormatted || 
+                   formatPrice(quotationData?.totalPrice || quotationData?.totalAmount || 0)}
+                </p>
+              </div>
+            </div>
+            
+            {quotationData?.notes && (
+              <div className="pt-4">
                 <p className="font-medium">{t('quotation.notes')}</p>
-                <p className="text-muted-foreground mt-1 whitespace-pre-wrap">{quotation.notes}</p>
+                <p className="text-sm text-muted-foreground whitespace-pre-line">{quotationData.notes}</p>
               </div>
             )}
           </CardContent>
         </Card>
       </div>
       
-      {/* Delete confirmation dialog */}
+      {/* Delete Confirmation Dialog */}
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -625,7 +723,7 @@ export default function QuotationDetailPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={handleDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
@@ -635,30 +733,30 @@ export default function QuotationDetailPage() {
         </AlertDialogContent>
       </AlertDialog>
       
-      {/* Status change confirmation dialog */}
-      <AlertDialog 
-        open={!!showStatusDialog} 
-        onOpenChange={(open) => !open && setShowStatusDialog(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {showStatusDialog && t(`quotation.confirmStatusChange${showStatusDialog.charAt(0).toUpperCase() + showStatusDialog.slice(1)}`)}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {showStatusDialog && t(`quotation.statusChangeWarning${showStatusDialog.charAt(0).toUpperCase() + showStatusDialog.slice(1)}`)}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={() => showStatusDialog && handleStatusChange(showStatusDialog)}
-            >
-              {t('common.confirm')}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {/* Status Change Dialog */}
+      {showStatusDialog && (
+        <AlertDialog open={!!showStatusDialog} onOpenChange={() => setShowStatusDialog(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {t(`quotation.confirm${showStatusDialog.charAt(0).toUpperCase() + showStatusDialog.slice(1)}`)}
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                {t(`quotation.${showStatusDialog}Warning`)}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => handleStatusChange(showStatusDialog)}
+                className={showStatusDialog === 'accepted' ? 'bg-green-600 text-white hover:bg-green-700' : ''}
+              >
+                {t(`quotation.confirm${showStatusDialog.charAt(0).toUpperCase() + showStatusDialog.slice(1)}Action`)}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </div>
   );
 }

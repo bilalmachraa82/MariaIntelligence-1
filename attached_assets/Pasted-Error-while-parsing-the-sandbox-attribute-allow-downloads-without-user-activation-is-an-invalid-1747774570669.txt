@@ -1,0 +1,1575 @@
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+_app-95689e6b4086e17a.js:38 
+            
+            
+           POST https://stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=1745797532.1747312056&jid=699760918&gjid=1918191230&_gid=1052171432.1747574575&_u=SCCAgEAjQAAAAGgCIAD~&z=376787050 net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-95689e6b4086e17a.js:38
+(anonymous) @ _app-95689e6b4086e17a.js:38
+wd @ analytics.js:36
+pe @ analytics.js:35
+(anonymous) @ analytics.js:73
+Ha.D @ analytics.js:38
+pc.send @ analytics.js:77
+X.b.<computed> @ analytics.js:57
+Z.v @ analytics.js:93
+Z.D @ analytics.js:92
+N @ analytics.js:94
+g.track @ index.js:351
+track @ protos.js:372
+e.invoke @ protos.js:178
+(anonymous) @ index.ts:270
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+(anonymous) @ tslib.es6.js:76
+u @ tslib.es6.js:72
+t.send @ ajs-destination.bundle.8e6b895db75187c55313.js:1
+(anonymous) @ index.ts:286
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+t.track @ ajs-destination.bundle.8e6b895db75187c55313.js:1
+(anonymous) @ delivery.js:28
+(anonymous) @ delivery.js:11
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+(anonymous) @ delivery.js:4
+o @ delivery.js:27
+(anonymous) @ event-queue.js:325
+(anonymous) @ event-queue.js:323
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+(anonymous) @ event-queue.js:321
+(anonymous) @ event-queue.js:320
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+(anonymous) @ tslib.es6.js:76
+u @ tslib.es6.js:72
+n.flushOne @ event-queue.js:273
+(anonymous) @ event-queue.js:181
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+(anonymous) @ tslib.es6.js:76
+u @ tslib.es6.js:72
+n.deliver @ event-queue.js:169
+(anonymous) @ event-queue.js:135
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+n.dispatchSingle @ event-queue.js:128
+(anonymous) @ dispatch.js:25
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+p @ dispatch.js:18
+(anonymous) @ index.ts:460
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+n._dispatch @ index.ts:454
+(anonymous) @ index.ts:253
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+n.track @ index.ts:241
+A @ _app-95689e6b4086e17a.js:25
+P @ replEnvironmentDesktop-8ba4a859ee4e04e8.js:1
+refresh @ replEnvironmentDesktop-8ba4a859ee4e04e8.js:1
+(anonymous) @ replEnvironmentDesktop-8ba4a859ee4e04e8.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+(anonymous) @ _app-95689e6b4086e17a.js:1
+onClick @ _app-95689e6b4086e17a.js:6
+(anonymous) @ _app-95689e6b4086e17a.js:1
+eB @ framework-a63b201baf0a4162.js:1
+eH @ framework-a63b201baf0a4162.js:1
+(anonymous) @ framework-a63b201baf0a4162.js:1
+re @ framework-a63b201baf0a4162.js:1
+rt @ framework-a63b201baf0a4162.js:1
+(anonymous) @ framework-a63b201baf0a4162.js:1
+uT @ framework-a63b201baf0a4162.js:1
+eM @ framework-a63b201baf0a4162.js:1
+ru @ framework-a63b201baf0a4162.js:1
+tB @ framework-a63b201baf0a4162.js:1
+tD @ framework-a63b201baf0a4162.js:1
+r @ _app-95689e6b4086e17a.js:38
+js?id=G-MPJY3F1YEL&cx=c&_slc=1:215 
+            
+            
+           POST https://stats.g.doubleclick.net/g/collect?v=2&tid=G-MPJY3F1YEL&cid=1745797532.1747312056&gtm=45je55j0v9135634466za200&aip=1&dma=0&gcd=13l3l3l3l2l1&npa=0&frm=0&tag_exp=101509157~102938614~103116025~103130495~103130497~103136993~103136995~103200001~103207802~103233427~103252644~103252646~103263073~103301114~103301116 net::ERR_CONNECTION_REFUSED
+Gc @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:215
+am @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:395
+IM @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:822
+LM @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:823
+aa.Ib @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:828
+aa.add @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:829
+aa.Rl @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:847
+aa.Gp @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:847
+(anonymous) @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:844
+ln @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:417
+ep @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:434
+(anonymous) @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:844
+c @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:616
+Ly @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:616
+aa.Fp @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:844
+c @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:858
+w @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:451
+un @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:419
+Mq @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:451
+Lq.flush @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:454
+Lq.push @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:452
+Eq @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:448
+event @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:711
+xD @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:717
+AD.b.push @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:722
+sD @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:722
+BD @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:722
+$D @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:733
+b.push @ js?id=G-MPJY3F1YEL&cx=c&_slc=1:734
+Sa @ analytics.js:42
+(anonymous) @ analytics.js:73
+Ha.D @ analytics.js:38
+pc.send @ analytics.js:77
+X.b.<computed> @ analytics.js:57
+Z.v @ analytics.js:93
+Z.D @ analytics.js:92
+N @ analytics.js:94
+g.track @ index.js:351
+track @ protos.js:372
+e.invoke @ protos.js:178
+(anonymous) @ index.ts:270
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+(anonymous) @ tslib.es6.js:76
+u @ tslib.es6.js:72
+t.send @ ajs-destination.bundle.8e6b895db75187c55313.js:1
+(anonymous) @ index.ts:286
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+t.track @ ajs-destination.bundle.8e6b895db75187c55313.js:1
+(anonymous) @ delivery.js:28
+(anonymous) @ delivery.js:11
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+(anonymous) @ delivery.js:4
+o @ delivery.js:27
+(anonymous) @ event-queue.js:325
+(anonymous) @ event-queue.js:323
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+(anonymous) @ event-queue.js:321
+(anonymous) @ event-queue.js:320
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+(anonymous) @ tslib.es6.js:76
+u @ tslib.es6.js:72
+n.flushOne @ event-queue.js:273
+(anonymous) @ event-queue.js:181
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+(anonymous) @ tslib.es6.js:76
+u @ tslib.es6.js:72
+n.deliver @ event-queue.js:169
+(anonymous) @ event-queue.js:135
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+n.dispatchSingle @ event-queue.js:128
+(anonymous) @ dispatch.js:25
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+p @ dispatch.js:18
+(anonymous) @ index.ts:460
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+n._dispatch @ index.ts:454
+(anonymous) @ index.ts:253
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+n.track @ index.ts:241
+A @ _app-95689e6b4086e17a.js:25
+P @ replEnvironmentDesktop-8ba4a859ee4e04e8.js:1
+refresh @ replEnvironmentDesktop-8ba4a859ee4e04e8.js:1
+(anonymous) @ replEnvironmentDesktop-8ba4a859ee4e04e8.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+(anonymous) @ _app-95689e6b4086e17a.js:1
+onClick @ _app-95689e6b4086e17a.js:6
+(anonymous) @ _app-95689e6b4086e17a.js:1
+eB @ framework-a63b201baf0a4162.js:1
+eH @ framework-a63b201baf0a4162.js:1
+(anonymous) @ framework-a63b201baf0a4162.js:1
+re @ framework-a63b201baf0a4162.js:1
+rt @ framework-a63b201baf0a4162.js:1
+(anonymous) @ framework-a63b201baf0a4162.js:1
+uT @ framework-a63b201baf0a4162.js:1
+eM @ framework-a63b201baf0a4162.js:1
+ru @ framework-a63b201baf0a4162.js:1
+tB @ framework-a63b201baf0a4162.js:1
+tD @ framework-a63b201baf0a4162.js:1
+r @ _app-95689e6b4086e17a.js:38
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the script '<URL>' because it violates the following Content Security Policy directive: "script-src 'self' 'unsafe-inline' 'unsafe-eval'". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback.
+
+Refused to load the script '<URL>' because it violates the following Content Security Policy directive: "script-src 'self' 'unsafe-inline' 'unsafe-eval'". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback.
+
+Refused to load the script '<URL>' because it violates the following Content Security Policy directive: "script-src 'self' 'unsafe-inline' 'unsafe-eval'". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback.
+
+Refused to load the script '<URL>' because it violates the following Content Security Policy directive: "script-src 'self' 'unsafe-inline' 'unsafe-eval'". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback.
+
+Refused to load the script '<URL>' because it violates the following Content Security Policy directive: "script-src 'self' 'unsafe-inline' 'unsafe-eval'". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback.
+
+Refused to load the script '<URL>' because it violates the following Content Security Policy directive: "script-src 'self' 'unsafe-inline' 'unsafe-eval'". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback.
+
+_app-95689e6b4086e17a.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//pagamentos/saida' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-95689e6b4086e17a.js:38
+d @ main-651fd046f1096d37.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+lU @ framework-a63b201baf0a4162.js:1
+t.useMemo @ framework-a63b201baf0a4162.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+ld @ framework-a63b201baf0a4162.js:1
+ou @ framework-a63b201baf0a4162.js:1
+i @ framework-a63b201baf0a4162.js:1
+uI @ framework-a63b201baf0a4162.js:1
+uM @ framework-a63b201baf0a4162.js:1
+uS @ framework-a63b201baf0a4162.js:1
+C @ framework-a63b201baf0a4162.js:1
+z @ framework-a63b201baf0a4162.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-a63b201baf0a4162.js:1
+I @ framework-a63b201baf0a4162.js:1
+t.unstable_scheduleCallback @ framework-a63b201baf0a4162.js:1
+uw @ framework-a63b201baf0a4162.js:1
+uk @ framework-a63b201baf0a4162.js:1
+lH @ framework-a63b201baf0a4162.js:1
+n @ replEnvironmentDesktop-8ba4a859ee4e04e8.js:1
+r @ _app-95689e6b4086e17a.js:38
+_app-95689e6b4086e17a.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//quotations' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-95689e6b4086e17a.js:38
+d @ main-651fd046f1096d37.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+lU @ framework-a63b201baf0a4162.js:1
+t.useMemo @ framework-a63b201baf0a4162.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+ld @ framework-a63b201baf0a4162.js:1
+ou @ framework-a63b201baf0a4162.js:1
+i @ framework-a63b201baf0a4162.js:1
+uI @ framework-a63b201baf0a4162.js:1
+uM @ framework-a63b201baf0a4162.js:1
+uS @ framework-a63b201baf0a4162.js:1
+C @ framework-a63b201baf0a4162.js:1
+z @ framework-a63b201baf0a4162.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-a63b201baf0a4162.js:1
+I @ framework-a63b201baf0a4162.js:1
+t.unstable_scheduleCallback @ framework-a63b201baf0a4162.js:1
+uw @ framework-a63b201baf0a4162.js:1
+uk @ framework-a63b201baf0a4162.js:1
+lH @ framework-a63b201baf0a4162.js:1
+n @ replEnvironmentDesktop-8ba4a859ee4e04e8.js:1
+r @ _app-95689e6b4086e17a.js:38
+_app-95689e6b4086e17a.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//quotations/12' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-95689e6b4086e17a.js:38
+d @ main-651fd046f1096d37.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+lU @ framework-a63b201baf0a4162.js:1
+t.useMemo @ framework-a63b201baf0a4162.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+ld @ framework-a63b201baf0a4162.js:1
+ou @ framework-a63b201baf0a4162.js:1
+i @ framework-a63b201baf0a4162.js:1
+uI @ framework-a63b201baf0a4162.js:1
+uM @ framework-a63b201baf0a4162.js:1
+uS @ framework-a63b201baf0a4162.js:1
+C @ framework-a63b201baf0a4162.js:1
+z @ framework-a63b201baf0a4162.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-a63b201baf0a4162.js:1
+I @ framework-a63b201baf0a4162.js:1
+t.unstable_scheduleCallback @ framework-a63b201baf0a4162.js:1
+uw @ framework-a63b201baf0a4162.js:1
+uk @ framework-a63b201baf0a4162.js:1
+lH @ framework-a63b201baf0a4162.js:1
+n @ replEnvironmentDesktop-8ba4a859ee4e04e8.js:1
+r @ _app-95689e6b4086e17a.js:38
+index.tsx:64 Uncaught RangeError: Invalid time value
+    at formatDate (index.tsx:64:8)
+    at QuotationDetailPage (index.tsx:344:52)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=60f8d09c:11548:26)
+    at updateFunctionComponent (chunk-RPCDYKBN.js?v=60f8d09c:14582:28)
+    at beginWork (chunk-RPCDYKBN.js?v=60f8d09c:15924:22)
+    at HTMLUnknownElement.callCallback2 (chunk-RPCDYKBN.js?v=60f8d09c:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-RPCDYKBN.js?v=60f8d09c:3699:24)
+    at invokeGuardedCallback (chunk-RPCDYKBN.js?v=60f8d09c:3733:39)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=60f8d09c:19765:15)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=60f8d09c:19198:20)
+formatDate @ index.tsx:64
+QuotationDetailPage @ index.tsx:344
+renderWithHooks @ chunk-RPCDYKBN.js?v=60f8d09c:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=60f8d09c:14582
+beginWork @ chunk-RPCDYKBN.js?v=60f8d09c:15924
+callCallback2 @ chunk-RPCDYKBN.js?v=60f8d09c:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=60f8d09c:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=60f8d09c:3733
+beginWork$1 @ chunk-RPCDYKBN.js?v=60f8d09c:19765
+performUnitOfWork @ chunk-RPCDYKBN.js?v=60f8d09c:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=60f8d09c:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=60f8d09c:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=60f8d09c:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=60f8d09c:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=60f8d09c:555
+flush @ @tanstack_react-query.js?v=60f8d09c:569
+batch @ @tanstack_react-query.js?v=60f8d09c:587
+dispatch_fn @ @tanstack_react-query.js?v=60f8d09c:996
+setData @ @tanstack_react-query.js?v=60f8d09c:696
+onSuccess @ @tanstack_react-query.js?v=60f8d09c:897
+resolve @ @tanstack_react-query.js?v=60f8d09c:456
+Promise.then
+run @ @tanstack_react-query.js?v=60f8d09c:498
+start @ @tanstack_react-query.js?v=60f8d09c:536
+fetch @ @tanstack_react-query.js?v=60f8d09c:926
+executeFetch_fn @ @tanstack_react-query.js?v=60f8d09c:2211
+onSubscribe @ @tanstack_react-query.js?v=60f8d09c:1898
+subscribe @ @tanstack_react-query.js?v=60f8d09c:24
+(anonymous) @ @tanstack_react-query.js?v=60f8d09c:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=60f8d09c:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=60f8d09c:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=60f8d09c:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=60f8d09c:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=60f8d09c:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=60f8d09c:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=60f8d09c:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19416
+commitRoot @ chunk-RPCDYKBN.js?v=60f8d09c:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=60f8d09c:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=60f8d09c:9119
+flushSync @ chunk-RPCDYKBN.js?v=60f8d09c:18959
+flushSync$1 @ chunk-RPCDYKBN.js?v=60f8d09c:21538
+dispatchDiscreteCustomEvent @ chunk-CPFL7ZFD.js?v=60f8d09c:52
+handleSelect @ @radix-ui_react-dropdown-menu.js?v=60f8d09c:432
+handleEvent @ chunk-OD433RWB.js?v=60f8d09c:6
+callCallback2 @ chunk-RPCDYKBN.js?v=60f8d09c:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=60f8d09c:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=60f8d09c:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=60f8d09c:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=60f8d09c:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=60f8d09c:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=60f8d09c:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=60f8d09c:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=60f8d09c:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=60f8d09c:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=60f8d09c:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=60f8d09c:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5449
+index.tsx:64 Uncaught RangeError: Invalid time value
+    at formatDate (index.tsx:64:8)
+    at QuotationDetailPage (index.tsx:344:52)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=60f8d09c:11548:26)
+    at updateFunctionComponent (chunk-RPCDYKBN.js?v=60f8d09c:14582:28)
+    at beginWork (chunk-RPCDYKBN.js?v=60f8d09c:15924:22)
+    at HTMLUnknownElement.callCallback2 (chunk-RPCDYKBN.js?v=60f8d09c:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-RPCDYKBN.js?v=60f8d09c:3699:24)
+    at invokeGuardedCallback (chunk-RPCDYKBN.js?v=60f8d09c:3733:39)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=60f8d09c:19765:15)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=60f8d09c:19198:20)
+formatDate @ index.tsx:64
+QuotationDetailPage @ index.tsx:344
+renderWithHooks @ chunk-RPCDYKBN.js?v=60f8d09c:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=60f8d09c:14582
+beginWork @ chunk-RPCDYKBN.js?v=60f8d09c:15924
+callCallback2 @ chunk-RPCDYKBN.js?v=60f8d09c:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=60f8d09c:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=60f8d09c:3733
+beginWork$1 @ chunk-RPCDYKBN.js?v=60f8d09c:19765
+performUnitOfWork @ chunk-RPCDYKBN.js?v=60f8d09c:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=60f8d09c:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=60f8d09c:19116
+recoverFromConcurrentError @ chunk-RPCDYKBN.js?v=60f8d09c:18736
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=60f8d09c:18879
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=60f8d09c:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=60f8d09c:555
+flush @ @tanstack_react-query.js?v=60f8d09c:569
+batch @ @tanstack_react-query.js?v=60f8d09c:587
+dispatch_fn @ @tanstack_react-query.js?v=60f8d09c:996
+setData @ @tanstack_react-query.js?v=60f8d09c:696
+onSuccess @ @tanstack_react-query.js?v=60f8d09c:897
+resolve @ @tanstack_react-query.js?v=60f8d09c:456
+Promise.then
+run @ @tanstack_react-query.js?v=60f8d09c:498
+start @ @tanstack_react-query.js?v=60f8d09c:536
+fetch @ @tanstack_react-query.js?v=60f8d09c:926
+executeFetch_fn @ @tanstack_react-query.js?v=60f8d09c:2211
+onSubscribe @ @tanstack_react-query.js?v=60f8d09c:1898
+subscribe @ @tanstack_react-query.js?v=60f8d09c:24
+(anonymous) @ @tanstack_react-query.js?v=60f8d09c:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=60f8d09c:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=60f8d09c:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=60f8d09c:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=60f8d09c:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=60f8d09c:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=60f8d09c:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=60f8d09c:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19416
+commitRoot @ chunk-RPCDYKBN.js?v=60f8d09c:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=60f8d09c:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=60f8d09c:9119
+flushSync @ chunk-RPCDYKBN.js?v=60f8d09c:18959
+flushSync$1 @ chunk-RPCDYKBN.js?v=60f8d09c:21538
+dispatchDiscreteCustomEvent @ chunk-CPFL7ZFD.js?v=60f8d09c:52
+handleSelect @ @radix-ui_react-dropdown-menu.js?v=60f8d09c:432
+handleEvent @ chunk-OD433RWB.js?v=60f8d09c:6
+callCallback2 @ chunk-RPCDYKBN.js?v=60f8d09c:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=60f8d09c:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=60f8d09c:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=60f8d09c:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=60f8d09c:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=60f8d09c:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=60f8d09c:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=60f8d09c:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=60f8d09c:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=60f8d09c:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=60f8d09c:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=60f8d09c:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5449
+Console.js:61 The above error occurred in the <QuotationDetailPage> component:
+
+    at QuotationDetailPage (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/quotations/[id]/index.tsx?t=1747771329182:56:17)
+    at Route (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=60f8d09c:323:16)
+    at Switch (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=60f8d09c:379:17)
+    at Router
+    at main
+    at div
+    at div
+    at Layout (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/components/layout/layout.tsx:23:26)
+    at QueryClientProvider (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=60f8d09c:2805:3)
+    at App (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/App.tsx?t=1747771329182&v=lDyhJuNnsQqd74Ttlf5d:677:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+Mt.forEach.n.<computed> @ Console.js:61
+logCapturedError @ chunk-RPCDYKBN.js?v=60f8d09c:14032
+update.callback @ chunk-RPCDYKBN.js?v=60f8d09c:14052
+callCallback @ chunk-RPCDYKBN.js?v=60f8d09c:11248
+commitUpdateQueue @ chunk-RPCDYKBN.js?v=60f8d09c:11265
+commitLayoutEffectOnFiber @ chunk-RPCDYKBN.js?v=60f8d09c:17093
+commitLayoutMountEffects_complete @ chunk-RPCDYKBN.js?v=60f8d09c:17980
+commitLayoutEffects_begin @ chunk-RPCDYKBN.js?v=60f8d09c:17969
+commitLayoutEffects @ chunk-RPCDYKBN.js?v=60f8d09c:17920
+commitRootImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19353
+commitRoot @ chunk-RPCDYKBN.js?v=60f8d09c:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=60f8d09c:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=60f8d09c:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=60f8d09c:555
+flush @ @tanstack_react-query.js?v=60f8d09c:569
+batch @ @tanstack_react-query.js?v=60f8d09c:587
+dispatch_fn @ @tanstack_react-query.js?v=60f8d09c:996
+setData @ @tanstack_react-query.js?v=60f8d09c:696
+onSuccess @ @tanstack_react-query.js?v=60f8d09c:897
+resolve @ @tanstack_react-query.js?v=60f8d09c:456
+Promise.then
+run @ @tanstack_react-query.js?v=60f8d09c:498
+start @ @tanstack_react-query.js?v=60f8d09c:536
+fetch @ @tanstack_react-query.js?v=60f8d09c:926
+executeFetch_fn @ @tanstack_react-query.js?v=60f8d09c:2211
+onSubscribe @ @tanstack_react-query.js?v=60f8d09c:1898
+subscribe @ @tanstack_react-query.js?v=60f8d09c:24
+(anonymous) @ @tanstack_react-query.js?v=60f8d09c:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=60f8d09c:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=60f8d09c:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=60f8d09c:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=60f8d09c:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=60f8d09c:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=60f8d09c:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=60f8d09c:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19416
+commitRoot @ chunk-RPCDYKBN.js?v=60f8d09c:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=60f8d09c:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=60f8d09c:9119
+flushSync @ chunk-RPCDYKBN.js?v=60f8d09c:18959
+flushSync$1 @ chunk-RPCDYKBN.js?v=60f8d09c:21538
+dispatchDiscreteCustomEvent @ chunk-CPFL7ZFD.js?v=60f8d09c:52
+handleSelect @ @radix-ui_react-dropdown-menu.js?v=60f8d09c:432
+handleEvent @ chunk-OD433RWB.js?v=60f8d09c:6
+callCallback2 @ chunk-RPCDYKBN.js?v=60f8d09c:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=60f8d09c:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=60f8d09c:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=60f8d09c:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=60f8d09c:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=60f8d09c:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=60f8d09c:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=60f8d09c:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=60f8d09c:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=60f8d09c:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=60f8d09c:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=60f8d09c:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5449
+chunk-RPCDYKBN.js?v=60f8d09c:9129 Uncaught RangeError: Invalid time value
+    at formatDate (index.tsx:64:8)
+    at QuotationDetailPage (index.tsx:344:52)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=60f8d09c:11548:26)
+    at updateFunctionComponent (chunk-RPCDYKBN.js?v=60f8d09c:14582:28)
+    at beginWork (chunk-RPCDYKBN.js?v=60f8d09c:15924:22)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=60f8d09c:19753:22)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=60f8d09c:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js?v=60f8d09c:19137:13)
+    at renderRootSync (chunk-RPCDYKBN.js?v=60f8d09c:19116:15)
+    at recoverFromConcurrentError (chunk-RPCDYKBN.js?v=60f8d09c:18736:28)
+formatDate @ index.tsx:64
+QuotationDetailPage @ index.tsx:344
+renderWithHooks @ chunk-RPCDYKBN.js?v=60f8d09c:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=60f8d09c:14582
+beginWork @ chunk-RPCDYKBN.js?v=60f8d09c:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=60f8d09c:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=60f8d09c:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=60f8d09c:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=60f8d09c:19116
+recoverFromConcurrentError @ chunk-RPCDYKBN.js?v=60f8d09c:18736
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=60f8d09c:18879
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=60f8d09c:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=60f8d09c:555
+flush @ @tanstack_react-query.js?v=60f8d09c:569
+batch @ @tanstack_react-query.js?v=60f8d09c:587
+dispatch_fn @ @tanstack_react-query.js?v=60f8d09c:996
+setData @ @tanstack_react-query.js?v=60f8d09c:696
+onSuccess @ @tanstack_react-query.js?v=60f8d09c:897
+resolve @ @tanstack_react-query.js?v=60f8d09c:456
+Promise.then
+run @ @tanstack_react-query.js?v=60f8d09c:498
+start @ @tanstack_react-query.js?v=60f8d09c:536
+fetch @ @tanstack_react-query.js?v=60f8d09c:926
+executeFetch_fn @ @tanstack_react-query.js?v=60f8d09c:2211
+onSubscribe @ @tanstack_react-query.js?v=60f8d09c:1898
+subscribe @ @tanstack_react-query.js?v=60f8d09c:24
+(anonymous) @ @tanstack_react-query.js?v=60f8d09c:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=60f8d09c:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=60f8d09c:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=60f8d09c:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=60f8d09c:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=60f8d09c:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=60f8d09c:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=60f8d09c:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19416
+commitRoot @ chunk-RPCDYKBN.js?v=60f8d09c:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=60f8d09c:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=60f8d09c:9119
+flushSync @ chunk-RPCDYKBN.js?v=60f8d09c:18959
+flushSync$1 @ chunk-RPCDYKBN.js?v=60f8d09c:21538
+dispatchDiscreteCustomEvent @ chunk-CPFL7ZFD.js?v=60f8d09c:52
+handleSelect @ @radix-ui_react-dropdown-menu.js?v=60f8d09c:432
+handleEvent @ chunk-OD433RWB.js?v=60f8d09c:6
+callCallback2 @ chunk-RPCDYKBN.js?v=60f8d09c:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=60f8d09c:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=60f8d09c:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=60f8d09c:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=60f8d09c:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=60f8d09c:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=60f8d09c:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=60f8d09c:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=60f8d09c:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=60f8d09c:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=60f8d09c:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=60f8d09c:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5449
+clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ:1 
+            
+            
+           GET https://clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ net::ERR_CONNECTION_CLOSED 200 (OK)
+_app-95689e6b4086e17a.js:38 
+            
+            
+           POST https://events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820 net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-95689e6b4086e17a.js:38
+(anonymous) @ _app-95689e6b4086e17a.js:38
+promise @ _app-95689e6b4086e17a.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:1
+n.httpRequest @ _app-95689e6b4086e17a.js:1
+t @ _app-95689e6b4086e17a.js:1
+a.sendChunk @ _app-95689e6b4086e17a.js:1
+a.sendEvents @ _app-95689e6b4086e17a.js:1
+a.flush @ _app-95689e6b4086e17a.js:1
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+_app-95689e6b4086e17a.js:38 
+            
+            
+           POST https://events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820 net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-95689e6b4086e17a.js:38
+(anonymous) @ _app-95689e6b4086e17a.js:38
+promise @ _app-95689e6b4086e17a.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:1
+n.httpRequest @ _app-95689e6b4086e17a.js:1
+t @ _app-95689e6b4086e17a.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:1
+Promise.catch
+t @ _app-95689e6b4086e17a.js:1
+a.sendChunk @ _app-95689e6b4086e17a.js:1
+a.sendEvents @ _app-95689e6b4086e17a.js:1
+a.flush @ _app-95689e6b4086e17a.js:1
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+setTimeout
+(anonymous) @ _app-95689e6b4086e17a.js:38
+e @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+_app-95689e6b4086e17a.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//quotations' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-95689e6b4086e17a.js:38
+d @ main-651fd046f1096d37.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+lU @ framework-a63b201baf0a4162.js:1
+t.useMemo @ framework-a63b201baf0a4162.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+ld @ framework-a63b201baf0a4162.js:1
+ou @ framework-a63b201baf0a4162.js:1
+i @ framework-a63b201baf0a4162.js:1
+uI @ framework-a63b201baf0a4162.js:1
+uM @ framework-a63b201baf0a4162.js:1
+u_ @ framework-a63b201baf0a4162.js:1
+r6 @ framework-a63b201baf0a4162.js:1
+(anonymous) @ framework-a63b201baf0a4162.js:1
+_app-95689e6b4086e17a.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//pagamentos/saida' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-95689e6b4086e17a.js:38
+d @ main-651fd046f1096d37.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+lU @ framework-a63b201baf0a4162.js:1
+t.useMemo @ framework-a63b201baf0a4162.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+ld @ framework-a63b201baf0a4162.js:1
+ou @ framework-a63b201baf0a4162.js:1
+i @ framework-a63b201baf0a4162.js:1
+uI @ framework-a63b201baf0a4162.js:1
+uM @ framework-a63b201baf0a4162.js:1
+u_ @ framework-a63b201baf0a4162.js:1
+r6 @ framework-a63b201baf0a4162.js:1
+(anonymous) @ framework-a63b201baf0a4162.js:1
+_app-95689e6b4086e17a.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//quotations' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-95689e6b4086e17a.js:38
+d @ main-651fd046f1096d37.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+lU @ framework-a63b201baf0a4162.js:1
+t.useMemo @ framework-a63b201baf0a4162.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+ld @ framework-a63b201baf0a4162.js:1
+ou @ framework-a63b201baf0a4162.js:1
+i @ framework-a63b201baf0a4162.js:1
+uI @ framework-a63b201baf0a4162.js:1
+uM @ framework-a63b201baf0a4162.js:1
+uS @ framework-a63b201baf0a4162.js:1
+C @ framework-a63b201baf0a4162.js:1
+z @ framework-a63b201baf0a4162.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-a63b201baf0a4162.js:1
+I @ framework-a63b201baf0a4162.js:1
+t.unstable_scheduleCallback @ framework-a63b201baf0a4162.js:1
+uw @ framework-a63b201baf0a4162.js:1
+uk @ framework-a63b201baf0a4162.js:1
+lH @ framework-a63b201baf0a4162.js:1
+n @ replEnvironmentDesktop-8ba4a859ee4e04e8.js:1
+r @ _app-95689e6b4086e17a.js:38
+_app-95689e6b4086e17a.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//quotations/11/edit' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-95689e6b4086e17a.js:38
+d @ main-651fd046f1096d37.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+lU @ framework-a63b201baf0a4162.js:1
+t.useMemo @ framework-a63b201baf0a4162.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+ld @ framework-a63b201baf0a4162.js:1
+ou @ framework-a63b201baf0a4162.js:1
+i @ framework-a63b201baf0a4162.js:1
+uI @ framework-a63b201baf0a4162.js:1
+uM @ framework-a63b201baf0a4162.js:1
+uS @ framework-a63b201baf0a4162.js:1
+C @ framework-a63b201baf0a4162.js:1
+z @ framework-a63b201baf0a4162.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-a63b201baf0a4162.js:1
+I @ framework-a63b201baf0a4162.js:1
+t.unstable_scheduleCallback @ framework-a63b201baf0a4162.js:1
+uw @ framework-a63b201baf0a4162.js:1
+uk @ framework-a63b201baf0a4162.js:1
+lH @ framework-a63b201baf0a4162.js:1
+n @ replEnvironmentDesktop-8ba4a859ee4e04e8.js:1
+r @ _app-95689e6b4086e17a.js:38
+_app-95689e6b4086e17a.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//quotations/11' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-95689e6b4086e17a.js:38
+d @ main-651fd046f1096d37.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+lU @ framework-a63b201baf0a4162.js:1
+t.useMemo @ framework-a63b201baf0a4162.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+ld @ framework-a63b201baf0a4162.js:1
+ou @ framework-a63b201baf0a4162.js:1
+i @ framework-a63b201baf0a4162.js:1
+uI @ framework-a63b201baf0a4162.js:1
+uM @ framework-a63b201baf0a4162.js:1
+uS @ framework-a63b201baf0a4162.js:1
+C @ framework-a63b201baf0a4162.js:1
+z @ framework-a63b201baf0a4162.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-a63b201baf0a4162.js:1
+I @ framework-a63b201baf0a4162.js:1
+t.unstable_scheduleCallback @ framework-a63b201baf0a4162.js:1
+uw @ framework-a63b201baf0a4162.js:1
+uk @ framework-a63b201baf0a4162.js:1
+lH @ framework-a63b201baf0a4162.js:1
+n @ replEnvironmentDesktop-8ba4a859ee4e04e8.js:1
+r @ _app-95689e6b4086e17a.js:38
+_app-95689e6b4086e17a.js:38 
+            
+            
+           POST https://events.launchdarkly.com/events/diagnostic/62b35a865152ab14c5942820 net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-95689e6b4086e17a.js:38
+(anonymous) @ _app-95689e6b4086e17a.js:38
+promise @ _app-95689e6b4086e17a.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:1
+n.httpRequest @ _app-95689e6b4086e17a.js:1
+t @ _app-95689e6b4086e17a.js:1
+a.sendChunk @ _app-95689e6b4086e17a.js:1
+a.sendEvents @ _app-95689e6b4086e17a.js:1
+m @ _app-95689e6b4086e17a.js:1
+v @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+_app-95689e6b4086e17a.js:38 
+            
+            
+           POST https://events.launchdarkly.com/events/diagnostic/62b35a865152ab14c5942820 net::ERR_CONNECTION_REFUSED
+(anonymous) @ _app-95689e6b4086e17a.js:38
+(anonymous) @ _app-95689e6b4086e17a.js:38
+promise @ _app-95689e6b4086e17a.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:1
+n.httpRequest @ _app-95689e6b4086e17a.js:1
+t @ _app-95689e6b4086e17a.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:1
+Promise.catch
+t @ _app-95689e6b4086e17a.js:1
+a.sendChunk @ _app-95689e6b4086e17a.js:1
+a.sendEvents @ _app-95689e6b4086e17a.js:1
+m @ _app-95689e6b4086e17a.js:1
+v @ _app-95689e6b4086e17a.js:1
+r @ _app-95689e6b4086e17a.js:38
+_app-95689e6b4086e17a.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//quotations' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-95689e6b4086e17a.js:38
+d @ main-651fd046f1096d37.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+lU @ framework-a63b201baf0a4162.js:1
+t.useMemo @ framework-a63b201baf0a4162.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+ld @ framework-a63b201baf0a4162.js:1
+ou @ framework-a63b201baf0a4162.js:1
+i @ framework-a63b201baf0a4162.js:1
+uI @ framework-a63b201baf0a4162.js:1
+uM @ framework-a63b201baf0a4162.js:1
+uS @ framework-a63b201baf0a4162.js:1
+C @ framework-a63b201baf0a4162.js:1
+z @ framework-a63b201baf0a4162.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-a63b201baf0a4162.js:1
+I @ framework-a63b201baf0a4162.js:1
+t.unstable_scheduleCallback @ framework-a63b201baf0a4162.js:1
+uw @ framework-a63b201baf0a4162.js:1
+uk @ framework-a63b201baf0a4162.js:1
+lH @ framework-a63b201baf0a4162.js:1
+n @ replEnvironmentDesktop-8ba4a859ee4e04e8.js:1
+r @ _app-95689e6b4086e17a.js:38
+clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ:1 
+            
+            
+           GET https://clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ net::ERR_CONNECTION_CLOSED 200 (OK)
+_app-95689e6b4086e17a.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//quotations/new' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-95689e6b4086e17a.js:38
+d @ main-651fd046f1096d37.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+lU @ framework-a63b201baf0a4162.js:1
+t.useMemo @ framework-a63b201baf0a4162.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+ld @ framework-a63b201baf0a4162.js:1
+ou @ framework-a63b201baf0a4162.js:1
+i @ framework-a63b201baf0a4162.js:1
+uI @ framework-a63b201baf0a4162.js:1
+uM @ framework-a63b201baf0a4162.js:1
+uS @ framework-a63b201baf0a4162.js:1
+C @ framework-a63b201baf0a4162.js:1
+z @ framework-a63b201baf0a4162.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-a63b201baf0a4162.js:1
+I @ framework-a63b201baf0a4162.js:1
+t.unstable_scheduleCallback @ framework-a63b201baf0a4162.js:1
+uw @ framework-a63b201baf0a4162.js:1
+uk @ framework-a63b201baf0a4162.js:1
+lH @ framework-a63b201baf0a4162.js:1
+n @ replEnvironmentDesktop-8ba4a859ee4e04e8.js:1
+r @ _app-95689e6b4086e17a.js:38
+_app-95689e6b4086e17a.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//quotations' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-95689e6b4086e17a.js:38
+d @ main-651fd046f1096d37.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+lU @ framework-a63b201baf0a4162.js:1
+t.useMemo @ framework-a63b201baf0a4162.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+ld @ framework-a63b201baf0a4162.js:1
+ou @ framework-a63b201baf0a4162.js:1
+i @ framework-a63b201baf0a4162.js:1
+uI @ framework-a63b201baf0a4162.js:1
+uM @ framework-a63b201baf0a4162.js:1
+uS @ framework-a63b201baf0a4162.js:1
+C @ framework-a63b201baf0a4162.js:1
+z @ framework-a63b201baf0a4162.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-a63b201baf0a4162.js:1
+I @ framework-a63b201baf0a4162.js:1
+t.unstable_scheduleCallback @ framework-a63b201baf0a4162.js:1
+uw @ framework-a63b201baf0a4162.js:1
+uk @ framework-a63b201baf0a4162.js:1
+lH @ framework-a63b201baf0a4162.js:1
+n @ replEnvironmentDesktop-8ba4a859ee4e04e8.js:1
+r @ _app-95689e6b4086e17a.js:38
+_app-95689e6b4086e17a.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//quotations/13' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-95689e6b4086e17a.js:38
+d @ main-651fd046f1096d37.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+lU @ framework-a63b201baf0a4162.js:1
+t.useMemo @ framework-a63b201baf0a4162.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+ld @ framework-a63b201baf0a4162.js:1
+ou @ framework-a63b201baf0a4162.js:1
+i @ framework-a63b201baf0a4162.js:1
+uI @ framework-a63b201baf0a4162.js:1
+uM @ framework-a63b201baf0a4162.js:1
+uS @ framework-a63b201baf0a4162.js:1
+C @ framework-a63b201baf0a4162.js:1
+z @ framework-a63b201baf0a4162.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-a63b201baf0a4162.js:1
+I @ framework-a63b201baf0a4162.js:1
+t.unstable_scheduleCallback @ framework-a63b201baf0a4162.js:1
+uw @ framework-a63b201baf0a4162.js:1
+uk @ framework-a63b201baf0a4162.js:1
+lH @ framework-a63b201baf0a4162.js:1
+n @ replEnvironmentDesktop-8ba4a859ee4e04e8.js:1
+r @ _app-95689e6b4086e17a.js:38
+index.tsx:64 Uncaught RangeError: Invalid time value
+    at formatDate (index.tsx:64:8)
+    at QuotationDetailPage (index.tsx:344:52)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=60f8d09c:11548:26)
+    at updateFunctionComponent (chunk-RPCDYKBN.js?v=60f8d09c:14582:28)
+    at beginWork (chunk-RPCDYKBN.js?v=60f8d09c:15924:22)
+    at HTMLUnknownElement.callCallback2 (chunk-RPCDYKBN.js?v=60f8d09c:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-RPCDYKBN.js?v=60f8d09c:3699:24)
+    at invokeGuardedCallback (chunk-RPCDYKBN.js?v=60f8d09c:3733:39)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=60f8d09c:19765:15)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=60f8d09c:19198:20)
+formatDate @ index.tsx:64
+QuotationDetailPage @ index.tsx:344
+renderWithHooks @ chunk-RPCDYKBN.js?v=60f8d09c:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=60f8d09c:14582
+beginWork @ chunk-RPCDYKBN.js?v=60f8d09c:15924
+callCallback2 @ chunk-RPCDYKBN.js?v=60f8d09c:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=60f8d09c:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=60f8d09c:3733
+beginWork$1 @ chunk-RPCDYKBN.js?v=60f8d09c:19765
+performUnitOfWork @ chunk-RPCDYKBN.js?v=60f8d09c:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=60f8d09c:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=60f8d09c:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=60f8d09c:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=60f8d09c:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=60f8d09c:555
+flush @ @tanstack_react-query.js?v=60f8d09c:569
+batch @ @tanstack_react-query.js?v=60f8d09c:587
+dispatch_fn @ @tanstack_react-query.js?v=60f8d09c:996
+setData @ @tanstack_react-query.js?v=60f8d09c:696
+onSuccess @ @tanstack_react-query.js?v=60f8d09c:897
+resolve @ @tanstack_react-query.js?v=60f8d09c:456
+Promise.then
+run @ @tanstack_react-query.js?v=60f8d09c:498
+start @ @tanstack_react-query.js?v=60f8d09c:536
+fetch @ @tanstack_react-query.js?v=60f8d09c:926
+executeFetch_fn @ @tanstack_react-query.js?v=60f8d09c:2211
+onSubscribe @ @tanstack_react-query.js?v=60f8d09c:1898
+subscribe @ @tanstack_react-query.js?v=60f8d09c:24
+(anonymous) @ @tanstack_react-query.js?v=60f8d09c:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=60f8d09c:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=60f8d09c:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=60f8d09c:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=60f8d09c:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=60f8d09c:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=60f8d09c:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=60f8d09c:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19416
+commitRoot @ chunk-RPCDYKBN.js?v=60f8d09c:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=60f8d09c:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=60f8d09c:9119
+flushSync @ chunk-RPCDYKBN.js?v=60f8d09c:18959
+flushSync$1 @ chunk-RPCDYKBN.js?v=60f8d09c:21538
+dispatchDiscreteCustomEvent @ chunk-CPFL7ZFD.js?v=60f8d09c:52
+handleSelect @ @radix-ui_react-dropdown-menu.js?v=60f8d09c:432
+handleEvent @ chunk-OD433RWB.js?v=60f8d09c:6
+callCallback2 @ chunk-RPCDYKBN.js?v=60f8d09c:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=60f8d09c:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=60f8d09c:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=60f8d09c:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=60f8d09c:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=60f8d09c:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=60f8d09c:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=60f8d09c:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=60f8d09c:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=60f8d09c:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=60f8d09c:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=60f8d09c:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5449
+index.tsx:64 Uncaught RangeError: Invalid time value
+    at formatDate (index.tsx:64:8)
+    at QuotationDetailPage (index.tsx:344:52)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=60f8d09c:11548:26)
+    at updateFunctionComponent (chunk-RPCDYKBN.js?v=60f8d09c:14582:28)
+    at beginWork (chunk-RPCDYKBN.js?v=60f8d09c:15924:22)
+    at HTMLUnknownElement.callCallback2 (chunk-RPCDYKBN.js?v=60f8d09c:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-RPCDYKBN.js?v=60f8d09c:3699:24)
+    at invokeGuardedCallback (chunk-RPCDYKBN.js?v=60f8d09c:3733:39)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=60f8d09c:19765:15)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=60f8d09c:19198:20)
+formatDate @ index.tsx:64
+QuotationDetailPage @ index.tsx:344
+renderWithHooks @ chunk-RPCDYKBN.js?v=60f8d09c:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=60f8d09c:14582
+beginWork @ chunk-RPCDYKBN.js?v=60f8d09c:15924
+callCallback2 @ chunk-RPCDYKBN.js?v=60f8d09c:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=60f8d09c:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=60f8d09c:3733
+beginWork$1 @ chunk-RPCDYKBN.js?v=60f8d09c:19765
+performUnitOfWork @ chunk-RPCDYKBN.js?v=60f8d09c:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=60f8d09c:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=60f8d09c:19116
+recoverFromConcurrentError @ chunk-RPCDYKBN.js?v=60f8d09c:18736
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=60f8d09c:18879
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=60f8d09c:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=60f8d09c:555
+flush @ @tanstack_react-query.js?v=60f8d09c:569
+batch @ @tanstack_react-query.js?v=60f8d09c:587
+dispatch_fn @ @tanstack_react-query.js?v=60f8d09c:996
+setData @ @tanstack_react-query.js?v=60f8d09c:696
+onSuccess @ @tanstack_react-query.js?v=60f8d09c:897
+resolve @ @tanstack_react-query.js?v=60f8d09c:456
+Promise.then
+run @ @tanstack_react-query.js?v=60f8d09c:498
+start @ @tanstack_react-query.js?v=60f8d09c:536
+fetch @ @tanstack_react-query.js?v=60f8d09c:926
+executeFetch_fn @ @tanstack_react-query.js?v=60f8d09c:2211
+onSubscribe @ @tanstack_react-query.js?v=60f8d09c:1898
+subscribe @ @tanstack_react-query.js?v=60f8d09c:24
+(anonymous) @ @tanstack_react-query.js?v=60f8d09c:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=60f8d09c:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=60f8d09c:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=60f8d09c:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=60f8d09c:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=60f8d09c:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=60f8d09c:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=60f8d09c:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19416
+commitRoot @ chunk-RPCDYKBN.js?v=60f8d09c:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=60f8d09c:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=60f8d09c:9119
+flushSync @ chunk-RPCDYKBN.js?v=60f8d09c:18959
+flushSync$1 @ chunk-RPCDYKBN.js?v=60f8d09c:21538
+dispatchDiscreteCustomEvent @ chunk-CPFL7ZFD.js?v=60f8d09c:52
+handleSelect @ @radix-ui_react-dropdown-menu.js?v=60f8d09c:432
+handleEvent @ chunk-OD433RWB.js?v=60f8d09c:6
+callCallback2 @ chunk-RPCDYKBN.js?v=60f8d09c:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=60f8d09c:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=60f8d09c:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=60f8d09c:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=60f8d09c:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=60f8d09c:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=60f8d09c:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=60f8d09c:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=60f8d09c:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=60f8d09c:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=60f8d09c:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=60f8d09c:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5449
+Console.js:61 The above error occurred in the <QuotationDetailPage> component:
+
+    at QuotationDetailPage (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/quotations/[id]/index.tsx?t=1747771329182:56:17)
+    at Route (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=60f8d09c:323:16)
+    at Switch (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=60f8d09c:379:17)
+    at Router
+    at main
+    at div
+    at div
+    at Layout (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/components/layout/layout.tsx:23:26)
+    at QueryClientProvider (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=60f8d09c:2805:3)
+    at App (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/App.tsx?t=1747771329182&v=jR6LcmnME80kLlcON1YVH:677:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+Mt.forEach.n.<computed> @ Console.js:61
+logCapturedError @ chunk-RPCDYKBN.js?v=60f8d09c:14032
+update.callback @ chunk-RPCDYKBN.js?v=60f8d09c:14052
+callCallback @ chunk-RPCDYKBN.js?v=60f8d09c:11248
+commitUpdateQueue @ chunk-RPCDYKBN.js?v=60f8d09c:11265
+commitLayoutEffectOnFiber @ chunk-RPCDYKBN.js?v=60f8d09c:17093
+commitLayoutMountEffects_complete @ chunk-RPCDYKBN.js?v=60f8d09c:17980
+commitLayoutEffects_begin @ chunk-RPCDYKBN.js?v=60f8d09c:17969
+commitLayoutEffects @ chunk-RPCDYKBN.js?v=60f8d09c:17920
+commitRootImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19353
+commitRoot @ chunk-RPCDYKBN.js?v=60f8d09c:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=60f8d09c:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=60f8d09c:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=60f8d09c:555
+flush @ @tanstack_react-query.js?v=60f8d09c:569
+batch @ @tanstack_react-query.js?v=60f8d09c:587
+dispatch_fn @ @tanstack_react-query.js?v=60f8d09c:996
+setData @ @tanstack_react-query.js?v=60f8d09c:696
+onSuccess @ @tanstack_react-query.js?v=60f8d09c:897
+resolve @ @tanstack_react-query.js?v=60f8d09c:456
+Promise.then
+run @ @tanstack_react-query.js?v=60f8d09c:498
+start @ @tanstack_react-query.js?v=60f8d09c:536
+fetch @ @tanstack_react-query.js?v=60f8d09c:926
+executeFetch_fn @ @tanstack_react-query.js?v=60f8d09c:2211
+onSubscribe @ @tanstack_react-query.js?v=60f8d09c:1898
+subscribe @ @tanstack_react-query.js?v=60f8d09c:24
+(anonymous) @ @tanstack_react-query.js?v=60f8d09c:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=60f8d09c:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=60f8d09c:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=60f8d09c:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=60f8d09c:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=60f8d09c:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=60f8d09c:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=60f8d09c:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19416
+commitRoot @ chunk-RPCDYKBN.js?v=60f8d09c:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=60f8d09c:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=60f8d09c:9119
+flushSync @ chunk-RPCDYKBN.js?v=60f8d09c:18959
+flushSync$1 @ chunk-RPCDYKBN.js?v=60f8d09c:21538
+dispatchDiscreteCustomEvent @ chunk-CPFL7ZFD.js?v=60f8d09c:52
+handleSelect @ @radix-ui_react-dropdown-menu.js?v=60f8d09c:432
+handleEvent @ chunk-OD433RWB.js?v=60f8d09c:6
+callCallback2 @ chunk-RPCDYKBN.js?v=60f8d09c:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=60f8d09c:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=60f8d09c:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=60f8d09c:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=60f8d09c:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=60f8d09c:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=60f8d09c:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=60f8d09c:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=60f8d09c:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=60f8d09c:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=60f8d09c:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=60f8d09c:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5449
+chunk-RPCDYKBN.js?v=60f8d09c:9129 Uncaught RangeError: Invalid time value
+    at formatDate (index.tsx:64:8)
+    at QuotationDetailPage (index.tsx:344:52)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=60f8d09c:11548:26)
+    at updateFunctionComponent (chunk-RPCDYKBN.js?v=60f8d09c:14582:28)
+    at beginWork (chunk-RPCDYKBN.js?v=60f8d09c:15924:22)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=60f8d09c:19753:22)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=60f8d09c:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js?v=60f8d09c:19137:13)
+    at renderRootSync (chunk-RPCDYKBN.js?v=60f8d09c:19116:15)
+    at recoverFromConcurrentError (chunk-RPCDYKBN.js?v=60f8d09c:18736:28)
+formatDate @ index.tsx:64
+QuotationDetailPage @ index.tsx:344
+renderWithHooks @ chunk-RPCDYKBN.js?v=60f8d09c:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=60f8d09c:14582
+beginWork @ chunk-RPCDYKBN.js?v=60f8d09c:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=60f8d09c:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=60f8d09c:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=60f8d09c:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=60f8d09c:19116
+recoverFromConcurrentError @ chunk-RPCDYKBN.js?v=60f8d09c:18736
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=60f8d09c:18879
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=60f8d09c:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=60f8d09c:555
+flush @ @tanstack_react-query.js?v=60f8d09c:569
+batch @ @tanstack_react-query.js?v=60f8d09c:587
+dispatch_fn @ @tanstack_react-query.js?v=60f8d09c:996
+setData @ @tanstack_react-query.js?v=60f8d09c:696
+onSuccess @ @tanstack_react-query.js?v=60f8d09c:897
+resolve @ @tanstack_react-query.js?v=60f8d09c:456
+Promise.then
+run @ @tanstack_react-query.js?v=60f8d09c:498
+start @ @tanstack_react-query.js?v=60f8d09c:536
+fetch @ @tanstack_react-query.js?v=60f8d09c:926
+executeFetch_fn @ @tanstack_react-query.js?v=60f8d09c:2211
+onSubscribe @ @tanstack_react-query.js?v=60f8d09c:1898
+subscribe @ @tanstack_react-query.js?v=60f8d09c:24
+(anonymous) @ @tanstack_react-query.js?v=60f8d09c:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=60f8d09c:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=60f8d09c:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=60f8d09c:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=60f8d09c:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=60f8d09c:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=60f8d09c:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=60f8d09c:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19416
+commitRoot @ chunk-RPCDYKBN.js?v=60f8d09c:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=60f8d09c:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=60f8d09c:9119
+flushSync @ chunk-RPCDYKBN.js?v=60f8d09c:18959
+flushSync$1 @ chunk-RPCDYKBN.js?v=60f8d09c:21538
+dispatchDiscreteCustomEvent @ chunk-CPFL7ZFD.js?v=60f8d09c:52
+handleSelect @ @radix-ui_react-dropdown-menu.js?v=60f8d09c:432
+handleEvent @ chunk-OD433RWB.js?v=60f8d09c:6
+callCallback2 @ chunk-RPCDYKBN.js?v=60f8d09c:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=60f8d09c:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=60f8d09c:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=60f8d09c:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=60f8d09c:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=60f8d09c:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=60f8d09c:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=60f8d09c:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=60f8d09c:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=60f8d09c:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=60f8d09c:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=60f8d09c:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5449
