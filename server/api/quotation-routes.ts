@@ -124,9 +124,83 @@ export function registerQuotationRoutes(app: any) {
         });
       }
       
+      // Mapeamento de tipos de propriedade para exibição
+      const propertyTypeMap = {
+        'apartment_t0t1': 'Apartamento T0/T1',
+        'apartment_t2': 'Apartamento T2',
+        'apartment_t3': 'Apartamento T3',
+        'apartment_t4': 'Apartamento T4',
+        'apartment_t5': 'Apartamento T5+',
+        'house_v1': 'Moradia V1',
+        'house_v2': 'Moradia V2',
+        'house_v3': 'Moradia V3',
+        'house_v4': 'Moradia V4',
+        'house_v5': 'Moradia V5+'
+      };
+      
+      // Enriquecer os dados do orçamento para a exibição no cliente
+      const enrichedQuotation = {...quotation};
+      
+      // Adicionar propriedades que podem estar faltando
+      if (!enrichedQuotation.propertyType) {
+        // Se o tipo de propriedade não estiver definido, tentar determiná-lo a partir do endereco ou outros dados
+        enrichedQuotation.propertyType = 'apartment_t0t1'; // Valor padrão
+      }
+      
+      // Garantir que temos todos os campos necessários para a exibição
+      enrichedQuotation.propertyTypeDisplay = propertyTypeMap[enrichedQuotation.propertyType] || enrichedQuotation.propertyType;
+      
+      // Adicionar ou ajustar campos necessários para a exibição
+      if (!enrichedQuotation.propertyArea) enrichedQuotation.propertyArea = 0;
+      if (!enrichedQuotation.exteriorArea) enrichedQuotation.exteriorArea = 0;
+      if (!enrichedQuotation.bedrooms) enrichedQuotation.bedrooms = 1;
+      if (!enrichedQuotation.bathrooms) enrichedQuotation.bathrooms = 1;
+      if (enrichedQuotation.isDuplex === undefined) enrichedQuotation.isDuplex = false;
+      if (enrichedQuotation.hasBBQ === undefined) enrichedQuotation.hasBBQ = false;
+      if (enrichedQuotation.hasGlassGarden === undefined) enrichedQuotation.hasGlassGarden = false;
+      
+      // Se totalPrice não estiver definido, usar totalAmount
+      if (!enrichedQuotation.totalPrice && enrichedQuotation.totalAmount) {
+        enrichedQuotation.totalPrice = enrichedQuotation.totalAmount;
+      }
+      
+      // Se basePrice não estiver definido, estimar a partir do preço total
+      if (!enrichedQuotation.basePrice && enrichedQuotation.totalPrice) {
+        enrichedQuotation.basePrice = enrichedQuotation.totalPrice;
+      }
+      
+      // Garantir que campos de sobretaxa estejam presentes
+      if (!enrichedQuotation.duplexSurcharge) enrichedQuotation.duplexSurcharge = "0.00";
+      if (!enrichedQuotation.bbqSurcharge) enrichedQuotation.bbqSurcharge = "0.00";
+      if (!enrichedQuotation.glassGardenSurcharge) enrichedQuotation.glassGardenSurcharge = "0.00";
+      if (!enrichedQuotation.exteriorSurcharge) enrichedQuotation.exteriorSurcharge = "0.00";
+      if (!enrichedQuotation.additionalSurcharges) enrichedQuotation.additionalSurcharges = "0.00";
+      
+      // Formatar o preço total para exibição em euros
+      try {
+        let priceSource = enrichedQuotation.totalPrice;
+        if (!priceSource && enrichedQuotation.totalAmount) {
+          priceSource = enrichedQuotation.totalAmount;
+        }
+        
+        const priceNumber = parseFloat(priceSource);
+        
+        if (!isNaN(priceNumber)) {
+          enrichedQuotation.totalPriceFormatted = new Intl.NumberFormat('pt-PT', {
+            style: 'currency',
+            currency: 'EUR'
+          }).format(priceNumber);
+        } else {
+          enrichedQuotation.totalPriceFormatted = priceSource ? priceSource + ' €' : '0,00 €';
+        }
+      } catch (e) {
+        console.error('Erro ao formatar preço:', e);
+        enrichedQuotation.totalPriceFormatted = enrichedQuotation.totalPrice || enrichedQuotation.totalAmount || '0,00 €';
+      }
+      
       return res.json({
         success: true,
-        data: quotation
+        data: enrichedQuotation
       });
     } catch (error: any) {
       console.error("Erro ao buscar orçamento:", error);
