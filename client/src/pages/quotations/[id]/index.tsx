@@ -279,7 +279,36 @@ export default function QuotationDetailPage() {
     );
   }
   
-  if (error || !quotation) {
+  // Log para depuração
+  console.log("Estado da consulta:", { error, isLoading, quotation });
+  
+  if (error) {
+    console.error("Erro ao buscar orçamento:", error);
+    return (
+      <div className="container mx-auto py-6 space-y-6">
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate("/quotations")}
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            {t('common.back')}
+          </Button>
+        </div>
+        
+        <Card>
+          <CardContent className="p-6">
+            <p className="text-center py-8">
+              {t('common.errorLoading')}: {error instanceof Error ? error.message : String(error)}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+  
+  if (!quotation) {
     return (
       <div className="container mx-auto py-6 space-y-6">
         <div className="flex items-center space-x-2">

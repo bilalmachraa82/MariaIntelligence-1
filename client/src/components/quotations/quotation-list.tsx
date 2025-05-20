@@ -365,7 +365,10 @@ export function QuotationList() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => navigate(`/quotations/${quotation.id}`)}>
+                            <DropdownMenuItem onClick={() => {
+                              console.log(`Navegando para orçamento ${quotation.id}`);
+                              navigate(`/quotations/${quotation.id}`);
+                            }}>
                               <Eye className="mr-2 h-4 w-4" />
                               {t('common.view')}
                             </DropdownMenuItem>
