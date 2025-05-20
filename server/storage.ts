@@ -3040,31 +3040,81 @@ export class DatabaseStorage implements IStorage {
     const quotation = await this.getQuotation(id);
     if (!quotation) throw new Error("Orçamento não encontrado");
     
+    console.log("Orçamento original para PDF:", JSON.stringify(quotation, null, 2));
+    
+    // Converter strings para números onde necessário
+    const convertToNumber = (value: any, defaultValue = 0): number => {
+      if (value === null || value === undefined) return defaultValue;
+      if (typeof value === 'number') return value;
+      if (typeof value === 'string') {
+        // Remover símbolos não numéricos exceto ponto e vírgula
+        const cleaned = value.replace(/[^\d.,]/g, '').replace(',', '.');
+        const parsed = parseFloat(cleaned);
+        return isNaN(parsed) ? defaultValue : parsed;
+      }
+      return defaultValue;
+    };
+    
+    // Calcular os valores com base nas características
+    const basePrice = convertToNumber(quotation.basePrice || quotation.totalAmount, 47);
+    const isDuplex = !!quotation.isDuplex;
+    const hasBBQ = !!quotation.hasBBQ;
+    const hasGlassGarden = !!quotation.hasGlassGarden;
+    const exteriorArea = convertToNumber(quotation.exteriorArea, 0);
+    const hasLargeExterior = exteriorArea > 15;
+    
+    // Calcular adicionais (10€ cada)
+    const duplexSurcharge = isDuplex ? 10 : 0;
+    const bbqSurcharge = hasBBQ ? 10 : 0;
+    const glassGardenSurcharge = hasGlassGarden ? 10 : 0;
+    const exteriorSurcharge = hasLargeExterior ? 10 : 0;
+    const additionalSurcharges = convertToNumber(quotation.additionalSurcharges, 0);
+    
+    // Calcular o preço total
+    const totalPrice = basePrice + duplexSurcharge + bbqSurcharge + 
+                       glassGardenSurcharge + exteriorSurcharge + additionalSurcharges;
+    
+    // Formatar valores monetários (€0,00)
+    const formatCurrency = (value: number): string => {
+      return value.toFixed(2).replace('.', ',');
+    };
+    
     // Enriquecer os dados do orçamento para o PDF
     const enrichedQuotation = {
       ...quotation,
-      // Garantir que todas as propriedades necessárias estão presentes
+      // Dados da propriedade
       propertyType: quotation.propertyType || 'apartment_t0t1',
-      propertyArea: quotation.propertyArea || 0,
-      exteriorArea: quotation.exteriorArea || 0,
-      bedrooms: quotation.bedrooms || 1,
-      bathrooms: quotation.bathrooms || 1,
-      isDuplex: quotation.isDuplex === true,
-      hasBBQ: quotation.hasBBQ === true,
-      hasGlassGarden: quotation.hasGlassGarden === true,
+      propertyArea: convertToNumber(quotation.propertyArea, 50),
+      exteriorArea: exteriorArea,
       
-      // Preços e taxas
-      basePrice: quotation.basePrice || quotation.totalAmount || '0.00',
-      duplexSurcharge: quotation.isDuplex ? '10.00' : '0.00',
-      bbqSurcharge: quotation.hasBBQ ? '10.00' : '0.00',
-      glassGardenSurcharge: quotation.hasGlassGarden ? '10.00' : '0.00',
-      exteriorSurcharge: (quotation.exteriorArea && quotation.exteriorArea > 15) ? '10.00' : '0.00',
-      additionalSurcharges: quotation.additionalSurcharges || '0.00',
+      // Características
+      isDuplex: isDuplex,
+      hasBBQ: hasBBQ,
+      hasGlassGarden: hasGlassGarden,
+      
+      // Preços e taxas (valores numéricos)
+      basePrice: basePrice,
+      duplexSurcharge: duplexSurcharge,
+      bbqSurcharge: bbqSurcharge,
+      glassGardenSurcharge: glassGardenSurcharge,
+      exteriorSurcharge: exteriorSurcharge,
+      additionalSurcharges: additionalSurcharges,
+      totalPrice: totalPrice,
+      
+      // Preços e taxas (formato string)
+      basePriceFormatted: `${formatCurrency(basePrice)} €`,
+      duplexSurchargeFormatted: `${formatCurrency(duplexSurcharge)} €`,
+      bbqSurchargeFormatted: `${formatCurrency(bbqSurcharge)} €`,
+      glassGardenSurchargeFormatted: `${formatCurrency(glassGardenSurcharge)} €`,
+      exteriorSurchargeFormatted: `${formatCurrency(exteriorSurcharge)} €`,
+      additionalSurchargesFormatted: `${formatCurrency(additionalSurcharges)} €`,
+      totalPriceFormatted: `${formatCurrency(totalPrice)} €`,
       
       // Garantir que temos valores formatados
       propertyTypeDisplay: this.getPropertyTypeDisplay(quotation.propertyType),
-      totalPrice: quotation.totalPrice || quotation.totalAmount || '0.00'
     };
+    
+    console.log("Orçamento enriquecido para PDF:", JSON.stringify(enrichedQuotation, null, 2));
     
     try {
       // Importar o serviço de PDF para gerar o documento
