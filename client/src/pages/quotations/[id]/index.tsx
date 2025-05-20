@@ -156,19 +156,19 @@ export default function QuotationDetailPage() {
   // Generate PDF
   const handleGeneratePdf = async () => {
     try {
-      const response = await apiRequest(`/api/quotations/${quotationId}/pdf`);
+      // Criar URL para download direto do PDF
+      const downloadUrl = `/api/quotations/${quotationId}/pdf?mode=download`;
       
-      if (response && response.success) {
-        // Em ambiente de produção, seria necessário incluir lógica para download do arquivo
-        toast({
-          title: t('quotation.pdfGenerated'),
-          description: t('quotation.pdfSuccess'),
-          variant: "default",
-        });
-      } else {
-        throw new Error("Falha ao gerar PDF");
-      }
+      // Abrir em nova aba para download direto
+      window.open(downloadUrl, '_blank');
+      
+      toast({
+        title: t('quotation.pdfGenerated'),
+        description: t('quotation.pdfSuccess'),
+        variant: "default",
+      });
     } catch (error) {
+      console.error("Erro ao gerar PDF:", error);
       toast({
         title: t('common.error'),
         description: t('quotation.pdfError'),
@@ -193,6 +193,12 @@ export default function QuotationDetailPage() {
         return;
       }
       
+      toast({
+        title: t('quotation.sendingEmail'),
+        description: t('quotation.pleaseWait'),
+        variant: "default",
+      });
+      
       // Enviar e-mail com o orçamento anexado
       const response = await apiRequest({
         url: `/api/quotations/${quotationId}/send-email`,
@@ -200,6 +206,7 @@ export default function QuotationDetailPage() {
         data: {
           email: quotationData.clientEmail,
           subject: `Orçamento de Serviço para ${quotationData.clientName}`,
+          message: `Prezado(a) ${quotationData.clientName},\n\nSegue em anexo o orçamento solicitado para os nossos serviços. Este orçamento é válido até ${formatDate(quotationData.validUntil)}.\n\nFicamos à disposição para quaisquer esclarecimentos.\n\nAtenciosamente,\nEquipe Maria Faz`
         }
       });
       
@@ -210,12 +217,15 @@ export default function QuotationDetailPage() {
           variant: "default",
         });
       } else {
-        throw new Error("Falha ao enviar e-mail");
+        throw new Error(response?.message || "Falha ao enviar e-mail");
       }
     } catch (error) {
+      console.error("Erro ao enviar e-mail:", error);
       toast({
         title: t('common.error'),
-        description: t('quotation.emailError'),
+        description: typeof error === 'string' ? error : 
+                     error instanceof Error ? error.message : 
+                     t('quotation.emailError'),
         variant: "destructive",
       });
     }
