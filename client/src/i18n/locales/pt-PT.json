@@ -221,6 +221,8 @@
       "emailSent": "E-mail Enviado",
       "emailSuccess": "E-mail enviado com sucesso!",
       "emailError": "Erro ao enviar e-mail",
+      "sendingEmail": "A enviar e-mail",
+      "pleaseWait": "Por favor aguarde...",
       "noEmailProvided": "O cliente não tem e-mail cadastrado",
       "sendByEmail": "Enviar por E-mail",
       "noQuotations": "Nenhum orçamento encontrado",
@@ -301,7 +303,21 @@
       "quotationFor": "Orçamento para",
       "createdOn": "Criado em",
       "notes": "Notas Adicionais",
-      "notesPlaceholder": "Informações adicionais sobre o orçamento"
+      "notesPlaceholder": "Informações adicionais sobre o orçamento",
+      "address": "Morada",
+      "pricingInfo": "Informações de Preço",
+      "confirmSent": "Confirmar Envio",
+      "sentWarning": "Ao confirmar, este orçamento será marcado como enviado ao cliente.",
+      "confirmSentAction": "Marcar como Enviado",
+      "confirmAccepted": "Confirmar Aceitação",
+      "acceptedWarning": "Ao confirmar, este orçamento será marcado como aceito pelo cliente.",
+      "confirmAcceptedAction": "Marcar como Aceite",
+      "confirmRejected": "Confirmar Rejeição",
+      "rejectedWarning": "Ao confirmar, este orçamento será marcado como rejeitado pelo cliente.",
+      "confirmRejectedAction": "Marcar como Rejeitado",
+      "confirmExpired": "Confirmar Expiração",
+      "expiredWarning": "Ao confirmar, este orçamento será marcado como expirado.",
+      "confirmExpiredAction": "Marcar como Expirado"
     }
   }
 }
