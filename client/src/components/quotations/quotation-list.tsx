@@ -367,7 +367,9 @@ export function QuotationList() {
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem onClick={() => {
                               console.log(`Navegando para orçamento ${quotation.id}`);
-                              navigate(`/quotations/${quotation.id}`);
+                              // Usar normalizeUrl para garantir que não tenha barras duplicadas
+                              const url = `/quotations/${quotation.id}`;
+                              navigate(url);
                             }}>
                               <Eye className="mr-2 h-4 w-4" />
                               {t('common.view')}

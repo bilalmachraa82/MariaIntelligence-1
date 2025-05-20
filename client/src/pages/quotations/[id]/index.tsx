@@ -52,10 +52,22 @@ export default function QuotationDetailPage() {
   const { data: quotation, isLoading, error } = useQuery({
     queryKey: [`/api/quotations/${quotationId}`],
     queryFn: async () => {
-      const response = await apiRequest({
-        url: `/api/quotations/${quotationId}`
-      });
-      return response.data;
+      try {
+        console.log(`Buscando orçamento com ID: ${quotationId}`);
+        const response = await apiRequest({
+          url: `/api/quotations/${quotationId}`
+        });
+        
+        console.log("Resposta da API:", response);
+        if (response.success && response.data) {
+          return response.data;
+        } else {
+          throw new Error("Orçamento não encontrado ou dados incompletos");
+        }
+      } catch (e) {
+        console.error("Erro ao buscar orçamento:", e);
+        throw e;
+      }
     },
     enabled: !!quotationId,
   });
