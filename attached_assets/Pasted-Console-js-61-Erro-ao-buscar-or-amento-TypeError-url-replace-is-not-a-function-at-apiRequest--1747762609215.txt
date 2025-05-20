@@ -1,0 +1,235 @@
+Console.js:61 Erro ao buscar orçamento: TypeError: url.replace is not a function
+    at apiRequest (queryClient.ts:41:24)
+    at queryFn (index.tsx:57:32)
+    at Object.fetchFn [as fn] (@tanstack_react-query.js?v=60f8d09c:840:14)
+    at run (@tanstack_react-query.js?v=60f8d09c:494:49)
+    at Object.start (@tanstack_react-query.js?v=60f8d09c:536:9)
+    at _a4.fetch (@tanstack_react-query.js?v=60f8d09c:926:41)
+    at _a9.executeFetch_fn (@tanstack_react-query.js?v=60f8d09c:2211:51)
+    at _a9.onSubscribe (@tanstack_react-query.js?v=60f8d09c:1898:74)
+    at _a9.subscribe (@tanstack_react-query.js?v=60f8d09c:24:10)
+    at @tanstack_react-query.js?v=60f8d09c:3022:60
+Mt.forEach.n.<computed> @ Console.js:61
+queryFn @ index.tsx:68
+await in queryFn
+fetchFn @ @tanstack_react-query.js?v=60f8d09c:840
+run @ @tanstack_react-query.js?v=60f8d09c:494
+start @ @tanstack_react-query.js?v=60f8d09c:536
+fetch @ @tanstack_react-query.js?v=60f8d09c:926
+executeFetch_fn @ @tanstack_react-query.js?v=60f8d09c:2211
+onSubscribe @ @tanstack_react-query.js?v=60f8d09c:1898
+subscribe @ @tanstack_react-query.js?v=60f8d09c:24
+(anonymous) @ @tanstack_react-query.js?v=60f8d09c:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=60f8d09c:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=60f8d09c:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=60f8d09c:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=60f8d09c:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=60f8d09c:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=60f8d09c:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=60f8d09c:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19416
+commitRoot @ chunk-RPCDYKBN.js?v=60f8d09c:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=60f8d09c:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=60f8d09c:9119
+flushSync @ chunk-RPCDYKBN.js?v=60f8d09c:18959
+flushSync$1 @ chunk-RPCDYKBN.js?v=60f8d09c:21538
+dispatchDiscreteCustomEvent @ chunk-CPFL7ZFD.js?v=60f8d09c:52
+handleSelect @ @radix-ui_react-dropdown-menu.js?v=60f8d09c:432
+handleEvent @ chunk-OD433RWB.js?v=60f8d09c:6
+callCallback2 @ chunk-RPCDYKBN.js?v=60f8d09c:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=60f8d09c:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=60f8d09c:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=60f8d09c:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=60f8d09c:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=60f8d09c:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=60f8d09c:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=60f8d09c:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=60f8d09c:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=60f8d09c:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=60f8d09c:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=60f8d09c:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5449
+_app-95689e6b4086e17a.js:38 Invalid href 'https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev//quotations/12' passed to next/router in page: '/replEnvironmentDesktop'. Repeated forward-slashes (//) or backslashes \ are not valid in the href.
+(anonymous) @ _app-95689e6b4086e17a.js:38
+d @ main-651fd046f1096d37.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+lU @ framework-a63b201baf0a4162.js:1
+t.useMemo @ framework-a63b201baf0a4162.js:1
+(anonymous) @ _app-95689e6b4086e17a.js:6
+ld @ framework-a63b201baf0a4162.js:1
+ou @ framework-a63b201baf0a4162.js:1
+i @ framework-a63b201baf0a4162.js:1
+uI @ framework-a63b201baf0a4162.js:1
+uM @ framework-a63b201baf0a4162.js:1
+uS @ framework-a63b201baf0a4162.js:1
+C @ framework-a63b201baf0a4162.js:1
+z @ framework-a63b201baf0a4162.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-a63b201baf0a4162.js:1
+z @ framework-a63b201baf0a4162.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-a63b201baf0a4162.js:1
+I @ framework-a63b201baf0a4162.js:1
+t.unstable_scheduleCallback @ framework-a63b201baf0a4162.js:1
+uw @ framework-a63b201baf0a4162.js:1
+uk @ framework-a63b201baf0a4162.js:1
+lH @ framework-a63b201baf0a4162.js:1
+n @ replEnvironmentDesktop-8ba4a859ee4e04e8.js:1
+r @ _app-95689e6b4086e17a.js:38
+Console.js:61 Erro ao buscar orçamento: TypeError: url.replace is not a function
+    at apiRequest (queryClient.ts:41:24)
+    at queryFn (index.tsx:57:32)
+    at Object.fetchFn [as fn] (@tanstack_react-query.js?v=60f8d09c:840:14)
+    at run (@tanstack_react-query.js?v=60f8d09c:494:49)
+    at @tanstack_react-query.js?v=60f8d09c:519:11
+Mt.forEach.n.<computed> @ Console.js:61
+queryFn @ index.tsx:68
+await in queryFn
+fetchFn @ @tanstack_react-query.js?v=60f8d09c:840
+run @ @tanstack_react-query.js?v=60f8d09c:494
+(anonymous) @ @tanstack_react-query.js?v=60f8d09c:519
+Promise.then
+(anonymous) @ @tanstack_react-query.js?v=60f8d09c:515
+Promise.catch
+run @ @tanstack_react-query.js?v=60f8d09c:498
+start @ @tanstack_react-query.js?v=60f8d09c:536
+fetch @ @tanstack_react-query.js?v=60f8d09c:926
+executeFetch_fn @ @tanstack_react-query.js?v=60f8d09c:2211
+onSubscribe @ @tanstack_react-query.js?v=60f8d09c:1898
+subscribe @ @tanstack_react-query.js?v=60f8d09c:24
+(anonymous) @ @tanstack_react-query.js?v=60f8d09c:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=60f8d09c:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=60f8d09c:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=60f8d09c:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=60f8d09c:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=60f8d09c:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=60f8d09c:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=60f8d09c:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19416
+commitRoot @ chunk-RPCDYKBN.js?v=60f8d09c:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=60f8d09c:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=60f8d09c:9119
+flushSync @ chunk-RPCDYKBN.js?v=60f8d09c:18959
+flushSync$1 @ chunk-RPCDYKBN.js?v=60f8d09c:21538
+dispatchDiscreteCustomEvent @ chunk-CPFL7ZFD.js?v=60f8d09c:52
+handleSelect @ @radix-ui_react-dropdown-menu.js?v=60f8d09c:432
+handleEvent @ chunk-OD433RWB.js?v=60f8d09c:6
+callCallback2 @ chunk-RPCDYKBN.js?v=60f8d09c:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=60f8d09c:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=60f8d09c:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=60f8d09c:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=60f8d09c:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=60f8d09c:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=60f8d09c:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=60f8d09c:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=60f8d09c:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=60f8d09c:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=60f8d09c:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=60f8d09c:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5449
+Console.js:61 Erro ao buscar orçamento: TypeError: url.replace is not a function
+    at apiRequest (queryClient.ts:41:24)
+    at queryFn (index.tsx:57:32)
+    at Object.fetchFn [as fn] (@tanstack_react-query.js?v=60f8d09c:840:14)
+    at run (@tanstack_react-query.js?v=60f8d09c:494:49)
+    at @tanstack_react-query.js?v=60f8d09c:519:11
+Mt.forEach.n.<computed> @ Console.js:61
+QuotationDetailPage @ index.tsx:298
+renderWithHooks @ chunk-RPCDYKBN.js?v=60f8d09c:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=60f8d09c:14582
+beginWork @ chunk-RPCDYKBN.js?v=60f8d09c:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=60f8d09c:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=60f8d09c:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=60f8d09c:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=60f8d09c:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=60f8d09c:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=60f8d09c:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=60f8d09c:555
+flush @ @tanstack_react-query.js?v=60f8d09c:569
+batch @ @tanstack_react-query.js?v=60f8d09c:587
+dispatch_fn @ @tanstack_react-query.js?v=60f8d09c:996
+onError @ @tanstack_react-query.js?v=60f8d09c:861
+reject @ @tanstack_react-query.js?v=60f8d09c:465
+(anonymous) @ @tanstack_react-query.js?v=60f8d09c:508
+Promise.catch
+run @ @tanstack_react-query.js?v=60f8d09c:498
+(anonymous) @ @tanstack_react-query.js?v=60f8d09c:519
+Promise.then
+(anonymous) @ @tanstack_react-query.js?v=60f8d09c:515
+Promise.catch
+run @ @tanstack_react-query.js?v=60f8d09c:498
+start @ @tanstack_react-query.js?v=60f8d09c:536
+fetch @ @tanstack_react-query.js?v=60f8d09c:926
+executeFetch_fn @ @tanstack_react-query.js?v=60f8d09c:2211
+onSubscribe @ @tanstack_react-query.js?v=60f8d09c:1898
+subscribe @ @tanstack_react-query.js?v=60f8d09c:24
+(anonymous) @ @tanstack_react-query.js?v=60f8d09c:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=60f8d09c:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=60f8d09c:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=60f8d09c:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=60f8d09c:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=60f8d09c:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=60f8d09c:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=60f8d09c:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=60f8d09c:19416
+commitRoot @ chunk-RPCDYKBN.js?v=60f8d09c:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=60f8d09c:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=60f8d09c:9119
+flushSync @ chunk-RPCDYKBN.js?v=60f8d09c:18959
+flushSync$1 @ chunk-RPCDYKBN.js?v=60f8d09c:21538
+dispatchDiscreteCustomEvent @ chunk-CPFL7ZFD.js?v=60f8d09c:52
+handleSelect @ @radix-ui_react-dropdown-menu.js?v=60f8d09c:432
+handleEvent @ chunk-OD433RWB.js?v=60f8d09c:6
+callCallback2 @ chunk-RPCDYKBN.js?v=60f8d09c:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=60f8d09c:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=60f8d09c:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=60f8d09c:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=60f8d09c:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=60f8d09c:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=60f8d09c:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=60f8d09c:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=60f8d09c:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=60f8d09c:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=60f8d09c:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=60f8d09c:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=60f8d09c:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=60f8d09c:5449
+Console.js:61 Erro ao buscar orçamento: TypeError: url.replace is not a function
+    at apiRequest (queryClient.ts:41:24)
+    at queryFn (index.tsx:57:32)
+    at Object.fetchFn [as fn] (@tanstack_react-query.js?v=60f8d09c:840:14)
+    at run (@tanstack_react-query.js?v=60f8d09c:494:49)
+    at @tanstack_react-query.js?v=60f8d09c:519:11
+Mt.forEach.n.<computed> @ Console.js:61
+QuotationDetailPage @ index.tsx:298
+renderWithHooks @ chunk-RPCDYKBN.js?v=60f8d09c:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=60f8d09c:14582
+beginWork @ chunk-RPCDYKBN.js?v=60f8d09c:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=60f8d09c:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=60f8d09c:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=60f8d09c:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=60f8d09c:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=60f8d09c:18678
+workLoop @ chunk-RPCDYKBN.js?v=60f8d09c:197
+flushWork @ chunk-RPCDYKBN.js?v=60f8d09c:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=60f8d09c:384

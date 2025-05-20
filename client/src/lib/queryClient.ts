@@ -34,8 +34,19 @@ interface ApiRequestOptions {
   headers?: Record<string, string>;
 }
 
-export async function apiRequest<T = unknown>(url: string, options: ApiRequestOptions = {}): Promise<T> {
+export async function apiRequest<T = unknown>(url: string | { url: string } | unknown, options: ApiRequestOptions = {}): Promise<T> {
+  // Verificar se url é um objeto com propriedade url
+  if (typeof url === 'object' && url !== null && 'url' in url) {
+    options = { ...(url as ApiRequestOptions) };
+    url = (url as { url: string }).url;
+  }
+  
   const { method = "GET", data, headers = {} } = options;
+  
+  // Garantir que url seja string
+  if (typeof url !== 'string') {
+    throw new Error(`URL inválida: ${JSON.stringify(url)}`);
+  }
   
   // Corrigir URLs com barras duplas
   const cleanUrl = url.replace(/([^:]\/)\/+/g, "$1");

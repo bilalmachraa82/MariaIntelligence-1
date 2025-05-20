@@ -54,13 +54,12 @@ export default function QuotationDetailPage() {
     queryFn: async () => {
       try {
         console.log(`Buscando orçamento com ID: ${quotationId}`);
-        const response = await apiRequest({
-          url: `/api/quotations/${quotationId}`
-        });
+        // Usar string direta para URL ao invés de objeto
+        const response = await apiRequest(`/api/quotations/${quotationId}`);
         
         console.log("Resposta da API:", response);
-        if (response.success && response.data) {
-          return response.data;
+        if (response && response.success !== false) {
+          return response.data || response;
         } else {
           throw new Error("Orçamento não encontrado ou dados incompletos");
         }
