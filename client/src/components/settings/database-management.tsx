@@ -1,13 +1,50 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useQueryClient } from "@tanstack/react-query";
+import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardHeader, 
+  CardTitle 
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, AlertTriangle, Database, Download, Trash2, RefreshCw, FileDown, HardDrive } from "lucide-react";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { 
+  Tabs, 
+  TabsContent, 
+  TabsList, 
+  TabsTrigger 
+} from "@/components/ui/tabs";
+import { 
+  Database, 
+  Download, 
+  UploadCloud, 
+  Trash2, 
+  AlertCircle, 
+  CheckCircle,
+  Shield, 
+  Info
+} from "lucide-react";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Separator } from "@/components/ui/separator";
 import { apiRequest } from "@/lib/queryClient";
-import { useTranslation } from "react-i18next";
 
 /**
  * Componente para gerenciamento do banco de dados, incluindo:
@@ -16,420 +53,573 @@ import { useTranslation } from "react-i18next";
  * - Restauração de dados
  */
 export function DatabaseManagement() {
-  const { t } = useTranslation();
   const { toast } = useToast();
-  const [isCreatingBackup, setIsCreatingBackup] = useState(false);
-  const [isRestoringBackup, setIsRestoringBackup] = useState(false);
+  const queryClient = useQueryClient();
+  const [isGeneratingBackup, setIsGeneratingBackup] = useState(false);
+  const [isPerformingRestore, setIsPerformingRestore] = useState(false);
   const [isPerformingCleanup, setIsPerformingCleanup] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [openRestoreDialog, setOpenRestoreDialog] = useState(false);
-  const [openCleanupDialog, setOpenCleanupDialog] = useState(false);
+  const [selectedTables, setSelectedTables] = useState<string[]>([]);
+  const [uploadedBackupFile, setUploadedBackupFile] = useState<File | null>(null);
+  const [backupData, setBackupData] = useState<any | null>(null);
+  const [operationResult, setOperationResult] = useState<{
+    success: boolean;
+    message: string;
+    timestamp?: string;
+  } | null>(null);
 
-  // Função para criação de backup do banco de dados
-  const handleCreateBackup = async () => {
+  // Lista de tabelas disponíveis no sistema
+  const availableTables = [
+    { id: "properties", label: "Imóveis", icon: "🏠" },
+    { id: "owners", label: "Proprietários", icon: "👤" },
+    { id: "reservations", label: "Reservas", icon: "📅" },
+    { id: "activities", label: "Atividades", icon: "📝" },
+    { id: "quotations", label: "Orçamentos", icon: "💰" },
+    { id: "financial_documents", label: "Documentos Financeiros", icon: "📄" },
+    { id: "financial_document_items", label: "Itens de Documentos", icon: "📋" },
+    { id: "payment_records", label: "Registros de Pagamento", icon: "💸" },
+    { id: "maintenance_tasks", label: "Tarefas de Manutenção", icon: "🔧" },
+    { id: "cleaning_teams", label: "Equipas de Limpeza", icon: "🧹" },
+  ];
+
+  // Tabelas essenciais/sensíveis (com aviso adicional)
+  const sensitiveTables = ["properties", "owners"];
+
+  // Função para gerar backup do banco de dados
+  const handleGenerateBackup = async () => {
     try {
-      setIsCreatingBackup(true);
+      setIsGeneratingBackup(true);
+      setOperationResult(null);
       
-      const response = await apiRequest('/api/database/backup', {
-        method: 'GET',
+      // Fazer chamada para a API de backup
+      const response = await fetch("/api/database/backup", {
+        method: "GET",
         headers: {
-          Accept: 'application/json',
+          "Content-Type": "application/json",
         },
       });
       
-      if (response.success) {
-        // Criar link para download automático
-        const blob = new Blob([JSON.stringify(response.data, null, 2)], { type: 'application/json' });
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        const date = new Date().toISOString().split('T')[0];
-        
-        link.href = url;
-        link.setAttribute('download', `maria-faz-backup-${date}.json`);
-        document.body.appendChild(link);
-        link.click();
-        
-        // Limpar o objeto URL após o download
-        setTimeout(() => {
-          window.URL.revokeObjectURL(url);
-          document.body.removeChild(link);
-        }, 100);
-        
-        toast({
-          title: t('settings.database.backupSuccess'),
-          description: t('settings.database.backupSuccessDesc'),
-        });
-      } else {
-        throw new Error(response.message || 'Erro ao criar backup');
+      if (!response.ok) {
+        throw new Error(\`Erro ao gerar backup: \${response.statusText}\`);
       }
-    } catch (error) {
-      console.error('Erro ao criar backup do banco de dados:', error);
+      
+      // Download do arquivo de backup
+      const data = await response.json();
+      const timestamp = new Date().toISOString().replace(/:/g, "-");
+      const fileName = \`database_backup_\${timestamp}.json\`;
+      
+      // Criar link para download do arquivo
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Exibir confirmação
+      setOperationResult({
+        success: true,
+        message: "Backup gerado com sucesso. O download foi iniciado automaticamente.",
+        timestamp: new Date().toISOString(),
+      });
+      
       toast({
-        title: t('settings.database.backupError'),
-        description: t('settings.database.backupErrorDesc'),
-        variant: 'destructive',
+        title: "Backup concluído",
+        description: "O backup do banco de dados foi gerado com sucesso.",
+      });
+    } catch (error) {
+      console.error("Erro ao gerar backup:", error);
+      setOperationResult({
+        success: false,
+        message: error instanceof Error ? error.message : "Erro ao gerar backup do banco de dados",
+      });
+      
+      toast({
+        variant: "destructive",
+        title: "Erro ao gerar backup",
+        description: error instanceof Error ? error.message : "Ocorreu um erro ao gerar o backup do banco de dados.",
       });
     } finally {
-      setIsCreatingBackup(false);
+      setIsGeneratingBackup(false);
     }
   };
-  
-  // Função para lidar com a seleção de arquivos para restauração
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setSelectedFile(event.target.files[0]);
-    }
-  };
-  
-  // Função para restauração de backup
-  const handleRestoreBackup = async () => {
-    if (!selectedFile) {
+
+  // Função para limpar tabelas selecionadas
+  const handleCleanupTables = async () => {
+    if (!selectedTables.length) {
       toast({
-        title: t('settings.database.noFileSelected'),
-        description: t('settings.database.selectBackupFile'),
-        variant: 'destructive',
+        variant: "destructive",
+        title: "Nenhuma tabela selecionada",
+        description: "Selecione pelo menos uma tabela para limpar.",
       });
       return;
     }
     
     try {
-      setIsRestoringBackup(true);
-      
-      // Leitura do arquivo
-      const fileContent = await selectedFile.text();
-      let backupData;
-      
-      try {
-        backupData = JSON.parse(fileContent);
-      } catch (error) {
-        throw new Error('Formato de arquivo inválido');
-      }
-      
-      // Envio para API
-      const response = await apiRequest('/api/database/restore', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ data: backupData }),
-      });
-      
-      if (response.success) {
-        toast({
-          title: t('settings.database.restoreSuccess'),
-          description: t('settings.database.restoreSuccessDesc'),
-        });
-        
-        // Fechar diálogo e redefinir arquivo
-        setOpenRestoreDialog(false);
-        setSelectedFile(null);
-        
-        // Pequeno tempo de espera antes do reload para permitir que o toast seja visto
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-      } else {
-        throw new Error(response.message || 'Erro ao restaurar backup');
-      }
-    } catch (error) {
-      console.error('Erro ao restaurar backup:', error);
-      toast({
-        title: t('settings.database.restoreError'),
-        description: typeof error === 'object' && error !== null 
-          ? (error as Error).message 
-          : t('settings.database.restoreErrorDesc'),
-        variant: 'destructive',
-      });
-    } finally {
-      setIsRestoringBackup(false);
-    }
-  };
-  
-  // Função para limpeza do banco de dados
-  const handleCleanupDatabase = async (cleanupType: 'all' | 'reservations' | 'financial' | 'activities') => {
-    try {
       setIsPerformingCleanup(true);
+      setOperationResult(null);
       
-      const response = await apiRequest('/api/database/cleanup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      // Fazer chamada para a API de limpeza
+      const response = await apiRequest("/api/database/cleanup", {
+        method: "POST",
+        data: {
+          tables: selectedTables,
         },
-        body: JSON.stringify({ type: cleanupType }),
       });
       
-      if (response.success) {
-        toast({
-          title: t('settings.database.cleanupSuccess'),
-          description: t('settings.database.cleanupSuccessDesc'),
-        });
-        
-        // Fechar diálogo
-        setOpenCleanupDialog(false);
-        
-        // Reload após um breve atraso para permitir que o usuário veja o toast
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-      } else {
-        throw new Error(response.message || 'Erro ao limpar banco de dados');
-      }
-    } catch (error) {
-      console.error('Erro ao limpar banco de dados:', error);
+      // Invalidar todos os caches
+      queryClient.invalidateQueries();
+      
+      // Exibir confirmação
+      setOperationResult({
+        success: true,
+        message: \`As seguintes tabelas foram limpas com sucesso: \${selectedTables.join(", ")}\`,
+        timestamp: response.timestamp,
+      });
+      
       toast({
-        title: t('settings.database.cleanupError'),
-        description: typeof error === 'object' && error !== null 
-          ? (error as Error).message 
-          : t('settings.database.cleanupErrorDesc'),
-        variant: 'destructive',
+        title: "Limpeza concluída",
+        description: \`\${selectedTables.length} tabela(s) foram limpas com sucesso.\`,
+      });
+      
+      // Resetar seleção
+      setSelectedTables([]);
+    } catch (error) {
+      console.error("Erro ao limpar tabelas:", error);
+      setOperationResult({
+        success: false,
+        message: error instanceof Error ? error.message : "Erro ao limpar tabelas do banco de dados",
+      });
+      
+      toast({
+        variant: "destructive",
+        title: "Erro ao limpar tabelas",
+        description: error instanceof Error ? error.message : "Ocorreu um erro ao limpar as tabelas selecionadas.",
       });
     } finally {
       setIsPerformingCleanup(false);
     }
   };
 
-  return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="text-xl flex items-center">
-          <Database className="mr-2 h-5 w-5" /> 
-          {t('settings.database.title')}
-        </CardTitle>
-        <CardDescription>{t('settings.database.description')}</CardDescription>
-      </CardHeader>
+  // Função para processar o arquivo de backup selecionado
+  const handleBackupFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    setUploadedBackupFile(file);
+    setBackupData(null);
+    
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const content = e.target?.result as string;
+          const parsed = JSON.parse(content);
+          setBackupData(parsed);
+        } catch (error) {
+          console.error("Erro ao processar arquivo de backup:", error);
+          toast({
+            variant: "destructive",
+            title: "Arquivo inválido",
+            description: "O arquivo selecionado não é um backup válido.",
+          });
+          setUploadedBackupFile(null);
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  // Função para restaurar o banco de dados a partir do backup
+  const handleRestoreBackup = async () => {
+    if (!backupData) {
+      toast({
+        variant: "destructive",
+        title: "Nenhum backup selecionado",
+        description: "Selecione um arquivo de backup para restaurar.",
+      });
+      return;
+    }
+    
+    try {
+      setIsPerformingRestore(true);
+      setOperationResult(null);
       
+      // Fazer chamada para a API de restauração
+      const response = await apiRequest("/api/database/restore", {
+        method: "POST",
+        data: {
+          backup: backupData,
+        },
+      });
+      
+      // Invalidar todos os caches
+      queryClient.invalidateQueries();
+      
+      // Exibir confirmação
+      setOperationResult({
+        success: true,
+        message: "Banco de dados restaurado com sucesso a partir do backup.",
+        timestamp: response.timestamp,
+      });
+      
+      toast({
+        title: "Restauração concluída",
+        description: "O banco de dados foi restaurado com sucesso.",
+      });
+      
+      // Limpar dados do backup
+      setUploadedBackupFile(null);
+      setBackupData(null);
+    } catch (error) {
+      console.error("Erro ao restaurar backup:", error);
+      setOperationResult({
+        success: false,
+        message: error instanceof Error ? error.message : "Erro ao restaurar banco de dados",
+      });
+      
+      toast({
+        variant: "destructive",
+        title: "Erro ao restaurar backup",
+        description: error instanceof Error ? error.message : "Ocorreu um erro ao restaurar o banco de dados.",
+      });
+    } finally {
+      setIsPerformingRestore(false);
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Database className="h-5 w-5" />
+          Gerenciamento do Banco de Dados
+        </CardTitle>
+        <CardDescription>
+          Ferramentas para backup, restauração e limpeza do banco de dados
+        </CardDescription>
+      </CardHeader>
       <CardContent>
-        <Tabs defaultValue="backup">
-          <TabsList className="grid w-full grid-cols-3">
+        <Tabs defaultValue="backup" className="space-y-4">
+          <TabsList className="grid grid-cols-3 w-full">
             <TabsTrigger value="backup">
-              <Download className="h-4 w-4 mr-2" /> 
-              {t('settings.database.backupTab')}
+              <Download className="h-4 w-4 mr-2" />
+              Backup
             </TabsTrigger>
             <TabsTrigger value="restore">
-              <FileDown className="h-4 w-4 mr-2" /> 
-              {t('settings.database.restoreTab')}
+              <UploadCloud className="h-4 w-4 mr-2" />
+              Restaurar
             </TabsTrigger>
             <TabsTrigger value="cleanup">
-              <Trash2 className="h-4 w-4 mr-2" /> 
-              {t('settings.database.cleanupTab')}
+              <Trash2 className="h-4 w-4 mr-2" />
+              Limpar
             </TabsTrigger>
           </TabsList>
           
-          {/* Tab de Backup */}
-          <TabsContent value="backup" className="mt-4 space-y-4">
-            <Alert className="bg-blue-50 dark:bg-blue-950">
-              <HardDrive className="h-4 w-4" />
-              <AlertTitle>{t('settings.database.backupInfoTitle')}</AlertTitle>
+          {/* Aba de Backup */}
+          <TabsContent value="backup" className="space-y-4">
+            <Alert className="bg-blue-50/50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400">
+              <Info className="h-4 w-4" />
+              <AlertTitle>Sobre o Backup</AlertTitle>
               <AlertDescription>
-                {t('settings.database.backupInfoDesc')}
+                Esta ferramenta gera um arquivo JSON contendo todos os dados do banco de dados.
+                O arquivo pode ser usado posteriormente para restaurar o sistema.
               </AlertDescription>
             </Alert>
-
-            <div className="flex justify-center mt-4">
+            
+            <div className="space-y-4">
               <Button 
-                size="lg" 
-                onClick={handleCreateBackup} 
-                disabled={isCreatingBackup}
-                className="w-full sm:w-auto"
+                onClick={handleGenerateBackup}
+                disabled={isGeneratingBackup}
+                className="w-full"
               >
-                {isCreatingBackup ? (
-                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('settings.database.creatingBackup')}</>
+                {isGeneratingBackup ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
+                    Gerando Backup...
+                  </>
                 ) : (
-                  <><Download className="mr-2 h-4 w-4" /> {t('settings.database.createBackup')}</>
+                  <>
+                    <Download className="mr-2 h-4 w-4" />
+                    Gerar Backup Completo
+                  </>
                 )}
               </Button>
+              
+              {operationResult && operationResult.success && (
+                <Alert variant="success" className="bg-green-50/50 dark:bg-green-950/50 text-green-600 dark:text-green-400 mt-4">
+                  <CheckCircle className="h-4 w-4" />
+                  <AlertTitle>Operação bem-sucedida</AlertTitle>
+                  <AlertDescription>
+                    {operationResult.message}
+                    {operationResult.timestamp && (
+                      <div className="text-xs mt-1 text-green-500 dark:text-green-300">
+                        {new Date(operationResult.timestamp).toLocaleString()}
+                      </div>
+                    )}
+                  </AlertDescription>
+                </Alert>
+              )}
+              
+              {operationResult && !operationResult.success && (
+                <Alert variant="destructive" className="mt-4">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>Erro</AlertTitle>
+                  <AlertDescription>
+                    {operationResult.message}
+                  </AlertDescription>
+                </Alert>
+              )}
             </div>
           </TabsContent>
           
-          {/* Tab de Restauração */}
-          <TabsContent value="restore" className="mt-4 space-y-4">
-            <Alert className="bg-amber-50 dark:bg-amber-950">
-              <AlertTriangle className="h-4 w-4" />
-              <AlertTitle>{t('settings.database.restoreWarningTitle')}</AlertTitle>
+          {/* Aba de Restauração */}
+          <TabsContent value="restore" className="space-y-4">
+            <Alert variant="warning" className="bg-yellow-50/50 dark:bg-yellow-950/50 text-yellow-600 dark:text-yellow-400">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Atenção</AlertTitle>
               <AlertDescription>
-                {t('settings.database.restoreWarningDesc')}
+                A restauração irá substituir TODOS os dados atuais pelos dados do backup.
+                Esta operação não pode ser desfeita.
               </AlertDescription>
             </Alert>
-
-            <div className="flex justify-center mt-4">
-              <Dialog open={openRestoreDialog} onOpenChange={setOpenRestoreDialog}>
-                <DialogTrigger asChild>
-                  <Button 
-                    variant="outline" 
-                    size="lg" 
-                    className="w-full sm:w-auto"
-                  >
-                    <RefreshCw className="mr-2 h-4 w-4" /> 
-                    {t('settings.database.restoreFromBackup')}
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>{t('settings.database.restoreDialogTitle')}</DialogTitle>
-                    <DialogDescription>
-                      {t('settings.database.restoreDialogDesc')}
-                    </DialogDescription>
-                  </DialogHeader>
-                  
-                  <div className="flex flex-col space-y-4 py-4">
-                    <Alert variant="destructive" className="bg-red-50 dark:bg-red-950">
-                      <AlertTriangle className="h-4 w-4" />
-                      <AlertTitle>{t('settings.database.restoreAlertTitle')}</AlertTitle>
-                      <AlertDescription>
-                        {t('settings.database.restoreAlertDesc')}
-                      </AlertDescription>
-                    </Alert>
-                    
-                    <div className="flex flex-col space-y-2">
-                      <label className="text-sm font-medium">{t('settings.database.selectBackup')}</label>
-                      <input
-                        type="file"
-                        accept=".json"
-                        onChange={handleFileChange}
-                        className="border rounded p-2 w-full"
-                      />
-                      {selectedFile && (
-                        <p className="text-sm text-muted-foreground">
-                          {t('settings.database.selectedFile')}: {selectedFile.name}
-                        </p>
-                      )}
-                    </div>
+            
+            <div className="space-y-4">
+              <div className="grid w-full items-center gap-1.5">
+                <Label htmlFor="backup-file">Arquivo de Backup</Label>
+                <input
+                  id="backup-file"
+                  type="file"
+                  accept=".json"
+                  onChange={handleBackupFileChange}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium"
+                />
+              </div>
+              
+              {uploadedBackupFile && backupData && (
+                <div className="p-3 border rounded-md">
+                  <h4 className="text-sm font-medium mb-1">Informações do Backup</h4>
+                  <div className="text-xs text-muted-foreground">
+                    <div>Nome: {uploadedBackupFile.name}</div>
+                    <div>Tamanho: {(uploadedBackupFile.size / 1024).toFixed(2)} KB</div>
+                    {backupData.metadata && (
+                      <>
+                        <div>Data: {new Date(backupData.metadata.timestamp).toLocaleString()}</div>
+                        <div>Versão: {backupData.metadata.version}</div>
+                        <div>Tabelas: {backupData.metadata.tableCount}</div>
+                      </>
+                    )}
                   </div>
-                  
-                  <DialogFooter>
-                    <Button
-                      variant="outline"
-                      onClick={() => setOpenRestoreDialog(false)}
-                    >
-                      {t('common.cancel')}
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      onClick={handleRestoreBackup}
-                      disabled={isRestoringBackup || !selectedFile}
-                    >
-                      {isRestoringBackup ? (
-                        <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('settings.database.restoringBackup')}</>
-                      ) : (
-                        <>{t('settings.database.confirmRestore')}</>
-                      )}
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+                </div>
+              )}
+              
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    disabled={!backupData || isPerformingRestore}
+                    variant="destructive"
+                    className="w-full"
+                  >
+                    {isPerformingRestore ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
+                        Restaurando...
+                      </>
+                    ) : (
+                      <>
+                        <UploadCloud className="mr-2 h-4 w-4" />
+                        Restaurar Banco de Dados
+                      </>
+                    )}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Confirmar Restauração</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Esta ação irá substituir TODOS os dados atuais pelos dados do backup.
+                      A operação não pode ser desfeita.
+                      <div className="mt-2 font-semibold">Deseja continuar?</div>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleRestoreBackup}>
+                      Confirmar Restauração
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+              
+              {operationResult && operationResult.success && (
+                <Alert variant="success" className="bg-green-50/50 dark:bg-green-950/50 text-green-600 dark:text-green-400 mt-4">
+                  <CheckCircle className="h-4 w-4" />
+                  <AlertTitle>Operação bem-sucedida</AlertTitle>
+                  <AlertDescription>
+                    {operationResult.message}
+                    {operationResult.timestamp && (
+                      <div className="text-xs mt-1 text-green-500 dark:text-green-300">
+                        {new Date(operationResult.timestamp).toLocaleString()}
+                      </div>
+                    )}
+                  </AlertDescription>
+                </Alert>
+              )}
+              
+              {operationResult && !operationResult.success && (
+                <Alert variant="destructive" className="mt-4">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>Erro</AlertTitle>
+                  <AlertDescription>
+                    {operationResult.message}
+                  </AlertDescription>
+                </Alert>
+              )}
             </div>
           </TabsContent>
           
-          {/* Tab de Limpeza */}
-          <TabsContent value="cleanup" className="mt-4 space-y-4">
-            <Alert variant="destructive" className="bg-red-50 dark:bg-red-950">
-              <AlertTriangle className="h-4 w-4" />
-              <AlertTitle>{t('settings.database.cleanupWarningTitle')}</AlertTitle>
+          {/* Aba de Limpeza */}
+          <TabsContent value="cleanup" className="space-y-4">
+            <Alert variant="destructive">
+              <Shield className="h-4 w-4" />
+              <AlertTitle>Aviso de Segurança</AlertTitle>
               <AlertDescription>
-                {t('settings.database.cleanupWarningDesc')}
+                Esta operação irá remover permanentemente os dados das tabelas selecionadas.
+                É recomendável fazer um backup antes de prosseguir.
               </AlertDescription>
             </Alert>
-
-            <div className="flex justify-center mt-4">
-              <Dialog open={openCleanupDialog} onOpenChange={setOpenCleanupDialog}>
-                <DialogTrigger asChild>
-                  <Button 
-                    variant="outline" 
-                    size="lg" 
-                    className="w-full sm:w-auto"
+            
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {availableTables.map((table) => (
+                  <div 
+                    key={table.id}
+                    className={`flex items-center space-x-2 p-2 rounded-md border ${
+                      sensitiveTables.includes(table.id) 
+                        ? "border-yellow-200 bg-yellow-50/50 dark:border-yellow-900 dark:bg-yellow-950/30" 
+                        : ""
+                    }`}
                   >
-                    <Trash2 className="mr-2 h-4 w-4" /> 
-                    {t('settings.database.cleanupDatabase')}
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>{t('settings.database.cleanupDialogTitle')}</DialogTitle>
-                    <DialogDescription>
-                      {t('settings.database.cleanupDialogDesc')}
-                    </DialogDescription>
-                  </DialogHeader>
-                  
-                  <div className="flex flex-col space-y-4 py-4">
-                    <Alert variant="destructive" className="bg-red-50 dark:bg-red-950">
-                      <AlertTriangle className="h-4 w-4" />
-                      <AlertTitle>{t('settings.database.cleanupAlertTitle')}</AlertTitle>
-                      <AlertDescription>
-                        {t('settings.database.cleanupAlertDesc')}
-                      </AlertDescription>
-                    </Alert>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                      <Button
-                        variant="outline"
-                        className="h-24 flex flex-col items-center justify-center space-y-2"
-                        onClick={() => handleCleanupDatabase('reservations')}
-                        disabled={isPerformingCleanup}
-                      >
-                        <span className="text-lg font-medium">{t('settings.database.cleanupReservations')}</span>
-                        <span className="text-xs text-muted-foreground text-center">
-                          {t('settings.database.cleanupReservationsDesc')}
-                        </span>
-                      </Button>
-                      
-                      <Button
-                        variant="outline"
-                        className="h-24 flex flex-col items-center justify-center space-y-2"
-                        onClick={() => handleCleanupDatabase('financial')}
-                        disabled={isPerformingCleanup}
-                      >
-                        <span className="text-lg font-medium">{t('settings.database.cleanupFinancial')}</span>
-                        <span className="text-xs text-muted-foreground text-center">
-                          {t('settings.database.cleanupFinancialDesc')}
-                        </span>
-                      </Button>
-                      
-                      <Button
-                        variant="outline"
-                        className="h-24 flex flex-col items-center justify-center space-y-2"
-                        onClick={() => handleCleanupDatabase('activities')}
-                        disabled={isPerformingCleanup}
-                      >
-                        <span className="text-lg font-medium">{t('settings.database.cleanupActivities')}</span>
-                        <span className="text-xs text-muted-foreground text-center">
-                          {t('settings.database.cleanupActivitiesDesc')}
-                        </span>
-                      </Button>
-                      
-                      <Button
-                        variant="destructive"
-                        className="h-24 flex flex-col items-center justify-center space-y-2"
-                        onClick={() => handleCleanupDatabase('all')}
-                        disabled={isPerformingCleanup}
-                      >
-                        <span className="text-lg font-medium">{t('settings.database.cleanupAll')}</span>
-                        <span className="text-xs text-center">
-                          {t('settings.database.cleanupAllDesc')}
-                        </span>
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  <DialogFooter>
-                    <Button
-                      variant="outline"
-                      onClick={() => setOpenCleanupDialog(false)}
+                    <Checkbox
+                      id={`table-${table.id}`}
+                      checked={selectedTables.includes(table.id)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setSelectedTables([...selectedTables, table.id]);
+                        } else {
+                          setSelectedTables(selectedTables.filter(t => t !== table.id));
+                        }
+                      }}
+                    />
+                    <label
+                      htmlFor={`table-${table.id}`}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex items-center"
                     >
-                      {t('common.cancel')}
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+                      <span className="mr-1">{table.icon}</span> {table.label}
+                      {sensitiveTables.includes(table.id) && (
+                        <span className="ml-1 text-yellow-500 dark:text-yellow-400 text-xs">⚠️</span>
+                      )}
+                    </label>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="flex justify-between items-center pt-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSelectedTables(availableTables.map(t => t.id))}
+                >
+                  Selecionar Todas
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSelectedTables([])}
+                >
+                  Limpar Seleção
+                </Button>
+              </div>
+              
+              <Separator className="my-4" />
+              
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    disabled={selectedTables.length === 0 || isPerformingCleanup}
+                    variant="destructive"
+                    className="w-full"
+                  >
+                    {isPerformingCleanup ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
+                        Limpando Dados...
+                      </>
+                    ) : (
+                      <>
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Limpar Tabelas Selecionadas ({selectedTables.length})
+                      </>
+                    )}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Confirmar Limpeza de Dados</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Esta ação irá remover PERMANENTEMENTE todos os dados das seguintes tabelas:
+                      <ul className="list-disc list-inside mt-2 mb-2">
+                        {selectedTables.map(tableId => {
+                          const table = availableTables.find(t => t.id === tableId);
+                          return (
+                            <li key={tableId} className="text-sm">
+                              {table?.icon} {table?.label || tableId}
+                              {sensitiveTables.includes(tableId) && (
+                                <span className="ml-1 text-yellow-500 dark:text-yellow-400">⚠️</span>
+                              )}
+                            </li>
+                          );
+                        })}
+                      </ul>
+                      <div className="mt-2 font-semibold">Esta operação não pode ser desfeita. Deseja continuar?</div>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleCleanupTables}>
+                      Confirmar Limpeza
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+              
+              {operationResult && operationResult.success && (
+                <Alert variant="success" className="bg-green-50/50 dark:bg-green-950/50 text-green-600 dark:text-green-400 mt-4">
+                  <CheckCircle className="h-4 w-4" />
+                  <AlertTitle>Operação bem-sucedida</AlertTitle>
+                  <AlertDescription>
+                    {operationResult.message}
+                    {operationResult.timestamp && (
+                      <div className="text-xs mt-1 text-green-500 dark:text-green-300">
+                        {new Date(operationResult.timestamp).toLocaleString()}
+                      </div>
+                    )}
+                  </AlertDescription>
+                </Alert>
+              )}
+              
+              {operationResult && !operationResult.success && (
+                <Alert variant="destructive" className="mt-4">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>Erro</AlertTitle>
+                  <AlertDescription>
+                    {operationResult.message}
+                  </AlertDescription>
+                </Alert>
+              )}
             </div>
           </TabsContent>
         </Tabs>
       </CardContent>
-      
-      <CardFooter className="flex justify-between border-t p-4 bg-muted/30">
-        <div className="text-xs text-muted-foreground">
-          {t('settings.database.footerNote')}
-        </div>
-      </CardFooter>
     </Card>
   );
 }
