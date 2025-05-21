@@ -99,13 +99,13 @@ export function DatabaseManagement() {
       });
       
       if (!response.ok) {
-        throw new Error(\`Erro ao gerar backup: \${response.statusText}\`);
+        throw new Error("Erro ao gerar backup: " + response.statusText);
       }
       
       // Download do arquivo de backup
       const data = await response.json();
       const timestamp = new Date().toISOString().replace(/:/g, "-");
-      const fileName = \`database_backup_\${timestamp}.json\`;
+      const fileName = "database_backup_" + timestamp + ".json";
       
       // Criar link para download do arquivo
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
@@ -174,13 +174,13 @@ export function DatabaseManagement() {
       // Exibir confirmação
       setOperationResult({
         success: true,
-        message: \`As seguintes tabelas foram limpas com sucesso: \${selectedTables.join(", ")}\`,
+        message: "As seguintes tabelas foram limpas com sucesso: " + selectedTables.join(", "),
         timestamp: response.timestamp,
       });
       
       toast({
         title: "Limpeza concluída",
-        description: \`\${selectedTables.length} tabela(s) foram limpas com sucesso.\`,
+        description: selectedTables.length + " tabela(s) foram limpas com sucesso.",
       });
       
       // Resetar seleção
@@ -493,14 +493,14 @@ export function DatabaseManagement() {
                 {availableTables.map((table) => (
                   <div 
                     key={table.id}
-                    className={`flex items-center space-x-2 p-2 rounded-md border ${
-                      sensitiveTables.includes(table.id) 
+                    className={"flex items-center space-x-2 p-2 rounded-md border " + 
+                      (sensitiveTables.includes(table.id) 
                         ? "border-yellow-200 bg-yellow-50/50 dark:border-yellow-900 dark:bg-yellow-950/30" 
                         : ""
-                    }`}
+                      )}
                   >
                     <Checkbox
-                      id={`table-${table.id}`}
+                      id={"table-" + table.id}
                       checked={selectedTables.includes(table.id)}
                       onCheckedChange={(checked) => {
                         if (checked) {
@@ -511,7 +511,7 @@ export function DatabaseManagement() {
                       }}
                     />
                     <label
-                      htmlFor={`table-${table.id}`}
+                      htmlFor={"table-" + table.id}
                       className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex items-center"
                     >
                       <span className="mr-1">{table.icon}</span> {table.label}

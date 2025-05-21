@@ -394,7 +394,7 @@ export default function SettingsPage() {
           </TabsTrigger>
           <TabsTrigger value="database" className="min-w-fit">
             <Database className="h-4 w-4 mr-1" />
-            <span className="whitespace-nowrap">{t("settings.tabs.database", "Banco de Dados")}</span>
+            <span className="whitespace-nowrap">Banco de Dados</span>
           </TabsTrigger>
         </TabsList>
 
@@ -821,6 +821,9 @@ export default function SettingsPage() {
           </Card>
         </TabsContent>
 
+        <TabsContent value="database" className="space-y-4">
+          <DatabaseManagement />
+        </TabsContent>
 
       </Tabs>
     </div>
