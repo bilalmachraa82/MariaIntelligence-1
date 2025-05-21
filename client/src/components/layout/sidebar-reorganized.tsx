@@ -354,7 +354,7 @@ export function SidebarReorganized({
       name: t("navigation.payments.expenses", "Despesas"),
       href: "/pagamentos/saida",
       altHref: "/payments/outgoing",
-      icon: CreditCard,
+      icon: Euro,
       iconColor: "text-red-500"
     },
     // Item de recebimentos
