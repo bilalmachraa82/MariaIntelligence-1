@@ -26,7 +26,8 @@ import {
   X,
   BellRing,
   Globe,
-  Key
+  Key,
+  Euro
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { usePendingApprovals } from "@/hooks/use-pending-approvals";
@@ -518,7 +519,7 @@ export function SidebarReorganized({
                     }
                   }}
                 >
-                  <BadgeDollarSign className="h-5 w-5 text-green-500" />
+                  <Euro className="h-5 w-5 text-green-500" />
                 </Button>
               </div>
               

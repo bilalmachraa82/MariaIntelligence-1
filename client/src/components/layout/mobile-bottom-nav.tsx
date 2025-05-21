@@ -94,7 +94,7 @@ export function MobileBottomNav({ onOpenMenu }: MobileBottomNavProps) {
       </div>
       
       <div className="flex flex-col items-center py-1 px-3" onClick={() => handleNavigate("/pagamentos/saida")}>
-        <BadgeDollarSign className={cn(
+        <Euro className={cn(
           "h-5 w-5 mb-1", 
           location.startsWith("/pagamentos") 
             ? "text-green-500" 
