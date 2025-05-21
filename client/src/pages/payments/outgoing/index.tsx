@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   BadgeDollarSign, 
+  Euro,
   Users, 
   ArrowRight, 
   Calendar, 
@@ -136,7 +137,7 @@ export default function PaymentsOutgoing() {
         </div>
         <Link href="/pagamentos/novo">
           <Button className="mt-4 md:mt-0 bg-green-500 hover:bg-green-600 text-white">
-            <BadgeDollarSign className="mr-2 h-4 w-4" />
+            <Euro className="mr-2 h-4 w-4" />
             Novo Pagamento
           </Button>
         </Link>

@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   BadgeDollarSign, 
+  Euro,
   UserCog, 
   ArrowRight, 
   Calendar, 
@@ -394,7 +395,7 @@ export default function PaymentsIncoming() {
                       >
                         {owner.totalDue > 0 ? (
                           <>
-                            <BadgeDollarSign className="mr-2 h-4 w-4" />
+                            <Euro className="mr-2 h-4 w-4" />
                             Registrar Pagamento Total
                           </>
                         ) : (

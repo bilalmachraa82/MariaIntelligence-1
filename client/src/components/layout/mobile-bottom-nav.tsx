@@ -7,6 +7,7 @@ import {
   Bot,
   Wrench,
   BadgeDollarSign,
+  Euro,
   Menu
 } from "lucide-react";
 
