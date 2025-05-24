@@ -1029,6 +1029,9 @@ export default function ReservationNewPage() {
                 className="bg-maria-primary hover:bg-maria-primary/90"
                 onClick={(e) => {
                   console.log("🔥 BOTÃO CLICADO!");
+                  console.log("📋 Dados do formulário:", form.getValues());
+                  console.log("❌ Erros do formulário:", form.formState.errors);
+                  console.log("✅ Formulário válido:", form.formState.isValid);
                   e.preventDefault();
                   form.handleSubmit(onSubmit)();
                 }}
