@@ -18,6 +18,7 @@ export default function SettingsPage() {
   // Verificar estado da conexão com IA
   const [isCheckingAI, setIsCheckingAI] = useState(false);
   const [aiConnected, setAiConnected] = useState(false);
+  const [isClearingMemory, setIsClearingMemory] = useState(false);
 
   const handleLanguageChange = (language: string) => {
     i18n.changeLanguage(language);
@@ -49,6 +50,37 @@ export default function SettingsPage() {
       });
     } finally {
       setIsCheckingAI(false);
+    }
+  };
+
+  const clearAIMemory = async () => {
+    setIsClearingMemory(true);
+    try {
+      const response = await fetch('/api/clear-ai-memory', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        toast({
+          title: "Memória Limpa! 🧠✨",
+          description: "A Maria esqueceu todas as conversas anteriores e vai cumprimentar-te novamente!",
+        });
+      } else {
+        throw new Error(data.message || 'Erro desconhecido');
+      }
+    } catch (error) {
+      toast({
+        title: "Erro ao Limpar Memória",
+        description: "Não foi possível limpar a memória da IA. Tente novamente.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsClearingMemory(false);
     }
   };
 
@@ -194,14 +226,32 @@ export default function SettingsPage() {
                 </Button>
               </div>
               
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h4 className="font-medium text-blue-900 mb-2">Como configurar o Assistente IA:</h4>
-                <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
-                  <li>Aceda ao <strong>Assistente Maria</strong> no menu principal</li>
-                  <li>Clique em <strong>"Configurar Chave da API Gemini"</strong></li>
-                  <li>Obtenha a sua chave em <strong>https://ai.google.dev/</strong></li>
-                  <li>Cole a chave e teste a conexão</li>
-                </ol>
+              <div className="space-y-4">
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <h4 className="font-medium text-blue-900 mb-2">Como configurar o Assistente IA:</h4>
+                  <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
+                    <li>Aceda ao <strong>Assistente Maria</strong> no menu principal</li>
+                    <li>Clique em <strong>"Configurar Chave da API Gemini"</strong></li>
+                    <li>Obtenha a sua chave em <strong>https://ai.google.dev/</strong></li>
+                    <li>Cole a chave e teste a conexão</li>
+                  </ol>
+                </div>
+                
+                <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                  <h4 className="font-medium text-amber-900 mb-2">Gestão da Memória da IA</h4>
+                  <p className="text-sm text-amber-800 mb-3">
+                    Limpe toda a memória das conversas anteriores para começar do zero.
+                  </p>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="border-amber-300 text-amber-800 hover:bg-amber-100"
+                    onClick={clearAIMemory}
+                    disabled={isClearingMemory}
+                  >
+                    {isClearingMemory ? "A limpar..." : "Limpar Memória da IA"}
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
