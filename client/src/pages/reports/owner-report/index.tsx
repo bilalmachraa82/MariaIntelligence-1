@@ -11,6 +11,7 @@ import { useOwnerReport, DateRange as ReportDateRange } from "@/hooks/use-owner-
 import { downloadOwnerReportPDF } from "@/lib/pdf-export-utils";
 import { exportOwnerReportPDFWithLogo } from "@/lib/pdf-logo-exporter";
 import { OwnerReportModern } from "@/components/reports/owner-report-modern";
+import { PropertyInsights } from "@/components/reports/property-insights";
 import { Button } from "@/components/ui/button";
 import { FileText, Download, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -278,7 +279,15 @@ export default function OwnerReportPage() {
           />
         </div>
       )}
-      
+
+      {/* Seção de Insights Inteligentes por IA */}
+      {selectedOwner && (
+        <PropertyInsights 
+          ownerId={parseInt(selectedOwner)}
+          dateRange={dateRange}
+          ownerName={owners?.find(o => o.id === parseInt(selectedOwner))?.name || "Proprietário"}
+        />
+      )}
 
     </div>
   );

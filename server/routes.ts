@@ -3298,6 +3298,115 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  /**
+   * Endpoint para gerar insights inteligentes do relatório de proprietário
+   */
+  app.post("/api/reports/owner/:ownerId/insights", async (req: Request, res: Response) => {
+    try {
+      const { ownerId } = req.params;
+      const { startDate, endDate } = req.body;
+
+      if (!ownerId || !startDate || !endDate) {
+        return res.status(400).json({ 
+          error: "ID do proprietário, data de início e fim são obrigatórios" 
+        });
+      }
+
+      // Buscar dados do relatório
+      const ownerIdNum = parseInt(ownerId);
+      const owner = await storage.getOwner(ownerIdNum);
+      if (!owner) {
+        return res.status(404).json({ error: "Proprietário não encontrado" });
+      }
+
+      // Buscar propriedades do proprietário
+      const properties = await storage.getProperties();
+      const ownerProperties = properties.filter(p => p.ownerId === ownerIdNum);
+
+      // Buscar reservas no período
+      const reservations = await storage.getReservations();
+      const propertyIds = ownerProperties.map(p => p.id);
+      const periodReservations = reservations.filter(r => {
+        const isOwnerProperty = propertyIds.includes(r.propertyId);
+        const isInPeriod = r.checkInDate >= startDate && r.checkInDate <= endDate;
+        return isOwnerProperty && isInPeriod;
+      });
+
+      // Calcular métricas financeiras
+      const totalRevenue = periodReservations.reduce((sum, r) => {
+        return sum + parseFloat(r.totalAmount || '0');
+      }, 0);
+
+      const totalExpenses = periodReservations.reduce((sum, r) => {
+        const cleaning = parseFloat(r.cleaningFee || '0');
+        const checkIn = parseFloat(r.checkInFee || '0');
+        const team = parseFloat(r.teamPayment || '0');
+        return sum + cleaning + checkIn + team;
+      }, 0);
+
+      const netProfit = totalRevenue - totalExpenses;
+
+      // Preparar dados das propriedades
+      const propertiesData = ownerProperties.map(property => {
+        const propReservations = periodReservations.filter(r => r.propertyId === property.id);
+        const propRevenue = propReservations.reduce((sum, r) => sum + parseFloat(r.totalAmount || '0'), 0);
+        const totalNights = propReservations.reduce((sum, r) => {
+          const checkIn = new Date(r.checkInDate);
+          const checkOut = new Date(r.checkOutDate);
+          return sum + Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
+        }, 0);
+
+        return {
+          name: property.name,
+          totalRevenue: propRevenue,
+          reservations: propReservations.length,
+          occupancyRate: totalNights > 0 ? Math.round((totalNights / 30) * 100) : 0, // Aproximação
+          averageRate: totalNights > 0 ? Math.round(propRevenue / totalNights) : 0,
+          seasonality: [] // Simplificado por agora
+        };
+      });
+
+      // Preparar dados para o serviço de insights
+      const reportData = {
+        ownerName: owner.name,
+        totalRevenue,
+        totalExpenses,
+        netProfit,
+        properties: propertiesData,
+        period: { startDate, endDate },
+        reservations: periodReservations
+      };
+
+      // Gerar insights usando IA
+      const { propertyInsightsService } = await import('./services/property-insights.service.js');
+      const insights = await propertyInsightsService.generateOwnerInsights(reportData);
+
+      // Calcular métricas avançadas
+      const advancedMetrics = propertyInsightsService.calculateAdvancedMetrics(reportData);
+
+      res.json({
+        success: true,
+        insights,
+        metrics: advancedMetrics,
+        summary: {
+          totalRevenue,
+          totalExpenses,
+          netProfit,
+          profitMargin: totalRevenue > 0 ? ((netProfit / totalRevenue) * 100).toFixed(1) : '0',
+          totalReservations: periodReservations.length,
+          averageBookingValue: periodReservations.length > 0 ? (totalRevenue / periodReservations.length).toFixed(0) : '0'
+        }
+      });
+
+    } catch (error) {
+      console.error("Erro ao gerar insights:", error);
+      res.status(500).json({ 
+        error: "Erro interno do servidor ao gerar insights",
+        details: error instanceof Error ? error.message : "Erro desconhecido"
+      });
+    }
+  });
+
   app.get("/api/reports/owner/:ownerId", async (req: Request, res: Response) => {
     try {
       const ownerId = Number(req.params.ownerId);
