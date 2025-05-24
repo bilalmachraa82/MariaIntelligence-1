@@ -454,6 +454,39 @@
       "email": "Email",
       "phone": "Telefone",
       "company": "Empresa"
+    },
+    "settings": {
+      "title": "Configurações",
+      "tabs": {
+        "general": "Geral",
+        "account": "Conta",
+        "ai": "Assistente IA"
+      },
+      "general": {
+        "title": "Configurações Gerais",
+        "description": "Personalize as configurações básicas da aplicação",
+        "timezone": "Fuso Horário",
+        "timezoneDescription": "Selecione o seu fuso horário para exibir datas e horários corretos"
+      },
+      "account": {
+        "title": "Conta de Utilizador", 
+        "description": "Gerir informações da sua conta",
+        "name": "Nome",
+        "changePassword": "Alterar Palavra-passe"
+      },
+      "language": {
+        "title": "Idioma",
+        "selectLanguage": "Selecionar Idioma"
+      },
+      "integrations": {
+        "title": "Assistente IA", 
+        "description": "Configure o assistente IA Gemini para análise de documentos e ajuda",
+        "aiStatus": "Estado da IA",
+        "connected": "Conectado",
+        "disconnected": "Desconectado",
+        "configure": "Configurar Chave API",
+        "testConnection": "Testar Conexão"
+      }
     }
   }
 }
