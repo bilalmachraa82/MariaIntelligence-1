@@ -69,12 +69,13 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
   const todayCheckIns = (todayReservations as any)?.checkIns || [];
   const todayCheckOuts = (todayReservations as any)?.checkOuts || [];
 
-  // Calculate task statistics
+  // Calculate task statistics - only real data
   const taskStatistics = {
     checkIns: todayCheckIns.length,
     checkOuts: todayCheckOuts.length,
-    cleaningTasks: todayCheckOuts.length, // Assume cleaning needed after each checkout
-    activities: activities?.activities?.length || 0
+    cleaningTasks: todayCheckOuts.length, // Real cleanings needed after checkout
+    activities: (activities && typeof activities === 'object' && 'activities' in activities) 
+      ? (activities.activities?.length || 0) : 0
   };
 
   // Utility functions
@@ -474,7 +475,8 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
                     </CardTitle>
                   </div>
                   <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-200 border-0">
-                    {activities?.activities?.length || 0}
+                    {(activities && typeof activities === 'object' && 'activities' in activities) 
+                      ? (activities.activities?.length || 0) : 0}
                   </Badge>
                 </div>
                 <CardDescription className="text-xs text-secondary-500 mt-1">
@@ -489,9 +491,9 @@ export default function DailyTasksDashboard({ minimal = false }: DailyTasksDashb
                       <Skeleton className="h-20 w-full" />
                       <Skeleton className="h-20 w-full" />
                     </div>
-                  ) : activities?.activities && activities.activities.length > 0 ? (
+                  ) : (activities && typeof activities === 'object' && 'activities' in activities && activities.activities && activities.activities.length > 0) ? (
                     <div className="space-y-3 py-2">
-                      {activities.activities.slice(0, 5).map((activity: Activity) => (
+                      {(activities as any).activities.slice(0, 5).map((activity: Activity) => (
                         <div 
                           key={activity.id}
                           className="rounded-lg bg-white border border-gray-100 hover:border-purple-200 hover:shadow-sm transition-all overflow-hidden"
