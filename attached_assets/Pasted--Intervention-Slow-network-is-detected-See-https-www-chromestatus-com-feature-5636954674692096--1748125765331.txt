@@ -1,0 +1,230 @@
+ [Intervention] Slow network is detected. See https://www.chromestatus.com/feature/5636954674692096 for more details. Fallback font will be used while loading: https://replit.com/public/fonts/ibm-plex-sans-v8-latin-500.woff2
+analytics.tiktok.com/i18n/pixel/events.js?sdkid=D004GE3C77U8PIVDSDJG&lib=ttq:1  Failed to load resource: net::ERR_CONNECTION_REFUSED
+sp.replit.com/v1/p:1  Failed to load resource: net::ERR_CONNECTION_RESET
+3530-f124227efbf08327.js:1 Replit version 922d46b6, pid2 version 0.0.1337
+_app-9dd3ff271e1ae21e.js:38 
+      /////////////////////
+   ///////////////////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////        Curious and driven?
+  ///////////////@@@@@@@///////        Work with us!
+  ///////////////@@@@@@@///////
+  ///////////////@@@@@@@///////        https://join.replit.com/hack.with.us
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@#//////////////
+   ///////////////////////////
+      /////////////////////
+      
+_app-9dd3ff271e1ae21e.js:38  
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://www.googletagmanager.com" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+_app-9dd3ff271e1ae21e.js:38 [LaunchDarkly] LaunchDarkly client initialized
+_app-9dd3ff271e1ae21e.js:38 [LaunchDarkly] Opening stream connection to https://clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwiYW5vbnltb3VzIjpmYWxzZX0
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=2073744185.1746558410&jid=1557227283&gjid=172821057&_gid=1651242196.1748073506&_u=SCCAgEAjQAAAAGAAIAB~&z=305453705:1  Failed to load resource: net::ERR_CONNECTION_REFUSED
+_app-9dd3ff271e1ae21e.js:38 [LaunchDarkly] Closing stream connection
+_app-9dd3ff271e1ae21e.js:38 [LaunchDarkly] Opening stream connection to https://clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ
+manifest.json:1  Failed to load resource: the server responded with a status of 403 ()
+/usage:1 Manifest fetch from https://replit.com/public/manifest.json failed, code 403
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://js.stripe.com" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://www.google.com" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+recaptcha__pt_pt.js:42 [Intervention] Slow network is detected. See https://www.chromestatus.com/feature/5636954674692096 for more details. Fallback font will be used while loading: https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu4mxK.woff2
+recaptcha__pt_pt.js:42 [Intervention] Slow network is detected. See https://www.chromestatus.com/feature/5636954674692096 for more details. Fallback font will be used while loading: https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmEU9fBBc4.woff2
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://js.stripe.com" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://m.stripe.network" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+stats.g.doubleclick.net/g/collect?v=2&tid=G-MPJY3F1YEL&cid=2073744185.1746558410&gtm=45je55l1h1v9135634466za200&aip=1&dma=0&gcd=13l3l3l3l2l1&npa=0&frm=0&tag_exp=101509157~103116026~103130498~103130500~103200004~103233427~103252644~103252646~104481633~104481635:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/diagnostic/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/diagnostic/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+m.stripe.com/6:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+_app-9dd3ff271e1ae21e.js:38 [LaunchDarkly] Closing stream connection
+_app-9dd3ff271e1ae21e.js:38 [LaunchDarkly] Opening stream connection to https://clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ
+_app-9dd3ff271e1ae21e.js:38 [LaunchDarkly] Closing stream connection
+_app-9dd3ff271e1ae21e.js:38 [LaunchDarkly] Opening stream connection to https://clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ
+/~:1 Blocked aria-hidden on an element because its descendant retained focus. The focus must not be hidden from assistive technology users. Avoid using aria-hidden on a focused element or its ancestor. Consider using the inert attribute instead, which will also prevent focus. For more details, see the aria-hidden section of the WAI-ARIA specification at https://w3c.github.io/aria/#aria-hidden.
+Element with focus: <div.cm-content cm-lineWrapping>
+Ancestor with aria-hidden: <div. useView_view__C2mnv css-17qdd0f Surface_surfaceRoot__TeA2u> <div class=​" useView_view__C2mnv css-17qdd0f Surface_surfaceRoot__TeA2u" aria-hidden=​"true" style=​"--useView--gap:​ 4px;​ border-color:​ var(--outline-dimmer)​;​ --focusedBorderColor:​ var(--accent-primary-default)​;​ --hoverBorderColor:​ var(--accent-primary-default)​;​">​…​</div>​
+_app-9dd3ff271e1ae21e.js:38 [LaunchDarkly] Closing stream connection
+_app-9dd3ff271e1ae21e.js:38 [LaunchDarkly] Opening stream connection to https://clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+attached_assets/image_1748122756266.png:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+framework-afbfdf5edeb7b5f1.js:1 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+_ @ framework-afbfdf5edeb7b5f1.js:1
+framework-afbfdf5edeb7b5f1.js:1 Unrecognized feature: 'ambient-light-sensor'.
+_ @ framework-afbfdf5edeb7b5f1.js:1
+framework-afbfdf5edeb7b5f1.js:1 Unrecognized feature: 'battery'.
+_ @ framework-afbfdf5edeb7b5f1.js:1
+framework-afbfdf5edeb7b5f1.js:1 Unrecognized feature: 'execution-while-not-rendered'.
+_ @ framework-afbfdf5edeb7b5f1.js:1
+framework-afbfdf5edeb7b5f1.js:1 Unrecognized feature: 'execution-while-out-of-viewport'.
+_ @ framework-afbfdf5edeb7b5f1.js:1
+framework-afbfdf5edeb7b5f1.js:1 Unrecognized feature: 'layout-animations'.
+_ @ framework-afbfdf5edeb7b5f1.js:1
+framework-afbfdf5edeb7b5f1.js:1 Unrecognized feature: 'legacy-image-formats'.
+_ @ framework-afbfdf5edeb7b5f1.js:1
+framework-afbfdf5edeb7b5f1.js:1 Unrecognized feature: 'navigation-override'.
+_ @ framework-afbfdf5edeb7b5f1.js:1
+framework-afbfdf5edeb7b5f1.js:1 Unrecognized feature: 'oversized-images'.
+_ @ framework-afbfdf5edeb7b5f1.js:1
+framework-afbfdf5edeb7b5f1.js:1 Unrecognized feature: 'publickey-credentials'.
+_ @ framework-afbfdf5edeb7b5f1.js:1
+framework-afbfdf5edeb7b5f1.js:1 Unrecognized feature: 'speaker-selection'.
+_ @ framework-afbfdf5edeb7b5f1.js:1
+framework-afbfdf5edeb7b5f1.js:1 Unrecognized feature: 'unoptimized-images'.
+_ @ framework-afbfdf5edeb7b5f1.js:1
+framework-afbfdf5edeb7b5f1.js:1 Unrecognized feature: 'unsized-media'.
+_ @ framework-afbfdf5edeb7b5f1.js:1
+framework-afbfdf5edeb7b5f1.js:1 Unrecognized feature: 'pointer-lock'.
+_ @ framework-afbfdf5edeb7b5f1.js:1
+framework-afbfdf5edeb7b5f1.js:1 Allow attribute will take precedence over 'allowfullscreen'.
+_ @ framework-afbfdf5edeb7b5f1.js:1
+framework-afbfdf5edeb7b5f1.js:1 Allow attribute will take precedence over 'allowpaymentrequest'.
+_ @ framework-afbfdf5edeb7b5f1.js:1
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=2073744185.1746558410&jid=966708238&gjid=686444617&_gid=1651242196.1748073506&_u=SCCAgEAjQAAAAGgCIAD~&z=603690160:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=2073744185.1746558410&jid=1262788893&gjid=1645119136&_gid=1651242196.1748073506&_u=SCCAgEAjQAAAAGgCIAD~&z=434834425:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+framework-afbfdf5edeb7b5f1.js:1 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+_ @ framework-afbfdf5edeb7b5f1.js:1
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+framework-afbfdf5edeb7b5f1.js:1 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+_ @ framework-afbfdf5edeb7b5f1.js:1
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+workspace_iframe.html:32 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.
+workspace_iframe.html:32 Unrecognized feature: 'battery'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+Console.js:61 [vite] connecting...
+Console.js:61 [vite] connected.
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=2073744185.1746558410&jid=1984603181&gjid=1225059781&_gid=1651242196.1748073506&_u=SCCAgEAjQAAAAGgCIAD~&z=50485726:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+Console.js:61 i18next: languageChanged pt-PT
+Console.js:61 i18next: initialized Object
+Console.js:61 i18n inicializado com os seguintes recursos: Array(6)
+Console.js:61 Fetch URL modificada: /api/reservations/dashboard
+Console.js:61 Fetch URL modificada: /api/activities
+Console.js:61 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+Console.js:61 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+Console.js:61 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+Console.js:61 Fetch URL modificada: /api/check-ai-services?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+Console.js:61 Iniciando processamento do PDF no servidor...
+Console.js:61 Fetch URL modificada: /api/ocr?provider=auto&demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Resposta do processamento de PDF no servidor: Object
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61
+stats.g.doubleclick.net/j/collect?t=dc&aip=1&_r=3&v=1&_v=j101&tid=UA-25629695-1&cid=2073744185.1746558410&jid=291091934&gjid=1355334716&_gid=1651242196.1748073506&_u=SCCAgEAjQAAAAGgCIAD~&z=1299359041:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_REFUSED
+manifest.json:1 
+            
+            
+           Failed to load resource: the server responded with a status of 403 ()
+[Violation] Forced reflow while executing JavaScript took 47ms

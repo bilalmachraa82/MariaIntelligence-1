@@ -9,6 +9,7 @@ import path from 'path';
 import { AIAdapter, AIServiceType } from '../services/ai-adapter.service';
 import { HandwritingDetector } from '../services/handwriting-detector';
 import { parseReservationData } from '../parsers/parseReservations';
+import pdf from 'pdf-parse';
 import { storage } from '../storage';
 import { matchPropertyByAlias } from '../utils/matchPropertyByAlias';
 
@@ -44,6 +45,64 @@ export async function postOcr(req: Request, res: Response) {
         success: false,
         message: 'Nenhum arquivo enviado'
       });
+    }
+
+    // ✅ DETECÇÃO PRÉVIA DE ARQUIVOS DE CONTROLE PARA MÚLTIPLAS RESERVAS
+    console.log('🔍 Verificando se é arquivo de controle...');
+    const pdfBuffer = fs.readFileSync(req.file.path);
+    const quickCheck = await pdf(pdfBuffer);
+    const textContent = quickCheck.text.toLowerCase();
+    
+    const isControlFile = textContent.includes('exciting lisbon aroeira') ||
+                         textContent.includes('controlo_aroeira') ||
+                         textContent.includes('aroeira i') ||
+                         (textContent.includes('data entrada') && 
+                          textContent.includes('data saída') &&
+                          textContent.includes('nome') &&
+                          textContent.includes('hóspedes'));
+    
+    if (isControlFile) {
+      console.log('✅ ARQUIVO DE CONTROLE DETECTADO - Processando múltiplas reservas');
+      
+      try {
+        const { processControlFile } = await import('../services/control-file-processor');
+        const controlResult = await processControlFile(req.file.path);
+        
+        if (controlResult.success && controlResult.reservations.length > 0) {
+          console.log(`🎉 SUCESSO: ${controlResult.reservations.length} reservas encontradas no arquivo de controle!`);
+          
+          // Converter para formato OCR compatível
+          const reservations = controlResult.reservations.map(reservation => ({
+            propertyName: controlResult.propertyName,
+            guestName: reservation.guestName,
+            checkInDate: reservation.checkInDate,
+            checkOutDate: reservation.checkOutDate,
+            numGuests: reservation.numGuests,
+            totalAmount: reservation.totalAmount || "0",
+            platform: reservation.platform || "booking",
+            status: "confirmed",
+            countryOfOrigin: reservation.countryOfOrigin || "",
+            numNights: reservation.numNights || 0,
+            notes: reservation.notes || "",
+            propertyId: controlResult.propertyId
+          }));
+          
+          return res.status(200).json({
+            success: true,
+            provider: 'control-file-processor',
+            reservations,
+            boxes: {},
+            extractedData: reservations[0], // Compatibilidade
+            missing: [],
+            rawText: controlResult.rawText
+          });
+        } else {
+          console.log('⚠️ Arquivo de controle não processado corretamente, continuando com OCR normal');
+        }
+      } catch (controlError) {
+        console.error('❌ Erro no processamento de arquivo de controle:', controlError);
+        console.log('🔄 Continuando com processamento OCR normal...');
+      }
     }
     
     // Validar tipo MIME
