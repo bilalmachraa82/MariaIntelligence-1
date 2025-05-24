@@ -7,18 +7,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { 
   FileText, 
-  Mail, 
   Download, 
   Euro, 
   Calendar,
   Building2,
   TrendingUp,
-  Send,
   Loader2,
   CheckCircle2,
-  User
+  User,
+  CalendarDays,
+  FileBarChart
 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { useProperties } from "@/hooks/use-properties";
@@ -43,9 +45,12 @@ export default function OwnerReports() {
   
   const [selectedOwner, setSelectedOwner] = useState<string>("");
   const [selectedPeriod, setSelectedPeriod] = useState<string>("");
+  const [periodType, setPeriodType] = useState<"monthly" | "custom">("monthly");
+  const [customStartDate, setCustomStartDate] = useState<string>("");
+  const [customEndDate, setCustomEndDate] = useState<string>("");
   const [reportData, setReportData] = useState<OwnerReport | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   
   const { data: owners = [], isLoading: isLoadingOwners } = useOwners();
   const { data: properties = [], isLoading: isLoadingProperties } = useProperties();
@@ -61,6 +66,15 @@ export default function OwnerReports() {
     const label = date.toLocaleDateString('pt-PT', { month: 'long', year: 'numeric' });
     return { value, label };
   });
+
+  // Gerar opções de período personalizado (trimestres, semestres, anos)
+  const customPeriodOptions = [
+    { value: "last-3-months", label: "Últimos 3 meses" },
+    { value: "last-6-months", label: "Últimos 6 meses" },
+    { value: "last-year", label: "Último ano" },
+    { value: "current-year", label: "Ano corrente" },
+    { value: "custom-range", label: "Período personalizado" }
+  ];
 
   const generateReport = async () => {
     if (!selectedOwner || !selectedPeriod) {
@@ -100,7 +114,7 @@ export default function OwnerReports() {
 
       periodReservations.forEach(reservation => {
         const revenue = parseFloat(reservation.totalAmount) || 0;
-        const commission = parseFloat(reservation.commission) || 0;
+        const commission = parseFloat(reservation.commission || '0') || 0;
         
         totalRevenue += revenue;
         totalCommission += commission;
@@ -137,42 +151,53 @@ export default function OwnerReports() {
     }
   };
 
-  const sendReportByEmail = async () => {
+  const generatePDF = async () => {
     if (!reportData) return;
 
-    setIsSendingEmail(true);
+    setIsGeneratingPDF(true);
     
     try {
-      const response = await fetch('/api/reports/owner/send-email', {
+      const response = await fetch('/api/reports/owner/generate-pdf', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           ownerId: reportData.owner.id,
-          period: selectedPeriod,
           reportData: reportData
         }),
       });
 
       if (response.ok) {
+        // Download do PDF
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = `relatorio_${reportData.owner.name.replace(/\s+/g, '_')}_${reportData.period.replace(/\s+/g, '_')}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
         toast({
-          title: "Email enviado com sucesso!",
-          description: `Relatório enviado para ${reportData.owner.name}`,
+          title: "PDF gerado com sucesso!",
+          description: `Relatório de ${reportData.owner.name} pronto para envio`,
         });
       } else {
-        throw new Error('Falha no envio do email');
+        throw new Error('Falha na geração do PDF');
       }
 
     } catch (error) {
-      console.error('Erro ao enviar email:', error);
+      console.error('Erro ao gerar PDF:', error);
       toast({
-        title: "Erro ao enviar email",
-        description: "Não foi possível enviar o relatório. Verifica a configuração de email.",
+        title: "Erro ao gerar PDF",
+        description: "Não foi possível gerar o relatório. Tenta novamente.",
         variant: "destructive"
       });
     } finally {
-      setIsSendingEmail(false);
+      setIsGeneratingPDF(false);
     }
   };
 
@@ -244,30 +269,77 @@ export default function OwnerReports() {
                 </Select>
               </div>
 
-              {/* Seleção de Período */}
+              {/* Tipo de Período */}
               <div className="space-y-2">
-                <label className="text-sm font-medium">Período</label>
-                <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
+                <label className="text-sm font-medium">Tipo de Período</label>
+                <Select value={periodType} onValueChange={(value: "monthly" | "custom") => setPeriodType(value)}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecciona o período" />
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {periodOptions.map((period) => (
-                      <SelectItem key={period.value} value={period.value}>
-                        <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4" />
-                          {period.label}
-                        </div>
-                      </SelectItem>
-                    ))}
+                    <SelectItem value="monthly">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        Mensal
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="custom">
+                      <div className="flex items-center gap-2">
+                        <CalendarDays className="h-4 w-4" />
+                        Personalizado
+                      </div>
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
+
+              {/* Seleção de Período baseado no tipo */}
+              {periodType === "monthly" ? (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Mês</label>
+                  <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona o mês" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {periodOptions.map((period) => (
+                        <SelectItem key={period.value} value={period.value}>
+                          <div className="flex items-center gap-2">
+                            <Calendar className="h-4 w-4" />
+                            {period.label}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="start-date">Data Início</Label>
+                    <Input
+                      id="start-date"
+                      type="date"
+                      value={customStartDate}
+                      onChange={(e) => setCustomStartDate(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="end-date">Data Fim</Label>
+                    <Input
+                      id="end-date"
+                      type="date"
+                      value={customEndDate}
+                      onChange={(e) => setCustomEndDate(e.target.value)}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             <Button 
               onClick={generateReport} 
-              disabled={!selectedOwner || !selectedPeriod || isGenerating}
+              disabled={!selectedOwner || (periodType === "monthly" && !selectedPeriod) || (periodType === "custom" && (!customStartDate || !customEndDate)) || isGenerating}
               className="w-full"
             >
               {isGenerating ? (
@@ -277,7 +349,7 @@ export default function OwnerReports() {
                 </>
               ) : (
                 <>
-                  <FileText className="h-4 w-4 mr-2" />
+                  <FileBarChart className="h-4 w-4 mr-2" />
                   Gerar Relatório
                 </>
               )}
@@ -306,25 +378,21 @@ export default function OwnerReports() {
                 </div>
                 <div className="flex gap-2">
                   <Button 
-                    variant="outline" 
-                    onClick={sendReportByEmail}
-                    disabled={isSendingEmail}
+                    onClick={generatePDF}
+                    disabled={isGeneratingPDF}
+                    className="bg-green-600 hover:bg-green-700"
                   >
-                    {isSendingEmail ? (
+                    {isGeneratingPDF ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Enviando...
+                        Gerando PDF...
                       </>
                     ) : (
                       <>
-                        <Mail className="h-4 w-4 mr-2" />
-                        Enviar Email
+                        <Download className="h-4 w-4 mr-2" />
+                        Gerar PDF
                       </>
                     )}
-                  </Button>
-                  <Button variant="outline">
-                    <Download className="h-4 w-4 mr-2" />
-                    Download PDF
                   </Button>
                 </div>
               </div>
@@ -405,7 +473,7 @@ export default function OwnerReports() {
                         {reportData.reservations.map((reservation) => {
                           const property = properties.find(p => p.id === reservation.propertyId);
                           const revenue = parseFloat(reservation.totalAmount) || 0;
-                          const commission = parseFloat(reservation.commission) || 0;
+                          const commission = parseFloat(reservation.commission || '0') || 0;
                           const net = revenue - commission;
                           
                           return (
