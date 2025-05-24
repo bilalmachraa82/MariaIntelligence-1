@@ -54,36 +54,40 @@ export class PropertyInsightsService {
   }
 
   private buildInsightsPrompt(data: OwnerReportData): string {
-    const profitMargin = data.totalRevenue > 0 ? ((data.netProfit / data.totalRevenue) * 100).toFixed(1) : '0';
+    const hasRevenue = data.totalRevenue > 0;
+    const hasReservations = data.reservations.length > 0;
+    const profitMargin = hasRevenue ? ((data.netProfit / data.totalRevenue) * 100).toFixed(1) : '0';
     const avgRevenuePerProperty = data.properties.length > 0 ? (data.totalRevenue / data.properties.length).toFixed(0) : '0';
-    const totalReservations = data.reservations.length;
     
     return `
-Atua como um consultor especialista em alojamento local e análise financeira imobiliária. Analisa os seguintes dados financeiros e operacionais de ${data.ownerName} e gera insights profissionais em português de Portugal.
+És um consultor especializado em alojamento local em Portugal. Analisa os dados REAIS de ${data.ownerName} para o período ${data.period.startDate} a ${data.period.endDate}.
 
-DADOS FINANCEIROS:
-- Receita Total: €${data.totalRevenue}
-- Despesas Totais: €${data.totalExpenses}
-- Lucro Líquido: €${data.netProfit}
+=== SITUAÇÃO FINANCEIRA REAL ===
+- Receita Total: €${data.totalRevenue.toFixed(2)}
+- Despesas Totais: €${data.totalExpenses.toFixed(2)}
+- Lucro Líquido: €${data.netProfit.toFixed(2)}
 - Margem de Lucro: ${profitMargin}%
-- Período: ${data.period.startDate} a ${data.period.endDate}
+- Total de Reservas: ${data.reservations.length}
 
-DADOS OPERACIONAIS:
-- Número de Propriedades: ${data.properties.length}
-- Total de Reservas: ${totalReservations}
-- Receita Média por Propriedade: €${avgRevenuePerProperty}
-
-PROPRIEDADES DETALHADAS:
+=== PROPRIEDADES DE ${data.ownerName.toUpperCase()} ===
 ${data.properties.map(prop => `
-- ${prop.name}: €${prop.totalRevenue} (${prop.reservations} reservas, taxa ocupação: ${prop.occupancyRate}%, preço médio: €${prop.averageRate})
+• ${prop.name}: €${prop.totalRevenue.toFixed(2)} receita, ${prop.reservations} reservas, ${prop.occupancyRate}% ocupação
 `).join('')}
 
-RESERVAS RECENTES:
-${data.reservations.slice(0, 5).map(res => `
-- ${res.guestName}: €${res.totalAmount} (${res.checkInDate} - ${res.checkOutDate})
-`).join('')}
+${hasReservations ? 
+`=== RESERVAS NO PERÍODO ===
+${data.reservations.map(r => `• ${r.guestName}: €${r.totalAmount} (${r.checkInDate} → ${r.checkOutDate})`).join('\n')}` 
+: 
+`=== ALERTA: SEM RESERVAS NO PERÍODO ===
+• Período analisado: ${data.period.startDate} a ${data.period.endDate}
+• Receita: €0,00
+• Situação requer AÇÃO IMEDIATA para reactivar propriedades`}
 
-RESPONDE EM FORMATO JSON com as seguintes secções:
+CONTEXTO PORTUGAL: Mercado de alojamento local, sazonalidade, concorrência regional.
+
+${hasReservations ? 'FOCA nos dados reais para recomendações específicas.' : 'PRIORIDADE: Estratégias para reactivar propriedades SEM RESERVAS.'}
+
+RESPOSTA OBRIGATÓRIA EM JSON VÁLIDO:
 
 {
   "executiveSummary": "Resumo executivo em 2-3 frases sobre o desempenho geral",
