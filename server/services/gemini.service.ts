@@ -13,12 +13,12 @@
 import { rateLimiter } from './rate-limiter.service';
 import crypto from 'crypto';
 
-// Interface para tipos de modelos disponíveis - Atualizado para os modelos mais recentes
+// Interface para tipos de modelos disponíveis - Atualizado para Gemini 2.5 Flash Preview
 export enum GeminiModel {
-  TEXT = 'gemini-1.5-flash-002',   // Modelo Flash 1.5-002 - versão mais recente estável
-  VISION = 'gemini-1.5-flash-002', // Para processamento de imagens - versão mais recente
-  FLASH = 'gemini-1.5-flash-002',  // Versão Flash 1.5-002 - última versão estável disponível
-  AUDIO = 'gemini-1.5-pro'         // Para processamento multimodal incluindo áudio
+  TEXT = 'gemini-2.5-flash-preview-05-20',   // Gemini 2.5 Flash Preview - versão mais recente
+  VISION = 'gemini-2.5-flash-preview-05-20', // Para processamento de imagens - versão mais recente
+  FLASH = 'gemini-2.5-flash-preview-05-20',  // Gemini 2.5 Flash Preview - último modelo disponível
+  AUDIO = 'gemini-2.5-flash-preview-05-20'   // Para processamento multimodal incluindo áudio
 }
 
 // Interface para configuração de geração
@@ -1517,6 +1517,7 @@ export class GeminiService {
         
         const targetModel = model === GeminiModel.VISION ? this.visionModel : 
                            model === GeminiModel.FLASH ? this.flashModel : 
+                           model === GeminiModel.TEXT ? this.defaultModel :
                            this.defaultModel;
         
         // Preparar configuração de requisição

@@ -369,6 +369,7 @@
           "trends": "Mostra-me as tendências de reservas deste ano"
         },
         "properties": {
+          "list": "Lista dos meus imóveis",
           "available": "Que propriedades estão disponíveis para esta semana?",
           "maintenance": "Há alguma manutenção pendente nos meus imóveis?",
           "cleaning": "Quando foram feitas as últimas limpezas?",
@@ -405,7 +406,54 @@
         "cleaning": "Que limpezas estão agendadas?",
         "maintenance": "Há manutenções urgentes?",
         "today": "O que tenho para fazer hoje?"
-      }
+      },
+      "showMore": "Mostrar mais",
+      "showLess": "Mostrar menos",
+      "contextProperty": "Propriedade",
+      "contextReservation": "Reserva", 
+      "contextReport": "Relatório",
+      "contextSuggestion": "Sugestão"
+    },
+    "cleaningTeams": {
+      "title": "Equipas de Limpeza",
+      "addTeam": "Adicionar Equipa",
+      "searchPlaceholder": "Pesquisar equipas...",
+      "teams": "Equipas",
+      "schedule": "Agendamento",
+      "allTeams": "Todas as Equipas",
+      "managementDescription": "Gerencie todas as equipas de limpeza da sua operação.",
+      "name": "Nome",
+      "contact": "Contacto",
+      "status": "Estado",
+      "statusActive": "Ativa",
+      "scheduleDescription": "Visualize e gerencie o agendamento de limpezas.",
+      "viewSchedules": "Ver Agendamentos"
+    },
+    "cleaningReports": {
+      "title": "Relatórios de Limpeza e Pagamentos"
+    },
+    "common": {
+      "exportPDF": "Exportar PDF",
+      "currency": "€",
+      "actions": "Ações",
+      "view": "Ver",
+      "edit": "Editar",
+      "delete": "Apagar",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar",
+      "back": "Voltar",
+      "save": "Guardar",
+      "saving": "A guardar...",
+      "error": "Erro",
+      "search": "Pesquisar",
+      "language": "Idioma",
+      "profile": "Perfil",
+      "help": "Ajuda",
+      "logout": "Sair",
+      "nif": "NIF",
+      "email": "Email",
+      "phone": "Telefone",
+      "company": "Empresa"
     }
   }
 }
