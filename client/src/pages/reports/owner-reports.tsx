@@ -77,10 +77,13 @@ export default function OwnerReports() {
   ];
 
   const generateReport = async () => {
-    if (!selectedOwner || !selectedPeriod) {
+    // Validação baseada no tipo de período
+    if (!selectedOwner || 
+        (periodType === "monthly" && !selectedPeriod) || 
+        (periodType === "custom" && (!customStartDate || !customEndDate))) {
       toast({
         title: "Dados em falta",
-        description: "Por favor selecciona o proprietário e o período.",
+        description: "Por favor preenche todos os campos necessários.",
         variant: "destructive"
       });
       return;
@@ -96,11 +99,22 @@ export default function OwnerReports() {
       // Encontrar propriedades do proprietário
       const ownerProperties = properties.filter(p => p.ownerId === owner.id);
       
-      // Filtrar reservas do período e das propriedades do proprietário
-      const [year, month] = selectedPeriod.split('-').map(Number);
-      const startDate = new Date(year, month - 1, 1);
-      const endDate = new Date(year, month, 0);
+      // Definir período baseado no tipo
+      let startDate: Date, endDate: Date, periodLabel: string;
       
+      if (periodType === "monthly") {
+        const [year, month] = selectedPeriod.split('-').map(Number);
+        startDate = new Date(year, month - 1, 1);
+        endDate = new Date(year, month, 0);
+        periodLabel = periodOptions.find(p => p.value === selectedPeriod)?.label || selectedPeriod;
+      } else {
+        startDate = new Date(customStartDate);
+        endDate = new Date(customEndDate);
+        endDate.setHours(23, 59, 59, 999); // Incluir todo o último dia
+        periodLabel = `${startDate.toLocaleDateString('pt-PT')} - ${endDate.toLocaleDateString('pt-PT')}`;
+      }
+      
+      // Filtrar reservas do período e das propriedades do proprietário
       const periodReservations = reservations.filter(r => {
         const checkInDate = new Date(r.checkInDate);
         const propertyMatch = ownerProperties.some(p => p.id === r.propertyId);
@@ -129,7 +143,7 @@ export default function OwnerReports() {
         totalRevenue,
         totalCommission,
         netAmount,
-        period: periodOptions.find(p => p.value === selectedPeriod)?.label || selectedPeriod
+        period: periodLabel
       };
 
       setReportData(report);

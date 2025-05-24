@@ -3131,6 +3131,226 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Endpoint para gerar PDF de relatório de proprietário
+  app.post("/api/reports/owner/generate-pdf", async (req: Request, res: Response) => {
+    try {
+      const { ownerId, reportData } = req.body;
+      
+      if (!ownerId || !reportData) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Dados do relatório são obrigatórios" 
+        });
+      }
+
+      // Buscar proprietário
+      const owner = await storage.getOwner(ownerId);
+      if (!owner) {
+        return res.status(404).json({ 
+          success: false, 
+          message: "Proprietário não encontrado" 
+        });
+      }
+
+      // Importar jsPDF
+      const { jsPDF } = await import('jspdf');
+      
+      // Criar novo documento PDF
+      const doc = new jsPDF();
+      
+      // Configurações de cores e estilo
+      const primaryColor = [37, 99, 235]; // Blue-600
+      const textColor = [31, 41, 55];     // Gray-800
+      const lightGray = [243, 244, 246];  // Gray-100
+      
+      // Função para adicionar logo (texto estilizado)
+      const addHeader = () => {
+        // Fundo do cabeçalho
+        doc.setFillColor(...lightGray);
+        doc.rect(0, 0, 210, 40, 'F');
+        
+        // Logo texto "Maria Faz"
+        doc.setTextColor(...primaryColor);
+        doc.setFontSize(24);
+        doc.setFont(undefined, 'bold');
+        doc.text('Maria Faz', 20, 25);
+        
+        // Subtítulo
+        doc.setTextColor(...textColor);
+        doc.setFontSize(10);
+        doc.setFont(undefined, 'normal');
+        doc.text('Gestão de Alojamento Local', 20, 32);
+        
+        // Data de geração
+        const currentDate = new Date().toLocaleDateString('pt-PT');
+        doc.text(`Gerado em ${currentDate}`, 150, 32);
+      };
+      
+      // Função para adicionar frase inspiradora
+      const addInspirationalQuote = () => {
+        const quotes = [
+          "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
+          "A excelência não é um ato, mas um hábito.",
+          "Cada proprietário é uma parceria valiosa no nosso sucesso conjunto.",
+          "A transparência constrói confiança, a confiança constrói negócios duradouros."
+        ];
+        
+        const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+        
+        doc.setFillColor(239, 246, 255); // Blue-50
+        doc.rect(15, 45, 180, 15, 'F');
+        
+        doc.setTextColor(30, 64, 175); // Blue-800
+        doc.setFontSize(9);
+        doc.setFont(undefined, 'italic');
+        doc.text(`"${randomQuote}"`, 20, 54);
+      };
+      
+      // Adicionar cabeçalho e frase
+      addHeader();
+      addInspirationalQuote();
+      
+      // Título do relatório
+      doc.setTextColor(...textColor);
+      doc.setFontSize(18);
+      doc.setFont(undefined, 'bold');
+      doc.text(`Relatório Financeiro - ${reportData.owner.name}`, 20, 75);
+      
+      // Período
+      doc.setFontSize(12);
+      doc.setFont(undefined, 'normal');
+      doc.text(`Período: ${reportData.period}`, 20, 85);
+      
+      // Resumo financeiro em caixas
+      let yPos = 100;
+      
+      // Função para criar caixa de valor
+      const addValueBox = (label: string, value: string, color: number[], y: number) => {
+        // Caixa
+        doc.setFillColor(...color);
+        doc.rect(20, y, 170, 20, 'F');
+        
+        // Borda
+        doc.setDrawColor(200, 200, 200);
+        doc.rect(20, y, 170, 20, 'S');
+        
+        // Texto do label
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(10);
+        doc.setFont(undefined, 'bold');
+        doc.text(label, 25, y + 8);
+        
+        // Valor
+        doc.setFontSize(14);
+        doc.text(value, 25, y + 16);
+      };
+      
+      // Receita Total
+      addValueBox(
+        'RECEITA TOTAL',
+        reportData.totalRevenue.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' }),
+        [34, 197, 94], // Green-600
+        yPos
+      );
+      yPos += 30;
+      
+      // Comissões
+      addValueBox(
+        'COMISSÕES MARIA FAZ',
+        reportData.totalCommission.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' }),
+        [234, 88, 12], // Orange-600
+        yPos
+      );
+      yPos += 30;
+      
+      // Valor Líquido
+      addValueBox(
+        'VALOR LÍQUIDO A RECEBER',
+        reportData.netAmount.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' }),
+        [37, 99, 235], // Blue-600
+        yPos
+      );
+      yPos += 40;
+      
+      // Detalhes das reservas
+      if (reportData.reservations.length > 0) {
+        doc.setTextColor(...textColor);
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.text('Detalhes das Reservas:', 20, yPos);
+        yPos += 15;
+        
+        // Cabeçalho da tabela
+        doc.setFillColor(...lightGray);
+        doc.rect(20, yPos, 170, 10, 'F');
+        
+        doc.setFontSize(9);
+        doc.setFont(undefined, 'bold');
+        doc.text('Hóspede', 25, yPos + 7);
+        doc.text('Check-in', 70, yPos + 7);
+        doc.text('Check-out', 105, yPos + 7);
+        doc.text('Receita', 140, yPos + 7);
+        doc.text('Líquido', 165, yPos + 7);
+        yPos += 12;
+        
+        // Linhas da tabela
+        reportData.reservations.slice(0, 10).forEach((reservation: any) => {
+          const revenue = parseFloat(reservation.totalAmount) || 0;
+          const commission = parseFloat(reservation.commission || '0') || 0;
+          const net = revenue - commission;
+          
+          doc.setFont(undefined, 'normal');
+          doc.setFontSize(8);
+          
+          // Alternar cor de fundo
+          if (reportData.reservations.indexOf(reservation) % 2 === 0) {
+            doc.setFillColor(249, 250, 251);
+            doc.rect(20, yPos - 2, 170, 8, 'F');
+          }
+          
+          doc.text(reservation.guestName.substring(0, 15), 25, yPos + 4);
+          doc.text(new Date(reservation.checkInDate).toLocaleDateString('pt-PT'), 70, yPos + 4);
+          doc.text(new Date(reservation.checkOutDate).toLocaleDateString('pt-PT'), 105, yPos + 4);
+          doc.text(revenue.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' }), 140, yPos + 4);
+          doc.text(net.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' }), 165, yPos + 4);
+          
+          yPos += 10;
+        });
+      }
+      
+      // Informação adicional no final
+      yPos += 20;
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'normal');
+      doc.setTextColor(107, 114, 128); // Gray-500
+      doc.text('Este relatório foi gerado automaticamente pelo sistema Maria Faz.', 20, yPos);
+      doc.text('Para questões ou esclarecimentos, entre em contacto connosco.', 20, yPos + 8);
+      
+      // Gerar PDF como buffer
+      const pdfOutput = doc.output('arraybuffer');
+      
+      // Registrar atividade
+      await storage.createActivity({
+        type: "owner_report_generated",
+        description: `Relatório PDF gerado para ${reportData.owner.name} (${reportData.period})`,
+        entityId: ownerId,
+        entityType: "owner"
+      });
+      
+      // Enviar PDF
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="relatorio_${reportData.owner.name.replace(/\s+/g, '_')}_${reportData.period.replace(/\s+/g, '_')}.pdf"`);
+      res.send(Buffer.from(pdfOutput));
+
+    } catch (error) {
+      console.error('Erro ao gerar PDF:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'Erro interno ao gerar PDF' 
+      });
+    }
+  });
+
   app.get("/api/reports/owner/:ownerId", async (req: Request, res: Response) => {
     try {
       const ownerId = Number(req.params.ownerId);
