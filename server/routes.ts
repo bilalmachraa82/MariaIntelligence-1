@@ -3322,14 +3322,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         month = String(startDate.getMonth() + 1).padStart(2, '0');
         year = String(startDate.getFullYear());
         
-        // Registrar atividade
-        // Registrar atividade e armazenar no RAG para aprendizado contínuo
-        const activity = await storage.createActivity({
-          activityType: 'report_generation',
-          description: `Relatório financeiro para proprietário ${owner.name} (ID: ${ownerId}) para o período de ${req.query.startDate} a ${req.query.endDate}`,
-          resourceType: 'owner',
-          resourceId: ownerId
-        });
+        // Logs simples para debug
+        console.log(`Gerando relatório para ${owner.name} - período: ${req.query.startDate} a ${req.query.endDate}`);
       } else {
         // Caso contrário, usar mês e ano específicos
         month = req.query.month as string;
