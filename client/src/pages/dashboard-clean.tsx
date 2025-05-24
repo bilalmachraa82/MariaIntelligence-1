@@ -5,8 +5,9 @@ import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Calendar, Activity, Users, FileText, BarChart3, Euro, Home } from "lucide-react";
+import { Calendar, Activity, ArrowRight, Users, FileText, BarChart3, Euro, TrendingUp, Home } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 interface DashboardStats {
   totalRevenue: number;
@@ -22,7 +23,7 @@ interface RecentActivity {
   createdAt: string;
 }
 
-export default function DashboardPage() {
+export default function CleanDashboard() {
   const { t } = useTranslation();
   const [location, setLocation] = useLocation();
 
