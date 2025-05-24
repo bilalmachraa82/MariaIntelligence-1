@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, Activity, ArrowRight, Check, LogOut, Sparkles, BarChart2 } from "lucide-react";
 import { InspirationQuote } from "@/components/ui/inspiration-quote";
+import { getDailyInspirationalQuote } from "@/lib/utils";
 
 export default function DashboardPage() {
   const { t } = useTranslation();

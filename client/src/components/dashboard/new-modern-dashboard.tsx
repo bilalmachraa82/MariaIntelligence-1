@@ -31,7 +31,7 @@ import {
   Download,
   FileUp,
   LineChart,
-  DollarSign, Euro as EuroIcon,
+  Euro, Euro as EuroIcon,
   TrendingUp,
   UserCheck,
   BarChart3,

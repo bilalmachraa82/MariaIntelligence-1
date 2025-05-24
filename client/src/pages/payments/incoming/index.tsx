@@ -136,7 +136,7 @@ export default function PaymentsIncoming() {
         </div>
         <Link href="/payments/incoming/new">
           <Button className="bg-maria-primary hover:bg-maria-primary/90">
-            <BadgeDollarSign className="mr-2 h-4 w-4" />
+            <Euro className="mr-2 h-4 w-4" />
             Novo Recebimento
           </Button>
         </Link>
@@ -215,7 +215,7 @@ export default function PaymentsIncoming() {
           {filteredPayments.length === 0 ? (
             <Card>
               <CardContent className="text-center py-12">
-                <BadgeDollarSign className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                <Euro className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
                 <h3 className="text-lg font-semibold mb-2">
                   {activeTab === 'pending' ? 'Nenhum pagamento pendente' : 'Nenhum pagamento encontrado'}
                 </h3>
