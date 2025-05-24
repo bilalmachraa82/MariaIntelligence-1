@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "wouter";
+import { useLocation } from "wouter";
 import { ArrowLeft, Settings, Globe, Bot, User, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function SettingsPage() {
   const { t, i18n } = useTranslation();
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("general");
 
@@ -58,7 +58,7 @@ export default function SettingsPage() {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => navigate("/")}
+          onClick={() => setLocation("/")}
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           {t("common.back", "Voltar")}
