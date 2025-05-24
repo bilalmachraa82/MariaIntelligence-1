@@ -3271,10 +3271,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       doc.text('Este relatório foi gerado automaticamente pelo sistema Maria Faz.', 20, yPos);
       doc.text('Para questões ou esclarecimentos, entre em contacto connosco.', 20, yPos + 8);
       
-      // Gerar PDF como blob e converter para buffer
-      const pdfData = doc.output('blob');
-      const arrayBuffer = await pdfData.arrayBuffer();
-      const pdfBuffer = Buffer.from(arrayBuffer);
+      // Gerar PDF de forma mais simples
+      const pdfBytes = doc.output('arraybuffer');
+      const pdfBuffer = Buffer.from(pdfBytes);
       
       // Registrar atividade
       await storage.createActivity({
