@@ -3323,12 +3323,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const properties = await storage.getProperties();
       const ownerProperties = properties.filter(p => p.ownerId === ownerIdNum);
 
-      // Buscar reservas no período
+      // Buscar reservas no período específico
       const reservations = await storage.getReservations();
       const propertyIds = ownerProperties.map(p => p.id);
       const periodReservations = reservations.filter(r => {
         const isOwnerProperty = propertyIds.includes(r.propertyId);
-        const isInPeriod = r.checkInDate >= startDate && r.checkInDate <= endDate;
+        const checkInDate = new Date(r.checkInDate);
+        const startDateObj = new Date(startDate);
+        const endDateObj = new Date(endDate);
+        
+        // Filtrar por período exato selecionado
+        const isInPeriod = checkInDate >= startDateObj && checkInDate <= endDateObj;
+        
+        console.log(`🔍 Reserva ${r.guestName}: CheckIn=${r.checkInDate}, IsOwnerProperty=${isOwnerProperty}, IsInPeriod=${isInPeriod}, StartDate=${startDate}, EndDate=${endDate}`);
+        
         return isOwnerProperty && isInPeriod;
       });
 
@@ -3346,7 +3354,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const netProfit = totalRevenue - totalExpenses;
 
-      // Preparar dados das propriedades
+      // Preparar dados das propriedades baseados no período selecionado
       const propertiesData = ownerProperties.map(property => {
         const propReservations = periodReservations.filter(r => r.propertyId === property.id);
         const propRevenue = propReservations.reduce((sum, r) => sum + parseFloat(r.totalAmount || '0'), 0);
@@ -3356,11 +3364,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return sum + Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
         }, 0);
 
+        // Calcular taxa de ocupação baseada no período selecionado
+        const startDateObj = new Date(startDate);
+        const endDateObj = new Date(endDate);
+        const periodDays = Math.ceil((endDateObj.getTime() - startDateObj.getTime()) / (1000 * 60 * 60 * 24));
+        const occupancyRate = periodDays > 0 ? Math.round((totalNights / periodDays) * 100) : 0;
+
+        console.log(`📊 Propriedade ${property.name}: ${propReservations.length} reservas, €${propRevenue}, ${totalNights} noites, ${occupancyRate}% ocupação no período`);
+
         return {
           name: property.name,
           totalRevenue: propRevenue,
           reservations: propReservations.length,
-          occupancyRate: totalNights > 0 ? Math.round((totalNights / 30) * 100) : 0, // Aproximação
+          occupancyRate: occupancyRate,
           averageRate: totalNights > 0 ? Math.round(propRevenue / totalNights) : 0,
           seasonality: [] // Simplificado por agora
         };
