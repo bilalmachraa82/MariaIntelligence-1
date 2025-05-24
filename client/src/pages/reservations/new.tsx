@@ -178,32 +178,59 @@ export default function ReservationNewPage() {
   }, [extractedData, form, clearExtractedData]);
 
   const onSubmit = async (data: any) => {
+    console.log("🚀 Iniciando criação de reserva:", data);
+    
     try {
-      // Calculate net amount before submission
-      const netAmount = calculateNetAmount(
-        Number(data.totalAmount),
-        Number(data.cleaningFee),
-        Number(data.checkInFee),
-        Number(data.commissionFee),
-        Number(data.teamPayment),
-        Number(data.platformFee)
-      );
-      
-      data.netAmount = netAmount.toString();
-      
-      await createReservation.mutateAsync(data);
-      
+      // Validar campos obrigatórios
+      if (!data.propertyId || !data.guestName || !data.checkInDate || !data.checkOutDate) {
+        toast({
+          title: "Campos obrigatórios",
+          description: "Por favor, preencha propriedade, nome do hóspede e datas.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const reservationData = {
+        propertyId: parseInt(data.propertyId),
+        guestName: data.guestName,
+        checkInDate: data.checkInDate.toISOString().split('T')[0],
+        checkOutDate: data.checkOutDate.toISOString().split('T')[0],
+        numAdults: parseInt(data.numAdults) || 1,
+        numChildren: parseInt(data.numChildren) || 0,
+        numGuests: parseInt(data.numGuests) || 1,
+        totalAmount: data.totalAmount,
+        platform: data.platform || "direct",
+        platformFee: data.platformFee || "0",
+        cleaningFee: data.cleaningFee || "0",
+        checkInFee: data.checkInFee || "0",
+        commissionFee: data.commissionFee || "0",
+        teamPayment: data.teamPayment || "0",
+        netAmount: data.netAmount || data.totalAmount,
+        status: data.status || "confirmed",
+        guestEmail: data.guestEmail || null,
+        guestPhone: data.guestPhone || null,
+        country: data.country || null,
+        reference: data.reference || null,
+        notes: data.notes || null
+      };
+
+      console.log("📝 Dados preparados para envio:", reservationData);
+
+      await createReservation.mutateAsync(reservationData);
+
       toast({
-        title: "Reserva criada",
-        description: "A reserva foi criada com sucesso.",
+        title: "Reserva criada com sucesso",
+        description: "A nova reserva foi registrada no sistema.",
       });
-      
+
       navigate("/reservations");
     } catch (error) {
-      console.error("Error creating reservation:", error);
+      console.error("❌ Erro ao criar reserva:", error);
+      
       toast({
         title: "Erro ao criar reserva",
-        description: "Ocorreu um erro ao criar a reserva. Por favor, tente novamente.",
+        description: "Ocorreu um erro ao salvar a reserva. Verifique os dados e tente novamente.",
         variant: "destructive",
       });
     }
