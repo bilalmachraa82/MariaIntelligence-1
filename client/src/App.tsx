@@ -20,8 +20,7 @@ import SettingsPage from "@/pages/settings";
 import DocumentScanPage from "@/pages/pdf-upload";
 import AssistantPage from "@/pages/assistant";
 import ReservationAssistantPage from "@/pages/reservation-assistant";
-import DemoDataPage from "@/pages/demo-data";
-import ForceResetDemoData from "@/pages/demo-data/force-reset";
+
 import { Layout } from "@/components/layout/layout";
 import { useTranslation } from "react-i18next";
 import { useEffect } from 'react';
@@ -111,8 +110,7 @@ function Router() {
       <Route path="/settings" component={SettingsPage} />
       <Route path="/assistant" component={AssistantPage} />
       <Route path="/reservation-assistant" component={ReservationAssistantPage} />
-      <Route path="/demo-data" component={DemoDataPage} />
-      <Route path="/demo-data/force-reset" component={ForceResetDemoData} />
+
       <Route path="/maintenance/pending" component={MaintenancePending} />
       <Route path="/maintenance/request" component={MaintenanceRequest} />
       <Route path="/maintenance/new" component={MaintenanceNewTask} />
@@ -166,8 +164,7 @@ function Router() {
       <Route path="/configuracoes" component={SettingsPage} />
       <Route path="/assistente" component={AssistantPage} />
       <Route path="/assistente-reservas" component={ReservationAssistantPage} />
-      <Route path="/dados-demo" component={DemoDataPage} />
-      <Route path="/dados-demo/remocao-forcada" component={ForceResetDemoData} />
+
       <Route path="/manutencao/pendentes" component={MaintenancePending} />
       <Route path="/manutencao/solicitacao" component={MaintenanceRequest} />
       <Route path="/manutencao/nova" component={MaintenanceNewTask} />
