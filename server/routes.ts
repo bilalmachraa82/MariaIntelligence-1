@@ -4265,6 +4265,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  /**
+   * Endpoint para limpar memória da IA
+   * Remove toda a memória de conversas anteriores do assistente
+   */
+  app.post("/api/clear-ai-memory", async (_req: Request, res: Response) => {
+    try {
+      // Limpar toda a memória do assistente IA
+      if (aiService && aiService.geminiService) {
+        // Reset da memória de conversas
+        aiService.geminiService.clearMemory?.();
+        
+        // Limpar cache de conversas se existir
+        if (global.conversationCache) {
+          global.conversationCache.clear();
+        }
+        
+        // Limpar histórico de conversas da base de dados
+        if (db) {
+          await db.delete(conversationHistory);
+        }
+        
+        console.log("✅ Memória da IA limpa com sucesso");
+        
+        res.json({
+          success: true,
+          message: "Memória da IA limpa com sucesso. A assistente irá cumprimentar novamente!"
+        });
+      } else {
+        res.status(500).json({
+          success: false,
+          message: "Serviço de IA não disponível"
+        });
+      }
+    } catch (error: any) {
+      console.error("❌ Erro ao limpar memória da IA:", error);
+      res.status(500).json({
+        success: false,
+        message: "Erro ao limpar memória da IA",
+        error: error.message
+      });
+    }
+  });
+
   // Demo Data Routes
   // Rota para gerar dados de demonstração
   app.post("/api/demo/generate", generateDemoData);
