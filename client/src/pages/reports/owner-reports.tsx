@@ -100,7 +100,7 @@ export default function OwnerReports() {
 
       periodReservations.forEach(reservation => {
         const revenue = parseFloat(reservation.totalAmount) || 0;
-        const commission = parseFloat(reservation.commissionFee) || 0;
+        const commission = parseFloat(reservation.commission) || 0;
         
         totalRevenue += revenue;
         totalCommission += commission;
@@ -405,7 +405,7 @@ export default function OwnerReports() {
                         {reportData.reservations.map((reservation) => {
                           const property = properties.find(p => p.id === reservation.propertyId);
                           const revenue = parseFloat(reservation.totalAmount) || 0;
-                          const commission = parseFloat(reservation.commissionFee) || 0;
+                          const commission = parseFloat(reservation.commission) || 0;
                           const net = revenue - commission;
                           
                           return (

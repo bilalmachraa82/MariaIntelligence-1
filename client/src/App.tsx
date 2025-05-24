@@ -31,6 +31,7 @@ import CleaningSchedulesPage from "@/pages/cleaning-teams/schedules";
 import CleaningReportsPage from "@/pages/cleaning-reports";
 import OwnerReportPage from "@/pages/reports/owner-report";
 import TrendsReportPage from "@/pages/reports/trends";
+import OwnerReports from "@/pages/reports/owner-reports";
 import MonthlyInvoicePage from "@/pages/reports/monthly-invoice";
 import BudgetCalculatorPage from "@/pages/budget-calculator";
 
@@ -107,6 +108,7 @@ function Router() {
       <Route path="/reports/owner-report" component={OwnerReportPage} />
       <Route path="/reports/monthly-invoice" component={MonthlyInvoicePage} />
       <Route path="/reports/trends" component={TrendsReportPage} />
+      <Route path="/reports/owner-reports" component={OwnerReports} />
       <Route path="/settings" component={SettingsPage} />
       <Route path="/assistant" component={AssistantPage} />
       <Route path="/reservation-assistant" component={ReservationAssistantPage} />
