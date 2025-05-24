@@ -141,28 +141,76 @@ DIRETRIZES:
   }
 
   private getFallbackInsights(data: OwnerReportData | null): any {
+    if (!data) {
+      return {
+        executiveSummary: "Dados insuficientes para análise.",
+        performanceAnalysis: "Análise requer dados válidos.",
+        marketInsights: "Sem dados disponíveis.",
+        recommendations: ["Verificar dados do sistema"],
+        strategicActions: ["Validar informações"],
+        riskAssessment: "Impossível avaliar sem dados.",
+        futureOpportunidades: "Dependem de dados válidos.",
+        visualizationSuggestions: ["Corrigir fonte de dados"]
+      };
+    }
+
+    // ANÁLISE DINÂMICA BASEADA NOS DADOS REAIS
+    const hasReservations = data.reservations.length > 0;
+    const totalRevenue = data.totalRevenue;
+    const totalReservations = data.reservations.length;
+    const avgRevenue = hasReservations ? (totalRevenue / totalReservations) : 0;
+    const propertyNames = data.properties.map(p => p.name).join(', ');
+    const profitMargin = totalRevenue > 0 ? ((data.netProfit / totalRevenue) * 100) : 0;
+
     return {
-      executiveSummary: "Análise detalhada em preparação. Os dados financeiros mostram um desempenho sólido com oportunidades de otimização identificadas.",
-      performanceAnalysis: "O portfolio apresenta métricas operacionais consistentes. A análise detalhada dos padrões de reserva revela oportunidades de melhoria na gestão de preços e ocupação. Recomenda-se monitorização contínua das tendências sazonais e ajustes estratégicos baseados nos dados históricos.",
-      marketInsights: "O mercado de alojamento local mantém-se dinâmico com variações sazonais típicas. A concorrência exige estratégias diferenciadas e foco na experiência do hóspede para manter a competitividade.",
-      recommendations: [
-        "Otimizar preços baseado na procura sazonal",
-        "Melhorar a experiência de check-in/check-out",
-        "Investir em marketing digital direcionado",
-        "Implementar programa de fidelização",
-        "Diversificar canais de distribuição"
+      executiveSummary: hasReservations 
+        ? `${data.ownerName} registou €${totalRevenue.toFixed(2)} com ${totalReservations} reserva(s) em ${propertyNames}. Receita média: €${avgRevenue.toFixed(2)} por reserva. ${totalReservations === 1 ? 'Actividade muito baixa requer acção imediata.' : 'Performance limitada com margem para crescimento.'}`
+        : `${data.ownerName}: Zero reservas em ${propertyNames} durante o período ${data.period.startDate} - ${data.period.endDate}. Situação crítica exige intervenção urgente.`,
+
+      performanceAnalysis: hasReservations
+        ? `Performance actual: €${totalRevenue.toFixed(2)} receita, €${data.netProfit.toFixed(2)} lucro (${profitMargin.toFixed(1)}% margem). ${totalReservations === 1 ? 'Apenas 1 reserva indica sérios problemas de ocupação' : `${totalReservations} reservas mostram actividade limitada`}. Propriedade(s) ${propertyNames} ${avgRevenue < 80 ? 'com preços potencialmente baixos' : avgRevenue > 150 ? 'com preços elevados que podem estar a limitar procura' : 'com preços na média de mercado'}.`
+        : `Análise crítica: 0% ocupação em ${propertyNames}. Possíveis causas: (1) Anúncios suspensos/invisíveis, (2) Preços desalinhados com mercado, (3) Problemas de qualidade, (4) Calendário bloqueado, (5) Concorrência muito forte.`,
+
+      marketInsights: hasReservations
+        ? `Contexto mercado AL português (${data.period.startDate}-${data.period.endDate}): Actividade de ${data.ownerName} está ${totalReservations === 1 ? 'muito abaixo' : 'abaixo'} da média esperada. ${propertyNames} precisa de reposicionamento competitivo.`
+        : `Mercado AL: Outras propriedades na região mantêm ocupação. ${data.ownerName} perdeu competitividade em ${propertyNames}. Urgente análise da concorrência local.`,
+
+      recommendations: hasReservations ? [
+        totalReservations === 1 ? `Campanha promocional urgente para ${propertyNames}` : `Intensificar marketing digital para ${propertyNames}`,
+        avgRevenue < 80 ? `Aumentar preços gradualmente - actual €${avgRevenue.toFixed(2)} está baixo` : avgRevenue > 150 ? `Reduzir preços - actual €${avgRevenue.toFixed(2)} pode estar a afastar hóspedes` : "Manter preços actuais e focar na ocupação",
+        "Actualizar fotografias profissionais de todas as propriedades",
+        `Analisar calendário de ${propertyNames} - pode estar bloqueado`,
+        "Contactar hóspede actual para feedback e avaliação"
+      ] : [
+        `URGENTE: Verificar se ${propertyNames} estão visíveis nas plataformas`,
+        "Reduzir preços temporariamente para gerar primeiras reservas",
+        "Implementar desconto de 'reabertura' de 20-30%",
+        "Verificar se calendários não estão bloqueados",
+        "Contactar suporte Airbnb/Booking para verificar visibilidade"
       ],
-      strategicActions: [
-        "Revisar estratégia de preços - próximos 30 dias",
-        "Implementar automações operacionais - próximos 60 dias",
-        "Expandir presença online - próximos 90 dias"
+
+      strategicActions: hasReservations ? [
+        totalReservations === 1 ? "Duplicar ocupação nos próximos 30 dias" : "Aumentar ocupação em 50% nos próximos 45 dias",
+        `Optimizar gestão de ${propertyNames} - próximos 15 dias`,
+        "Implementar sistema de follow-up com hóspedes"
+      ] : [
+        "ACÇÃO IMEDIATA: Reactivar todas as propriedades em 24h",
+        "Ajustar preços e relançar anúncios em 48h",
+        "Obter primeira reserva nos próximos 7 dias"
       ],
-      riskAssessment: "Riscos moderados relacionados com sazonalidade e dependência de canais específicos. Recomenda-se diversificação e criação de reservas financeiras para períodos de menor ocupação.",
-      futureOpportunities: "Oportunidades de crescimento através da expansão do portfolio, melhoria da eficiência operacional e desenvolvimento de serviços complementares. O mercado apresenta potencial para investimentos estratégicos.",
+
+      riskAssessment: hasReservations
+        ? `Risco ALTO: Com apenas ${totalReservations} reserva(s) e €${totalRevenue.toFixed(2)}, ${data.ownerName} está em risco de perder viabilidade financeira. Dependência excessiva de poucos hóspedes.`
+        : `RISCO CRÍTICO: Zero actividade em ${propertyNames}. Sem intervenção imediata, pode perder posição no mercado e relevância nas plataformas de reserva.`,
+
+      futureOpportunidades: hasReservations
+        ? `Potencial identificado: Se conseguir 4-5 reservas/mês como a actual (€${avgRevenue.toFixed(2)}), pode gerar €${(avgRevenue * 5).toFixed(2)}/mês. Focar em optimização de ${propertyNames}.`
+        : `Oportunidade de recomeço: Mercado AL mantém procura. ${data.ownerName} pode reposicionar ${propertyNames} com estratégia renovada e preços competitivos.`,
+
       visualizationSuggestions: [
-        "Taxa de ocupação mensal",
-        "Receita por disponibilidade (RevPAR)",
-        "Tempo médio de antecedência das reservas"
+        `Comparação mensal: ${propertyNames} vs. concorrência local`,
+        hasReservations ? "Evolução de preços vs. ocupação" : "Análise de preços de propriedades similares na zona",
+        "Timeline de reservas e períodos vazios"
       ]
     };
   }
