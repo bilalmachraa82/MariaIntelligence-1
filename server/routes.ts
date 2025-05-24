@@ -378,12 +378,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       tomorrow.setDate(tomorrow.getDate() + 1);
       const tomorrowStr = tomorrow.toISOString().split('T')[0];
       
-      // Arrays para armazenar cada tipo de reserva
+      // Arrays para armazenar cada tipo de reserva - APENAS DADOS REAIS
       const checkIns: any[] = [];
       const checkOuts: any[] = [];
       const cleaningTasks: any[] = [];
       
-      // Categorizar as reservas
+      console.log(`Dashboard: Processando ${reservations.length} reservas reais da base de dados`);
+      
+      // Categorizar APENAS as reservas REAIS da base de dados
       reservations.forEach((reservation: any) => {
         // Check-ins para hoje e amanhã
         const checkInStr = reservation.checkInDate instanceof Date 
