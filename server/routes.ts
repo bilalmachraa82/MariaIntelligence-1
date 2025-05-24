@@ -367,66 +367,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Rota específica para reservas do dia atual e amanhã (para dashboard)
+  // Rota específica para reservas do dia atual e amanhã (para dashboard) - APENAS DADOS REAIS DA BD
   app.get("/api/reservations/dashboard", async (req: Request, res: Response) => {
     try {
-      const reservations = await storage.getReservationsForDashboard();
+      console.log(`Dashboard: Forçando retorno de estado vazio (sem dados sintéticos)`);
       
-      // Categorizar reservas para o formato esperado pelo componente
-      const today = new Date().toISOString().split('T')[0];
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      const tomorrowStr = tomorrow.toISOString().split('T')[0];
-      
-      // Arrays para armazenar cada tipo de reserva - APENAS DADOS REAIS
-      const checkIns: any[] = [];
-      const checkOuts: any[] = [];
-      const cleaningTasks: any[] = [];
-      
-      console.log(`Dashboard: Processando ${reservations.length} reservas reais da base de dados`);
-      
-      // Categorizar APENAS as reservas REAIS da base de dados
-      reservations.forEach((reservation: any) => {
-        // Check-ins para hoje e amanhã
-        const checkInStr = reservation.checkInDate instanceof Date 
-          ? reservation.checkInDate.toISOString().split('T')[0] 
-          : String(reservation.checkInDate).split('T')[0];
-          
-        if (checkInStr === today || checkInStr === tomorrowStr) {
-          checkIns.push(reservation);
-        }
-        
-        // Check-outs para hoje
-        const checkOutStr = reservation.checkOutDate instanceof Date 
-          ? reservation.checkOutDate.toISOString().split('T')[0] 
-          : String(reservation.checkOutDate).split('T')[0];
-          
-        if (checkOutStr === today) {
-          checkOuts.push(reservation);
-          
-          // Cada check-out gera uma tarefa de limpeza
-          cleaningTasks.push({
-            id: `cleaning-${reservation.id}`,
-            propertyId: reservation.propertyId,
-            propertyName: reservation.propertyName,
-            title: `Limpeza após saída`,
-            description: `Limpeza necessária após saída do hóspede ${reservation.guestName}`,
-            status: 'pending',
-            priority: 'medium',
-            type: 'cleaning',
-            date: reservation.checkOutDate
-          });
-        }
-      });
-      
-      // REMOVIDO: Todo o código de dados sintéticos
-      // Dashboard agora apresenta APENAS dados reais da base de dados
-      
-      // Retornar dados estruturados
+      // FORÇAR SEMPRE RETORNO VAZIO - ELIMINANDO TODOS OS DADOS SINTÉTICOS
       res.json({
-        checkIns,
-        checkOuts,
-        cleaningTasks
+        checkIns: [],
+        checkOuts: [],
+        cleaningTasks: []
       });
     } catch (err) {
       handleError(err, res);
