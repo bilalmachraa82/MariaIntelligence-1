@@ -4494,99 +4494,146 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { title, period, date, granularity, statistics, revenueData } = req.body;
 
+      console.log('Gerando PDF do dashboard:', { title, period, date, granularity });
+
       // Importar jsPDF dinamicamente
       const { jsPDF } = await import('jspdf');
       require('jspdf-autotable');
 
-      const doc = new jsPDF();
+      // Criar documento PDF com configurações mais robustas
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
       let yPosition = 20;
 
-      // Título e cabeçalho
+      // Título e cabeçalho com codificação segura
       doc.setFontSize(20);
       doc.setFont('helvetica', 'bold');
-      doc.text(title, 20, yPosition);
+      const titleText = title || 'Relatorio Dashboard Maria Faz';
+      doc.text(titleText, 20, yPosition);
       yPosition += 15;
 
       doc.setFontSize(12);
       doc.setFont('helvetica', 'normal');
-      doc.text(`Período: ${period}`, 20, yPosition);
+      doc.text(`Periodo: ${period || 'N/A'}`, 20, yPosition);
       yPosition += 8;
-      doc.text(`Data de Geração: ${date}`, 20, yPosition);
+      doc.text(`Data de Geracao: ${date || 'N/A'}`, 20, yPosition);
       yPosition += 8;
-      doc.text(`Granularidade: ${granularity}`, 20, yPosition);
+      doc.text(`Granularidade: ${granularity || 'N/A'}`, 20, yPosition);
       yPosition += 20;
 
-      // Resumo de estatísticas
+      // Resumo de estatísticas com valores seguros
       doc.setFontSize(16);
       doc.setFont('helvetica', 'bold');
-      doc.text('Resumo de Estatísticas', 20, yPosition);
+      doc.text('Resumo de Estatisticas', 20, yPosition);
       yPosition += 15;
 
+      const safeStats = statistics || {};
       const statsData = [
-        ['Receita Total', `€${statistics.totalRevenue.toFixed(2)}`],
-        ['Lucro Líquido', `€${statistics.netProfit.toFixed(2)}`],
-        ['Taxa de Ocupação', `${statistics.occupancyRate.toFixed(1)}%`],
-        ['Total de Reservas', statistics.totalReservations.toString()]
+        ['Receita Total', `EUR ${(safeStats.totalRevenue || 0).toFixed(2)}`],
+        ['Lucro Liquido', `EUR ${(safeStats.netProfit || 0).toFixed(2)}`],
+        ['Taxa de Ocupacao', `${(safeStats.occupancyRate || 0).toFixed(1)}%`],
+        ['Total de Reservas', (safeStats.totalReservations || 0).toString()]
       ];
 
-      (doc as any).autoTable({
-        head: [['Métrica', 'Valor']],
-        body: statsData,
-        startY: yPosition,
-        theme: 'grid',
-        headStyles: { fillColor: [41, 128, 185] },
-        margin: { left: 20, right: 20 }
-      });
-
-      yPosition = (doc as any).lastAutoTable.finalY + 20;
-
-      // Dados detalhados se existirem
-      if (revenueData && revenueData.length > 0) {
-        doc.setFontSize(16);
-        doc.setFont('helvetica', 'bold');
-        doc.text('Dados Detalhados', 20, yPosition);
-        yPosition += 15;
-
-        const detailData = revenueData.map((item: any) => [
-          item.name || 'N/A',
-          `€${(item.Receita || 0).toFixed(2)}`,
-          `€${(item.Lucro || 0).toFixed(2)}`
-        ]);
-
+      try {
         (doc as any).autoTable({
-          head: [['Período', 'Receita (€)', 'Lucro (€)']],
-          body: detailData,
+          head: [['Metrica', 'Valor']],
+          body: statsData,
           startY: yPosition,
           theme: 'grid',
-          headStyles: { fillColor: [46, 204, 113] },
-          margin: { left: 20, right: 20 }
+          headStyles: { 
+            fillColor: [41, 128, 185],
+            textColor: [255, 255, 255]
+          },
+          margin: { left: 20, right: 20 },
+          styles: {
+            fontSize: 10,
+            cellPadding: 3
+          }
         });
+
+        yPosition = (doc as any).lastAutoTable.finalY + 20;
+      } catch (tableError) {
+        console.error('Erro ao criar tabela de estatísticas:', tableError);
+        yPosition += 50; // Pular espaço se a tabela falhar
       }
 
-      // Adicionar rodapé
-      const pageCount = doc.getNumberOfPages();
-      for (let i = 1; i <= pageCount; i++) {
-        doc.setPage(i);
-        doc.setFontSize(10);
-        doc.setFont('helvetica', 'italic');
-        doc.text(`Maria Faz - Gestão de Alojamentos | Página ${i} de ${pageCount}`, 
-                 doc.internal.pageSize.width / 2, 
-                 doc.internal.pageSize.height - 10, 
-                 { align: 'center' });
+      // Dados detalhados se existirem
+      if (revenueData && Array.isArray(revenueData) && revenueData.length > 0) {
+        try {
+          doc.setFontSize(16);
+          doc.setFont('helvetica', 'bold');
+          doc.text('Dados Detalhados', 20, yPosition);
+          yPosition += 15;
+
+          const detailData = revenueData.map((item: any) => [
+            (item.name || 'N/A').toString(),
+            `EUR ${(item.Receita || 0).toFixed(2)}`,
+            `EUR ${(item.Lucro || 0).toFixed(2)}`
+          ]);
+
+          (doc as any).autoTable({
+            head: [['Periodo', 'Receita (EUR)', 'Lucro (EUR)']],
+            body: detailData,
+            startY: yPosition,
+            theme: 'grid',
+            headStyles: { 
+              fillColor: [46, 204, 113],
+              textColor: [255, 255, 255]
+            },
+            margin: { left: 20, right: 20 },
+            styles: {
+              fontSize: 10,
+              cellPadding: 3
+            }
+          });
+        } catch (detailError) {
+          console.error('Erro ao criar tabela de detalhes:', detailError);
+        }
       }
 
-      // Retornar PDF
-      const pdfBuffer = Buffer.from(doc.output('arraybuffer'));
+      // Adicionar rodapé com tratamento de erro
+      try {
+        const pageCount = doc.getNumberOfPages();
+        for (let i = 1; i <= pageCount; i++) {
+          doc.setPage(i);
+          doc.setFontSize(10);
+          doc.setFont('helvetica', 'normal');
+          const footerText = `Maria Faz - Gestao de Alojamentos | Pagina ${i} de ${pageCount}`;
+          doc.text(footerText, 
+                   doc.internal.pageSize.width / 2, 
+                   doc.internal.pageSize.height - 10, 
+                   { align: 'center' });
+        }
+      } catch (footerError) {
+        console.error('Erro ao adicionar rodapé:', footerError);
+      }
+
+      // Gerar e retornar PDF com headers corretos
+      const pdfData = doc.output('arraybuffer');
+      const pdfBuffer = Buffer.from(pdfData);
+      
+      const fileName = `dashboard_${(period || 'relatorio').replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
       
       res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename="dashboard_${period.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf"`);
-      res.send(pdfBuffer);
+      res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+      res.setHeader('Content-Length', pdfBuffer.length.toString());
+      res.setHeader('Cache-Control', 'no-cache');
+      
+      res.end(pdfBuffer);
+
+      console.log('PDF gerado com sucesso:', fileName);
 
     } catch (error) {
-      console.error('Erro ao gerar PDF do dashboard:', error);
+      console.error('Erro completo ao gerar PDF do dashboard:', error);
       res.status(500).json({
         success: false,
-        message: "Erro ao gerar PDF do dashboard"
+        message: "Erro ao gerar PDF do dashboard",
+        error: error instanceof Error ? error.message : 'Erro desconhecido'
       });
     }
   });
