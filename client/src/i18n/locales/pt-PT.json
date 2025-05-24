@@ -14,7 +14,22 @@
       "saving": "A guardar...",
       "error": "Erro"
     },
-    "dashboard": {
+    "documentScan": {
+      "title": "Digitalização de Documentos",
+      "description": "Converta PDFs ou imagens de reservas em dados estruturados com reconhecimento inteligente",
+      "uploadPdfSection": "Processamento Automático de Documentos",
+      "uploadPdfDescription": "Faça upload de PDFs de reservas para processamento automático com inteligência artificial",
+      "instructionsTitle": "Como Funciona",
+      "step1Title": "Seleccionar ou Capturar",
+      "step1Description": "Faça upload de PDFs (único ou par de check-in/check-out), seleccione imagens ou capture fotos dos documentos de reserva",
+      "step2Title": "Processamento com IA",
+      "step2Description": "O sistema analisa automaticamente os dados com OCR e processamento avançado de IA, priorizando Mistral OCR e extraindo informações de reservas",
+      "step3Title": "Revisão e Confirmação",
+      "step3Description": "Verifique os dados extraídos e confirme para criar uma nova reserva no sistema",
+      "step4Title": "Reserva Criada",
+      "step4Description": "A reserva é automaticamente criada e associada à propriedade, com todos os cálculos feitos"
+    },
+  "dashboard": {
       "fullDashboard": "Dashboard Completo",
       "welcomeName": "Olá Carina",
       "fullDashboardDescription": "Visualização detalhada de todas as atividades",
