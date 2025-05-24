@@ -26,6 +26,7 @@ import {
   BarChart
 } from "@tremor/react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
 import {
   Calendar,
   Download,
@@ -115,6 +116,7 @@ export default function NewModernDashboard({ minimal = false }: { minimal?: bool
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange>(dateRanges[0]);
   const [location, setLocation] = useLocation();
   const { t } = useTranslation();
+  const { toast } = useToast();
   const [selectedTab, setSelectedTab] = useState("overview");
 
   // Interface para tipagem das estatísticas
@@ -235,6 +237,63 @@ export default function NewModernDashboard({ minimal = false }: { minimal?: bool
 
   // Recent reservations data (latest 4)
   const recentReservations = reservations?.slice(0, 4) || [];
+
+  // Função para exportar dados do dashboard
+  const handleExportData = () => {
+    try {
+      // Criar dados para exportação
+      const selectedRange = selectedDateRange.label;
+      
+      // Converter para CSV
+      const csvHeaders = ['Período', 'Receita (€)', 'Lucro (€)'];
+      const csvRows = revenueData?.map(item => [
+        item.name || 'N/A',
+        item.Receita || 0,
+        item.Lucro || 0
+      ]) || [];
+
+      const csvContent = [
+        `Relatório Dashboard Maria Faz - ${selectedRange}`,
+        `Data de Geração: ${new Date().toLocaleDateString('pt-PT')}`,
+        `Granularidade: ${getGranularityLabel()}`,
+        '',
+        'RESUMO ESTATÍSTICAS',
+        `Receita Total,${statistics?.totalRevenue || 0}`,
+        `Lucro Líquido,${statistics?.netProfit || 0}`,
+        `Taxa de Ocupação,${statistics?.occupancyRate || 0}%`,
+        `Total de Reservas,${statistics?.reservationsCount || 0}`,
+        '',
+        'DADOS DETALHADOS',
+        csvHeaders.join(','),
+        ...csvRows.map(row => row.join(','))
+      ].join('\n');
+
+      // Criar e baixar arquivo
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `dashboard_${selectedRange.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Mostrar sucesso
+      toast({
+        title: "Exportação Concluída! 📊",
+        description: "Os dados do dashboard foram exportados para CSV com sucesso.",
+      });
+
+    } catch (error) {
+      console.error('Erro na exportação:', error);
+      toast({
+        title: "Erro na Exportação",
+        description: "Não foi possível exportar os dados. Tente novamente.",
+        variant: "destructive"
+      });
+    }
+  };
 
   // Preparing financial data for pie chart with custom color values
   const financialData = statistics?.totalRevenue
@@ -401,9 +460,7 @@ export default function NewModernDashboard({ minimal = false }: { minimal?: bool
             <Button 
               variant="default"
               className="whitespace-nowrap bg-gradient-to-r from-primary to-blue-500 hover:from-primary/90 hover:to-blue-500/90 transition-all"
-              onClick={() => {
-                alert(t("dashboard.exportNotImplemented", 'Exportação de dados implementada na versão completa'));
-              }}
+              onClick={handleExportData}
             >
               <Download className="mr-2 h-4 w-4" />
               {t("dashboard.export", "Exportar")}
