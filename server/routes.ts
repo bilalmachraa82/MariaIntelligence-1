@@ -3328,14 +3328,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const propertyIds = ownerProperties.map(p => p.id);
       const periodReservations = reservations.filter(r => {
         const isOwnerProperty = propertyIds.includes(r.propertyId);
+        
+        // Converter datas para comparação
         const checkInDate = new Date(r.checkInDate);
         const startDateObj = new Date(startDate);
         const endDateObj = new Date(endDate);
         
-        // Filtrar por período exato selecionado
+        // Normalizar horas para evitar problemas de timezone
+        checkInDate.setHours(0, 0, 0, 0);
+        startDateObj.setHours(0, 0, 0, 0);
+        endDateObj.setHours(23, 59, 59, 999);
+        
         const isInPeriod = checkInDate >= startDateObj && checkInDate <= endDateObj;
         
-        console.log(`🔍 Reserva ${r.guestName}: CheckIn=${r.checkInDate}, IsOwnerProperty=${isOwnerProperty}, IsInPeriod=${isInPeriod}, StartDate=${startDate}, EndDate=${endDate}`);
+        console.log(`🔍 Análise Reserva: ${r.guestName} - CheckIn: ${r.checkInDate} - Período: ${startDate} até ${endDate} - Na propriedade: ${isOwnerProperty} - No período: ${isInPeriod}`);
         
         return isOwnerProperty && isInPeriod;
       });
