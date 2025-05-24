@@ -178,28 +178,27 @@ export function PropertyInsights({ ownerId, dateRange, ownerName }: PropertyInsi
         </CardContent>
       </Card>
 
-      {/* Métricas Principais */}
-      {summary && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="text-center">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Euro className="h-5 w-5 text-green-600" />
-                <span className="text-2xl font-bold text-green-600">
-                  {formatCurrency(summary.totalRevenue)}
-                </span>
-              </div>
-              <p className="text-sm text-gray-600">Receita Total</p>
-            </CardContent>
-          </Card>
-          
-          <Card className="text-center">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Percent className="h-5 w-5 text-blue-600" />
-                <span className={`text-2xl font-bold ${getProfitabilityColor(parseFloat(summary.profitMargin))}`}>
-                  {summary.profitMargin}%
-                </span>
+      {/* Métricas Principais - DADOS REAIS DO BACKEND */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="text-center">
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Euro className="h-5 w-5 text-green-600" />
+              <span className="text-2xl font-bold text-green-600">
+                {summary ? formatCurrency(summary.totalRevenue) : formatCurrency(0)}
+              </span>
+            </div>
+            <p className="text-sm text-gray-600">Receita Total</p>
+          </CardContent>
+        </Card>
+        
+        <Card className="text-center">
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Percent className="h-5 w-5 text-blue-600" />
+              <span className={`text-2xl font-bold ${summary && parseFloat(summary.profitMargin) > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                {summary ? `${summary.profitMargin}%` : '0%'}
+              </span>
               </div>
               <p className="text-sm text-gray-600">Margem de Lucro</p>
             </CardContent>
@@ -210,14 +209,13 @@ export function PropertyInsights({ ownerId, dateRange, ownerName }: PropertyInsi
               <div className="flex items-center justify-center gap-2 mb-2">
                 <Users className="h-5 w-5 text-purple-600" />
                 <span className="text-2xl font-bold text-purple-600">
-                  {summary.totalReservations}
+                  {summary ? summary.totalReservations : 0}
                 </span>
               </div>
               <p className="text-sm text-gray-600">Reservas</p>
             </CardContent>
           </Card>
         </div>
-      )}
 
       {/* Tabs com Insights Detalhados */}
       <Tabs defaultValue="analysis" className="w-full">
