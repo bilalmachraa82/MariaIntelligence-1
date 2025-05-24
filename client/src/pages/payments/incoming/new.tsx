@@ -4,6 +4,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Save, Loader2 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
@@ -36,11 +37,16 @@ export default function NewIncomingPaymentPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("details");
   const [selectedPaymentType, setSelectedPaymentType] = useState("invoice");
-  const [owners, setOwners] = useState([
-    { id: "1", name: "Manuel Gomes", pendingAmount: 1250.00 },
-    { id: "2", name: "Sofia Carvalho", pendingAmount: 320.00 },
-    { id: "3", name: "António Silva", pendingAmount: 0 }
-  ]);
+  
+  // Usar dados reais da base de dados
+  const { data: owners = [], isLoading: isLoadingOwners } = useQuery({
+    queryKey: ["/api/owners"],
+    queryFn: async () => {
+      const response = await fetch("/api/owners");
+      if (!response.ok) throw new Error("Erro ao carregar proprietários");
+      return response.json();
+    }
+  });
   const [pendingInvoices, setPendingInvoices] = useState([
     { id: "1", ownerId: "1", reference: "INV-2025-001", amount: 750.00, dueDate: "2025-04-10", propertyName: "Apartamento Ajuda", month: "Março 2025" },
     { id: "2", ownerId: "1", reference: "INV-2025-002", amount: 500.00, dueDate: "2025-04-10", propertyName: "Vila SJ Estoril", month: "Março 2025" },
@@ -85,34 +91,49 @@ export default function NewIncomingPaymentPage() {
     }
   }, [watchOwnerId, selectedOwnerPendingAmount, form]);
   
-  // Manipular envio do formulário
-  const onSubmit = async (values: PaymentFormValues) => {
-    setIsLoading(true);
-    
-    try {
-      // Simular chamada à API para criar novo pagamento
-      console.log("Dados do pagamento:", values);
-      
-      // Simular atraso de processamento
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+  const queryClient = useQueryClient();
+  
+  const createPaymentMutation = useMutation({
+    mutationFn: async (data: PaymentFormValues) => {
+      const response = await fetch("/api/payment-records", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ownerId: parseInt(data.ownerId),
+          amount: parseFloat(data.amount),
+          paymentDate: data.paymentDate,
+          paymentType: data.paymentType,
+          paymentMethod: data.paymentMethod,
+          description: data.description,
+          invoiceReference: data.invoiceReference
+        })
+      });
+      if (!response.ok) throw new Error("Erro ao criar pagamento");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/payment-records"] });
       toast({
         title: "Recebimento registrado com sucesso",
-        description: "O pagamento foi registrado e as faturas foram atualizadas.",
+        description: "O pagamento foi registrado na base de dados.",
       });
-      
-      // Redirecionar para a lista de pagamentos
       setLocation("/payments/incoming");
-    } catch (error) {
+    },
+    onError: (error) => {
       console.error("Erro ao registrar pagamento:", error);
       toast({
         title: "Erro ao registrar recebimento",
         description: "Ocorreu um erro ao processar sua solicitação. Tente novamente.",
         variant: "destructive",
       });
-    } finally {
-      setIsLoading(false);
     }
+  });
+
+  // Manipular envio do formulário
+  const onSubmit = async (values: PaymentFormValues) => {
+    createPaymentMutation.mutate(values);
   };
 
   return (

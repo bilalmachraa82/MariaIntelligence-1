@@ -172,6 +172,7 @@ function Router() {
       <Route path="/pagamentos/saida" component={PaymentsOutgoing} />
       <Route path="/pagamentos/entrada" component={PaymentsIncoming} />
       <Route path="/pagamentos/novo" component={PaymentNewPage} />
+      <Route path="/payments/incoming/new" component={PaymentNewPage} />
       
       {/* Rotas financeiras em português */}
       <Route path="/financeiro/documentos" component={FinancialDocumentsPage} />
