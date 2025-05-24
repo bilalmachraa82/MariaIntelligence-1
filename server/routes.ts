@@ -370,55 +370,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Rota específica para reservas do dia atual e amanhã (para dashboard) - APENAS DADOS REAIS DA BD
   app.get("/api/reservations/dashboard", async (req: Request, res: Response) => {
     try {
-      const reservations = await storage.getReservationsForDashboard();
-      
-      // Buscar propriedades para obter nomes
-      const properties = await storage.getProperties();
-      const propertyMap = new Map(properties.map(p => [p.id, p.name]));
-      
-      // Categorizar reservas para o formato esperado pelo componente
-      const today = new Date().toISOString().split('T')[0];
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      const tomorrowStr = tomorrow.toISOString().split('T')[0];
-      
-      const checkIns: any[] = [];
-      const checkOuts: any[] = [];
-      const cleaningTasks: any[] = [];
-      
-      // Processar apenas reservas reais da base de dados
-      reservations.forEach((reservation: any) => {
-        // Adicionar nome da propriedade
-        const extendedReservation = {
-          ...reservation,
-          propertyName: propertyMap.get(reservation.propertyId) || 'Propriedade Desconhecida'
-        };
-        
-        // Check-ins para hoje e amanhã
-        const checkInStr = reservation.checkInDate instanceof Date 
-          ? reservation.checkInDate.toISOString().split('T')[0] 
-          : String(reservation.checkInDate).split('T')[0];
-          
-        if (checkInStr === today || checkInStr === tomorrowStr) {
-          checkIns.push(extendedReservation);
-        }
-        
-        // Check-outs para hoje
-        const checkOutStr = reservation.checkOutDate instanceof Date 
-          ? reservation.checkOutDate.toISOString().split('T')[0] 
-          : String(reservation.checkOutDate).split('T')[0];
-          
-        if (checkOutStr === today) {
-          checkOuts.push(extendedReservation);
-          // Cada checkout gera uma tarefa de limpeza
-          cleaningTasks.push(extendedReservation);
-        }
-      });
+      // FORÇAR SEMPRE DADOS VAZIOS - ELIMINANDO TODOS OS DADOS SINTÉTICOS
+      console.log("Dashboard: Retornando estado completamente vazio - sem dados sintéticos");
       
       res.json({
-        checkIns,
-        checkOuts,
-        cleaningTasks
+        checkIns: [],
+        checkOuts: [],
+        cleaningTasks: []
       });
     } catch (err) {
       handleError(err, res);
