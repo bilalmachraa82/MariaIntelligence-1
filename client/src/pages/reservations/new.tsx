@@ -57,10 +57,8 @@ export default function NewReservationPage() {
   const [, setLocation] = useLocation();
   const { t } = useTranslation();
   
-  // Estados para alternância entre modo manual e scanner
-  const [mode, setMode] = useState<'manual' | 'scanner'>('manual');
+  // Estados para o formulário
   const [isProcessing, setIsProcessing] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
   
   // Hooks para dados
   const { data: properties = [], isLoading: propertiesLoading } = useProperties();
@@ -138,78 +136,7 @@ export default function NewReservationPage() {
     }
   };
 
-  // Função para processar arquivo escaneado
-  const handleFileUpload = async (uploadedFile: File) => {
-    if (!uploadedFile) return;
-    
-    setIsProcessing(true);
-    setFile(uploadedFile);
 
-    try {
-      const formData = new FormData();
-      formData.append('file', uploadedFile);
-
-      const response = await fetch('/api/ocr', {
-        method: 'POST',
-        body: formData
-      });
-
-      const result = await response.json();
-
-      if (result.success && result.extractedData) {
-        const data = result.extractedData;
-        
-        // Preencher formulário com dados extraídos
-        if (data.guestName) form.setValue("guestName", data.guestName);
-        if (data.checkInDate) form.setValue("checkInDate", data.checkInDate);
-        if (data.checkOutDate) form.setValue("checkOutDate", data.checkOutDate);
-        if (data.totalAmount) form.setValue("totalAmount", data.totalAmount.toString());
-        if (data.numGuests) form.setValue("numGuests", data.numGuests);
-        if (data.platformFee) form.setValue("platformFee", data.platformFee.toString());
-        if (data.cleaningFee) form.setValue("cleaningFee", data.cleaningFee.toString());
-        if (data.checkInFee) form.setValue("checkInFee", data.checkInFee.toString());
-        if (data.commissionFee) form.setValue("commissionFee", data.commissionFee.toString());
-        if (data.teamPayment) form.setValue("teamPayment", data.teamPayment.toString());
-        
-        // Tentar encontrar propriedade correspondente
-        if (data.propertyId) {
-          form.setValue("propertyId", data.propertyId);
-        } else if (data.propertyName) {
-          const property = activeProperties.find(p => 
-            p.name.toLowerCase().includes(data.propertyName.toLowerCase()) ||
-            p.aliases.some(alias => alias.toLowerCase().includes(data.propertyName.toLowerCase()))
-          );
-          if (property) {
-            form.setValue("propertyId", property.id);
-          }
-        }
-
-        calculateValues();
-        
-        toast({
-          title: "Scanner concluído!",
-          description: "Dados extraídos com sucesso. Verifique os campos antes de guardar.",
-        });
-        
-        // Mudar para modo manual para edição
-        setMode('manual');
-      } else {
-        toast({
-          title: "Erro no scanner",
-          description: "Não foi possível extrair dados do documento.",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "Erro",
-        description: "Erro ao processar documento.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsProcessing(false);
-    }
-  };
 
   if (propertiesLoading || enumsLoading) {
     return (
@@ -247,95 +174,19 @@ export default function NewReservationPage() {
         </div>
       </div>
 
-      {/* Selector de modo */}
-      <div className="flex gap-2 mb-6">
+      {/* Opção de Scanner */}
+      <div className="flex justify-end mb-6">
         <Button
-          variant={mode === 'manual' ? 'default' : 'outline'}
-          onClick={() => setMode('manual')}
-          className="flex items-center gap-2"
-        >
-          <Building className="w-4 h-4" />
-          Formulário Manual
-        </Button>
-        <Button
-          variant={mode === 'scanner' ? 'default' : 'outline'}
-          onClick={() => setMode('scanner')}
+          variant="outline"
+          onClick={() => setLocation('/upload-pdf')}
           className="flex items-center gap-2"
         >
           <Camera className="w-4 h-4" />
-          Scanner de Documentos
+          Usar Scanner de Documentos
         </Button>
       </div>
 
-      {/* Modo Scanner */}
-      {mode === 'scanner' && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Camera className="w-5 h-5" />
-              Scanner de Documentos
-            </CardTitle>
-            <CardDescription>
-              Carregue um documento PDF ou imagem para extrair automaticamente os dados da reserva
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-              <input
-                type="file"
-                accept=".pdf,.jpg,.jpeg,.png"
-                onChange={(e) => {
-                  const uploadedFile = e.target.files?.[0];
-                  if (uploadedFile) {
-                    handleFileUpload(uploadedFile);
-                  }
-                }}
-                className="hidden"
-                id="file-upload"
-                disabled={isProcessing}
-              />
-              
-              {isProcessing ? (
-                <div className="flex flex-col items-center gap-4">
-                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                  <p className="text-lg font-medium">A processar documento...</p>
-                  <p className="text-sm text-muted-foreground">
-                    A extrair dados da reserva
-                  </p>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center gap-4">
-                  <Upload className="w-12 h-12 text-gray-400" />
-                  <div>
-                    <p className="text-lg font-medium mb-2">
-                      Carregue o documento da reserva
-                    </p>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Suporte para PDF, JPG, PNG
-                    </p>
-                    <label htmlFor="file-upload">
-                      <Button className="cursor-pointer">
-                        Selecionar Ficheiro
-                      </Button>
-                    </label>
-                  </div>
-                </div>
-              )}
-            </div>
-            
-            {file && (
-              <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                <p className="text-sm">
-                  <strong>Ficheiro selecionado:</strong> {file.name}
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Modo Manual */}
-      {mode === 'manual' && (
+      {/* Formulário Manual */}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <Card>
@@ -790,7 +641,6 @@ export default function NewReservationPage() {
             </Card>
           </form>
         </Form>
-      )}
     </div>
   );
 }
