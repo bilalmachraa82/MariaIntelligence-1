@@ -127,7 +127,7 @@ export const ChatBubble = ({ message, onFeedback }: ChatBubbleProps) => {
             "bg-muted/70 border border-border/50 rounded-tl-none"
         )}
       >
-        <div className={`text-sm mb-2 prose dark:prose-invert prose-sm max-w-none ${isLongMessage && !expanded ? 'max-h-40 overflow-hidden' : ''}`}>
+        <div className={`text-sm mb-2 prose prose-sm max-w-none ${isLongMessage && !expanded ? 'max-h-40 overflow-hidden' : ''}`}>
           {isUser ? (
             <div>{message.content}</div>
           ) : (
