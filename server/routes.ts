@@ -3158,27 +3158,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Criar novo documento PDF
       const doc = new jsPDF();
       
-      // Configurações de cores e estilo
-      const primaryColor = [37, 99, 235]; // Blue-600
-      const textColor = [31, 41, 55];     // Gray-800
-      const lightGray = [243, 244, 246];  // Gray-100
-      
-      // Função para adicionar logo (texto estilizado)
+      // Função para adicionar cabeçalho
       const addHeader = () => {
         // Fundo do cabeçalho
-        doc.setFillColor(...lightGray);
+        doc.setFillColor(243, 244, 246);
         doc.rect(0, 0, 210, 40, 'F');
         
         // Logo texto "Maria Faz"
-        doc.setTextColor(...primaryColor);
+        doc.setTextColor(37, 99, 235);
         doc.setFontSize(24);
-        doc.setFont(undefined, 'bold');
+        doc.setFont("helvetica", 'bold');
         doc.text('Maria Faz', 20, 25);
         
         // Subtítulo
-        doc.setTextColor(...textColor);
+        doc.setTextColor(31, 41, 55);
         doc.setFontSize(10);
-        doc.setFont(undefined, 'normal');
+        doc.setFont("helvetica", 'normal');
         doc.text('Gestão de Alojamento Local', 20, 32);
         
         // Data de geração
@@ -3197,12 +3192,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
         
-        doc.setFillColor(239, 246, 255); // Blue-50
+        doc.setFillColor(239, 246, 255);
         doc.rect(15, 45, 180, 15, 'F');
         
-        doc.setTextColor(30, 64, 175); // Blue-800
+        doc.setTextColor(30, 64, 175);
         doc.setFontSize(9);
-        doc.setFont(undefined, 'italic');
+        doc.setFont("helvetica", 'italic');
         doc.text(`"${randomQuote}"`, 20, 54);
       };
       
@@ -3211,81 +3206,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
       addInspirationalQuote();
       
       // Título do relatório
-      doc.setTextColor(...textColor);
+      doc.setTextColor(31, 41, 55);
       doc.setFontSize(18);
-      doc.setFont(undefined, 'bold');
+      doc.setFont("helvetica", 'bold');
       doc.text(`Relatório Financeiro - ${reportData.owner.name}`, 20, 75);
       
       // Período
       doc.setFontSize(12);
-      doc.setFont(undefined, 'normal');
+      doc.setFont("helvetica", 'normal');
       doc.text(`Período: ${reportData.period}`, 20, 85);
       
-      // Resumo financeiro em caixas
+      // Resumo financeiro
       let yPos = 100;
       
-      // Função para criar caixa de valor
-      const addValueBox = (label: string, value: string, color: number[], y: number) => {
-        // Caixa
-        doc.setFillColor(...color);
-        doc.rect(20, y, 170, 20, 'F');
-        
-        // Borda
-        doc.setDrawColor(200, 200, 200);
-        doc.rect(20, y, 170, 20, 'S');
-        
-        // Texto do label
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(10);
-        doc.setFont(undefined, 'bold');
-        doc.text(label, 25, y + 8);
-        
-        // Valor
-        doc.setFontSize(14);
-        doc.text(value, 25, y + 16);
-      };
-      
       // Receita Total
-      addValueBox(
-        'RECEITA TOTAL',
-        reportData.totalRevenue.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' }),
-        [34, 197, 94], // Green-600
-        yPos
-      );
+      doc.setFillColor(34, 197, 94);
+      doc.rect(20, yPos, 170, 20, 'F');
+      doc.setDrawColor(200, 200, 200);
+      doc.rect(20, yPos, 170, 20, 'S');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(10);
+      doc.setFont("helvetica", 'bold');
+      doc.text('RECEITA TOTAL', 25, yPos + 8);
+      doc.setFontSize(14);
+      doc.text(reportData.totalRevenue.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' }), 25, yPos + 16);
       yPos += 30;
       
       // Comissões
-      addValueBox(
-        'COMISSÕES MARIA FAZ',
-        reportData.totalCommission.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' }),
-        [234, 88, 12], // Orange-600
-        yPos
-      );
+      doc.setFillColor(234, 88, 12);
+      doc.rect(20, yPos, 170, 20, 'F');
+      doc.setDrawColor(200, 200, 200);
+      doc.rect(20, yPos, 170, 20, 'S');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(10);
+      doc.setFont("helvetica", 'bold');
+      doc.text('COMISSÕES MARIA FAZ', 25, yPos + 8);
+      doc.setFontSize(14);
+      doc.text(reportData.totalCommission.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' }), 25, yPos + 16);
       yPos += 30;
       
       // Valor Líquido
-      addValueBox(
-        'VALOR LÍQUIDO A RECEBER',
-        reportData.netAmount.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' }),
-        [37, 99, 235], // Blue-600
-        yPos
-      );
+      doc.setFillColor(37, 99, 235);
+      doc.rect(20, yPos, 170, 20, 'F');
+      doc.setDrawColor(200, 200, 200);
+      doc.rect(20, yPos, 170, 20, 'S');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(10);
+      doc.setFont("helvetica", 'bold');
+      doc.text('VALOR LÍQUIDO A RECEBER', 25, yPos + 8);
+      doc.setFontSize(14);
+      doc.text(reportData.netAmount.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' }), 25, yPos + 16);
       yPos += 40;
       
       // Detalhes das reservas
       if (reportData.reservations.length > 0) {
-        doc.setTextColor(...textColor);
+        doc.setTextColor(31, 41, 55);
         doc.setFontSize(14);
-        doc.setFont(undefined, 'bold');
+        doc.setFont("helvetica", 'bold');
         doc.text('Detalhes das Reservas:', 20, yPos);
         yPos += 15;
         
         // Cabeçalho da tabela
-        doc.setFillColor(...lightGray);
+        doc.setFillColor(243, 244, 246);
         doc.rect(20, yPos, 170, 10, 'F');
         
+        doc.setTextColor(31, 41, 55);
         doc.setFontSize(9);
-        doc.setFont(undefined, 'bold');
+        doc.setFont("helvetica", 'bold');
         doc.text('Hóspede', 25, yPos + 7);
         doc.text('Check-in', 70, yPos + 7);
         doc.text('Check-out', 105, yPos + 7);
@@ -3294,16 +3281,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         yPos += 12;
         
         // Linhas da tabela
-        reportData.reservations.slice(0, 10).forEach((reservation: any) => {
+        reportData.reservations.slice(0, 10).forEach((reservation: any, index: number) => {
           const revenue = parseFloat(reservation.totalAmount) || 0;
           const commission = parseFloat(reservation.commission || '0') || 0;
           const net = revenue - commission;
           
-          doc.setFont(undefined, 'normal');
+          doc.setFont("helvetica", 'normal');
           doc.setFontSize(8);
+          doc.setTextColor(31, 41, 55);
           
           // Alternar cor de fundo
-          if (reportData.reservations.indexOf(reservation) % 2 === 0) {
+          if (index % 2 === 0) {
             doc.setFillColor(249, 250, 251);
             doc.rect(20, yPos - 2, 170, 8, 'F');
           }
@@ -3327,7 +3315,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       doc.text('Para questões ou esclarecimentos, entre em contacto connosco.', 20, yPos + 8);
       
       // Gerar PDF como buffer
-      const pdfOutput = doc.output('arraybuffer');
+      const pdfBuffer = Buffer.from(doc.output('arraybuffer'));
       
       // Registrar atividade
       await storage.createActivity({
@@ -3339,8 +3327,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Enviar PDF
       res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Length', pdfBuffer.length.toString());
       res.setHeader('Content-Disposition', `attachment; filename="relatorio_${reportData.owner.name.replace(/\s+/g, '_')}_${reportData.period.replace(/\s+/g, '_')}.pdf"`);
-      res.send(Buffer.from(pdfOutput));
+      res.end(pdfBuffer);
 
     } catch (error) {
       console.error('Erro ao gerar PDF:', error);
