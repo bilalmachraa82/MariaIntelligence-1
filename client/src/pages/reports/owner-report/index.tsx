@@ -8,14 +8,12 @@ import { format, startOfMonth, endOfMonth } from "date-fns";
 import { pt } from "date-fns/locale";
 import { useOwners } from "@/hooks/use-owners";
 import { useOwnerReport, DateRange as ReportDateRange } from "@/hooks/use-owner-report";
-import { downloadOwnerReportCSV } from "@/lib/export-utils";
 import { downloadOwnerReportPDF } from "@/lib/pdf-export-utils";
 import { exportOwnerReportPDFWithLogo } from "@/lib/pdf-logo-exporter";
 import { OwnerReportModern } from "@/components/reports/owner-report-modern";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, Mail, Users, Image } from "lucide-react";
+import { FileText, Download, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
 
 // Componente principal
 export default function OwnerReportPage() {
@@ -71,7 +69,6 @@ export default function OwnerReportPage() {
   const initialState = loadSavedState();
   
   const [selectedOwner, setSelectedOwner] = useState<string>(initialState.selectedOwner);
-  const [isSendingEmail, setIsSendingEmail] = useState<boolean>(false);
   const [uiDateRange, setUiDateRange] = useState<UIDateRange>(initialState.dateRange);
   
   // Converter o UIDateRange para o formato esperado pelo hook useOwnerReport
@@ -135,54 +132,37 @@ export default function OwnerReportPage() {
     }
   };
   
-  // Função para enviar o relatório por email
-  const handleSendEmail = async () => {
-    if (!selectedOwner || !ownerReport) return;
-    
-    setIsSendingEmail(true);
-    
-    try {
-      // Obter o mês e ano para o título do relatório
-      const startDate = new Date(dateRange.startDate);
-      const month = startDate.toLocaleString('pt-PT', { month: 'long' });
-      const year = startDate.getFullYear();
-      
-      const response = await apiRequest<{success: boolean; email?: string; error?: string}>('/api/reports/owner/send-email', {
-        method: 'POST',
-        data: {
-          ownerId: parseInt(selectedOwner),
-          month,
-          year,
-          startDate: dateRange.startDate,
-          endDate: dateRange.endDate
-        }
-      });
-      
-      if (response.success) {
-        toast({
-          title: t("email.sent", "Email enviado com sucesso"),
-          description: t("email.sentDescription", "O relatório foi enviado para {{email}}", { 
-            email: response.email || "o email do proprietário"
-          }),
-          variant: "default"
-        });
-      } else {
-        throw new Error(response.error || t("email.genericError", "Erro ao enviar o email"));
-      }
-    } catch (error) {
-      console.error("Erro ao enviar email:", error);
+  // Função para baixar PDF
+  const handleDownloadPDF = async () => {
+    if (!selectedOwner || !ownerReport) {
       toast({
-        title: t("email.error", "Erro ao enviar email"),
-        description: t("email.errorDescription", "Não foi possível enviar o relatório. Tente novamente mais tarde."),
-        variant: "destructive"
+        title: "Erro",
+        description: "Gere um relatório primeiro",
+        variant: "destructive",
       });
-    } finally {
-      setIsSendingEmail(false);
+      return;
+    }
+
+    try {
+      const ownerName = owners?.find(o => o.id === parseInt(selectedOwner))?.name || "Proprietário";
+      await downloadOwnerReportPDF(ownerReport, ownerName, dateRange.startDate, dateRange.endDate);
+      
+      toast({
+        title: "PDF gerado!",
+        description: `Relatório de ${ownerName} baixado com sucesso`,
+      });
+    } catch (error) {
+      console.error('Erro ao gerar PDF:', error);
+      toast({
+        title: "Erro ao gerar PDF",
+        description: error instanceof Error ? error.message : "Erro desconhecido",
+        variant: "destructive",
+      });
     }
   };
   
   // Verificar se está carregando os dados
-  const isLoading = isOwnersLoading || isReportLoading || isSendingEmail;
+  const isLoading = isOwnersLoading || isReportLoading;
   return (
     <div className="container mx-auto py-8 max-w-7xl">
       {/* Cabeçalho com animação e design moderno */}
@@ -201,30 +181,10 @@ export default function OwnerReportPage() {
                 variant="outline"
                 size="sm"
                 className="bg-white/20 text-white border-white/40 hover:bg-white/30 flex items-center gap-2"
-                onClick={() => downloadOwnerReportCSV(ownerReport, 'full', i18n.language)}
-              >
-                <Download className="h-4 w-4" />
-                {t("export.csv", "Exportar CSV")}
-              </Button>
-              
-              <Button
-                variant="outline"
-                size="sm"
-                className="bg-white/20 text-white border-white/40 hover:bg-white/30 flex items-center gap-2"
-                onClick={() => exportOwnerReportPDFWithLogo(ownerReport, 'full', i18n.language)}
+                onClick={handleDownloadPDF}
               >
                 <FileText className="h-4 w-4" />
-                {t("export.pdf", "Exportar PDF com Logo")}
-              </Button>
-              
-              <Button
-                variant="default"
-                size="sm"
-                className="bg-emerald-500 hover:bg-emerald-600 text-white flex items-center gap-2"
-                onClick={handleSendEmail}
-              >
-                <Mail className="h-4 w-4" />
-                {t("reports.sendEmail", "Enviar Relatório")}
+                {t("export.pdf", "Exportar PDF")}
               </Button>
             </div>
           )}
