@@ -35,10 +35,7 @@ import OwnerReports from "@/pages/reports/owner-reports";
 import MonthlyInvoicePage from "@/pages/reports/monthly-invoice";
 import BudgetCalculatorPage from "@/pages/budget-calculator";
 
-// Imports das novas páginas de manutenção e pagamentos
-import MaintenancePending from "@/pages/maintenance/pending";
-import MaintenanceRequest from "@/pages/maintenance/request";
-import MaintenanceNewTask from "@/pages/maintenance/new";
+// Imports das páginas de pagamentos
 import PaymentsOutgoing from "@/pages/payments/outgoing";
 import PaymentsIncoming from "@/pages/payments/incoming";
 import PaymentNewPage from "@/pages/payments/new";
@@ -113,9 +110,7 @@ function Router() {
       <Route path="/assistant" component={AssistantPage} />
       <Route path="/reservation-assistant" component={ReservationAssistantPage} />
 
-      <Route path="/maintenance/pending" component={MaintenancePending} />
-      <Route path="/maintenance/request" component={MaintenanceRequest} />
-      <Route path="/maintenance/new" component={MaintenanceNewTask} />
+
       <Route path="/payments" component={PaymentsIncoming} /> {/* Página principal de pagamentos por padrão mostra recebimentos */}
       <Route path="/payments/outgoing" component={PaymentsOutgoing} />
       <Route path="/payments/incoming" component={PaymentsIncoming} />
@@ -167,9 +162,7 @@ function Router() {
       <Route path="/assistente" component={AssistantPage} />
       <Route path="/assistente-reservas" component={ReservationAssistantPage} />
 
-      <Route path="/manutencao/pendentes" component={MaintenancePending} />
-      <Route path="/manutencao/solicitacao" component={MaintenanceRequest} />
-      <Route path="/manutencao/nova" component={MaintenanceNewTask} />
+
       <Route path="/pagamentos" component={PaymentsIncoming} /> {/* Página principal de pagamentos por padrão mostra recebimentos */}
       <Route path="/pagamentos/saida" component={PaymentsOutgoing} />
       <Route path="/pagamentos/entrada" component={PaymentsIncoming} />

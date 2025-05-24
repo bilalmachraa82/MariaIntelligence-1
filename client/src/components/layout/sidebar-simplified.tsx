@@ -73,12 +73,7 @@ export function SidebarSimplified({ collapsed, onToggleCollapse, isMobile = fals
       icon: Users,
       iconColor: "text-orange-500"
     },
-    {
-      name: "Manutenção",
-      href: "/maintenance/pending",
-      icon: Wrench,
-      iconColor: "text-amber-500"
-    },
+
     {
       name: "Finanças",
       href: "/pagamentos/entrada",
