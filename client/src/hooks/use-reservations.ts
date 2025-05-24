@@ -1,6 +1,6 @@
-import { useQuery, useMutation, UseQueryOptions } from "@tanstack/react-query";
+import { useQuery, useMutation, UseQueryOptions, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "../lib/queryClient";
-import type { Reservation, ReservationStatus } from "../lib/types";
+import type { Reservation, InsertReservation } from "@shared/schema";
 
 export function useReservations(options?: Partial<UseQueryOptions<Reservation[]>>) {
   return useQuery<Reservation[]>({
@@ -26,12 +26,27 @@ export function useDeleteReservation() {
 }
 
 export function useCreateReservation() {
+  const queryClient = useQueryClient();
+  
   return useMutation({
-    mutationFn: (reservation: Partial<Reservation>) => 
-      apiRequest('/api/reservations', { 
+    mutationFn: async (reservation: InsertReservation) => {
+      const response = await fetch('/api/reservations', {
         method: 'POST',
-        data: reservation
-      })
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reservation)
+      });
+      
+      if (!response.ok) {
+        throw new Error('Erro ao criar reserva');
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/reservations'] });
+    }
   });
 }
 
@@ -45,7 +60,7 @@ export function useReservationEnums() {
       }
       const data = await response.json();
       return {
-        reservationStatus: ['pending', 'confirmed', 'cancelled', 'completed'] as ReservationStatus[],
+        reservationStatus: ['pending', 'confirmed', 'cancelled', 'completed'],
         ...data
       };
     }
