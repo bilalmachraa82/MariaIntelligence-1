@@ -540,6 +540,15 @@
     "pdfUpload": {
       "uploadButton": "Importar PDF"
     },
+    "cleaningReports": {
+      "totalCleanings": "Total de Limpezas",
+      "completedCleanings": "concluídas",
+      "teamPayments": "Pagamentos às Equipas",
+      "pendingPayments": "Pagamentos Pendentes",
+      "forAllTeams": "para todas as equipas",
+      "avgTeamScore": "Pontuação Média",
+      "outOf100": "de 100 pontos possíveis"
+    },
     "reservations": {
       "recentReservations": "Reservas Recentes",
       "recentReservationsSubtitle": "As reservas mais recentes em todas as propriedades"
