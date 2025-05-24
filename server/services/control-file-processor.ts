@@ -269,20 +269,37 @@ export async function processControlFile(filePath: string): Promise<ControlFileR
     // Usar o adaptador de IA para extrair as reservas do texto
     const aiAdapter = AIAdapter.getInstance();
     
-    // Definir um sistema de prompt para extração de múltiplas reservas
-    const systemPrompt = "Extraia todas as reservas do seguinte documento de controle. " +
-      "Cada reserva deve ter os seguintes campos: " +
-      "- Nome do cliente (guestName) " +
-      "- Data de check-in (checkInDate) no formato DD/MM/YYYY " +
-      "- Data de check-out (checkOutDate) no formato DD/MM/YYYY " +
-      "- Número de hóspedes (numGuests) " +
-      "- Valor total (totalAmount) " +
-      "- Plataforma de reserva (platform), como Airbnb, Booking, etc. " +
-      "- Notas adicionais (notes), se houver " +
-      "IMPORTANTE: Retorne APENAS um array JSON com as reservas extraídas. " +
-      "NÃO use marcadores de código markdown. " +
-      "NÃO inclua explicações ou textos adicionais. " +
-      "Retorne APENAS o JSON puro.";
+    // Definir um sistema de prompt especializado para extração de múltiplas reservas
+    const systemPrompt = `Você é um especialista em extração de dados de documentos de controle de reservas.
+
+TAREFA: Extrair TODAS as reservas do documento fornecido. Cada linha representa uma reserva diferente.
+
+FORMATO DO DOCUMENTO:
+O documento contém uma tabela com colunas: Data entrada, Data saída, N.º noites, Nome, N.º hóspedes, País, Site, Info
+
+INSTRUÇÕES ESPECÍFICAS:
+1. Extrair CADA LINHA da tabela como uma reserva separada
+2. NÃO ignorar nenhuma reserva - processar todas as linhas
+3. Para cada reserva, extrair:
+   - guestName: Nome do hóspede
+   - checkInDate: Data de entrada (formato DD/MM/YYYY)
+   - checkOutDate: Data de saída (formato DD/MM/YYYY)
+   - numGuests: Número de hóspedes
+   - platform: Site de reserva (Airbnb, Booking, etc.)
+   - countryOfOrigin: País do hóspede
+   - notes: Informações adicionais se houver
+   - totalAmount: "0" (padrão se não especificado)
+   - numNights: Calcular diferença entre datas
+
+FORMATO DE SAÍDA:
+Retornar um array JSON com TODAS as reservas encontradas.
+NÃO usar markdown ou backticks.
+Apenas JSON puro.
+
+Exemplo: [{"guestName":"Nome1","checkInDate":"06/04/2025",...},{"guestName":"Nome2","checkInDate":"09/04/2025",...}]`;
+    
+    console.log(`[ControlFileProcessor] Texto completo para análise (${rawText.length} caracteres):`);
+    console.log(rawText.substring(0, 500) + "...");
     
     // Extrair as reservas usando o adaptador de IA
     const extractionResult = await aiAdapter.extractDataFromText(
@@ -291,10 +308,12 @@ export async function processControlFile(filePath: string): Promise<ControlFileR
         systemPrompt,
         responseFormat: { type: 'json' },
         temperature: 0.1,
-        maxTokens: 4096,
+        maxTokens: 8192, // Aumentar tokens para textos maiores
         documentType: 'control_file'
       }
     );
+    
+    console.log(`[ControlFileProcessor] Resposta do AI para extração:`, extractionResult);
     
     // Adicionar o conteúdo à base de conhecimento RAG
     await ragService.addToKnowledgeBase(
