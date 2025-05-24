@@ -1023,7 +1023,16 @@ export default function ReservationNewPage() {
               >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={isPending} className="bg-maria-primary hover:bg-maria-primary/90">
+              <Button 
+                type="submit" 
+                disabled={isPending} 
+                className="bg-maria-primary hover:bg-maria-primary/90"
+                onClick={(e) => {
+                  console.log("🔥 BOTÃO CLICADO!");
+                  e.preventDefault();
+                  form.handleSubmit(onSubmit)();
+                }}
+              >
                 {isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
