@@ -63,91 +63,14 @@ import QuotationNewPage from "@/pages/quotations/new";
 import QuotationDetailPage from "@/pages/quotations/[id]";
 import QuotationEditPage from "@/pages/quotations/[id]/edit";
 
-// Inicializador de tema com tratamento de erros aprimorado
-const initializeDarkMode = () => {
-  // Funções auxiliares para aplicar temas
-  const applyDarkTheme = () => document.documentElement.classList.add("dark");
-  const applyLightTheme = () => document.documentElement.classList.remove("dark");
+// Aplicar sempre tema claro (dark mode removido)
+const initializeLightMode = () => {
+  // Remove qualquer classe dark que possa existir
+  document.documentElement.classList.remove("dark");
   
-  // Verificar legacy preference (darkMode boolean)
-  const legacyPreference = localStorage.getItem("darkMode");
-  if (legacyPreference === "true") {
-    applyDarkTheme();
-    return;
-  }
-  
-  // Buscar tema salvo
-  const storedTheme = localStorage.getItem("theme");
-  if (!storedTheme) {
-    // Se não existir, criar tema padrão e salvar
-    const defaultTheme = { 
-      appearance: "system", 
-      primary: "blue", 
-      radius: 0.5, 
-      variant: "tint" 
-    };
-    localStorage.setItem("theme", JSON.stringify(defaultTheme));
-    
-    // Verificar preferência do sistema
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      applyDarkTheme();
-    } else {
-      applyLightTheme();
-    }
-    return;
-  }
-  
-  // Processar tema salvo
-  if (storedTheme === "dark") {
-    // Formato simples antigo - dark string
-    applyDarkTheme();
-    return;
-  } else if (storedTheme === "light") {
-    // Formato simples antigo - light string
-    applyLightTheme();
-    return;
-  }
-  
-  // Tentar processar formato JSON
-  try {
-    const themeObject = JSON.parse(storedTheme);
-    
-    // Aplicar configuração baseada no tipo
-    if (themeObject.appearance === "dark") {
-      applyDarkTheme();
-    } else if (themeObject.appearance === "light") {
-      applyLightTheme();
-    } else if (themeObject.appearance === "system") {
-      // Usar preferência do sistema
-      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        applyDarkTheme();
-      } else {
-        applyLightTheme();
-      }
-      
-      // Listener para mudanças na preferência do sistema
-      window.matchMedia("(prefers-color-scheme: dark)")
-        .addEventListener("change", (e) => {
-          if (e.matches) {
-            applyDarkTheme();
-          } else {
-            applyLightTheme();
-          }
-        });
-    }
-  } catch (e) {
-    // Em caso de erro de parsing, usar tema claro como fallback
-    console.error("Erro ao processar tema:", e);
-    applyLightTheme();
-    
-    // Salvar tema padrão para corrigir o problema
-    localStorage.setItem("theme", JSON.stringify({ 
-      appearance: "light", 
-      primary: "blue", 
-      radius: 0.5, 
-      variant: "tint" 
-    }));
-  }
+  // Limpa as configurações antigas de tema
+  localStorage.removeItem("darkMode");
+  localStorage.removeItem("theme");
 };
 
 // Executa a inicialização do tema escuro

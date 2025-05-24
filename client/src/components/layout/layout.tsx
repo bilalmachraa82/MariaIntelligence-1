@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { SidebarReorganized } from "./sidebar-reorganized";
+import { SidebarSimplified } from "./sidebar-simplified";
 import { MobileNav } from "./mobile-nav";
 import { BottomNav } from "./bottom-nav-fixed";
 
@@ -107,7 +107,7 @@ export function Layout({ children, className }: LayoutProps) {
       <div className="flex-1 flex relative pt-[57px]">
         {/* Barra lateral (ocultada em dispositivos móveis) */}
         <div className="hidden md:block">
-          <SidebarReorganized 
+          <SidebarSimplified 
             collapsed={!sidebarOpen} 
             onToggleCollapse={toggleSidebar} 
           />

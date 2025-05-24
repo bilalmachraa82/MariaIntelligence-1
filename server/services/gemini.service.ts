@@ -15,9 +15,9 @@ import crypto from 'crypto';
 
 // Interface para tipos de modelos disponíveis
 export enum GeminiModel {
-  TEXT = 'gemini-1.5-pro',          // Para processamento de texto
-  VISION = 'gemini-1.5-pro-vision', // Para processamento de imagens
-  FLASH = 'gemini-1.5-flash',       // Versão mais rápida e mais barata
+  TEXT = 'gemini-2.5-flash',        // Para processamento de texto - versão mais recente
+  VISION = 'gemini-2.5-flash',      // Para processamento de imagens - versão mais recente  
+  FLASH = 'gemini-2.5-flash',       // Versão Flash 2.5 - mais rápida e eficiente
   AUDIO = 'gemini-2.5-pro-exp-03-25' // Experimental - Para processamento de áudio (inclui voz)
 }
 
