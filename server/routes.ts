@@ -3156,54 +3156,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { jsPDF } = await import('jspdf');
       
       // Criar novo documento PDF
-      const doc = new jsPDF();
-      
-      // Função para adicionar cabeçalho
-      const addHeader = () => {
-        // Fundo do cabeçalho
-        doc.setFillColor(243, 244, 246);
-        doc.rect(0, 0, 210, 40, 'F');
-        
-        // Logo texto "Maria Faz"
-        doc.setTextColor(37, 99, 235);
-        doc.setFontSize(24);
-        doc.setFont("helvetica", 'bold');
-        doc.text('Maria Faz', 20, 25);
-        
-        // Subtítulo
-        doc.setTextColor(31, 41, 55);
-        doc.setFontSize(10);
-        doc.setFont("helvetica", 'normal');
-        doc.text('Gestão de Alojamento Local', 20, 32);
-        
-        // Data de geração
-        const currentDate = new Date().toLocaleDateString('pt-PT');
-        doc.text(`Gerado em ${currentDate}`, 150, 32);
-      };
-      
-      // Função para adicionar frase inspiradora
-      const addInspirationalQuote = () => {
-        const quotes = [
-          "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
-          "A excelência não é um ato, mas um hábito.",
-          "Cada proprietário é uma parceria valiosa no nosso sucesso conjunto.",
-          "A transparência constrói confiança, a confiança constrói negócios duradouros."
-        ];
-        
-        const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-        
-        doc.setFillColor(239, 246, 255);
-        doc.rect(15, 45, 180, 15, 'F');
-        
-        doc.setTextColor(30, 64, 175);
-        doc.setFontSize(9);
-        doc.setFont("helvetica", 'italic');
-        doc.text(`"${randomQuote}"`, 20, 54);
-      };
-      
-      // Adicionar cabeçalho e frase
-      addHeader();
-      addInspirationalQuote();
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
       
       // Título do relatório
       doc.setTextColor(31, 41, 55);
@@ -3314,8 +3271,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       doc.text('Este relatório foi gerado automaticamente pelo sistema Maria Faz.', 20, yPos);
       doc.text('Para questões ou esclarecimentos, entre em contacto connosco.', 20, yPos + 8);
       
-      // Gerar PDF como buffer
-      const pdfBuffer = Buffer.from(doc.output('arraybuffer'));
+      // Gerar PDF como blob e converter para buffer
+      const pdfData = doc.output('blob');
+      const arrayBuffer = await pdfData.arrayBuffer();
+      const pdfBuffer = Buffer.from(arrayBuffer);
       
       // Registrar atividade
       await storage.createActivity({
