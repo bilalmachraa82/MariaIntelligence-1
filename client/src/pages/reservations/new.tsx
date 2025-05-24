@@ -96,7 +96,7 @@ export default function ReservationNewPage() {
   const { toast } = useToast();
 
   const form = useForm({
-    resolver: zodResolver(extendedReservationSchema.omit({ commission: true })),
+    resolver: zodResolver(extendedReservationSchema),
     defaultValues: {
       propertyId: 0,
       guestName: "",
@@ -248,7 +248,8 @@ export default function ReservationNewPage() {
     
     const cleaningFee = Number(selectedProperty.cleaningCost);
     const checkInFee = Number(selectedProperty.checkInFee);
-    const commissionFee = (totalAmount * Number(selectedProperty.commission)) / 100;
+    const commissionRate = Number(selectedProperty.commission);
+    const commissionFee = (totalAmount * commissionRate) / 100;
     const teamPayment = Number(selectedProperty.teamPayment);
     
     const netAmount = calculateNetAmount(
@@ -264,6 +265,7 @@ export default function ReservationNewPage() {
     form.setValue("cleaningFee", cleaningFee.toString());
     form.setValue("checkInFee", checkInFee.toString());
     form.setValue("commissionFee", commissionFee.toString());
+    form.setValue("commission", commissionRate.toString());
     form.setValue("teamPayment", teamPayment.toString());
     form.setValue("netAmount", netAmount.toString());
     

@@ -20,8 +20,23 @@ export function useReservation(id: number) {
 }
 
 export function useDeleteReservation() {
+  const queryClient = useQueryClient();
+  
   return useMutation({
-    mutationFn: (id: number) => apiRequest(`/api/reservations/${id}`, { method: 'DELETE' }),
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/reservations/${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Erro ao excluir reserva');
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/reservations'] });
+    }
   });
 }
 
