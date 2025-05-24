@@ -58,8 +58,7 @@ import { RecentActivity } from "./recent-activity";
 import { RevenueVsProfitChart } from "./revenue-vs-profit-chart";
 import { FinancialDistributionChart } from "./financial-distribution-chart";
 
-// Componentes personalizados
-import { DemoDataManager } from "../demo-data-manager";
+
 
 // Utils
 import { formatCurrency, calculateOccupancyColor } from "@/lib/utils";
@@ -713,17 +712,7 @@ export default function NewModernDashboard({ minimal = false }: { minimal?: bool
                 </motion.div>
               </div>
               
-              {/* Demo data manager */}
-              <div className="mt-8">
-                <motion.div 
-                  custom={11} 
-                  variants={fadeIn} 
-                  initial="hidden" 
-                  animate="visible"
-                >
-                  <DemoDataManager />
-                </motion.div>
-              </div>
+
             </TabPanel>
             
             <TabPanel>

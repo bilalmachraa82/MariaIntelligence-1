@@ -505,6 +505,41 @@
         "configure": "Configurar Chave API",
         "testConnection": "Testar Conexão"
       }
+    },
+    "common": {
+      "loading": "A carregar..."
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Visão geral do seu negócio de aluguer de imóveis",
+      "export": "Exportar",
+      "period": "Período",
+      "overview": "Visão Geral",
+      "details": "Detalhes",
+      "totalRevenue": "Receita Total",
+      "netProfit": "Lucro Líquido",
+      "occupancyRate": "Taxa de Ocupação",
+      "target": "Meta",
+      "totalReservations": "Total de Reservas",
+      "revenueVsProfit": "Receita vs Lucro",
+      "financialBreakdown": "Distribuição Financeira",
+      "detailedDescription": "Análise detalhada de receitas, despesas e lucratividade por propriedade.",
+      "comingSoon": "Análise detalhada em desenvolvimento. Disponível em breve!",
+      "noDataAvailable": "Não há dados disponíveis.",
+      "exportNotImplemented": "Exportação de dados implementada na versão completa",
+      "backToOverview": "Voltar para Visão Geral",
+      "comparedToPrevious": "em relação ao período anterior"
+    },
+    "pdfUpload": {
+      "uploadButton": "Importar PDF"
+    },
+    "reservations": {
+      "recentReservations": "Reservas Recentes",
+      "recentReservationsSubtitle": "As reservas mais recentes em todas as propriedades"
+    },
+    "activities": {
+      "recentActivity": "Actividade Recente",
+      "recentActivitySubtitle": "Registo de acções e eventos no sistema"
     }
   }
 }
