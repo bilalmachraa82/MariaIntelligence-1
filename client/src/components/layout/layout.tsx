@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { SidebarSimplified } from "./sidebar-simplified";
 import { MobileNav } from "./mobile-nav";
-import { BottomNav } from "./bottom-nav-fixed";
+import { BottomNavSimplified } from "./bottom-nav-simplified";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -128,7 +128,7 @@ export function Layout({ children, className }: LayoutProps) {
       </div>
       
       {/* Barra de navegação inferior para mobile */}
-      <BottomNav />
+      <BottomNavSimplified />
     </div>
   );
 }

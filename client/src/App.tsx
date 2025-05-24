@@ -73,8 +73,8 @@ const initializeLightMode = () => {
   localStorage.removeItem("theme");
 };
 
-// Executa a inicialização do tema escuro
-initializeDarkMode();
+// Executa a inicialização do tema claro
+initializeLightMode();
 
 function Router() {
   return (
