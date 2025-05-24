@@ -17,12 +17,8 @@ import {
   BadgePercent, 
   Mail, 
   Phone,
-  FileText,
   Upload,
-  Camera,
-  FileUp,
-  ImageIcon,
-  FileIcon
+  Camera
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
@@ -52,49 +48,29 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import { 
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { 
-  Tabs, 
-  TabsContent, 
-  TabsList, 
-  TabsTrigger 
-} from "@/components/ui/tabs";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { cn, calculateNetAmount, formatCurrency } from "@/lib/utils";
-import { useToast } from "@/hooks/use-toast";
-import { usePdfUpload } from "@/hooks/use-pdf-upload";
-import { processReservationFile } from "@/lib/ocr";
-import { TextImportPanel } from "@/components/reservations/text-import-panel";
+import { toast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 
-export default function ReservationNewPage() {
-  const [_, navigate] = useLocation();
-  const { extractedData, clearExtractedData } = usePdfUpload();
-  const [selectedPropertyId, setSelectedPropertyId] = useState<number | undefined>();
-  const [calculatedCosts, setCalculatedCosts] = useState({
-    cleaningFee: 0,
-    checkInFee: 0,
-    commissionFee: 0,
-    teamPayment: 0,
-    platformFee: 0,
-    netAmount: 0
-  });
+export default function NewReservationPage() {
+  const [, setLocation] = useLocation();
+  const { t } = useTranslation();
   
-  // Estado para acompanhar os arquivos selecionados para upload
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [isProcessingFile, setIsProcessingFile] = useState(false);
-  const [processingError, setProcessingError] = useState<string | null>(null);
+  // Estados para alternância entre modo manual e scanner
+  const [mode, setMode] = useState<'manual' | 'scanner'>('manual');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
   
-  const { data: properties, isLoading: isLoadingProperties } = useProperties();
-  const { data: enums, isLoading: isLoadingEnums } = useReservationEnums();
+  // Hooks para dados
+  const { data: properties = [], isLoading: propertiesLoading } = useProperties();
+  const { data: enums, isLoading: enumsLoading } = useReservationEnums();
   const createReservation = useCreateReservation();
-  const { toast } = useToast();
 
+  // Filtrar propriedades ativas
+  const activeProperties = properties.filter(p => p.active);
+
+  // Configuração do formulário
   const form = useForm({
     resolver: zodResolver(extendedReservationSchema),
     defaultValues: {
@@ -102,658 +78,658 @@ export default function ReservationNewPage() {
       guestName: "",
       guestEmail: "",
       guestPhone: "",
-      country: "",
-      reference: "",
-      checkInDate: new Date(),
-      checkOutDate: new Date(Date.now() + 86400000), // tomorrow
-      numAdults: 1,
-      numChildren: 0,
-      numGuests: 1,
-      totalAmount: "0",
-      status: "pending",
-      platform: "direct",
+      checkInDate: "",
+      checkOutDate: "",
+      totalAmount: "",
       platformFee: "0",
       cleaningFee: "0",
       checkInFee: "0",
       commissionFee: "0",
       teamPayment: "0",
-      netAmount: "0",
+      netAmount: "",
+      numGuests: 1,
+      numAdults: 1,
+      numChildren: 0,
+      source: "direct" as const,
+      status: "pending" as const,
       notes: "",
-    },
+      country: ""
+    }
   });
 
-  // Fill form with extracted OCR data if available
-  useEffect(() => {
-    if (extractedData) {
-      form.reset({
-        propertyId: extractedData.propertyId,
-        guestName: extractedData.guestName,
-        guestEmail: extractedData.guestEmail || "",
-        guestPhone: extractedData.guestPhone || "",
-        checkInDate: new Date(extractedData.checkInDate),
-        checkOutDate: new Date(extractedData.checkOutDate),
-        numGuests: extractedData.numGuests,
-        totalAmount: extractedData.totalAmount.toString(),
-        status: "confirmed",
-        platform: extractedData.platform,
-        platformFee: extractedData.platformFee.toString(),
-        cleaningFee: extractedData.cleaningFee.toString(),
-        checkInFee: extractedData.checkInFee.toString(),
-        commissionFee: extractedData.commissionFee.toString(),
-        teamPayment: extractedData.teamPayment.toString(),
-        netAmount: calculateNetAmount(
-          extractedData.totalAmount,
-          extractedData.cleaningFee,
-          extractedData.checkInFee,
-          extractedData.commissionFee,
-          extractedData.teamPayment,
-          extractedData.platformFee
-        ).toString(),
-        notes: "Criado via extração de PDF",
-      });
-      
-      setSelectedPropertyId(extractedData.propertyId);
-      
-      // Update calculated costs
-      setCalculatedCosts({
-        cleaningFee: extractedData.cleaningFee,
-        checkInFee: extractedData.checkInFee,
-        commissionFee: extractedData.commissionFee,
-        teamPayment: extractedData.teamPayment,
-        platformFee: extractedData.platformFee,
-        netAmount: calculateNetAmount(
-          extractedData.totalAmount,
-          extractedData.cleaningFee,
-          extractedData.checkInFee,
-          extractedData.commissionFee,
-          extractedData.teamPayment,
-          extractedData.platformFee
-        )
-      });
-      
-      if (typeof clearExtractedData === 'function') {
-        clearExtractedData();
-      }
-    }
-  }, [extractedData, form, clearExtractedData]);
-
-  const onSubmit = async (data: any) => {
-    console.log("🚀 Iniciando criação de reserva:", data);
+  // Função para calcular valores automaticamente
+  const calculateValues = () => {
+    const totalAmount = parseFloat(form.getValues("totalAmount") || "0");
+    const platformFee = parseFloat(form.getValues("platformFee") || "0");
+    const cleaningFee = parseFloat(form.getValues("cleaningFee") || "0");
+    const checkInFee = parseFloat(form.getValues("checkInFee") || "0");
+    const commissionFee = parseFloat(form.getValues("commissionFee") || "0");
+    const teamPayment = parseFloat(form.getValues("teamPayment") || "0");
     
-    try {
-      // Validar campos obrigatórios
-      if (!data.propertyId || !data.guestName || !data.checkInDate || !data.checkOutDate) {
-        toast({
-          title: "Campos obrigatórios",
-          description: "Por favor, preencha propriedade, nome do hóspede e datas.",
-          variant: "destructive",
-        });
-        return;
+    const netAmount = totalAmount - platformFee - cleaningFee - checkInFee - commissionFee - teamPayment;
+    form.setValue("netAmount", netAmount.toFixed(2));
+  };
+
+  // Observar mudanças nos valores para recalcular
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name && ["totalAmount", "platformFee", "cleaningFee", "checkInFee", "commissionFee", "teamPayment"].includes(name)) {
+        calculateValues();
       }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
-      const reservationData = {
-        propertyId: parseInt(data.propertyId),
-        guestName: data.guestName,
-        checkInDate: data.checkInDate.toISOString().split('T')[0],
-        checkOutDate: data.checkOutDate.toISOString().split('T')[0],
-        numAdults: parseInt(data.numAdults) || 1,
-        numChildren: parseInt(data.numChildren) || 0,
-        numGuests: parseInt(data.numGuests) || 1,
-        totalAmount: data.totalAmount,
-        platform: data.platform || "direct",
-        platformFee: data.platformFee || "0",
-        cleaningFee: data.cleaningFee || "0",
-        checkInFee: data.checkInFee || "0",
-        commissionFee: data.commissionFee || "0",
-        teamPayment: data.teamPayment || "0",
-        netAmount: data.netAmount || data.totalAmount,
-        status: data.status || "confirmed",
-        guestEmail: data.guestEmail || null,
-        guestPhone: data.guestPhone || null,
-        country: data.country || null,
-        reference: data.reference || null,
-        notes: data.notes || null
-      };
-
-      console.log("📝 Dados preparados para envio:", reservationData);
-
-      await createReservation.mutateAsync(reservationData);
-
+  // Submissão do formulário
+  const onSubmit = async (data: any) => {
+    try {
+      await createReservation.mutateAsync(data);
       toast({
-        title: "Reserva criada com sucesso",
-        description: "A nova reserva foi registrada no sistema.",
+        title: "Sucesso!",
+        description: "Reserva criada com sucesso.",
       });
-
-      navigate("/reservations");
+      setLocation("/reservations");
     } catch (error) {
-      console.error("❌ Erro ao criar reserva:", error);
-      
       toast({
-        title: "Erro ao criar reserva",
-        description: "Ocorreu um erro ao salvar a reserva. Verifique os dados e tente novamente.",
+        title: "Erro",
+        description: "Erro ao criar reserva. Tente novamente.",
         variant: "destructive",
       });
     }
   };
 
-  // Update costs when property changes
-  const updatePropertyCosts = (propertyId: number) => {
-    setSelectedPropertyId(propertyId);
+  // Função para processar arquivo escaneado
+  const handleFileUpload = async (uploadedFile: File) => {
+    if (!uploadedFile) return;
     
-    const selectedProperty = properties?.find(p => p.id === propertyId);
-    if (!selectedProperty) return;
-    
-    const totalAmount = Number(form.getValues("totalAmount"));
-    const platformFee = Number(form.getValues("platformFee"));
-    
-    const cleaningFee = Number(selectedProperty.cleaningCost);
-    const checkInFee = Number(selectedProperty.checkInFee);
-    const commissionRate = Number(selectedProperty.commission);
-    const commissionFee = (totalAmount * commissionRate) / 100;
-    const teamPayment = Number(selectedProperty.teamPayment);
-    
-    const netAmount = calculateNetAmount(
-      totalAmount,
-      cleaningFee,
-      checkInFee,
-      commissionFee,
-      teamPayment,
-      platformFee
-    );
-    
-    // Update form values
-    form.setValue("cleaningFee", cleaningFee.toString());
-    form.setValue("checkInFee", checkInFee.toString());
-    form.setValue("commissionFee", commissionFee.toString());
-    form.setValue("commission", commissionRate.toString());
-    form.setValue("teamPayment", teamPayment.toString());
-    form.setValue("netAmount", netAmount.toString());
-    
-    // Update calculated costs
-    setCalculatedCosts({
-      cleaningFee,
-      checkInFee,
-      commissionFee,
-      teamPayment,
-      platformFee,
-      netAmount
-    });
-  };
+    setIsProcessing(true);
+    setFile(uploadedFile);
 
-  // Recalculate when amount or platformFee changes
-  const recalculateNetAmount = () => {
-    const totalAmount = Number(form.getValues("totalAmount"));
-    const platformFee = Number(form.getValues("platformFee"));
-    const cleaningFee = Number(form.getValues("cleaningFee"));
-    const checkInFee = Number(form.getValues("checkInFee"));
-    const commissionFee = Number(form.getValues("commissionFee"));
-    const teamPayment = Number(form.getValues("teamPayment"));
-    
-    const netAmount = calculateNetAmount(
-      totalAmount,
-      cleaningFee,
-      checkInFee,
-      commissionFee,
-      teamPayment,
-      platformFee
-    );
-    
-    form.setValue("netAmount", netAmount.toString());
-    
-    setCalculatedCosts(prev => ({
-      ...prev,
-      platformFee,
-      netAmount
-    }));
-  };
-  
-  // Função para processar um arquivo (PDF ou imagem)
-  const handleFileUpload = async (file: File) => {
-    if (!file) return;
-    
-    setSelectedFile(file);
-    setIsProcessingFile(true);
-    setProcessingError(null);
-    
     try {
-      const result = await processReservationFile(file);
-      
-      if (result?.extractedData) {
-        // Preencher o formulário com os dados extraídos
-        form.reset({
-          propertyId: result.extractedData.propertyId,
-          guestName: result.extractedData.guestName,
-          guestEmail: result.extractedData.guestEmail || "",
-          guestPhone: result.extractedData.guestPhone || "",
-          checkInDate: new Date(result.extractedData.checkInDate),
-          checkOutDate: new Date(result.extractedData.checkOutDate),
-          numGuests: result.extractedData.numGuests,
-          totalAmount: result.extractedData.totalAmount.toString(),
-          status: "confirmed",
-          platform: result.extractedData.platform,
-          platformFee: result.extractedData.platformFee.toString(),
-          cleaningFee: result.extractedData.cleaningFee.toString(),
-          checkInFee: result.extractedData.checkInFee.toString(),
-          commissionFee: result.extractedData.commissionFee.toString(),
-          teamPayment: result.extractedData.teamPayment.toString(),
-          netAmount: calculateNetAmount(
-            result.extractedData.totalAmount,
-            result.extractedData.cleaningFee,
-            result.extractedData.checkInFee,
-            result.extractedData.commissionFee,
-            result.extractedData.teamPayment,
-            result.extractedData.platformFee
-          ).toString(),
-          notes: `Criado via extração de ${file.type.includes('pdf') ? 'PDF' : 'imagem'}`,
-        });
+      const formData = new FormData();
+      formData.append('file', uploadedFile);
+
+      const response = await fetch('/api/ocr', {
+        method: 'POST',
+        body: formData
+      });
+
+      const result = await response.json();
+
+      if (result.success && result.extractedData) {
+        const data = result.extractedData;
         
-        setSelectedPropertyId(result.extractedData.propertyId);
+        // Preencher formulário com dados extraídos
+        if (data.guestName) form.setValue("guestName", data.guestName);
+        if (data.checkInDate) form.setValue("checkInDate", data.checkInDate);
+        if (data.checkOutDate) form.setValue("checkOutDate", data.checkOutDate);
+        if (data.totalAmount) form.setValue("totalAmount", data.totalAmount.toString());
+        if (data.numGuests) form.setValue("numGuests", data.numGuests);
+        if (data.platformFee) form.setValue("platformFee", data.platformFee.toString());
+        if (data.cleaningFee) form.setValue("cleaningFee", data.cleaningFee.toString());
+        if (data.checkInFee) form.setValue("checkInFee", data.checkInFee.toString());
+        if (data.commissionFee) form.setValue("commissionFee", data.commissionFee.toString());
+        if (data.teamPayment) form.setValue("teamPayment", data.teamPayment.toString());
+        
+        // Tentar encontrar propriedade correspondente
+        if (data.propertyId) {
+          form.setValue("propertyId", data.propertyId);
+        } else if (data.propertyName) {
+          const property = activeProperties.find(p => 
+            p.name.toLowerCase().includes(data.propertyName.toLowerCase()) ||
+            p.aliases.some(alias => alias.toLowerCase().includes(data.propertyName.toLowerCase()))
+          );
+          if (property) {
+            form.setValue("propertyId", property.id);
+          }
+        }
+
+        calculateValues();
         
         toast({
-          title: "Dados extraídos com sucesso",
-          description: `Os dados foram extraídos do ${file.type.includes('pdf') ? 'PDF' : 'imagem'} com sucesso.`,
+          title: "Scanner concluído!",
+          description: "Dados extraídos com sucesso. Verifique os campos antes de guardar.",
+        });
+        
+        // Mudar para modo manual para edição
+        setMode('manual');
+      } else {
+        toast({
+          title: "Erro no scanner",
+          description: "Não foi possível extrair dados do documento.",
+          variant: "destructive",
         });
       }
     } catch (error) {
-      console.error("Erro ao processar arquivo:", error);
-      setProcessingError(error instanceof Error ? error.message : "Erro desconhecido ao processar arquivo");
-      
       toast({
-        title: "Erro ao processar arquivo",
-        description: "Não foi possível extrair os dados do arquivo. Tente novamente ou preencha manualmente.",
+        title: "Erro",
+        description: "Erro ao processar documento.",
         variant: "destructive",
       });
     } finally {
-      setIsProcessingFile(false);
-    }
-  };
-  
-  // Função para lidar com a seleção de um arquivo
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      handleFileUpload(files[0]);
-    }
-  };
-  
-  // Função para lidar com o drop de arquivo
-  const handleFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const files = e.dataTransfer.files;
-    if (files && files.length > 0) {
-      handleFileUpload(files[0]);
-    }
-  };
-  
-  // Função para processar os dados importados de texto
-  const handleTextImportComplete = (reservationData: any) => {
-    if (!reservationData) return;
-    
-    try {
-      // Preencher o formulário com os dados extraídos do texto
-      form.reset({
-        propertyId: reservationData.propertyId || 0,
-        guestName: reservationData.guest_name || "",
-        guestEmail: reservationData.guest_email || "",
-        guestPhone: reservationData.guest_phone || "",
-        checkInDate: reservationData.check_in_date ? new Date(reservationData.check_in_date) : new Date(),
-        checkOutDate: reservationData.check_out_date ? new Date(reservationData.check_out_date) : new Date(Date.now() + 86400000),
-        numGuests: reservationData.total_guests || 1,
-        totalAmount: "0", // Geralmente não vem do texto
-        status: "confirmed",
-        platform: reservationData.booking_source?.toLowerCase() || "direct",
-        platformFee: "0",
-        cleaningFee: "0",
-        checkInFee: "0",
-        commissionFee: "0",
-        teamPayment: "0",
-        netAmount: "0",
-        notes: reservationData.special_requests ? `Pedidos especiais: ${reservationData.special_requests}` : "Criado via importação de texto",
-      });
-      
-      // Se tiver um propertyId válido, atualizar os custos
-      if (reservationData.propertyId) {
-        setSelectedPropertyId(reservationData.propertyId);
-        updatePropertyCosts(reservationData.propertyId);
-      }
-      
-      toast({
-        title: "Dados importados com sucesso",
-        description: "Os dados da reserva foram extraídos do texto com sucesso.",
-      });
-    } catch (error) {
-      console.error("Erro ao processar dados de texto:", error);
-      
-      toast({
-        title: "Erro ao processar dados",
-        description: "Não foi possível preencher o formulário com os dados extraídos. Verifique os dados e tente novamente.",
-        variant: "destructive",
-      });
+      setIsProcessing(false);
     }
   };
 
-  const isPending = createReservation.isPending;
-  const isLoading = isLoadingProperties || isLoadingEnums;
-
-  if (isLoading) {
+  if (propertiesLoading || enumsLoading) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={() => navigate("/reservations")}
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Voltar
-          </Button>
-          <Skeleton className="h-8 w-48 ml-2" />
-        </div>
+      <div className="container mx-auto px-4 py-8">
+        <Skeleton className="h-8 w-64 mb-6" />
         <Card>
           <CardHeader>
             <Skeleton className="h-6 w-48" />
-            <Skeleton className="h-4 w-72" />
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
-            </div>
+          <CardContent className="space-y-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton key={i} className="h-10 w-full" />
+            ))}
           </CardContent>
-          <CardFooter>
-            <Skeleton className="h-10 w-24" />
-          </CardFooter>
         </Card>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center">
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={() => navigate("/reservations")}
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      {/* Cabeçalho */}
+      <div className="flex items-center gap-4 mb-6">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setLocation("/reservations")}
         >
-          <ArrowLeft className="h-4 w-4 mr-1" />
+          <ArrowLeft className="w-4 h-4 mr-2" />
           Voltar
         </Button>
-        <h2 className="text-2xl font-bold text-secondary-900 ml-2">
-          Nova Reserva
-        </h2>
+        <div>
+          <h1 className="text-2xl font-bold">Nova Reserva</h1>
+          <p className="text-muted-foreground">Criar uma nova reserva no sistema</p>
+        </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Cadastrar Nova Reserva</CardTitle>
-          <CardDescription>
-            Preencha os dados para cadastrar uma nova reserva ou importe de um documento
-          </CardDescription>
-        </CardHeader>
-        
-        <Tabs defaultValue="manual" className="w-full">
-          <div className="px-6">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="manual">Formulário Manual</TabsTrigger>
-              <TabsTrigger value="text">Importar Texto</TabsTrigger>
-              <TabsTrigger value="pdf">Processar PDF</TabsTrigger>
-              <TabsTrigger value="image">Processar Imagem</TabsTrigger>
-            </TabsList>
-          </div>
-          
-          <TabsContent value="text">
-            <CardContent>
-              <TextImportPanel onImportComplete={handleTextImportComplete} />
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              <Button 
-                variant="outline" 
-                onClick={() => form.reset()} 
-                disabled={isPending}
-              >
-                Limpar
-              </Button>
-              <Button 
-                type="submit"
-                onClick={form.handleSubmit(onSubmit)}
-                disabled={isPending}
-              >
-                {isPending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Salvando...
-                  </>
-                ) : (
-                  <>
-                    <Save className="mr-2 h-4 w-4" />
-                    Salvar Reserva
-                  </>
-                )}
-              </Button>
-            </CardFooter>
-          </TabsContent>
-          
-          <TabsContent value="manual">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)}>
-                <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="propertyId"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Propriedade</FormLabel>
-                          <Select
-                            onValueChange={(value) => {
-                              field.onChange(Number(value));
-                              updatePropertyCosts(Number(value));
-                            }}
-                            defaultValue={field.value.toString()}
-                            value={field.value.toString()}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="w-full">
-                                <Building className="mr-2 h-4 w-4 text-muted-foreground" />
-                                <SelectValue placeholder="Selecione uma propriedade" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {properties?.map(property => (
-                                <SelectItem 
-                                  key={property.id} 
-                                  value={property.id.toString()}
-                                >
-                                  {property.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+      {/* Selector de modo */}
+      <div className="flex gap-2 mb-6">
+        <Button
+          variant={mode === 'manual' ? 'default' : 'outline'}
+          onClick={() => setMode('manual')}
+          className="flex items-center gap-2"
+        >
+          <Building className="w-4 h-4" />
+          Formulário Manual
+        </Button>
+        <Button
+          variant={mode === 'scanner' ? 'default' : 'outline'}
+          onClick={() => setMode('scanner')}
+          className="flex items-center gap-2"
+        >
+          <Camera className="w-4 h-4" />
+          Scanner de Documentos
+        </Button>
+      </div>
 
-                    <FormField
-                      control={form.control}
-                      name="platform"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Plataforma</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            value={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Selecione a plataforma" />
-                              </SelectTrigger>
+      {/* Modo Scanner */}
+      {mode === 'scanner' && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Camera className="w-5 h-5" />
+              Scanner de Documentos
+            </CardTitle>
+            <CardDescription>
+              Carregue um documento PDF ou imagem para extrair automaticamente os dados da reserva
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+              <input
+                type="file"
+                accept=".pdf,.jpg,.jpeg,.png"
+                onChange={(e) => {
+                  const uploadedFile = e.target.files?.[0];
+                  if (uploadedFile) {
+                    handleFileUpload(uploadedFile);
+                  }
+                }}
+                className="hidden"
+                id="file-upload"
+                disabled={isProcessing}
+              />
+              
+              {isProcessing ? (
+                <div className="flex flex-col items-center gap-4">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                  <p className="text-lg font-medium">A processar documento...</p>
+                  <p className="text-sm text-muted-foreground">
+                    A extrair dados da reserva
+                  </p>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-4">
+                  <Upload className="w-12 h-12 text-gray-400" />
+                  <div>
+                    <p className="text-lg font-medium mb-2">
+                      Carregue o documento da reserva
+                    </p>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Suporte para PDF, JPG, PNG
+                    </p>
+                    <label htmlFor="file-upload">
+                      <Button className="cursor-pointer">
+                        Selecionar Ficheiro
+                      </Button>
+                    </label>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {file && (
+              <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                <p className="text-sm">
+                  <strong>Ficheiro selecionado:</strong> {file.name}
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Modo Manual */}
+      {mode === 'manual' && (
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Building className="w-5 h-5" />
+                  Informações da Reserva
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Propriedade */}
+                <FormField
+                  control={form.control}
+                  name="propertyId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Propriedade *</FormLabel>
+                      <Select 
+                        onValueChange={(value) => field.onChange(parseInt(value))}
+                        value={field.value?.toString()}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione uma propriedade" />
+                          </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="airbnb">Airbnb</SelectItem>
-                          <SelectItem value="booking">Booking</SelectItem>
-                          <SelectItem value="expedia">Expedia</SelectItem>
-                          <SelectItem value="direct">Direto</SelectItem>
-                          <SelectItem value="other">Outro</SelectItem>
+                          {activeProperties.map((property) => (
+                            <SelectItem key={property.id} value={property.id.toString()}>
+                              {property.name}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Nome do Hóspede */}
                 <FormField
                   control={form.control}
                   name="guestName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nome do Hóspede</FormLabel>
+                      <FormLabel>Nome do Hóspede *</FormLabel>
                       <FormControl>
-                        <Input 
-                          placeholder="Nome completo do hóspede"
-                          {...field}
-                        />
+                        <Input placeholder="Nome completo do hóspede" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="reference"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Referência</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Referência ou código da reserva"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <FormField
-                  control={form.control}
-                  name="numAdults"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Adultos</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="1"
-                          placeholder="Número de adultos"
-                          {...field}
-                          onChange={(e) => {
-                            const adults = parseInt(e.target.value) || 1;
-                            field.onChange(adults);
-                            // Atualizar o total de hóspedes
-                            const children = form.getValues("numChildren") || 0;
-                            form.setValue("numGuests", adults + children);
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="numChildren"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Crianças</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="0"
-                          placeholder="Número de crianças"
-                          {...field}
-                          onChange={(e) => {
-                            const children = parseInt(e.target.value) || 0;
-                            field.onChange(children);
-                            // Atualizar o total de hóspedes
-                            const adults = form.getValues("numAdults") || 1;
-                            form.setValue("numGuests", adults + children);
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="numGuests"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Total Hóspedes</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="1"
-                          disabled
-                          {...field}
-                          onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+                {/* Email e Telefone */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="guestEmail"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="email" 
+                            placeholder="email@exemplo.com" 
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="guestPhone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Telefone</FormLabel>
+                        <FormControl>
+                          <Input placeholder="+351 000 000 000" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Datas */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="checkInDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Data de Check-in *</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="checkOutDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Data de Check-out *</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Número de Hóspedes */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="numGuests"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Total de Hóspedes *</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            min="1" 
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="numAdults"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Adultos</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            min="0" 
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="numChildren"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Crianças</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            min="0" 
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Informações Financeiras */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CircleDollarSign className="w-5 h-5" />
+                  Informações Financeiras
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="totalAmount"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Valor Total *</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            step="0.01" 
+                            placeholder="0.00" 
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="netAmount"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Valor Líquido</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            step="0.01" 
+                            placeholder="0.00" 
+                            {...field}
+                            readOnly
+                            className="bg-gray-50"
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Calculado automaticamente
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Taxas e Comissões */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="platformFee"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Taxa da Plataforma</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            step="0.01" 
+                            placeholder="0.00" 
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="cleaningFee"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Taxa de Limpeza</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            step="0.01" 
+                            placeholder="0.00" 
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="checkInFee"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Taxa de Check-in</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            step="0.01" 
+                            placeholder="0.00" 
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="commissionFee"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Comissão</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            step="0.01" 
+                            placeholder="0.00" 
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
                 <FormField
                   control={form.control}
-                  name="guestEmail"
+                  name="teamPayment"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email do Hóspede</FormLabel>
+                      <FormLabel>Pagamento à Equipa</FormLabel>
                       <FormControl>
                         <Input 
-                          type="email"
-                          placeholder="Email para contato (opcional)"
-                          {...field}
+                          type="number" 
+                          step="0.01" 
+                          placeholder="0.00" 
+                          {...field} 
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+              </CardContent>
+            </Card>
 
-                <FormField
-                  control={form.control}
-                  name="guestPhone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Telefone do Hóspede</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="Telefone para contato (opcional)"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
+            {/* Informações Adicionais */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Informações Adicionais</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="source"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Plataforma</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione a plataforma" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="airbnb">Airbnb</SelectItem>
+                            <SelectItem value="booking">Booking.com</SelectItem>
+                            <SelectItem value="direct">Direto</SelectItem>
+                            <SelectItem value="expedia">Expedia</SelectItem>
+                            <SelectItem value="other">Outro</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="status"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Estado</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione o estado" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="pending">Pendente</SelectItem>
+                            <SelectItem value="confirmed">Confirmada</SelectItem>
+                            <SelectItem value="cancelled">Cancelada</SelectItem>
+                            <SelectItem value="completed">Concluída</SelectItem>
+                            <SelectItem value="no-show">Não compareceu</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
                 <FormField
                   control={form.control}
                   name="country"
@@ -761,343 +737,60 @@ export default function ReservationNewPage() {
                     <FormItem>
                       <FormLabel>País de Origem</FormLabel>
                       <FormControl>
-                        <Input 
-                          placeholder="País do hóspede (opcional)"
-                          {...field}
-                        />
+                        <Input placeholder="Ex: Portugal" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
-                  control={form.control}
-                  name="checkInDate"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Data de Check-in</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "dd/MM/yyyy")
-                              ) : (
-                                <span>Selecione uma data</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <CalendarComponent
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) => date < new Date("1900-01-01")}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
 
                 <FormField
                   control={form.control}
-                  name="checkOutDate"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Data de Check-out</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "dd/MM/yyyy")
-                              ) : (
-                                <span>Selecione uma data</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <CalendarComponent
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) => 
-                              date < new Date("1900-01-01") || 
-                              date <= form.getValues("checkInDate")
-                            }
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
-                  control={form.control}
-                  name="totalAmount"
+                  name="notes"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Valor Total (€)</FormLabel>
+                      <FormLabel>Observações</FormLabel>
                       <FormControl>
-                        <Input
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          placeholder="0.00"
-                          {...field}
-                          onChange={(e) => {
-                            field.onChange(e.target.value);
-                            
-                            // If a property is selected, recalculate commission
-                            if (selectedPropertyId) {
-                              const selectedProperty = properties?.find(p => p.id === selectedPropertyId);
-                              if (selectedProperty) {
-                                const totalAmount = Number(e.target.value);
-                                const commissionFee = (totalAmount * Number(selectedProperty.commission)) / 100;
-                                form.setValue("commissionFee", commissionFee.toString());
-                                
-                                setCalculatedCosts(prev => ({
-                                  ...prev,
-                                  commissionFee
-                                }));
-                              }
-                            }
-                            
-                            // Recalculate net amount
-                            setTimeout(recalculateNetAmount, 0);
-                          }}
+                        <Textarea 
+                          placeholder="Observações adicionais sobre a reserva..."
+                          className="min-h-[80px]"
+                          {...field} 
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+              </CardContent>
+            </Card>
 
-                <FormField
-                  control={form.control}
-                  name="platformFee"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Taxa da Plataforma (€)</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          placeholder="0.00"
-                          {...field}
-                          onChange={(e) => {
-                            field.onChange(e.target.value);
-                            
-                            // Recalculate net amount
-                            setTimeout(recalculateNetAmount, 0);
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+            {/* Botões de ação */}
+            <Card>
+              <CardFooter className="flex justify-between pt-6">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setLocation("/reservations")}
+                >
+                  Cancelar
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={createReservation.isPending}
+                  className="flex items-center gap-2"
+                >
+                  {createReservation.isPending ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Save className="w-4 h-4" />
                   )}
-                />
-              </div>
-
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status da Reserva</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      value={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione o status" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {enums?.reservationStatus?.map(status => (
-                          <SelectItem key={status} value={status}>
-                            {status === "pending" && "Pendente"}
-                            {status === "confirmed" && "Confirmada"}
-                            {status === "cancelled" && "Cancelada"}
-                            {status === "completed" && "Completada"}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="notes"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Notas</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Observações adicionais sobre a reserva"
-                        className="min-h-[100px]"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="bg-secondary-50 rounded-lg p-4 border border-secondary-200">
-                <h3 className="text-sm font-medium text-secondary-700 mb-2">Resumo dos Custos</h3>
-                
-                <div className="space-y-2">
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <p className="text-sm text-secondary-500">Valor Total</p>
-                      <p className="font-medium">{formatCurrency(Number(form.getValues("totalAmount")))}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-secondary-500">Taxa da Plataforma</p>
-                      <p className="font-medium text-red-600">-{formatCurrency(calculatedCosts.platformFee)}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-secondary-500">Custo de Limpeza</p>
-                      <p className="font-medium text-red-600">-{formatCurrency(calculatedCosts.cleaningFee)}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-secondary-500">Taxa de Check-in</p>
-                      <p className="font-medium text-red-600">-{formatCurrency(calculatedCosts.checkInFee)}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-secondary-500">Comissão</p>
-                      <p className="font-medium text-red-600">-{formatCurrency(calculatedCosts.commissionFee)}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-secondary-500">Pagamento Equipe</p>
-                      <p className="font-medium text-red-600">-{formatCurrency(calculatedCosts.teamPayment)}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="pt-2 border-t border-secondary-200 mt-2">
-                    <div className="flex justify-between items-center">
-                      <p className="text-sm font-medium text-secondary-700">Valor Líquido</p>
-                      <p className="font-medium text-green-600">{formatCurrency(calculatedCosts.netAmount)}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              <Button 
-                variant="outline" 
-                type="button" 
-                onClick={() => navigate("/reservations")}
-                disabled={isPending}
-              >
-                Cancelar
-              </Button>
-              <Button 
-                type="submit" 
-                disabled={isPending} 
-                className="bg-maria-primary hover:bg-maria-primary/90"
-                onClick={(e) => {
-                  console.log("🔥 BOTÃO CLICADO!");
-                  console.log("📋 Dados do formulário:", form.getValues());
-                  console.log("❌ Erros do formulário:", form.formState.errors);
-                  console.log("✅ Formulário válido:", form.formState.isValid);
-                  e.preventDefault();
-                  form.handleSubmit(onSubmit)();
-                }}
-              >
-                {isPending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Salvando...
-                  </>
-                ) : (
-                  <>
-                    <Save className="mr-2 h-4 w-4" />
-                    Criar Reserva
-                  </>
-                )}
-              </Button>
-            </CardFooter>
+                  Guardar Reserva
+                </Button>
+              </CardFooter>
+            </Card>
           </form>
         </Form>
-        </TabsContent>
-
-        <TabsContent value="pdf">
-          <CardContent className="space-y-6">
-            <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-secondary-200 rounded-lg">
-              <FileText className="h-12 w-12 text-secondary-400 mb-4" />
-              <h3 className="text-xl font-medium text-secondary-900 mb-2">Upload de PDF</h3>
-              <p className="text-secondary-500 text-center mb-4">
-                Arraste e solte um arquivo PDF ou clique para selecionar
-              </p>
-              <Input 
-                type="file" 
-                accept=".pdf" 
-                className="max-w-sm" 
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) handleFileUpload(file);
-                }}
-              />
-            </div>
-          </CardContent>
-        </TabsContent>
-
-        <TabsContent value="image">
-          <CardContent className="space-y-6">
-            <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-secondary-200 rounded-lg">
-              <ImageIcon className="h-12 w-12 text-secondary-400 mb-4" />
-              <h3 className="text-xl font-medium text-secondary-900 mb-2">Upload de Imagem</h3>
-              <p className="text-secondary-500 text-center mb-4">
-                Arraste e solte uma imagem ou clique para selecionar
-              </p>
-              <Input 
-                type="file" 
-                accept="image/*" 
-                className="max-w-sm" 
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) handleFileUpload(file);
-                }}
-              />
-            </div>
-          </CardContent>
-        </TabsContent>
-      </Tabs>
-      </Card>
+      )}
     </div>
   );
 }
