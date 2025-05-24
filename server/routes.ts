@@ -3339,13 +3339,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Garantir formato de dois dígitos para o mês
         month = month.padStart(2, '0');
         
-        // Registrar atividade
-        await storage.createActivity({
-          activityType: 'report_generation',
-          description: `Relatório financeiro para proprietário ${owner.name} (ID: ${ownerId}) para ${month}/${year}`,
-          resourceType: 'owner',
-          resourceId: ownerId
-        });
+        // Log simples para debug
+        console.log(`Gerando relatório para ${owner.name} - mês: ${month}/${year}`);
       }
       
       // Gerar o relatório
