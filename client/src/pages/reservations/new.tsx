@@ -96,7 +96,7 @@ export default function ReservationNewPage() {
   const { toast } = useToast();
 
   const form = useForm({
-    resolver: zodResolver(extendedReservationSchema),
+    resolver: zodResolver(extendedReservationSchema.omit({ commission: true })),
     defaultValues: {
       propertyId: 0,
       guestName: "",
