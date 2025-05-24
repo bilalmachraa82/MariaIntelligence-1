@@ -18,7 +18,8 @@ import {
   Bot,
   Settings,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Wrench
 } from "lucide-react";
 
 interface SidebarProps {
@@ -46,7 +47,7 @@ export function SidebarSimplified({ collapsed, onToggleCollapse, isMobile = fals
     return location.startsWith(href);
   };
 
-  // Menu principal - 6 itens essenciais
+  // Menu principal - 7 itens essenciais
   const mainNavItems: NavItem[] = [
     {
       name: "Início",
@@ -71,6 +72,12 @@ export function SidebarSimplified({ collapsed, onToggleCollapse, isMobile = fals
       href: isPortuguese ? "/proprietarios" : "/owners",
       icon: Users,
       iconColor: "text-orange-500"
+    },
+    {
+      name: "Manutenção",
+      href: "/maintenance/pending",
+      icon: Wrench,
+      iconColor: "text-amber-500"
     },
     {
       name: "Finanças",
