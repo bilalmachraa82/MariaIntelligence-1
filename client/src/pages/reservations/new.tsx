@@ -566,15 +566,11 @@ export default function ReservationNewPage() {
                               </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {enums?.reservationPlatform?.map(platform => (
-                            <SelectItem key={platform} value={platform}>
-                              {platform === "airbnb" && "Airbnb"}
-                              {platform === "booking" && "Booking"}
-                              {platform === "expedia" && "Expedia"}
-                              {platform === "direct" && "Direto"}
-                              {platform === "other" && "Outro"}
-                            </SelectItem>
-                          ))}
+                          <SelectItem value="airbnb">Airbnb</SelectItem>
+                          <SelectItem value="booking">Booking</SelectItem>
+                          <SelectItem value="expedia">Expedia</SelectItem>
+                          <SelectItem value="direct">Direto</SelectItem>
+                          <SelectItem value="other">Outro</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
