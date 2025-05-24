@@ -412,7 +412,10 @@
       "contextProperty": "Propriedade",
       "contextReservation": "Reserva", 
       "contextReport": "Relatório",
-      "contextSuggestion": "Sugestão"
+      "contextSuggestion": "Sugestão",
+      "welcomeMessage": "Olá Carina! 😊 Sou a Maria, a tua assistente especializada em alojamento local. Estou aqui para te ajudar a fazer crescer o teu negócio com carinho e expertise! É assim que preferes ser chamada, ou gostarias que te chamasse de outra forma?",
+      "conversationCleared": "Conversa reiniciada",
+      "conversationClearedDesc": "A tua conversa anterior foi apagada, mas lembro-me sempre das tuas preferências!"
     },
     "cleaningTeams": {
       "title": "Equipas de Limpeza",
