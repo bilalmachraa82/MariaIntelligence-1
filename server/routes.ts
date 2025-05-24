@@ -4486,6 +4486,111 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  /**
+   * Endpoint para gerar PDF do dashboard
+   * Recebe dados do dashboard e gera um PDF formatado
+   */
+  app.post("/api/generate-dashboard-pdf", async (req: Request, res: Response) => {
+    try {
+      const { title, period, date, granularity, statistics, revenueData } = req.body;
+
+      // Importar jsPDF dinamicamente
+      const { jsPDF } = await import('jspdf');
+      require('jspdf-autotable');
+
+      const doc = new jsPDF();
+      let yPosition = 20;
+
+      // Título e cabeçalho
+      doc.setFontSize(20);
+      doc.setFont('helvetica', 'bold');
+      doc.text(title, 20, yPosition);
+      yPosition += 15;
+
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Período: ${period}`, 20, yPosition);
+      yPosition += 8;
+      doc.text(`Data de Geração: ${date}`, 20, yPosition);
+      yPosition += 8;
+      doc.text(`Granularidade: ${granularity}`, 20, yPosition);
+      yPosition += 20;
+
+      // Resumo de estatísticas
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Resumo de Estatísticas', 20, yPosition);
+      yPosition += 15;
+
+      const statsData = [
+        ['Receita Total', `€${statistics.totalRevenue.toFixed(2)}`],
+        ['Lucro Líquido', `€${statistics.netProfit.toFixed(2)}`],
+        ['Taxa de Ocupação', `${statistics.occupancyRate.toFixed(1)}%`],
+        ['Total de Reservas', statistics.totalReservations.toString()]
+      ];
+
+      (doc as any).autoTable({
+        head: [['Métrica', 'Valor']],
+        body: statsData,
+        startY: yPosition,
+        theme: 'grid',
+        headStyles: { fillColor: [41, 128, 185] },
+        margin: { left: 20, right: 20 }
+      });
+
+      yPosition = (doc as any).lastAutoTable.finalY + 20;
+
+      // Dados detalhados se existirem
+      if (revenueData && revenueData.length > 0) {
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Dados Detalhados', 20, yPosition);
+        yPosition += 15;
+
+        const detailData = revenueData.map((item: any) => [
+          item.name || 'N/A',
+          `€${(item.Receita || 0).toFixed(2)}`,
+          `€${(item.Lucro || 0).toFixed(2)}`
+        ]);
+
+        (doc as any).autoTable({
+          head: [['Período', 'Receita (€)', 'Lucro (€)']],
+          body: detailData,
+          startY: yPosition,
+          theme: 'grid',
+          headStyles: { fillColor: [46, 204, 113] },
+          margin: { left: 20, right: 20 }
+        });
+      }
+
+      // Adicionar rodapé
+      const pageCount = doc.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'italic');
+        doc.text(`Maria Faz - Gestão de Alojamentos | Página ${i} de ${pageCount}`, 
+                 doc.internal.pageSize.width / 2, 
+                 doc.internal.pageSize.height - 10, 
+                 { align: 'center' });
+      }
+
+      // Retornar PDF
+      const pdfBuffer = Buffer.from(doc.output('arraybuffer'));
+      
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="dashboard_${period.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf"`);
+      res.send(pdfBuffer);
+
+    } catch (error) {
+      console.error('Erro ao gerar PDF do dashboard:', error);
+      res.status(500).json({
+        success: false,
+        message: "Erro ao gerar PDF do dashboard"
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

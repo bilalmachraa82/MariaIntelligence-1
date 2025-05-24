@@ -240,12 +240,23 @@ export default function NewModernDashboard({ minimal = false }: { minimal?: bool
 
   // Função para exportar dados do dashboard
   const handleExportData = () => {
+    // Mostrar opções de formato
+    const formatChoice = window.confirm("Escolha o formato de exportação:\n\nOK = PDF\nCancelar = CSV");
+    
+    if (formatChoice) {
+      exportToPDF();
+    } else {
+      exportToCSV();
+    }
+  };
+
+  // Exportar para CSV com encoding correto
+  const exportToCSV = () => {
     try {
-      // Criar dados para exportação
       const selectedRange = selectedDateRange.label;
       
-      // Converter para CSV
-      const csvHeaders = ['Período', 'Receita (€)', 'Lucro (€)'];
+      // Converter para CSV com encoding UTF-8 BOM
+      const csvHeaders = ['Periodo', 'Receita (EUR)', 'Lucro (EUR)'];
       const csvRows = revenueData?.map(item => [
         item.name || 'N/A',
         item.Receita || 0,
@@ -253,23 +264,25 @@ export default function NewModernDashboard({ minimal = false }: { minimal?: bool
       ]) || [];
 
       const csvContent = [
-        `Relatório Dashboard Maria Faz - ${selectedRange}`,
-        `Data de Geração: ${new Date().toLocaleDateString('pt-PT')}`,
+        `Relatorio Dashboard Maria Faz - ${selectedRange}`,
+        `Data de Geracao: ${new Date().toLocaleDateString('pt-PT')}`,
         `Granularidade: ${getGranularityLabel()}`,
         '',
-        'RESUMO ESTATÍSTICAS',
+        'RESUMO ESTATISTICAS',
         `Receita Total,${statistics?.totalRevenue || 0}`,
-        `Lucro Líquido,${statistics?.netProfit || 0}`,
-        `Taxa de Ocupação,${statistics?.occupancyRate || 0}%`,
+        `Lucro Liquido,${statistics?.netProfit || 0}`,
+        `Taxa de Ocupacao,${statistics?.occupancyRate || 0}%`,
         `Total de Reservas,${statistics?.reservationsCount || 0}`,
         '',
         'DADOS DETALHADOS',
         csvHeaders.join(','),
         ...csvRows.map(row => row.join(','))
-      ].join('\n');
+      ].join('\r\n');
 
-      // Criar e baixar arquivo
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      // Adicionar BOM para UTF-8
+      const BOM = '\uFEFF';
+      const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+      
       const link = document.createElement('a');
       const url = URL.createObjectURL(blob);
       link.setAttribute('href', url);
@@ -278,20 +291,81 @@ export default function NewModernDashboard({ minimal = false }: { minimal?: bool
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      URL.revokeObjectURL(url);
 
-      // Mostrar sucesso
       toast({
-        title: "Exportação Concluída! 📊",
-        description: "Os dados do dashboard foram exportados para CSV com sucesso.",
+        title: "Exportação CSV Concluída! 📊",
+        description: "Os dados foram exportados em formato CSV com codificação correta.",
       });
 
     } catch (error) {
-      console.error('Erro na exportação:', error);
+      console.error('Erro na exportação CSV:', error);
       toast({
         title: "Erro na Exportação",
-        description: "Não foi possível exportar os dados. Tente novamente.",
+        description: "Não foi possível exportar para CSV. Tente novamente.",
         variant: "destructive"
       });
+    }
+  };
+
+  // Exportar para PDF
+  const exportToPDF = async () => {
+    try {
+      const selectedRange = selectedDateRange.label;
+      
+      // Preparar dados para PDF
+      const reportData = {
+        title: `Relatório Dashboard Maria Faz`,
+        period: selectedRange,
+        date: new Date().toLocaleDateString('pt-PT'),
+        granularity: getGranularityLabel(),
+        statistics: {
+          totalRevenue: statistics?.totalRevenue || 0,
+          netProfit: statistics?.netProfit || 0,
+          occupancyRate: statistics?.occupancyRate || 0,
+          totalReservations: statistics?.reservationsCount || 0
+        },
+        revenueData: revenueData || []
+      };
+
+      // Enviar para o servidor para gerar PDF
+      const response = await fetch('/api/generate-dashboard-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reportData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao gerar PDF no servidor');
+      }
+
+      // Download do PDF
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `dashboard_${selectedRange.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Exportação PDF Concluída! 📄",
+        description: "O relatório foi gerado em PDF com sucesso.",
+      });
+
+    } catch (error) {
+      console.error('Erro na exportação PDF:', error);
+      toast({
+        title: "Erro na Exportação PDF",
+        description: "Não foi possível gerar o PDF. Exportando em CSV como alternativa...",
+        variant: "destructive"
+      });
+      // Fallback para CSV se PDF falhar
+      exportToCSV();
     }
   };
 
