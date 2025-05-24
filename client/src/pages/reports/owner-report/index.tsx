@@ -145,7 +145,7 @@ export default function OwnerReportPage() {
 
     try {
       const ownerName = owners?.find(o => o.id === parseInt(selectedOwner))?.name || "Proprietário";
-      await downloadOwnerReportPDF(ownerReport, ownerName, dateRange.startDate, dateRange.endDate);
+      await downloadOwnerReportPDF(ownerReport, 'full', i18n.language);
       
       toast({
         title: "PDF gerado!",
@@ -274,62 +274,12 @@ export default function OwnerReportPage() {
             occupancyData={occupancyData}
             costDistribution={costDistribution}
             isLoading={isLoading}
-            onExport={(format) => downloadOwnerReportCSV(ownerReport, format, i18n.language)}
-            onSendEmail={handleSendEmail}
+            onExport={handleDownloadPDF}
           />
         </div>
       )}
       
-      {/* Preview do email */}
-      {selectedOwner && ownerReport && (
-        <Card className="mt-8 border-none shadow-md overflow-hidden">
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300">
-                <span className="p-1.5 rounded-full bg-emerald-100 dark:bg-emerald-800">
-                  <Mail className="h-5 w-5 text-emerald-600 dark:text-emerald-300" />
-                </span>
-                {t("emailPreview.title", "Prévia do Email")}
-              </CardTitle>
-              <CardDescription>
-                {t("emailPreview.description", "Assim será o email enviado ao proprietário")}
-              </CardDescription>
-            </CardHeader>
-          </div>
-          <CardContent className="p-6">
-            <div className="border rounded-md p-4 bg-white dark:bg-gray-900">
-              <div className="mb-3 pb-3 border-b">
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  <span className="font-semibold">Para:</span> {ownerReport.ownerName}
-                </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  <span className="font-semibold">Assunto:</span> {t("emailPreview.subject", "Seu Relatório Financeiro")} - {format(new Date(dateRange.startDate), "MMMM yyyy", { locale: pt })}
-                </div>
-              </div>
-              <div className="prose prose-blue dark:prose-invert max-w-none">
-                <p>{t("emailPreview.greeting", "Olá")} {ownerReport.ownerName},</p>
-                <p>
-                  {t("emailPreview.body1", "Temos o prazer de enviar seu relatório financeiro para o período selecionado, anexo a este email em formato PDF. Nele você encontrará:")}
-                </p>
-                <ul>
-                  <li>{t("emailPreview.item1", "Resumo detalhado do desempenho de suas propriedades")}</li>
-                  <li>{t("emailPreview.item2", "Análise de receitas, despesas e lucro líquido")}</li>
-                  <li>{t("emailPreview.item3", "Lista completa de todas as reservas no período")}</li>
-                  <li>{t("emailPreview.item4", "Insights personalizados para otimizar seus resultados")}</li>
-                  <li>{t("emailPreview.item5", "Tabela detalhada com valores recebidos por cada propriedade")}</li>
-                </ul>
-                <p>
-                  {t("emailPreview.body2", "Este relatório é enviado automaticamente e contém todos os detalhes necessários no PDF anexo. Não é necessário acessar nenhum sistema adicional.")}
-                </p>
-                <p>
-                  {t("emailPreview.closing", "Estamos à disposição para qualquer esclarecimento!")}
-                </p>
-                <p>{t("emailPreview.signature", "Equipe Maria Faz")}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+
     </div>
   );
 }
