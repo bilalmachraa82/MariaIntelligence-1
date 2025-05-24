@@ -30,14 +30,32 @@
       "step4Description": "A reserva é automaticamente criada e associada à propriedade, com todos os cálculos feitos"
     },
   "dashboard": {
+      "title": "Dashboard",
+      "description": "Visão geral do seu negócio de aluguer de imóveis",
       "fullDashboard": "Dashboard Completo",
       "welcomeName": "Olá Carina",
-      "fullDashboardDescription": "Visualização detalhada de todas as atividades",
+      "fullDashboardDescription": "Visualização detalhada de todas as actividades",
       "backToOverview": "Voltar à Visão Geral",
       "dailyTasks": "Tarefas do Dia",
       "financialSummary": "Resumo Financeiro",
       "todaysSchedule": "Agenda de Hoje",
-      "financialView": "Visão Financeira"
+      "financialView": "Visão Financeira",
+      "export": "Exportar",
+      "period": "Período",
+      "overview": "Visão Geral",
+      "details": "Detalhes",
+      "totalRevenue": "Receita Total",
+      "netProfit": "Lucro Líquido",
+      "occupancyRate": "Taxa de Ocupação",
+      "target": "Meta",
+      "totalReservations": "Total de Reservas",
+      "revenueVsProfit": "Receita vs Lucro",
+      "financialBreakdown": "Distribuição Financeira",
+      "detailedDescription": "Análise detalhada de receitas, despesas e lucratividade por propriedade.",
+      "comingSoon": "Análise detalhada em desenvolvimento. Disponível em breve!",
+      "noDataAvailable": "Não há dados disponíveis.",
+      "exportNotImplemented": "Exportação de dados implementada na versão completa",
+      "comparedToPrevious": "em relação ao período anterior"
     },
     "navigation": {
       "mainMenu": "Menu",
@@ -507,28 +525,17 @@
       }
     },
     "common": {
-      "loading": "A carregar..."
-    },
-    "dashboard": {
-      "title": "Dashboard",
-      "description": "Visão geral do seu negócio de aluguer de imóveis",
-      "export": "Exportar",
-      "period": "Período",
-      "overview": "Visão Geral",
-      "details": "Detalhes",
-      "totalRevenue": "Receita Total",
-      "netProfit": "Lucro Líquido",
-      "occupancyRate": "Taxa de Ocupação",
-      "target": "Meta",
-      "totalReservations": "Total de Reservas",
-      "revenueVsProfit": "Receita vs Lucro",
-      "financialBreakdown": "Distribuição Financeira",
-      "detailedDescription": "Análise detalhada de receitas, despesas e lucratividade por propriedade.",
-      "comingSoon": "Análise detalhada em desenvolvimento. Disponível em breve!",
-      "noDataAvailable": "Não há dados disponíveis.",
-      "exportNotImplemented": "Exportação de dados implementada na versão completa",
-      "backToOverview": "Voltar para Visão Geral",
-      "comparedToPrevious": "em relação ao período anterior"
+      "loading": "A carregar...",
+      "back": "Voltar",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar",
+      "edit": "Editar",
+      "delete": "Apagar",
+      "view": "Ver",
+      "actions": "Acções",
+      "error": "Erro",
+      "success": "Sucesso"
     },
     "pdfUpload": {
       "uploadButton": "Importar PDF"
