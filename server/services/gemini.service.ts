@@ -13,12 +13,12 @@
 import { rateLimiter } from './rate-limiter.service';
 import crypto from 'crypto';
 
-// Interface para tipos de modelos disponíveis
+// Interface para tipos de modelos disponíveis - Atualizado para os modelos mais recentes
 export enum GeminiModel {
-  TEXT = 'gemini-2.5-flash',        // Para processamento de texto - versão mais recente
-  VISION = 'gemini-2.5-flash',      // Para processamento de imagens - versão mais recente  
-  FLASH = 'gemini-2.5-flash',       // Versão Flash 2.5 - mais rápida e eficiente
-  AUDIO = 'gemini-2.5-pro-exp-03-25' // Experimental - Para processamento de áudio (inclui voz)
+  TEXT = 'gemini-1.5-flash-002',   // Modelo Flash 1.5-002 - versão mais recente estável
+  VISION = 'gemini-1.5-flash-002', // Para processamento de imagens - versão mais recente
+  FLASH = 'gemini-1.5-flash-002',  // Versão Flash 1.5-002 - última versão estável disponível
+  AUDIO = 'gemini-1.5-pro'         // Para processamento multimodal incluindo áudio
 }
 
 // Interface para configuração de geração

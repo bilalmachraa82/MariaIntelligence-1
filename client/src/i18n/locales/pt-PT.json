@@ -318,6 +318,94 @@
       "confirmExpired": "Confirmar Expiração",
       "expiredWarning": "Ao confirmar, este orçamento será marcado como expirado.",
       "confirmExpiredAction": "Marcar como Expirado"
+    },
+    "aiAssistant": {
+      "title": "Assistente Maria",
+      "placeholder": "Escreve a tua mensagem aqui...",
+      "sendMessage": "Enviar",
+      "clearConversation": "Nova conversa",
+      "uploadDocument": "Enviar ficheiro",
+      "attachFile": "Anexar ficheiro",
+      "configureKey": "Configurar Chave da API Gemini",
+      "enterApiKey": "Insira a chave da API Gemini",
+      "getKeyInstructions": "Obtenha sua chave em https://ai.google.dev/ e cole-a abaixo para ativar todas as funcionalidades do assistente.",
+      "secureStorage": "A chave será armazenada com segurança no servidor e não será compartilhada com terceiros.",
+      "dismiss": "Dispensar",
+      "options": "Opções",
+      "tabs": {
+        "chat": "Conversa",
+        "suggestions": "Sugestões",
+        "quickAccess": "Atalhos",
+        "tools": "Opções"
+      },
+      "chatTitle": "Assistente Maria",
+      "chatDescription": "Tira as tuas dúvidas sobre imóveis, reservas e relatórios",
+      "quickSuggestions": {
+        "title": "Atalhos",
+        "subtitle": "Ações rápidas para as tuas tarefas mais comuns"
+      },
+      "allSuggestions": "Todas as sugestões",
+      "allSuggestionsDesc": "Explore sugestões por categoria para obter insights valiosos",
+      "categories": {
+        "business": "Negócios",
+        "properties": "Imóveis", 
+        "reservations": "Reservas",
+        "assistant": "Assistente"
+      },
+      "tools": {
+        "title": "Opções",
+        "description": "Gerir a conversa e documentos"
+      },
+      "tip": {
+        "title": "Dica",
+        "message": "Podes usar a assistente para obter informações sobre os teus imóveis, ajuda com reservas e análises de desempenho. Basta perguntares de forma natural!"
+      },
+      "suggestions": {
+        "business": {
+          "performance": "Como está o desempenho do meu negócio este mês?",
+          "revenue": "Qual foi a minha receita total no último trimestre?",
+          "profit": "Quanto lucro tive nos últimos 6 meses?",
+          "occupancy": "Qual é a taxa de ocupação dos meus imóveis?",
+          "trends": "Mostra-me as tendências de reservas deste ano"
+        },
+        "properties": {
+          "available": "Que propriedades estão disponíveis para esta semana?",
+          "maintenance": "Há alguma manutenção pendente nos meus imóveis?",
+          "cleaning": "Quando foram feitas as últimas limpezas?",
+          "recommendations": "Que melhorias recomendam para os meus imóveis?"
+        },
+        "reservations": {
+          "upcoming": "Que reservas tenho para os próximos dias?",
+          "cancellations": "Houve cancelamentos recentemente?",
+          "availability": "Que datas estão livres para reservas?",
+          "longestStay": "Qual foi a reserva mais longa este ano?"
+        },
+        "assistant": {
+          "personality": "Como funciona esta assistente?",
+          "capabilities": "Que tipo de informações podes dar-me?",
+          "dataSource": "De onde vêm os dados que usas?",
+          "improvement": "Como posso melhorar o meu negócio?"
+        }
+      },
+      "quickTasks": {
+        "nextCheckins": "Próximos Check-ins",
+        "checkinsDesc": "Ver próximas chegadas",
+        "nextCheckouts": "Próximos Check-outs", 
+        "checkoutsDesc": "Ver próximas saídas",
+        "cleaning": "Limpezas",
+        "cleaningDesc": "Gestão de limpezas",
+        "maintenance": "Manutenção",
+        "maintenanceDesc": "Tarefas pendentes",
+        "today": "Tarefas de Hoje",
+        "todayDesc": "O que preciso fazer hoje"
+      },
+      "quickPrompts": {
+        "nextCheckins": "Que check-ins tenho hoje e amanhã?",
+        "nextCheckouts": "Que check-outs tenho hoje e amanhã?",
+        "cleaning": "Que limpezas estão agendadas?",
+        "maintenance": "Há manutenções urgentes?",
+        "today": "O que tenho para fazer hoje?"
+      }
     }
   }
 }
