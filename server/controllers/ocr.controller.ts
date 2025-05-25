@@ -49,8 +49,8 @@ export async function postOcr(req: Request, res: Response) {
 
     // ✅ DETECÇÃO PRÉVIA DE ARQUIVOS DE CONTROLE PARA MÚLTIPLAS RESERVAS
     console.log('🔍 Verificando se é arquivo de controle...');
-    const pdfBuffer = fs.readFileSync(req.file.path);
-    const quickCheck = await pdf(pdfBuffer);
+    const initialBuffer = fs.readFileSync(req.file.path);
+    const quickCheck = await pdf(initialBuffer);
     const textContent = quickCheck.text.toLowerCase();
     
     const isControlFile = textContent.includes('exciting lisbon aroeira') ||
