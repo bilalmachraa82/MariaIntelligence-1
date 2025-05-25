@@ -53,51 +53,50 @@ export async function postOcr(req: Request, res: Response) {
     const quickCheck = await pdf(initialBuffer);
     const textContent = quickCheck.text.toLowerCase();
     
-    const isControlFile = textContent.includes('exciting lisbon aroeira') ||
-                         textContent.includes('controlo_aroeira') ||
-                         textContent.includes('aroeira i') ||
-                         (textContent.includes('data entrada') && 
-                          textContent.includes('data saída') &&
-                          textContent.includes('nome') &&
-                          textContent.includes('hóspedes'));
+    const isControlFile = textContent.includes('entradas') ||
+                         textContent.includes('saídas') ||
+                         (textContent.includes('referência') &&
+                          textContent.includes('alojamento') &&
+                          textContent.includes('hóspede')) ||
+                         textContent.includes('controlo') ||
+                         textContent.includes('aroeira');
     
     if (isControlFile) {
       console.log('✅ ARQUIVO DE CONTROLE DETECTADO - Processando múltiplas reservas');
       
       try {
-        const { processControlFile } = await import('../services/control-file-processor');
-        const controlResult = await processControlFile(req.file.path);
+        const { processCheckinCheckoutFile } = await import('../services/checkin-checkout-processor');
+        const result = await processCheckinCheckoutFile(req.file.path);
         
-        if (controlResult.success && controlResult.reservations.length > 0) {
-          console.log(`🎉 SUCESSO: ${controlResult.reservations.length} reservas encontradas no arquivo de controle!`);
+        if (result.success && result.reservations.length > 0) {
+          console.log(`🎉 SUCESSO: ${result.reservations.length} reservas encontradas no arquivo de ${result.type}!`);
           
-          // Converter para formato OCR compatível
-          const reservations = controlResult.reservations.map(reservation => ({
-            propertyName: controlResult.propertyName,
-            guestName: reservation.guestName,
-            checkInDate: reservation.checkInDate,
-            checkOutDate: reservation.checkOutDate,
-            numGuests: reservation.numGuests,
-            totalAmount: reservation.totalAmount || "0",
-            platform: reservation.platform || "booking",
-            status: "confirmed",
-            countryOfOrigin: reservation.countryOfOrigin || "",
-            numNights: reservation.numNights || 0,
-            notes: reservation.notes || "",
-            propertyId: controlResult.propertyId
-          }));
+          // Identificar dados em falta para confirmação
+          const reservationsWithValidation = result.reservations.map(reservation => {
+            const missing = [];
+            if (!reservation.propertyId) missing.push('Propriedade não identificada');
+            if (!reservation.guestPhone) missing.push('Telefone');
+            if (!reservation.guestEmail) missing.push('Email');
+            if (!reservation.totalAmount || reservation.totalAmount === 0) missing.push('Valor da reserva');
+            
+            return {
+              ...reservation,
+              missing: missing.length > 0 ? missing : undefined
+            };
+          });
           
           return res.status(200).json({
             success: true,
-            provider: 'control-file-processor',
-            reservations,
-            boxes: {},
-            extractedData: reservations[0], // Compatibilidade
-            missing: [],
-            rawText: controlResult.rawText
+            provider: 'checkin-checkout-processor',
+            reservations: reservationsWithValidation,
+            documentType: result.type,
+            extractedData: reservationsWithValidation[0] || {},
+            missing: reservationsWithValidation.some(r => r.missing) ? ['Confirmar dados das reservas'] : [],
+            rawText: quickCheck.text.substring(0, 1000),
+            requiresConfirmation: true
           });
         } else {
-          console.log('⚠️ Arquivo de controle não processado corretamente, continuando com OCR normal');
+          console.log('⚠️ Arquivo de check-in/check-out não processado corretamente, continuando com OCR normal');
         }
       } catch (controlError) {
         console.error('❌ Erro no processamento de arquivo de controle:', controlError);
