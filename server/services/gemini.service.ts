@@ -1782,4 +1782,172 @@ export class GeminiService {
     // Executar a função com controle de taxa
     return rateLimitedLearn();
   }
+
+  /**
+   * Analisa documento com múltiplas reservas usando Gemini 2.5 Flash
+   */
+  async analyzeMultiReservationDocument(
+    extractedText: string,
+    scenario: { type: string; description: string; characteristics: string[] }
+  ): Promise<{
+    success: boolean;
+    reservations: any[];
+    confidence: number;
+    errors?: string[];
+  }> {
+    try {
+      console.log('🤖 Analisando documento com Gemini 2.5 Flash...');
+      
+      const prompt = this.buildMultiReservationPrompt(scenario);
+      
+      const result = await this.withRetry(async () => {
+        return await this.flashModel.generateContent({
+          contents: [
+            {
+              role: 'user',
+              parts: [{ text: `${prompt}\n\nTEXTO DO DOCUMENTO:\n${extractedText}` }]
+            }
+          ]
+        });
+      });
+
+      const responseText = result.response.text();
+      console.log('📄 Resposta do Gemini recebida');
+      
+      // Parse da resposta JSON
+      const cleanedResponse = this.cleanJsonResponse(responseText);
+      const analysisResult = JSON.parse(cleanedResponse);
+      
+      return {
+        success: true,
+        reservations: analysisResult.reservations || [],
+        confidence: analysisResult.confidence || 0
+      };
+      
+    } catch (error) {
+      console.error('❌ Erro na análise Gemini:', error);
+      return {
+        success: false,
+        reservations: [],
+        confidence: 0,
+        errors: [error instanceof Error ? error.message : 'Erro desconhecido']
+      };
+    }
+  }
+
+  /**
+   * Constrói prompt especializado para cada cenário de documento
+   */
+  private buildMultiReservationPrompt(scenario: { type: string; description: string; characteristics: string[] }): string {
+    const basePrompt = `
+Você é um especialista em análise de documentos de hospedagem. Analise o texto fornecido e extraia TODAS as reservas encontradas.
+
+CENÁRIO DETECTADO: ${scenario.description}
+CARACTERÍSTICAS: ${scenario.characteristics.join(', ')}
+
+INSTRUÇÕES ESPECÍFICAS:
+1. Identifique TODAS as reservas no documento (pode haver 5-15 reservas)
+2. Para cada reserva, extraia os seguintes dados:
+   - reference: Código de referência (ex: A169-4421916, A203-HM88FZ2EDE)
+   - propertyName: Nome da propriedade/alojamento 
+   - guestName: Nome do hóspede principal
+   - guestPhone: Telefone (formato internacional se possível)
+   - guestEmail: Email (se disponível)
+   - checkInDate: Data de check-in (formato YYYY-MM-DD)
+   - checkOutDate: Data de check-out (formato YYYY-MM-DD)
+   - adults: Número de adultos
+   - children: Número de crianças
+   - country: País de origem
+   - status: Estado da reserva (confirmada, pendente, etc.)
+   - platform: Plataforma de origem (booking, airbnb, etc.)
+
+FORMATOS ESPECÍFICOS PARA DIFERENTES CENÁRIOS:`;
+
+    // Adicionar instruções específicas por cenário
+    switch (scenario.type) {
+      case 'checkin':
+        return basePrompt + `
+3. Este é um documento de CHECK-IN (Entradas)
+4. Procure por tabelas com colunas: Referência, Alojamento, Check in, Adultos, Crianças, Cliente, Hóspede, Telefone
+5. As datas de check-in são as mais importantes
+6. Ignore linhas de cabeçalho e filtros`;
+
+      case 'checkout':
+        return basePrompt + `
+3. Este é um documento de CHECK-OUT (Saídas)
+4. Procure por tabelas com colunas: Referência, Alojamento, Check out, Adultos, Crianças, Cliente, Hóspede, Telefone
+5. As datas de check-out são as mais importantes
+6. Ignore linhas de cabeçalho e filtros`;
+
+      case 'control':
+        return basePrompt + `
+3. Este é um arquivo de CONTROLE por propriedade
+4. Todas as reservas são da mesma propriedade (geralmente Aroeira)
+5. Procure por listas de hóspedes com datas de entrada e saída
+6. Formato pode ser menos tabular, mais descritivo`;
+
+      case 'mixed':
+        return basePrompt + `
+3. Este documento contém AMBOS check-ins e check-outs
+4. Identifique seções separadas para Entradas e Saídas
+5. Processe cada seção independentemente
+6. Marque claramente o tipo de cada reserva`;
+
+      default:
+        return basePrompt + `
+3. Formato desconhecido - analise cuidadosamente a estrutura
+4. Procure por padrões de dados de reserva
+5. Identifique referências, nomes, datas e propriedades`;
+    }
+
+    return basePrompt + `
+
+FORMATO DE RESPOSTA JSON:
+{
+  "success": true,
+  "confidence": 85,
+  "totalReservations": 7,
+  "reservations": [
+    {
+      "reference": "A169-4421916",
+      "propertyName": "Almada 1 Bernardo T3",
+      "guestName": "Adozinda Fortes",
+      "guestPhone": "+44 7951 998541",
+      "guestEmail": "zezafortes80@gmail.com",
+      "checkInDate": "2025-05-22",
+      "checkOutDate": "2025-05-25",
+      "adults": 4,
+      "children": 0,
+      "country": "Reino Unido",
+      "status": "confirmed",
+      "platform": "booking"
+    }
+  ]
+}
+
+IMPORTANTE: 
+- Responda APENAS com JSON válido
+- Não adicione texto antes ou depois do JSON
+- Se não encontrar dados, use string vazia ""
+- Para números, use 0 se não encontrar
+- Seja preciso com datas (formato YYYY-MM-DD)`;
+  }
+
+  /**
+   * Limpa resposta JSON removendo texto extra
+   */
+  private cleanJsonResponse(response: string): string {
+    // Remover markdown
+    let cleaned = response.replace(/```json/g, '').replace(/```/g, '');
+    
+    // Encontrar início e fim do JSON
+    const jsonStart = cleaned.indexOf('{');
+    const jsonEnd = cleaned.lastIndexOf('}') + 1;
+    
+    if (jsonStart !== -1 && jsonEnd !== -1) {
+      cleaned = cleaned.substring(jsonStart, jsonEnd);
+    }
+    
+    return cleaned.trim();
+  }
 }

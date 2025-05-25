@@ -62,45 +62,30 @@ export async function postOcr(req: Request, res: Response) {
                          textContent.includes('aroeira');
     
     if (isControlFile) {
-      console.log('✅ ARQUIVO DE CONTROLE DETECTADO - Processando múltiplas reservas');
+      console.log('✅ ARQUIVO DETECTADO - Processando múltiplas reservas com Gemini 2.5 Flash');
       
       try {
-        const { processCheckinCheckoutFile } = await import('../services/checkin-checkout-processor');
-        const result = await processCheckinCheckoutFile(req.file.path);
+        // Usar Gemini diretamente para múltiplas reservas
+        const { AIAdapter } = await import('../services/ai-adapter.service');
+        const aiAdapter = AIAdapter.getInstance();
+        const result = await aiAdapter.processMultipleReservations(req.file.path, textContent);
         
         if (result.success && result.reservations.length > 0) {
-          console.log(`🎉 SUCESSO: ${result.reservations.length} reservas encontradas no arquivo de ${result.type}!`);
-          
-          // Identificar dados em falta para confirmação
-          const reservationsWithValidation = result.reservations.map(reservation => {
-            const missing = [];
-            if (!reservation.propertyId) missing.push('Propriedade não identificada');
-            if (!reservation.guestPhone) missing.push('Telefone');
-            if (!reservation.guestEmail) missing.push('Email');
-            if (!reservation.totalAmount || reservation.totalAmount === 0) missing.push('Valor da reserva');
-            
-            return {
-              ...reservation,
-              missing: missing.length > 0 ? missing : undefined
-            };
-          });
+          console.log(`🎉 SUCESSO: ${result.reservations.length} reservas encontradas!`);
           
           return res.status(200).json({
             success: true,
-            provider: 'checkin-checkout-processor',
-            reservations: reservationsWithValidation,
-            documentType: result.type,
-            extractedData: reservationsWithValidation[0] || {},
-            missing: reservationsWithValidation.some(r => r.missing) ? ['Confirmar dados das reservas'] : [],
-            rawText: quickCheck.text.substring(0, 1000),
-            requiresConfirmation: true
+            provider: 'gemini-multi-reservations',
+            reservations: result.reservations,
+            documentType: result.documentType,
+            extractedData: result.reservations[0] || {},
+            missing: result.missingData || [],
+            rawText: textContent.substring(0, 1000),
+            requiresConfirmation: result.requiresConfirmation
           });
-        } else {
-          console.log('⚠️ Arquivo de check-in/check-out não processado corretamente, continuando com OCR normal');
         }
-      } catch (controlError) {
-        console.error('❌ Erro no processamento de arquivo de controle:', controlError);
-        console.log('🔄 Continuando com processamento OCR normal...');
+      } catch (geminiError) {
+        console.error('❌ Erro no processamento Gemini:', geminiError);
       }
     }
     

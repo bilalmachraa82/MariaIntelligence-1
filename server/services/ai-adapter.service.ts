@@ -975,6 +975,252 @@ export class AIAdapter {
       };
     }
   }
+
+  /**
+   * Processa múltiplas reservas usando Gemini 2.5 Flash como primário
+   */
+  async processMultipleReservations(filePath: string, textContent: string): Promise<{
+    success: boolean;
+    reservations: any[];
+    documentType: string;
+    missingData?: string[];
+    requiresConfirmation: boolean;
+  }> {
+    try {
+      console.log('🤖 Processando múltiplas reservas com Gemini 2.5 Flash...');
+      
+      // Detectar tipo de documento
+      const documentType = this.detectDocumentType(textContent);
+      console.log(`📋 Tipo detectado: ${documentType}`);
+      
+      // Extrair texto se necessário
+      let extractedText = textContent;
+      if (!extractedText || extractedText.length < 100) {
+        const fs = require('fs');
+        const pdf = require('pdf-parse');
+        const pdfBuffer = fs.readFileSync(filePath);
+        const pdfData = await pdf(pdfBuffer);
+        extractedText = pdfData.text;
+      }
+      
+      // Usar Gemini 2.5 Flash para análise
+      const prompt = this.buildMultiReservationPrompt(documentType, extractedText);
+      const result = await this.geminiService.generateText(prompt);
+      
+      // Parse da resposta JSON
+      const cleanedResponse = this.cleanJsonResponse(result);
+      const analysisResult = JSON.parse(cleanedResponse);
+      
+      if (!analysisResult.reservations || analysisResult.reservations.length === 0) {
+        return {
+          success: false,
+          reservations: [],
+          documentType,
+          requiresConfirmation: false
+        };
+      }
+      
+      // Processar e validar reservas
+      const processedReservations = await this.processReservations(analysisResult.reservations);
+      const missingData = this.identifyMissingData(processedReservations);
+      
+      return {
+        success: true,
+        reservations: processedReservations,
+        documentType,
+        missingData: missingData.length > 0 ? missingData : undefined,
+        requiresConfirmation: missingData.length > 0
+      };
+      
+    } catch (error) {
+      console.error('❌ Erro no processamento Gemini:', error);
+      return {
+        success: false,
+        reservations: [],
+        documentType: 'unknown',
+        requiresConfirmation: false
+      };
+    }
+  }
+
+  /**
+   * Detecta tipo de documento baseado no conteúdo
+   */
+  private detectDocumentType(text: string): string {
+    const lowerText = text.toLowerCase();
+    
+    if (lowerText.includes('entradas') && !lowerText.includes('saídas')) {
+      return 'checkin';
+    } else if (lowerText.includes('saídas') && !lowerText.includes('entradas')) {
+      return 'checkout';
+    } else if (lowerText.includes('entradas') && lowerText.includes('saídas')) {
+      return 'mixed';
+    } else if (lowerText.includes('controlo') || lowerText.includes('aroeira')) {
+      return 'control';
+    }
+    
+    return 'unknown';
+  }
+
+  /**
+   * Constrói prompt especializado para múltiplas reservas
+   */
+  private buildMultiReservationPrompt(documentType: string, extractedText: string): string {
+    const basePrompt = `
+Você é um especialista em análise de documentos de hospedagem. Analise o texto fornecido e extraia TODAS as reservas encontradas.
+
+INSTRUÇÕES ESPECÍFICAS:
+1. Identifique TODAS as reservas no documento (normalmente 5-15 reservas)
+2. Para cada reserva, extraia:
+   - reference: Código de referência (ex: A169-4421916, A203-HM88FZ2EDE)
+   - propertyName: Nome da propriedade/alojamento
+   - guestName: Nome do hóspede principal
+   - guestPhone: Telefone (se disponível)
+   - guestEmail: Email (se disponível)
+   - checkInDate: Data de check-in (formato YYYY-MM-DD)
+   - checkOutDate: Data de check-out (formato YYYY-MM-DD)
+   - adults: Número de adultos
+   - children: Número de crianças
+   - country: País de origem (se disponível)
+   - status: Estado da reserva
+   - platform: Plataforma (booking, airbnb, etc.)
+
+FORMATO ESPECÍFICO PARA ${documentType.toUpperCase()}:`;
+
+    let specificInstructions = '';
+    switch (documentType) {
+      case 'checkin':
+        specificInstructions = `
+3. Este é um documento de CHECK-IN (Entradas)
+4. Procure por tabelas com colunas: Referência, Alojamento, Check in, Adultos, Crianças, Cliente, Hóspede, Telefone
+5. Ignore linhas de cabeçalho e filtros`;
+        break;
+      case 'checkout':
+        specificInstructions = `
+3. Este é um documento de CHECK-OUT (Saídas)
+4. Procure por tabelas com colunas: Referência, Alojamento, Check out, Adultos, Crianças, Cliente, Hóspede, Telefone
+5. Ignore linhas de cabeçalho e filtros`;
+        break;
+      case 'control':
+        specificInstructions = `
+3. Este é um arquivo de CONTROLE por propriedade
+4. Procure por listas de hóspedes com datas de entrada e saída
+5. Formato pode ser menos tabular`;
+        break;
+      default:
+        specificInstructions = `
+3. Analise cuidadosamente a estrutura do documento
+4. Procure por padrões de dados de reserva`;
+    }
+
+    return `${basePrompt}${specificInstructions}
+
+FORMATO DE RESPOSTA JSON:
+{
+  "success": true,
+  "totalReservations": 7,
+  "reservations": [
+    {
+      "reference": "A169-4421916",
+      "propertyName": "Almada 1 Bernardo T3",
+      "guestName": "Adozinda Fortes",
+      "guestPhone": "+44 7951 998541",
+      "guestEmail": "zezafortes80@gmail.com",
+      "checkInDate": "2025-05-22",
+      "checkOutDate": "2025-05-25",
+      "adults": 4,
+      "children": 0,
+      "country": "Reino Unido",
+      "status": "confirmed",
+      "platform": "booking"
+    }
+  ]
+}
+
+IMPORTANTE: 
+- Responda APENAS com JSON válido
+- Não adicione texto antes ou depois do JSON
+- Se não encontrar dados, use string vazia ""
+- Para números, use 0 se não encontrar
+
+TEXTO DO DOCUMENTO:
+${extractedText}`;
+  }
+
+  /**
+   * Limpa resposta JSON
+   */
+  private cleanJsonResponse(response: string): string {
+    let cleaned = response.replace(/```json/g, '').replace(/```/g, '');
+    const jsonStart = cleaned.indexOf('{');
+    const jsonEnd = cleaned.lastIndexOf('}') + 1;
+    
+    if (jsonStart !== -1 && jsonEnd !== -1) {
+      cleaned = cleaned.substring(jsonStart, jsonEnd);
+    }
+    
+    return cleaned.trim();
+  }
+
+  /**
+   * Processa reservas extraídas
+   */
+  private async processReservations(reservations: any[]): Promise<any[]> {
+    const processed = [];
+    
+    for (const reservation of reservations) {
+      const processedReservation = {
+        reference: reservation.reference || '',
+        propertyName: reservation.propertyName || '',
+        guestName: reservation.guestName || '',
+        guestPhone: reservation.guestPhone || '',
+        guestEmail: reservation.guestEmail || '',
+        checkInDate: this.formatDate(reservation.checkInDate),
+        checkOutDate: this.formatDate(reservation.checkOutDate),
+        numGuests: (reservation.adults || 0) + (reservation.children || 0),
+        adults: reservation.adults || 0,
+        children: reservation.children || 0,
+        totalAmount: 0,
+        platform: reservation.platform || 'manual',
+        status: reservation.status || 'confirmed',
+        notes: `Extraído via Gemini 2.5 Flash (${new Date().toLocaleDateString()})`,
+        country: reservation.country || ''
+      };
+      
+      processed.push(processedReservation);
+    }
+    
+    return processed;
+  }
+
+  /**
+   * Identifica dados em falta
+   */
+  private identifyMissingData(reservations: any[]): string[] {
+    const missingData = new Set<string>();
+    
+    for (const reservation of reservations) {
+      if (!reservation.guestPhone) missingData.add('Telefone');
+      if (!reservation.guestEmail) missingData.add('Email');
+      if (!reservation.totalAmount || reservation.totalAmount === 0) missingData.add('Valor da reserva');
+    }
+    
+    return Array.from(missingData);
+  }
+
+  /**
+   * Formata data para YYYY-MM-DD
+   */
+  private formatDate(dateStr: string): string {
+    if (!dateStr) return '';
+    
+    if (dateStr.match(/^\d{2}-\d{2}-\d{4}$/)) {
+      const [day, month, year] = dateStr.split('-');
+      return `${year}-${month}-${day}`;
+    }
+    
+    return dateStr;
+  }
 }
 
 // Exportar singleton para uso global
