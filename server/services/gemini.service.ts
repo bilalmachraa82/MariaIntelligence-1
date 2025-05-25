@@ -226,10 +226,10 @@ export class GeminiService {
       // Criar mock para evitar erros
       this.mockInitialization();
     } else {
-      // Initialização inicial - a conexão real será testada assincronamente
+      // Inicialização inicial - marcar como inicializado imediatamente se a chave existe
+      this.apiKey = apiKey;
+      this.isInitialized = true; // Assumir que está inicializado se a chave existe
       this.initialize(apiKey);
-      // Não definimos isInitialized=true aqui, isso será feito após a validação da API
-      // em validateApiKey callback (linha ~215)
     }
   }
   
