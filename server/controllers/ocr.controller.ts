@@ -53,13 +53,26 @@ export async function postOcr(req: Request, res: Response) {
     const quickCheck = await pdf(initialBuffer);
     const textContent = quickCheck.text.toLowerCase();
     
-    const isControlFile = textContent.includes('entradas') ||
-                         textContent.includes('saídas') ||
-                         (textContent.includes('referência') &&
-                          textContent.includes('alojamento') &&
-                          textContent.includes('hóspede')) ||
-                         textContent.includes('controlo') ||
-                         textContent.includes('aroeira');
+    // Detectar múltiplas reservas por padrões no texto
+    const hasMultipleReservations = textContent.includes('entradas') ||
+                                   textContent.includes('saídas') ||
+                                   textContent.includes('controlo') ||
+                                   textContent.includes('aroeira') ||
+                                   // Padrões de reservas múltiplas
+                                   (textContent.match(/check[\s-]*in/gi) && textContent.match(/check[\s-]*out/gi)) ||
+                                   // Múltiplas datas de reserva
+                                   (textContent.match(/\d{2}[-\/]\d{2}[-\/]\d{4}/g) || []).length >= 4 ||
+                                   // Múltiplos códigos de referência
+                                   (textContent.match(/[a-z]\d+[-]\d+/gi) || []).length >= 2 ||
+                                   // Padrões tabulares
+                                   textContent.includes('referência') && textContent.includes('alojamento') ||
+                                   // Múltiplos telefones
+                                   (textContent.match(/\+\d{2}\s?\d{3}\s?\d{2}\s?\d{2}\s?\d{2}/g) || []).length >= 2;
+    
+    console.log(`🔍 Análise de múltiplas reservas: ${hasMultipleReservations}`);
+    console.log(`📊 Texto analisado (primeiros 500 chars): ${textContent.substring(0, 500)}`);
+    
+    const isControlFile = hasMultipleReservations;
     
     if (isControlFile) {
       console.log('✅ DOCUMENTO COM MÚLTIPLAS RESERVAS DETECTADO - Forçando Gemini 2.5 Flash');
@@ -77,39 +90,46 @@ export async function postOcr(req: Request, res: Response) {
         const gemini = new GeminiService();
         
         const prompt = `
-Analise este documento de hospedagem e extraia TODAS as reservas. Este documento contém múltiplas reservas em formato tabular.
+EXTRAIA TODAS AS RESERVAS DESTE DOCUMENTO. Este é um documento de hospedagem com MÚLTIPLAS reservas que devem ser extraídas.
 
-INSTRUÇÕES:
-1. Encontre TODAS as reservas (normalmente 5-15 reservas)
-2. Para cada reserva extraia:
-   - reference: Código (ex: A169-4421916)
-   - propertyName: Nome da propriedade 
-   - guestName: Nome do hóspede
-   - checkInDate: Data check-in (YYYY-MM-DD)
-   - checkOutDate: Data check-out (YYYY-MM-DD)
-   - adults: Número de adultos
-   - children: Número de crianças
+CRITÉRIO OBRIGATÓRIO: Encontre CADA linha de reserva no documento. NÃO pare após a primeira reserva.
 
-RESPONDA APENAS COM JSON:
+Para CADA reserva encontrada, extraia:
+- reference: Código de referência 
+- propertyName: Nome da propriedade/alojamento
+- guestName: Nome completo do hóspede (NÃO "Telefone" ou "Email")
+- checkInDate: Data de entrada (formato YYYY-MM-DD)
+- checkOutDate: Data de saída (formato YYYY-MM-DD)
+- adults: Número de adultos (padrão 2 se não especificado)
+- children: Número de crianças (padrão 0 se não especificado)
+
+IMPORTANTE:
+- Procure por TODAS as entradas na tabela/lista
+- Cada linha com dados de hóspede é uma reserva separada
+- NÃO pare após encontrar uma reserva
+- Se encontrar telefones como +32 475 69 31 35, extraia o nome do hóspede correto, não "Telefone"
+
+RESPONDA APENAS COM JSON VÁLIDO:
 {
   "reservations": [
     {
-      "reference": "A169-4421916",
-      "propertyName": "Almada 1 Bernardo T3",
-      "guestName": "Adozinda Fortes",
-      "checkInDate": "2025-05-22",
-      "checkOutDate": "2025-05-25",
-      "adults": 4,
+      "reference": "código_referência",
+      "propertyName": "nome_propriedade",
+      "guestName": "nome_real_hospede",
+      "checkInDate": "YYYY-MM-DD",
+      "checkOutDate": "YYYY-MM-DD", 
+      "adults": 2,
       "children": 0
     }
   ]
 }
 
-DOCUMENTO:
+DOCUMENTO COMPLETO:
 ${fullText}`;
 
+        console.log('🚀 Tentativa 1/5');
         const geminiResult = await gemini.generateText(prompt);
-        console.log('🤖 Resposta Gemini recebida');
+        console.log('🤖 Resposta Gemini recebida:', geminiResult.substring(0, 200) + '...');
         
         // Parse JSON
         const jsonMatch = geminiResult.match(/\{[\s\S]*\}/);

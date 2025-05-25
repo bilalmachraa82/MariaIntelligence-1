@@ -1,0 +1,770 @@
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://www.googletagmanager.com" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+3530-5f1466cf3c388862.js:1 Replit version 7a4ca955, pid2 version 0.0.1337
+_app-bbff46a72ff35a98.js:38 
+      /////////////////////
+   ///////////////////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////        Curious and driven?
+  ///////////////@@@@@@@///////        Work with us!
+  ///////////////@@@@@@@///////
+  ///////////////@@@@@@@///////        https://join.replit.com/hack.with.us
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@#//////////////
+   ///////////////////////////
+      /////////////////////
+      
+_app-bbff46a72ff35a98.js:38  
+_app-bbff46a72ff35a98.js:38 [LaunchDarkly] LaunchDarkly client initialized
+_app-bbff46a72ff35a98.js:38 [LaunchDarkly] Opening stream connection to https://clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwiYW5vbnltb3VzIjpmYWxzZX0
+_app-bbff46a72ff35a98.js:38 [LaunchDarkly] Closing stream connection
+_app-bbff46a72ff35a98.js:38 [LaunchDarkly] Opening stream connection to https://clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ
+chrome-extension://j…nt/index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://js.stripe.com" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+6747e1e9-3a8c0a03c126d804.js:1 Uncaught (in promise) TypeError: i.enterprise.execute is not a function
+    at 6747e1e9-3a8c0a03c126d804.js:1:35441
+chrome-extension://jldogdgepmcedfdhgnmclgemehfhpomg/content/index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://www.google.com" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+/~:1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://js.stripe.com" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://m.stripe.network" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+_app-bbff46a72ff35a98.js:38 [LaunchDarkly] Closing stream connection
+_app-bbff46a72ff35a98.js:38 [LaunchDarkly] Opening stream connection to https://clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ
+attached_assets/image_1748122756266.png:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()
+attached_assets/image_1748125751926.png:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()
+dotdevproxy.janeway.repl.co/__reachability:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_RESET
+dotdevproxy.janeway.repl.co/__reachability:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_RESET
+dotdevproxy.janeway.repl.co/__reachability:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_RESET
+dotdevproxy.worf.repl.co/__reachability:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_RESET
+dotdevproxy.worf.repl.co/__reachability:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_RESET
+dotdevproxy.worf.repl.co/__reachability:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_RESET
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Unrecognized feature: 'ambient-light-sensor'.
+Unrecognized feature: 'ambient-light-sensor'.
+Unrecognized feature: 'ambient-light-sensor'.
+Unrecognized feature: 'ambient-light-sensor'.
+Unrecognized feature: 'ambient-light-sensor'.
+Unrecognized feature: 'ambient-light-sensor'.
+Unrecognized feature: 'ambient-light-sensor'.
+Unrecognized feature: 'ambient-light-sensor'.
+Unrecognized feature: 'battery'.
+Unrecognized feature: 'battery'.
+Unrecognized feature: 'battery'.
+Unrecognized feature: 'battery'.
+Unrecognized feature: 'battery'.
+Unrecognized feature: 'battery'.
+Unrecognized feature: 'battery'.
+Unrecognized feature: 'battery'.
+Unrecognized feature: 'execution-while-not-rendered'.
+Unrecognized feature: 'execution-while-not-rendered'.
+Unrecognized feature: 'execution-while-not-rendered'.
+Unrecognized feature: 'execution-while-not-rendered'.
+Unrecognized feature: 'execution-while-not-rendered'.
+Unrecognized feature: 'execution-while-not-rendered'.
+Unrecognized feature: 'execution-while-not-rendered'.
+Unrecognized feature: 'execution-while-not-rendered'.
+Unrecognized feature: 'execution-while-out-of-viewport'.
+Unrecognized feature: 'execution-while-out-of-viewport'.
+Unrecognized feature: 'execution-while-out-of-viewport'.
+Unrecognized feature: 'execution-while-out-of-viewport'.
+Unrecognized feature: 'execution-while-out-of-viewport'.
+Unrecognized feature: 'execution-while-out-of-viewport'.
+Unrecognized feature: 'execution-while-out-of-viewport'.
+Unrecognized feature: 'execution-while-out-of-viewport'.
+Unrecognized feature: 'layout-animations'.
+Unrecognized feature: 'layout-animations'.
+Unrecognized feature: 'layout-animations'.
+Unrecognized feature: 'layout-animations'.
+Unrecognized feature: 'layout-animations'.
+Unrecognized feature: 'layout-animations'.
+Unrecognized feature: 'layout-animations'.
+Unrecognized feature: 'layout-animations'.
+Unrecognized feature: 'legacy-image-formats'.
+Unrecognized feature: 'legacy-image-formats'.
+Unrecognized feature: 'legacy-image-formats'.
+Unrecognized feature: 'legacy-image-formats'.
+Unrecognized feature: 'legacy-image-formats'.
+Unrecognized feature: 'legacy-image-formats'.
+Unrecognized feature: 'legacy-image-formats'.
+Unrecognized feature: 'legacy-image-formats'.
+Unrecognized feature: 'navigation-override'.
+Unrecognized feature: 'navigation-override'.
+Unrecognized feature: 'navigation-override'.
+Unrecognized feature: 'navigation-override'.
+Unrecognized feature: 'navigation-override'.
+Unrecognized feature: 'navigation-override'.
+Unrecognized feature: 'navigation-override'.
+Unrecognized feature: 'navigation-override'.
+Unrecognized feature: 'oversized-images'.
+Unrecognized feature: 'oversized-images'.
+Unrecognized feature: 'oversized-images'.
+Unrecognized feature: 'oversized-images'.
+Unrecognized feature: 'oversized-images'.
+Unrecognized feature: 'oversized-images'.
+Unrecognized feature: 'oversized-images'.
+Unrecognized feature: 'oversized-images'.
+Unrecognized feature: 'publickey-credentials'.
+Unrecognized feature: 'publickey-credentials'.
+Unrecognized feature: 'publickey-credentials'.
+Unrecognized feature: 'publickey-credentials'.
+Unrecognized feature: 'publickey-credentials'.
+Unrecognized feature: 'publickey-credentials'.
+Unrecognized feature: 'publickey-credentials'.
+Unrecognized feature: 'publickey-credentials'.
+Unrecognized feature: 'speaker-selection'.
+Unrecognized feature: 'speaker-selection'.
+Unrecognized feature: 'speaker-selection'.
+Unrecognized feature: 'speaker-selection'.
+Unrecognized feature: 'speaker-selection'.
+Unrecognized feature: 'speaker-selection'.
+Unrecognized feature: 'speaker-selection'.
+Unrecognized feature: 'speaker-selection'.
+Unrecognized feature: 'unoptimized-images'.
+Unrecognized feature: 'unoptimized-images'.
+Unrecognized feature: 'unoptimized-images'.
+Unrecognized feature: 'unoptimized-images'.
+Unrecognized feature: 'unoptimized-images'.
+Unrecognized feature: 'unoptimized-images'.
+Unrecognized feature: 'unoptimized-images'.
+Unrecognized feature: 'unoptimized-images'.
+Unrecognized feature: 'unsized-media'.
+Unrecognized feature: 'unsized-media'.
+Unrecognized feature: 'unsized-media'.
+Unrecognized feature: 'unsized-media'.
+Unrecognized feature: 'unsized-media'.
+Unrecognized feature: 'unsized-media'.
+Unrecognized feature: 'unsized-media'.
+Unrecognized feature: 'unsized-media'.
+framework-614079200275e643.js:1 Unrecognized feature: 'pointer-lock'.
+_ @ framework-614079200275e643.js:1
+Allow attribute will take precedence over 'allowfullscreen'.
+Allow attribute will take precedence over 'allowfullscreen'.
+Allow attribute will take precedence over 'allowfullscreen'.
+Allow attribute will take precedence over 'allowfullscreen'.
+Allow attribute will take precedence over 'allowfullscreen'.
+Allow attribute will take precedence over 'allowfullscreen'.
+Allow attribute will take precedence over 'allowfullscreen'.
+Allow attribute will take precedence over 'allowfullscreen'.
+Allow attribute will take precedence over 'allowpaymentrequest'.
+Allow attribute will take precedence over 'allowpaymentrequest'.
+Allow attribute will take precedence over 'allowpaymentrequest'.
+Allow attribute will take precedence over 'allowpaymentrequest'.
+Allow attribute will take precedence over 'allowpaymentrequest'.
+Allow attribute will take precedence over 'allowpaymentrequest'.
+Allow attribute will take precedence over 'allowpaymentrequest'.
+Allow attribute will take precedence over 'allowpaymentrequest'.
+chrome-extension://jldogdgepmcedfdhgnmclgemehfhpomg/content/index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+chrome-extension://jldogdgepmcedfdhgnmclgemehfhpomg/content/index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+eruda.js:2 [vite] connecting...
+eruda.js:2 [vite] connected.
+eruda.js:2 i18next: languageChanged pt-PT
+eruda.js:2 i18next: initialized Object
+eruda.js:2 i18n inicializado com os seguintes recursos: Array(6)
+eruda.js:2 Fetch URL modificada: /api/reservations/dashboard
+eruda.js:2 Fetch URL modificada: /api/activities
+eruda.js:2 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+eruda.js:2 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+eruda.js:2 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+eruda.js:2 Fetch URL modificada: /api/check-ai-services?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+eruda.js:2 Iniciando processamento do PDF no servidor...
+eruda.js:2 Fetch URL modificada: /api/ocr?provider=auto&demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+eruda.js:2 Resposta do processamento de PDF no servidor: Object
+eruda.js:2 Iniciando processamento do PDF no servidor...
+eruda.js:2 Fetch URL modificada: /api/ocr?provider=auto&demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+eruda.js:2 Resposta do processamento de PDF no servidor: Object
+eruda.js:2 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ VM41 eruda.js:2
+_app-bbff46a72ff35a98.js:38 [Violation] 'setInterval' handler took 54ms
+eruda.js:2 [vite] server connection lost. Polling for restart...
+eruda.js:2 
+            
+            
+           GET https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/ 502 (Bad Gateway)
+window.fetch @ VM41 eruda.js:2
+window.fetch @ VM80 enforce-clean-mode.ts:37
+ping @ VM61 client:736
+waitForSuccessfulPing @ VM61 client:749
+(anonymous) @ VM61 client:561
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@vite/client:562 
+            
+            
+           GET https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/upload-pdf 502 (Bad Gateway)
+(anonymous) @ VM61 client:562
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+eruda.js:2 [vite] connecting...
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ VM160 index.iife.js:24
+eruda.js:2 [vite] connecting...
+eruda.js:2 i18next: languageChanged pt-PT
+eruda.js:2 i18next: initialized {debug: true, initAsync: true, ns: Array(1), defaultNS: Array(1), fallbackLng: Array(1), …}
+eruda.js:2 i18n inicializado com os seguintes recursos: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+eruda.js:2 Fetch URL modificada: /api/reservations/dashboard
+eruda.js:2 Fetch URL modificada: /api/activities
+eruda.js:2 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+eruda.js:2 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+eruda.js:2 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+stallwart.build.js:1 stallwart: failed ping 1
+eruda.js:2 [vite] connected.
+eruda.js:2 Fetch URL modificada: /api/check-ai-services?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+eruda.js:2 Iniciando processamento do PDF no servidor...
+eruda.js:2 Fetch URL modificada: /api/ocr?provider=auto&demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+eruda.js:2 Resposta do processamento de PDF no servidor: {success: true, provider: 'openrouter', reservations: Array(1), boxes: {…}, extractedData: {…}, …}
+eruda.js:2 Iniciando processamento do PDF no servidor...
+eruda.js:2 Fetch URL modificada: /api/ocr?provider=auto&demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+eruda.js:2 Resposta do processamento de PDF no servidor: {success: true, provider: 'openrouter', reservations: Array(1), boxes: {…}, extractedData: {…}, …}
+eruda.js:2 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ VM169 eruda.js:2
+(anonymous) @ VM406 chunk-EROKE5VP.js:340
+commitHookEffectListMount @ VM203 chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ VM203 chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ VM203 chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ VM203 chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ VM203 chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ VM203 chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ VM203 chunk-RPCDYKBN.js:19447
+commitRootImpl @ VM203 chunk-RPCDYKBN.js:19416
+commitRoot @ VM203 chunk-RPCDYKBN.js:19277
+performSyncWorkOnRoot @ VM203 chunk-RPCDYKBN.js:18895
+flushSyncCallbacks @ VM203 chunk-RPCDYKBN.js:9119
+commitRootImpl @ VM203 chunk-RPCDYKBN.js:19432
+commitRoot @ VM203 chunk-RPCDYKBN.js:19277
+finishConcurrentRender @ VM203 chunk-RPCDYKBN.js:18805
+performConcurrentWorkOnRoot @ VM203 chunk-RPCDYKBN.js:18718
+workLoop @ VM203 chunk-RPCDYKBN.js:197
+flushWork @ VM203 chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ VM203 chunk-RPCDYKBN.js:384
+eruda.js:2 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ VM169 eruda.js:2
+(anonymous) @ VM406 chunk-EROKE5VP.js:340
+commitHookEffectListMount @ VM203 chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ VM203 chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ VM203 chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ VM203 chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ VM203 chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ VM203 chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ VM203 chunk-RPCDYKBN.js:19447
+commitRootImpl @ VM203 chunk-RPCDYKBN.js:19416
+commitRoot @ VM203 chunk-RPCDYKBN.js:19277
+performSyncWorkOnRoot @ VM203 chunk-RPCDYKBN.js:18895
+flushSyncCallbacks @ VM203 chunk-RPCDYKBN.js:9119
+commitRootImpl @ VM203 chunk-RPCDYKBN.js:19432
+commitRoot @ VM203 chunk-RPCDYKBN.js:19277
+finishConcurrentRender @ VM203 chunk-RPCDYKBN.js:18805
+performConcurrentWorkOnRoot @ VM203 chunk-RPCDYKBN.js:18718
+workLoop @ VM203 chunk-RPCDYKBN.js:197
+flushWork @ VM203 chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ VM203 chunk-RPCDYKBN.js:384
+eruda.js:2 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ VM169 eruda.js:2
+(anonymous) @ VM406 chunk-EROKE5VP.js:340
+commitHookEffectListMount @ VM203 chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ VM203 chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ VM203 chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ VM203 chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ VM203 chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ VM203 chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ VM203 chunk-RPCDYKBN.js:19447
+commitRootImpl @ VM203 chunk-RPCDYKBN.js:19416
+commitRoot @ VM203 chunk-RPCDYKBN.js:19277
+performSyncWorkOnRoot @ VM203 chunk-RPCDYKBN.js:18895
+flushSyncCallbacks @ VM203 chunk-RPCDYKBN.js:9119
+commitRootImpl @ VM203 chunk-RPCDYKBN.js:19432
+commitRoot @ VM203 chunk-RPCDYKBN.js:19277
+finishConcurrentRender @ VM203 chunk-RPCDYKBN.js:18805
+performConcurrentWorkOnRoot @ VM203 chunk-RPCDYKBN.js:18718
+workLoop @ VM203 chunk-RPCDYKBN.js:197
+flushWork @ VM203 chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ VM203 chunk-RPCDYKBN.js:384
+eruda.js:2 [vite] server connection lost. Polling for restart...
+eruda.js:2 
+            
+            
+           GET https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/ 502 (Bad Gateway)
+window.fetch @ VM169 eruda.js:2
+window.fetch @ VM217 enforce-clean-mode.ts:37
+ping @ VM197 client:736
+waitForSuccessfulPing @ VM197 client:749
+(anonymous) @ VM197 client:561
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+eruda.js:2 [vite] connecting...
+eruda.js:2 [vite] connected.
+eruda.js:2 i18next: languageChanged pt-PT
+eruda.js:2 i18next: initialized {debug: true, initAsync: true, ns: Array(1), defaultNS: Array(1), fallbackLng: Array(1), …}
+eruda.js:2 i18n inicializado com os seguintes recursos: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+eruda.js:2 Fetch URL modificada: /api/reservations/dashboard
+eruda.js:2 Fetch URL modificada: /api/activities
+eruda.js:2 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+eruda.js:2 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+eruda.js:2 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+menu.660ae325.js:1 Uncaught IndexSizeError: Failed to execute 'setStart' on 'Range': The offset 4294967295 is invalid.
+    at HTMLDocument.g (menu.660ae325.js:1:149448)
+    at menu.660ae325.js:52:40260
+g @ menu.660ae325.js:1
+(anonymous) @ menu.660ae325.js:52
+setTimeout
+(anonymous) @ menu.660ae325.js:52
+menu.660ae325.js:1 Uncaught IndexSizeError: Failed to execute 'setStart' on 'Range': The offset 4294967295 is invalid.
+    at HTMLDocument.g (menu.660ae325.js:1:149448)
+    at menu.660ae325.js:52:40260
+g @ menu.660ae325.js:1
+(anonymous) @ menu.660ae325.js:52
+setTimeout
+(anonymous) @ menu.660ae325.js:52
+menu.660ae325.js:1 Uncaught IndexSizeError: Failed to execute 'setStart' on 'Range': The offset 4294967295 is invalid.
+    at HTMLDocument.g (menu.660ae325.js:1:149448)
+    at menu.660ae325.js:52:40260
+g @ menu.660ae325.js:1
+(anonymous) @ menu.660ae325.js:52
+setTimeout
+(anonymous) @ menu.660ae325.js:52
+framework-614079200275e643.js:1 [Violation] 'click' handler took 250ms
+_app-bbff46a72ff35a98.js:38 WARN: A component changed from uncontrolled to controlled.
+overrideMethod @ hook.js:608
+(anonymous) @ _app-bbff46a72ff35a98.js:38
+(anonymous) @ _app-bbff46a72ff35a98.js:26
+oO @ framework-614079200275e643.js:1
+uB @ framework-614079200275e643.js:1
+u_ @ framework-614079200275e643.js:1
+r6 @ framework-614079200275e643.js:1
+(anonymous) @ framework-614079200275e643.js:1
+uO @ framework-614079200275e643.js:1
+uS @ framework-614079200275e643.js:1
+C @ framework-614079200275e643.js:1
+z @ framework-614079200275e643.js:1
+menu.660ae325.js:1 Uncaught IndexSizeError: Failed to execute 'setStart' on 'Range': The offset 4294967295 is invalid.
+    at HTMLDocument.g (menu.660ae325.js:1:149448)
+    at menu.660ae325.js:52:40260
+g @ menu.660ae325.js:1
+(anonymous) @ menu.660ae325.js:52
+setTimeout
+(anonymous) @ menu.660ae325.js:52
+_app-bbff46a72ff35a98.js:38 WARN: A component changed from uncontrolled to controlled.
+overrideMethod @ hook.js:608
+(anonymous) @ _app-bbff46a72ff35a98.js:38
+(anonymous) @ _app-bbff46a72ff35a98.js:26
+oO @ framework-614079200275e643.js:1
+uB @ framework-614079200275e643.js:1
+u_ @ framework-614079200275e643.js:1
+r6 @ framework-614079200275e643.js:1
+(anonymous) @ framework-614079200275e643.js:1
+uO @ framework-614079200275e643.js:1
+uS @ framework-614079200275e643.js:1
+C @ framework-614079200275e643.js:1
+z @ framework-614079200275e643.js:1
+menu.660ae325.js:1 Uncaught IndexSizeError: Failed to execute 'setStart' on 'Range': The offset 4294967295 is invalid.
+    at HTMLDocument.g (menu.660ae325.js:1:149448)
+    at menu.660ae325.js:52:40260
+g @ menu.660ae325.js:1
+(anonymous) @ menu.660ae325.js:52
+setTimeout
+(anonymous) @ menu.660ae325.js:52
+menu.660ae325.js:1 Uncaught IndexSizeError: Failed to execute 'setStart' on 'Range': The offset 4294967295 is invalid.
+    at HTMLDocument.g (menu.660ae325.js:1:149448)
+    at menu.660ae325.js:52:40260
+g @ menu.660ae325.js:1
+(anonymous) @ menu.660ae325.js:52
+setTimeout
+(anonymous) @ menu.660ae325.js:52
+eruda.js:2 Fetch URL modificada: /api/reservations/dashboard
+eruda.js:2 Fetch URL modificada: /api/reservations/dashboard?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+eruda.js:2 Fetch URL modificada: /api/activities
+eruda.js:2 Fetch URL modificada: /api/activities?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+eruda.js:2 Fetch URL modificada: /api/check-ai-services?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+eruda.js:2 Iniciando processamento do PDF no servidor...
+eruda.js:2 Fetch URL modificada: /api/ocr?provider=auto&demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+eruda.js:2 Resposta do processamento de PDF no servidor: {success: true, provider: 'openrouter', reservations: Array(1), boxes: {…}, extractedData: {…}, …}
+eruda.js:2 Iniciando processamento do PDF no servidor...
+eruda.js:2 Fetch URL modificada: /api/ocr?provider=auto&demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+eruda.js:2 Resposta do processamento de PDF no servidor: {success: true, provider: 'openrouter', reservations: Array(1), boxes: {…}, extractedData: {…}, …}
+eruda.js:2 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61
+(anonymous) @ chunk-EROKE5VP.js?v=96aa68f4:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=96aa68f4:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=96aa68f4:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=96aa68f4:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=96aa68f4:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=96aa68f4:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=96aa68f4:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=96aa68f4:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=96aa68f4:19416
+commitRoot @ chunk-RPCDYKBN.js?v=96aa68f4:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=96aa68f4:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=96aa68f4:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=96aa68f4:19432
+commitRoot @ chunk-RPCDYKBN.js?v=96aa68f4:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=96aa68f4:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=96aa68f4:18718
+workLoop @ chunk-RPCDYKBN.js?v=96aa68f4:197
+flushWork @ chunk-RPCDYKBN.js?v=96aa68f4:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=96aa68f4:384
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ VM792 index.iife.js:24
+eruda.js:2 [vite] connecting...
+eruda.js:2 [vite] connected.
+eruda.js:2 i18next: languageChanged pt-PT
+eruda.js:2 i18next: initialized {debug: true, initAsync: true, ns: Array(1), defaultNS: Array(1), fallbackLng: Array(1), …}
+eruda.js:2 i18n inicializado com os seguintes recursos: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+eruda.js:2 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+eruda.js:2 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+eruda.js:2 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ VM1108 index.iife.js:24
+eruda.js:2 [vite] connecting...
+eruda.js:2 [vite] connected.
+eruda.js:2 i18next: languageChanged pt-PT
+eruda.js:2 i18next: initialized {debug: true, initAsync: true, ns: Array(1), defaultNS: Array(1), fallbackLng: Array(1), …}
+eruda.js:2 i18n inicializado com os seguintes recursos: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+eruda.js:2 Fetch URL modificada: /api/reservations/dashboard
+eruda.js:2 Fetch URL modificada: /api/activities
+eruda.js:2 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+eruda.js:2 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+eruda.js:2 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+Console.js:61 [vite] connecting...
+Console.js:61 [vite] connected.
+Console.js:61 i18next: languageChanged pt-PT
+Console.js:61 i18next: initialized {debug: true, initAsync: true, ns: Array(1), defaultNS: Array(1), fallbackLng: Array(1), …}
+Console.js:61 i18n inicializado com os seguintes recursos: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+Console.js:61 Fetch URL modificada: /api/reservations/dashboard
+Console.js:61 Fetch URL modificada: /api/activities
+Console.js:61 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+Console.js:61 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+Console.js:61 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+Console.js:61 Fetch URL modificada: /api/check-ai-services?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Iniciando processamento do PDF no servidor...
+Console.js:61 Fetch URL modificada: /api/ocr?provider=auto&demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Resposta do processamento de PDF no servidor: {success: true, provider: 'openrouter', reservations: Array(1), boxes: {…}, extractedData: {…}, …}
+Console.js:61 Iniciando processamento do PDF no servidor...
+Console.js:61 Fetch URL modificada: /api/ocr?provider=auto&demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Resposta do processamento de PDF no servidor: {success: true, provider: 'openrouter', reservations: Array(1), boxes: {…}, extractedData: {…}, …}
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61
+(anonymous) @ chunk-EROKE5VP.js?v=96aa68f4:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=96aa68f4:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=96aa68f4:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=96aa68f4:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=96aa68f4:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=96aa68f4:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=96aa68f4:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=96aa68f4:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=96aa68f4:19416
+commitRoot @ chunk-RPCDYKBN.js?v=96aa68f4:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=96aa68f4:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=96aa68f4:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=96aa68f4:19432
+commitRoot @ chunk-RPCDYKBN.js?v=96aa68f4:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=96aa68f4:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=96aa68f4:18718
+workLoop @ chunk-RPCDYKBN.js?v=96aa68f4:197
+flushWork @ chunk-RPCDYKBN.js?v=96aa68f4:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=96aa68f4:384
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61
+(anonymous) @ chunk-EROKE5VP.js?v=96aa68f4:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=96aa68f4:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=96aa68f4:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=96aa68f4:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=96aa68f4:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=96aa68f4:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=96aa68f4:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=96aa68f4:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=96aa68f4:19416
+commitRoot @ chunk-RPCDYKBN.js?v=96aa68f4:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=96aa68f4:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=96aa68f4:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=96aa68f4:19432
+commitRoot @ chunk-RPCDYKBN.js?v=96aa68f4:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=96aa68f4:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=96aa68f4:18718
+workLoop @ chunk-RPCDYKBN.js?v=96aa68f4:197
+flushWork @ chunk-RPCDYKBN.js?v=96aa68f4:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=96aa68f4:384
+Console.js:61 Fetch URL modificada: /api/properties
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/reservations
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/check-gemini-key?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 i18next::translator: missingKey pt-PT translation aiAssistant.fileUploaded Arquivo enviado
+Console.js:61 Chave de tradução faltando: aiAssistant.fileUploaded
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=96aa68f4:689
+t @ i18next.js?v=96aa68f4:2075
+fixedT @ i18next.js?v=96aa68f4:2059
+handleFileUpload @ index.tsx:486
+handleFileInputChange @ index.tsx:823
+callCallback2 @ chunk-RPCDYKBN.js?v=96aa68f4:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=96aa68f4:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=96aa68f4:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=96aa68f4:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=96aa68f4:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=96aa68f4:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=96aa68f4:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=96aa68f4:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=96aa68f4:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=96aa68f4:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=96aa68f4:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=96aa68f4:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=96aa68f4:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=96aa68f4:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=96aa68f4:5449
+Console.js:61 i18next::translator: missingKey pt-PT translation aiAssistant.fileProcessing Processando arquivo: 
+Console.js:61 Chave de tradução faltando: aiAssistant.fileProcessing
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=96aa68f4:689
+t @ i18next.js?v=96aa68f4:2075
+fixedT @ i18next.js?v=96aa68f4:2059
+handleFileUpload @ index.tsx:487
+handleFileInputChange @ index.tsx:823
+callCallback2 @ chunk-RPCDYKBN.js?v=96aa68f4:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=96aa68f4:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=96aa68f4:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=96aa68f4:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=96aa68f4:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=96aa68f4:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=96aa68f4:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=96aa68f4:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=96aa68f4:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=96aa68f4:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=96aa68f4:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=96aa68f4:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=96aa68f4:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=96aa68f4:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=96aa68f4:5449
+Console.js:61 i18next::translator: missingKey pt-PT translation aiAssistant.userSentFile 📄 Enviei o arquivo: file (13).pdf
+Console.js:61 Chave de tradução faltando: aiAssistant.userSentFile
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=96aa68f4:689
+t @ i18next.js?v=96aa68f4:2075
+fixedT @ i18next.js?v=96aa68f4:2059
+handleFileUpload @ index.tsx:495
+handleFileInputChange @ index.tsx:823
+callCallback2 @ chunk-RPCDYKBN.js?v=96aa68f4:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=96aa68f4:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=96aa68f4:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=96aa68f4:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=96aa68f4:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=96aa68f4:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=96aa68f4:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=96aa68f4:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=96aa68f4:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=96aa68f4:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=96aa68f4:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=96aa68f4:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=96aa68f4:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=96aa68f4:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=96aa68f4:5449
+Console.js:61 Fetch URL modificada: /api/upload-control-file?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/ocr?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/check-gemini-key?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 i18next::translator: missingKey pt-PT translation aiAssistant.pdfAdded Adicionei o documento "file (13).pdf" à minha base de conhecimento. O que gostaria de saber sobre ele?
+Console.js:61 Chave de tradução faltando: aiAssistant.pdfAdded
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=96aa68f4:689
+t @ i18next.js?v=96aa68f4:2075
+fixedT @ i18next.js?v=96aa68f4:2059
+handleFileUpload @ index.tsx:623
+await in handleFileUpload
+handleFileInputChange @ index.tsx:823
+callCallback2 @ chunk-RPCDYKBN.js?v=96aa68f4:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=96aa68f4:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=96aa68f4:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=96aa68f4:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=96aa68f4:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=96aa68f4:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=96aa68f4:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=96aa68f4:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=96aa68f4:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=96aa68f4:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=96aa68f4:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=96aa68f4:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=96aa68f4:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=96aa68f4:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=96aa68f4:5449
+Console.js:61 Fetch URL modificada: /api/check-gemini-key?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/clear-ai-memory?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+enforce-clean-mode.ts:68 
+            
+            
+           POST https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/api/clear-ai-memory?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true 500 (Internal Server Error)
+window.fetch @ Network.js:219
+window.fetch @ enforce-clean-mode.ts:68
+clearAIMemory @ index.tsx:59
+callCallback2 @ chunk-RPCDYKBN.js?v=96aa68f4:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=96aa68f4:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=96aa68f4:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=96aa68f4:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=96aa68f4:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=96aa68f4:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=96aa68f4:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=96aa68f4:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=96aa68f4:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=96aa68f4:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=96aa68f4:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=96aa68f4:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=96aa68f4:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=96aa68f4:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=96aa68f4:5449
+_app-bbff46a72ff35a98.js:38 [Violation] 'setInterval' handler took 326ms
+MariaIntelligence-1:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://www.google.com" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+_app-bbff46a72ff35a98.js:38 [Violation] 'setTimeout' handler took 55ms
