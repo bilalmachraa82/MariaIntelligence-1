@@ -542,8 +542,18 @@ export class GeminiService {
    * Verifica se o serviço está inicializado com uma chave API válida
    */
   private checkInitialization(): void {
-    if (!this.isInitialized) {
+    // Verificar se temos uma chave API disponível primeiro
+    const apiKey = this.apiKey || process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+    
+    if (!apiKey) {
       throw new Error('Chave Gemini não configurada. Configure GOOGLE_GEMINI_API_KEY ou GOOGLE_API_KEY nas configurações.');
+    }
+    
+    // Se temos chave mas não está marcado como inicializado, definir agora
+    if (!this.isInitialized && apiKey) {
+      this.apiKey = apiKey;
+      this.isInitialized = true;
+      console.log('✅ Gemini inicializado com chave API encontrada');
     }
   }
 
