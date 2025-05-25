@@ -66,9 +66,8 @@ export async function postOcr(req: Request, res: Response) {
       
       try {
         // Usar Gemini diretamente para múltiplas reservas
-        const { AIAdapter } = await import('../services/ai-adapter.service');
-        const aiAdapter = AIAdapter.getInstance();
-        const result = await aiAdapter.processMultipleReservations(req.file.path, textContent);
+        const { aiService } = await import('../services/ai-adapter.service');
+        const result = await aiService.processMultipleReservations(req.file.path, textContent);
         
         if (result.success && result.reservations.length > 0) {
           console.log(`🎉 SUCESSO: ${result.reservations.length} reservas encontradas!`);
