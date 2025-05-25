@@ -62,29 +62,90 @@ export async function postOcr(req: Request, res: Response) {
                          textContent.includes('aroeira');
     
     if (isControlFile) {
-      console.log('✅ ARQUIVO DETECTADO - Processando múltiplas reservas com Gemini 2.5 Flash');
+      console.log('✅ DOCUMENTO COM MÚLTIPLAS RESERVAS DETECTADO - Forçando Gemini 2.5 Flash');
       
       try {
-        // Usar Gemini diretamente para múltiplas reservas
-        const { aiService } = await import('../services/ai-adapter.service');
-        const result = await aiService.processMultipleReservations(req.file.path, textContent);
+        // Extrair texto completo primeiro
+        const pdfBuffer = fs.readFileSync(req.file.path);
+        const pdfData = await pdf(pdfBuffer);
+        const fullText = pdfData.text;
         
-        if (result.success && result.reservations.length > 0) {
-          console.log(`🎉 SUCESSO: ${result.reservations.length} reservas encontradas!`);
+        console.log(`📄 Texto extraído: ${fullText.length} caracteres`);
+        
+        // Usar Gemini diretamente com prompt especializado
+        const { GeminiService } = await import('../services/gemini.service');
+        const gemini = new GeminiService();
+        
+        const prompt = `
+Analise este documento de hospedagem e extraia TODAS as reservas. Este documento contém múltiplas reservas em formato tabular.
+
+INSTRUÇÕES:
+1. Encontre TODAS as reservas (normalmente 5-15 reservas)
+2. Para cada reserva extraia:
+   - reference: Código (ex: A169-4421916)
+   - propertyName: Nome da propriedade 
+   - guestName: Nome do hóspede
+   - checkInDate: Data check-in (YYYY-MM-DD)
+   - checkOutDate: Data check-out (YYYY-MM-DD)
+   - adults: Número de adultos
+   - children: Número de crianças
+
+RESPONDA APENAS COM JSON:
+{
+  "reservations": [
+    {
+      "reference": "A169-4421916",
+      "propertyName": "Almada 1 Bernardo T3",
+      "guestName": "Adozinda Fortes",
+      "checkInDate": "2025-05-22",
+      "checkOutDate": "2025-05-25",
+      "adults": 4,
+      "children": 0
+    }
+  ]
+}
+
+DOCUMENTO:
+${fullText}`;
+
+        const geminiResult = await gemini.generateText(prompt);
+        console.log('🤖 Resposta Gemini recebida');
+        
+        // Parse JSON
+        const jsonMatch = geminiResult.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          const analysisResult = JSON.parse(jsonMatch[0]);
           
-          return res.status(200).json({
-            success: true,
-            provider: 'gemini-multi-reservations',
-            reservations: result.reservations,
-            documentType: result.documentType,
-            extractedData: result.reservations[0] || {},
-            missing: result.missingData || [],
-            rawText: textContent.substring(0, 1000),
-            requiresConfirmation: result.requiresConfirmation
-          });
+          if (analysisResult.reservations && analysisResult.reservations.length > 0) {
+            console.log(`✅ GEMINI SUCESSO: ${analysisResult.reservations.length} reservas encontradas!`);
+            
+            const processedReservations = analysisResult.reservations.map(res => ({
+              ...res,
+              guestPhone: res.guestPhone || '',
+              guestEmail: res.guestEmail || '',
+              numGuests: (res.adults || 0) + (res.children || 0),
+              totalAmount: 0,
+              platform: 'manual',
+              status: 'confirmed',
+              notes: 'Extraído via Gemini 2.5 Flash'
+            }));
+            
+            return res.status(200).json({
+              success: true,
+              provider: 'gemini-2.5-flash',
+              reservations: processedReservations,
+              extractedData: processedReservations[0] || {},
+              missing: ['Telefone', 'Email', 'Valor da reserva'],
+              rawText: fullText.substring(0, 1000),
+              requiresConfirmation: true
+            });
+          }
         }
+        
+        console.log('⚠️ Gemini não encontrou reservas, continuando com método padrão');
+        
       } catch (geminiError) {
-        console.error('❌ Erro no processamento Gemini:', geminiError);
+        console.error('❌ Erro Gemini:', geminiError);
       }
     }
     

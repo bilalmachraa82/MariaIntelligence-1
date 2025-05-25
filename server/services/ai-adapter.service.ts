@@ -1007,9 +1007,30 @@ export class AIAdapter {
       const prompt = this.buildMultiReservationPrompt(documentType, extractedText);
       const result = await this.geminiService.generateText(prompt);
       
-      // Parse da resposta JSON
+      // Parse da resposta JSON com tratamento de erro
       const cleanedResponse = this.cleanJsonResponse(result);
-      const analysisResult = JSON.parse(cleanedResponse);
+      console.log('🔍 Resposta limpa do Gemini:', cleanedResponse.substring(0, 500));
+      
+      let analysisResult;
+      try {
+        analysisResult = JSON.parse(cleanedResponse);
+      } catch (parseError) {
+        console.error('❌ Erro ao fazer parse do JSON:', parseError);
+        console.log('📄 Resposta original:', result.substring(0, 500));
+        
+        // Tentar extrair JSON de forma mais robusta
+        const jsonMatch = result.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          try {
+            analysisResult = JSON.parse(jsonMatch[0]);
+          } catch (secondError) {
+            console.error('❌ Falha no segundo parse:', secondError);
+            throw new Error('Resposta do Gemini não é JSON válido');
+          }
+        } else {
+          throw new Error('Nenhum JSON encontrado na resposta do Gemini');
+        }
+      }
       
       if (!analysisResult.reservations || analysisResult.reservations.length === 0) {
         return {
