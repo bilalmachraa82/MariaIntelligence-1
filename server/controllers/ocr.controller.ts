@@ -89,8 +89,46 @@ export async function postOcr(req: Request, res: Response) {
         const { GeminiService } = await import('../services/gemini.service');
         const gemini = new GeminiService();
         
-        const prompt = `
-EXTRAIA TODAS AS RESERVAS DESTE DOCUMENTO. Este é um documento de hospedagem com MÚLTIPLAS reservas que devem ser extraídas.
+        const prompt = `Você é um especialista em extração de dados de documentos de hospedagem.
+
+ANALISE este documento e extraia TODAS as reservas da tabela.
+
+INSTRUÇÕES CRÍTICAS:
+1. Este documento contém MÚLTIPLAS RESERVAS em formato de tabela
+2. Ignore campos de filtro como "Alojamento: Todos", "Proprietário: Todos" - são filtros de pesquisa
+3. Procure por CADA LINHA da tabela de reservas que contenha:
+   - Número de referência (ex: 25952514-6423)
+   - Nome da propriedade REAL (ex: "São João Batista T3", "Aroeira I", "Aroeira II")
+   - Nome do hóspede REAL (ex: "João Silva", "Maria Santos") - NÃO use "Telefone"
+   - Datas de check-in e check-out
+   - Número de adultos e crianças
+
+CAMPOS OBRIGATÓRIOS por reserva:
+- reference: Código/número da reserva
+- propertyName: Nome real da propriedade (não "Todos")
+- guestName: Nome completo do hóspede (não "Telefone")
+- checkInDate: Data formato YYYY-MM-DD
+- checkOutDate: Data formato YYYY-MM-DD
+- totalAmount: Valor numérico (sem símbolos)
+- guestCount: Total de hóspedes
+
+RESPONDA APENAS COM JSON VÁLIDO:
+{
+  "reservations": [
+    {
+      "reference": "25952514-6423",
+      "propertyName": "São João Batista T3", 
+      "guestName": "Ana Silva",
+      "checkInDate": "2025-05-25",
+      "checkOutDate": "2025-05-27",
+      "totalAmount": 150.00,
+      "guestCount": 2
+    }
+  ]
+}
+
+DOCUMENTO COMPLETO:
+${fullText}`dagem com MÚLTIPLAS reservas que devem ser extraídas.
 
 CRITÉRIO OBRIGATÓRIO: Encontre CADA linha de reserva no documento. NÃO pare após a primeira reserva.
 
