@@ -1260,35 +1260,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log('🔍 Tentando Google AI Vision...');
           const base64Pdf = req.file.buffer.toString('base64');
           
-          const analysisPrompt = `Analyze this accommodation control PDF document and extract ALL reservations with COMPLETE information.
+          const analysisPrompt = `Analyze this Portuguese accommodation control PDF document and extract ALL reservation data with complete details.
 
-CRITICAL INSTRUCTIONS:
-1. IGNORE filter fields like "Alojamento: Todos", "Proprietário: Todos", "Telefone", etc. - these are NOT guest data
-2. Find the main reservation table and extract ALL columns: Referência, Alojamento, Estado, Check-in, Check-out, Adultos, Crianças, Valor Total, Observações
-3. Extract EVERY row from this table (typically 8-12 reservations)
-4. Property names are real like: "Almada 1Bernardo T3", "Boavista 1Tania T2", "São João Batista T3"
-5. Guest names are real people names, NOT "Telefone" or filter text
-6. Look for financial values (total price, daily rate, commission)
-7. Extract guest counts (adults, children) from the table
-8. Include any observations or special notes
+DOCUMENT ANALYSIS INSTRUCTIONS:
+1. This is a property management control document showing reservations for a specific property
+2. Look for the property name at the TOP of the document - it should be something like "Aroeira I", "Aroeira II", "São João Batista T3", etc.
+3. IGNORE filter dropdowns like "Alojamento: Todos", "Proprietário: Todos" - these are UI elements, not data
+4. Find the main reservation table with columns like: Referência, Hóspede/Nome, Check-in, Check-out, Adultos, Crianças, Valor, Estado
+5. Extract EVERY reservation row from this table (typically 8-15 reservations)
 
-Return this exact JSON format:
+DATA EXTRACTION RULES:
+- Property Name: Extract from document header/title (e.g., "Aroeira I", "Casa dos Barcos T1")
+- Guest Names: Real person names from the table rows
+- Dates: Convert to YYYY-MM-DD format
+- Guest Counts: Numbers of adults and children from respective columns
+- Financial Values: Look for price columns (Valor Total, Preço, etc.)
+- Reference: Booking reference codes if available
+- Status: Reservation status (confirmado, cancelado, etc.)
+
+Return this EXACT JSON structure:
 {
+  "propertyName": "main property name from document header",
   "reservations": [
     {
-      "reference": "reservation code",
-      "propertyName": "property name", 
-      "guestName": "guest name",
+      "reference": "booking reference or N/A",
+      "propertyName": "property name from header", 
+      "guestName": "guest full name",
       "checkInDate": "YYYY-MM-DD",
       "checkOutDate": "YYYY-MM-DD",
-      "adults": number,
-      "children": number,
-      "totalPrice": "price in euros",
-      "dailyRate": "daily rate if available",
-      "commission": "commission if available",
-      "observations": "any notes or comments",
-      "status": "confirmed",
-      "source": "booking platform if mentioned"
+      "adults": number_of_adults,
+      "children": number_of_children,
+      "totalPrice": "price_in_euros or N/A",
+      "dailyRate": "daily_rate or N/A",
+      "observations": "special_notes or N/A",
+      "status": "confirmed"
     }
   ]
 }`;
