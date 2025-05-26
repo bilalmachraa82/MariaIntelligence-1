@@ -20,10 +20,13 @@ import SettingsPage from "@/pages/settings";
 import DocumentScanPage from "@/pages/pdf-upload";
 import AssistantPage from "@/pages/assistant";
 import ReservationAssistantPage from "@/pages/reservation-assistant";
+import Login from "@/pages/Login";
 
 import { Layout } from "@/components/layout/layout";
 import { useTranslation } from "react-i18next";
 import { useEffect } from 'react';
+import { useAuth } from "@/hooks/useAuth";
+import { Loader2 } from "lucide-react";
 
 // Imports das páginas de equipes de limpeza
 import CleaningTeamsPage from "@/pages/cleaning-teams";
@@ -73,33 +76,61 @@ const initializeLightMode = () => {
 // Executa a inicialização do tema claro
 initializeLightMode();
 
+function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
+  const { data: user, isLoading, error } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-purple-600" />
+          <p className="text-gray-600">A verificar autenticação...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !user?.user) {
+    return <Login />;
+  }
+
+  return (
+    <Layout>
+      <Component />
+    </Layout>
+  );
+}
+
 function Router() {
   return (
     <Switch>
-      {/* Rotas em inglês */}
-      <Route path="/" component={DashboardFull} />
-      <Route path="/dashboard" component={DashboardFull} />
-      <Route path="/dashboard-full" component={DashboardFull} />
-      <Route path="/properties" component={PropertiesPage} />
-      <Route path="/properties/edit/:id?" component={PropertyEditPage} />
-      <Route path="/properties/estatisticas" component={PropertyStatisticsPage} />
-      <Route path="/properties/:id" component={PropertyDetailPage} />
-      <Route path="/owners" component={OwnersPage} />
-      <Route path="/owners/edit/:id?" component={OwnerEditPage} />
-      <Route path="/owners/:id" component={OwnerDetailPage} />
-      <Route path="/reservations" component={ReservationsPage} />
-      <Route path="/reservations/new" component={ReservationNewPage} />
-      <Route path="/reservations/:id" component={ReservationDetailPage} />
-      <Route path="/reservations/approval" component={ReservationApprovalPage} />
-      <Route path="/budget-calculator" component={BudgetCalculatorPage} />
-      <Route path="/calculadora-orcamento" component={BudgetCalculatorPage} />
-      <Route path="/upload-pdf" component={DocumentScanPage} />
-      <Route path="/scan" component={DocumentScanPage} />
-      <Route path="/pdf-upload" component={DocumentScanPage} />
-      <Route path="/cleaning-teams" component={CleaningTeamsPage} />
-      <Route path="/cleaning-teams/new" component={() => <div>New Cleaning Team (Coming Soon)</div>} />
-      <Route path="/cleaning-teams/schedules" component={CleaningSchedulesPage} />
-      <Route path="/cleaning-teams/:id" component={() => <div>Cleaning Team Details (Coming Soon)</div>} />
+      {/* Rota de login não protegida */}
+      <Route path="/login" component={Login} />
+      
+      {/* Todas as outras rotas são protegidas */}
+      <Route path="/" component={() => <ProtectedRoute component={DashboardFull} />} />
+      <Route path="/dashboard" component={() => <ProtectedRoute component={DashboardFull} />} />
+      <Route path="/dashboard-full" component={() => <ProtectedRoute component={DashboardFull} />} />
+      <Route path="/properties" component={() => <ProtectedRoute component={PropertiesPage} />} />
+      <Route path="/properties/edit/:id?" component={() => <ProtectedRoute component={PropertyEditPage} />} />
+      <Route path="/properties/estatisticas" component={() => <ProtectedRoute component={PropertyStatisticsPage} />} />
+      <Route path="/properties/:id" component={() => <ProtectedRoute component={PropertyDetailPage} />} />
+      <Route path="/owners" component={() => <ProtectedRoute component={OwnersPage} />} />
+      <Route path="/owners/edit/:id?" component={() => <ProtectedRoute component={OwnerEditPage} />} />
+      <Route path="/owners/:id" component={() => <ProtectedRoute component={OwnerDetailPage} />} />
+      <Route path="/reservations" component={() => <ProtectedRoute component={ReservationsPage} />} />
+      <Route path="/reservations/new" component={() => <ProtectedRoute component={ReservationNewPage} />} />
+      <Route path="/reservations/:id" component={() => <ProtectedRoute component={ReservationDetailPage} />} />
+      <Route path="/reservations/approval" component={() => <ProtectedRoute component={ReservationApprovalPage} />} />
+      <Route path="/budget-calculator" component={() => <ProtectedRoute component={BudgetCalculatorPage} />} />
+      <Route path="/calculadora-orcamento" component={() => <ProtectedRoute component={BudgetCalculatorPage} />} />
+      <Route path="/upload-pdf" component={() => <ProtectedRoute component={DocumentScanPage} />} />
+      <Route path="/scan" component={() => <ProtectedRoute component={DocumentScanPage} />} />
+      <Route path="/pdf-upload" component={() => <ProtectedRoute component={DocumentScanPage} />} />
+      <Route path="/cleaning-teams" component={() => <ProtectedRoute component={CleaningTeamsPage} />} />
+      <Route path="/cleaning-teams/new" component={() => <ProtectedRoute component={() => <div>New Cleaning Team (Coming Soon)</div>} />} />
+      <Route path="/cleaning-teams/schedules" component={() => <ProtectedRoute component={CleaningSchedulesPage} />} />
+      <Route path="/cleaning-teams/:id" component={() => <ProtectedRoute component={() => <div>Cleaning Team Details (Coming Soon)</div>} />} />
       <Route path="/cleaning-reports" component={CleaningReportsPage} />
       <Route path="/reports" component={ReportsPage} />
       <Route path="/reports/owner-report" component={OwnerReportPage} />

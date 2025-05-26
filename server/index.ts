@@ -68,6 +68,18 @@ app.use('/api/upload-pdf', authLimiter);
 app.use('/api/upload-control-file', authLimiter);
 app.use('/api/upload-image', authLimiter);
 
+// Configurar sessões
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'mariafaz-secret-key-2024',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // Para desenvolvimento, usar true em produção com HTTPS
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 horas
+  }
+}));
+
 app.use(express.json({
   limit: '2mb' // Limitar tamanho do payload JSON
 }));
@@ -113,6 +125,9 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Registrar rotas de autenticação ANTES das outras rotas
+  app.use('/api/auth', authRoutes);
+  
   const server = await registerRoutes(app);
   
   // Registrar rotas de gerenciamento de banco de dados
