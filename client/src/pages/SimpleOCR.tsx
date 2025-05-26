@@ -16,6 +16,7 @@ interface ExtractedReservation {
   email?: string;
   phone?: string;
   notes?: string;
+  source?: string;
 }
 
 interface OCRResult {
@@ -24,6 +25,7 @@ interface OCRResult {
   reservations: ExtractedReservation[];
   extractedText?: string;
   error?: string;
+  consolidatedReservations?: number;
 }
 
 export default function SimpleOCR() {
@@ -46,6 +48,24 @@ export default function SimpleOCR() {
     setResults([]);
 
     try {
+      // Se múltiplos arquivos, usar endpoint de consolidação
+      if (files.length > 1) {
+        const formData = new FormData();
+        files.forEach(file => {
+          formData.append('files', file);
+        });
+
+        const response = await fetch('/api/simple-ocr/process-multiple', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const result = await response.json();
+        setResults([result]);
+        return;
+      }
+
+      // Processamento individual para um arquivo
       const allResults: OCRResult[] = [];
 
       for (let i = 0; i < files.length; i++) {

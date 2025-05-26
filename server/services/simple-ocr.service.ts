@@ -496,6 +496,112 @@ ${text}`;
   }
 
   /**
+   * Consolida reservas de check-in e check-out pelo nome do hóspede
+   */
+  async consolidateReservations(
+    reservations: Array<ExtractedReservation & { documentType: string; source?: string }>
+  ): Promise<Array<ExtractedReservation & { source: string }>> {
+    console.log('🔄 Iniciando consolidação de reservas...');
+    
+    const checkIns = reservations.filter(r => r.documentType === 'check-in');
+    const checkOuts = reservations.filter(r => r.documentType === 'check-out');
+    const others = reservations.filter(r => !['check-in', 'check-out'].includes(r.documentType));
+    
+    console.log(`📥 Check-ins: ${checkIns.length}, 📤 Check-outs: ${checkOuts.length}, 📄 Outros: ${others.length}`);
+    
+    const consolidated: Array<ExtractedReservation & { source: string }> = [];
+    
+    // Consolidar check-ins com check-outs correspondentes
+    for (const checkIn of checkIns) {
+      const matchingCheckOut = checkOuts.find(checkOut => 
+        this.namesMatch(checkIn.guestName, checkOut.guestName)
+      );
+      
+      if (matchingCheckOut) {
+        console.log(`🔗 Consolidando: ${checkIn.guestName} ↔ ${matchingCheckOut.guestName}`);
+        
+        const consolidatedReservation: ExtractedReservation & { source: string } = {
+          guestName: checkIn.guestName,
+          propertyName: checkIn.propertyName || matchingCheckOut.propertyName,
+          checkInDate: checkIn.checkInDate,
+          checkOutDate: checkIn.checkOutDate || matchingCheckOut.checkOutDate,
+          totalAmount: matchingCheckOut.totalAmount || checkIn.totalAmount,
+          guestCount: checkIn.guestCount || matchingCheckOut.guestCount,
+          email: checkIn.email || matchingCheckOut.email,
+          phone: checkIn.phone || matchingCheckOut.phone,
+          notes: this.mergeNotes(checkIn.notes, matchingCheckOut.notes),
+          source: 'consolidated'
+        };
+        
+        consolidated.push(consolidatedReservation);
+        
+        // Remover check-out usado da lista
+        const index = checkOuts.indexOf(matchingCheckOut);
+        checkOuts.splice(index, 1);
+      } else {
+        console.log(`📥 Check-in órfão: ${checkIn.guestName}`);
+        consolidated.push({ ...checkIn, source: 'check-in-only' });
+      }
+    }
+    
+    // Adicionar check-outs órfãos
+    for (const checkOut of checkOuts) {
+      console.log(`📤 Check-out órfão: ${checkOut.guestName}`);
+      consolidated.push({ ...checkOut, source: 'check-out-only' });
+    }
+    
+    // Adicionar outros tipos de documentos
+    for (const other of others) {
+      consolidated.push({ ...other, source: other.documentType || 'other' });
+    }
+    
+    console.log(`✅ Consolidação concluída: ${consolidated.length} reservas finais`);
+    return consolidated;
+  }
+
+  /**
+   * Verifica se dois nomes de hóspedes correspondem
+   */
+  private namesMatch(name1: string, name2: string): boolean {
+    if (!name1 || !name2) return false;
+    
+    const normalize = (name: string) => name.toLowerCase()
+      .replace(/[àáâãäå]/g, 'a')
+      .replace(/[èéêë]/g, 'e')
+      .replace(/[ìíîï]/g, 'i')
+      .replace(/[òóôõö]/g, 'o')
+      .replace(/[ùúûü]/g, 'u')
+      .replace(/[ç]/g, 'c')
+      .replace(/[^a-z\s]/g, '')
+      .trim();
+    
+    const n1 = normalize(name1);
+    const n2 = normalize(name2);
+    
+    // Verificação exata
+    if (n1 === n2) return true;
+    
+    // Verificação por palavras (sobrenomes)
+    const words1 = n1.split(/\s+/).filter(w => w.length > 2);
+    const words2 = n2.split(/\s+/).filter(w => w.length > 2);
+    
+    // Se pelo menos 2 palavras em comum
+    const commonWords = words1.filter(w1 => words2.some(w2 => w1.includes(w2) || w2.includes(w1)));
+    
+    return commonWords.length >= Math.min(2, Math.min(words1.length, words2.length));
+  }
+
+  /**
+   * Combina notas de check-in e check-out
+   */
+  private mergeNotes(checkInNotes?: string, checkOutNotes?: string): string | undefined {
+    const notes = [];
+    if (checkInNotes) notes.push(`Check-in: ${checkInNotes}`);
+    if (checkOutNotes) notes.push(`Check-out: ${checkOutNotes}`);
+    return notes.length > 0 ? notes.join(' | ') : undefined;
+  }
+
+  /**
    * Parse valores monetários
    */
   private parseAmount(amount: any): number {

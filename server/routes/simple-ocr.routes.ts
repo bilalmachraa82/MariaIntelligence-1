@@ -121,4 +121,110 @@ router.get('/status', async (req, res) => {
   }
 });
 
+/**
+ * POST /api/simple-ocr/process-multiple
+ * Processa múltiplos arquivos e consolida dados de check-in/check-out
+ */
+router.post('/process-multiple', upload.array('files', 10), async (req, res) => {
+  try {
+    const files = req.files as Express.Multer.File[];
+    
+    if (!files || files.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Nenhum arquivo fornecido'
+      });
+    }
+
+    console.log(`📄 Processando ${files.length} arquivos para consolidação...`);
+
+    const allReservations: any[] = [];
+    const fileResults: any[] = [];
+
+    // Processar cada arquivo individualmente
+    for (const file of files) {
+      console.log(`🔍 Processando: ${file.originalname}`);
+      
+      const result = await ocrService.processFile(file.path, file.mimetype);
+      
+      if (result.success && result.reservations.length > 0) {
+        // Adicionar tipo de documento e fonte aos dados
+        const reservationsWithMeta = result.reservations.map(r => ({
+          ...r,
+          documentType: result.type,
+          source: file.originalname
+        }));
+        
+        allReservations.push(...reservationsWithMeta);
+        fileResults.push({
+          filename: file.originalname,
+          type: result.type,
+          reservations: result.reservations.length,
+          success: true
+        });
+      } else {
+        fileResults.push({
+          filename: file.originalname,
+          type: 'unknown',
+          reservations: 0,
+          success: false,
+          error: result.error
+        });
+      }
+
+      // Limpar arquivo temporário
+      try {
+        fs.unlinkSync(file.path);
+      } catch (cleanupError) {
+        console.warn('Aviso: Não foi possível remover arquivo temporário:', cleanupError);
+      }
+    }
+
+    if (allReservations.length === 0) {
+      return res.json({
+        success: false,
+        error: 'Nenhuma reserva foi extraída dos arquivos fornecidos',
+        fileResults
+      });
+    }
+
+    // Consolidar reservas de check-in e check-out
+    console.log('🔄 Iniciando consolidação de reservas...');
+    const consolidatedReservations = await ocrService.consolidateReservations(allReservations);
+
+    const consolidatedCount = consolidatedReservations.filter(r => r.source === 'consolidated').length;
+
+    console.log(`✅ Processamento múltiplo concluído: ${consolidatedReservations.length} reservas finais, ${consolidatedCount} consolidadas`);
+
+    res.json({
+      success: true,
+      type: 'multiple-consolidated',
+      reservations: consolidatedReservations,
+      consolidatedReservations: consolidatedCount,
+      fileResults,
+      message: `${consolidatedReservations.length} reserva(s) processada(s), ${consolidatedCount} consolidada(s) de check-in/check-out`
+    });
+
+  } catch (error) {
+    console.error('❌ Erro no processamento múltiplo:', error);
+    
+    // Limpar arquivos em caso de erro
+    if (req.files) {
+      const files = req.files as Express.Multer.File[];
+      files.forEach(file => {
+        try {
+          fs.unlinkSync(file.path);
+        } catch (cleanupError) {
+          console.warn('Aviso: Não foi possível remover arquivo temporário:', cleanupError);
+        }
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro interno do servidor'
+    });
+  }
+});
+
 export default router;
