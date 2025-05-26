@@ -54,7 +54,7 @@ export default function MultiOCR() {
         formData.append('pdf', file);
 
         try {
-          const response = await fetch('/api/ocr?provider=auto&demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true', {
+          const response = await fetch('/api/ocr?provider=gemini&demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true', {
             method: 'POST',
             body: formData,
           });
