@@ -126,10 +126,11 @@ export function UploadPDF() {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       
-      if (file.type !== 'application/pdf') {
+      const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+      if (!allowedTypes.includes(file.type)) {
         toast({
           title: "Formato inválido",
-          description: "Por favor, selecione apenas arquivos PDF.",
+          description: "Por favor, selecione apenas arquivos PDF ou imagens (JPG, PNG, WebP).",
           variant: "destructive",
         });
         return;
@@ -163,12 +164,13 @@ export function UploadPDF() {
       if (isMultiUploadMode) {
         const filesArray = Array.from(e.dataTransfer.files);
         
-        // Verificar se todos os arquivos são PDFs
-        const nonPdfFiles = filesArray.filter(file => file.type !== 'application/pdf');
-        if (nonPdfFiles.length > 0) {
+        // Verificar se todos os arquivos são PDFs ou imagens
+        const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+        const invalidFiles = filesArray.filter(file => !allowedTypes.includes(file.type));
+        if (invalidFiles.length > 0) {
           toast({
             title: "Formato inválido",
-            description: `${nonPdfFiles.length} arquivo(s) não são PDFs válidos.`,
+            description: `${invalidFiles.length} arquivo(s) não são PDFs ou imagens válidas (JPG, PNG, WebP).`,
             variant: "destructive",
           });
           return;
@@ -339,7 +341,7 @@ export function UploadPDF() {
                     name="file-upload" 
                     type="file" 
                     className="sr-only" 
-                    accept=".pdf" 
+                    accept=".pdf,.jpg,.jpeg,.png,.webp" 
                     onChange={handleFileChange}
                     disabled={isUploading}
                   />
@@ -352,7 +354,7 @@ export function UploadPDF() {
                     name="multi-file-upload" 
                     type="file" 
                     className="sr-only" 
-                    accept=".pdf" 
+                    accept=".pdf,.jpg,.jpeg,.png,.webp" 
                     multiple
                     onChange={handleMultipleFileSelect}
                     disabled={isUploading}
@@ -363,8 +365,8 @@ export function UploadPDF() {
             </div>
             <p className="text-xs text-secondary-500 mt-2">
               {isMultiUploadMode 
-                ? "Múltiplos PDFs até 10MB cada" 
-                : "PDFs até 10MB"}
+                ? "Múltiplos PDFs ou imagens (JPG, PNG, WebP) até 10MB cada" 
+                : "PDFs ou imagens (JPG, PNG, WebP) até 10MB"}
             </p>
             
             {/* Indicador de carregamento */}
