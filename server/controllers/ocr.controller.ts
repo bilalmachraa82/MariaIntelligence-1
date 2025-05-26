@@ -131,12 +131,60 @@ ${fullText}`;
         const geminiResult = await gemini.generateText(prompt);
         console.log('🤖 Resposta Gemini recebida:', geminiResult.substring(0, 200) + '...');
         
-        // Parse JSON
-        const jsonMatch = geminiResult.match(/\{[\s\S]*\}/);
+        // Parse JSON com melhor tratamento de erros
+        let jsonMatch = geminiResult.match(/```json\s*(\{[\s\S]*?\})\s*```/);
+        if (!jsonMatch) {
+          jsonMatch = geminiResult.match(/\{[\s\S]*\}/);
+        }
+        
         if (jsonMatch) {
-          const analysisResult = JSON.parse(jsonMatch[0]);
+          let jsonStr = jsonMatch[1] || jsonMatch[0];
           
-          if (analysisResult.reservations && analysisResult.reservations.length > 0) {
+          // Limpar JSON mal formado
+          jsonStr = jsonStr.replace(/,(\s*[}\]])/g, '$1'); // Remove vírgulas extras antes de } ou ]
+          jsonStr = jsonStr.replace(/([}\]])(\s*)([{\[])/g, '$1,$2$3'); // Adiciona vírgulas entre objetos
+          
+          try {
+            // Função robusta para corrigir JSON mal formado
+            function fixMalformedJson(str) {
+              // Remover vírgulas extras antes de } ou ]
+              str = str.replace(/,(\s*[}\]])/g, '$1');
+              // Adicionar vírgulas entre objetos
+              str = str.replace(/}(\s*){/g, '},$1{');
+              // Corrigir aspas problemáticas
+              str = str.replace(/""([^"]*)""/g, '"$1"');
+              // Remover quebras de linha dentro de strings
+              str = str.replace(/"([^"]*)\n([^"]*)"/, '"$1 $2"');
+              
+              try {
+                return JSON.parse(str);
+              } catch {
+                // Extração manual como último recurso
+                const reservations = [];
+                const guestMatches = str.match(/"guestName"\s*:\s*"([^"]+)"/g);
+                const propertyMatches = str.match(/"propertyName"\s*:\s*"([^"]+)"/g);
+                const checkinMatches = str.match(/"checkInDate"\s*:\s*"([^"]+)"/g);
+                const checkoutMatches = str.match(/"checkOutDate"\s*:\s*"([^"]+)"/g);
+                
+                if (guestMatches && propertyMatches) {
+                  for (let i = 0; i < Math.min(guestMatches.length, propertyMatches.length); i++) {
+                    reservations.push({
+                      guestName: guestMatches[i].match(/"([^"]+)"/)[1],
+                      propertyName: propertyMatches[i].match(/"([^"]+)"/)[1],
+                      checkInDate: checkinMatches?.[i]?.match(/"([^"]+)"/)?.[1] || null,
+                      checkOutDate: checkoutMatches?.[i]?.match(/"([^"]+)"/)?.[1] || null,
+                      totalAmount: 0,
+                      guestCount: 1
+                    });
+                  }
+                }
+                return { reservations };
+              }
+            }
+            
+            const analysisResult = fixMalformedJson(jsonStr);
+          
+            if (analysisResult.reservations && analysisResult.reservations.length > 0) {
             console.log(`✅ GEMINI SUCESSO: ${analysisResult.reservations.length} reservas encontradas!`);
             
             const processedReservations = analysisResult.reservations.map(res => ({
@@ -160,6 +208,12 @@ ${fullText}`;
               requiresConfirmation: true
             });
           }
+        } catch (parseError) {
+          console.error('❌ Erro no parsing JSON:', parseError);
+          console.log('🔄 JSON problemático:', jsonStr);
+        }
+        } else {
+          console.log('⚠️ Nenhum JSON encontrado na resposta do Gemini');
         }
         
         console.log('⚠️ Gemini não encontrou reservas, continuando com método padrão');
