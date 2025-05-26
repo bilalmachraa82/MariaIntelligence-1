@@ -129,8 +129,8 @@ function Router() {
       <Route path="/upload-pdf" component={() => <ProtectedRoute component={DocumentScanPage} />} />
       <Route path="/scan" component={() => <ProtectedRoute component={DocumentScanPage} />} />
       <Route path="/pdf-upload" component={() => <ProtectedRoute component={DocumentScanPage} />} />
-      <Route path="/simple-ocr" component={() => <ProtectedRoute component={SimpleOCR} />} />
-      <Route path="/ocr" component={() => <ProtectedRoute component={SimpleOCR} />} />
+      <Route path="/simple-ocr" component={() => <ProtectedRoute component={MultiOCR} />} />
+      <Route path="/ocr" component={() => <ProtectedRoute component={MultiOCR} />} />
       <Route path="/multi-ocr" component={() => <ProtectedRoute component={MultiOCR} />} />
       <Route path="/cleaning-teams" component={() => <ProtectedRoute component={CleaningTeamsPage} />} />
       <Route path="/cleaning-teams/new" component={() => <ProtectedRoute component={() => <div>New Cleaning Team (Coming Soon)</div>} />} />
