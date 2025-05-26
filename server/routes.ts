@@ -1241,8 +1241,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
    * Usa prioridade: Mistral OCR (OpenRouter) -> RolmOCR -> Gemini
    * Detecta automaticamente conteúdo manuscrito e otimiza o processamento
    */
-  // Rota OCR corrigida para extrair todas as reservas
-  app.post("/api/ocr", configuredPdfUpload.single('pdf'), async (req: Request, res: Response) => {
+  // Rota OCR definitiva - Sistema funcional para múltiplas reservas
+  app.post("/api/ocr", multer({ storage: multer.memoryStorage() }).single('pdf'), async (req: Request, res: Response) => {
     console.log('🎯 CONTROLADOR CORRIGIDO - Extração de múltiplas reservas');
     
     try {
@@ -1254,7 +1254,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { fixMalformedJson } = await import('./utils/json-parser');
       
       // Extrair texto com pdf-parse
-      const pdfBuffer = req.file.buffer;
+      const pdfBuffer = Buffer.isBuffer(req.file.buffer) ? req.file.buffer : Buffer.from(req.file.buffer);
       const pdf = await import('pdf-parse');
       const data = await pdf.default(pdfBuffer);
       const extractedText = data.text;
@@ -1327,12 +1327,12 @@ Return JSON with ALL reservations found:
         extractedText: extractedText.substring(0, 1000) + '...'
       });
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erro no processamento OCR:', error);
       res.status(500).json({
         success: false,
         message: 'Erro no processamento OCR',
-        error: error.message
+        error: error?.message || 'Erro desconhecido'
       });
     }
   });
