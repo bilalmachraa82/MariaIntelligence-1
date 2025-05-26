@@ -128,26 +128,7 @@ RESPONDA APENAS COM JSON VÁLIDO:
 }
 
 DOCUMENTO COMPLETO:
-${fullText}`dagem com MÚLTIPLAS reservas que devem ser extraídas.
-
-CRITÉRIO OBRIGATÓRIO: Encontre CADA linha de reserva no documento. NÃO pare após a primeira reserva.
-
-Para CADA reserva encontrada, extraia:
-- reference: Código de referência 
-- propertyName: Nome da propriedade/alojamento
-- guestName: Nome completo do hóspede (NÃO "Telefone" ou "Email")
-- checkInDate: Data de entrada (formato YYYY-MM-DD)
-- checkOutDate: Data de saída (formato YYYY-MM-DD)
-- adults: Número de adultos (padrão 2 se não especificado)
-- children: Número de crianças (padrão 0 se não especificado)
-
-IMPORTANTE:
-- Procure por TODAS as entradas na tabela/lista
-- Cada linha com dados de hóspede é uma reserva separada
-- NÃO pare após encontrar uma reserva
-- Se encontrar telefones como +32 475 69 31 35, extraia o nome do hóspede correto, não "Telefone"
-
-RESPONDA APENAS COM JSON VÁLIDO:
+${fullText}`;
 {
   "reservations": [
     {
@@ -165,9 +146,10 @@ RESPONDA APENAS COM JSON VÁLIDO:
 DOCUMENTO COMPLETO:
 ${fullText}`;
 
-        console.log('🚀 Tentativa 1/5');
+        console.log('🚀 Tentativa 1/5 - NOVO PROMPT MELHORADO');
+        console.log('📋 Usando prompt especializado para múltiplas reservas');
         const geminiResult = await gemini.generateText(prompt);
-        console.log('🤖 Resposta Gemini recebida:', geminiResult.substring(0, 200) + '...');
+        console.log('🤖 Resposta Gemini recebida:', geminiResult.substring(0, 300) + '...');
         
         // Parse JSON com melhor tratamento de erros
         let jsonMatch = geminiResult.match(/```json\s*(\{[\s\S]*?\})\s*```/);
