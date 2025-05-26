@@ -1241,9 +1241,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
    * Usa prioridade: Mistral OCR (OpenRouter) -> RolmOCR -> Gemini
    * Detecta automaticamente conteúdo manuscrito e otimiza o processamento
    */
-  // Sistema OCR Funcional - Extração de múltiplas reservas
+  // Sistema OCR Puro - Sem dependências externas
   app.post("/api/ocr", multer({ storage: multer.memoryStorage() }).single('pdf'), async (req: Request, res: Response) => {
-    console.log('🚀 NOVO SISTEMA OCR - Processando PDF com Gemini Vision');
+    console.log('🚀 SISTEMA OCR PURO - Processando PDF sem APIs externas');
     
     try {
       if (!req.file) {
@@ -1252,113 +1252,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log(`📁 Processando: ${req.file.originalname} (${req.file.size} bytes)`);
 
-      // Verificar se tem GEMINI_API_KEY
-      if (!process.env.GEMINI_API_KEY) {
-        return res.status(500).json({ 
-          success: false, 
-          message: 'Chave API Gemini não configurada' 
-        });
+      // Extrair texto usando pdf-parse (método local, sem APIs)
+      console.log('📄 Extraindo texto com pdf-parse...');
+      const pdf = await import('pdf-parse');
+      const pdfData = await pdf.default(req.file.buffer);
+      const extractedText = pdfData.text;
+      
+      console.log(`📄 Texto extraído: ${extractedText.length} caracteres`);
+      
+      if (extractedText.length < 100) {
+        throw new Error('Não foi possível extrair texto suficiente do PDF');
       }
 
-      // Converter PDF para base64
-      const base64Pdf = req.file.buffer.toString('base64');
+      // Analisar texto extraído para encontrar reservas
+      const reservations = extractReservationsFromText(extractedText);
       
-      // Usar Gemini Vision para analisar o PDF diretamente
-      const analysisPrompt = `Analyze this accommodation control PDF document and extract ALL reservations from the main table.
-
-CRITICAL INSTRUCTIONS:
-1. IGNORE filter fields like "Alojamento: Todos", "Proprietário: Todos", "Telefone", etc. - these are NOT guest data
-2. Find the main reservation table with columns: Referência, Alojamento, Estado, Check-in, Check-out, Adultos, Crianças
-3. Extract EVERY row from this table (typically 8-12 reservations)
-4. Property names are real like: "Almada 1Bernardo T3", "Boavista 1Tania T2", "São João Batista T3"
-5. Guest names are real people names, NOT "Telefone" or filter text
-
-Return this exact JSON format:
-{
-  "reservations": [
-    {
-      "reference": "reservation code",
-      "propertyName": "property name", 
-      "guestName": "guest name",
-      "checkInDate": "YYYY-MM-DD",
-      "checkOutDate": "YYYY-MM-DD",
-      "adults": number,
-      "children": number,
-      "status": "confirmed"
-    }
-  ]
-}`;
-
-      console.log('🔍 Enviando PDF para análise Gemini Vision...');
-
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{
-            parts: [
-              { text: analysisPrompt },
-              { 
-                inline_data: {
-                  mime_type: 'application/pdf',
-                  data: base64Pdf
-                }
-              }
-            ]
-          }],
-          generationConfig: { 
-            temperature: 0.1, 
-            maxOutputTokens: 8192 
-          }
-        })
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('❌ Erro Gemini API:', response.status, errorText);
-        throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
-      }
-
-      const data = await response.json();
-      
-      if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
-        console.error('❌ Resposta Gemini inválida:', JSON.stringify(data, null, 2));
-        throw new Error('Resposta inválida da Gemini API');
-      }
-
-      const responseText = data.candidates[0].content.parts[0].text;
-      console.log('🤖 Resposta Gemini:', responseText.substring(0, 300) + '...');
-
-      // Extrair JSON da resposta
-      let jsonStr = responseText;
-      
-      // Procurar JSON na resposta
-      const jsonMatch = responseText.match(/```json\s*([\s\S]*?)\s*```/) || 
-                       responseText.match(/\{[\s\S]*"reservations"[\s\S]*\}/);
-      
-      if (jsonMatch) {
-        jsonStr = jsonMatch[1] || jsonMatch[0];
-      }
-
-      // Parse JSON
-      let parsed;
-      try {
-        parsed = JSON.parse(jsonStr);
-      } catch (parseError) {
-        console.log('⚠️ Erro no parse JSON, tentando correção automática...');
-        // Usar parser robusto se necessário
-        try {
-          const { fixMalformedJson } = await import('./utils/json-parser');
-          parsed = fixMalformedJson(jsonStr);
-        } catch (fixError) {
-          console.error('❌ Falha na correção JSON:', fixError);
-          throw new Error('Não foi possível processar a resposta JSON');
-        }
-      }
-
-      const reservations = parsed.reservations || [];
-      
-      console.log(`✅ SUCESSO! Extraídas ${reservations.length} reservas`);
+      console.log(`✅ SUCESSO! ${reservations.length} reservas extraídas via pdf-parse`);
       
       // Log das reservas encontradas
       reservations.forEach((res: any, index: number) => {
@@ -1367,9 +1276,10 @@ Return this exact JSON format:
 
       res.json({
         success: true,
-        provider: 'gemini-vision',
+        provider: 'pdf-parse-local',
         count: reservations.length,
         reservations: reservations,
+        extractedText: extractedText.substring(0, 1000) + '...',
         message: `${reservations.length} reservas extraídas com sucesso`
       });
 
@@ -1382,6 +1292,80 @@ Return this exact JSON format:
       });
     }
   });
+
+  // Função para extrair reservas do texto (fallback)
+  function extractReservationsFromText(text: string): any[] {
+    const reservations: any[] = [];
+    
+    // Procurar padrões de reservas no texto
+    const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+    
+    // Padrões para identificar dados de reserva
+    const datePattern = /\d{1,2}\/\d{1,2}\/\d{4}/g;
+    const referencePattern = /\b[A-Z0-9]{8,}\b/;
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      
+      // Ignorar linhas de filtro
+      if (line.includes('Alojamento: Todos') || 
+          line.includes('Proprietário: Todos') || 
+          line.includes('Telefone') ||
+          line.includes('filtro')) {
+        continue;
+      }
+      
+      // Procurar por datas (possível linha de reserva)
+      const dates = line.match(datePattern);
+      if (dates && dates.length >= 2) {
+        const parts = line.split(/\s+/);
+        
+        // Tentar extrair informações da linha
+        const reference = parts.find(p => referencePattern.test(p)) || `REF${i}`;
+        const checkInDate = convertDateFormat(dates[0]);
+        const checkOutDate = convertDateFormat(dates[1]);
+        
+        // Procurar nome da propriedade (geralmente palavras com T1, T2, T3)
+        const propertyName = parts.find(p => /T[0-9]/.test(p)) || 
+                           parts.find(p => p.length > 5 && !/\d{1,2}\/\d{1,2}\/\d{4}/.test(p)) || 
+                           'Propriedade não identificada';
+        
+        // Nome do hóspede (primeira palavra que não é data nem referência)
+        const guestName = parts.find(p => 
+          !datePattern.test(p) && 
+          !referencePattern.test(p) && 
+          p.length > 2 && 
+          !p.includes('T') &&
+          !p.includes('Confirmada')
+        ) || 'Hóspede não identificado';
+        
+        if (checkInDate && checkOutDate && propertyName !== 'Propriedade não identificada') {
+          reservations.push({
+            reference,
+            propertyName,
+            guestName,
+            checkInDate,
+            checkOutDate,
+            adults: 2,
+            children: 0,
+            status: 'confirmed'
+          });
+        }
+      }
+    }
+    
+    return reservations;
+  }
+
+  // Função para converter formato de data
+  function convertDateFormat(dateStr: string): string {
+    try {
+      const [day, month, year] = dateStr.split('/');
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    } catch {
+      return dateStr;
+    }
+  }
   
   /**
    * Endpoints adicionais para processamento OCR removidos (controlador antigo)
