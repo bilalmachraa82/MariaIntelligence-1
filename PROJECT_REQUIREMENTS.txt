@@ -1,0 +1,499 @@
+# MARIA FAZ - PROJETO COMPLETO PARA LOVABLE
+# Sistema de Gestão de Propriedades com IA
+
+## VISÃO GERAL DO PROJETO
+
+**Nome:** Maria Faz - Plataforma de Gestão de Propriedades com IA
+**Descrição:** Sistema avançado de gestão de propriedades de alojamento local com processamento inteligente de documentos via IA, automação de tarefas e gestão financeira completa.
+
+## TECNOLOGIAS PRINCIPAIS
+
+### Frontend
+- React 18 com TypeScript
+- Vite como bundler
+- Tailwind CSS + shadcn/ui para design system
+- Wouter para roteamento
+- React Query (TanStack Query) para gestão de estado
+- i18next para internacionalização (PT/EN)
+- Framer Motion para animações
+
+### Backend
+- Node.js com Express
+- TypeScript
+- PostgreSQL com Drizzle ORM
+- Multer para upload de ficheiros
+- PDF-parse para extração de texto
+- Sistema de sessões com express-session
+
+### IA e OCR
+- Google Gemini 2.5 Flash API (principal)
+- OpenRouter API (Mistral) como fallback
+- HuggingFace para detecção de manuscritos
+- Processamento inteligente de PDFs
+
+### Infraestrutura
+- Replit para deployment
+- PostgreSQL database
+- Sistema de cron jobs para tarefas automáticas
+- Gestão de uploads temporários
+
+## ARQUITETURA DO SISTEMA
+
+### Estrutura de Pastas
+```
+/
+├── client/src/           # Frontend React
+│   ├── components/       # Componentes reutilizáveis
+│   ├── pages/           # Páginas da aplicação
+│   ├── hooks/           # Custom hooks
+│   ├── lib/             # Utilitários
+│   └── i18n/            # Traduções
+├── server/              # Backend Express
+│   ├── controllers/     # Controladores de API
+│   ├── services/        # Serviços de negócio
+│   ├── storage.ts       # Camada de dados
+│   └── routes.ts        # Definição de rotas
+└── shared/              # Código partilhado
+    └── schema.ts        # Schemas Drizzle
+```
+
+## MODELOS DE DADOS (Database Schema)
+
+### 1. Properties (Propriedades)
+```sql
+- id: serial primary key
+- name: varchar(255) not null
+- address: text
+- city: varchar(100)
+- propertyType: varchar(50)
+- bedrooms: integer
+- bathrooms: integer
+- maxGuests: integer
+- ownerId: integer (FK to owners)
+- aliases: text[] (nomes alternativos)
+- amenities: text[]
+- description: text
+- pricePerNight: decimal(10,2)
+- cleaningFee: decimal(10,2)
+- isActive: boolean default true
+```
+
+### 2. Owners (Proprietários)
+```sql
+- id: serial primary key
+- name: varchar(255) not null
+- email: varchar(255)
+- phone: varchar(20)
+- company: varchar(255)
+- address: text
+- taxId: varchar(50)
+- bankDetails: text
+- commissionRate: decimal(5,2)
+```
+
+### 3. Reservations (Reservas)
+```sql
+- id: serial primary key
+- propertyId: integer (FK to properties)
+- guestName: varchar(255) not null
+- guestEmail: varchar(255)
+- guestPhone: varchar(20)
+- checkInDate: date not null
+- checkOutDate: date not null
+- numGuests: integer
+- adults: integer
+- children: integer
+- totalAmount: decimal(10,2)
+- platform: varchar(50) (booking, airbnb, manual)
+- status: varchar(20) (pending, confirmed, checked-in, completed, cancelled)
+- reference: varchar(100)
+- notes: text
+- checkInUserId: integer
+- checkOutUserId: integer
+- checkInStatus: varchar(20)
+- checkOutStatus: varchar(20)
+- createdAt: timestamp
+```
+
+### 4. Cleaning Teams (Equipas de Limpeza)
+```sql
+- id: serial primary key
+- name: varchar(255) not null
+- contactPerson: varchar(255)
+- phone: varchar(20)
+- email: varchar(255)
+- hourlyRate: decimal(8,2)
+- specialties: text[]
+- isActive: boolean default true
+```
+
+### 5. Cleaning Schedules (Agendamentos de Limpeza)
+```sql
+- id: serial primary key
+- propertyId: integer (FK to properties)
+- reservationId: integer (FK to reservations)
+- teamId: integer (FK to cleaning_teams)
+- scheduledDate: date
+- startTime: time
+- estimatedDuration: integer (minutos)
+- status: varchar(20) (scheduled, in-progress, completed, cancelled)
+- actualStartTime: timestamp
+- actualEndTime: timestamp
+- notes: text
+- photos: text[] (URLs das fotos)
+```
+
+### 6. Maintenance Tasks (Tarefas de Manutenção)
+```sql
+- id: serial primary key
+- propertyId: integer (FK to properties)
+- title: varchar(255) not null
+- description: text
+- category: varchar(50) (plumbing, electrical, cleaning, general)
+- priority: varchar(20) (low, medium, high, urgent)
+- status: varchar(20) (pending, in-progress, completed, cancelled)
+- reportedBy: varchar(255)
+- assignedTo: varchar(255)
+- estimatedCost: decimal(10,2)
+- actualCost: decimal(10,2)
+- dueDate: date
+- completedAt: timestamp
+- photos: text[]
+- notes: text
+```
+
+### 7. Activities (Registro de Atividades)
+```sql
+- id: serial primary key
+- type: varchar(50) (reservation, cleaning, maintenance, payment)
+- entityId: integer (ID da entidade relacionada)
+- title: varchar(255)
+- description: text
+- performedBy: varchar(255)
+- timestamp: timestamp default now()
+- metadata: jsonb (dados adicionais)
+```
+
+### 8. Financial Records (Registros Financeiros)
+```sql
+- id: serial primary key
+- type: varchar(20) (income, expense)
+- category: varchar(50)
+- amount: decimal(10,2) not null
+- description: text
+- date: date not null
+- propertyId: integer (FK to properties)
+- reservationId: integer (FK to reservations)
+- ownerId: integer (FK to owners)
+- paymentMethod: varchar(50)
+- reference: varchar(100)
+- invoiceNumber: varchar(100)
+- taxAmount: decimal(10,2)
+```
+
+### 9. AI Knowledge Base (Base de Conhecimento IA)
+```sql
+- id: serial primary key
+- documentType: varchar(50) (reservation, contract, invoice)
+- fileName: varchar(255)
+- content: text
+- extractedData: jsonb
+- embeddings: vector (pgvector)
+- uploadedAt: timestamp default now()
+- processedAt: timestamp
+```
+
+## USER STORIES DETALHADAS
+
+### 1. GESTÃO DE PROPRIEDADES
+
+**Como proprietário, quero:**
+- Cadastrar novas propriedades com todas as informações (localização, tipo, capacidade, comodidades)
+- Definir preços por noite e taxas de limpeza
+- Adicionar fotos e descrições detalhadas
+- Configurar aliases/nomes alternativos para facilitar identificação em documentos
+- Visualizar estatísticas de ocupação e rendimento por propriedade
+- Editar informações das propriedades existentes
+- Desativar propriedades temporariamente
+
+**Como administrador, quero:**
+- Ver lista completa de propriedades com filtros (cidade, tipo, proprietário)
+- Exportar dados das propriedades para relatórios
+- Gerir múltiplas propriedades de diferentes proprietários
+
+### 2. GESTÃO DE RESERVAS
+
+**Como recepcionista, quero:**
+- Visualizar reservas por data, propriedade ou estado
+- Fazer check-in e check-out de hóspedes
+- Registrar observações sobre as reservas
+- Ver calendário de ocupação
+- Filtrar reservas por múltiplos critérios (datas, estado, propriedade)
+- Receber notificações de check-ins/check-outs do dia
+
+**Como proprietário, quero:**
+- Ver todas as minhas reservas em tempo real
+- Receber relatórios automáticos de ocupação
+- Acompanhar o estado das reservas (confirmada, em andamento, concluída)
+
+### 3. PROCESSAMENTO INTELIGENTE DE DOCUMENTOS (OCR + IA)
+
+**Como utilizador, quero:**
+- Fazer upload de PDFs de reservas e extrair automaticamente os dados
+- Processar documentos com múltiplas reservas (como arquivos de controle)
+- Ter os dados extraídos automaticamente preenchidos no sistema
+- Corrigir dados extraídos antes de salvar
+- Receber feedback sobre dados em falta ou inconsistentes
+- Processar tanto documentos digitais quanto manuscritos
+
+**Funcionalidades Técnicas:**
+- Detecção automática de tipo de documento (reserva individual vs múltiplas)
+- Extração via Gemini 2.5 Flash para documentos complexos
+- Fallback para OpenRouter/Mistral em caso de falha
+- Parser nativo como último recurso
+- Detecção de manuscritos para escolher melhor método OCR
+- Matching inteligente de propriedades por nome/alias
+
+### 4. GESTÃO DE LIMPEZA
+
+**Como gestor de limpeza, quero:**
+- Agendar limpezas automaticamente após check-outs
+- Atribuir equipas específicas a propriedades
+- Acompanhar o progresso das limpezas
+- Registrar tempo gasto e observações
+- Anexar fotos do antes/depois
+- Calcular custos de limpeza
+
+**Como membro da equipa de limpeza, quero:**
+- Ver as minhas tarefas agendadas
+- Marcar início e fim de limpezas
+- Reportar problemas encontrados
+- Registrar material utilizado
+
+### 5. MANUTENÇÃO
+
+**Como proprietário, quero:**
+- Reportar problemas de manutenção
+- Acompanhar o estado das reparações
+- Ver custos estimados vs reais
+- Receber fotos dos trabalhos realizados
+- Aprovar orçamentos antes da execução
+
+**Como técnico de manutenção, quero:**
+- Receber notificações de novas tarefas
+- Atualizar progresso dos trabalhos
+- Anexar fotos e notas
+- Registrar material e tempo utilizado
+
+### 6. ASSISTENTE IA (MARIA)
+
+**Como utilizador, quero:**
+- Fazer perguntas sobre reservas, propriedades e relatórios em linguagem natural
+- Receber sugestões proativas sobre tarefas pendentes
+- Processar documentos via chat
+- Obter resumos automáticos de atividades
+- Receber alertas inteligentes sobre problemas
+
+**Funcionalidades da IA:**
+- Chat conversacional em português/inglês
+- Análise de documentos enviados
+- Sugestões baseadas em padrões históricos
+- Alertas proativos sobre manutenção
+- Integração com base de conhecimento
+
+### 7. RELATÓRIOS E ANÁLISES
+
+**Como proprietário, quero:**
+- Relatórios mensais de receitas por propriedade
+- Análise de ocupação e sazonalidade
+- Comparação de performance entre propriedades
+- Exportação de dados para contabilidade
+- Dashboards visuais com gráficos
+
+**Como administrador, quero:**
+- Relatórios consolidados de múltiplos proprietários
+- Análises de tendências do mercado
+- Relatórios de custos operacionais
+- KPIs de performance das equipas
+
+### 8. GESTÃO FINANCEIRA
+
+**Como proprietário, quero:**
+- Registrar todas as receitas e despesas
+- Categorizar transações automaticamente
+- Calcular comissões e impostos
+- Gerar faturas automáticas
+- Acompanhar fluxo de caixa
+
+**Como contabilista, quero:**
+- Exportar dados para sistemas contabilísticos
+- Ver relatórios fiscais
+- Acompanhar pagamentos pendentes
+- Validar cálculos de impostos
+
+## FUNCIONALIDADES ESPECIAIS
+
+### 1. SISTEMA DE NOTIFICAÇÕES
+- Email automático para proprietários (relatórios, alertas)
+- Notificações push para equipas móveis
+- SMS para situações urgentes
+- Dashboard com notificações em tempo real
+
+### 2. AUTOMAÇÃO INTELIGENTE
+- Agendamento automático de limpezas
+- Mudança automática de status de reservas
+- Geração automática de faturas mensais
+- Alertas preventivos de manutenção
+- Limpeza automática de arquivos temporários
+
+### 3. MULTI-IDIOMA
+- Interface completa em Português (Portugal) e Inglês
+- IA que responde no idioma do utilizador
+- Documentos processados em múltiplos idiomas
+- Localização de moedas e formatos de data
+
+### 4. SISTEMA DE PERMISSÕES
+- Diferentes níveis de acesso (admin, proprietário, funcionário)
+- Filtros automáticos baseados em permissões
+- Logs de auditoria para mudanças críticas
+
+### 5. MOBILE-FIRST DESIGN
+- Interface responsiva para todos os dispositivos
+- PWA (Progressive Web App) para instalação mobile
+- Touch-friendly para tablets e smartphones
+- Navegação otimizada para mobile
+
+## INTEGRAÇÕES EXTERNAS
+
+### APIs de IA
+- Google Gemini 2.5 Flash (principal)
+- OpenRouter/Mistral (backup)
+- HuggingFace (detecção manuscritos)
+
+### Serviços de Email
+- SendGrid para emails transacionais
+- Nodemailer como fallback
+
+### Armazenamento
+- PostgreSQL para dados principais
+- Sistema de ficheiros para uploads temporários
+- Possível integração com cloud storage
+
+## CONFIGURAÇÕES TÉCNICAS
+
+### Variáveis de Ambiente Necessárias
+```
+# Database
+DATABASE_URL=postgresql://...
+
+# AI Services
+GOOGLE_GEMINI_API_KEY=xxx
+OPENROUTER_API_KEY=xxx
+HF_TOKEN=xxx
+
+# Email
+SENDGRID_API_KEY=xxx
+EMAIL_FROM=noreply@mariafaz.com
+
+# App Settings
+NODE_ENV=production
+MAX_UPLOAD_MB=10
+SESSION_SECRET=xxx
+```
+
+### Performance e Segurança
+- Rate limiting nas APIs
+- Validação rigorosa de inputs
+- Sanitização de uploads
+- Encriptação de dados sensíveis
+- Logs de auditoria
+- Backup automático de database
+
+## FLUXOS DE TRABALHO PRINCIPAIS
+
+### 1. Fluxo de Reserva
+```
+Upload PDF → OCR/IA → Extração dados → Validação → Confirmação → Agendamento Limpeza
+```
+
+### 2. Fluxo de Check-in/Check-out
+```
+Notificação → Check-in → Registo observações → Check-out → Agendamento limpeza → Relatório
+```
+
+### 3. Fluxo de Manutenção
+```
+Reportar problema → Criar tarefa → Atribuir técnico → Execução → Validação → Fecho
+```
+
+### 4. Fluxo Financeiro
+```
+Reserva confirmada → Registo receita → Cálculo comissões → Geração fatura → Envio relatório
+```
+
+## MÉTRICAS E KPIs
+
+### Dashboard Principal
+- Taxa de ocupação atual
+- Receita do mês vs mês anterior
+- Número de check-ins/check-outs hoje
+- Tarefas pendentes por categoria
+- Próximas limpezas agendadas
+
+### Relatórios Avançados
+- Receita por propriedade/proprietário
+- Análise sazonal de ocupação
+- Custos operacionais detalhados
+- Performance das equipas de limpeza
+- Tempo médio de resolução de manutenção
+
+## ROADMAP DE DESENVOLVIMENTO
+
+### Fase 1 (Core)
+- Gestão básica de propriedades e reservas
+- Sistema de OCR com IA
+- Dashboard principal
+- Sistema de utilizadores
+
+### Fase 2 (Operações)
+- Gestão de limpeza completa
+- Sistema de manutenção
+- Relatórios básicos
+- Assistente IA
+
+### Fase 3 (Avançado)
+- Automações inteligentes
+- Relatórios avançados
+- Integrações externas
+- App mobile nativa
+
+### Fase 4 (Escala)
+- Multi-tenancy
+- API pública
+- Marketplace de serviços
+- Analytics avançados
+
+## CONSIDERAÇÕES ESPECIAIS PARA LOVABLE
+
+### Estrutura Recomendada
+1. Começar com o schema de database completo
+2. Implementar autenticação básica
+3. Criar componentes base do design system
+4. Desenvolver páginas principais uma a uma
+5. Integrar APIs de IA progressivamente
+6. Adicionar funcionalidades avançadas
+
+### Prioridades de Implementação
+1. **Crítico:** Properties, Reservations, OCR básico
+2. **Importante:** Dashboard, Cleaning, Reports
+3. **Desejável:** Maintenance, AI Assistant, Advanced Analytics
+
+### Notas Técnicas
+- Usar Drizzle ORM para type-safety
+- Implementar React Query para cache eficiente
+- Criar hooks customizados para lógica de negócio
+- Usar shadcn/ui para consistência visual
+- Implementar error boundaries e loading states
+- Configurar i18n desde o início
+
+Este documento serve como blueprint completo para recriar o sistema Maria Faz no Lovable, mantendo todas as funcionalidades e a arquitetura robusta do projeto original.
