@@ -90,7 +90,7 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
     );
   }
 
-  if (error || !user?.user) {
+  if (error || !user) {
     return <Login />;
   }
 
