@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Upload, FileText, Users, Calendar, Euro, CheckCircle, AlertCircle } from 'lucide-react';
+import { Loader2, Upload, FileText, Users, Calendar, Euro, CheckCircle, AlertCircle, Merge, Sparkles } from 'lucide-react';
 
 interface ExtractedReservation {
   guestName: string;
