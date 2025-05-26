@@ -14,7 +14,7 @@ export default function DocumentScanPage() {
           {t("documentScan.title", "Digitalização de Documentos")}
         </h2>
         <p className="text-secondary-500">
-          {t("documentScan.description", "Converta PDFs ou imagens de reservas em dados estruturados com reconhecimento inteligente")}
+          {t("documentScan.description", "Converta PDFs ou imagens (JPG, PNG, WebP) de reservas em dados estruturados com reconhecimento inteligente")}
         </p>
       </div>
       
