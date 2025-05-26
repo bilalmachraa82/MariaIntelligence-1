@@ -1,0 +1,26 @@
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+Console.js:61 [vite] connecting...
+Console.js:61 [vite] connected.
+Console.js:61 i18next: languageChanged en-US
+Console.js:61 i18next: initialized {debug: true, initAsync: true, ns: Array(1), defaultNS: Array(1), fallbackLng: Array(1), …}
+Console.js:61 i18n inicializado com os seguintes recursos: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+Console.js:61 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+Console.js:61 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+Console.js:61 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/:1 [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) <input data-replit-metadata=​"client/​src/​pages/​Login.tsx:​80:​22" data-component-name=​"Input" type=​"password" class=​"flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:​border-0 file:​bg-transparent file:​text-sm file:​font-medium file:​text-foreground placeholder:​text-muted-foreground focus-visible:​outline-none focus-visible:​ring-2 focus-visible:​ring-ring focus-visible:​ring-offset-2 disabled:​cursor-not-allowed disabled:​opacity-50" placeholder=​"mariafaz123" name=​"password" id=​":​r4:​-form-item" aria-describedby=​":​r4:​-form-item-description" aria-invalid=​"false" value>​flex
+workspace_iframe.html:1 Unrecognized feature: 'ambient-light-sensor'.
+workspace_iframe.html:1 Unrecognized feature: 'battery'.
+workspace_iframe.html:1 Unrecognized feature: 'execution-while-not-rendered'.
+workspace_iframe.html:1 Unrecognized feature: 'execution-while-out-of-viewport'.
+workspace_iframe.html:1 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:1 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:1 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:1 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:1 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:1 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html:1 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:1 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:1 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:1 Allow attribute will take precedence over 'allowpaymentrequest'.
