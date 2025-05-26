@@ -1241,9 +1241,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
    * Usa prioridade: Mistral OCR (OpenRouter) -> RolmOCR -> Gemini
    * Detecta automaticamente conteúdo manuscrito e otimiza o processamento
    */
-  // Sistema OCR Puro - Sem dependências externas
+  // Sistema OCR com Google AI - Extração de múltiplas reservas
   app.post("/api/ocr", multer({ storage: multer.memoryStorage() }).single('pdf'), async (req: Request, res: Response) => {
-    console.log('🚀 SISTEMA OCR PURO - Processando PDF sem APIs externas');
+    console.log('🚀 SISTEMA OCR COM GOOGLE AI - Processando PDF');
     
     try {
       if (!req.file) {
@@ -1252,7 +1252,104 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log(`📁 Processando: ${req.file.originalname} (${req.file.size} bytes)`);
 
-      // Extrair texto usando pdf-parse (método local, sem APIs)
+      // Tentar primeiro com Google AI se a chave estiver disponível
+      const googleApiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
+      
+      if (googleApiKey) {
+        try {
+          console.log('🔍 Tentando Google AI Vision...');
+          const base64Pdf = req.file.buffer.toString('base64');
+          
+          const analysisPrompt = `Analyze this accommodation control PDF document and extract ALL reservations from the main table.
+
+CRITICAL INSTRUCTIONS:
+1. IGNORE filter fields like "Alojamento: Todos", "Proprietário: Todos", "Telefone", etc. - these are NOT guest data
+2. Find the main reservation table with columns: Referência, Alojamento, Estado, Check-in, Check-out, Adultos, Crianças
+3. Extract EVERY row from this table (typically 8-12 reservations)
+4. Property names are real like: "Almada 1Bernardo T3", "Boavista 1Tania T2", "São João Batista T3"
+5. Guest names are real people names, NOT "Telefone" or filter text
+
+Return this exact JSON format:
+{
+  "reservations": [
+    {
+      "reference": "reservation code",
+      "propertyName": "property name", 
+      "guestName": "guest name",
+      "checkInDate": "YYYY-MM-DD",
+      "checkOutDate": "YYYY-MM-DD",
+      "adults": number,
+      "children": number,
+      "status": "confirmed"
+    }
+  ]
+}`;
+
+          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${googleApiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{
+                parts: [
+                  { text: analysisPrompt },
+                  { 
+                    inline_data: {
+                      mime_type: 'application/pdf',
+                      data: base64Pdf
+                    }
+                  }
+                ]
+              }],
+              generationConfig: { 
+                temperature: 0.1, 
+                maxOutputTokens: 8192 
+              }
+            })
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
+              const responseText = data.candidates[0].content.parts[0].text;
+              console.log('✅ Google AI Vision funcionou!');
+              
+              // Processar resposta do Google AI
+              let jsonStr = responseText;
+              const jsonMatch = responseText.match(/```json\s*([\s\S]*?)\s*```/) || 
+                               responseText.match(/\{[\s\S]*"reservations"[\s\S]*\}/);
+              
+              if (jsonMatch) {
+                jsonStr = jsonMatch[1] || jsonMatch[0];
+              }
+
+              const parsed = JSON.parse(jsonStr);
+              const reservations = parsed.reservations || [];
+              
+              console.log(`✅ SUCESSO! ${reservations.length} reservas extraídas via Google AI`);
+              
+              // Log das reservas encontradas
+              reservations.forEach((res: any, index: number) => {
+                console.log(`📋 ${index + 1}. ${res.guestName || 'N/A'} -> ${res.propertyName || 'N/A'} (${res.checkInDate || 'N/A'} a ${res.checkOutDate || 'N/A'})`);
+              });
+              
+              return res.json({
+                success: true,
+                provider: 'google-ai-vision',
+                count: reservations.length,
+                reservations: reservations,
+                message: `${reservations.length} reservas extraídas com sucesso`
+              });
+            }
+          }
+        } catch (googleError: any) {
+          console.log('⚠️ Google AI falhou:', googleError.message);
+          console.log('🔄 Activando fallback com pdf-parse...');
+        }
+      } else {
+        console.log('⚠️ Chave Google AI não disponível, usando fallback...');
+      }
+
+      // Fallback: usar pdf-parse + análise de texto
       console.log('📄 Extraindo texto com pdf-parse...');
       const pdf = await import('pdf-parse');
       const pdfData = await pdf.default(req.file.buffer);
@@ -1276,7 +1373,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({
         success: true,
-        provider: 'pdf-parse-local',
+        provider: 'pdf-parse-fallback',
         count: reservations.length,
         reservations: reservations,
         extractedText: extractedText.substring(0, 1000) + '...',
