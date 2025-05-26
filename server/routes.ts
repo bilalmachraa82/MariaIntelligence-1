@@ -1242,7 +1242,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
    * Usa prioridade: Mistral OCR (OpenRouter) -> RolmOCR -> Gemini
    * Detecta automaticamente conteúdo manuscrito e otimiza o processamento
    */
-  app.post("/api/ocr", pdfUpload.single('pdf'), processMultipleReservations);
+  // Rota temporária para testar o controlador corrigido
+  app.post("/api/ocr-fixed", configuredPdfUpload.single('pdf'), processMultipleReservations);
+  
+  app.post("/api/ocr", configuredPdfUpload.single('pdf'), processMultipleReservations);
   
   /**
    * Endpoints adicionais para processamento OCR (legado/auxiliar)
