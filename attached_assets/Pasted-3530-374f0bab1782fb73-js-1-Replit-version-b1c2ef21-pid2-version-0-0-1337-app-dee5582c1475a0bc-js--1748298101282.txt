@@ -1,0 +1,416 @@
+3530-374f0bab1782fb73.js:1 Replit version b1c2ef21, pid2 version 0.0.1337
+_app-dee5582c1475a0bc.js:38 
+      /////////////////////
+   ///////////////////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////        Curious and driven?
+  ///////////////@@@@@@@///////        Work with us!
+  ///////////////@@@@@@@///////
+  ///////////////@@@@@@@///////        https://join.replit.com/hack.with.us
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@#//////////////
+   ///////////////////////////
+      /////////////////////
+      
+_app-dee5582c1475a0bc.js:38  
+chrome-extension://j…nt/index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://js.stripe.com" from accessing a cross-origin frame.
+    at chrome-extension://jldogdgepmcedfdhgnmclgemehfhpomg/content/index.iife.js:24:41133
+_app-dee5582c1475a0bc.js:38 [LaunchDarkly] LaunchDarkly client initialized
+_app-dee5582c1475a0bc.js:38 [LaunchDarkly] Opening stream connection to https://clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwiYW5vbnltb3VzIjpmYWxzZX0
+_app-dee5582c1475a0bc.js:38 [LaunchDarkly] Closing stream connection
+_app-dee5582c1475a0bc.js:38 [LaunchDarkly] Opening stream connection to https://clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ
+hook.js:608 If you do not provide children, you must specify an aria-label for accessibility
+overrideMethod @ hook.js:608
+hook.js:608 If you do not provide children, you must specify an aria-label for accessibility
+overrideMethod @ hook.js:608
+analytics.tiktok.com/api/v2/monitor:1  Failed to load resource: the server responded with a status of 503 ()
+chrome-extension://j…nt/index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://www.googletagmanager.com" from accessing a cross-origin frame.
+    at chrome-extension://jldogdgepmcedfdhgnmclgemehfhpomg/content/index.iife.js:24:41133
+/account:1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+chrome-extension://j…nt/index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://js.stripe.com" from accessing a cross-origin frame.
+    at chrome-extension://jldogdgepmcedfdhgnmclgemehfhpomg/content/index.iife.js:24:41133
+chrome-extension://j…nt/index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://m.stripe.network" from accessing a cross-origin frame.
+    at chrome-extension://jldogdgepmcedfdhgnmclgemehfhpomg/content/index.iife.js:24:41133
+_app-dee5582c1475a0bc.js:38 [LaunchDarkly] Closing stream connection
+_app-dee5582c1475a0bc.js:38 [LaunchDarkly] Opening stream connection to https://clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ
+_app-dee5582c1475a0bc.js:38 [LaunchDarkly] Closing stream connection
+_app-dee5582c1475a0bc.js:38 [LaunchDarkly] Opening stream connection to https://clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ
+ stallwart: failed ping 1
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+ Unrecognized feature: 'ambient-light-sensor'.
+_ @ framework-2a5414383c66f062.js:1
+ Unrecognized feature: 'battery'.
+_ @ framework-2a5414383c66f062.js:1
+ Unrecognized feature: 'execution-while-not-rendered'.
+_ @ framework-2a5414383c66f062.js:1
+ Unrecognized feature: 'execution-while-out-of-viewport'.
+_ @ framework-2a5414383c66f062.js:1
+ Unrecognized feature: 'layout-animations'.
+_ @ framework-2a5414383c66f062.js:1
+ Unrecognized feature: 'legacy-image-formats'.
+_ @ framework-2a5414383c66f062.js:1
+ Unrecognized feature: 'navigation-override'.
+_ @ framework-2a5414383c66f062.js:1
+ Unrecognized feature: 'oversized-images'.
+_ @ framework-2a5414383c66f062.js:1
+ Unrecognized feature: 'publickey-credentials'.
+_ @ framework-2a5414383c66f062.js:1
+ Unrecognized feature: 'speaker-selection'.
+_ @ framework-2a5414383c66f062.js:1
+ Unrecognized feature: 'unoptimized-images'.
+_ @ framework-2a5414383c66f062.js:1
+ Unrecognized feature: 'unsized-media'.
+_ @ framework-2a5414383c66f062.js:1
+ Unrecognized feature: 'pointer-lock'.
+_ @ framework-2a5414383c66f062.js:1
+ Allow attribute will take precedence over 'allowfullscreen'.
+_ @ framework-2a5414383c66f062.js:1
+ Allow attribute will take precedence over 'allowpaymentrequest'.
+_ @ framework-2a5414383c66f062.js:1
+ stallwart: failed ping 2
+MariaIntelligence-1:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+ stallwart: failed ping 1
+graphql:1  Failed to load resource: the server responded with a status of 500 ()
+chrome-extension://j…nt/index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.
+workspace_iframe.html:32 Unrecognized feature: 'battery'.
+workspace_iframe.html:32 Unrecognized feature: 'battery'.
+workspace_iframe.html:32 Unrecognized feature: 'battery'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+pdf-upload:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+pdf-upload:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+pdf-upload:1  Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+chrome-extension://j…nt/index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a frame with origin "https://replit.com". Protocols, domains, and ports must match.
+pdf-upload:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+pdf-upload:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+pdf-upload:1  Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a frame with origin "https://replit.com". Protocols, domains, and ports must match.
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a frame with origin "https://replit.com". Protocols, domains, and ports must match.
+ [vite] connecting...
+ [vite] connected.
+ i18next: languageChanged pt-PT
+ i18next: initialized [object Object]
+ i18n inicializado com os seguintes recursos: [object Object],[object Object],[object Object],[object Object],[object Object],[object Object]
+ 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+ 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+ Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+ Fetch URL modificada: /api/check-ai-services?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+ [vite] server connection lost. Polling for restart...
+chrome-extension://j…nt/index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a frame with origin "https://replit.com". Protocols, domains, and ports must match.
+ [vite] connecting...
+ [vite] connected.
+ i18next: languageChanged pt-PT
+ i18next: initialized [object Object]
+ i18n inicializado com os seguintes recursos: [object Object],[object Object],[object Object],[object Object],[object Object],[object Object]
+ 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+ 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+ Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+ Fetch URL modificada: /api/check-ai-services?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+stallwart.build.js:1 stallwart: failed ping 1
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://www.google.com" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+ [vite] hot updated: /src/components/dashboard/upload-pdf.tsx
+ [vite] hot updated: /src/index.css?v=O2tTkNRUe-NhtEPYgpwi7
+ Fetch URL modificada: /api/check-ai-services?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+ [vite] hot updated: /src/components/dashboard/upload-pdf.tsx
+ [vite] hot updated: /src/index.css?v=O2tTkNRUe-NhtEPYgpwi7
+ Fetch URL modificada: /api/check-ai-services?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+ [vite] hot updated: /src/components/dashboard/upload-pdf.tsx
+ [vite] hot updated: /src/index.css?v=O2tTkNRUe-NhtEPYgpwi7
+ Fetch URL modificada: /api/check-ai-services?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+ [vite] hot updated: /src/App.tsx?v=O2tTkNRUe-NhtEPYgpwi7
+ [vite] hot updated: /src/index.css?v=O2tTkNRUe-NhtEPYgpwi7
+ Fetch URL modificada: /api/check-ai-services?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+ 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+ 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+ Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+ [vite] hot updated: /src/pages/SimpleOCR.tsx
+ [vite] hot updated: /src/index.css?v=O2tTkNRUe-NhtEPYgpwi7
+ [vite] server connection lost. Polling for restart...
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/SimpleOCR.tsx?t=1748297941126:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/SimpleOCR.tsx?t=1748297941126:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/SimpleOCR.tsx?t=1748297941126:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/index.css?t=1748297941126&v=O2tTkNRUe-NhtEPYgpwi7:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/index.css?t=1748297941126&v=O2tTkNRUe-NhtEPYgpwi7:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/index.css?t=1748297941126&v=O2tTkNRUe-NhtEPYgpwi7:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/index.css?t=1748297941126&v=O2tTkNRUe-NhtEPYgpwi7:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/index.css?t=1748297941126&v=O2tTkNRUe-NhtEPYgpwi7:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/index.css?t=1748297941126&v=O2tTkNRUe-NhtEPYgpwi7:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/SimpleOCR.tsx?t=1748297941126:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/SimpleOCR.tsx?t=1748297941126:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/SimpleOCR.tsx?t=1748297941126:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+ [hmr] Failed to reload /src/index.css?v=O2tTkNRUe-NhtEPYgpwi7. This could be due to syntax errors or importing non-existent modules. (see errors above)
+Mt.forEach.n.<computed> @ eruda.js:2
+ [hmr] Failed to reload /src/pages/SimpleOCR.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+Mt.forEach.n.<computed> @ eruda.js:2
+ [vite] hot updated: /src/pages/SimpleOCR.tsx
+ [vite] hot updated: /src/index.css?v=O2tTkNRUe-NhtEPYgpwi7
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+pdf-upload:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+pdf-upload:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+pdf-upload:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+chrome-extension://j…nt/index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a frame with origin "https://replit.com". Protocols, domains, and ports must match.
+chrome-extension://j…nt/index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+ [vite] connecting...
+ [vite] connected.
+ i18next: languageChanged pt-PT
+ i18next: initialized Object
+ i18n inicializado com os seguintes recursos: Array(6)
+ 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+ 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+ Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+ Fetch URL modificada: /api/check-ai-services?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+Console.js:61 [vite] connecting...
+Console.js:61 [vite] connected.
+Console.js:61 i18next: languageChanged pt-PT
+Console.js:61 i18next: initialized Object
+Console.js:61 i18n inicializado com os seguintes recursos: Array(6)
+Console.js:61 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+Console.js:61 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+Console.js:61 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+Console.js:61 📄 Processando arquivo 1/1: Imagem WhatsApp 2025-05-26 às 22.21.00_418ddd8d.jpg
+Console.js:61 Fetch URL modificada: /api/simple-ocr/process?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/api/simple-ocr/process?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/api/simple-ocr/process?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/api/simple-ocr/process?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+stallwart.build.js:1 stallwart: failed ping 1
+_app-dee5582c1475a0bc.js:38 [Violation] 'requestAnimationFrame' handler took 62ms
+[Violation] Forced reflow while executing JavaScript took 62ms
+_app-dee5582c1475a0bc.js:38 [Violation] 'requestAnimationFrame' handler took 75ms
+[Violation] Forced reflow while executing JavaScript took 75ms
+_app-dee5582c1475a0bc.js:38 [Violation] 'requestAnimationFrame' handler took 57ms
+[Violation] Forced reflow while executing JavaScript took 56ms
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+Console.js:61 [vite] connecting...
+Console.js:61 [vite] connected.
+Console.js:61 i18next: languageChanged pt-PT
+Console.js:61 i18next: initialized {debug: true, initAsync: true, ns: Array(1), defaultNS: Array(1), fallbackLng: Array(1), …}
+Console.js:61 i18n inicializado com os seguintes recursos: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+Console.js:61 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+Console.js:61 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+Console.js:61 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+_app-dee5582c1475a0bc.js:38 [Violation] 'requestAnimationFrame' handler took 59ms
+[Violation] Forced reflow while executing JavaScript took 58ms
+Console.js:61 📄 Processando arquivo 1/1: Imagem WhatsApp 2025-05-26 às 22.21.00_418ddd8d.jpg
+Console.js:61 Fetch URL modificada: /api/simple-ocr/process?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+enforce-clean-mode.ts:68 
+            
+            
+           POST https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/api/simple-ocr/process?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true 500 (Internal Server Error)
+window.fetch @ Network.js:219
+window.fetch @ enforce-clean-mode.ts:68
+handleUpload @ SimpleOCR.tsx:59
+callCallback2 @ chunk-RPCDYKBN.js?v=eef0c531:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=eef0c531:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=eef0c531:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=eef0c531:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=eef0c531:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=eef0c531:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=eef0c531:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=eef0c531:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=eef0c531:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=eef0c531:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=eef0c531:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=eef0c531:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=eef0c531:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=eef0c531:5449
