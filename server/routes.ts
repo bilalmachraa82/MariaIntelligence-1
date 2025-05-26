@@ -1242,12 +1242,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
    * Detecta automaticamente conteúdo manuscrito e otimiza o processamento
    */
   // Sistema OCR com Google AI - Extração de múltiplas reservas
-  app.post("/api/ocr", multer({ storage: multer.memoryStorage() }).single('pdf'), async (req: Request, res: Response) => {
-    console.log('🚀 SISTEMA OCR COM GOOGLE AI - Processando PDF');
+  app.post("/api/ocr", multer({ 
+    storage: multer.memoryStorage(),
+    fileFilter: (req, file, cb) => {
+      // Aceitar PDFs e imagens
+      const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+      if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+      } else {
+        cb(new Error('Tipo de arquivo não suportado. Use PDF, JPG, PNG ou WebP'), false);
+      }
+    }
+  }).single('file'), async (req: Request, res: Response) => {
+    const fileType = req.file.mimetype.startsWith('image/') ? 'IMAGEM' : 'PDF';
+    console.log(`🚀 SISTEMA OCR COM GOOGLE AI - Processando ${fileType}`);
     
     try {
       if (!req.file) {
-        return res.status(400).json({ success: false, message: 'Nenhum arquivo PDF enviado' });
+        return res.status(400).json({ success: false, message: 'Nenhum arquivo enviado' });
       }
 
       console.log(`📁 Processando: ${req.file.originalname} (${req.file.size} bytes)`);
@@ -1258,9 +1270,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (googleApiKey) {
         try {
           console.log('🔍 Tentando Google AI Vision...');
-          const base64Pdf = req.file.buffer.toString('base64');
+          const base64File = req.file.buffer.toString('base64');
+          const mediaType = req.file.mimetype;
           
-          const analysisPrompt = `Analyze this Portuguese accommodation control PDF document and extract ALL reservation data with complete details.
+          // Prompt especializado baseado no tipo de arquivo
+          const analysisPrompt = mediaType.startsWith('image/') 
+            ? `Analyze this accommodation booking screenshot/image and extract ALL reservation details with complete accuracy.
+
+DOCUMENT TYPE: This is a mobile screenshot or booking confirmation image (Airbnb, Booking.com, WhatsApp, etc.)
+
+EXTRACTION INSTRUCTIONS:
+1. Look for the guest name (usually prominently displayed)
+2. Find the property name (accommodation name) 
+3. Extract check-in and check-out dates (format: YYYY-MM-DD)
+4. Get number of guests/people (adults, children if specified)
+5. Find the total price/value (€ amount)
+6. Extract nights/duration if shown
+7. Look for booking platform (Airbnb, Booking.com, etc.)
+8. Find any special notes, modifications, or comments
+9. Get booking reference/confirmation number if visible
+
+EXAMPLES TO LOOK FOR:
+- Guest name like "Maria João Cerdeira Garcia"
+- Property like "Casa Semedo", "Aroeira I", "São João Batista T3"
+- Dates like "qui, 12/06/2025" → "2025-06-12"
+- Price like "€ 304,39"
+- Guests like "4 Hóspedes"
+- Duration like "3 noites"
+
+Return this EXACT JSON format:
+{
+  "documentType": "booking_image",
+  "propertyName": "property name from image",
+  "reservations": [
+    {
+      "reference": "booking reference or N/A",
+      "propertyName": "property name", 
+      "guestName": "full guest name",
+      "checkInDate": "YYYY-MM-DD",
+      "checkOutDate": "YYYY-MM-DD",
+      "adults": number_of_adults,
+      "children": number_of_children,
+      "totalPrice": "€XX,XX",
+      "nights": number_of_nights,
+      "observations": "any notes/modifications/comments",
+      "status": "confirmed",
+      "source": "platform name (Airbnb, Booking, etc.)"
+    }
+  ]
+}`
+            : `Analyze this Portuguese accommodation control PDF document and extract ALL reservation data with complete details.
 
 DOCUMENT ANALYSIS INSTRUCTIONS:
 1. This is a property management control document showing reservations for a specific property
