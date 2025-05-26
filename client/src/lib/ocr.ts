@@ -93,7 +93,7 @@ function safeJsonParse(jsonStr: string): any {
 export async function uploadAndProcessPDF(file: File, options: { useCache?: boolean, skipQualityCheck?: boolean } = {}): Promise<UploadResponse> {
   const { useCache = false, skipQualityCheck = false } = options;
   const formData = new FormData();
-  formData.append("pdf", file);
+  formData.append("file", file);
   formData.append("useCache", useCache ? "true" : "false");
   formData.append("skipQualityCheck", skipQualityCheck ? "true" : "false");
 
@@ -343,7 +343,7 @@ export async function processPDFWithOCR(
     
     // Usar o endpoint unificado de OCR no servidor
     const formData = new FormData();
-    formData.append("pdf", file);
+    formData.append("file", file);
     
     // Adicionar opções de processamento ao formulário
     formData.append("skipQualityCheck", skipQualityCheck ? "true" : "false");
@@ -630,7 +630,7 @@ export async function processMultiplePDFs(
         // Processar o PDF usando a API do servidor
         // Esta chamada usa o endpoint que executa pdf-parse + processamento Gemini
         const formData = new FormData();
-        formData.append("pdf", file);
+        formData.append("file", file);
         formData.append("skipQualityCheck", skipQualityCheck ? "true" : "false");
         formData.append("useCache", useCache ? "true" : "false");
         
