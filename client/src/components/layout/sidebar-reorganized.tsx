@@ -331,8 +331,8 @@ export function SidebarReorganized({
   const toolsNavItems = [
     {
       name: "Scanner",
-      href: "/upload-pdf",
-      altHref: "/pdf-upload",
+      href: "/pdf-upload",
+      altHref: "/upload-pdf",
       icon: FileUp,
       iconColor: "text-rose-500",
       description: "Digitalizar e processar documentos"
