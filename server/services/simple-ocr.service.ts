@@ -227,11 +227,19 @@ export class SimpleOCRService {
   }
 
   /**
-   * Extrai dados de reservas usando Gemini
+   * Extrai dados de reservas usando Gemini (atualizado com prompt melhorado)
    */
   private async extractReservationData(text: string, documentType: string): Promise<ExtractedReservation[]> {
+    // Verificar se documento é complexo e pode precisar do Gemini 2.5 Pro
+    const isComplexDocument = text.length > 8000 || 
+                             (text.match(/\n/g) || []).length > 300 ||
+                             documentType === 'control-file';
+    
+    const modelName = isComplexDocument ? "gemini-1.5-pro" : "gemini-1.5-flash";
+    console.log(`🤖 Usando modelo ${modelName} para documento ${documentType} (${text.length} chars)`);
+    
     const model = this.genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
+      model: modelName,
       generationConfig: {
         temperature: 0.1,
         topK: 40,
@@ -369,74 +377,84 @@ ${text}
 EXTRAIA TODAS AS RESERVAS ENCONTRADAS:`;
     }
 
-    // Prompt específico para o tipo de documento
-    if (documentType === 'check-out') {
-      return `
-Você é um especialista em extração de dados de documentos de check-out de hospedagem.
-Analise este documento de CHECK-OUT e extraia TODOS os dados da reserva, especialmente os VALORES MONETÁRIOS.
-
-INSTRUÇÕES ESPECÍFICAS PARA CHECK-OUT:
-- Procure por valores totais, preços finais, montantes pagos
-- Identifique valores em €, EUR, ou outros símbolos monetários
-- Extraia valores mesmo se estiverem em formatos como "123,45 €" ou "Total: 304.39"
-- Se houver múltiplos valores, use o valor total final
-- Datas no formato YYYY-MM-DD
-- Use null APENAS se realmente não encontrar
-
-FORMATO JSON OBRIGATÓRIO:
-\`\`\`json
-{
-  "reservations": [
-    {
-      "guestName": "Nome completo do hóspede",
-      "propertyName": "Nome da propriedade/apartamento",
-      "checkInDate": "YYYY-MM-DD",
-      "checkOutDate": "YYYY-MM-DD",
-      "totalAmount": 123.45,
-      "guestCount": 2,
-      "email": "email@exemplo.com",
-      "phone": "+351912345678",
-      "notes": null
-    }
-  ]
-}
-\`\`\`
-
-DOCUMENTO DE CHECK-OUT:
-${text}`;
-    }
-
-    // Prompt para documentos simples (check-in)
+    // Usar o prompt estruturado melhorado
     return `
-Você é um especialista em extração de dados de documentos de hospedagem.
-Analise este documento e extraia os dados da reserva.
+⚙️ FUNÇÃO
+Converter QUALQUER documento (imagem, PDF, texto) que contenha reservas turísticas num fluxo estruturado de registos JSON.
 
-REGRAS:
-- Retorne APENAS JSON válido
-- Datas no formato YYYY-MM-DD
-- Valores como números (se disponíveis)
-- Use null se não encontrar
+🎯 OUTPUT
+Por omissão: lista JSON. Não devolvas comentários, apenas JSON válido UTF-8.
 
-FORMATO:
+📑 CAMPOS (ordem fixa)
+{
+  "data_entrada": "YYYY-MM-DD",
+  "data_saida": "YYYY-MM-DD", 
+  "noites": 0,
+  "nome": "",
+  "hospedes": 0,
+  "pais": "",
+  "pais_inferido": false,
+  "site": "",
+  "telefone": "",
+  "observacoes": "",
+  "timezone_source": "",
+  "valor_total": 0.00,
+  "propriedade": ""
+}
+
+📝 ETAPAS
+
+1. **Pré-OCR**
+   • Auto-detecta orientação, idioma e faz binarização adaptativa.
+   • Remove cabeçalhos/rodapés e ISBN/IDs de impressão.
+
+2. **Segmentação de registos**
+   • Um registo começa quando surge (data E nome) **ou** (data seguida de preço / hóspedes).
+   • Usa janela deslizante ≤120 caracteres para juntar as partes.
+
+3. **Mapeamento & Normalização**
+   | Campo | Regex/Rótulos (idiomas PT, EN, ES, FR, DE) | Normalização |
+   |-------|-------------------------------------------|--------------|
+   | datas | 3-4 dígitos separados por \`/\`, \`-\`, \`.\` ou \`<esp>\` | \`YYYY-MM-DD\` |
+   | noites | "night(s)", "noites", "Nº noches", "Nächte" | inteiro; se ausente → \`dif_dias\` |
+   | hóspedes | "Guests", "PAX", "Hóspedes", "Adultos + Crianças" | soma |
+   | telefone | \`\\+?\\d[\\d\\-\\s]{7,}\` | \`+<indicativo> <resto>\` |
+   | site | palavras-chave → Airbnb, Booking, Vrbo, Direct, Owner | se nada coincidir → "Outro" |
+   | país | após rótulo "Country/País/Pays/País de origem" | PT-BR → converte para PT-EU |
+   | valores | procurar €, EUR, $, USD, totais, preços | números com 2 decimais |
+
+4. **Inferências & Flags**
+   • Se país vazio mas telefone tem indicativo → preenche \`pais\`; marca \`pais_inferido=true\`.
+   • \`timezone_source = "doc"\` se o PDF declara fuso; \`"default Europe/Lisbon"\` caso contrário.
+
+5. **Validação final**
+   • Garante \`data_entrada\` ≤ \`data_saida\`.
+   • Remove duplicados (\`nome\` + \`data_entrada\` + \`site\`).
+
+⚠️ ERROS & LACUNAS
+   • Campo não encontrado → \`""\` ou \`0\`.
+   • Se OCR falha gravemente, devolve \`[]\`.
+
+FORMATO DE RETORNO OBRIGATÓRIO:
 \`\`\`json
 {
   "reservations": [
     {
-      "guestName": "Nome do hóspede",
-      "propertyName": "Nome da propriedade",
-      "checkInDate": "YYYY-MM-DD",
-      "checkOutDate": "YYYY-MM-DD",
-      "totalAmount": 0.00,
-      "guestCount": 1,
+      "guestName": "valor do campo nome",
+      "propertyName": "valor do campo propriedade", 
+      "checkInDate": "valor do campo data_entrada",
+      "checkOutDate": "valor do campo data_saida",
+      "totalAmount": "valor do campo valor_total como número",
+      "guestCount": "valor do campo hospedes",
       "email": null,
-      "phone": null,
-      "notes": null
+      "phone": "valor do campo telefone",
+      "notes": "valor do campo observacoes"
     }
   ]
 }
 \`\`\`
 
-DOCUMENTO:
+DOCUMENTO PARA PROCESSAR:
 ${text}`;
   }
 
