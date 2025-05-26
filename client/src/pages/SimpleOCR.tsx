@@ -158,22 +158,33 @@ export default function SimpleOCR() {
           const matchedProperty = properties.find((p: any) => {
             const normalizedDbProperty = normalizePropertyName(p.name);
             
-            // Correspondência exata
+            // Ignorar propriedades com "check-in" ou "check-out" no nome
+            if (normalizedDbProperty.includes('checkin') || normalizedDbProperty.includes('checkout')) {
+              return false;
+            }
+            
+            // Correspondência exata primeiro
             if (normalizedDbProperty === normalizedReservationProperty) return true;
             
-            // Correspondência parcial
-            if (normalizedDbProperty.includes(normalizedReservationProperty) || 
-                normalizedReservationProperty.includes(normalizedDbProperty)) return true;
+            // Correspondência por palavras-chave específicas (mínimo 4 caracteres)
+            const reservationWords = normalizedReservationProperty.split(/[^a-z0-9]/).filter(w => w.length >= 4);
+            const dbWords = normalizedDbProperty.split(/[^a-z0-9]/).filter(w => w.length >= 4);
             
-            // Correspondência por palavras-chave
-            const reservationWords = normalizedReservationProperty.split(/[^a-z0-9]/);
-            const dbWords = normalizedDbProperty.split(/[^a-z0-9]/);
+            // Procurar palavras-chave importantes
+            const keyWords = ['almada', 'noronha', 'joao', 'batista', 'barcos', 'bernardo', 'obidos'];
             
-            return reservationWords.some(word => 
-              word.length > 2 && dbWords.some(dbWord => 
-                dbWord.includes(word) || word.includes(dbWord)
-              )
+            for (const keyWord of keyWords) {
+              if (normalizedReservationProperty.includes(keyWord) && normalizedDbProperty.includes(keyWord)) {
+                return true;
+              }
+            }
+            
+            // Correspondência de palavras (só se tiver pelo menos 2 palavras coincidentes)
+            const matches = reservationWords.filter(word => 
+              dbWords.some(dbWord => dbWord.includes(word) || word.includes(dbWord))
             );
+            
+            return matches.length >= 2;
           });
           
           if (matchedProperty) {
