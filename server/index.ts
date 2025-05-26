@@ -5,6 +5,7 @@ import { setupVite, serveStatic, log } from "./vite";
 import { startScheduler } from "./services/scheduler";
 import { registerDatabaseRoutes } from "./api/database-routes";
 import authRoutes from "./routes/auth.routes";
+import simpleOcrRoutes from "./routes/simple-ocr.routes";
 import { handleLogin, handleMe, handleLogout } from "./simple-auth";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
@@ -212,6 +213,9 @@ app.use((req, res, next) => {
 (async () => {
   
   const server = await registerRoutes(app);
+  
+  // Registrar rotas do OCR simplificado
+  app.use('/api/simple-ocr', simpleOcrRoutes);
   
   // Registrar rotas de gerenciamento de banco de dados
   registerDatabaseRoutes(app);

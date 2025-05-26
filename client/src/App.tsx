@@ -18,6 +18,7 @@ import ReservationNewPage from "@/pages/reservations/new";
 import ReportsPage from "@/pages/reports";
 import SettingsPage from "@/pages/settings";
 import DocumentScanPage from "@/pages/pdf-upload";
+import SimpleOCR from "@/pages/SimpleOCR";
 import AssistantPage from "@/pages/assistant";
 import ReservationAssistantPage from "@/pages/reservation-assistant";
 import Login from "@/pages/Login";
