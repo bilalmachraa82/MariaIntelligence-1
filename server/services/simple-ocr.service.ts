@@ -190,25 +190,40 @@ export class SimpleOCRService {
     // Análise simples baseada em palavras-chave
     const lowerText = text.toLowerCase();
 
-    if (lowerText.includes('check-in') || lowerText.includes('entrada')) {
-      return 'check-in';
-    }
-    
-    if (lowerText.includes('check-out') || lowerText.includes('saída')) {
-      return 'check-out';
-    }
-    
+    // Arquivos de controle primeiro (têm prioridade)
     if (lowerText.includes('controlo') || lowerText.includes('aroeira') || lowerText.includes('multiple')) {
       return 'control-file';
     }
 
     // Se tem múltiplas datas, provavelmente é um arquivo de controle
     const dateMatches = text.match(/\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}/g) || [];
-    if (dateMatches.length > 4) {
+    if (dateMatches.length > 6) {
       return 'control-file';
     }
 
-    return 'unknown';
+    // Check-out tem prioridade se contém valores monetários ou palavras-chave específicas
+    if (lowerText.includes('check-out') || 
+        lowerText.includes('saída') ||
+        lowerText.includes('total amount') ||
+        lowerText.includes('total price') ||
+        lowerText.includes('final bill') ||
+        lowerText.includes('invoice') ||
+        lowerText.includes('payment') ||
+        lowerText.includes('€') ||
+        lowerText.includes('eur') ||
+        lowerText.includes('total:') ||
+        /\d+[.,]\d{2}\s*€/.test(text) ||
+        /total.*\d+[.,]\d+/i.test(text) ||
+        /amount.*\d+[.,]\d+/i.test(text)) {
+      return 'check-out';
+    }
+    
+    if (lowerText.includes('check-in') || lowerText.includes('entrada')) {
+      return 'check-in';
+    }
+
+    // Se não conseguir determinar, assumir check-in como padrão
+    return 'check-in';
   }
 
   /**
@@ -354,7 +369,44 @@ ${text}
 EXTRAIA TODAS AS RESERVAS ENCONTRADAS:`;
     }
 
-    // Prompt para documentos simples (check-in/check-out)
+    // Prompt específico para o tipo de documento
+    if (documentType === 'check-out') {
+      return `
+Você é um especialista em extração de dados de documentos de check-out de hospedagem.
+Analise este documento de CHECK-OUT e extraia TODOS os dados da reserva, especialmente os VALORES MONETÁRIOS.
+
+INSTRUÇÕES ESPECÍFICAS PARA CHECK-OUT:
+- Procure por valores totais, preços finais, montantes pagos
+- Identifique valores em €, EUR, ou outros símbolos monetários
+- Extraia valores mesmo se estiverem em formatos como "123,45 €" ou "Total: 304.39"
+- Se houver múltiplos valores, use o valor total final
+- Datas no formato YYYY-MM-DD
+- Use null APENAS se realmente não encontrar
+
+FORMATO JSON OBRIGATÓRIO:
+\`\`\`json
+{
+  "reservations": [
+    {
+      "guestName": "Nome completo do hóspede",
+      "propertyName": "Nome da propriedade/apartamento",
+      "checkInDate": "YYYY-MM-DD",
+      "checkOutDate": "YYYY-MM-DD",
+      "totalAmount": 123.45,
+      "guestCount": 2,
+      "email": "email@exemplo.com",
+      "phone": "+351912345678",
+      "notes": null
+    }
+  ]
+}
+\`\`\`
+
+DOCUMENTO DE CHECK-OUT:
+${text}`;
+    }
+
+    // Prompt para documentos simples (check-in)
     return `
 Você é um especialista em extração de dados de documentos de hospedagem.
 Analise este documento e extraia os dados da reserva.
@@ -362,7 +414,7 @@ Analise este documento e extraia os dados da reserva.
 REGRAS:
 - Retorne APENAS JSON válido
 - Datas no formato YYYY-MM-DD
-- Valores como números
+- Valores como números (se disponíveis)
 - Use null se não encontrar
 
 FORMATO:
