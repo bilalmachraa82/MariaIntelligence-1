@@ -1,0 +1,1032 @@
+3530-374f0bab1782fb73.js:1 Replit version b1c2ef21, pid2 version 0.0.1337
+_app-dee5582c1475a0bc.js:38 
+      /////////////////////
+   ///////////////////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////        Curious and driven?
+  ///////////////@@@@@@@///////        Work with us!
+  ///////////////@@@@@@@///////
+  ///////////////@@@@@@@///////        https://join.replit.com/hack.with.us
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@#//////////////
+   ///////////////////////////
+      /////////////////////
+      
+_app-dee5582c1475a0bc.js:38  
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://www.googletagmanager.com" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+_app-dee5582c1475a0bc.js:38 [LaunchDarkly] LaunchDarkly client initialized
+chrome-extension://j…nt/index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://js.stripe.com" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+_app-dee5582c1475a0bc.js:38 [LaunchDarkly] Opening stream connection to https://clientstream.launchdarkly.com/eval/62b35a865152ab14c5942820/eyJrZXkiOiIzOTYyMjE5NiIsImtpbmQiOiJ1c2VyIiwibmFtZSI6ImJpbGFsbWFjaHJhYTIwMSIsInJvbGVzIjpbImV4cGxvcmVyIiwib25ib2FyZGluZ19leHBlcmllbmNlX25vbmUiLCJpbnRlbnRfcGVyc29uYWwiXSwiZW1haWwiOiJiaWxhbC5tYWNocmFhMjAxMkBnbWFpbC5jb20iLCJ0aW1lX2NyZWF0ZWQiOjE3Mzk0MDU3MDg1ODMsIl9tZXRhIjp7InByaXZhdGVBdHRyaWJ1dGVzIjpbImVtYWlsIl19fQ
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+[Report Only] Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://js.stripe.com" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://m.stripe.network" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+framework-2a5414383c66f062.js:1 Unrecognized feature: 'ambient-light-sensor'.
+_ @ framework-2a5414383c66f062.js:1
+framework-2a5414383c66f062.js:1 Unrecognized feature: 'battery'.
+_ @ framework-2a5414383c66f062.js:1
+framework-2a5414383c66f062.js:1 Unrecognized feature: 'execution-while-not-rendered'.
+_ @ framework-2a5414383c66f062.js:1
+framework-2a5414383c66f062.js:1 Unrecognized feature: 'execution-while-out-of-viewport'.
+_ @ framework-2a5414383c66f062.js:1
+framework-2a5414383c66f062.js:1 Unrecognized feature: 'layout-animations'.
+_ @ framework-2a5414383c66f062.js:1
+framework-2a5414383c66f062.js:1 Unrecognized feature: 'legacy-image-formats'.
+_ @ framework-2a5414383c66f062.js:1
+framework-2a5414383c66f062.js:1 Unrecognized feature: 'navigation-override'.
+_ @ framework-2a5414383c66f062.js:1
+framework-2a5414383c66f062.js:1 Unrecognized feature: 'oversized-images'.
+_ @ framework-2a5414383c66f062.js:1
+framework-2a5414383c66f062.js:1 Unrecognized feature: 'publickey-credentials'.
+_ @ framework-2a5414383c66f062.js:1
+framework-2a5414383c66f062.js:1 Unrecognized feature: 'speaker-selection'.
+_ @ framework-2a5414383c66f062.js:1
+framework-2a5414383c66f062.js:1 Unrecognized feature: 'unoptimized-images'.
+_ @ framework-2a5414383c66f062.js:1
+framework-2a5414383c66f062.js:1 Unrecognized feature: 'unsized-media'.
+_ @ framework-2a5414383c66f062.js:1
+framework-2a5414383c66f062.js:1 Unrecognized feature: 'pointer-lock'.
+_ @ framework-2a5414383c66f062.js:1
+framework-2a5414383c66f062.js:1 Allow attribute will take precedence over 'allowfullscreen'.
+_ @ framework-2a5414383c66f062.js:1
+framework-2a5414383c66f062.js:1 Allow attribute will take precedence over 'allowpaymentrequest'.
+_ @ framework-2a5414383c66f062.js:1
+MariaIntelligence-1#PROJECT_REQUIREMENTS.txt:1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.
+dotdevproxy.janeway.repl.co/__reachability:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_RESET
+dotdevproxy.janeway.repl.co/__reachability:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_RESET
+dotdevproxy.janeway.repl.co/__reachability:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_RESET
+dotdevproxy.worf.repl.co/__reachability:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_RESET
+dotdevproxy.worf.repl.co/__reachability:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_RESET
+dotdevproxy.worf.repl.co/__reachability:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_RESET
+MariaIntelligence-1#…_REQUIREMENTS.txt:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1#…_REQUIREMENTS.txt:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1#…_REQUIREMENTS.txt:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1#…_REQUIREMENTS.txt:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1#…_REQUIREMENTS.txt:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+chrome-extension://j…nt/index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://www.google.com" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+_app-dee5582c1475a0bc.js:38 [LaunchDarkly] Closing stream connection
+stallwart.build.js:1 stallwart: failed ping 1
+MariaIntelligence-1#…_REQUIREMENTS.txt:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+MariaIntelligence-1#…_REQUIREMENTS.txt:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+VM20 index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at VM20 index.iife.js:24:41133
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.
+workspace_iframe.html:32 Unrecognized feature: 'battery'.
+workspace_iframe.html:32 Unrecognized feature: 'battery'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+VM20 index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a frame with origin "https://replit.com". Protocols, domains, and ports must match.
+VM36 eruda.js:2 [vite] connecting...
+VM36 eruda.js:2 [vite] connected.
+VM36 eruda.js:2 i18next: languageChanged en-US
+VM36 eruda.js:2 i18next: initialized [object Object]
+VM36 eruda.js:2 i18n inicializado com os seguintes recursos: [object Object],[object Object],[object Object],[object Object],[object Object],[object Object]
+VM36 eruda.js:2 Fetch URL modificada: /api/auth/me
+VM36 eruda.js:2 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+VM36 eruda.js:2 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+VM36 eruda.js:2 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+[DOM] Input elements should have autocomplete attributes <attribute>: (More info: <URL>) 
+[DOM] Input elements should have autocomplete attributes <attribute>: (More info: <URL>) 
+[DOM] Input elements should have autocomplete attributes <attribute>: (More info: <URL>) 
+[DOM] Input elements should have autocomplete attributes <attribute>: (More info: <URL>) 
+[DOM] Input elements should have autocomplete attributes <attribute>: (More info: <URL>) 
+[DOM] Input elements should have autocomplete attributes <attribute>: (More info: <URL>) 
+[DOM] Input elements should have autocomplete attributes <attribute>: (More info: <URL>) 
+[DOM] Input elements should have autocomplete attributes <attribute>: (More info: <URL>) 
+[DOM] Input elements should have autocomplete attributes <attribute>: (More info: <URL>) 
+[DOM] Input elements should have autocomplete attributes <attribute>: (More info: <URL>) 
+[DOM] Input elements should have autocomplete attributes <attribute>: (More info: <URL>) 
+[DOM] Input elements should have autocomplete attributes <attribute>: (More info: <URL>) 
+[DOM] Input elements should have autocomplete attributes <attribute>: (More info: <URL>) 
+VM36 eruda.js:2 Fetch URL modificada: /api/auth/me
+VM36 eruda.js:2 Fetch URL modificada: /api/auth/me?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+VM36 eruda.js:2 Fetch URL modificada: /api/auth/login?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+VM20 index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at VM20 index.iife.js:24:41133
+VM36 eruda.js:2 [vite] connecting...
+VM36 eruda.js:2 [vite] connected.
+VM36 eruda.js:2 i18next: languageChanged en-US
+VM36 eruda.js:2 i18next: initialized Object
+VM36 eruda.js:2 i18n inicializado com os seguintes recursos: Array(6)
+VM36 eruda.js:2 Fetch URL modificada: /api/auth/me
+VM36 eruda.js:2 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+VM36 eruda.js:2 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+VM36 eruda.js:2 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+VM36 eruda.js:2 [vite] hot updated: /src/index.css?v=EeiyXM_9VfAJpaFHsF6bX
+VM36 eruda.js:2 [vite] hot updated: /src/App.tsx?v=EeiyXM_9VfAJpaFHsF6bX
+VM36 eruda.js:2 Fetch URL modificada: /api/auth/me?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+VM36 eruda.js:2 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+VM36 eruda.js:2 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+VM36 eruda.js:2 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+VM36 eruda.js:2 Fetch URL modificada: /api/auth/login?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+VM36 eruda.js:2 Fetch URL modificada: /api/auth/login?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true&demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+VM719 index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at VM719 index.iife.js:24:41133
+(anonymous) @ VM719 index.iife.js:24
+VM728 eruda.js:2 [Violation] Added non-passive event listener to a scroll-blocking 'wheel' event. Consider marking event handler as 'passive' to make the page more responsive. See https://www.chromestatus.com/feature/5745543795965952
+add @ VM728 eruda.js:2
+(anonymous) @ VM728 eruda.js:2
+t @ VM728 eruda.js:2
+(anonymous) @ VM728 eruda.js:2
+on @ VM728 eruda.js:2
+value @ VM728 eruda.js:2
+t @ VM728 eruda.js:2
+value @ VM728 eruda.js:2
+t @ VM728 eruda.js:2
+_initDevTools @ VM728 eruda.js:2
+init @ VM728 eruda.js:2
+(anonymous) @ VM729 injected.js:2
+(anonymous) @ VM729 injected.js:156
+VM728 eruda.js:2 [vite] connecting...
+VM728 eruda.js:2 [vite] connected.
+VM728 eruda.js:2 i18next: languageChanged en-US
+VM728 eruda.js:2 i18next: initialized {debug: true, initAsync: true, ns: Array(1), defaultNS: Array(1), fallbackLng: Array(1), …}
+VM728 eruda.js:2 i18n inicializado com os seguintes recursos: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+VM728 eruda.js:2 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+VM728 eruda.js:2 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+VM728 eruda.js:2 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+VM728 eruda.js:2 Fetch URL modificada: /api/auth/login?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+DevTools.js:316 [Violation] Added non-passive event listener to a scroll-blocking 'wheel' event. Consider marking event handler as 'passive' to make the page more responsive. See https://www.chromestatus.com/feature/5745543795965952
+add @ delegate.js:81
+(anonymous) @ $event.js:17
+t @ each.js:8
+(anonymous) @ $event.js:16
+on @ $.js:42
+value @ index.js:144
+t @ index.js:17
+value @ DevTools.js:316
+t @ DevTools.js:58
+_initDevTools @ eruda.js:244
+init @ eruda.js:51
+(anonymous) @ injected.js:2
+(anonymous) @ injected.js:156
+Console.js:61 [vite] connecting...
+Console.js:61 [vite] connected.
+Console.js:61 i18next: languageChanged en-US
+Console.js:61 i18next: initialized {debug: true, initAsync: true, ns: Array(1), defaultNS: Array(1), fallbackLng: Array(1), …}
+Console.js:61 i18n inicializado com os seguintes recursos: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+Console.js:61 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+Console.js:61 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+Console.js:61 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+Console.js:61 [vite] hot updated: /src/pages/Login.tsx
+Console.js:61 [vite] hot updated: /src/index.css?v=EeiyXM_9VfAJpaFHsF6bX
+Login.tsx?t=1748287052030:189 Uncaught ReferenceError: error is not defined
+    at Login (Login.tsx?t=1748287052030:189:9)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=414a997a:11548:26)
+    at mountIndeterminateComponent (chunk-RPCDYKBN.js?v=414a997a:14926:21)
+    at beginWork (chunk-RPCDYKBN.js?v=414a997a:15914:22)
+    at HTMLUnknownElement.callCallback2 (chunk-RPCDYKBN.js?v=414a997a:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-RPCDYKBN.js?v=414a997a:3699:24)
+    at invokeGuardedCallback (chunk-RPCDYKBN.js?v=414a997a:3733:39)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=414a997a:19765:15)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=414a997a:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js?v=414a997a:19137:13)
+Login @ Login.tsx?t=1748287052030:189
+renderWithHooks @ chunk-RPCDYKBN.js?v=414a997a:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=414a997a:14926
+beginWork @ chunk-RPCDYKBN.js?v=414a997a:15914
+callCallback2 @ chunk-RPCDYKBN.js?v=414a997a:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=414a997a:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=414a997a:3733
+beginWork$1 @ chunk-RPCDYKBN.js?v=414a997a:19765
+performUnitOfWork @ chunk-RPCDYKBN.js?v=414a997a:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=414a997a:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=414a997a:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=414a997a:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=414a997a:9119
+flushSync @ chunk-RPCDYKBN.js?v=414a997a:18959
+scheduleRefresh @ chunk-RPCDYKBN.js?v=414a997a:20004
+(anonymous) @ @react-refresh:267
+performReactRefresh @ @react-refresh:256
+(anonymous) @ @react-refresh:677
+setTimeout
+(anonymous) @ @react-refresh:666
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:728
+(anonymous) @ Login.tsx:305
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+Login.tsx?t=1748287052030:189 Uncaught ReferenceError: error is not defined
+    at Login (Login.tsx?t=1748287052030:189:9)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=414a997a:11548:26)
+    at mountIndeterminateComponent (chunk-RPCDYKBN.js?v=414a997a:14926:21)
+    at beginWork (chunk-RPCDYKBN.js?v=414a997a:15914:22)
+    at HTMLUnknownElement.callCallback2 (chunk-RPCDYKBN.js?v=414a997a:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-RPCDYKBN.js?v=414a997a:3699:24)
+    at invokeGuardedCallback (chunk-RPCDYKBN.js?v=414a997a:3733:39)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=414a997a:19765:15)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=414a997a:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js?v=414a997a:19137:13)
+Login @ Login.tsx?t=1748287052030:189
+renderWithHooks @ chunk-RPCDYKBN.js?v=414a997a:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=414a997a:14926
+beginWork @ chunk-RPCDYKBN.js?v=414a997a:15914
+callCallback2 @ chunk-RPCDYKBN.js?v=414a997a:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=414a997a:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=414a997a:3733
+beginWork$1 @ chunk-RPCDYKBN.js?v=414a997a:19765
+performUnitOfWork @ chunk-RPCDYKBN.js?v=414a997a:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=414a997a:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=414a997a:19116
+recoverFromConcurrentError @ chunk-RPCDYKBN.js?v=414a997a:18736
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=414a997a:18879
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=414a997a:9119
+flushSync @ chunk-RPCDYKBN.js?v=414a997a:18959
+scheduleRefresh @ chunk-RPCDYKBN.js?v=414a997a:20004
+(anonymous) @ @react-refresh:267
+performReactRefresh @ @react-refresh:256
+(anonymous) @ @react-refresh:677
+setTimeout
+(anonymous) @ @react-refresh:666
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:728
+(anonymous) @ Login.tsx:305
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+Console.js:61 The above error occurred in the <Login> component:
+
+    at Login (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/Login.tsx?t=1748287052030:34:25)
+    at ProtectedRoute (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/App.tsx?t=1748287030356&v=WX57jw5xUWgvjkYN6r8rL:75:38)
+    at component
+    at Route (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=414a997a:323:16)
+    at Switch (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=414a997a:379:17)
+    at Router
+    at main
+    at div
+    at div
+    at Layout (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/components/layout/layout.tsx:23:26)
+    at QueryClientProvider (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=414a997a:2805:3)
+    at App (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/App.tsx?t=1748287030356&v=WX57jw5xUWgvjkYN6r8rL:722:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+Mt.forEach.n.<computed> @ Console.js:61
+logCapturedError @ chunk-RPCDYKBN.js?v=414a997a:14032
+update.callback @ chunk-RPCDYKBN.js?v=414a997a:14052
+callCallback @ chunk-RPCDYKBN.js?v=414a997a:11248
+commitUpdateQueue @ chunk-RPCDYKBN.js?v=414a997a:11265
+commitLayoutEffectOnFiber @ chunk-RPCDYKBN.js?v=414a997a:17093
+commitLayoutMountEffects_complete @ chunk-RPCDYKBN.js?v=414a997a:17980
+commitLayoutEffects_begin @ chunk-RPCDYKBN.js?v=414a997a:17969
+commitLayoutEffects @ chunk-RPCDYKBN.js?v=414a997a:17920
+commitRootImpl @ chunk-RPCDYKBN.js?v=414a997a:19353
+commitRoot @ chunk-RPCDYKBN.js?v=414a997a:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=414a997a:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=414a997a:9119
+flushSync @ chunk-RPCDYKBN.js?v=414a997a:18959
+scheduleRefresh @ chunk-RPCDYKBN.js?v=414a997a:20004
+(anonymous) @ @react-refresh:267
+performReactRefresh @ @react-refresh:256
+(anonymous) @ @react-refresh:677
+setTimeout
+(anonymous) @ @react-refresh:666
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:728
+(anonymous) @ Login.tsx:305
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+Login.tsx?t=1748287052030:189 Uncaught (in promise) ReferenceError: error is not defined
+    at Login (Login.tsx?t=1748287052030:189:9)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=414a997a:11548:26)
+    at mountIndeterminateComponent (chunk-RPCDYKBN.js?v=414a997a:14926:21)
+    at beginWork (chunk-RPCDYKBN.js?v=414a997a:15914:22)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=414a997a:19753:22)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=414a997a:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js?v=414a997a:19137:13)
+    at renderRootSync (chunk-RPCDYKBN.js?v=414a997a:19116:15)
+    at recoverFromConcurrentError (chunk-RPCDYKBN.js?v=414a997a:18736:28)
+    at performSyncWorkOnRoot (chunk-RPCDYKBN.js?v=414a997a:18879:28)
+Login @ Login.tsx?t=1748287052030:189
+renderWithHooks @ chunk-RPCDYKBN.js?v=414a997a:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=414a997a:14926
+beginWork @ chunk-RPCDYKBN.js?v=414a997a:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=414a997a:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=414a997a:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=414a997a:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=414a997a:19116
+recoverFromConcurrentError @ chunk-RPCDYKBN.js?v=414a997a:18736
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=414a997a:18879
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=414a997a:9119
+flushSync @ chunk-RPCDYKBN.js?v=414a997a:18959
+scheduleRefresh @ chunk-RPCDYKBN.js?v=414a997a:20004
+(anonymous) @ @react-refresh:267
+performReactRefresh @ @react-refresh:256
+(anonymous) @ @react-refresh:677
+setTimeout
+(anonymous) @ @react-refresh:666
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:728
+(anonymous) @ Login.tsx:305
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+eruda.js:2 [Violation] 'setTimeout' handler took 66ms
+[Violation] Forced reflow while executing JavaScript took 65ms
+[Violation] Forced reflow while executing JavaScript took 33ms
+Console.js:61 [vite] hot updated: /src/pages/Login.tsx
+Console.js:61 [vite] hot updated: /src/index.css?v=EeiyXM_9VfAJpaFHsF6bX
+Console.js:61 Fetch URL modificada: /api/auth/me?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+Console.js:61 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+Console.js:61 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+@react-refresh:675 [Violation] 'setTimeout' handler took 62ms
+Login.tsx?t=1748287064347:189 Uncaught ReferenceError: error is not defined
+    at Login (Login.tsx?t=1748287064347:189:9)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=414a997a:11548:26)
+    at mountIndeterminateComponent (chunk-RPCDYKBN.js?v=414a997a:14926:21)
+    at beginWork (chunk-RPCDYKBN.js?v=414a997a:15914:22)
+    at HTMLUnknownElement.callCallback2 (chunk-RPCDYKBN.js?v=414a997a:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-RPCDYKBN.js?v=414a997a:3699:24)
+    at invokeGuardedCallback (chunk-RPCDYKBN.js?v=414a997a:3733:39)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=414a997a:19765:15)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=414a997a:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js?v=414a997a:19137:13)
+Login @ Login.tsx?t=1748287064347:189
+renderWithHooks @ chunk-RPCDYKBN.js?v=414a997a:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=414a997a:14926
+beginWork @ chunk-RPCDYKBN.js?v=414a997a:15914
+callCallback2 @ chunk-RPCDYKBN.js?v=414a997a:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=414a997a:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=414a997a:3733
+beginWork$1 @ chunk-RPCDYKBN.js?v=414a997a:19765
+performUnitOfWork @ chunk-RPCDYKBN.js?v=414a997a:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=414a997a:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=414a997a:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=414a997a:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=414a997a:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=414a997a:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=414a997a:555
+flush @ @tanstack_react-query.js?v=414a997a:569
+batch @ @tanstack_react-query.js?v=414a997a:587
+dispatch_fn @ @tanstack_react-query.js?v=414a997a:996
+onError @ @tanstack_react-query.js?v=414a997a:861
+reject @ @tanstack_react-query.js?v=414a997a:465
+(anonymous) @ @tanstack_react-query.js?v=414a997a:508
+Promise.catch
+run @ @tanstack_react-query.js?v=414a997a:498
+start @ @tanstack_react-query.js?v=414a997a:536
+fetch @ @tanstack_react-query.js?v=414a997a:926
+executeFetch_fn @ @tanstack_react-query.js?v=414a997a:2211
+onSubscribe @ @tanstack_react-query.js?v=414a997a:1898
+subscribe @ @tanstack_react-query.js?v=414a997a:24
+(anonymous) @ @tanstack_react-query.js?v=414a997a:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=414a997a:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=414a997a:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=414a997a:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=414a997a:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=414a997a:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=414a997a:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=414a997a:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=414a997a:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=414a997a:19416
+commitRoot @ chunk-RPCDYKBN.js?v=414a997a:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=414a997a:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=414a997a:9119
+flushSync @ chunk-RPCDYKBN.js?v=414a997a:18959
+scheduleRoot @ chunk-RPCDYKBN.js?v=414a997a:20015
+(anonymous) @ @react-refresh:247
+performReactRefresh @ @react-refresh:226
+(anonymous) @ @react-refresh:677
+setTimeout
+(anonymous) @ @react-refresh:666
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:728
+(anonymous) @ Login.tsx?t=1748287052030:283
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+Login.tsx?t=1748287064347:189 Uncaught ReferenceError: error is not defined
+    at Login (Login.tsx?t=1748287064347:189:9)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=414a997a:11548:26)
+    at mountIndeterminateComponent (chunk-RPCDYKBN.js?v=414a997a:14926:21)
+    at beginWork (chunk-RPCDYKBN.js?v=414a997a:15914:22)
+    at HTMLUnknownElement.callCallback2 (chunk-RPCDYKBN.js?v=414a997a:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-RPCDYKBN.js?v=414a997a:3699:24)
+    at invokeGuardedCallback (chunk-RPCDYKBN.js?v=414a997a:3733:39)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=414a997a:19765:15)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=414a997a:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js?v=414a997a:19137:13)
+Login @ Login.tsx?t=1748287064347:189
+renderWithHooks @ chunk-RPCDYKBN.js?v=414a997a:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=414a997a:14926
+beginWork @ chunk-RPCDYKBN.js?v=414a997a:15914
+callCallback2 @ chunk-RPCDYKBN.js?v=414a997a:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=414a997a:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=414a997a:3733
+beginWork$1 @ chunk-RPCDYKBN.js?v=414a997a:19765
+performUnitOfWork @ chunk-RPCDYKBN.js?v=414a997a:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=414a997a:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=414a997a:19116
+recoverFromConcurrentError @ chunk-RPCDYKBN.js?v=414a997a:18736
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=414a997a:18879
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=414a997a:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=414a997a:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=414a997a:555
+flush @ @tanstack_react-query.js?v=414a997a:569
+batch @ @tanstack_react-query.js?v=414a997a:587
+dispatch_fn @ @tanstack_react-query.js?v=414a997a:996
+onError @ @tanstack_react-query.js?v=414a997a:861
+reject @ @tanstack_react-query.js?v=414a997a:465
+(anonymous) @ @tanstack_react-query.js?v=414a997a:508
+Promise.catch
+run @ @tanstack_react-query.js?v=414a997a:498
+start @ @tanstack_react-query.js?v=414a997a:536
+fetch @ @tanstack_react-query.js?v=414a997a:926
+executeFetch_fn @ @tanstack_react-query.js?v=414a997a:2211
+onSubscribe @ @tanstack_react-query.js?v=414a997a:1898
+subscribe @ @tanstack_react-query.js?v=414a997a:24
+(anonymous) @ @tanstack_react-query.js?v=414a997a:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=414a997a:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=414a997a:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=414a997a:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=414a997a:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=414a997a:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=414a997a:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=414a997a:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=414a997a:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=414a997a:19416
+commitRoot @ chunk-RPCDYKBN.js?v=414a997a:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=414a997a:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=414a997a:9119
+flushSync @ chunk-RPCDYKBN.js?v=414a997a:18959
+scheduleRoot @ chunk-RPCDYKBN.js?v=414a997a:20015
+(anonymous) @ @react-refresh:247
+performReactRefresh @ @react-refresh:226
+(anonymous) @ @react-refresh:677
+setTimeout
+(anonymous) @ @react-refresh:666
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:728
+(anonymous) @ Login.tsx?t=1748287052030:283
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+Console.js:61 The above error occurred in the <Login> component:
+
+    at Login (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/Login.tsx?t=1748287064347:34:25)
+    at ProtectedRoute (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/App.tsx?t=1748287030356&v=WX57jw5xUWgvjkYN6r8rL:75:38)
+    at component
+    at Route (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=414a997a:323:16)
+    at Switch (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=414a997a:379:17)
+    at Router
+    at main
+    at div
+    at div
+    at Layout (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/components/layout/layout.tsx:23:26)
+    at QueryClientProvider (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=414a997a:2805:3)
+    at App (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/App.tsx?t=1748287030356&v=WX57jw5xUWgvjkYN6r8rL:722:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+Mt.forEach.n.<computed> @ Console.js:61
+logCapturedError @ chunk-RPCDYKBN.js?v=414a997a:14032
+update.callback @ chunk-RPCDYKBN.js?v=414a997a:14052
+callCallback @ chunk-RPCDYKBN.js?v=414a997a:11248
+commitUpdateQueue @ chunk-RPCDYKBN.js?v=414a997a:11265
+commitLayoutEffectOnFiber @ chunk-RPCDYKBN.js?v=414a997a:17093
+commitLayoutMountEffects_complete @ chunk-RPCDYKBN.js?v=414a997a:17980
+commitLayoutEffects_begin @ chunk-RPCDYKBN.js?v=414a997a:17969
+commitLayoutEffects @ chunk-RPCDYKBN.js?v=414a997a:17920
+commitRootImpl @ chunk-RPCDYKBN.js?v=414a997a:19353
+commitRoot @ chunk-RPCDYKBN.js?v=414a997a:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=414a997a:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=414a997a:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=414a997a:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=414a997a:555
+flush @ @tanstack_react-query.js?v=414a997a:569
+batch @ @tanstack_react-query.js?v=414a997a:587
+dispatch_fn @ @tanstack_react-query.js?v=414a997a:996
+onError @ @tanstack_react-query.js?v=414a997a:861
+reject @ @tanstack_react-query.js?v=414a997a:465
+(anonymous) @ @tanstack_react-query.js?v=414a997a:508
+Promise.catch
+run @ @tanstack_react-query.js?v=414a997a:498
+start @ @tanstack_react-query.js?v=414a997a:536
+fetch @ @tanstack_react-query.js?v=414a997a:926
+executeFetch_fn @ @tanstack_react-query.js?v=414a997a:2211
+onSubscribe @ @tanstack_react-query.js?v=414a997a:1898
+subscribe @ @tanstack_react-query.js?v=414a997a:24
+(anonymous) @ @tanstack_react-query.js?v=414a997a:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=414a997a:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=414a997a:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=414a997a:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=414a997a:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=414a997a:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=414a997a:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=414a997a:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=414a997a:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=414a997a:19416
+commitRoot @ chunk-RPCDYKBN.js?v=414a997a:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=414a997a:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=414a997a:9119
+flushSync @ chunk-RPCDYKBN.js?v=414a997a:18959
+scheduleRoot @ chunk-RPCDYKBN.js?v=414a997a:20015
+(anonymous) @ @react-refresh:247
+performReactRefresh @ @react-refresh:226
+(anonymous) @ @react-refresh:677
+setTimeout
+(anonymous) @ @react-refresh:666
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:728
+(anonymous) @ Login.tsx?t=1748287052030:283
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+chunk-RPCDYKBN.js?v=414a997a:9129 Uncaught ReferenceError: error is not defined
+    at Login (Login.tsx?t=1748287064347:189:9)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=414a997a:11548:26)
+    at mountIndeterminateComponent (chunk-RPCDYKBN.js?v=414a997a:14926:21)
+    at beginWork (chunk-RPCDYKBN.js?v=414a997a:15914:22)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=414a997a:19753:22)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=414a997a:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js?v=414a997a:19137:13)
+    at renderRootSync (chunk-RPCDYKBN.js?v=414a997a:19116:15)
+    at recoverFromConcurrentError (chunk-RPCDYKBN.js?v=414a997a:18736:28)
+    at performSyncWorkOnRoot (chunk-RPCDYKBN.js?v=414a997a:18879:28)
+Login @ Login.tsx?t=1748287064347:189
+renderWithHooks @ chunk-RPCDYKBN.js?v=414a997a:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=414a997a:14926
+beginWork @ chunk-RPCDYKBN.js?v=414a997a:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=414a997a:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=414a997a:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=414a997a:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=414a997a:19116
+recoverFromConcurrentError @ chunk-RPCDYKBN.js?v=414a997a:18736
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=414a997a:18879
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=414a997a:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=414a997a:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=414a997a:555
+flush @ @tanstack_react-query.js?v=414a997a:569
+batch @ @tanstack_react-query.js?v=414a997a:587
+dispatch_fn @ @tanstack_react-query.js?v=414a997a:996
+onError @ @tanstack_react-query.js?v=414a997a:861
+reject @ @tanstack_react-query.js?v=414a997a:465
+(anonymous) @ @tanstack_react-query.js?v=414a997a:508
+Promise.catch
+run @ @tanstack_react-query.js?v=414a997a:498
+start @ @tanstack_react-query.js?v=414a997a:536
+fetch @ @tanstack_react-query.js?v=414a997a:926
+executeFetch_fn @ @tanstack_react-query.js?v=414a997a:2211
+onSubscribe @ @tanstack_react-query.js?v=414a997a:1898
+subscribe @ @tanstack_react-query.js?v=414a997a:24
+(anonymous) @ @tanstack_react-query.js?v=414a997a:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=414a997a:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=414a997a:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=414a997a:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=414a997a:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=414a997a:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=414a997a:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=414a997a:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=414a997a:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=414a997a:19416
+commitRoot @ chunk-RPCDYKBN.js?v=414a997a:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=414a997a:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=414a997a:9119
+flushSync @ chunk-RPCDYKBN.js?v=414a997a:18959
+scheduleRoot @ chunk-RPCDYKBN.js?v=414a997a:20015
+(anonymous) @ @react-refresh:247
+performReactRefresh @ @react-refresh:226
+(anonymous) @ @react-refresh:677
+setTimeout
+(anonymous) @ @react-refresh:666
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:728
+(anonymous) @ Login.tsx?t=1748287052030:283
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+Console.js:61 [vite] hot updated: /src/pages/Login.tsx
+Console.js:61 [vite] hot updated: /src/index.css?v=EeiyXM_9VfAJpaFHsF6bX
+Console.js:61 Fetch URL modificada: /api/auth/me?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/auth/me?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true&demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+Console.js:61 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+Console.js:61 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+@react-refresh:675 [Violation] 'setTimeout' handler took 103ms
+Login.tsx?t=1748287069539:189 Uncaught ReferenceError: error is not defined
+    at Login (Login.tsx?t=1748287069539:189:9)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=414a997a:11548:26)
+    at mountIndeterminateComponent (chunk-RPCDYKBN.js?v=414a997a:14926:21)
+    at beginWork (chunk-RPCDYKBN.js?v=414a997a:15914:22)
+    at HTMLUnknownElement.callCallback2 (chunk-RPCDYKBN.js?v=414a997a:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-RPCDYKBN.js?v=414a997a:3699:24)
+    at invokeGuardedCallback (chunk-RPCDYKBN.js?v=414a997a:3733:39)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=414a997a:19765:15)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=414a997a:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js?v=414a997a:19137:13)
+Login @ Login.tsx?t=1748287069539:189
+renderWithHooks @ chunk-RPCDYKBN.js?v=414a997a:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=414a997a:14926
+beginWork @ chunk-RPCDYKBN.js?v=414a997a:15914
+callCallback2 @ chunk-RPCDYKBN.js?v=414a997a:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=414a997a:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=414a997a:3733
+beginWork$1 @ chunk-RPCDYKBN.js?v=414a997a:19765
+performUnitOfWork @ chunk-RPCDYKBN.js?v=414a997a:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=414a997a:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=414a997a:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=414a997a:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=414a997a:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=414a997a:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=414a997a:555
+flush @ @tanstack_react-query.js?v=414a997a:569
+batch @ @tanstack_react-query.js?v=414a997a:587
+dispatch_fn @ @tanstack_react-query.js?v=414a997a:996
+onError @ @tanstack_react-query.js?v=414a997a:861
+reject @ @tanstack_react-query.js?v=414a997a:465
+(anonymous) @ @tanstack_react-query.js?v=414a997a:508
+Promise.catch
+run @ @tanstack_react-query.js?v=414a997a:498
+start @ @tanstack_react-query.js?v=414a997a:536
+fetch @ @tanstack_react-query.js?v=414a997a:926
+executeFetch_fn @ @tanstack_react-query.js?v=414a997a:2211
+onSubscribe @ @tanstack_react-query.js?v=414a997a:1898
+subscribe @ @tanstack_react-query.js?v=414a997a:24
+(anonymous) @ @tanstack_react-query.js?v=414a997a:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=414a997a:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=414a997a:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=414a997a:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=414a997a:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=414a997a:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=414a997a:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=414a997a:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=414a997a:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=414a997a:19416
+commitRoot @ chunk-RPCDYKBN.js?v=414a997a:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=414a997a:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=414a997a:9119
+flushSync @ chunk-RPCDYKBN.js?v=414a997a:18959
+scheduleRoot @ chunk-RPCDYKBN.js?v=414a997a:20015
+(anonymous) @ @react-refresh:247
+performReactRefresh @ @react-refresh:226
+(anonymous) @ @react-refresh:677
+setTimeout
+(anonymous) @ @react-refresh:666
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:728
+(anonymous) @ Login.tsx?t=1748287064347:283
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+Login.tsx?t=1748287069539:189 Uncaught ReferenceError: error is not defined
+    at Login (Login.tsx?t=1748287069539:189:9)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=414a997a:11548:26)
+    at mountIndeterminateComponent (chunk-RPCDYKBN.js?v=414a997a:14926:21)
+    at beginWork (chunk-RPCDYKBN.js?v=414a997a:15914:22)
+    at HTMLUnknownElement.callCallback2 (chunk-RPCDYKBN.js?v=414a997a:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-RPCDYKBN.js?v=414a997a:3699:24)
+    at invokeGuardedCallback (chunk-RPCDYKBN.js?v=414a997a:3733:39)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=414a997a:19765:15)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=414a997a:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js?v=414a997a:19137:13)
+Login @ Login.tsx?t=1748287069539:189
+renderWithHooks @ chunk-RPCDYKBN.js?v=414a997a:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=414a997a:14926
+beginWork @ chunk-RPCDYKBN.js?v=414a997a:15914
+callCallback2 @ chunk-RPCDYKBN.js?v=414a997a:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=414a997a:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=414a997a:3733
+beginWork$1 @ chunk-RPCDYKBN.js?v=414a997a:19765
+performUnitOfWork @ chunk-RPCDYKBN.js?v=414a997a:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=414a997a:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=414a997a:19116
+recoverFromConcurrentError @ chunk-RPCDYKBN.js?v=414a997a:18736
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=414a997a:18879
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=414a997a:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=414a997a:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=414a997a:555
+flush @ @tanstack_react-query.js?v=414a997a:569
+batch @ @tanstack_react-query.js?v=414a997a:587
+dispatch_fn @ @tanstack_react-query.js?v=414a997a:996
+onError @ @tanstack_react-query.js?v=414a997a:861
+reject @ @tanstack_react-query.js?v=414a997a:465
+(anonymous) @ @tanstack_react-query.js?v=414a997a:508
+Promise.catch
+run @ @tanstack_react-query.js?v=414a997a:498
+start @ @tanstack_react-query.js?v=414a997a:536
+fetch @ @tanstack_react-query.js?v=414a997a:926
+executeFetch_fn @ @tanstack_react-query.js?v=414a997a:2211
+onSubscribe @ @tanstack_react-query.js?v=414a997a:1898
+subscribe @ @tanstack_react-query.js?v=414a997a:24
+(anonymous) @ @tanstack_react-query.js?v=414a997a:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=414a997a:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=414a997a:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=414a997a:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=414a997a:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=414a997a:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=414a997a:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=414a997a:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=414a997a:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=414a997a:19416
+commitRoot @ chunk-RPCDYKBN.js?v=414a997a:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=414a997a:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=414a997a:9119
+flushSync @ chunk-RPCDYKBN.js?v=414a997a:18959
+scheduleRoot @ chunk-RPCDYKBN.js?v=414a997a:20015
+(anonymous) @ @react-refresh:247
+performReactRefresh @ @react-refresh:226
+(anonymous) @ @react-refresh:677
+setTimeout
+(anonymous) @ @react-refresh:666
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:728
+(anonymous) @ Login.tsx?t=1748287064347:283
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+Console.js:61 The above error occurred in the <Login> component:
+
+    at Login (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/Login.tsx?t=1748287069539:34:25)
+    at ProtectedRoute (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/App.tsx?t=1748287030356&v=WX57jw5xUWgvjkYN6r8rL:75:38)
+    at component
+    at Route (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=414a997a:323:16)
+    at Switch (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=414a997a:379:17)
+    at Router
+    at main
+    at div
+    at div
+    at Layout (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/components/layout/layout.tsx:23:26)
+    at QueryClientProvider (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=414a997a:2805:3)
+    at App (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/App.tsx?t=1748287030356&v=WX57jw5xUWgvjkYN6r8rL:722:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+Mt.forEach.n.<computed> @ Console.js:61
+logCapturedError @ chunk-RPCDYKBN.js?v=414a997a:14032
+update.callback @ chunk-RPCDYKBN.js?v=414a997a:14052
+callCallback @ chunk-RPCDYKBN.js?v=414a997a:11248
+commitUpdateQueue @ chunk-RPCDYKBN.js?v=414a997a:11265
+commitLayoutEffectOnFiber @ chunk-RPCDYKBN.js?v=414a997a:17093
+commitLayoutMountEffects_complete @ chunk-RPCDYKBN.js?v=414a997a:17980
+commitLayoutEffects_begin @ chunk-RPCDYKBN.js?v=414a997a:17969
+commitLayoutEffects @ chunk-RPCDYKBN.js?v=414a997a:17920
+commitRootImpl @ chunk-RPCDYKBN.js?v=414a997a:19353
+commitRoot @ chunk-RPCDYKBN.js?v=414a997a:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=414a997a:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=414a997a:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=414a997a:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=414a997a:555
+flush @ @tanstack_react-query.js?v=414a997a:569
+batch @ @tanstack_react-query.js?v=414a997a:587
+dispatch_fn @ @tanstack_react-query.js?v=414a997a:996
+onError @ @tanstack_react-query.js?v=414a997a:861
+reject @ @tanstack_react-query.js?v=414a997a:465
+(anonymous) @ @tanstack_react-query.js?v=414a997a:508
+Promise.catch
+run @ @tanstack_react-query.js?v=414a997a:498
+start @ @tanstack_react-query.js?v=414a997a:536
+fetch @ @tanstack_react-query.js?v=414a997a:926
+executeFetch_fn @ @tanstack_react-query.js?v=414a997a:2211
+onSubscribe @ @tanstack_react-query.js?v=414a997a:1898
+subscribe @ @tanstack_react-query.js?v=414a997a:24
+(anonymous) @ @tanstack_react-query.js?v=414a997a:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=414a997a:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=414a997a:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=414a997a:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=414a997a:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=414a997a:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=414a997a:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=414a997a:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=414a997a:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=414a997a:19416
+commitRoot @ chunk-RPCDYKBN.js?v=414a997a:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=414a997a:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=414a997a:9119
+flushSync @ chunk-RPCDYKBN.js?v=414a997a:18959
+scheduleRoot @ chunk-RPCDYKBN.js?v=414a997a:20015
+(anonymous) @ @react-refresh:247
+performReactRefresh @ @react-refresh:226
+(anonymous) @ @react-refresh:677
+setTimeout
+(anonymous) @ @react-refresh:666
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:728
+(anonymous) @ Login.tsx?t=1748287064347:283
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+chunk-RPCDYKBN.js?v=414a997a:9129 Uncaught ReferenceError: error is not defined
+    at Login (Login.tsx?t=1748287069539:189:9)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=414a997a:11548:26)
+    at mountIndeterminateComponent (chunk-RPCDYKBN.js?v=414a997a:14926:21)
+    at beginWork (chunk-RPCDYKBN.js?v=414a997a:15914:22)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=414a997a:19753:22)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=414a997a:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js?v=414a997a:19137:13)
+    at renderRootSync (chunk-RPCDYKBN.js?v=414a997a:19116:15)
+    at recoverFromConcurrentError (chunk-RPCDYKBN.js?v=414a997a:18736:28)
+    at performSyncWorkOnRoot (chunk-RPCDYKBN.js?v=414a997a:18879:28)
+Login @ Login.tsx?t=1748287069539:189
+renderWithHooks @ chunk-RPCDYKBN.js?v=414a997a:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=414a997a:14926
+beginWork @ chunk-RPCDYKBN.js?v=414a997a:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=414a997a:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=414a997a:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=414a997a:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=414a997a:19116
+recoverFromConcurrentError @ chunk-RPCDYKBN.js?v=414a997a:18736
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=414a997a:18879
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=414a997a:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=414a997a:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=414a997a:555
+flush @ @tanstack_react-query.js?v=414a997a:569
+batch @ @tanstack_react-query.js?v=414a997a:587
+dispatch_fn @ @tanstack_react-query.js?v=414a997a:996
+onError @ @tanstack_react-query.js?v=414a997a:861
+reject @ @tanstack_react-query.js?v=414a997a:465
+(anonymous) @ @tanstack_react-query.js?v=414a997a:508
+Promise.catch
+run @ @tanstack_react-query.js?v=414a997a:498
+start @ @tanstack_react-query.js?v=414a997a:536
+fetch @ @tanstack_react-query.js?v=414a997a:926
+executeFetch_fn @ @tanstack_react-query.js?v=414a997a:2211
+onSubscribe @ @tanstack_react-query.js?v=414a997a:1898
+subscribe @ @tanstack_react-query.js?v=414a997a:24
+(anonymous) @ @tanstack_react-query.js?v=414a997a:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=414a997a:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=414a997a:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=414a997a:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=414a997a:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=414a997a:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=414a997a:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=414a997a:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=414a997a:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=414a997a:19416
+commitRoot @ chunk-RPCDYKBN.js?v=414a997a:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=414a997a:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=414a997a:9119
+flushSync @ chunk-RPCDYKBN.js?v=414a997a:18959
+scheduleRoot @ chunk-RPCDYKBN.js?v=414a997a:20015
+(anonymous) @ @react-refresh:247
+performReactRefresh @ @react-refresh:226
+(anonymous) @ @react-refresh:677
+setTimeout
+(anonymous) @ @react-refresh:666
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:728
+(anonymous) @ Login.tsx?t=1748287064347:283
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+Console.js:61 [vite] hot updated: /src/pages/Login.tsx
+Console.js:61 [vite] hot updated: /src/index.css?v=EeiyXM_9VfAJpaFHsF6bX
+Console.js:61 Fetch URL modificada: /api/auth/me?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/auth/me?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true&demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/auth/me?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true&demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true&demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+Console.js:61 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+Console.js:61 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+@react-refresh:675 [Violation] 'setTimeout' handler took 86ms
+Console.js:61 [vite] hot updated: /src/pages/Login.tsx
+Console.js:61 [vite] hot updated: /src/index.css?v=EeiyXM_9VfAJpaFHsF6bX
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+[Violation] Forced reflow while executing JavaScript took 81ms
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+Console.js:61 [vite] connecting...
+Console.js:61 [vite] connected.
+Console.js:61 i18next: languageChanged en-US
+Console.js:61 i18next: initialized {debug: true, initAsync: true, ns: Array(1), defaultNS: Array(1), fallbackLng: Array(1), …}
+Console.js:61 i18n inicializado com os seguintes recursos: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+Console.js:61 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+Console.js:61 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+Console.js:61 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+Console.js:61 Fetch URL modificada: /api/auth/login?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+_app-dee5582c1475a0bc.js:38 [Violation] 'requestAnimationFrame' handler took 81ms
+[Violation] Forced reflow while executing JavaScript took 81ms

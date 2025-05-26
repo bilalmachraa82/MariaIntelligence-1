@@ -5,6 +5,7 @@ import { setupVite, serveStatic, log } from "./vite";
 import { startScheduler } from "./services/scheduler";
 import { registerDatabaseRoutes } from "./api/database-routes";
 import authRoutes from "./routes/auth.routes";
+import { handleLogin, handleMe, handleLogout } from "./simple-auth";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 
@@ -125,7 +126,12 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Registrar rotas de autenticação ANTES das outras rotas
+  // Registrar rotas de autenticação simples PRIMEIRO para garantir que funcionam
+  app.post('/api/auth/login', express.json(), handleLogin);
+  app.get('/api/auth/me', handleMe);
+  app.post('/api/auth/logout', handleLogout);
+  
+  // Registrar outras rotas de autenticação
   app.use('/api/auth', authRoutes);
   
   const server = await registerRoutes(app);
