@@ -40,8 +40,8 @@ export function BottomNav() {
     },
     {
       name: t("navigation.documentScan", "Scanner"),
-      href: "/upload-pdf",
-      altHref: "/pdf-upload",
+      href: "/simple-ocr",
+      altHref: "/simple-ocr",
       icon: ScanSearch
     },
     {

@@ -89,7 +89,7 @@ export function Sidebar({ className }: SidebarProps) {
   const toolsLinks: NavLink[] = [
     {
       title: t("navigation.pdfUpload"),
-      href: isPortuguese ? "/upload-pdf" : "/pdf-upload",
+      href: "/simple-ocr",
       icon: FileUp,
       description: "Upload e processamento de PDFs",
     },

@@ -331,7 +331,7 @@ export function SidebarReorganized({
   const toolsNavItems = [
     {
       name: "Scanner",
-      href: "/pdf-upload",
+      href: "/simple-ocr",
       altHref: "/upload-pdf",
       icon: FileUp,
       iconColor: "text-rose-500",
