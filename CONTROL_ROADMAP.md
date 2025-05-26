@@ -68,11 +68,11 @@
   - [ ] Implementar Row Level Security (RLS)
   - [ ] Migrar schemas PostgreSQL
 
-- [ ] **Sistema de Autenticação**
-  - [ ] Tabela user_profiles
-  - [ ] 4 tipos de utilizador (super_admin, property_owner, cleaning_team, maintenance_tech)
-  - [ ] Páginas de login/register
-  - [ ] Middleware de proteção de rotas
+- [ ] **Sistema de Autenticação (SIMPLIFICADO)**
+  - [ ] Login básico com email/password (só para admin)
+  - [ ] Página de login simples
+  - [ ] Sessão segura
+  - [ ] Proteção de todas as rotas (só admin acede)
 
 - [ ] **Importação CSV**
   - [ ] Interface de upload

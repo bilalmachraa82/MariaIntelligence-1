@@ -764,86 +764,61 @@ export const supabaseConfig = {
 
 ## SISTEMA DE LOGIN E AUTENTICAÇÃO
 
-### Tipos de Utilizadores
+### Tipos de Utilizadores (FASE INICIAL)
 ```
-1. SUPER_ADMIN
+1. ADMIN (Carina)
    - Acesso total ao sistema
    - Gere todos os proprietários e propriedades
    - Configura equipas de limpeza
-   - Acesso a relatórios globais
+   - Processa PDFs e reservas
+   - Acesso a todos os relatórios
+   - Gestão completa do sistema
 
-2. PROPERTY_OWNER  
-   - Vê apenas as suas propriedades
-   - Gere as suas reservas
-   - Relatórios financeiros próprios
-   - Não vê dados de outros proprietários
-
-3. CLEANING_TEAM
-   - Vê tarefas de limpeza atribuídas
-   - Actualiza status de limpezas
-   - Adiciona fotos e notas
-   - Acesso limitado a dados
-
-4. MAINTENANCE_TECH
-   - Vê tarefas de manutenção
-   - Actualiza progresso
-   - Regista custos e materiais
+FUTURO (opcional):
+- property_owner: Proprietários com acesso limitado às suas propriedades
+- cleaning_team: Equipas com acesso às tarefas de limpeza
+- maintenance_tech: Técnicos para manutenção
 ```
 
-### Schema de Autenticação
+### Schema de Autenticação (SIMPLIFICADO)
 ```sql
--- Tabela de utilizadores (Supabase auth.users já existe)
+-- FASE INICIAL: Apenas 1 admin (Carina)
+-- Supabase auth.users já existe - só precisa criar 1 utilizador
+
+-- OPCIONAL: Tabela adicional para perfil (futuro)
 CREATE TABLE user_profiles (
   id uuid REFERENCES auth.users(id) PRIMARY KEY,
-  user_type text NOT NULL CHECK (user_type IN ('super_admin', 'property_owner', 'cleaning_team', 'maintenance_tech')),
+  user_type text DEFAULT 'admin',
   full_name text NOT NULL,
   phone text,
   avatar_url text,
   is_active boolean DEFAULT true,
-  created_at timestamp DEFAULT now(),
-  updated_at timestamp DEFAULT now()
+  created_at timestamp DEFAULT now()
 );
 
--- Relacionamento user -> owner (para property_owners)
-ALTER TABLE owners ADD COLUMN user_id uuid REFERENCES auth.users(id);
-
--- Relacionamento user -> cleaning_team  
-ALTER TABLE cleaning_teams ADD COLUMN user_id uuid REFERENCES auth.users(id);
+-- SEM Row Level Security inicialmente (só 1 utilizador)
+-- Adicionar RLS mais tarde quando houver múltiplos utilizadores
 ```
 
-### Fluxo de Login
+### Fluxo de Login (SIMPLIFICADO)
 ```
-1. Utilizador acede /login
-2. Escolhe método (email/password, Google, etc.)
-3. Supabase autentica e cria sessão
-4. Sistema verifica user_type na tabela user_profiles
-5. Redireciona para dashboard apropriado:
-   - super_admin → Dashboard completo
-   - property_owner → Dashboard das suas propriedades  
-   - cleaning_team → Tarefas de limpeza
-   - maintenance_tech → Tarefas de manutenção
+1. Carina acede /login
+2. Insere email/password (Supabase auth)
+3. Sistema autentica e cria sessão
+4. Redireciona para dashboard principal (acesso total)
+5. Todas as funcionalidades disponíveis para admin
+
+FUTURO: Quando houver múltiplos utilizadores, adicionar lógica de redirecionamento baseada no tipo
 ```
 
-### Row Level Security (RLS)
+### Row Level Security (RLS) - FUTURO
 ```sql
--- Proprietários só veem as suas propriedades
-CREATE POLICY "owners_own_properties" ON properties
-FOR ALL USING (
-  owner_id IN (
-    SELECT id FROM owners 
-    WHERE user_id = auth.uid()
-  )
-);
+-- FASE INICIAL: SEM RLS (só 1 admin vê tudo)
+-- Implementar RLS apenas quando houver múltiplos utilizadores
 
--- Reservas filtradas por propriedade do owner
-CREATE POLICY "owners_own_reservations" ON reservations  
-FOR ALL USING (
-  property_id IN (
-    SELECT p.id FROM properties p
-    JOIN owners o ON p.owner_id = o.id
-    WHERE o.user_id = auth.uid()
-  )
-);
+-- EXEMPLO para futuro (proprietários só veem suas propriedades):
+-- CREATE POLICY "owners_own_properties" ON properties
+-- FOR ALL USING (owner_id IN (SELECT id FROM owners WHERE user_id = auth.uid()));
 ```
 
 ## SISTEMA DE IMPORTAÇÃO VIA CSV
