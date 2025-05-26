@@ -181,11 +181,11 @@ export default function SimpleOCR() {
       </Card>
 
       {/* Results Section */}
-      {result && (
+      {results.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              {result.success ? (
+              {results.some(r => r.success) ? (
                 <CheckCircle className="h-5 w-5 text-green-600" />
               ) : (
                 <AlertCircle className="h-5 w-5 text-red-600" />
@@ -194,27 +194,29 @@ export default function SimpleOCR() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {result.success ? (
-              <>
-                <div className="flex items-center gap-4">
-                  <Badge className={getTypeColor(result.type)}>
-                    {getTypeLabel(result.type)}
-                  </Badge>
-                  <span className="text-sm text-gray-600">
-                    {result.reservations.length} reserva(s) encontrada(s)
-                  </span>
-                </div>
+            {results.map((result, resultIndex) => (
+              <div key={resultIndex} className="space-y-4">
+                {result.success ? (
+                  <>
+                    <div className="flex items-center gap-4">
+                      <Badge className={getTypeColor(result.type)}>
+                        {getTypeLabel(result.type)}
+                      </Badge>
+                      <span className="text-sm text-gray-600">
+                        {result.reservations.length} reserva(s) encontrada(s)
+                      </span>
+                    </div>
 
-                {result.reservations.length === 0 ? (
-                  <Alert>
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>
-                      Nenhuma reserva foi encontrada no documento processado.
-                    </AlertDescription>
-                  </Alert>
-                ) : (
-                  <div className="space-y-4">
-                    {result.reservations.map((reservation, index) => (
+                    {result.reservations.length === 0 ? (
+                      <Alert>
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertDescription>
+                          Nenhuma reserva foi encontrada no documento processado.
+                        </AlertDescription>
+                      </Alert>
+                    ) : (
+                      <div className="space-y-4">
+                        {result.reservations.map((reservation: ExtractedReservation, index: number) => (
                       <Card key={index} className="border-l-4 border-l-purple-500">
                         <CardContent className="pt-4">
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -283,6 +285,8 @@ export default function SimpleOCR() {
                 </AlertDescription>
               </Alert>
             )}
+            </div>
+          ))}
           </CardContent>
         </Card>
       )}
