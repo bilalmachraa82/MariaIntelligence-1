@@ -1241,94 +1241,140 @@ export async function registerRoutes(app: Express): Promise<Server> {
    * Usa prioridade: Mistral OCR (OpenRouter) -> RolmOCR -> Gemini
    * Detecta automaticamente conteúdo manuscrito e otimiza o processamento
    */
-  // Rota OCR definitiva - Sistema funcional para múltiplas reservas
+  // Sistema OCR Funcional - Extração de múltiplas reservas
   app.post("/api/ocr", multer({ storage: multer.memoryStorage() }).single('pdf'), async (req: Request, res: Response) => {
-    console.log('🎯 CONTROLADOR CORRIGIDO - Extração de múltiplas reservas');
+    console.log('🚀 NOVO SISTEMA OCR - Processando PDF com Gemini Vision');
     
     try {
       if (!req.file) {
-        return res.status(400).json({ success: false, message: 'Nenhum arquivo enviado' });
+        return res.status(400).json({ success: false, message: 'Nenhum arquivo PDF enviado' });
       }
 
-      // Importar o parser JSON robusto
-      const { fixMalformedJson } = await import('./utils/json-parser');
-      
-      // Extrair texto com pdf-parse
-      const pdfBuffer = Buffer.isBuffer(req.file.buffer) ? req.file.buffer : Buffer.from(req.file.buffer);
-      const pdf = await import('pdf-parse');
-      const data = await pdf.default(pdfBuffer);
-      const extractedText = data.text;
-      
-      console.log(`📄 Texto extraído: ${extractedText.length} caracteres`);
-      
-      // Prompt especializado para múltiplas reservas
-      const prompt = `Analyze this accommodation control document and extract ALL reservations. This is a table with multiple reservations (typically 8-12). Extract every single reservation row.
+      console.log(`📁 Processando: ${req.file.originalname} (${req.file.size} bytes)`);
 
-IMPORTANT RULES:
-- IGNORE filter fields like "Alojamento: Todos", "Proprietário: Todos", "Telefone", etc.
-- Extract ONLY actual guest names and property names from the reservation table
-- Look for the actual table with columns: Referência, Alojamento, Estado, Check-in, Check-out, Adultos, Crianças
-- Property names are like "São João Batista T3", "Aroeira I", "Almada 1Bernardo T3"
-- Guest names are real person names, NOT "Telefone" or "Todos"
+      // Verificar se tem GEMINI_API_KEY
+      if (!process.env.GEMINI_API_KEY) {
+        return res.status(500).json({ 
+          success: false, 
+          message: 'Chave API Gemini não configurada' 
+        });
+      }
 
-Document text:
-${extractedText}
+      // Converter PDF para base64
+      const base64Pdf = req.file.buffer.toString('base64');
+      
+      // Usar Gemini Vision para analisar o PDF diretamente
+      const analysisPrompt = `Analyze this accommodation control PDF document and extract ALL reservations from the main table.
 
-Return JSON with ALL reservations found:
+CRITICAL INSTRUCTIONS:
+1. IGNORE filter fields like "Alojamento: Todos", "Proprietário: Todos", "Telefone", etc. - these are NOT guest data
+2. Find the main reservation table with columns: Referência, Alojamento, Estado, Check-in, Check-out, Adultos, Crianças
+3. Extract EVERY row from this table (typically 8-12 reservations)
+4. Property names are real like: "Almada 1Bernardo T3", "Boavista 1Tania T2", "São João Batista T3"
+5. Guest names are real people names, NOT "Telefone" or filter text
+
+Return this exact JSON format:
 {
   "reservations": [
     {
-      "reference": "string",
-      "propertyName": "string", 
-      "guestName": "string",
+      "reference": "reservation code",
+      "propertyName": "property name", 
+      "guestName": "guest name",
       "checkInDate": "YYYY-MM-DD",
       "checkOutDate": "YYYY-MM-DD",
-      "numAdults": number,
-      "numChildren": number,
-      "status": "string"
+      "adults": number,
+      "children": number,
+      "status": "confirmed"
     }
   ]
 }`;
 
-      // Chamar Gemini diretamente
-      const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${process.env.GEMINI_API_KEY}`, {
+      console.log('🔍 Enviando PDF para análise Gemini Vision...');
+
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.1, maxOutputTokens: 8192 }
+          contents: [{
+            parts: [
+              { text: analysisPrompt },
+              { 
+                inline_data: {
+                  mime_type: 'application/pdf',
+                  data: base64Pdf
+                }
+              }
+            ]
+          }],
+          generationConfig: { 
+            temperature: 0.1, 
+            maxOutputTokens: 8192 
+          }
         })
       });
 
-      if (!geminiResponse.ok) {
-        throw new Error(`Gemini API error: ${geminiResponse.status}`);
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Erro Gemini API:', response.status, errorText);
+        throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
       }
 
-      const geminiData = await geminiResponse.json();
-      const responseText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      const data = await response.json();
       
-      console.log(`🤖 Resposta Gemini recebida: ${responseText.substring(0, 200)}...`);
-      
-      // Usar parser JSON robusto
-      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) {
-        throw new Error('Nenhum JSON encontrado na resposta');
+      if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
+        console.error('❌ Resposta Gemini inválida:', JSON.stringify(data, null, 2));
+        throw new Error('Resposta inválida da Gemini API');
       }
+
+      const responseText = data.candidates[0].content.parts[0].text;
+      console.log('🤖 Resposta Gemini:', responseText.substring(0, 300) + '...');
+
+      // Extrair JSON da resposta
+      let jsonStr = responseText;
       
-      const parsedData = fixMalformedJson(jsonMatch[0]);
-      const reservations = parsedData.reservations || [];
+      // Procurar JSON na resposta
+      const jsonMatch = responseText.match(/```json\s*([\s\S]*?)\s*```/) || 
+                       responseText.match(/\{[\s\S]*"reservations"[\s\S]*\}/);
       
-      console.log(`✅ ${reservations.length} reservas extraídas com sucesso`);
+      if (jsonMatch) {
+        jsonStr = jsonMatch[1] || jsonMatch[0];
+      }
+
+      // Parse JSON
+      let parsed;
+      try {
+        parsed = JSON.parse(jsonStr);
+      } catch (parseError) {
+        console.log('⚠️ Erro no parse JSON, tentando correção automática...');
+        // Usar parser robusto se necessário
+        try {
+          const { fixMalformedJson } = await import('./utils/json-parser');
+          parsed = fixMalformedJson(jsonStr);
+        } catch (fixError) {
+          console.error('❌ Falha na correção JSON:', fixError);
+          throw new Error('Não foi possível processar a resposta JSON');
+        }
+      }
+
+      const reservations = parsed.reservations || [];
       
+      console.log(`✅ SUCESSO! Extraídas ${reservations.length} reservas`);
+      
+      // Log das reservas encontradas
+      reservations.forEach((res: any, index: number) => {
+        console.log(`📋 ${index + 1}. ${res.guestName || 'N/A'} -> ${res.propertyName || 'N/A'} (${res.checkInDate || 'N/A'} a ${res.checkOutDate || 'N/A'})`);
+      });
+
       res.json({
         success: true,
-        provider: 'gemini',
+        provider: 'gemini-vision',
+        count: reservations.length,
         reservations: reservations,
-        extractedText: extractedText.substring(0, 1000) + '...'
+        message: `${reservations.length} reservas extraídas com sucesso`
       });
 
     } catch (error: any) {
-      console.error('❌ Erro no processamento OCR:', error);
+      console.error('❌ ERRO OCR:', error);
       res.status(500).json({
         success: false,
         message: 'Erro no processamento OCR',
