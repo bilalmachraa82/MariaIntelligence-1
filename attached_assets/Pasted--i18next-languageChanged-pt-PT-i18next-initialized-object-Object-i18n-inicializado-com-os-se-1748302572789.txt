@@ -1,0 +1,1069 @@
+ i18next: languageChanged pt-PT
+ i18next: initialized [object Object]
+ i18n inicializado com os seguintes recursos: [object Object],[object Object],[object Object],[object Object],[object Object],[object Object]
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'ambient-light-sensor'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'ambient-light-sensor'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'battery'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'battery'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'execution-while-not-rendered'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'execution-while-not-rendered'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'execution-while-out-of-viewport'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'execution-while-out-of-viewport'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'layout-animations'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'layout-animations'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'legacy-image-formats'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'legacy-image-formats'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'navigation-override'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'navigation-override'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'oversized-images'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'oversized-images'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'publickey-credentials'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'publickey-credentials'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'speaker-selection'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'speaker-selection'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'unoptimized-images'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'unoptimized-images'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'unsized-media'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Unrecognized feature: 'unsized-media'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Allow attribute will take precedence over 'allowfullscreen'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Allow attribute will take precedence over 'allowfullscreen'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Allow attribute will take precedence over 'allowpaymentrequest'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2Fpdf-upload&id=%3Ar6au%3A:1 Allow attribute will take precedence over 'allowpaymentrequest'.
+ 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+ 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+ Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+ Fetch URL modificada: /api/check-ai-services?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a frame with origin "https://replit.com". Protocols, domains, and ports must match.
+(anonymous) @ index.iife.js:24
+ [vite] connecting...
+ [vite] connected.
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a frame with origin "https://replit.com". Protocols, domains, and ports must match.
+(anonymous) @ index.iife.js:24
+ [vite] connecting...
+ [vite] connected.
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a frame with origin "https://replit.com". Protocols, domains, and ports must match.
+(anonymous) @ index.iife.js:24
+ [vite] connecting...
+ [vite] connected.
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a frame with origin "https://replit.com". Protocols, domains, and ports must match.
+(anonymous) @ index.iife.js:24
+ [vite] connecting...
+ [vite] connected.
+ i18next: languageChanged pt-PT
+ i18next: initialized [object Object]
+ i18n inicializado com os seguintes recursos: [object Object],[object Object],[object Object],[object Object],[object Object],[object Object]
+replEnvironmentDesktop-babae5762233d5b8.js:1 Unrecognized feature: 'ambient-light-sensor'.
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+navigateTo @ replEnvironmentDesktop-babae5762233d5b8.js:1
+push.96198.ne.refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+s @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+notify @ _app-dee5582c1475a0bc.js:26
+t.apply @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+replEnvironmentDesktop-babae5762233d5b8.js:1 Unrecognized feature: 'battery'.
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+navigateTo @ replEnvironmentDesktop-babae5762233d5b8.js:1
+push.96198.ne.refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+s @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+notify @ _app-dee5582c1475a0bc.js:26
+t.apply @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+replEnvironmentDesktop-babae5762233d5b8.js:1 Unrecognized feature: 'execution-while-not-rendered'.
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+navigateTo @ replEnvironmentDesktop-babae5762233d5b8.js:1
+push.96198.ne.refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+s @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+notify @ _app-dee5582c1475a0bc.js:26
+t.apply @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+replEnvironmentDesktop-babae5762233d5b8.js:1 Unrecognized feature: 'execution-while-out-of-viewport'.
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+navigateTo @ replEnvironmentDesktop-babae5762233d5b8.js:1
+push.96198.ne.refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+s @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+notify @ _app-dee5582c1475a0bc.js:26
+t.apply @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+replEnvironmentDesktop-babae5762233d5b8.js:1 Unrecognized feature: 'layout-animations'.
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+navigateTo @ replEnvironmentDesktop-babae5762233d5b8.js:1
+push.96198.ne.refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+s @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+notify @ _app-dee5582c1475a0bc.js:26
+t.apply @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+replEnvironmentDesktop-babae5762233d5b8.js:1 Unrecognized feature: 'legacy-image-formats'.
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+navigateTo @ replEnvironmentDesktop-babae5762233d5b8.js:1
+push.96198.ne.refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+s @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+notify @ _app-dee5582c1475a0bc.js:26
+t.apply @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+replEnvironmentDesktop-babae5762233d5b8.js:1 Unrecognized feature: 'navigation-override'.
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+navigateTo @ replEnvironmentDesktop-babae5762233d5b8.js:1
+push.96198.ne.refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+s @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+notify @ _app-dee5582c1475a0bc.js:26
+t.apply @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+replEnvironmentDesktop-babae5762233d5b8.js:1 Unrecognized feature: 'oversized-images'.
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+navigateTo @ replEnvironmentDesktop-babae5762233d5b8.js:1
+push.96198.ne.refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+s @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+notify @ _app-dee5582c1475a0bc.js:26
+t.apply @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+replEnvironmentDesktop-babae5762233d5b8.js:1 Unrecognized feature: 'publickey-credentials'.
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+navigateTo @ replEnvironmentDesktop-babae5762233d5b8.js:1
+push.96198.ne.refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+s @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+notify @ _app-dee5582c1475a0bc.js:26
+t.apply @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+replEnvironmentDesktop-babae5762233d5b8.js:1 Unrecognized feature: 'speaker-selection'.
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+navigateTo @ replEnvironmentDesktop-babae5762233d5b8.js:1
+push.96198.ne.refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+s @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+notify @ _app-dee5582c1475a0bc.js:26
+t.apply @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+replEnvironmentDesktop-babae5762233d5b8.js:1 Unrecognized feature: 'unoptimized-images'.
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+navigateTo @ replEnvironmentDesktop-babae5762233d5b8.js:1
+push.96198.ne.refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+s @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+notify @ _app-dee5582c1475a0bc.js:26
+t.apply @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+replEnvironmentDesktop-babae5762233d5b8.js:1 Unrecognized feature: 'unsized-media'.
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+navigateTo @ replEnvironmentDesktop-babae5762233d5b8.js:1
+push.96198.ne.refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+s @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+notify @ _app-dee5582c1475a0bc.js:26
+t.apply @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+replEnvironmentDesktop-babae5762233d5b8.js:1 Unrecognized feature: 'pointer-lock'.
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+navigateTo @ replEnvironmentDesktop-babae5762233d5b8.js:1
+push.96198.ne.refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+s @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+notify @ _app-dee5582c1475a0bc.js:26
+t.apply @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+replEnvironmentDesktop-babae5762233d5b8.js:1 Allow attribute will take precedence over 'allowfullscreen'.
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+navigateTo @ replEnvironmentDesktop-babae5762233d5b8.js:1
+push.96198.ne.refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+s @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+notify @ _app-dee5582c1475a0bc.js:26
+t.apply @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+replEnvironmentDesktop-babae5762233d5b8.js:1 Allow attribute will take precedence over 'allowpaymentrequest'.
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+navigateTo @ replEnvironmentDesktop-babae5762233d5b8.js:1
+push.96198.ne.refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+s @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+notify @ _app-dee5582c1475a0bc.js:26
+t.apply @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+ 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+ 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+ Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+ Fetch URL modificada: /api/check-ai-services?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+ [vite] server connection lost. Polling for restart...
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/simple-ocr:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+simple-ocr:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+pdf-upload:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+pdf-upload:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a frame with origin "https://replit.com". Protocols, domains, and ports must match.
+stallwart.build.js:1 stallwart: failed ping 1
+stallwart.build.js:1 stallwart: failed ping 2
+stallwart.build.js:1 stallwart: failed ping 1
+stallwart.build.js:1 stallwart: failed ping 2
+stallwart.build.js:1 stallwart: failed ping 3
+pdf-upload:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+pdf-upload:1  Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a frame with origin "https://replit.com". Protocols, domains, and ports must match.
+pdf-upload:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+pdf-upload:1  Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a frame with origin "https://replit.com". Protocols, domains, and ports must match.
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+ [vite] connecting...
+ [vite] connected.
+ i18next: languageChanged pt-PT
+ i18next: initialized Object
+ i18n inicializado com os seguintes recursos: Array(6)
+ 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+ 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+ Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+ Fetch URL modificada: /api/check-ai-services?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+Console.js:61 [vite] connecting...
+Console.js:61 [vite] connected.
+Console.js:61 i18next: languageChanged pt-PT
+ i18next: initialized Object
+ i18n inicializado com os seguintes recursos: Array(6)
+ 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+ 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+ Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+ Fetch URL modificada: /api/reservations/dashboard
+ Fetch URL modificada: /api/reservations/dashboard?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+ Fetch URL modificada: /api/activities
+ Fetch URL modificada: /api/activities?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://www.google.com" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+ Fetch URL modificada: /api/reservations/dashboard
+ Fetch URL modificada: /api/reservations/dashboard?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+ Fetch URL modificada: /api/activities
+ Fetch URL modificada: /api/activities?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+hook.js:608 Measure loop restarted more than 5 times
+overrideMethod @ hook.js:608
+ Fetch URL modificada: /api/simple-ocr/process-multiple?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+ Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+ Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+ Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+ Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true:1 
+            
+            
+           Failed to load resource: the server responded with a status of 400 (Bad Request)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true:1  Failed to load resource: the server responded with a status of 400 (Bad Request)
+ Erro ao guardar reservas: 
+Mt.forEach.n.<computed> @ eruda.js:2
+eruda.js:2 [Violation] 'setTimeout' handler took 157ms
+[Violation] Forced reflow while executing JavaScript took 156ms
+_app-dee5582c1475a0bc.js:38 [Violation] 'requestAnimationFrame' handler took 84ms
+[Violation] Forced reflow while executing JavaScript took 84ms

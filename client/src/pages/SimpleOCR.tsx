@@ -142,19 +142,59 @@ export default function SimpleOCR() {
           const propertiesResponse = await fetch('/api/properties');
           const properties = await propertiesResponse.json();
           
-          const matchedProperty = properties.find((p: any) => 
-            p.name.toLowerCase().includes(reservation.propertyName.toLowerCase()) ||
-            reservation.propertyName.toLowerCase().includes(p.name.toLowerCase())
-          );
+          // Normalizar nomes para melhor correspondência
+          const normalizePropertyName = (name: string) => 
+            name.toLowerCase()
+              .replace(/\s+/g, '')
+              .replace(/[àáâãä]/g, 'a')
+              .replace(/[èéêë]/g, 'e')
+              .replace(/[ìíîï]/g, 'i')
+              .replace(/[òóôõö]/g, 'o')
+              .replace(/[ùúûü]/g, 'u')
+              .replace(/[ç]/g, 'c');
+          
+          const normalizedReservationProperty = normalizePropertyName(reservation.propertyName);
+          
+          const matchedProperty = properties.find((p: any) => {
+            const normalizedDbProperty = normalizePropertyName(p.name);
+            
+            // Correspondência exata
+            if (normalizedDbProperty === normalizedReservationProperty) return true;
+            
+            // Correspondência parcial
+            if (normalizedDbProperty.includes(normalizedReservationProperty) || 
+                normalizedReservationProperty.includes(normalizedDbProperty)) return true;
+            
+            // Correspondência por palavras-chave
+            const reservationWords = normalizedReservationProperty.split(/[^a-z0-9]/);
+            const dbWords = normalizedDbProperty.split(/[^a-z0-9]/);
+            
+            return reservationWords.some(word => 
+              word.length > 2 && dbWords.some(dbWord => 
+                dbWord.includes(word) || word.includes(dbWord)
+              )
+            );
+          });
           
           if (matchedProperty) {
             propertyId = matchedProperty.id;
+            console.log(`✅ Propriedade encontrada: ${reservation.propertyName} → ${matchedProperty.name} (ID: ${matchedProperty.id})`);
+          } else {
+            console.log(`❌ Propriedade não encontrada: ${reservation.propertyName}`);
+            // Usar a primeira propriedade disponível como fallback
+            propertyId = properties.length > 0 ? properties[0].id : null;
           }
+        }
+
+        // Se ainda não temos propriedade válida, pular esta reserva
+        if (!propertyId) {
+          console.log(`⚠️ Pulando reserva ${reservation.guestName} - nenhuma propriedade válida encontrada`);
+          continue;
         }
 
         // Criar a reserva na base de dados
         const reservationData = {
-          propertyId: propertyId || 1, // Usar propriedade padrão se não encontrar match
+          propertyId: propertyId,
           guestName: reservation.guestName,
           guestEmail: reservation.email || null,
           guestPhone: reservation.phone || null,
