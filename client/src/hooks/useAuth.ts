@@ -1,5 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useToast } from '@/hooks/use-toast';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 interface User {
   id: string;
@@ -8,100 +7,69 @@ interface User {
   isAdmin: boolean;
 }
 
-interface AuthResponse {
-  user: User;
-  message: string;
-}
+// Simulação simples de autenticação para desenvolvimento
+const MOCK_USER: User = {
+  id: 'admin-001',
+  email: 'admin@mariafaz.pt',
+  name: 'Carina Admin',
+  isAdmin: true
+};
 
-// Hook para verificar se utilizador está autenticado
+// Chave para armazenar o estado de login no localStorage
+const AUTH_KEY = 'mariafaz-auth';
+
 export function useAuth() {
-  return useQuery({
-    queryKey: ['/api/auth/me'],
-    retry: false,
-    staleTime: 1000 * 60 * 5, // 5 minutos
-    queryFn: async () => {
-      const response = await fetch('/api/auth/me');
-      if (!response.ok) {
-        throw new Error('Não autenticado');
+  const queryClient = useQueryClient();
+
+  // Verificar se o utilizador está logado (simulação)
+  const { data: user, isLoading } = useQuery({
+    queryKey: ['auth', 'user'],
+    queryFn: () => {
+      const stored = localStorage.getItem(AUTH_KEY);
+      if (stored) {
+        return MOCK_USER;
       }
-      return response.json();
-    }
+      return null;
+    },
+    retry: false,
   });
+
+  return {
+    user,
+    isLoading,
+    isAuthenticated: !!user,
+  };
 }
 
-// Hook para fazer login
 export function useLogin() {
   const queryClient = useQueryClient();
-  const { toast } = useToast();
 
   return useMutation({
     mutationFn: async (credentials: { email: string; password: string }) => {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(credentials),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Erro ao fazer login');
+      // Simulação simples de verificação de credenciais
+      if (credentials.email === 'admin@mariafaz.pt' && credentials.password === 'mariafaz123') {
+        localStorage.setItem(AUTH_KEY, 'true');
+        return MOCK_USER;
+      } else {
+        throw new Error('Credenciais inválidas');
       }
-
-      return response.json() as Promise<AuthResponse>;
     },
-    onSuccess: (data) => {
-      // Invalidar cache e atualizar dados do utilizador
-      queryClient.setQueryData(['/api/auth/me'], { user: data.user });
-      toast({
-        title: "Login realizado com sucesso!",
-        description: `Bem-vinda, ${data.user.name}!`,
-      });
+    onSuccess: (user) => {
+      queryClient.setQueryData(['auth', 'user'], user);
     },
-    onError: (error: Error) => {
-      toast({
-        title: "Erro no login",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
   });
 }
 
-// Hook para fazer logout
 export function useLogout() {
   const queryClient = useQueryClient();
-  const { toast } = useToast();
 
   return useMutation({
     mutationFn: async () => {
-      const response = await fetch('/api/auth/logout', {
-        method: 'POST',
-      });
-
-      if (!response.ok) {
-        throw new Error('Erro ao fazer logout');
-      }
-
-      return response.json();
+      localStorage.removeItem(AUTH_KEY);
+      return true;
     },
     onSuccess: () => {
-      // Limpar todos os dados em cache
-      queryClient.clear();
-      toast({
-        title: "Logout realizado",
-        description: "Sessão terminada com sucesso",
-      });
-      // Redirecionar para login
-      window.location.href = '/login';
+      queryClient.setQueryData(['auth', 'user'], null);
     },
-    onError: (error: Error) => {
-      toast({
-        title: "Erro no logout",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
   });
 }

@@ -95,6 +95,90 @@ app.get('/api/health', (req, res) => {
   console.log("Rota de saúde acessada");
 });
 
+// ROTAS DE AUTENTICAÇÃO (antes do Vite interceptar)
+app.post('/api/auth/login', (req, res) => {
+  console.log('Login attempt:', req.body);
+  const { email, password } = req.body;
+  
+  if (email === 'admin@mariafaz.pt' && password === 'mariafaz123') {
+    req.session.user = {
+      id: 'admin-001',
+      email: 'admin@mariafaz.pt',
+      name: 'Carina Admin',
+      isAdmin: true
+    };
+    
+    res.json({
+      message: 'Login realizado com sucesso',
+      user: req.session.user
+    });
+  } else {
+    res.status(401).json({
+      message: 'Credenciais inválidas'
+    });
+  }
+});
+
+app.get('/api/auth/me', (req, res) => {
+  if (req.session.user) {
+    res.json({ user: req.session.user });
+  } else {
+    res.status(401).json({ message: 'Não autenticado' });
+  }
+});
+
+app.post('/api/auth/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.json({ message: 'Logout realizado com sucesso' });
+  });
+});
+
+// Middleware especial para interceptar rotas de auth ANTES do Vite
+app.use((req, res, next) => {
+  // Interceptar rotas de autenticação antes do Vite processar
+  if (req.path === '/api/auth/login' && req.method === 'POST') {
+    console.log('🔐 Interceptando login:', req.body);
+    const { email, password } = req.body;
+    
+    if (email === 'admin@mariafaz.pt' && password === 'mariafaz123') {
+      req.session.user = {
+        id: 'admin-001',
+        email: 'admin@mariafaz.pt',
+        name: 'Carina Admin',
+        isAdmin: true
+      };
+      
+      return res.json({
+        message: 'Login realizado com sucesso',
+        user: req.session.user
+      });
+    } else {
+      return res.status(401).json({
+        message: 'Credenciais inválidas'
+      });
+    }
+  }
+  
+  if (req.path === '/api/auth/me' && req.method === 'GET') {
+    console.log('👤 Interceptando /me, sessão:', !!req.session.user);
+    if (req.session.user) {
+      return res.json({ user: req.session.user });
+    } else {
+      return res.status(401).json({ message: 'Não autenticado' });
+    }
+  }
+  
+  if (req.path === '/api/auth/logout' && req.method === 'POST') {
+    console.log('🚪 Interceptando logout');
+    req.session.destroy(() => {
+      return res.json({ message: 'Logout realizado com sucesso' });
+    });
+    return;
+  }
+  
+  next();
+});
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -126,13 +210,6 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Registrar rotas de autenticação simples PRIMEIRO para garantir que funcionam
-  app.post('/api/auth/login', express.json(), handleLogin);
-  app.get('/api/auth/me', handleMe);
-  app.post('/api/auth/logout', handleLogout);
-  
-  // Registrar outras rotas de autenticação
-  app.use('/api/auth', authRoutes);
   
   const server = await registerRoutes(app);
   
