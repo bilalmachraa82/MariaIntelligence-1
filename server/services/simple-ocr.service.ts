@@ -35,7 +35,63 @@ export class SimpleOCRService {
   }
 
   /**
-   * Processa um arquivo PDF e extrai dados de reservas
+   * Processa um arquivo (PDF ou imagem) e extrai dados de reservas
+   */
+  async processFile(filePath: string, mimeType: string): Promise<OCRResult> {
+    try {
+      console.log('🔍 Iniciando processamento OCR:', filePath, 'Tipo:', mimeType);
+
+      let extractedText = '';
+
+      // Determinar se é PDF ou imagem
+      if (mimeType === 'application/pdf') {
+        extractedText = await this.extractTextFromPDF(filePath);
+      } else if (mimeType.startsWith('image/')) {
+        extractedText = await this.extractTextFromImage(filePath);
+      } else {
+        throw new Error('Tipo de arquivo não suportado');
+      }
+      
+      if (!extractedText.trim()) {
+        return {
+          success: false,
+          type: 'unknown',
+          reservations: [],
+          error: 'Não foi possível extrair texto do arquivo'
+        };
+      }
+
+      console.log('📄 Texto extraído com sucesso, caracteres:', extractedText.length);
+
+      // 2. Classificar tipo de documento
+      const documentType = await this.classifyDocument(extractedText);
+      console.log('📋 Tipo de documento identificado:', documentType);
+
+      // 3. Extrair dados estruturados com Gemini
+      const reservations = await this.extractReservationData(extractedText, documentType);
+      
+      console.log('✅ OCR concluído, reservas encontradas:', reservations.length);
+
+      return {
+        success: true,
+        type: documentType,
+        reservations,
+        extractedText: extractedText.slice(0, 500) + '...' // Primeiro 500 caracteres para debug
+      };
+
+    } catch (error) {
+      console.error('❌ Erro no processamento OCR:', error);
+      return {
+        success: false,
+        type: 'unknown',
+        reservations: [],
+        error: error instanceof Error ? error.message : 'Erro desconhecido'
+      };
+    }
+  }
+
+  /**
+   * Processa um arquivo PDF e extrai dados de reservas (método legado)
    */
   async processPDF(filePath: string): Promise<OCRResult> {
     try {
@@ -89,6 +145,42 @@ export class SimpleOCRService {
     const dataBuffer = fs.readFileSync(filePath);
     const data = await pdf(dataBuffer);
     return data.text;
+  }
+
+  /**
+   * Extrai texto de uma imagem usando Gemini Vision
+   */
+  private async extractTextFromImage(filePath: string): Promise<string> {
+    try {
+      const model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      
+      // Converter imagem para base64
+      const imageBuffer = fs.readFileSync(filePath);
+      const base64Image = imageBuffer.toString('base64');
+      
+      const prompt = `
+        Analise esta imagem e extraia todo o texto visível. 
+        Se for uma captura de tela de reserva (Airbnb, Booking.com, WhatsApp, etc.), 
+        extraia todos os detalhes como nomes de hóspedes, datas, valores, propriedades.
+        Retorne apenas o texto extraído, sem comentários adicionais.
+      `;
+
+      const result = await model.generateContent([
+        prompt,
+        {
+          inlineData: {
+            data: base64Image,
+            mimeType: 'image/jpeg'
+          }
+        }
+      ]);
+
+      const response = await result.response;
+      return response.text();
+    } catch (error) {
+      console.error('Erro ao extrair texto da imagem:', error);
+      throw new Error('Falha na extração de texto da imagem');
+    }
   }
 
   /**

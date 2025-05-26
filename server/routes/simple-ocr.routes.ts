@@ -50,19 +50,19 @@ const ocrService = new SimpleOCRService();
  * POST /api/simple-ocr/process
  * Processa um PDF e extrai dados de reservas
  */
-router.post('/process', upload.single('pdf'), async (req, res) => {
+router.post('/process', upload.single('file'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({
         success: false,
-        error: 'Nenhum arquivo PDF fornecido'
+        error: 'Nenhum arquivo fornecido'
       });
     }
 
-    console.log('📄 Processando arquivo PDF:', req.file.filename);
+    console.log('📄 Processando arquivo:', req.file.filename, 'Tipo:', req.file.mimetype);
 
-    // Processar o PDF
-    const result = await ocrService.processPDF(req.file.path);
+    // Processar o arquivo (PDF ou imagem)
+    const result = await ocrService.processFile(req.file.path, req.file.mimetype);
 
     // Limpar arquivo temporário
     try {
