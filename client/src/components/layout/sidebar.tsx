@@ -73,6 +73,12 @@ export function Sidebar({ className }: SidebarProps) {
       description: "Controle suas reservas",
     },
     {
+      title: t("quotation.title", "Orçamentos"),
+      href: isPortuguese ? "/orcamentos" : "/quotations",
+      icon: Calculator,
+      description: "Gerencie orçamentos para serviços de limpeza",
+    },
+    {
       title: t("navigation.owners"),
       href: isPortuguese ? "/proprietarios" : "/owners",
       icon: UserCog,
