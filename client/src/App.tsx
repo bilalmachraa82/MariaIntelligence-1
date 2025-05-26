@@ -77,7 +77,7 @@ const initializeLightMode = () => {
 initializeLightMode();
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
-  const { data: user, isLoading, error } = useAuth();
+  const { data: authData, isLoading, error } = useAuth();
 
   if (isLoading) {
     return (
@@ -90,7 +90,7 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
     );
   }
 
-  if (error || !user) {
+  if (error || !authData?.user) {
     return <Login />;
   }
 

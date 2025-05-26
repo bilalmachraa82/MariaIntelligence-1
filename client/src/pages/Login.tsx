@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -8,60 +7,33 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, Shield } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { useLogin } from '@/hooks/useAuth';
 
 const loginSchema = z.object({
   email: z.string().email('Insira um email válido'),
-  password: z.string().min(6, 'Password deve ter pelo menos 6 caracteres'),
+  password: z.string().min(3, 'Password deve ter pelo menos 3 caracteres'),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function Login() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string>('');
-  const { toast } = useToast();
+  const loginMutation = useLogin();
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: '',
+      email: 'admin@mariafaz.pt',
       password: '',
     },
   });
 
-  const onSubmit = async (data: LoginFormData) => {
-    setIsLoading(true);
-    setError('');
-
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Erro ao fazer login');
+  const onSubmit = (data: LoginFormData) => {
+    loginMutation.mutate(data, {
+      onSuccess: () => {
+        // Redirecionar após login bem-sucedido
+        window.location.href = '/';
       }
-
-      // Sucesso - redirecionar para dashboard
-      toast({
-        title: "Login realizado com sucesso!",
-        description: "Bem-vinda ao Maria Faz",
-      });
-      
-      // Recarregar página para ativar sessão
-      window.location.href = '/';
-      
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro desconhecido');
-    } finally {
-      setIsLoading(false);
-    }
+    });
   };
 
   return (
@@ -90,7 +62,7 @@ export default function Login() {
                         type="email"
                         placeholder="admin@mariafaz.pt"
                         {...field}
-                        disabled={isLoading}
+                        disabled={loginMutation.isPending}
                       />
                     </FormControl>
                     <FormMessage />
@@ -107,9 +79,9 @@ export default function Login() {
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="••••••••"
+                        placeholder="mariafaz123"
                         {...field}
-                        disabled={isLoading}
+                        disabled={loginMutation.isPending}
                       />
                     </FormControl>
                     <FormMessage />
@@ -117,18 +89,20 @@ export default function Login() {
                 )}
               />
 
-              {error && (
+              {loginMutation.isError && (
                 <Alert variant="destructive">
-                  <AlertDescription>{error}</AlertDescription>
+                  <AlertDescription>
+                    {loginMutation.error?.message || 'Erro ao fazer login'}
+                  </AlertDescription>
                 </Alert>
               )}
 
               <Button
                 type="submit"
                 className="w-full"
-                disabled={isLoading}
+                disabled={loginMutation.isPending}
               >
-                {isLoading ? (
+                {loginMutation.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     A entrar...
@@ -142,7 +116,7 @@ export default function Login() {
 
           <div className="mt-6 text-center text-sm text-gray-600">
             <p>Sistema exclusivo para administradores</p>
-            <p className="text-purple-600 font-medium">Maria Faz v2.0</p>
+            <p className="text-purple-600 font-medium">Credenciais: admin@mariafaz.pt / mariafaz123</p>
           </div>
         </CardContent>
       </Card>

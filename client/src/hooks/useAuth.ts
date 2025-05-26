@@ -19,6 +19,13 @@ export function useAuth() {
     queryKey: ['/api/auth/me'],
     retry: false,
     staleTime: 1000 * 60 * 5, // 5 minutos
+    queryFn: async () => {
+      const response = await fetch('/api/auth/me');
+      if (!response.ok) {
+        throw new Error('Não autenticado');
+      }
+      return response.json();
+    }
   });
 }
 
