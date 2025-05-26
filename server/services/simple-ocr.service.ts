@@ -123,29 +123,67 @@ export class SimpleOCRService {
    * Extrai dados de reservas usando Gemini
    */
   private async extractReservationData(text: string, documentType: string): Promise<ExtractedReservation[]> {
-    const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = this.genAI.getGenerativeModel({ 
+      model: "gemini-1.5-flash",
+      generationConfig: {
+        temperature: 0.1,
+        topK: 40,
+        topP: 0.95,
+        maxOutputTokens: 8192,
+      }
+    });
 
     const prompt = this.buildExtractionPrompt(text, documentType);
     
     try {
+      console.log('🤖 Enviando prompt para Gemini...');
       const result = await model.generateContent(prompt);
       const response = await result.response;
       const extractedText = response.text();
 
-      console.log('🤖 Resposta do Gemini:', extractedText.slice(0, 200) + '...');
+      console.log('🤖 Resposta completa do Gemini:', extractedText);
 
-      // Parse da resposta JSON
-      const jsonMatch = extractedText.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) {
-        throw new Error('Gemini não retornou JSON válido');
+      // Tentar várias estratégias para extrair JSON válido
+      let parsedData;
+      
+      // Estratégia 1: Procurar por JSON entre ```json e ```
+      const jsonCodeBlockMatch = extractedText.match(/```json\s*([\s\S]*?)\s*```/);
+      if (jsonCodeBlockMatch) {
+        try {
+          parsedData = JSON.parse(jsonCodeBlockMatch[1]);
+        } catch (e) {
+          console.log('❌ Falha na estratégia 1 (code block)');
+        }
+      }
+      
+      // Estratégia 2: Procurar por JSON entre { e }
+      if (!parsedData) {
+        const jsonMatch = extractedText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          try {
+            parsedData = JSON.parse(jsonMatch[0]);
+          } catch (e) {
+            console.log('❌ Falha na estratégia 2 (regex match)');
+            // Tentar limpar JSON malformado
+            const cleanedJson = this.cleanMalformedJson(jsonMatch[0]);
+            try {
+              parsedData = JSON.parse(cleanedJson);
+            } catch (e2) {
+              console.log('❌ Falha na estratégia 2b (cleaned JSON)');
+            }
+          }
+        }
       }
 
-      const parsedData = JSON.parse(jsonMatch[0]);
+      if (!parsedData) {
+        throw new Error('Não foi possível extrair JSON válido da resposta do Gemini');
+      }
       
       if (!parsedData.reservations || !Array.isArray(parsedData.reservations)) {
-        throw new Error('Formato de resposta inválido do Gemini');
+        throw new Error('Formato de resposta inválido do Gemini - falta array de reservations');
       }
 
+      console.log(`✅ Gemini extraiu ${parsedData.reservations.length} reservas`);
       return this.validateAndCleanReservations(parsedData.reservations);
 
     } catch (error) {
@@ -155,49 +193,107 @@ export class SimpleOCRService {
   }
 
   /**
+   * Limpa JSON malformado comum do Gemini
+   */
+  private cleanMalformedJson(jsonStr: string): string {
+    // Remove comentários
+    let cleaned = jsonStr.replace(/\/\*[\s\S]*?\*\//g, '');
+    cleaned = cleaned.replace(/\/\/.*$/gm, '');
+    
+    // Corrige vírgulas trailing
+    cleaned = cleaned.replace(/,(\s*[}\]])/g, '$1');
+    
+    // Corrige aspas não fechadas
+    cleaned = cleaned.replace(/(['"])[^'"]*$/g, '$1');
+    
+    // Remove caracteres não printáveis
+    cleaned = cleaned.replace(/[\x00-\x1f\x7f-\x9f]/g, '');
+    
+    return cleaned;
+  }
+
+  /**
    * Constrói o prompt para o Gemini baseado no tipo de documento
    */
   private buildExtractionPrompt(text: string, documentType: string): string {
-    const basePrompt = `
+    if (documentType === 'control-file') {
+      return `
+Você é um especialista em extração de dados de documentos de reservas de alojamento.
+
+ANALISE ESTE ARQUIVO DE CONTROLE e extraia TODAS as reservas individuais.
+
+INSTRUÇÕES ESPECÍFICAS:
+- Este documento contém MÚLTIPLAS RESERVAS
+- Cada linha representa uma reserva diferente
+- Procure por referências, nomes de propriedades, hóspedes, datas e valores
+- Propriedades típicas: Aroeira I, Aroeira II, São João Batista, Sete Rios, Ajuda, etc.
+- Datas normalmente no formato DD-MM-YYYY ou DD/MM/YYYY
+- Valores em euros (€)
+
+REGRAS OBRIGATÓRIAS:
+1. Retorne APENAS JSON válido (sem texto extra)
+2. Datas no formato YYYY-MM-DD
+3. Valores como números (sem símbolos €)
+4. Use null se um campo estiver ausente
+5. NÃO invente dados - só extraia o que existe
+
+FORMATO EXATO:
+\`\`\`json
+{
+  "reservations": [
+    {
+      "guestName": "Nome completo do hóspede",
+      "propertyName": "Nome da propriedade",
+      "checkInDate": "YYYY-MM-DD",
+      "checkOutDate": "YYYY-MM-DD", 
+      "totalAmount": 0.00,
+      "guestCount": 1,
+      "email": null,
+      "phone": null,
+      "notes": "Referência ou observações"
+    }
+  ]
+}
+\`\`\`
+
+TEXTO DO DOCUMENTO:
+${text}
+
+EXTRAIA TODAS AS RESERVAS ENCONTRADAS:`;
+    }
+
+    // Prompt para documentos simples (check-in/check-out)
+    return `
 Você é um especialista em extração de dados de documentos de hospedagem.
-Analise o texto abaixo e extraia TODAS as reservas mencionadas.
+Analise este documento e extraia os dados da reserva.
 
-IMPORTANTE:
-- Retorne APENAS um JSON válido
+REGRAS:
+- Retorne APENAS JSON válido
 - Datas no formato YYYY-MM-DD
-- Valores monetários como números (sem símbolos)
-- Se não encontrar um campo, use null
+- Valores como números
+- Use null se não encontrar
 
-Formato de resposta:
+FORMATO:
+\`\`\`json
 {
   "reservations": [
     {
       "guestName": "Nome do hóspede",
-      "propertyName": "Nome da propriedade", 
+      "propertyName": "Nome da propriedade",
       "checkInDate": "YYYY-MM-DD",
       "checkOutDate": "YYYY-MM-DD",
-      "totalAmount": 150.00,
-      "guestCount": 2,
-      "email": "email@exemplo.com",
-      "phone": "+351123456789",
-      "notes": "Observações adicionais"
+      "totalAmount": 0.00,
+      "guestCount": 1,
+      "email": null,
+      "phone": null,
+      "notes": null
     }
   ]
 }
+\`\`\`
 
-TEXTO DO DOCUMENTO:
-${text}
-`;
-
-    if (documentType === 'control-file') {
-      return basePrompt + `
-      
-ATENÇÃO: Este é um arquivo de controle com MÚLTIPLAS RESERVAS.
-Procure por padrões repetitivos e extraia CADA reserva individual.
-Propriedades comuns: Aroeira I, Aroeira II, Ajuda, Sete Rios, etc.`;
-    }
-
-    return basePrompt;
+DOCUMENTO:
+${text}`;
   }
 
   /**
