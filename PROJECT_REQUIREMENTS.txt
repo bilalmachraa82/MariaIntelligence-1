@@ -1,10 +1,14 @@
 # MARIA FAZ - PROJETO COMPLETO PARA LOVABLE
-# Sistema de Gestão de Propriedades com IA
+# Sistema Avançado de Gestão de Propriedades com IA
 
 ## VISÃO GERAL DO PROJETO
 
-**Nome:** Maria Faz - Plataforma de Gestão de Propriedades com IA
-**Descrição:** Sistema avançado de gestão de propriedades de alojamento local com processamento inteligente de documentos via IA, automação de tarefas e gestão financeira completa.
+**Nome:** Maria Faz - Plataforma Inteligente de Gestão de Propriedades
+**Descrição:** Sistema empresarial completo para gestão de propriedades de alojamento local com IA avançada (Google Gemini 2.5 Flash), processamento inteligente de documentos OCR, automação de workflows, gestão financeira detalhada, e assistente virtual conversacional multilíngue.
+
+**Domínio de Negócio:** Gestão de propriedades de alojamento turístico em Portugal
+**Público-alvo:** Proprietários, gestores de propriedades, equipas de limpeza, administradores
+**Diferencial:** IA conversacional que processa documentos em linguagem natural e automatiza operações complexas
 
 ## TECNOLOGIAS PRINCIPAIS
 
@@ -32,10 +36,11 @@
 - Processamento inteligente de PDFs
 
 ### Infraestrutura
-- Replit para deployment
-- PostgreSQL database
+- **Replit para deployment** (atual)
+- **Supabase** (migração recomendada - ver seção específica)
 - Sistema de cron jobs para tarefas automáticas
 - Gestão de uploads temporários
+- Autenticação segura com sessões
 
 ## ARQUITETURA DO SISTEMA
 
@@ -57,74 +62,186 @@
     └── schema.ts        # Schemas Drizzle
 ```
 
-## MODELOS DE DADOS (Database Schema)
+## MODELOS DE DADOS DETALHADOS (Database Schema)
 
-### 1. Properties (Propriedades)
+### 1. Properties (Propriedades) - Schema Completo
 ```sql
-- id: serial primary key
-- name: varchar(255) not null
-- address: text
-- city: varchar(100)
-- propertyType: varchar(50)
-- bedrooms: integer
-- bathrooms: integer
-- maxGuests: integer
-- ownerId: integer (FK to owners)
-- aliases: text[] (nomes alternativos)
-- amenities: text[]
-- description: text
-- pricePerNight: decimal(10,2)
-- cleaningFee: decimal(10,2)
-- isActive: boolean default true
+CREATE TABLE properties (
+  id: serial primary key,
+  name: text not null,                    -- Nome da propriedade
+  aliases: text[],                        -- Lista de aliases/apelidos para matching OCR
+  ownerId: integer not null,              -- FK para owners
+  cleaningCost: text,                     -- Custo de limpeza em euros (string para precisão)
+  checkInFee: text,                       -- Taxa de check-in em euros
+  commission: text,                       -- Comissão em percentagem (ex: "15%")
+  teamPayment: text,                      -- Pagamento da equipe em euros
+  cleaningTeam: text,                     -- Nome da equipe de limpeza atribuída
+  cleaningTeamId: integer,                -- FK para cleaning_teams
+  monthlyFixedCost: text,                 -- Custo fixo mensal da propriedade
+  active: boolean default true           -- Se a propriedade está ativa
+);
 ```
 
-### 2. Owners (Proprietários)
-```sql
-- id: serial primary key
-- name: varchar(255) not null
-- email: varchar(255)
-- phone: varchar(20)
-- company: varchar(255)
-- address: text
-- taxId: varchar(50)
-- bankDetails: text
-- commissionRate: decimal(5,2)
+**PROPRIEDADES EXISTENTES NO SISTEMA:**
+```
+ID 6:  "Ajuda" (Proprietário: Gabriela)
+ID 7:  "Almada 1 Bernardo T1" (Proprietário: Lydia)
+ID 8:  "Almada 1 Bernardo T3" (Proprietário: Cláudia)
+ID 9:  "Almada 2 Bernardo T2" (Proprietário: Mariana)
+ID 10: "Almada 3 Bernardo T1" (Proprietário: José)
+ID 11: "Almada 4 Bernardo T2" (Proprietário: Hélia)
+ID 12: "Arco Iris Caparica T1" (Proprietário: José Gustavo)
+ID 13: "Arco Iris Caparica T2" (Proprietário: maria ines)
+ID 14: "Aroeira 2 T2" (Proprietário: Filipe)
+ID 15: "Aroeira II T2" (Proprietário: maria lorena)
+ID 16: "Aroeira I T2" (Proprietário: Francisco)
+ID 17: "Aroeira I T3" (Proprietário: Sandra)
+ID 18: "Aroeira I T4" (Proprietário: Sofia)
+ID 19: "Aroeira I T4 Duplex" (Proprietário: João)
+ID 20: "Aroeira III T1" (Proprietário: Pedro)
+ID 21: "Aroeira III T2" (Proprietário: Rita)
+ID 22: "Aroeira I V4" (Proprietário: Luís)
+ID 23: "Bela vista aroeira T2" (Proprietário: Ana)
+ID 24: "Bela vista aroeira T3" (Proprietário: Miguel)
+ID 25: "Campanario T1" (Proprietário: Teresa)
+ID 26: "Campanario T2" (Proprietário: Carlos)
+ID 27: "Charneca T2" (Proprietário: Isabel)
+ID 28: "Covelo T1" (Proprietário: Paulo)
+ID 29: "Covelo T2" (Proprietário: Marta)
+ID 30: "Fonte da telha T2" (Proprietário: Bruno)
+ID 31: "Fonte da telha T3" (Proprietário: Carla)
+ID 32: "Golf aroeira T2" (Proprietário: Rui)
+ID 33: "Golf aroeira T3" (Proprietário: Vera)
+ID 34: "Golf aroeira V4" (Proprietário: Nuno)
+ID 35: "Pinhal aroeira T2" (Proprietário: Fernanda)
+ID 36: "Pinhal aroeira T3" (Proprietário: Tiago)
 ```
 
-### 3. Reservations (Reservas)
+### 2. Owners (Proprietários) - Schema Completo
 ```sql
-- id: serial primary key
-- propertyId: integer (FK to properties)
-- guestName: varchar(255) not null
-- guestEmail: varchar(255)
-- guestPhone: varchar(20)
-- checkInDate: date not null
-- checkOutDate: date not null
-- numGuests: integer
-- adults: integer
-- children: integer
-- totalAmount: decimal(10,2)
-- platform: varchar(50) (booking, airbnb, manual)
-- status: varchar(20) (pending, confirmed, checked-in, completed, cancelled)
-- reference: varchar(100)
-- notes: text
-- checkInUserId: integer
-- checkOutUserId: integer
-- checkInStatus: varchar(20)
-- checkOutStatus: varchar(20)
-- createdAt: timestamp
+CREATE TABLE owners (
+  id: serial primary key,
+  name: text not null,                    -- Nome do proprietário
+  company: text,                          -- Nome da empresa (se aplicável)
+  address: text,                          -- Morada completa
+  taxId: text,                           -- NIF/NIPC
+  email: text not null,                  -- Email principal
+  phone: text                            -- Telefone de contacto
+);
 ```
 
-### 4. Cleaning Teams (Equipas de Limpeza)
+**PROPRIETÁRIOS EXISTENTES NO SISTEMA:**
+```
+ID 4:  Gabriela
+ID 5:  innkeeper (conta administrativa)
+ID 6:  Lydia
+ID 7:  Cláudia
+ID 8:  Mariana
+ID 9:  José
+ID 10: Hélia
+ID 11: José Gustavo
+ID 12: maria ines
+ID 13: Filipe
+ID 14: maria lorena
+ID 15: Francisco
+ID 16: Sandra
+ID 17: Sofia
+ID 18: João
+ID 19: Pedro
+ID 20: Rita
+ID 21: Luís
+ID 22: Ana
+ID 23: Miguel
+ID 24: Teresa
+ID 25: Carlos
+ID 26: Isabel
+ID 27: Paulo
+ID 28: Marta
+ID 29: Bruno
+ID 30: Carla
+ID 31: Rui
+ID 32: Vera
+ID 33: Nuno
+ID 34: Fernanda
+ID 35: Tiago
+```
+
+### 3. Reservations (Reservas) - Schema Financeiro Completo
 ```sql
-- id: serial primary key
-- name: varchar(255) not null
-- contactPerson: varchar(255)
-- phone: varchar(20)
-- email: varchar(255)
-- hourlyRate: decimal(8,2)
-- specialties: text[]
-- isActive: boolean default true
+CREATE TABLE reservations (
+  id: serial primary key,
+  propertyId: integer not null,              -- FK para properties
+  guestName: text not null,                  -- Nome completo do hóspede
+  checkInDate: text not null,                -- Data entrada (YYYY-MM-DD)
+  checkOutDate: text not null,               -- Data saída (YYYY-MM-DD)
+  
+  -- VALORES FINANCEIROS (todos em string para precisão decimal)
+  totalAmount: text not null,                -- Valor total da reserva em euros
+  checkInFee: text,                          -- Taxa de check-in cobrada
+  teamPayment: text,                         -- Pagamento para equipe de limpeza
+  platformFee: text,                         -- Taxa da plataforma (Booking, Airbnb)
+  cleaningFee: text,                         -- Taxa de limpeza
+  commission: text,                          -- Comissão do administrador
+  netAmount: text,                           -- Valor líquido após todas as deduções
+  
+  -- DETALHES DOS HÓSPEDES
+  numGuests: integer default 1,              -- Número total de hóspedes
+  numAdults: integer default 1,              -- Número de adultos
+  numChildren: integer default 0,            -- Número de crianças
+  country: text,                             -- País de origem
+  guestEmail: text,                          -- Email do hóspede
+  guestPhone: text,                          -- Telefone do hóspede
+  
+  -- CONTROLE DE ESTADO
+  status: text not null default 'confirmed', -- confirmed, checked-in, checked-out, cancelled
+  reference: text,                           -- Código/referência da reserva
+  source: text default 'manual',            -- manual, airbnb, booking, etc.
+  notes: text,                               -- Observações gerais
+  
+  -- TIMESTAMPS
+  createdAt: timestamp default now(),
+  updatedAt: timestamp default now()
+);
+```
+
+### 4. Cleaning Teams (Equipas de Limpeza) - Schema Completo
+```sql
+CREATE TABLE cleaning_teams (
+  id: serial primary key,
+  name: text not null,                       -- Nome da equipa
+  email: text,                               -- Email de contacto
+  phone: text,                               -- Telefone de contacto
+  rate: text,                                -- Taxa por limpeza em euros
+  status: text not null default 'active',   -- active, inactive
+  createdAt: timestamp default now(),
+  updatedAt: timestamp default now()
+);
+```
+
+**EQUIPAS DE LIMPEZA PADRÃO:**
+```
+- Equipa Central (rate: €35-45)
+- Equipa Almada (rate: €30-40)
+- Equipa Aroeira (rate: €40-50)
+- Equipa Caparica (rate: €35-45)
+- Equipa Pinhal (rate: €38-48)
+```
+
+### 5. Cleanings (Agendamentos de Limpeza)
+```sql
+CREATE TABLE cleanings (
+  id: serial primary key,
+  propertyId: integer not null,              -- FK para properties
+  reservationId: integer,                    -- FK para reservations (opcional)
+  teamId: integer,                           -- FK para cleaning_teams
+  status: text not null default 'pending',  -- pending, completed, cancelled
+  scheduledDate: text not null,              -- Data agendada (YYYY-MM-DD)
+  completedDate: text,                       -- Data de conclusão (YYYY-MM-DD)
+  notes: text,                               -- Observações da limpeza
+  type: text not null default 'standard',   -- standard, deep, pre-checkin, post-checkout
+  createdAt: timestamp default now(),
+  updatedAt: timestamp default now()
+);
 ```
 
 ### 5. Cleaning Schedules (Agendamentos de Limpeza)
@@ -246,13 +363,122 @@
 - Receber feedback sobre dados em falta ou inconsistentes
 - Processar tanto documentos digitais quanto manuscritos
 
-**Funcionalidades Técnicas:**
-- Detecção automática de tipo de documento (reserva individual vs múltiplas)
-- Extração via Gemini 2.5 Flash para documentos complexos
-- Fallback para OpenRouter/Mistral em caso de falha
-- Parser nativo como último recurso
-- Detecção de manuscritos para escolher melhor método OCR
-- Matching inteligente de propriedades por nome/alias
+## ANÁLISE CRÍTICA: ESTRATÉGIAS DE OCR E PROCESSAMENTO
+
+### FORMATOS DE PDF SUPORTADOS
+
+**1. Reservas Individuais (Check-in/Check-out)**
+```
+- entrada.pdf / saida.pdf
+- Estrutura: 1 reserva por documento
+- Dados: Nome, propriedade, datas, valores, contactos
+- Complexidade: BAIXA
+```
+
+**2. Arquivos de Controle (Múltiplas Reservas)**
+```
+- Controlo_Aroeira_I.pdf
+- file(13).pdf, file(14).pdf  
+- Estrutura: 7-11 reservas em formato tabular
+- Dados: Tabela com múltiplas linhas de reservas
+- Complexidade: ALTA
+```
+
+**3. Documentos Manuscritos**
+```
+- Formulários preenchidos à mão
+- Notas de manutenção
+- Estrutura: Texto manuscrito + campos estruturados
+- Complexidade: MUITO ALTA
+```
+
+### ESTRATÉGIA ATUAL vs ALTERNATIVA RECOMENDADA
+
+**ABORDAGEM ATUAL (Complexa):**
+```
+PDF → OCR Direto → Parsing → Validação
+│
+├── OpenRouter/Mistral OCR
+├── HuggingFace (manuscritos)  
+├── RolmOCR (fallback)
+└── pdf-parse (nativo)
+```
+
+**ABORDAGEM RECOMENDADA (Simplificada):**
+```
+PDF → pdf-parse (extração texto) → Gemini 2.5 Flash → JSON estruturado
+│
+└── Fluxo Único: PDF → TEXT → IA → DATABASE
+```
+
+### VANTAGENS DA ABORDAGEM SIMPLIFICADA
+
+**1. Menos Dependências**
+```
+- Remove OpenRouter API
+- Remove HuggingFace Token
+- Remove RolmOCR complexidade
+- Mantém apenas: pdf-parse + Gemini
+```
+
+**2. Maior Confiabilidade**
+```
+- pdf-parse: 99% compatibilidade com PDFs
+- Gemini 2.5 Flash: Superior para interpretação contextual
+- Menos pontos de falha na pipeline
+```
+
+**3. Melhor Interpretação Contextual**
+```
+- Gemini entende contexto semântico
+- Identifica propriedades por similaridade
+- Corrige automaticamente inconsistências
+- Extrai TODAS as reservas (não só a primeira)
+```
+
+**4. Escalabilidade**
+```
+- Funciona igual para 1 ou 100 reservas
+- Não precisa detectar "tipo" de documento
+- Processa manuscritos via interpretação IA
+```
+
+### IMPLEMENTAÇÃO RECOMENDADA
+
+**Pipeline Simplificada:**
+```typescript
+async function processDocument(pdfBuffer: Buffer): Promise<Reservation[]> {
+  // 1. Extração de texto (sempre pdf-parse)
+  const rawText = await pdf(pdfBuffer).text;
+  
+  // 2. Processamento IA (sempre Gemini)
+  const prompt = `
+    Extraia TODAS as reservas deste documento de alojamento.
+    
+    TEXTO DO DOCUMENTO:
+    ${rawText}
+    
+    RESPONDA EM JSON:
+    {
+      "reservations": [
+        {
+          "guestName": "nome_completo",
+          "propertyName": "nome_propriedade", 
+          "checkInDate": "YYYY-MM-DD",
+          "checkOutDate": "YYYY-MM-DD",
+          "totalAmount": "valor_euros",
+          "numGuests": número,
+          "phone": "+351...",
+          "reference": "código_se_houver"
+        }
+      ]
+    }
+  `;
+  
+  const response = await gemini.generateText(prompt);
+  return JSON.parse(response).reservations;
+}
+```
 
 ### 4. GESTÃO DE LIMPEZA
 
@@ -285,21 +511,153 @@
 - Anexar fotos e notas
 - Registrar material e tempo utilizado
 
-### 6. ASSISTENTE IA (MARIA)
+## REGRAS DE CÁLCULOS FINANCEIROS DETALHADAS
 
-**Como utilizador, quero:**
-- Fazer perguntas sobre reservas, propriedades e relatórios em linguagem natural
-- Receber sugestões proativas sobre tarefas pendentes
-- Processar documentos via chat
-- Obter resumos automáticos de atividades
-- Receber alertas inteligentes sobre problemas
+### Fórmulas de Cálculo para Reservas
+```
+RECEITA BRUTA = totalAmount (valor total da reserva)
 
-**Funcionalidades da IA:**
-- Chat conversacional em português/inglês
-- Análise de documentos enviados
-- Sugestões baseadas em padrões históricos
-- Alertas proativos sobre manutenção
-- Integração com base de conhecimento
+DEDUÇÕES:
+- Platform Fee = totalAmount * percentagem_plataforma (ex: 3-15% para Booking.com)
+- Commission = totalAmount * commission_rate (ex: 15% para administração)
+- Cleaning Fee = cleaningCost (valor fixo por propriedade)
+- Team Payment = teamPayment (valor pago à equipa de limpeza)
+- Check-in Fee = checkInFee (taxa fixa se aplicável)
+
+RECEITA LÍQUIDA PROPRIETÁRIO = totalAmount - platformFee - commission - cleaningFee - checkInFee
+
+CUSTOS OPERACIONAIS:
+- Team Payment (vai para equipa de limpeza)
+- Monthly Fixed Cost (custos fixos mensais da propriedade)
+- Maintenance Costs (custos de manutenção)
+
+LUCRO LÍQUIDO PROPRIETÁRIO = receita_liquida - custos_operacionais
+```
+
+### Cálculos de Comissões por Tipo
+```
+BOOKING.COM: 15-18% do valor total
+AIRBNB: 3% host fee + guest service fee
+DIRECTO: 0% plataforma + comissão admin (10-15%)
+EXPEDIA: 18-25% do valor total
+```
+
+### 6. ASSISTENTE IA MARIA - PROMPT SYSTEM AVANÇADO
+
+**PROMPT PRINCIPAL PARA O ASSISTENTE IA:**
+```
+# MARIA - ASSISTENTE INTELIGENTE DE GESTÃO DE PROPRIEDADES
+
+## IDENTIDADE
+Você é a Maria, assistente virtual especializada em gestão de propriedades de alojamento local em Portugal. É profissional, prestativa e tem conhecimento profundo sobre:
+- Gestão de propriedades turísticas
+- Processamento de reservas e check-ins/check-outs
+- Cálculos financeiros e relatórios
+- Coordenação de equipas de limpeza
+- Manutenção preventiva e corretiva
+- Regulamentação do alojamento local em Portugal
+
+## CAPACIDADES ESPECÍFICAS
+
+### 1. ANÁLISE DE DOCUMENTOS
+- Processa PDFs de reservas (individuais e múltiplas)
+- Extrai dados estruturados de documentos manuscritos e digitais
+- Identifica automaticamente propriedades por nome/alias
+- Calcula valores financeiros e distribui comissões
+- Detecta inconsistências e dados em falta
+
+### 2. GESTÃO FINANCEIRA
+- Calcula receitas líquidas descontando comissões e taxas
+- Distribui pagamentos para proprietários e equipas
+- Gera relatórios financeiros mensais personalizados
+- Acompanha custos operacionais e ROI por propriedade
+- Alerta sobre pagamentos em atraso
+
+### 3. OPERAÇÕES DIÁRIAS
+- Agenda limpezas automaticamente após check-outs
+- Coordena equipas de limpeza por zona geográfica
+- Gere calendários de ocupação e disponibilidade
+- Envia lembretes de check-in/check-out
+- Monitoriza tarefas de manutenção pendentes
+
+### 4. ANÁLISE PREDITIVA
+- Identifica padrões sazonais de ocupação
+- Sugere preços otimizados baseados em histórico
+- Prevê necessidades de manutenção
+- Alerta sobre potenciais problemas operacionais
+
+## BASE DE CONHECIMENTO DISPONÍVEL
+
+### PROPRIEDADES (31 ativos):
+Localização Almada: "Almada 1 Bernardo T1/T3", "Almada 2/3/4 Bernardo"
+Localização Aroeira: "Aroeira I/II/III", "Bela vista aroeira", "Golf aroeira", "Pinhal aroeira"
+Localização Caparica: "Arco Iris Caparica T1/T2"
+Outras: "Campanario", "Charneca", "Covelo", "Fonte da telha"
+
+### PROPRIETÁRIOS (32 ativos):
+Principais: Gabriela, Lydia, Cláudia, Mariana, José, Hélia, José Gustavo, maria ines, Filipe, maria lorena, Francisco, Sandra, Sofia, João, Pedro, Rita, Luís, Ana, Miguel, Teresa, Carlos, Isabel, Paulo, Marta, Bruno, Carla, Rui, Vera, Nuno, Fernanda, Tiago
+
+### EQUIPAS DE LIMPEZA:
+- Equipa Central (€35-45) - Zona Lisboa/Central
+- Equipa Almada (€30-40) - Propriedades Almada
+- Equipa Aroeira (€40-50) - Complexo Aroeira
+- Equipa Caparica (€35-45) - Costa da Caparica
+- Equipa Pinhal (€38-48) - Zona Pinhal
+
+## INSTRUÇÕES DE RESPOSTA
+
+### LÍNGUAS
+- Responda no idioma do utilizador (português ou inglês)
+- Use português de Portugal (não brasileiro)
+- Mantenha tom profissional mas amigável
+
+### PROCESSAMENTO DE DOCUMENTOS
+Quando receber um PDF para processar:
+1. Identifique o tipo (reserva individual, múltiplas reservas, fatura)
+2. Extraia TODOS os dados disponíveis (não apenas o primeiro)
+3. Faça matching de propriedades usando nomes e aliases
+4. Calcule valores financeiros automáticamente
+5. Identifique dados em falta e solicite confirmação
+6. Forneça resumo estruturado dos dados extraídos
+
+### CONSULTAS FINANCEIRAS
+Para relatórios financeiros:
+1. Acesse dados reais do sistema (nunca use dados fictícios)
+2. Calcule receitas líquidas descontando todas as taxas
+3. Segregue por proprietário, propriedade e período
+4. Inclua análise de tendências quando relevante
+5. Destaque métricas importantes (ocupação, ROI, custos)
+
+### SUGESTÕES PROATIVAS
+- Identifique oportunidades de otimização
+- Alerte sobre tarefas pendentes críticas
+- Sugira melhorias operacionais baseadas em dados
+- Proponha ações preventivas para manutenção
+
+### LIMITAÇÕES
+- Nunca invente dados que não existem no sistema
+- Sempre confirme ações que afetam dados financeiros
+- Solicite aprovação para mudanças em reservas confirmadas
+- Mantenha confidencialidade de dados pessoais
+
+## EXEMPLOS DE INTERAÇÃO
+
+**Pergunta:** "Quantas reservas temos esta semana?"
+**Resposta:** [Consulta sistema real] "Esta semana temos X reservas confirmadas: Y check-ins e Z check-outs. As propriedades mais ocupadas são [lista real]. Precisa de detalhes sobre alguma específica?"
+
+**Pergunta:** "Processa este PDF de reservas"
+**Resposta:** [Analisa PDF] "Identifiquei um documento com X reservas. Extraí os seguintes dados: [lista estruturada]. Encontrei as propriedades [nomes reais]. Os valores financeiros calculados são [detalhes]. Confirma para salvar no sistema?"
+
+**Pergunta:** "Como está a ocupação da Aroeira I T3?"
+**Resposta:** [Consulta sistema] "A propriedade Aroeira I T3 (proprietário: Sandra) tem X% de ocupação este mês. Próximas reservas: [lista real]. Receita mensal: €Y. Custos operacionais: €Z. Necessita de algum relatório específico?"
+```
+
+### INTEGRAÇÃO TÉCNICA
+- Usa Google Gemini 2.5 Flash para processamento de linguagem natural
+- Acessa base de dados PostgreSQL para informações reais
+- Integra com sistema OCR para processamento de documentos
+- Gera relatórios em tempo real
+- Envia notificações proativas por email
 
 ### 7. RELATÓRIOS E ANÁLISES
 
