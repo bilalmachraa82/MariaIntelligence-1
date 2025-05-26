@@ -33,8 +33,9 @@ export default function SimpleOCR() {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(event.target.files || []);
-    const pdfFiles = selectedFiles.filter(file => file.type === 'application/pdf');
-    setFiles(pdfFiles);
+    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+    const validFiles = selectedFiles.filter(file => allowedTypes.includes(file.type));
+    setFiles(validFiles);
     setResults([]);
   };
 
@@ -123,7 +124,7 @@ export default function SimpleOCR() {
       <div>
         <h1 className="text-3xl font-bold text-gray-900">OCR Inteligente</h1>
         <p className="text-gray-600 mt-2">
-          Processe PDFs de reservas e extraia dados automaticamente usando IA
+          Processe PDFs ou imagens (JPG, PNG, WebP) de reservas e extraia dados automaticamente usando IA
         </p>
       </div>
 
@@ -132,17 +133,17 @@ export default function SimpleOCR() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Upload className="h-5 w-5" />
-            Upload de PDF
+            Upload de Documentos
           </CardTitle>
           <CardDescription>
-            Suporte para PDFs de check-in, check-out e arquivos de controle com múltiplas reservas
+            Suporte para PDFs e imagens (JPG, PNG, WebP) de check-in, check-out e arquivos de controle com múltiplas reservas
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
             <Input
               type="file"
-              accept=".pdf"
+              accept=".pdf,.jpg,.jpeg,.png,.webp"
               multiple
               onChange={handleFileChange}
               className="cursor-pointer"
