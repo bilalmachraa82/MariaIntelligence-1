@@ -27,43 +27,65 @@ interface OCRResult {
 }
 
 export default function SimpleOCR() {
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [result, setResult] = useState<OCRResult | null>(null);
+  const [results, setResults] = useState<OCRResult[]>([]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = event.target.files?.[0];
-    if (selectedFile && selectedFile.type === 'application/pdf') {
-      setFile(selectedFile);
-      setResult(null);
-    }
+    const selectedFiles = Array.from(event.target.files || []);
+    const pdfFiles = selectedFiles.filter(file => file.type === 'application/pdf');
+    setFiles(pdfFiles);
+    setResults([]);
   };
 
   const handleUpload = async () => {
-    if (!file) return;
+    if (files.length === 0) return;
 
     setIsProcessing(true);
-    setResult(null);
+    setResults([]);
 
     try {
-      const formData = new FormData();
-      formData.append('pdf', file);
+      const allResults: OCRResult[] = [];
 
-      const response = await fetch('/api/simple-ocr/process', {
-        method: 'POST',
-        body: formData,
-      });
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        console.log(`📄 Processando arquivo ${i + 1}/${files.length}: ${file.name}`);
 
-      const data: OCRResult = await response.json();
-      setResult(data);
+        const formData = new FormData();
+        formData.append('pdf', file);
+
+        try {
+          const response = await fetch('/api/simple-ocr/process', {
+            method: 'POST',
+            body: formData,
+          });
+
+          const data: OCRResult = await response.json();
+          allResults.push({
+            ...data,
+            fileName: file.name // Adicionar nome do arquivo para identificação
+          } as OCRResult & { fileName: string });
+
+        } catch (error) {
+          allResults.push({
+            success: false,
+            type: 'unknown',
+            reservations: [],
+            error: `Erro ao processar ${file.name}: ` + (error instanceof Error ? error.message : 'Erro desconhecido'),
+            fileName: file.name
+          } as OCRResult & { fileName: string });
+        }
+      }
+
+      setResults(allResults);
 
     } catch (error) {
-      setResult({
+      setResults([{
         success: false,
         type: 'unknown',
         reservations: [],
-        error: 'Erro ao processar arquivo: ' + (error instanceof Error ? error.message : 'Erro desconhecido')
-      });
+        error: 'Erro geral no processamento: ' + (error instanceof Error ? error.message : 'Erro desconhecido')
+      }]);
     } finally {
       setIsProcessing(false);
     }
@@ -121,30 +143,36 @@ export default function SimpleOCR() {
             <Input
               type="file"
               accept=".pdf"
+              multiple
               onChange={handleFileChange}
               className="cursor-pointer"
             />
-            {file && (
-              <p className="text-sm text-gray-600 mt-2">
-                Arquivo selecionado: {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
-              </p>
+            {files.length > 0 && (
+              <div className="text-sm text-gray-600 mt-2">
+                <p className="font-medium">{files.length} arquivo(s) selecionado(s):</p>
+                {files.map((file, index) => (
+                  <p key={index} className="ml-2">
+                    • {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
+                  </p>
+                ))}
+              </div>
             )}
           </div>
 
           <Button
             onClick={handleUpload}
-            disabled={!file || isProcessing}
+            disabled={files.length === 0 || isProcessing}
             className="w-full"
           >
             {isProcessing ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Processando PDF...
+                Processando {files.length} PDF(s)...
               </>
             ) : (
               <>
                 <FileText className="mr-2 h-4 w-4" />
-                Processar PDF
+                Processar {files.length} PDF(s)
               </>
             )}
           </Button>
