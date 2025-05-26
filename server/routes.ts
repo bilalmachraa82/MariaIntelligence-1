@@ -27,9 +27,8 @@ import { registerSpeechRoutes } from "./api/speech-routes";
 import uploadControlFileRouter from "./api/upload-control-file";
 import reservationAssistantRouter from "./api/reservation-assistant";
 import { generateDemoData, resetDemoDataHandler } from "./api/demo-data";
-// Importar o novo controlador OCR e middleware de upload configurável
-import * as ocrController from "./controllers/ocr.controller";
-import { processMultipleReservations } from "./controllers/ocr-fixed.controller";
+// Middleware de upload configurável
+// import { processMultipleReservations } from "./controllers/ocr-fixed.controller";
 import * as budgetController from "./controllers/budget.controller";
 import { pdfUpload as configuredPdfUpload, imageUpload as configuredImageUpload, anyFileUpload as configuredAnyFileUpload } from "./middleware/upload";
 import { 
@@ -1242,16 +1241,105 @@ export async function registerRoutes(app: Express): Promise<Server> {
    * Usa prioridade: Mistral OCR (OpenRouter) -> RolmOCR -> Gemini
    * Detecta automaticamente conteúdo manuscrito e otimiza o processamento
    */
-  // Rota temporária para testar o controlador corrigido
-  app.post("/api/ocr-fixed", configuredPdfUpload.single('pdf'), processMultipleReservations);
-  
-  app.post("/api/ocr", configuredPdfUpload.single('pdf'), processMultipleReservations);
+  // Rota OCR corrigida para extrair todas as reservas
+  app.post("/api/ocr", configuredPdfUpload.single('pdf'), async (req: Request, res: Response) => {
+    console.log('🎯 CONTROLADOR CORRIGIDO - Extração de múltiplas reservas');
+    
+    try {
+      if (!req.file) {
+        return res.status(400).json({ success: false, message: 'Nenhum arquivo enviado' });
+      }
+
+      // Importar o parser JSON robusto
+      const { fixMalformedJson } = await import('./utils/json-parser');
+      
+      // Extrair texto com pdf-parse
+      const pdfBuffer = req.file.buffer;
+      const pdf = await import('pdf-parse');
+      const data = await pdf.default(pdfBuffer);
+      const extractedText = data.text;
+      
+      console.log(`📄 Texto extraído: ${extractedText.length} caracteres`);
+      
+      // Prompt especializado para múltiplas reservas
+      const prompt = `Analyze this accommodation control document and extract ALL reservations. This is a table with multiple reservations (typically 8-12). Extract every single reservation row.
+
+IMPORTANT RULES:
+- IGNORE filter fields like "Alojamento: Todos", "Proprietário: Todos", "Telefone", etc.
+- Extract ONLY actual guest names and property names from the reservation table
+- Look for the actual table with columns: Referência, Alojamento, Estado, Check-in, Check-out, Adultos, Crianças
+- Property names are like "São João Batista T3", "Aroeira I", "Almada 1Bernardo T3"
+- Guest names are real person names, NOT "Telefone" or "Todos"
+
+Document text:
+${extractedText}
+
+Return JSON with ALL reservations found:
+{
+  "reservations": [
+    {
+      "reference": "string",
+      "propertyName": "string", 
+      "guestName": "string",
+      "checkInDate": "YYYY-MM-DD",
+      "checkOutDate": "YYYY-MM-DD",
+      "numAdults": number,
+      "numChildren": number,
+      "status": "string"
+    }
+  ]
+}`;
+
+      // Chamar Gemini diretamente
+      const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${process.env.GEMINI_API_KEY}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.1, maxOutputTokens: 8192 }
+        })
+      });
+
+      if (!geminiResponse.ok) {
+        throw new Error(`Gemini API error: ${geminiResponse.status}`);
+      }
+
+      const geminiData = await geminiResponse.json();
+      const responseText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      
+      console.log(`🤖 Resposta Gemini recebida: ${responseText.substring(0, 200)}...`);
+      
+      // Usar parser JSON robusto
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        throw new Error('Nenhum JSON encontrado na resposta');
+      }
+      
+      const parsedData = fixMalformedJson(jsonMatch[0]);
+      const reservations = parsedData.reservations || [];
+      
+      console.log(`✅ ${reservations.length} reservas extraídas com sucesso`);
+      
+      res.json({
+        success: true,
+        provider: 'gemini',
+        reservations: reservations,
+        extractedText: extractedText.substring(0, 1000) + '...'
+      });
+
+    } catch (error) {
+      console.error('❌ Erro no processamento OCR:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erro no processamento OCR',
+        error: error.message
+      });
+    }
+  });
   
   /**
-   * Endpoints adicionais para processamento OCR (legado/auxiliar)
+   * Endpoints adicionais para processamento OCR removidos (controlador antigo)
    */
-  app.post("/api/ocr/process", anyFileUpload.single('file'), ocrController.processOCR);
-  app.post("/api/ocr/process/:service", anyFileUpload.single('file'), ocrController.processWithService);
   
   /**
    * Endpoint para estimativa de orçamento
