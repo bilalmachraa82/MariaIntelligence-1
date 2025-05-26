@@ -1260,14 +1260,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log('🔍 Tentando Google AI Vision...');
           const base64Pdf = req.file.buffer.toString('base64');
           
-          const analysisPrompt = `Analyze this accommodation control PDF document and extract ALL reservations from the main table.
+          const analysisPrompt = `Analyze this accommodation control PDF document and extract ALL reservations with COMPLETE information.
 
 CRITICAL INSTRUCTIONS:
 1. IGNORE filter fields like "Alojamento: Todos", "Proprietário: Todos", "Telefone", etc. - these are NOT guest data
-2. Find the main reservation table with columns: Referência, Alojamento, Estado, Check-in, Check-out, Adultos, Crianças
+2. Find the main reservation table and extract ALL columns: Referência, Alojamento, Estado, Check-in, Check-out, Adultos, Crianças, Valor Total, Observações
 3. Extract EVERY row from this table (typically 8-12 reservations)
 4. Property names are real like: "Almada 1Bernardo T3", "Boavista 1Tania T2", "São João Batista T3"
 5. Guest names are real people names, NOT "Telefone" or filter text
+6. Look for financial values (total price, daily rate, commission)
+7. Extract guest counts (adults, children) from the table
+8. Include any observations or special notes
 
 Return this exact JSON format:
 {
@@ -1280,7 +1283,12 @@ Return this exact JSON format:
       "checkOutDate": "YYYY-MM-DD",
       "adults": number,
       "children": number,
-      "status": "confirmed"
+      "totalPrice": "price in euros",
+      "dailyRate": "daily rate if available",
+      "commission": "commission if available",
+      "observations": "any notes or comments",
+      "status": "confirmed",
+      "source": "booking platform if mentioned"
     }
   ]
 }`;
