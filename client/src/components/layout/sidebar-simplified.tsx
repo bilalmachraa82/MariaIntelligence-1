@@ -92,7 +92,7 @@ export function SidebarSimplified({ collapsed, onToggleCollapse, isMobile = fals
   const toolsNavItems: NavItem[] = [
     {
       name: "Scanner",
-      href: "/pdf-upload",
+      href: "/simple-ocr",
       icon: FileUp,
       iconColor: "text-rose-500"
     },

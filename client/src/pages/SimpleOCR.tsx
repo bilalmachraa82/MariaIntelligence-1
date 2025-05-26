@@ -110,6 +110,66 @@ export default function SimpleOCR() {
     }
   };
 
+  const handleSaveReservations = async (reservations: ExtractedReservation[]) => {
+    setIsProcessing(true);
+    
+    try {
+      for (const reservation of reservations) {
+        // Primeiro, vamos buscar o ID da propriedade baseado no nome
+        let propertyId = null;
+        
+        if (reservation.propertyName) {
+          const propertiesResponse = await fetch('/api/properties');
+          const properties = await propertiesResponse.json();
+          
+          const matchedProperty = properties.find((p: any) => 
+            p.name.toLowerCase().includes(reservation.propertyName.toLowerCase()) ||
+            reservation.propertyName.toLowerCase().includes(p.name.toLowerCase())
+          );
+          
+          if (matchedProperty) {
+            propertyId = matchedProperty.id;
+          }
+        }
+
+        // Criar a reserva na base de dados
+        const reservationData = {
+          propertyId: propertyId || 1, // Usar propriedade padrão se não encontrar match
+          guestName: reservation.guestName,
+          guestEmail: reservation.email || null,
+          guestPhone: reservation.phone || null,
+          checkInDate: reservation.checkInDate,
+          checkOutDate: reservation.checkOutDate,
+          guestCount: reservation.guestCount,
+          totalAmount: reservation.totalAmount.toString(),
+          source: 'direct' as const,
+          status: 'confirmed' as const,
+          notes: reservation.notes || null
+        };
+
+        const response = await fetch('/api/reservations', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(reservationData),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Erro ao guardar reserva: ${response.statusText}`);
+        }
+      }
+
+      alert(`Sucesso! ${reservations.length} reserva(s) guardada(s) com sucesso na base de dados.`);
+
+    } catch (error) {
+      console.error('Erro ao guardar reservas:', error);
+      alert('Erro ao guardar as reservas na base de dados.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   const formatDate = (dateStr: string) => {
     try {
       const date = new Date(dateStr);
@@ -216,6 +276,16 @@ export default function SimpleOCR() {
                       </Alert>
                     ) : (
                       <div className="space-y-4">
+                        <div className="flex justify-end">
+                          <Button 
+                            onClick={() => handleSaveReservations(result.reservations)}
+                            className="bg-green-600 hover:bg-green-700 text-white"
+                            disabled={isProcessing}
+                          >
+                            <Users className="h-4 w-4 mr-2" />
+                            Guardar {result.reservations.length} Reserva(s) na Base de Dados
+                          </Button>
+                        </div>
                         {result.reservations.map((reservation: ExtractedReservation, index: number) => (
                       <Card key={index} className="border-l-4 border-l-purple-500">
                         <CardContent className="pt-4">
