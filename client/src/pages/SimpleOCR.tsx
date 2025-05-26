@@ -53,7 +53,7 @@ export default function SimpleOCR() {
         console.log(`📄 Processando arquivo ${i + 1}/${files.length}: ${file.name}`);
 
         const formData = new FormData();
-        formData.append('pdf', file);
+        formData.append('file', file);
 
         try {
           const response = await fetch('/api/simple-ocr/process', {

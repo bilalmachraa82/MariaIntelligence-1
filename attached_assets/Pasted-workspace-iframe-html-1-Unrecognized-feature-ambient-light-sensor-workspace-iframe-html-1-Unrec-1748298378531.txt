@@ -1,0 +1,60 @@
+workspace_iframe.html:1 Unrecognized feature: 'ambient-light-sensor'.
+workspace_iframe.html:1 Unrecognized feature: 'battery'.
+workspace_iframe.html:1 Unrecognized feature: 'execution-while-not-rendered'.
+workspace_iframe.html:1 Unrecognized feature: 'execution-while-out-of-viewport'.
+workspace_iframe.html:1 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:1 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:1 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:1 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:1 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:1 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html:1 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:1 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:1 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:1 Allow attribute will take precedence over 'allowpaymentrequest'.
+MariaIntelligence-1:1 Unrecognized feature: 'ambient-light-sensor'.
+MariaIntelligence-1:1 Unrecognized feature: 'battery'.
+MariaIntelligence-1:1 Unrecognized feature: 'execution-while-not-rendered'.
+MariaIntelligence-1:1 Unrecognized feature: 'execution-while-out-of-viewport'.
+MariaIntelligence-1:1 Unrecognized feature: 'layout-animations'.
+MariaIntelligence-1:1 Unrecognized feature: 'legacy-image-formats'.
+MariaIntelligence-1:1 Unrecognized feature: 'navigation-override'.
+MariaIntelligence-1:1 Unrecognized feature: 'oversized-images'.
+MariaIntelligence-1:1 Unrecognized feature: 'publickey-credentials'.
+MariaIntelligence-1:1 Unrecognized feature: 'speaker-selection'.
+MariaIntelligence-1:1 Unrecognized feature: 'unoptimized-images'.
+MariaIntelligence-1:1 Unrecognized feature: 'unsized-media'.
+MariaIntelligence-1:1 Unrecognized feature: 'pointer-lock'.
+MariaIntelligence-1:1 Allow attribute will take precedence over 'allowfullscreen'.
+MariaIntelligence-1:1 Allow attribute will take precedence over 'allowpaymentrequest'.
+Console.js:61 i18next: languageChanged pt-PT
+Console.js:61 i18next: initialized {debug: true, initAsync: true, ns: Array(1), defaultNS: Array(1), fallbackLng: Array(1), …}
+Console.js:61 i18n inicializado com os seguintes recursos: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+Console.js:61 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+Console.js:61 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+Console.js:61 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+Console.js:61 Fetch URL modificada: /api/check-ai-services?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 📄 Processando arquivo 1/1: Imagem WhatsApp 2025-05-26 às 22.21.00_418ddd8d.jpg
+Console.js:61 Fetch URL modificada: /api/simple-ocr/process?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+enforce-clean-mode.ts:68 
+            
+            
+           POST https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/api/simple-ocr/process?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true 500 (Internal Server Error)
+window.fetch @ Network.js:219
+window.fetch @ enforce-clean-mode.ts:68
+handleUpload @ SimpleOCR.tsx:59
+callCallback2 @ chunk-RPCDYKBN.js?v=eef0c531:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=eef0c531:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=eef0c531:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=eef0c531:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=eef0c531:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=eef0c531:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=eef0c531:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=eef0c531:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=eef0c531:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=eef0c531:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=eef0c531:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=eef0c531:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=eef0c531:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=eef0c531:5449
