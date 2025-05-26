@@ -1,8 +1,10 @@
 import express, { type Request, Response, NextFunction } from "express";
+import session from "express-session";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { startScheduler } from "./services/scheduler";
 import { registerDatabaseRoutes } from "./api/database-routes";
+import authRoutes from "./routes/auth.routes";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 
