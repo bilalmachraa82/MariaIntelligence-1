@@ -1,7 +1,8 @@
-import { GeminiService } from './gemini.service.js';
-import { OpenRouterService } from './openrouter.service.js';
-import { processMultiReservationPDF } from './gemini-multi-processor.js';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import pdf from 'pdf-parse';
+import fs from 'fs';
 
+// Interface para os dados extraídos - v4.1 (working version)
 export interface ExtractedReservation {
   data_entrada: string;
   data_saida: string;
@@ -9,31 +10,326 @@ export interface ExtractedReservation {
   nome: string;
   hospedes: number;
   pais: string;
+  pais_inferido: boolean;
   site: string;
   telefone: string;
   observacoes: string;
+  timezone_source: string;
+  id_reserva: string;
+  confidence: number;
+  source_page: number;
+  needs_review: boolean;
+  // Campos legacy para compatibilidade
+  guestName?: string;
+  propertyName?: string;
+  checkInDate?: string;
+  checkOutDate?: string;
+  totalAmount?: number;
+  guestCount?: number;
+  email?: string;
+  phone?: string;
+  notes?: string;
 }
 
 export interface OCRResult {
   success: boolean;
+  type: 'check-in' | 'check-out' | 'control-file' | 'unknown';
   reservations: ExtractedReservation[];
-  processingTime: number;
-  message: string;
-  type?: string;
+  extractedText?: string;
   error?: string;
-  reservationsCount?: number;
-  documentType?: string;
-  scenario?: string;
-  confidence?: number;
+  processingTime?: number;
+  message?: string;
 }
 
 export class SimpleOCRService {
-  private geminiService: GeminiService;
-  private openRouterService: OpenRouterService;
+  private genAI: GoogleGenerativeAI;
 
   constructor() {
-    this.geminiService = new GeminiService();
-    this.openRouterService = new OpenRouterService();
+    const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error('GOOGLE_API_KEY não configurada');
+    }
+    this.genAI = new GoogleGenerativeAI(apiKey);
+  }
+
+  /**
+   * Processa um arquivo (PDF ou imagem) e extrai dados de reservas
+   */
+  async processFile(filePath: string, mimeType: string): Promise<OCRResult> {
+    try {
+      console.log('🔍 Iniciando processamento OCR:', filePath, 'Tipo:', mimeType);
+
+      let extractedText = '';
+
+      // Determinar se é PDF ou imagem
+      if (mimeType === 'application/pdf') {
+        extractedText = await this.extractTextFromPDF(filePath);
+      } else if (mimeType.startsWith('image/')) {
+        extractedText = await this.extractTextFromImage(filePath);
+      } else {
+        throw new Error(`Tipo de arquivo não suportado: ${mimeType}`);
+      }
+
+      console.log(`📄 Texto extraído com sucesso, caracteres: ${extractedText.length}`);
+
+      // Classificar o documento
+      const documentType = await this.classifyDocument(extractedText);
+      console.log(`📋 Tipo de documento identificado: ${documentType}`);
+
+      // Extrair dados estruturados
+      const reservations = await this.extractReservationData(extractedText, documentType);
+
+      return {
+        success: true,
+        type: documentType,
+        reservations,
+        extractedText: extractedText.substring(0, 1000) // Primeiros 1000 chars para debug
+      };
+
+    } catch (error) {
+      console.error('❌ Erro no processamento OCR:', error);
+      return {
+        success: false,
+        type: 'unknown',
+        reservations: [],
+        error: error instanceof Error ? error.message : 'Erro desconhecido'
+      };
+    }
+  }
+
+  /**
+   * Extrai texto de um arquivo PDF
+   */
+  private async extractTextFromPDF(filePath: string): Promise<string> {
+    try {
+      const dataBuffer = fs.readFileSync(filePath);
+      const pdfData = await pdf(dataBuffer);
+      return pdfData.text;
+    } catch (error) {
+      console.error('❌ Erro ao extrair texto do PDF:', error);
+      throw new Error(`Falha na extração de texto do PDF: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
+    }
+  }
+
+  /**
+   * Extrai texto de uma imagem usando Gemini Vision
+   */
+  private async extractTextFromImage(filePath: string): Promise<string> {
+    try {
+      const model = this.genAI.getGenerativeModel({ model: "gemini-pro-vision" });
+
+      // Ler e converter imagem para base64
+      const imageBuffer = fs.readFileSync(filePath);
+      const base64Image = imageBuffer.toString('base64');
+      const mimeType = filePath.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg';
+
+      const result = await model.generateContent([
+        "Extraia todo o texto visível nesta imagem, preservando a estrutura e formatação. Inclua todos os detalhes como nomes, datas, números e valores.",
+        {
+          inlineData: {
+            data: base64Image,
+            mimeType: mimeType
+          }
+        }
+      ]);
+
+      const response = await result.response;
+      return response.text();
+    } catch (error) {
+      console.error('❌ Erro ao extrair texto da imagem:', error);
+      throw new Error(`Falha na extração de texto da imagem: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
+    }
+  }
+
+  /**
+   * Classifica o tipo de documento com base no conteúdo
+   */
+  private async classifyDocument(text: string): Promise<'check-in' | 'check-out' | 'control-file' | 'unknown'> {
+    try {
+      const model = this.genAI.getGenerativeModel({ model: "gemini-pro" });
+
+      const prompt = `
+Analise o texto fornecido e classifique o documento em uma destas categorias:
+- "check-in": Documento listando chegadas/entradas de hóspedes
+- "check-out": Documento listando saídas/partidas de hóspedes  
+- "control-file": Arquivo de controle com múltiplas reservas de uma propriedade
+- "unknown": Não consegue determinar o tipo
+
+Texto: ${text.substring(0, 2000)}
+
+Responda APENAS com uma das categorias acima.`;
+
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const classification = response.text().trim().toLowerCase();
+
+      if (['check-in', 'check-out', 'control-file'].includes(classification)) {
+        return classification as 'check-in' | 'check-out' | 'control-file';
+      }
+
+      return 'unknown';
+    } catch (error) {
+      console.error('❌ Erro na classificação do documento:', error);
+      return 'unknown';
+    }
+  }
+
+  /**
+   * Extrai dados estruturados de reservas do texto
+   */
+  private async extractReservationData(text: string, documentType: string): Promise<ExtractedReservation[]> {
+    try {
+      const model = this.genAI.getGenerativeModel({ model: "gemini-pro" });
+
+      const prompt = this.buildExtractionPrompt(text, documentType);
+      
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const responseText = response.text();
+
+      console.log('📄 Resposta do Gemini (primeiros 500 chars):', responseText.substring(0, 500));
+
+      // Tentar extrair JSON da resposta
+      const jsonMatch = responseText.match(/\[[\s\S]*\]/);
+      if (!jsonMatch) {
+        console.log('❌ Nenhum JSON encontrado na resposta');
+        return [];
+      }
+
+      const jsonText = jsonMatch[0];
+      const extractedReservations = JSON.parse(jsonText);
+
+      // Validar e processar reservas
+      const validReservations = extractedReservations
+        .filter((r: any) => r.nome && r.data_entrada)
+        .map((r: any, index: number) => ({
+          data_entrada: this.formatDate(r.data_entrada),
+          data_saida: this.formatDate(r.data_saida),
+          noites: r.noites || this.calculateNights(r.data_entrada, r.data_saida),
+          nome: r.nome || '',
+          hospedes: r.hospedes || 2,
+          pais: r.pais || '',
+          pais_inferido: r.pais_inferido || false,
+          site: r.site || 'Booking.com',
+          telefone: r.telefone || '',
+          observacoes: r.observacoes || 'Extraído via OCR v4.1',
+          timezone_source: r.timezone_source || 'Europe/Lisbon',
+          id_reserva: r.id_reserva || `OCR-${Date.now()}-${index}`,
+          confidence: r.confidence || 85,
+          source_page: r.source_page || 1,
+          needs_review: r.needs_review || false
+        }));
+
+      console.log(`✅ Extraídas ${validReservations.length} reservas válidas`);
+      return validReservations;
+
+    } catch (error) {
+      console.error('❌ Erro na extração de dados:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Constrói o prompt para extração baseado no tipo de documento
+   */
+  private buildExtractionPrompt(text: string, documentType: string): string {
+    const basePrompt = `
+Analise o texto fornecido e extraia TODAS as reservas de hospedagem encontradas.
+
+IMPORTANTE: Responda APENAS com um array JSON válido, sem texto adicional.
+
+Formato para cada reserva:
+{
+  "data_entrada": "YYYY-MM-DD",
+  "data_saida": "YYYY-MM-DD", 
+  "noites": 3,
+  "nome": "Nome do Hóspede",
+  "hospedes": 2,
+  "pais": "País",
+  "pais_inferido": false,
+  "site": "Booking.com",
+  "telefone": "+351912345678",
+  "observacoes": "Informações adicionais",
+  "timezone_source": "Europe/Lisbon",
+  "id_reserva": "REF123",
+  "confidence": 90,
+  "source_page": 1,
+  "needs_review": false
+}`;
+
+    let specificInstructions = '';
+    switch (documentType) {
+      case 'check-in':
+        specificInstructions = `
+Tipo: Documento de CHECK-IN (Entradas)
+- Procure por listas/tabelas de hóspedes chegando
+- Foque nas datas de entrada
+- Ignore cabeçalhos e filtros`;
+        break;
+      case 'check-out':
+        specificInstructions = `
+Tipo: Documento de CHECK-OUT (Saídas)
+- Procure por listas/tabelas de hóspedes partindo
+- Foque nas datas de saída
+- Ignore cabeçalhos e filtros`;
+        break;
+      case 'control-file':
+        specificInstructions = `
+Tipo: Arquivo de CONTROLE
+- Documento com múltiplas reservas de uma propriedade
+- Pode ter formato menos estruturado
+- Procure por padrões de nomes, datas e contatos`;
+        break;
+      default:
+        specificInstructions = `
+Tipo: Documento GENÉRICO
+- Procure por qualquer padrão de dados de reserva
+- Seja flexível na identificação dos campos`;
+    }
+
+    return `${basePrompt}
+
+${specificInstructions}
+
+TEXTO PARA ANÁLISE:
+${text}
+
+Responda APENAS com o array JSON:`;
+  }
+
+  /**
+   * Formata data para formato ISO (YYYY-MM-DD)
+   */
+  private formatDate(dateStr: string): string {
+    if (!dateStr) return '';
+    
+    // Se já está no formato ISO, retornar
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      return dateStr;
+    }
+    
+    // Converter DD/MM/YYYY para YYYY-MM-DD
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
+      const [day, month, year] = dateStr.split('/');
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+    
+    return dateStr;
+  }
+
+  /**
+   * Calcula número de noites entre duas datas
+   */
+  private calculateNights(checkIn: string, checkOut: string): number {
+    try {
+      const inDate = new Date(checkIn);
+      const outDate = new Date(checkOut);
+      const diffTime = Math.abs(outDate.getTime() - inDate.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return Math.max(diffDays, 1);
+    } catch {
+      return 1;
+    }
   }
 
   async extractReservationsFromText(text: string): Promise<OCRResult> {
