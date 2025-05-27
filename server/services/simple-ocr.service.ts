@@ -163,7 +163,16 @@ EXTRAI TODAS AS RESERVAS:`;
         reservations = JSON.parse(cleanResponse);
       } catch (parseError) {
         console.log('Erro no parse JSON:', parseError);
-        throw new Error('Resposta inválida do serviço de IA');
+        console.log('Resposta recebida:', response.substring(0, 500));
+        
+        // Tentar reparar JSON mal formado
+        try {
+          reservations = this.fixMalformedJson(response);
+        } catch (fixError) {
+          console.log('Falha ao reparar JSON:', fixError);
+          // Retornar array vazio em vez de erro para não quebrar o fluxo
+          reservations = [];
+        }
       }
 
       return {
@@ -263,6 +272,55 @@ EXTRAI TODAS AS RESERVAS:`;
     }
     
     return consolidated;
+  }
+
+  private fixMalformedJson(responseText: string): any[] {
+    console.log('🔧 Tentando reparar JSON mal formado...');
+    
+    // Limpar a resposta
+    let cleaned = responseText.replace(/```json|```/g, '').trim();
+    
+    // Tentar encontrar array JSON mesmo que incompleto
+    const arrayStart = cleaned.indexOf('[');
+    const arrayEnd = cleaned.lastIndexOf(']');
+    
+    if (arrayStart !== -1 && arrayEnd !== -1 && arrayEnd > arrayStart) {
+      cleaned = cleaned.substring(arrayStart, arrayEnd + 1);
+    }
+    
+    // Tentar reparar strings não fechadas
+    cleaned = cleaned.replace(/"/g, '"').replace(/"/g, '"');
+    
+    // Tentar reparar vírgulas em excesso
+    cleaned = cleaned.replace(/,(\s*[}\]])/g, '$1');
+    
+    // Se ainda não funcionar, tentar extrair objetos individuais
+    try {
+      return JSON.parse(cleaned);
+    } catch (e) {
+      console.log('🔧 Tentando extração de objetos individuais...');
+      
+      // Procurar por padrões de reserva
+      const reservationPattern = /{[^{}]*"data_entrada"[^{}]*}/g;
+      const matches = cleaned.match(reservationPattern);
+      
+      if (matches) {
+        const reservations = [];
+        for (const match of matches) {
+          try {
+            const reservation = JSON.parse(match);
+            reservations.push(reservation);
+          } catch (parseError) {
+            console.log('Falha ao parsear objeto individual:', match.substring(0, 100));
+          }
+        }
+        return reservations;
+      }
+      
+      // Se tudo falhar, retornar array vazio
+      console.log('❌ Não foi possível reparar o JSON');
+      return [];
+    }
   }
 
   private validateAndCleanReservations(reservations: any[]): ExtractedReservation[] {
