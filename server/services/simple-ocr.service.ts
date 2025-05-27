@@ -45,9 +45,96 @@ export class SimpleOCRService {
   constructor() {
     const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
     if (!apiKey) {
-      throw new Error('GEMINI_API_KEY não configurada');
+      console.warn('⚠️ GEMINI_API_KEY não configurada - OCR não funcionará');
+      // Don't throw error, just create empty instance
+      this.genAI = null as any;
+      return;
     }
     this.genAI = new GoogleGenerativeAI(apiKey);
+  }
+
+  private async extractTextFromPDF(filePath: string): Promise<string> {
+    try {
+      const dataBuffer = fs.readFileSync(filePath);
+      const data = await pdf(dataBuffer);
+      return data.text;
+    } catch (error) {
+      console.error('Erro ao extrair texto do PDF:', error);
+      throw new Error('Falha na extração de texto do PDF');
+    }
+  }
+
+  private async extractTextFromImage(filePath: string): Promise<string> {
+    if (!this.genAI) {
+      throw new Error('Gemini API não configurada');
+    }
+    
+    try {
+      const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const imageData = fs.readFileSync(filePath);
+      
+      const result = await model.generateContent([
+        "Extract all text from this image, maintaining the original structure and formatting:",
+        {
+          inlineData: {
+            data: imageData.toString('base64'),
+            mimeType: 'image/jpeg'
+          }
+        }
+      ]);
+
+      return result.response.text();
+    } catch (error) {
+      console.error('Erro ao extrair texto da imagem:', error);
+      throw new Error('Falha na extração de texto da imagem');
+    }
+  }
+
+  private async classifyDocument(text: string): Promise<'check-in' | 'check-out' | 'control-file' | 'unknown'> {
+    const lowerText = text.toLowerCase();
+    
+    if (lowerText.includes('check-in') || lowerText.includes('entrada')) {
+      return 'check-in';
+    }
+    if (lowerText.includes('check-out') || lowerText.includes('saída')) {
+      return 'check-out';
+    }
+    if (lowerText.includes('controlo') || lowerText.includes('control')) {
+      return 'control-file';
+    }
+    
+    return 'unknown';
+  }
+
+  private async extractReservationData(text: string, documentType: string): Promise<ExtractedReservation[]> {
+    if (!this.genAI) {
+      throw new Error('Gemini API não configurada');
+    }
+
+    try {
+      const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      
+      const prompt = `Analisa este texto e extrai todas as reservas encontradas.
+      
+TEXTO:
+${text}
+
+Responde APENAS com um array JSON válido, sem texto adicional:`;
+
+      const result = await model.generateContent(prompt);
+      const responseText = result.response.text();
+      
+      try {
+        const parsed = JSON.parse(responseText);
+        return Array.isArray(parsed) ? parsed : [parsed];
+      } catch {
+        console.warn('Resposta não é JSON válido, retornando array vazio');
+        return [];
+      }
+    } catch (error) {
+      console.error('Erro na extração de dados:', error);
+      return [];
+    }
   }
 
   /**
