@@ -1910,17 +1910,6 @@ Return this EXACT JSON structure:
       handleError(err, res);
     }
   });
-
-  /**
-   * Endpoint para limpar memória da IA
-   * Simples endpoint que sempre retorna sucesso
-   */
-  app.post("/api/clear-ai-memory", (_req: Request, res: Response) => {
-    res.json({
-      success: true,
-      message: "Memória da IA limpa com sucesso"
-    });
-  });
   
   /**
    * Endpoint para verificar a disponibilidade da chave da API Gemini
@@ -4141,73 +4130,6 @@ Return this EXACT JSON structure:
   // Registrar rotas do assistente de reservas com Gemini 2.5 Flash
   app.use('/api/reservation-assistant', reservationAssistantRouter);
 
-  // EXTRACTOR DE RESERVAS v4.2 - Working implementation that extracted 38 reservations
-  app.post('/api/extractor-working', anyFileUpload.single('file'), async (req: Request, res: Response) => {
-    console.log('🚀 EXTRACTOR v4.2 endpoint hit!');
-    res.setHeader('Content-Type', 'application/json');
-    try {
-      if (!req.file) {
-        return res.status(400).json({ error: 'Arquivo não fornecido' });
-      }
-
-      console.log('🚀 Using working EXTRACTOR v4.2 that extracted 38 reservations...');
-      
-      const { GoogleGenerativeAI } = await import('@google/generative-ai');
-      const pdf = await import('pdf-parse');
-      const fs = await import('fs');
-      
-      // Extract text from PDF
-      const pdfBuffer = fs.readFileSync(req.file.path);
-      const pdfData = await pdf.default(pdfBuffer);
-      
-      // Use the exact working prompt that extracted 19 reservations from each file
-      const prompt = `# EXTRACTOR DE RESERVAS v4.2
-
-Extrai TODAS as reservas deste documento como array JSON:
-
-${pdfData.text}
-
-Formato: [{"nome":"","data_entrada":"YYYY-MM-DD","data_saida":"YYYY-MM-DD","hospedes":0}]`;
-
-      const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY!);
-      const model = genAI.getGenerativeModel({ 
-        model: 'gemini-1.5-flash',
-        generationConfig: { temperature: 0.1, maxOutputTokens: 4096 }
-      });
-      
-      const result = await model.generateContent(prompt);
-      const response = result.response.text();
-      
-      const jsonMatch = response.match(/\[[\s\S]*\]/);
-      if (jsonMatch) {
-        const reservations = JSON.parse(jsonMatch[0]);
-        console.log(`✅ Working endpoint: ${reservations.length} reservations extracted!`);
-        
-        // Clean up file
-        fs.unlinkSync(req.file.path);
-        
-        res.json({
-          success: true,
-          reservations,
-          count: reservations.length,
-          service: 'EXTRACTOR_v4.2_WORKING',
-          message: `${reservations.length} reservas extraídas com sucesso!`
-        });
-      } else {
-        fs.unlinkSync(req.file.path);
-        res.json({ success: false, reservations: [], error: 'Nenhum JSON encontrado na resposta' });
-      }
-      
-    } catch (error) {
-      console.error('❌ Working endpoint error:', error);
-      if (req.file) {
-        const fs = await import('fs');
-        fs.unlinkSync(req.file.path);
-      }
-      res.status(500).json({ error: 'Erro interno do servidor' });
-    }
-  });
-
   // Rotas de teste para desenvolvimento
   
   // Endpoint para teste do rate limiter com função limitada
@@ -4487,7 +4409,48 @@ Formato: [{"nome":"","data_entrada":"YYYY-MM-DD","data_saida":"YYYY-MM-DD","hosp
     }
   });
 
-
+  /**
+   * Endpoint para limpar memória da IA
+   * Remove toda a memória de conversas anteriores do assistente
+   */
+  app.post("/api/clear-ai-memory", async (_req: Request, res: Response) => {
+    try {
+      // Limpar toda a memória do assistente IA
+      if (aiService && aiService.geminiService) {
+        // Reset da memória de conversas
+        aiService.geminiService.clearMemory?.();
+        
+        // Limpar cache de conversas se existir
+        if (global.conversationCache) {
+          global.conversationCache.clear();
+        }
+        
+        // Limpar histórico de conversas da base de dados
+        if (db) {
+          await db.delete(conversationHistory);
+        }
+        
+        console.log("✅ Memória da IA limpa com sucesso");
+        
+        res.json({
+          success: true,
+          message: "Memória da IA limpa com sucesso. A assistente irá cumprimentar novamente!"
+        });
+      } else {
+        res.status(500).json({
+          success: false,
+          message: "Serviço de IA não disponível"
+        });
+      }
+    } catch (error: any) {
+      console.error("❌ Erro ao limpar memória da IA:", error);
+      res.status(500).json({
+        success: false,
+        message: "Erro ao limpar memória da IA",
+        error: error.message
+      });
+    }
+  });
 
   // Demo Data Routes
   // Rota para gerar dados de demonstração

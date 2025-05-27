@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { Link } from "wouter";
 import { 
   Card, 
@@ -20,59 +20,55 @@ import {
   Brush,
   ArrowDownCircle,
   Filter,
-  Search,
-  Loader2
+  Search
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { formatCurrency } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { useReservations } from "@/hooks/use-reservations";
-import { useProperties } from "@/hooks/use-properties";
 
 export default function PaymentsOutgoing() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   
-  // Buscar dados reais da base de dados
-  const { data: reservations, isLoading: isLoadingReservations } = useReservations();
-  const { data: properties, isLoading: isLoadingProperties } = useProperties();
-  
-  // Calcular pagamentos a fazer baseados em dados reais
-  const payments = useMemo(() => {
-    if (!reservations || !properties) return [];
-    
-    const outgoingPayments: any[] = [];
-    
-    // Adicionar pagamentos para equipas de limpeza baseados em reservas completadas
-    reservations
-      .filter(reservation => reservation.status === 'completed')
-      .forEach(reservation => {
-        const property = properties.find(p => p.id === reservation.propertyId);
-        if (!property) return;
-        
-        const teamPayment = parseFloat(reservation.teamPayment || '0');
-        if (teamPayment > 0) {
-          outgoingPayments.push({
-            id: `cleaning-${reservation.id}`,
-            recipient: `Equipa de Limpeza - ${property.name}`,
-            type: "cleaning",
-            propertyName: property.name,
-            amount: teamPayment,
-            dueDate: new Date(reservation.checkOutDate).toISOString().split('T')[0],
-            status: "pending",
-            invoiceNumber: `LMP-${reservation.id}`,
-            createdAt: reservation.checkOutDate,
-            reservationId: reservation.id
-          });
-        }
-      });
-    
-    return outgoingPayments;
-  }, [reservations, properties]);
-  
-  const isLoading = isLoadingReservations || isLoadingProperties;
+  // Dados mockup para a interface - em produção viriam da API
+  const [payments, setPayments] = useState([
+    {
+      id: 1,
+      recipient: "Equipa de Limpeza Lisboa Centro",
+      type: "cleaning",
+      propertyName: "Apartamento Ajuda",
+      amount: 45.00,
+      dueDate: "2025-03-15",
+      status: "pending",
+      invoiceNumber: "INV-2025-0123",
+      createdAt: "2025-03-01"
+    },
+    {
+      id: 2,
+      recipient: "Técnico João",
+      type: "maintenance",
+      propertyName: "Vila SJ Estoril",
+      amount: 120.00,
+      dueDate: "2025-03-18",
+      status: "pending",
+      invoiceNumber: "INV-2025-0124",
+      createdAt: "2025-03-05"
+    },
+    {
+      id: 3,
+      recipient: "Equipa de Limpeza Cascais",
+      type: "cleaning",
+      propertyName: "Apartamento Cascais",
+      amount: 65.00,
+      dueDate: "2025-03-10",
+      status: "paid",
+      paidAt: "2025-03-09",
+      invoiceNumber: "INV-2025-0119",
+      createdAt: "2025-02-28"
+    }
+  ]);
   
   // Função para obter a cor do tipo de pagamento
   const getTypeColor = (type: string) => {

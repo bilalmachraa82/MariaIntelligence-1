@@ -28,30 +28,30 @@ export function BottomNavSimplified() {
     return location.startsWith(href);
   };
 
-  // 5 itens principais para navegação móvel - Português de Portugal
+  // 5 itens principais para navegação móvel
   const navItems: NavItem[] = [
     {
-      name: t("navigation.home", "Início"),
+      name: "Início",
       href: isPortuguese ? "/painel" : "/dashboard",
       icon: Home
     },
     {
-      name: t("navigation.reservations", "Reservas"),
+      name: "Reservas",
       href: isPortuguese ? "/reservas" : "/reservations",
       icon: Calendar
     },
     {
-      name: t("navigation.properties", "Imóveis"),
+      name: "Imóveis",
       href: isPortuguese ? "/propriedades" : "/properties",
       icon: Building2
     },
     {
-      name: t("navigation.finances", "Finanças"),
+      name: "Finanças",
       href: "/pagamentos/entrada",
       icon: Euro
     },
     {
-      name: t("navigation.settings", "Configurações"),
+      name: "Config",
       href: isPortuguese ? "/configuracoes" : "/settings",
       icon: Settings
     }

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
 import { ArrowLeft } from 'lucide-react';
 import { format, addDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -68,16 +67,64 @@ const serviceProviders: CleaningServiceProvider[] = [
   }
 ];
 
-// Interface para dados reais de agendamentos do sistema
-interface RealScheduleData {
-  id: number;
-  type: string;
-  status: string;
-  date: string;
-  propertyId: number;
-  propertyName: string;
-  notes?: string;
-}
+// Dados de exemplo para demonstração
+const demoSchedules: ScheduleItem[] = [
+  {
+    id: 1,
+    providerId: 1,
+    providerName: 'ANA CRISTINA PARADA DE ALMEIDA TEIXEIRA',
+    propertyId: 7,
+    propertyName: 'Alfama Charme',
+    date: new Date(2025, 2, 25, 10, 0), // 25 de Março de 2025, 10:00
+    status: 'scheduled',
+    type: 'check-out',
+    notes: 'Limpeza completa após saída de hóspedes'
+  },
+  {
+    id: 2,
+    providerId: 2,
+    providerName: 'MELANIE NEVES CARVALHO PEREIRA',
+    propertyId: 13,
+    propertyName: 'Vila Verde',
+    date: new Date(2025, 2, 26, 14, 0), // 26 de Março de 2025, 14:00
+    status: 'scheduled',
+    type: 'check-in',
+    notes: 'Preparação para entrada de novos hóspedes'
+  },
+  {
+    id: 3,
+    providerId: 3,
+    providerName: 'VERA LUCIA BOTELHO RODRIGUES',
+    propertyId: 9,
+    propertyName: 'Graça Elegante',
+    date: new Date(2025, 2, 24, 12, 0), // 24 de Março de 2025, 12:00
+    status: 'completed',
+    type: 'check-in',
+    notes: 'Limpeza completa para entrada de hóspedes'
+  },
+  {
+    id: 4,
+    providerId: 4,
+    providerName: 'MARIA FAZ (EQUIPA INTERNA)',
+    propertyId: 15,
+    propertyName: 'Belém Riverside',
+    date: new Date(2025, 2, 24, 15, 30), // 24 de Março de 2025, 15:30
+    status: 'scheduled',
+    type: 'check-out',
+    notes: 'Limpeza prioritária para novo hóspede no mesmo dia'
+  },
+  {
+    id: 5,
+    providerId: 4,
+    providerName: 'MARIA FAZ (EQUIPA INTERNA)',
+    propertyId: 21,
+    propertyName: 'Castelo View',
+    date: new Date(2025, 2, 25, 8, 0), // 25 de Março de 2025, 8:00
+    status: 'scheduled',
+    type: 'check-in',
+    notes: 'Preparação antecipada para chegada do hóspede VIP'
+  }
+];
 
 export default function CleaningSchedulesPage() {
   const { t } = useTranslation();
@@ -89,66 +136,10 @@ export default function CleaningSchedulesPage() {
   // Estado para filtros
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [typeFilter, setTypeFilter] = useState<string>('all');
-
-  // Buscar dados reais do sistema
-  const { data: properties = [] } = useQuery({
-    queryKey: ['/api/properties'],
-  });
-
-  const { data: reservations = [] } = useQuery({
-    queryKey: ['/api/reservations'],
-  });
-
-  // Gerar agendamentos reais baseados nas reservas
-  const getRealSchedules = (): ScheduleItem[] => {
-    const schedules: ScheduleItem[] = [];
-    
-    reservations.forEach((reservation: any) => {
-      const property = properties.find((p: any) => p.id === reservation.propertyId);
-      if (!property) return;
-
-      // Agendamento de limpeza pós check-out
-      if (reservation.checkOutDate) {
-        schedules.push({
-          id: `checkout-${reservation.id}`,
-          providerId: 1, // Assumir equipa padrão
-          providerName: 'Equipa de Limpeza',
-          propertyId: reservation.propertyId,
-          propertyName: property.name,
-          date: new Date(reservation.checkOutDate),
-          status: new Date(reservation.checkOutDate) < new Date() ? 'completed' : 'scheduled',
-          type: 'check-out',
-          notes: `Limpeza após saída de ${reservation.guestName}`
-        });
-      }
-
-      // Agendamento de limpeza pré check-in
-      if (reservation.checkInDate) {
-        const checkInPrep = new Date(reservation.checkInDate);
-        checkInPrep.setHours(checkInPrep.getHours() - 2); // 2 horas antes
-        
-        schedules.push({
-          id: `checkin-${reservation.id}`,
-          providerId: 1, // Assumir equipa padrão
-          providerName: 'Equipa de Limpeza',
-          propertyId: reservation.propertyId,
-          propertyName: property.name,
-          date: checkInPrep,
-          status: checkInPrep < new Date() ? 'completed' : 'scheduled',
-          type: 'check-in',
-          notes: `Preparação para chegada de ${reservation.guestName}`
-        });
-      }
-    });
-
-    return schedules;
-  };
   
-  // Funções para filtragem dos agendamentos reais
+  // Funções para filtragem dos agendamentos
   const getFilteredSchedules = () => {
-    const realSchedules = getRealSchedules();
-    
-    return realSchedules.filter(schedule => {
+    return demoSchedules.filter(schedule => {
       const teamMatch = !selectedTeam || selectedTeam === 'all' || schedule.providerId.toString() === selectedTeam;
       const statusMatch = !statusFilter || statusFilter === 'all' || schedule.status === statusFilter;
       const typeMatch = !typeFilter || typeFilter === 'all' || schedule.type === typeFilter;

@@ -7,7 +7,6 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 
 export default function SettingsPage() {
@@ -19,16 +18,7 @@ export default function SettingsPage() {
   // Verificar estado da conexão com IA
   const [isCheckingAI, setIsCheckingAI] = useState(false);
   const [aiConnected, setAiConnected] = useState(false);
-
-
-  // Buscar dados reais do sistema
-  const { data: properties = [] } = useQuery({
-    queryKey: ["/api/properties"],
-  });
-
-  const { data: reservations = [] } = useQuery({
-    queryKey: ["/api/reservations"],
-  });
+  const [isClearingMemory, setIsClearingMemory] = useState(false);
 
   const handleLanguageChange = (language: string) => {
     i18n.changeLanguage(language);
@@ -63,7 +53,36 @@ export default function SettingsPage() {
     }
   };
 
-
+  const clearAIMemory = async () => {
+    setIsClearingMemory(true);
+    try {
+      const response = await fetch('/api/clear-ai-memory', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        toast({
+          title: "Memória Limpa! 🧠✨",
+          description: "A Maria esqueceu todas as conversas anteriores e vai cumprimentar-te novamente!",
+        });
+      } else {
+        throw new Error(data.message || 'Erro desconhecido');
+      }
+    } catch (error) {
+      toast({
+        title: "Erro ao Limpar Memória",
+        description: "Não foi possível limpar a memória da IA. Tente novamente.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsClearingMemory(false);
+    }
+  };
 
   return (
     <div className="container mx-auto py-6 max-w-4xl">
@@ -115,61 +134,24 @@ export default function SettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">
-                    {t("settings.general.timezone", "Fuso Horário")}
-                  </label>
-                  <Select defaultValue="Europe/Lisbon">
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecionar fuso horário" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Europe/Lisbon">Europa/Lisboa (GMT+0)</SelectItem>
-                      <SelectItem value="Europe/London">Europa/Londres (GMT+0)</SelectItem>
-                      <SelectItem value="America/New_York">América/Nova York (GMT-5)</SelectItem>
-                      <SelectItem value="Asia/Tokyo">Ásia/Tóquio (GMT+9)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-muted-foreground">
-                    {t("settings.general.timezoneDescription", "Selecione o seu fuso horário para exibir datas e horários corretos")}
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">
-                    Sistema de Base de Dados
-                  </label>
-                  <div className="p-3 border rounded-lg bg-green-50 border-green-200">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium text-green-800">PostgreSQL</p>
-                        <p className="text-sm text-green-600">Base de dados configurada e operacional</p>
-                      </div>
-                      <Badge variant="default" className="bg-green-600">
-                        Ativo
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">
-                    Estado do Sistema
-                  </label>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="p-3 border rounded-lg">
-                      <p className="text-sm font-medium">Propriedades</p>
-                      <p className="text-lg font-bold text-blue-600">{properties.length}</p>
-                      <p className="text-xs text-muted-foreground">Registadas no sistema</p>
-                    </div>
-                    <div className="p-3 border rounded-lg">
-                      <p className="text-sm font-medium">Reservas</p>
-                      <p className="text-lg font-bold text-emerald-600">{reservations.length}</p>
-                      <p className="text-xs text-muted-foreground">Total no sistema</p>
-                    </div>
-                  </div>
-                </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  {t("settings.general.timezone", "Fuso Horário")}
+                </label>
+                <Select defaultValue="Europe/Lisbon">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecionar fuso horário" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Europe/Lisbon">Europa/Lisboa (GMT+0)</SelectItem>
+                    <SelectItem value="Europe/London">Europa/Londres (GMT+0)</SelectItem>
+                    <SelectItem value="America/New_York">América/Nova York (GMT-5)</SelectItem>
+                    <SelectItem value="Asia/Tokyo">Ásia/Tóquio (GMT+9)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  {t("settings.general.timezoneDescription", "Selecione o seu fuso horário para exibir datas e horários corretos")}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -255,7 +237,21 @@ export default function SettingsPage() {
                   </ol>
                 </div>
                 
-
+                <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                  <h4 className="font-medium text-amber-900 mb-2">Gestão da Memória da IA</h4>
+                  <p className="text-sm text-amber-800 mb-3">
+                    Limpe toda a memória das conversas anteriores para começar do zero.
+                  </p>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="border-amber-300 text-amber-800 hover:bg-amber-100"
+                    onClick={clearAIMemory}
+                    disabled={isClearingMemory}
+                  >
+                    {isClearingMemory ? "A limpar..." : "Limpar Memória da IA"}
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>

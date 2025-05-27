@@ -44,76 +44,75 @@ export function Sidebar({ className }: SidebarProps) {
     altHref?: string;
   }
 
-  // Links principais - funcionalidades mais usadas diariamente
+  // Links dinâmicos baseados no idioma organizados por categoria
   const mainLinks: NavLink[] = [
     {
-      title: "Início",
+      title: t("navigation.dashboard"),
       href: isPortuguese ? "/painel" : "/dashboard",
-      altHref: "/",
+      altHref: "/", // Ambos redirecionam para a mesma página
       icon: Home,
       description: "Visão geral do sistema",
     },
     {
-      title: "Reservas",
-      href: isPortuguese ? "/reservas" : "/reservations",
-      icon: CalendarDays,
-      description: "Gestão de reservas e check-ins",
-    },
-    {
-      title: "Propriedades",
+      title: t("navigation.properties"),
       href: isPortuguese ? "/propriedades" : "/properties",
       icon: Building2,
-      description: "Gestão de imóveis",
+      description: "Gerencie todas as propriedades",
     },
     {
-      title: "Proprietários",
-      href: isPortuguese ? "/proprietarios" : "/owners",
-      icon: UserCog,
-      description: "Gestão de proprietários",
+      title: t("navigation.reservations"),
+      href: isPortuguese ? "/reservas" : "/reservations",
+      icon: CalendarDays,
+      description: "Controle suas reservas",
     },
     {
-      title: "Relatórios",
-      href: isPortuguese ? "/relatorios" : "/reports",
-      icon: BarChart3,
-      description: "Análises e estatísticas",
-    },
-  ];
-  
-  // Ferramentas e serviços (sem duplicações)
-  const serviceLinks: NavLink[] = [
-    {
-      title: "Orçamentos",
+      title: t("quotation.title", "Orçamentos"),
       href: isPortuguese ? "/orcamentos" : "/quotations",
       icon: Calculator,
-      description: "Orçamentos para serviços",
+      description: "Gerencie orçamentos para serviços de limpeza",
     },
     {
-      title: "Equipas de Limpeza",
-      href: isPortuguese ? "/equipas-limpeza" : "/cleaning-teams",
-      icon: Brush,
-      description: "Gestão de equipas",
-    },
-    {
-      title: "Scanner",
-      href: "/simple-ocr",
-      icon: FileUp,
-      description: "Digitalização de documentos",
-    },
-    {
-      title: "Assistente IA",
-      href: isPortuguese ? "/assistente" : "/assistant",
-      icon: Bot,
-      description: "Suporte inteligente",
+      title: t("navigation.owners"),
+      href: isPortuguese ? "/proprietarios" : "/owners",
+      icon: UserCog,
+      description: "Gerenciar proprietários",
     },
   ];
   
-  // Configurações simplificadas
-  const settingsLinks: NavLink[] = [
+  const toolsLinks: NavLink[] = [
     {
-      title: "Configurações",
+      title: t("navigation.pdfUpload"),
+      href: "/simple-ocr",
+      icon: FileUp,
+      description: "Upload e processamento de PDFs",
+    },
+
+    {
+      title: t("navigation.aiAssistant"),
+      href: isPortuguese ? "/assistente" : "/assistant",
+      icon: Bot,
+      description: "Assistente inteligente Maria",
+    },
+  ];
+  
+  const managementLinks: NavLink[] = [
+    {
+      title: t("navigation.cleaningTeams"),
+      href: isPortuguese ? "/equipas-limpeza" : "/cleaning-teams",
+      icon: Brush,
+      description: "Equipas de limpeza",
+    },
+    {
+      title: t("navigation.reports"),
+      href: isPortuguese ? "/relatorios" : "/reports",
+      icon: BarChart3,
+      description: "Estatísticas e relatórios",
+    },
+    {
+      title: t("navigation.settings"),
       href: isPortuguese ? "/configuracoes" : "/settings",
       icon: Settings,
-      description: "Configurações gerais",
+      description: "Configurações do sistema",
     },
   ];
   

@@ -132,40 +132,136 @@ export function TrendsReport({
   const [trendsData, setTrendsData] = useState<PropertyTrend[]>([]);
   const [isLoadingData, setIsLoadingData] = useState<boolean>(true);
   
-  // Efeito para carregar os dados reais da API
+  // Efeito para carregar os dados
   useEffect(() => {
     async function loadTrendsData() {
       setIsLoadingData(true);
       
-      try {
-        // Buscar dados reais da API
-        const params = new URLSearchParams();
-        if (dateRange.from) params.append('startDate', dateRange.from.toISOString());
-        if (dateRange.to) params.append('endDate', dateRange.to.toISOString());
-        if (ownerId) params.append('ownerId', ownerId.toString());
-        if (propertyId) params.append('propertyId', propertyId.toString());
-        params.append('granularity', granularity);
-        
-        const response = await fetch(`/api/reports/trends?${params}`);
-        if (response.ok) {
-          const data = await response.json();
-          setTrendsData(data);
-        } else {
-          console.error('Erro ao buscar dados de tendências');
-          setTrendsData([]);
-        }
-      } catch (error) {
-        console.error('Erro ao carregar dados de tendências:', error);
-        setTrendsData([]);
-      } finally {
+      // Em um ambiente real, esta seria uma chamada API
+      // com dateRange.from, dateRange.to, ownerId e propertyId
+      
+      // Simular atraso de rede
+      setTimeout(() => {
+        const mockData = generateMockTrendsData(
+          dateRange.from as Date, 
+          dateRange.to as Date,
+          granularity, 
+          ownerId,
+          propertyId
+        );
+        setTrendsData(mockData);
         setIsLoadingData(false);
-      }
+      }, 800);
     }
     
     loadTrendsData();
   }, [dateRange, granularity, ownerId, propertyId]);
   
-
+  // Função para gerar dados para testes de interface (seria removida na implementação real)
+  function generateMockTrendsData(
+    startDate: Date, 
+    endDate: Date, 
+    granularity: string,
+    ownerId?: number,
+    propertyId?: number
+  ): PropertyTrend[] {
+    // Implementação minima para teste de UI
+    // No ambiente real, esses dados seriam obtidos do backend
+    const properties = [];
+    const propertyNames = [
+      "Villa Oceano", "Casa do Sol", "Apartamento Central", 
+      "Loft Moderno", "Vila das Flores", "Chalé da Montanha"
+    ];
+    
+    const months = differenceInMonths(endDate, startDate) + 1;
+    
+    for (let i = 0; i < (propertyId ? 1 : 5); i++) {
+      const propertyData: TrendDataPoint[] = [];
+      const baseRevenue = 2000 + Math.random() * 3000;
+      const baseOccupancy = 50 + Math.random() * 30;
+      
+      let currentDate = startOfMonth(startDate);
+      let totalRevenue = 0;
+      let totalProfit = 0;
+      let totalOccupancy = 0;
+      
+      // Gerar pontos de dados para cada mês
+      while (currentDate <= endDate) {
+        const month = currentDate.getMonth();
+        const seasonalFactor = 1 + (month >= 5 && month <= 8 ? 0.3 : 0); // Fator sazonal (verão)
+        
+        // Simular crescimento ao longo do tempo
+        const timeProgression = differenceInMonths(currentDate, startDate) / Math.max(1, months);
+        const growthFactor = 1 + timeProgression * 0.2; // Crescimento gradual
+        
+        // Adicionar variação aleatória
+        const randomFactor = 0.8 + Math.random() * 0.4;
+        
+        // Calcular métricas para este mês
+        const revenue = baseRevenue * seasonalFactor * growthFactor * randomFactor;
+        const profit = revenue * (0.4 + Math.random() * 0.2); // Margem entre 40% e 60%
+        const occupancy = Math.min(100, baseOccupancy * seasonalFactor * growthFactor * randomFactor);
+        const reservations = Math.round(occupancy / 10 + Math.random() * 5);
+        const averageRate = revenue / Math.max(1, reservations);
+        
+        propertyData.push({
+          date: format(currentDate, "yyyy-MM-dd"),
+          revenue: Math.round(revenue),
+          profit: Math.round(profit),
+          occupancy: Math.round(occupancy),
+          reservations,
+          averageRate: Math.round(averageRate)
+        });
+        
+        totalRevenue += revenue;
+        totalProfit += profit;
+        totalOccupancy += occupancy;
+        
+        // Avançar para o próximo mês
+        currentDate = endOfMonth(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+      }
+      
+      // Calcular médias e crescimento
+      const avgOccupancy = totalOccupancy / propertyData.length;
+      const firstHalfData = propertyData.slice(0, Math.ceil(propertyData.length / 2));
+      const secondHalfData = propertyData.slice(Math.ceil(propertyData.length / 2));
+      
+      const firstHalfRevenue = firstHalfData.reduce((sum, item) => sum + item.revenue, 0);
+      const secondHalfRevenue = secondHalfData.reduce((sum, item) => sum + item.revenue, 0);
+      const revenueGrowth = firstHalfRevenue > 0 
+        ? ((secondHalfRevenue - firstHalfRevenue) / firstHalfRevenue) * 100 
+        : 100;
+        
+      const firstHalfProfit = firstHalfData.reduce((sum, item) => sum + item.profit, 0);
+      const secondHalfProfit = secondHalfData.reduce((sum, item) => sum + item.profit, 0);
+      const profitGrowth = firstHalfProfit > 0 
+        ? ((secondHalfProfit - firstHalfProfit) / firstHalfProfit) * 100 
+        : 100;
+        
+      const firstHalfOccupancy = firstHalfData.reduce((sum, item) => sum + item.occupancy, 0) / firstHalfData.length;
+      const secondHalfOccupancy = secondHalfData.reduce((sum, item) => sum + item.occupancy, 0) / secondHalfData.length;
+      const occupancyGrowth = firstHalfOccupancy > 0 
+        ? ((secondHalfOccupancy - firstHalfOccupancy) / firstHalfOccupancy) * 100 
+        : 100;
+      
+      properties.push({
+        propertyId: i + 1,
+        propertyName: propertyId ? "Propriedade Selecionada" : propertyNames[i],
+        data: propertyData,
+        totals: {
+          totalRevenue,
+          totalProfit,
+          averageOccupancy: avgOccupancy,
+          totalReservations: propertyData.reduce((sum, item) => sum + item.reservations, 0),
+          revenueGrowth,
+          profitGrowth,
+          occupancyGrowth
+        }
+      });
+    }
+    
+    return properties;
+  }
   
   // Calcular dados agregados para todas as propriedades
   const aggregatedData = useMemo(() => {

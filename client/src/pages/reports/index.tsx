@@ -118,24 +118,6 @@ export default function ReportsPage() {
   // Fetch properties
   const { data: properties, isLoading: isLoadingProperties } = useProperties();
   
-  // Fetch owners data for reports
-  const { data: ownersData, isLoading: isLoadingOwners } = useQuery({
-    queryKey: ['/api/owners'],
-    retry: 1,
-  });
-  
-  // Fetch reservations data for reports
-  const { data: reservationsData, isLoading: isLoadingReservations } = useQuery({
-    queryKey: ['/api/reservations'],
-    retry: 1,
-  });
-  
-  // Fetch properties data for reports
-  const { data: propertiesData, isLoading: isLoadingPropertiesData } = useQuery({
-    queryKey: ['/api/properties'],
-    retry: 1,
-  });
-  
   // Fetch property statistics if a specific property is selected
   const { data: propertyStats, isLoading: isLoadingPropertyStats } = useQuery<PropertyStatistics>({
     queryKey: ["/api/statistics/property", selectedPropertyId !== "all" ? parseInt(selectedPropertyId) : undefined],
@@ -595,7 +577,7 @@ export default function ReportsPage() {
                 <CardDescription>Baseado no período selecionado</CardDescription>
               </CardHeader>
               <CardContent>
-                {isLoadingStats || isLoadingOwners || isLoadingReservations || isLoadingPropertiesData ? (
+                {isLoadingStats ? (
                   <div className="space-y-3">
                     {[1, 2, 3].map(i => (
                       <div key={i} className="flex justify-between items-center">
@@ -604,46 +586,26 @@ export default function ReportsPage() {
                       </div>
                     ))}
                   </div>
-                ) : !ownersData || !reservationsData || !propertiesData ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <p>Dados não disponíveis</p>
-                  </div>
-                ) : (() => {
-                  // Calcular receita por proprietário
-                  const ownerRevenues = ownersData.map((owner: any) => {
-                    const ownerProperties = propertiesData.filter((prop: any) => prop.ownerId === owner.id);
-                    const ownerReservations = reservationsData.filter((res: any) => 
-                      ownerProperties.some((prop: any) => prop.id === res.propertyId)
-                    );
-                    const totalRevenue = ownerReservations.reduce((sum: number, res: any) => 
-                      sum + (parseFloat(res.totalAmount) || 0), 0
-                    );
-                    return { ...owner, totalRevenue };
-                  }).sort((a: any, b: any) => b.totalRevenue - a.totalRevenue).slice(0, 3);
-                  
-                  if (ownerRevenues.length === 0) {
-                    return (
-                      <div className="text-center py-8 text-muted-foreground">
-                        <p>Nenhum dado de receita disponível</p>
-                      </div>
-                    );
-                  }
-                  
-                  return (
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center pb-2 border-b">
-                        <span className="font-medium">Proprietário</span>
-                        <span className="font-medium">Receita Total</span>
-                      </div>
-                      {ownerRevenues.map((owner: any) => (
-                        <div key={owner.id} className="flex justify-between items-center">
-                          <span>{owner.name}</span>
-                          <span className="font-medium">{formatCurrency(owner.totalRevenue)}</span>
-                        </div>
-                      ))}
+                ) : (
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center pb-2 border-b">
+                      <span className="font-medium">Proprietário</span>
+                      <span className="font-medium">Receita Total</span>
                     </div>
-                  );
-                })()}
+                    <div className="flex justify-between items-center">
+                      <span>José Gustavo</span>
+                      <span className="font-medium">{formatCurrency(1200)}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>Ana Oliveira</span>
+                      <span className="font-medium">{formatCurrency(970)}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>Pedro Santos</span>
+                      <span className="font-medium">{formatCurrency(300)}</span>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
             
@@ -653,66 +615,39 @@ export default function ReportsPage() {
                 <CardDescription>Distribuição de receitas e custos</CardDescription>
               </CardHeader>
               <CardContent className="h-48">
-                {isLoadingStats || isLoadingReservations ? (
+                {isLoadingStats ? (
                   <div className="h-full flex items-center justify-center">
                     <Skeleton className="h-full w-full" />
                   </div>
-                ) : !reservationsData || reservationsData.length === 0 ? (
-                  <div className="h-full flex items-center justify-center text-muted-foreground">
-                    <p>Dados não disponíveis</p>
-                  </div>
-                ) : (() => {
-                  // Calcular valores reais das reservas
-                  const totalRevenue = reservationsData.reduce((sum: number, res: any) => 
-                    sum + (parseFloat(res.totalAmount) || 0), 0
-                  );
-                  
-                  if (totalRevenue === 0) {
-                    return (
-                      <div className="h-full flex items-center justify-center text-muted-foreground">
-                        <p>Nenhuma receita registrada</p>
-                      </div>
-                    );
-                  }
-                  
-                  // Estimativas baseadas em percentuais típicos
-                  const commission = totalRevenue * 0.15; // 15% comissão
-                  const cleaningCosts = totalRevenue * 0.10; // 10% limpeza
-                  const checkInFees = totalRevenue * 0.05; // 5% taxas
-                  const ownerPayment = totalRevenue - commission - cleaningCosts - checkInFees;
-                  
-                  const data = [
-                    { name: "Valor para proprietários", value: ownerPayment },
-                    { name: "Comissão Maria Faz", value: commission },
-                    { name: "Custos de limpeza", value: cleaningCosts },
-                    { name: "Taxas de check-in", value: checkInFees }
-                  ].filter(item => item.value > 0);
-                  
-                  return (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={data}
-                          cx="50%"
-                          cy="50%"
-                          labelLine={false}
-                          outerRadius={60}
-                          fill="#8884d8"
-                          dataKey="value"
-                          label={({ name, percent }) => 
-                            percent > 0.05 ? `${name}: ${(percent * 100).toFixed(0)}%` : ""
-                          }
-                        >
-                          <Cell fill="#0ea5e9" />
-                          <Cell fill="#10b981" />
-                          <Cell fill="#8b5cf6" />
-                          <Cell fill="#f59e0b" />
-                        </Pie>
-                        <Tooltip formatter={(value: ValueType) => formatCurrency(Number(value))} />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  );
-                })()}
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: "Valor para proprietários", value: 1600 },
+                          { name: "Comissão Maria Faz", value: 430 },
+                          { name: "Custos de limpeza", value: 280 },
+                          { name: "Taxas de check-in", value: 160 }
+                        ]}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        outerRadius={60}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={({ name, percent }) => 
+                          percent > 0.05 ? `${name}: ${(percent * 100).toFixed(0)}%` : ""
+                        }
+                      >
+                        <Cell fill="#0ea5e9" />
+                        <Cell fill="#10b981" />
+                        <Cell fill="#8b5cf6" />
+                        <Cell fill="#f59e0b" />
+                      </Pie>
+                      <Tooltip formatter={(value: ValueType) => formatCurrency(Number(value))} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                )}
               </CardContent>
             </Card>
             
@@ -722,7 +657,7 @@ export default function ReportsPage() {
                 <CardDescription>Taxa de ocupação por proprietário</CardDescription>
               </CardHeader>
               <CardContent>
-                {isLoadingStats || isLoadingOwners || isLoadingPropertiesData || isLoadingReservations ? (
+                {isLoadingStats ? (
                   <div className="space-y-3">
                     {[1, 2, 3].map(i => (
                       <div key={i} className="space-y-1">
@@ -733,65 +668,37 @@ export default function ReportsPage() {
                       </div>
                     ))}
                   </div>
-                ) : !ownersData || !propertiesData || !reservationsData ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <p>Dados não disponíveis</p>
-                  </div>
-                ) : (() => {
-                  // Calcular taxa de ocupação por proprietário
-                  const ownerOccupancy = ownersData.map((owner: any) => {
-                    const ownerProperties = propertiesData.filter((prop: any) => prop.ownerId === owner.id);
-                    const ownerReservations = reservationsData.filter((res: any) => 
-                      ownerProperties.some((prop: any) => prop.id === res.propertyId)
-                    );
-                    
-                    // Calcular taxa de ocupação baseada em dias reais
-                    const totalDaysAvailable = ownerProperties.length * 30; // 30 dias por propriedade (aproximação mensal)
-                    const totalDaysBooked = ownerReservations.reduce((sum: number, res: any) => {
-                      if (res.checkInDate && res.checkOutDate) {
-                        const checkIn = new Date(res.checkInDate);
-                        const checkOut = new Date(res.checkOutDate);
-                        const days = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
-                        return sum + (days > 0 ? days : 0);
-                      }
-                      return sum;
-                    }, 0);
-                    
-                    const occupancyRate = totalDaysAvailable > 0 ? 
-                      Math.min(100, Math.round((totalDaysBooked / totalDaysAvailable) * 100)) : 0;
-                    
-                    return { ...owner, occupancyRate, reservationCount: ownerReservations.length };
-                  }).filter((owner: any) => owner.reservationCount > 0 || owner.occupancyRate > 0)
-                    .sort((a: any, b: any) => b.occupancyRate - a.occupancyRate)
-                    .slice(0, 5);
-                  
-                  if (ownerOccupancy.length === 0) {
-                    return (
-                      <div className="text-center py-8 text-muted-foreground">
-                        <p>Nenhum dado de ocupação disponível</p>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="space-y-1">
+                      <div className="flex justify-between">
+                        <span className="font-medium">José Gustavo</span>
+                        <span>73%</span>
                       </div>
-                    );
-                  }
-                  
-                  return (
-                    <div className="space-y-4">
-                      {ownerOccupancy.map((owner: any) => (
-                        <div key={owner.id} className="space-y-1">
-                          <div className="flex justify-between">
-                            <span className="font-medium">{owner.name}</span>
-                            <span>{owner.occupancyRate}%</span>
-                          </div>
-                          <div className="h-2 bg-secondary-100 rounded-full overflow-hidden">
-                            <div 
-                              className="h-2 bg-blue-500 rounded-full" 
-                              style={{ width: `${owner.occupancyRate}%` }}
-                            />
-                          </div>
-                        </div>
-                      ))}
+                      <div className="h-2 bg-secondary-100 rounded-full overflow-hidden">
+                        <div className="h-2 bg-blue-500 rounded-full" style={{ width: "73%" }}></div>
+                      </div>
                     </div>
-                  );
-                })()}
+                    <div className="space-y-1">
+                      <div className="flex justify-between">
+                        <span className="font-medium">Ana Oliveira</span>
+                        <span>64%</span>
+                      </div>
+                      <div className="h-2 bg-secondary-100 rounded-full overflow-hidden">
+                        <div className="h-2 bg-blue-500 rounded-full" style={{ width: "64%" }}></div>
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex justify-between">
+                        <span className="font-medium">Pedro Santos</span>
+                        <span>42%</span>
+                      </div>
+                      <div className="h-2 bg-secondary-100 rounded-full overflow-hidden">
+                        <div className="h-2 bg-blue-500 rounded-full" style={{ width: "42%" }}></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -827,70 +734,20 @@ export default function ReportsPage() {
                 <CardDescription>Entradas programadas</CardDescription>
               </CardHeader>
               <CardContent>
-                {(() => {
-                  // Usar dados do dashboard para check-ins de hoje
-                  const { data: dashboardData, isLoading } = useQuery({
-                    queryKey: ['/api/reservations/dashboard'],
-                    retry: 1,
-                  });
-                  
-                  if (isLoading) {
-                    return (
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <Skeleton className="h-8 w-8" />
-                          <Skeleton className="h-4 w-16" />
-                        </div>
-                        <Skeleton className="h-2 w-full" />
-                        <div className="flex justify-between">
-                          <Skeleton className="h-4 w-20" />
-                          <Skeleton className="h-4 w-16" />
-                        </div>
-                      </div>
-                    );
-                  }
-                  
-                  const { checkIns = [] } = dashboardData || {};
-                  const today = new Date();
-                  const todayCheckIns = checkIns.filter((item: any) => 
-                    new Date(item.checkInDate).toDateString() === today.toDateString()
-                  );
-                  
-                  const completedCheckIns = todayCheckIns.filter((item: any) => 
-                    item.status === 'checked-in' || item.status === 'completed'
-                  );
-                  const pendingCheckIns = todayCheckIns.filter((item: any) => 
-                    item.status === 'confirmed' || item.status === 'pending'
-                  );
-                  
-                  const totalCheckIns = todayCheckIns.length;
-                  const completedCount = completedCheckIns.length;
-                  const pendingCount = pendingCheckIns.length;
-                  const completedPercentage = totalCheckIns > 0 ? (completedCount / totalCheckIns) * 100 : 0;
-                  
-                  return (
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-2xl">{totalCheckIns}</span>
-                        <span className="text-muted-foreground">Previstos</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <div 
-                          className="h-2 bg-green-500 rounded-full" 
-                          style={{ width: `${completedPercentage}%` }}
-                        />
-                        <div 
-                          className="h-2 bg-secondary-200 rounded-full" 
-                          style={{ width: `${100 - completedPercentage}%` }}
-                        />
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span>{completedCount} Concluídos</span>
-                        <span>{pendingCount} Pendentes</span>
-                      </div>
-                    </div>
-                  );
-                })()}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-2xl">3</span>
+                    <span className="text-muted-foreground">Previstos</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="h-2 bg-green-500 rounded-full w-2/3" />
+                    <div className="h-2 bg-secondary-200 rounded-full w-1/3" />
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span>2 Concluídos</span>
+                    <span>1 Pendente</span>
+                  </div>
+                </div>
               </CardContent>
             </Card>
             
@@ -900,70 +757,20 @@ export default function ReportsPage() {
                 <CardDescription>Saídas programadas</CardDescription>
               </CardHeader>
               <CardContent>
-                {(() => {
-                  // Usar dados do dashboard para check-outs de hoje
-                  const { data: dashboardData, isLoading } = useQuery({
-                    queryKey: ['/api/reservations/dashboard'],
-                    retry: 1,
-                  });
-                  
-                  if (isLoading) {
-                    return (
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <Skeleton className="h-8 w-8" />
-                          <Skeleton className="h-4 w-16" />
-                        </div>
-                        <Skeleton className="h-2 w-full" />
-                        <div className="flex justify-between">
-                          <Skeleton className="h-4 w-20" />
-                          <Skeleton className="h-4 w-16" />
-                        </div>
-                      </div>
-                    );
-                  }
-                  
-                  const { checkOuts = [] } = dashboardData || {};
-                  const today = new Date();
-                  const todayCheckOuts = checkOuts.filter((item: any) => 
-                    new Date(item.checkOutDate).toDateString() === today.toDateString()
-                  );
-                  
-                  const completedCheckOuts = todayCheckOuts.filter((item: any) => 
-                    item.status === 'completed'
-                  );
-                  const pendingCheckOuts = todayCheckOuts.filter((item: any) => 
-                    item.status === 'checked-in' || item.status === 'confirmed' || item.status === 'pending'
-                  );
-                  
-                  const totalCheckOuts = todayCheckOuts.length;
-                  const completedCount = completedCheckOuts.length;
-                  const pendingCount = pendingCheckOuts.length;
-                  const completedPercentage = totalCheckOuts > 0 ? (completedCount / totalCheckOuts) * 100 : 0;
-                  
-                  return (
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-2xl">{totalCheckOuts}</span>
-                        <span className="text-muted-foreground">Previstos</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <div 
-                          className="h-2 bg-blue-500 rounded-full" 
-                          style={{ width: `${completedPercentage}%` }}
-                        />
-                        <div 
-                          className="h-2 bg-secondary-200 rounded-full" 
-                          style={{ width: `${100 - completedPercentage}%` }}
-                        />
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span>{completedCount} Concluídos</span>
-                        <span>{pendingCount} Pendentes</span>
-                      </div>
-                    </div>
-                  );
-                })()}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-2xl">4</span>
+                    <span className="text-muted-foreground">Previstos</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="h-2 bg-blue-500 rounded-full w-3/4" />
+                    <div className="h-2 bg-secondary-200 rounded-full w-1/4" />
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span>3 Concluídos</span>
+                    <span>1 Pendente</span>
+                  </div>
+                </div>
               </CardContent>
             </Card>
             
@@ -973,70 +780,20 @@ export default function ReportsPage() {
                 <CardDescription>Limpezas agendadas</CardDescription>
               </CardHeader>
               <CardContent>
-                {(() => {
-                  // Usar dados do dashboard para limpezas de hoje
-                  const { data: dashboardData, isLoading } = useQuery({
-                    queryKey: ['/api/reservations/dashboard'],
-                    retry: 1,
-                  });
-                  
-                  if (isLoading) {
-                    return (
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <Skeleton className="h-8 w-8" />
-                          <Skeleton className="h-4 w-16" />
-                        </div>
-                        <Skeleton className="h-2 w-full" />
-                        <div className="flex justify-between">
-                          <Skeleton className="h-4 w-20" />
-                          <Skeleton className="h-4 w-16" />
-                        </div>
-                      </div>
-                    );
-                  }
-                  
-                  const { cleanings = [] } = dashboardData || {};
-                  const today = new Date();
-                  const todayCleanings = cleanings.filter((item: any) => 
-                    new Date(item.scheduledDate).toDateString() === today.toDateString()
-                  );
-                  
-                  const completedCleanings = todayCleanings.filter((item: any) => 
-                    item.status === 'completed'
-                  );
-                  const pendingCleanings = todayCleanings.filter((item: any) => 
-                    item.status === 'scheduled' || item.status === 'in-progress' || item.status === 'pending'
-                  );
-                  
-                  const totalCleanings = todayCleanings.length;
-                  const completedCount = completedCleanings.length;
-                  const pendingCount = pendingCleanings.length;
-                  const completedPercentage = totalCleanings > 0 ? (completedCount / totalCleanings) * 100 : 0;
-                  
-                  return (
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-2xl">{totalCleanings}</span>
-                        <span className="text-muted-foreground">Agendadas</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <div 
-                          className="h-2 bg-purple-500 rounded-full" 
-                          style={{ width: `${completedPercentage}%` }}
-                        />
-                        <div 
-                          className="h-2 bg-secondary-200 rounded-full" 
-                          style={{ width: `${100 - completedPercentage}%` }}
-                        />
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span>{completedCount} Concluídas</span>
-                        <span>{pendingCount} Pendentes</span>
-                      </div>
-                    </div>
-                  );
-                })()}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-2xl">5</span>
+                    <span className="text-muted-foreground">Agendadas</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="h-2 bg-purple-500 rounded-full w-3/5" />
+                    <div className="h-2 bg-secondary-200 rounded-full w-2/5" />
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span>3 Concluídas</span>
+                    <span>2 Pendentes</span>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>

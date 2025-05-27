@@ -76,7 +76,7 @@ interface DailyTask {
   propertyId?: number;
   guestName?: string;
   status: "pending" | "completed" | "in-progress" | "upcoming" | "attention";
-  type: "check-in" | "check-out" | "cleaning" | "task";
+  type: "check-in" | "check-out" | "cleaning" | "maintenance" | "task";
   icon: React.ReactNode;
   priority: "high" | "medium" | "low";
 }
@@ -166,13 +166,61 @@ export default function DailyTasksDashboard() {
     }));
   }, [todayCheckOuts, t]);
 
-
+  // Buscar tarefas de manutenção da API
+  const { data: maintenanceTasksData = [] } = useQuery({
+    queryKey: ["/api/maintenance-tasks"],
+    staleTime: 5 * 60 * 1000, // 5 minutos de cache
+  });
 
   // Memoizar o estado de demo data removido para evitar recálculos
   const demoDataRemoved = useMemo(() => isDemoDataRemoved(), []);
   
-  // Manutenção removida - não exibir tarefas de manutenção
-  const maintenanceTasks: DailyTask[] = [];
+  // Converter tarefas de manutenção para o formato DailyTask
+  const maintenanceTasks: DailyTask[] = useMemo(() => {
+    // Se os dados de demonstração foram removidos, não exibir tarefas de manutenção simuladas
+    if (demoDataRemoved) {
+      // Verificar se temos tarefas reais de manutenção (não demo)
+      // Se o array existe e tem tarefas, filtramos apenas as reais
+      if (maintenanceTasksData && Array.isArray(maintenanceTasksData) && maintenanceTasksData.length > 0) {
+        // Filtrar apenas tarefas reais (não demo)
+        return maintenanceTasksData
+          .filter(task => !task.isDemo && (task.status === "pending" || task.status === "scheduled"))
+          .map(task => ({
+            id: `maintenance-${task.id}`,
+            title: task.description.split(' - ')[0] || t("maintenance.task", "Tarefa de manutenção"),
+            description: task.description.split(' - ')[1] || task.description,
+            propertyName: task.propertyName,
+            propertyId: task.propertyId,
+            status: task.priority === "high" ? "attention" : "pending",
+            type: "maintenance",
+            icon: task.priority === "high" 
+              ? <AlertTriangle className="h-5 w-5 text-red-500" />
+              : <Wrench className="h-5 w-5 text-amber-500" />,
+            priority: task.priority
+          }));
+      }
+      return []; // Se não há tarefas ou se o array não existe, retornar vazio
+    }
+    
+    // Caso contrário, exibir todas as tarefas incluindo demo
+    if (!maintenanceTasksData || !Array.isArray(maintenanceTasksData)) return [];
+    
+    return maintenanceTasksData
+      .filter(task => task.status === "pending" || task.status === "scheduled")
+      .map(task => ({
+        id: `maintenance-${task.id}`,
+        title: task.description.split(' - ')[0] || t("maintenance.task", "Tarefa de manutenção"),
+        description: task.description.split(' - ')[1] || task.description,
+        propertyName: task.propertyName,
+        propertyId: task.propertyId,
+        status: task.priority === "high" ? "attention" : "pending",
+        type: "maintenance",
+        icon: task.priority === "high" 
+          ? <AlertTriangle className="h-5 w-5 text-red-500" />
+          : <Wrench className="h-5 w-5 text-amber-500" />,
+        priority: task.priority
+      }));
+  }, [maintenanceTasksData, t, demoDataRemoved]);
 
   // Create other tasks com useMemo - agora verifica se os dados de demonstração foram removidos
   const otherTasks: DailyTask[] = useMemo(() => {

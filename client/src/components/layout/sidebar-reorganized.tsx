@@ -347,11 +347,11 @@ export function SidebarReorganized({
     }
   ];
 
-  // Finanças - Menu simplificado sem duplicações
+  // Finanças - Menu simplificado com itens diretos, sem aninhamento duplo
   const financeNavItems = [
-    // Item de despesas
+    // Item de pagamentos
     {
-      name: "Despesas",
+      name: t("navigation.payments.expenses", "Despesas"),
       href: "/pagamentos/saida",
       altHref: "/payments/outgoing",
       icon: Euro,
@@ -359,7 +359,7 @@ export function SidebarReorganized({
     },
     // Item de recebimentos
     {
-      name: "Recebimentos",
+      name: t("navigation.payments.income", "Recebimentos"),
       href: "/pagamentos/entrada",
       altHref: "/payments/incoming",
       icon: PiggyBank,
@@ -372,10 +372,18 @@ export function SidebarReorganized({
       altHref: "/orcamentos",
       icon: FileText,
       iconColor: "text-blue-500"
+    },
+    // Item de relatórios
+    {
+      name: t("navigation.reports.financial", "Relatórios"),
+      href: isPortuguese ? "/relatorios" : "/reports",
+      altHref: isPortuguese ? "/reports" : "/relatorios",
+      icon: BarChart3,
+      iconColor: "text-emerald-500"
     }
   ];
 
-  // Operações - Apenas serviços de limpeza (manutenção removida)
+  // Operações - Serviços e manutenção - simplificados como links diretos
   const operationsNavItems = [
     // Equipe de limpeza
     {
@@ -400,19 +408,60 @@ export function SidebarReorganized({
       altHref: "/cleaning-reports",
       icon: FileSpreadsheet,
       iconColor: "text-cyan-500"
+    },
+    // Manutenção pendente
+    {
+      name: t("navigation.maintenance.pending", "Manutenção Pendente"),
+      href: "/manutencao/pendentes",
+      altHref: "/maintenance/pending",
+      icon: Wrench,
+      iconColor: "text-amber-500"
+    },
+    // Solicitação de manutenção
+    {
+      name: t("navigation.maintenance.request", "Solicitar Manutenção"),
+      href: "/manutencao/solicitacao",
+      altHref: "/maintenance/request",
+      icon: FileText,
+      iconColor: "text-amber-500"
     }
   ];
 
-  // Utilidades - Apenas configurações gerais
+  // Utilidades - Simplificado com links diretos
   const otherNavItems = [
-    // Configurações gerais - único item necessário
+    // Configurações gerais
     {
       name: t("navigation.settings", "Configurações Gerais"),
       href: "/configuracoes",
       altHref: "/settings",
       icon: Settings,
       iconColor: "text-gray-500"
-    }
+    },
+    // Notificações
+    {
+      name: t("settings.tabs.notifications", "Notificações"),
+      href: "/configuracoes?tab=notifications",
+      altHref: "/settings?tab=notifications",
+      icon: BellRing,
+      iconColor: "text-amber-400"
+    },
+    // Idioma
+    {
+      name: t("settings.tabs.language", "Idioma"),
+      href: "/configuracoes?tab=language",
+      altHref: "/settings?tab=language",
+      icon: Globe,
+      iconColor: "text-blue-500"
+    },
+    // Integrações
+    {
+      name: t("settings.tabs.integrations", "Integrações"),
+      href: "/configuracoes?tab=api",
+      altHref: "/settings?tab=api",
+      icon: Key,
+      iconColor: "text-teal-500"
+    },
+    // Opção de Dados Demo removida conforme solicitado
   ];
 
   // Se modo colapsado, apenas mostre ícones

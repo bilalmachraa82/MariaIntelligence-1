@@ -234,7 +234,7 @@ function App() {
   // Este código é executado sempre que o aplicativo é iniciado/recarregado
   useEffect(() => {
     // Forçar o modo limpo (sem dados demo) uma única vez na inicialização
-    enforceCleanMode(); // Reativado - agora sem interceptors
+    enforceCleanMode();
     console.log('Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados');
   }, []);
   
