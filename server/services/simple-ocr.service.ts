@@ -180,15 +180,19 @@ Return format:
 }]`;
 
     try {
+      // Force fresh request by adding timestamp to bypass cache
+      const timestampPrompt = prompt + `\n\n[Request ID: ${Date.now()}]`;
+      
       const model = this.genAI.getGenerativeModel({ 
         model: 'gemini-1.5-flash',
         generationConfig: {
           maxOutputTokens: 8192,
-          temperature: 0.1
+          temperature: 0.1,
+          candidateCount: 1
         }
       });
       
-      const result = await model.generateContent(prompt);
+      const result = await model.generateContent(timestampPrompt);
       const response = result.response;
       const text = response.text();
       
