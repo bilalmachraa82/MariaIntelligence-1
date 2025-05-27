@@ -4143,6 +4143,8 @@ Return this EXACT JSON structure:
 
   // EXTRACTOR DE RESERVAS v4.2 - Working implementation that extracted 38 reservations
   app.post('/api/extractor-working', upload.single('file'), async (req: Request, res: Response) => {
+    console.log('🚀 EXTRACTOR v4.2 endpoint hit!');
+    res.setHeader('Content-Type', 'application/json');
     try {
       if (!req.file) {
         return res.status(400).json({ error: 'Arquivo não fornecido' });
