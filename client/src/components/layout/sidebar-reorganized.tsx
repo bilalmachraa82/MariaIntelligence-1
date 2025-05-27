@@ -347,11 +347,11 @@ export function SidebarReorganized({
     }
   ];
 
-  // Finanças - Menu simplificado com itens diretos, sem aninhamento duplo
+  // Finanças - Menu simplificado sem duplicações
   const financeNavItems = [
-    // Item de pagamentos
+    // Item de despesas
     {
-      name: t("navigation.payments.expenses", "Despesas"),
+      name: "Despesas",
       href: "/pagamentos/saida",
       altHref: "/payments/outgoing",
       icon: Euro,
@@ -359,7 +359,7 @@ export function SidebarReorganized({
     },
     // Item de recebimentos
     {
-      name: t("navigation.payments.income", "Recebimentos"),
+      name: "Recebimentos",
       href: "/pagamentos/entrada",
       altHref: "/payments/incoming",
       icon: PiggyBank,
@@ -372,18 +372,10 @@ export function SidebarReorganized({
       altHref: "/orcamentos",
       icon: FileText,
       iconColor: "text-blue-500"
-    },
-    // Item de relatórios
-    {
-      name: t("navigation.reports.financial", "Relatórios"),
-      href: isPortuguese ? "/relatorios" : "/reports",
-      altHref: isPortuguese ? "/reports" : "/relatorios",
-      icon: BarChart3,
-      iconColor: "text-emerald-500"
     }
   ];
 
-  // Operações - Serviços e manutenção - simplificados como links diretos
+  // Operações - Apenas serviços de limpeza (manutenção removida)
   const operationsNavItems = [
     // Equipe de limpeza
     {
@@ -408,22 +400,6 @@ export function SidebarReorganized({
       altHref: "/cleaning-reports",
       icon: FileSpreadsheet,
       iconColor: "text-cyan-500"
-    },
-    // Manutenção pendente
-    {
-      name: t("navigation.maintenance.pending", "Manutenção Pendente"),
-      href: "/manutencao/pendentes",
-      altHref: "/maintenance/pending",
-      icon: Wrench,
-      iconColor: "text-amber-500"
-    },
-    // Solicitação de manutenção
-    {
-      name: t("navigation.maintenance.request", "Solicitar Manutenção"),
-      href: "/manutencao/solicitacao",
-      altHref: "/maintenance/request",
-      icon: FileText,
-      iconColor: "text-amber-500"
     }
   ];
 

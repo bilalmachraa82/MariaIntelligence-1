@@ -44,75 +44,76 @@ export function Sidebar({ className }: SidebarProps) {
     altHref?: string;
   }
 
-  // Links dinâmicos baseados no idioma organizados por categoria
+  // Links principais - funcionalidades mais usadas diariamente
   const mainLinks: NavLink[] = [
     {
-      title: t("navigation.dashboard"),
+      title: "Início",
       href: isPortuguese ? "/painel" : "/dashboard",
-      altHref: "/", // Ambos redirecionam para a mesma página
+      altHref: "/",
       icon: Home,
       description: "Visão geral do sistema",
     },
     {
-      title: t("navigation.properties"),
-      href: isPortuguese ? "/propriedades" : "/properties",
-      icon: Building2,
-      description: "Gerencie todas as propriedades",
-    },
-    {
-      title: t("navigation.reservations"),
+      title: "Reservas",
       href: isPortuguese ? "/reservas" : "/reservations",
       icon: CalendarDays,
-      description: "Controle suas reservas",
+      description: "Gestão de reservas e check-ins",
     },
     {
-      title: t("quotation.title", "Orçamentos"),
-      href: isPortuguese ? "/orcamentos" : "/quotations",
-      icon: Calculator,
-      description: "Gerencie orçamentos para serviços de limpeza",
+      title: "Propriedades",
+      href: isPortuguese ? "/propriedades" : "/properties",
+      icon: Building2,
+      description: "Gestão de imóveis",
     },
     {
-      title: t("navigation.owners"),
+      title: "Proprietários",
       href: isPortuguese ? "/proprietarios" : "/owners",
       icon: UserCog,
-      description: "Gerenciar proprietários",
-    },
-  ];
-  
-  const toolsLinks: NavLink[] = [
-    {
-      title: t("navigation.pdfUpload"),
-      href: "/simple-ocr",
-      icon: FileUp,
-      description: "Upload e processamento de PDFs",
-    },
-
-    {
-      title: t("navigation.aiAssistant"),
-      href: isPortuguese ? "/assistente" : "/assistant",
-      icon: Bot,
-      description: "Assistente inteligente Maria",
-    },
-  ];
-  
-  const managementLinks: NavLink[] = [
-    {
-      title: t("navigation.cleaningTeams"),
-      href: isPortuguese ? "/equipas-limpeza" : "/cleaning-teams",
-      icon: Brush,
-      description: "Equipas de limpeza",
+      description: "Gestão de proprietários",
     },
     {
-      title: t("navigation.reports"),
+      title: "Relatórios",
       href: isPortuguese ? "/relatorios" : "/reports",
       icon: BarChart3,
-      description: "Estatísticas e relatórios",
+      description: "Análises e estatísticas",
+    },
+  ];
+  
+  // Ferramentas e serviços (sem duplicações)
+  const serviceLinks: NavLink[] = [
+    {
+      title: "Orçamentos",
+      href: isPortuguese ? "/orcamentos" : "/quotations",
+      icon: Calculator,
+      description: "Orçamentos para serviços",
     },
     {
-      title: t("navigation.settings"),
+      title: "Equipas de Limpeza",
+      href: isPortuguese ? "/equipas-limpeza" : "/cleaning-teams",
+      icon: Brush,
+      description: "Gestão de equipas",
+    },
+    {
+      title: "Scanner",
+      href: "/simple-ocr",
+      icon: FileUp,
+      description: "Digitalização de documentos",
+    },
+    {
+      title: "Assistente IA",
+      href: isPortuguese ? "/assistente" : "/assistant",
+      icon: Bot,
+      description: "Suporte inteligente",
+    },
+  ];
+  
+  // Configurações simplificadas
+  const settingsLinks: NavLink[] = [
+    {
+      title: "Configurações",
       href: isPortuguese ? "/configuracoes" : "/settings",
       icon: Settings,
-      description: "Configurações do sistema",
+      description: "Configurações gerais",
     },
   ];
   
