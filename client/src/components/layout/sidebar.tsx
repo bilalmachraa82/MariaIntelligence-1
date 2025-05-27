@@ -16,13 +16,6 @@ import {
   LogOut,
   Calculator,
   Menu,
-  Wrench,
-  BadgeDollarSign,
-  ClipboardList,
-  Receipt,
-  FileText,
-  CreditCard,
-  Banknote,
   Database
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -234,71 +227,7 @@ export function Sidebar({ className }: SidebarProps) {
               </div>
             </div>
             
-            {/* Seção Manutenção */}
-            <div>
-              <h3 className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center">
-                <Wrench className="mr-1 h-3 w-3" />
-                {t("navigation.maintenance")}
-              </h3>
-              <div className="mt-2 space-y-1">
-                {maintenanceLinks.map((link) => (
-                  <TooltipProvider key={link.href}>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div
-                          className={cn(
-                            "flex items-center px-3 py-2 text-sm font-medium rounded-md group cursor-pointer transition-all",
-                            isLinkActive(link.href, link.altHref)
-                              ? "bg-gradient-to-r from-yellow-500 to-yellow-600 text-white"
-                              : "text-maria-dark dark:text-white hover:bg-yellow-100 hover:bg-opacity-30 dark:hover:bg-yellow-900 dark:hover:bg-opacity-20"
-                          )}
-                          onClick={() => handleLinkClick(link.href)}
-                        >
-                          <link.icon className="mr-3 h-5 w-5" />
-                          {link.title}
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent side="right">
-                        <p>{link.description}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                ))}
-              </div>
-            </div>
-            
-            {/* Seção Finanças */}
-            <div>
-              <h3 className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center">
-                <BadgeDollarSign className="mr-1 h-3 w-3" />
-                {t("navigation.payments")}
-              </h3>
-              <div className="mt-2 space-y-1">
-                {paymentLinks.map((link) => (
-                  <TooltipProvider key={link.href}>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div
-                          className={cn(
-                            "flex items-center px-3 py-2 text-sm font-medium rounded-md group cursor-pointer transition-all",
-                            isLinkActive(link.href, link.altHref)
-                              ? "bg-gradient-to-r from-green-500 to-green-600 text-white"
-                              : "text-maria-dark dark:text-white hover:bg-green-100 hover:bg-opacity-30 dark:hover:bg-green-900 dark:hover:bg-opacity-20"
-                          )}
-                          onClick={() => handleLinkClick(link.href)}
-                        >
-                          <link.icon className="mr-3 h-5 w-5" />
-                          {link.title}
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent side="right">
-                        <p>{link.description}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                ))}
-              </div>
-            </div>
+
             
             {/* Seção Ferramentas */}
             <div>
