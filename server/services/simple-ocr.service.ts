@@ -238,49 +238,29 @@ ${text}`;
     
     const lines = text.split('\n');
     for (const line of lines) {
-      const datePattern = /(\d{2}\/\d{2}\/\d{4})/g;
-      const dates = line.match(datePattern);
+      // Procurar linhas com padrão específico do Aroeira: DD/MM/YYYYDD/MM/YYYYnúmeroNome...
+      const aroeiraPattern = /(\d{2}\/\d{2}\/\d{4})(\d{2}\/\d{2}\/\d{4})(\d+)([A-Za-z]+)(\d+)([A-Za-z]+)(Booking|Airbnb)/;
+      const match = line.match(aroeiraPattern);
       
-      if (dates && dates.length >= 2) {
-        const parts = line.split(/\s+/);
-        let nome = '';
-        let hospedes = 2;
-        let pais = '';
-        let site = 'Booking.com';
+      if (match) {
+        const [, dataEntrada, dataSaida, noites, nome, hospedes, pais, site] = match;
         
-        for (const part of parts) {
-          if (!datePattern.test(part) && 
-              !part.match(/^\d+$/) && 
-              part.length > 1 && 
-              !part.toLowerCase().includes('booking')) {
-            if (!nome) {
-              nome = part;
-            } else if (!pais && part.length > 2) {
-              pais = part;
-            }
-          } else if (part.match(/^\d+$/) && parseInt(part) <= 10) {
-            hospedes = parseInt(part);
-          }
-        }
+        const data_entrada = this.formatDateToISO(dataEntrada);
+        const data_saida = this.formatDateToISO(dataSaida);
         
-        if (nome && dates[0] && dates[1]) {
-          const data_entrada = this.formatDateToISO(dates[0]);
-          const data_saida = this.formatDateToISO(dates[1]);
-          
-          reservations.push({
-            data_entrada,
-            data_saida,
-            noites: this.calculateNights(data_entrada, data_saida),
-            nome,
-            hospedes,
-            pais,
-            site,
-            telefone: '',
-            observacoes: 'Extraído manualmente do documento Aroeira'
-          });
-          
-          console.log(`✅ Reserva manual: ${nome} (${data_entrada} → ${data_saida})`);
-        }
+        reservations.push({
+          data_entrada,
+          data_saida,
+          noites: parseInt(noites),
+          nome,
+          hospedes: parseInt(hospedes),
+          pais,
+          site,
+          telefone: '',
+          observacoes: 'Extraído manualmente do documento Aroeira'
+        });
+        
+        console.log(`✅ Reserva manual: ${nome} (${data_entrada} → ${data_saida})`);
       }
     }
     
