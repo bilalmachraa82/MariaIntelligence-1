@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertTriangle, Users, Database } from "lucide-react";
+import { AlertTriangle, Users, Database, Sparkles } from "lucide-react";
 
 export default function CleaningReportsPage() {
   const { t } = useTranslation();

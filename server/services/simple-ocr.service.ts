@@ -118,6 +118,49 @@ EXTRAI TODAS AS RESERVAS:`;
     }
   }
 
+  async processFile(filePath: string): Promise<OCRResult> {
+    try {
+      // Import pdf-parse dynamically to handle PDF files
+      const pdfParse = (await import('pdf-parse')).default;
+      const fs = await import('fs');
+      
+      // Read and process the PDF file
+      const dataBuffer = fs.readFileSync(filePath);
+      const pdfData = await pdfParse(dataBuffer);
+      
+      // Extract reservations from the PDF text
+      return await this.extractReservationsFromText(pdfData.text);
+    } catch (error) {
+      console.error('Erro ao processar arquivo:', error);
+      return {
+        success: false,
+        reservations: [],
+        processingTime: 0,
+        message: `Erro ao processar arquivo: ${error instanceof Error ? error.message : 'Erro desconhecido'}`
+      };
+    }
+  }
+
+  async consolidateReservations(checkInData: any[], checkOutData: any[]): Promise<any[]> {
+    // Simple consolidation logic - merge check-in and check-out data
+    const consolidated = [];
+    
+    for (const checkIn of checkInData) {
+      const matchingCheckOut = checkOutData.find(checkOut => 
+        checkOut.nome === checkIn.nome && 
+        checkOut.data_entrada === checkIn.data_entrada
+      );
+      
+      consolidated.push({
+        ...checkIn,
+        data_saida: matchingCheckOut?.data_saida || checkIn.data_saida,
+        observacoes: `${checkIn.observacoes || ''} ${matchingCheckOut?.observacoes || ''}`.trim()
+      });
+    }
+    
+    return consolidated;
+  }
+
   private validateAndCleanReservations(reservations: any[]): ExtractedReservation[] {
     return reservations
       .filter(reservation => {
