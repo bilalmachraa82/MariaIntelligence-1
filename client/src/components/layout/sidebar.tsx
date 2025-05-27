@@ -123,37 +123,7 @@ export function Sidebar({ className }: SidebarProps) {
     },
   ];
   
-  // Links para Manutenção
-  const maintenanceLinks: NavLink[] = [
-    {
-      title: t("navigation.pendingTasks"),
-      href: isPortuguese ? "/manutencao/pendentes" : "/maintenance/pending",
-      icon: ClipboardList,
-      description: "Lista de tarefas de manutenção pendentes",
-    },
-    {
-      title: t("navigation.requestMaintenance"),
-      href: isPortuguese ? "/manutencao/solicitacao" : "/maintenance/request",
-      icon: Wrench,
-      description: "Registrar nova solicitação de manutenção",
-    },
-  ];
 
-  // Links para Pagamentos
-  const paymentLinks: NavLink[] = [
-    {
-      title: t("navigation.outgoingPayments"),
-      href: isPortuguese ? "/pagamentos/saida" : "/payments/outgoing",
-      icon: Receipt,
-      description: "Pagamentos pendentes a equipas e fornecedores",
-    },
-    {
-      title: t("navigation.incomingPayments"),
-      href: isPortuguese ? "/pagamentos/entrada" : "/payments/incoming",
-      icon: BadgeDollarSign,
-      description: "Receitas a receber de proprietários e plataformas",
-    },
-  ];
   
   // Links para Desenvolvimento e Utilidades
   const utilityLinks: NavLink[] = [

@@ -1,0 +1,1429 @@
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Almada 1 Bernardo T3 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Casa dos Barcos T1 → Barcos (Check-in) (ID: 10)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São João Batista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Almada Noronha 37 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Almada 1 Bernardo T3 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Óbidos T3 → Óbidos (ID: 28)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São João Batista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Almada 1 Bernardo T3 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Almada Noronha 37 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São João Batista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São João Batista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Casa dos Barcos T1 → Barcos (Check-in) (ID: 10)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Almada Noronha 37 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São João Batista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São João Batista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São João Batista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Casa dos Barcos T1 → Barcos (Check-in) (ID: 10)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Almada Noronha 37 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São JoãoBatista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Almada 1Bernardo T3 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: AlmadaNoronha 37 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Óbidos T3 → Óbidos (ID: 28)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Casa dosBarcos T1 → Barcos (Check-in) (ID: 10)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: AlmadaNoronha 37 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São JoãoBatista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Almada 1Bernardo T3 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São JoãoBatista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Almada 1Bernardo T3 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São JoãoBatista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: AlmadaNoronha 37 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São JoãoBatista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São JoãoBatista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: AlmadaNoronha 37 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São JoãoBatista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Casa dosBarcos T1 → Barcos (Check-in) (ID: 10)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São JoãoBatista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: AlmadaNoronha 37 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.notifications Notificações
+Console.js:61 Chave de tradução faltando: settings.tabs.notifications
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:442
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.language Idioma
+Console.js:61 Chave de tradução faltando: settings.tabs.language
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:450
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.integrations Integrações
+Console.js:61 Chave de tradução faltando: settings.tabs.integrations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:458
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 Fetch URL modificada: /api/reservations?status=pending&demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61
+(anonymous) @ chunk-35NWVKDH.js?v=eef0c531:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=eef0c531:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=eef0c531:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=eef0c531:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=eef0c531:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=eef0c531:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=eef0c531:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=eef0c531:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=eef0c531:19416
+commitRoot @ chunk-RPCDYKBN.js?v=eef0c531:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 Fetch URL modificada: /api/reservations/dashboard
+Console.js:61 Fetch URL modificada: /api/reservations/dashboard?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/activities
+Console.js:61 Fetch URL modificada: /api/activities?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/statistics
+Console.js:61 Fetch URL modificada: /api/statistics?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.notifications Notificações
+Console.js:61 Chave de tradução faltando: settings.tabs.notifications
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:442
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.language Idioma
+Console.js:61 Chave de tradução faltando: settings.tabs.language
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:450
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.integrations Integrações
+Console.js:61 Chave de tradução faltando: settings.tabs.integrations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:458
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61
+(anonymous) @ chunk-35NWVKDH.js?v=eef0c531:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=eef0c531:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=eef0c531:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=eef0c531:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=eef0c531:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=eef0c531:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=eef0c531:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=eef0c531:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=eef0c531:19416
+commitRoot @ chunk-RPCDYKBN.js?v=eef0c531:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.notifications Notificações
+Console.js:61 Chave de tradução faltando: settings.tabs.notifications
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:442
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.language Idioma
+Console.js:61 Chave de tradução faltando: settings.tabs.language
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:450
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.integrations Integrações
+Console.js:61 Chave de tradução faltando: settings.tabs.integrations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:458
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.notifications Notificações
+Console.js:61 Chave de tradução faltando: settings.tabs.notifications
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:442
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.language Idioma
+Console.js:61 Chave de tradução faltando: settings.tabs.language
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:450
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.integrations Integrações
+Console.js:61 Chave de tradução faltando: settings.tabs.integrations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:458
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 Fetch URL modificada: /api/reservations
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/enums?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+[Violation] 'setTimeout' handler took <N>ms
+[Violation] 'setTimeout' handler took <N>ms
+[Violation] 'setTimeout' handler took <N>ms
+[Violation] 'setTimeout' handler took <N>ms
+[Violation] 'setTimeout' handler took <N>ms
+[Violation] 'setTimeout' handler took <N>ms
+[Violation] 'setTimeout' handler took <N>ms
+[Violation] 'setTimeout' handler took <N>ms
+[Violation] 'setTimeout' handler took <N>ms
+[Violation] 'requestAnimationFrame' handler took <N>ms
+[Violation] 'requestAnimationFrame' handler took <N>ms
+[Violation] 'requestAnimationFrame' handler took <N>ms
+[Violation] 'requestAnimationFrame' handler took <N>ms
+[Violation] 'requestAnimationFrame' handler took <N>ms
+[Violation] 'requestAnimationFrame' handler took <N>ms
+[Violation] 'requestAnimationFrame' handler took <N>ms
+[Violation] 'requestAnimationFrame' handler took <N>ms
+[Violation] 'requestAnimationFrame' handler took <N>ms
+[Violation] 'requestAnimationFrame' handler took <N>ms
+[Violation] 'requestAnimationFrame' handler took <N>ms
+[Violation] 'requestAnimationFrame' handler took <N>ms
+[Violation] 'requestAnimationFrame' handler took <N>ms
+[Violation] 'requestAnimationFrame' handler took <N>ms
+[Violation] 'requestAnimationFrame' handler took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+[Violation] Forced reflow while executing JavaScript took <N>ms
+Console.js:61 [vite] hot updated: /src/pages/SimpleOCR.tsx
+Console.js:61 [vite] hot updated: /src/index.css?v=Ik_3KKDl-k59O5RqMeBTz
+ [vite] hot updated: /src/pages/SimpleOCR.tsx
+ [vite] hot updated: /src/index.css?v=Ik_3KKDl-k59O5RqMeBTz
+Console.js:61 Fetch URL modificada: /api/properties
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/enums?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+[Violation] 'requestIdleCallback' handler took 120ms
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://www.google.com" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+Console.js:61 Fetch URL modificada: /api/properties
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/enums?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+[Violation] 'requestIdleCallback' handler took 492ms
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.notifications Notificações
+Console.js:61 Chave de tradução faltando: settings.tabs.notifications
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:442
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.language Idioma
+Console.js:61 Chave de tradução faltando: settings.tabs.language
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:450
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.integrations Integrações
+Console.js:61 Chave de tradução faltando: settings.tabs.integrations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:458
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 Fetch URL modificada: /api/reservations?status=pending&demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61
+(anonymous) @ chunk-35NWVKDH.js?v=eef0c531:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=eef0c531:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=eef0c531:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=eef0c531:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=eef0c531:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=eef0c531:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=eef0c531:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=eef0c531:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=eef0c531:19416
+commitRoot @ chunk-RPCDYKBN.js?v=eef0c531:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.notifications Notificações
+Console.js:61 Chave de tradução faltando: settings.tabs.notifications
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:442
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.language Idioma
+Console.js:61 Chave de tradução faltando: settings.tabs.language
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:450
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.integrations Integrações
+Console.js:61 Chave de tradução faltando: settings.tabs.integrations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:458
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.notifications Notificações
+Console.js:61 Chave de tradução faltando: settings.tabs.notifications
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:442
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.language Idioma
+Console.js:61 Chave de tradução faltando: settings.tabs.language
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:450
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.integrations Integrações
+Console.js:61 Chave de tradução faltando: settings.tabs.integrations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:458
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.notifications Notificações
+Console.js:61 Chave de tradução faltando: settings.tabs.notifications
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:442
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.language Idioma
+Console.js:61 Chave de tradução faltando: settings.tabs.language
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:450
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.integrations Integrações
+Console.js:61 Chave de tradução faltando: settings.tabs.integrations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:458
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61
+(anonymous) @ chunk-35NWVKDH.js?v=eef0c531:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=eef0c531:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=eef0c531:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=eef0c531:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=eef0c531:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=eef0c531:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=eef0c531:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=eef0c531:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=eef0c531:19416
+commitRoot @ chunk-RPCDYKBN.js?v=eef0c531:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.notifications Notificações
+Console.js:61 Chave de tradução faltando: settings.tabs.notifications
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:442
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.language Idioma
+Console.js:61 Chave de tradução faltando: settings.tabs.language
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:450
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.integrations Integrações
+Console.js:61 Chave de tradução faltando: settings.tabs.integrations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:458
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.notifications Notificações
+Console.js:61 Chave de tradução faltando: settings.tabs.notifications
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:442
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.language Idioma
+Console.js:61 Chave de tradução faltando: settings.tabs.language
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:450
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.integrations Integrações
+Console.js:61 Chave de tradução faltando: settings.tabs.integrations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:458
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation cleaningTeams.schedules.title Agendamentos de Limpeza
+Console.js:61 Chave de tradução faltando: cleaningTeams.schedules.title
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+CleaningSchedulesPage @ schedules.tsx:203
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation cleaningTeams.schedules.filters Filtros
+Console.js:61 Chave de tradução faltando: cleaningTeams.schedules.filters
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+CleaningSchedulesPage @ schedules.tsx:209
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation cleaningTeams.schedules.filtersDescription Filtre os agendamentos por equipa, status e tipo
+Console.js:61 Chave de tradução faltando: cleaningTeams.schedules.filtersDescription
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+CleaningSchedulesPage @ schedules.tsx:211
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation cleaningTeams.select Selecionar Prestador
+Console.js:61 Chave de tradução faltando: cleaningTeams.select
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+CleaningSchedulesPage @ schedules.tsx:217
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation cleaningTeams.selectTeam Todos os prestadores
+Console.js:61 Chave de tradução faltando: cleaningTeams.selectTeam
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+CleaningSchedulesPage @ schedules.tsx:223
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation cleaningTeams.schedules.status Status
+Console.js:61 Chave de tradução faltando: cleaningTeams.schedules.status
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+CleaningSchedulesPage @ schedules.tsx:237
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation cleaningTeams.schedules.allStatuses Todos os status
+Console.js:61 Chave de tradução faltando: cleaningTeams.schedules.allStatuses
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+CleaningSchedulesPage @ schedules.tsx:243
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation cleaningTeams.schedules.type Tipo
+Console.js:61 Chave de tradução faltando: cleaningTeams.schedules.type
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+CleaningSchedulesPage @ schedules.tsx:254
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation cleaningTeams.schedules.allTypes Todos os tipos
+Console.js:61 Chave de tradução faltando: cleaningTeams.schedules.allTypes
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+CleaningSchedulesPage @ schedules.tsx:260
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation cleaningTeams.schedules.calendarView Visualização de Calendário
+Console.js:61 Chave de tradução faltando: cleaningTeams.schedules.calendarView
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+CleaningSchedulesPage @ schedules.tsx:275
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation cleaningTeams.schedules.listView Visualização em Lista
+Console.js:61 Chave de tradução faltando: cleaningTeams.schedules.listView
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+CleaningSchedulesPage @ schedules.tsx:276
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation cleaningTeams.schedules.calendarTitle Calendário de Agendamentos
+Console.js:61 Chave de tradução faltando: cleaningTeams.schedules.calendarTitle
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+CleaningSchedulesPage @ schedules.tsx:282
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation cleaningTeams.schedules.calendarDescription Selecione uma data para ver os agendamentos
+Console.js:61 Chave de tradução faltando: cleaningTeams.schedules.calendarDescription
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+CleaningSchedulesPage @ schedules.tsx:284
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation cleaningTeams.schedules.listTitle Lista de Agendamentos
+Console.js:61 Chave de tradução faltando: cleaningTeams.schedules.listTitle
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+CleaningSchedulesPage @ schedules.tsx:347
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation cleaningTeams.schedules.listDescription Visualize todos os agendamentos futuros
+Console.js:61 Chave de tradução faltando: cleaningTeams.schedules.listDescription
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+CleaningSchedulesPage @ schedules.tsx:349
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.notifications Notificações
+Console.js:61 Chave de tradução faltando: settings.tabs.notifications
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:442
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.language Idioma
+Console.js:61 Chave de tradução faltando: settings.tabs.language
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:450
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.integrations Integrações
+Console.js:61 Chave de tradução faltando: settings.tabs.integrations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:458
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.notifications Notificações
+Console.js:61 Chave de tradução faltando: settings.tabs.notifications
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:442
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.language Idioma
+Console.js:61 Chave de tradução faltando: settings.tabs.language
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:450
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.integrations Integrações
+Console.js:61 Chave de tradução faltando: settings.tabs.integrations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:458
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61
+(anonymous) @ chunk-35NWVKDH.js?v=eef0c531:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=eef0c531:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=eef0c531:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=eef0c531:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=eef0c531:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=eef0c531:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=eef0c531:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=eef0c531:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=eef0c531:19416
+commitRoot @ chunk-RPCDYKBN.js?v=eef0c531:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.notifications Notificações
+Console.js:61 Chave de tradução faltando: settings.tabs.notifications
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:442
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.language Idioma
+Console.js:61 Chave de tradução faltando: settings.tabs.language
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:450
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.integrations Integrações
+Console.js:61 Chave de tradução faltando: settings.tabs.integrations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:458
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.notifications Notificações
+Console.js:61 Chave de tradução faltando: settings.tabs.notifications
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:442
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.language Idioma
+Console.js:61 Chave de tradução faltando: settings.tabs.language
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:450
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation settings.tabs.integrations Integrações
+Console.js:61 Chave de tradução faltando: settings.tabs.integrations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+SidebarReorganized @ sidebar-reorganized.tsx:458
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 Fetch URL modificada: /api/simple-ocr/process-multiple?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Almada 1 Bernardo T3 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ❌ Propriedade não encontrada: Casa dos Barcos T1
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São João Batista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Almada Noronha 37 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Almada 1 Bernardo T3 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Óbidos T3 → Óbidos (ID: 28)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São João Batista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Almada 1 Bernardo T3 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Almada Noronha 37 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São João Batista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São João Batista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ❌ Propriedade não encontrada: Casa dos Barcos T1
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Almada Noronha 37 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São João Batista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São João Batista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São João Batista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ❌ Propriedade não encontrada: Casa dos Barcos T1
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Almada Noronha 37 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São JoãoBatista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Almada 1Bernardo T3 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: AlmadaNoronha 37 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Óbidos T3 → Óbidos (ID: 28)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ❌ Propriedade não encontrada: Casa dosBarcos T1
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: AlmadaNoronha 37 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São JoãoBatista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Almada 1Bernardo T3 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São JoãoBatista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: Almada 1Bernardo T3 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São JoãoBatista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: AlmadaNoronha 37 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São JoãoBatista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São JoãoBatista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: AlmadaNoronha 37 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São JoãoBatista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ❌ Propriedade não encontrada: Casa dosBarcos T1
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: São JoãoBatista T3 → João Batista (ID: 16)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ✅ Propriedade encontrada: AlmadaNoronha 37 → Almada rei (ID: 7)
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
