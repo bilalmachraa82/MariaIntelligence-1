@@ -1915,21 +1915,11 @@ Return this EXACT JSON structure:
    * Endpoint para limpar memória da IA
    * Simples endpoint que sempre retorna sucesso
    */
-  app.post("/api/clear-ai-memory", async (_req: Request, res: Response) => {
-    try {
-      // Para efeitos de demonstração, sempre retorna sucesso
-      // A funcionalidade de memória é principalmente conceptual
-      res.json({
-        success: true,
-        message: "Memória da IA limpa com sucesso"
-      });
-    } catch (error: any) {
-      res.status(500).json({
-        success: false,
-        message: "Erro ao limpar memória da IA",
-        error: error.message
-      });
-    }
+  app.post("/api/clear-ai-memory", (_req: Request, res: Response) => {
+    res.json({
+      success: true,
+      message: "Memória da IA limpa com sucesso"
+    });
   });
   
   /**
