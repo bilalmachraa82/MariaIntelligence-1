@@ -19,7 +19,7 @@ export default function SettingsPage() {
   // Verificar estado da conexão com IA
   const [isCheckingAI, setIsCheckingAI] = useState(false);
   const [aiConnected, setAiConnected] = useState(false);
-  const [isClearingMemory, setIsClearingMemory] = useState(false);
+
 
   // Buscar dados reais do sistema
   const { data: properties = [] } = useQuery({
@@ -63,36 +63,7 @@ export default function SettingsPage() {
     }
   };
 
-  const clearAIMemory = async () => {
-    setIsClearingMemory(true);
-    try {
-      const response = await fetch('/api/clear-ai-memory', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      const data = await response.json();
-      
-      if (data.success) {
-        toast({
-          title: "Memória Limpa! 🧠✨",
-          description: "A Maria esqueceu todas as conversas anteriores e vai cumprimentar-te novamente!",
-        });
-      } else {
-        throw new Error(data.message || 'Erro desconhecido');
-      }
-    } catch (error) {
-      toast({
-        title: "Erro ao Limpar Memória",
-        description: "Não foi possível limpar a memória da IA. Tente novamente.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsClearingMemory(false);
-    }
-  };
+
 
   return (
     <div className="container mx-auto py-6 max-w-4xl">
@@ -284,21 +255,7 @@ export default function SettingsPage() {
                   </ol>
                 </div>
                 
-                <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                  <h4 className="font-medium text-amber-900 mb-2">Gestão da Memória da IA</h4>
-                  <p className="text-sm text-amber-800 mb-3">
-                    Limpe toda a memória das conversas anteriores para começar do zero.
-                  </p>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="border-amber-300 text-amber-800 hover:bg-amber-100"
-                    onClick={clearAIMemory}
-                    disabled={isClearingMemory}
-                  >
-                    {isClearingMemory ? "A limpar..." : "Limpar Memória da IA"}
-                  </Button>
-                </div>
+
               </div>
             </CardContent>
           </Card>
