@@ -136,6 +136,12 @@ export default function ReportsPage() {
     retry: 1,
   });
   
+  // Fetch dashboard data for operational reports
+  const { data: dashboardData, isLoading: isLoadingDashboard } = useQuery({
+    queryKey: ['/api/reservations/dashboard'],
+    retry: 1,
+  });
+  
   // Fetch property statistics if a specific property is selected
   const { data: propertyStats, isLoading: isLoadingPropertyStats } = useQuery<PropertyStatistics>({
     queryKey: ["/api/statistics/property", selectedPropertyId !== "all" ? parseInt(selectedPropertyId) : undefined],
@@ -650,7 +656,7 @@ export default function ReportsPage() {
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-base">Visão Geral de Pagamentos</CardTitle>
-                <CardDescription>Distribuição de receitas e custos</CardDescription>
+                <CardDescription>Receita total das reservas</CardDescription>
               </CardHeader>
               <CardContent className="h-48">
                 {isLoadingStats || isLoadingReservations ? (
@@ -675,42 +681,18 @@ export default function ReportsPage() {
                     );
                   }
                   
-                  // Estimativas baseadas em percentuais típicos
-                  const commission = totalRevenue * 0.15; // 15% comissão
-                  const cleaningCosts = totalRevenue * 0.10; // 10% limpeza
-                  const checkInFees = totalRevenue * 0.05; // 5% taxas
-                  const ownerPayment = totalRevenue - commission - cleaningCosts - checkInFees;
-                  
-                  const data = [
-                    { name: "Valor para proprietários", value: ownerPayment },
-                    { name: "Comissão Maria Faz", value: commission },
-                    { name: "Custos de limpeza", value: cleaningCosts },
-                    { name: "Taxas de check-in", value: checkInFees }
-                  ].filter(item => item.value > 0);
-                  
                   return (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={data}
-                          cx="50%"
-                          cy="50%"
-                          labelLine={false}
-                          outerRadius={60}
-                          fill="#8884d8"
-                          dataKey="value"
-                          label={({ name, percent }) => 
-                            percent > 0.05 ? `${name}: ${(percent * 100).toFixed(0)}%` : ""
-                          }
-                        >
-                          <Cell fill="#0ea5e9" />
-                          <Cell fill="#10b981" />
-                          <Cell fill="#8b5cf6" />
-                          <Cell fill="#f59e0b" />
-                        </Pie>
-                        <Tooltip formatter={(value: ValueType) => formatCurrency(Number(value))} />
-                      </PieChart>
-                    </ResponsiveContainer>
+                    <div className="h-full flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-primary mb-2">
+                          {formatCurrency(totalRevenue)}
+                        </div>
+                        <p className="text-sm text-muted-foreground">Receita Total das Reservas</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {reservationsData.length} reserva{reservationsData.length !== 1 ? 's' : ''}
+                        </p>
+                      </div>
+                    </div>
                   );
                 })()}
               </CardContent>
