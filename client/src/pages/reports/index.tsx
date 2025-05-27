@@ -51,6 +51,7 @@ interface DateRange {
   label: string;
 }
 
+// Interface para representar os dados de estatísticas gerais
 interface Statistics {
   totalRevenue: number;
   netProfit: number;
@@ -59,6 +60,7 @@ interface Statistics {
   topProperties: PropertyStatistics[];
 }
 
+// Interface para representar os dados de estatísticas de propriedades
 interface PropertyStatistics {
   id: number;
   name: string;
@@ -108,108 +110,43 @@ export default function ReportsPage() {
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange>(dateRanges[0]);
   const [selectedPropertyId, setSelectedPropertyId] = useState<string>("all");
   
-  // All hooks called unconditionally at component top level
+  // Fetch statistics
   const { data: statistics, isLoading: isLoadingStats } = useQuery<Statistics>({
     queryKey: ["/api/statistics", selectedDateRange.startDate, selectedDateRange.endDate],
   });
   
+  // Fetch properties
   const { data: properties, isLoading: isLoadingProperties } = useProperties();
   
+  // Fetch owners data for reports
   const { data: ownersData, isLoading: isLoadingOwners } = useQuery({
     queryKey: ['/api/owners'],
     retry: 1,
   });
   
+  // Fetch reservations data for reports
   const { data: reservationsData, isLoading: isLoadingReservations } = useQuery({
     queryKey: ['/api/reservations'],
     retry: 1,
   });
   
+  // Fetch properties data for reports
   const { data: propertiesData, isLoading: isLoadingPropertiesData } = useQuery({
     queryKey: ['/api/properties'],
     retry: 1,
   });
   
+  // Fetch dashboard data for operational reports
   const { data: dashboardData, isLoading: isLoadingDashboard } = useQuery({
     queryKey: ['/api/reservations/dashboard'],
     retry: 1,
   });
   
+  // Fetch property statistics if a specific property is selected
   const { data: propertyStats, isLoading: isLoadingPropertyStats } = useQuery<PropertyStatistics>({
     queryKey: ["/api/statistics/property", selectedPropertyId !== "all" ? parseInt(selectedPropertyId) : undefined],
     enabled: selectedPropertyId !== "all",
   });
-
-  // Calculate owner revenues with proper error handling
-  const ownerRevenues = (() => {
-    if (!ownersData || !reservationsData || !propertiesData) return [];
-    
-    return ownersData.map((owner: any) => {
-      const ownerProperties = propertiesData.filter((prop: any) => prop.ownerId === owner.id);
-      const ownerReservations = reservationsData.filter((res: any) => 
-        ownerProperties.some((prop: any) => prop.id === res.propertyId)
-      );
-      const totalRevenue = ownerReservations.reduce((sum: number, res: any) => 
-        sum + (parseFloat(res.totalAmount) || 0), 0
-      );
-      return { ...owner, totalRevenue };
-    }).sort((a: any, b: any) => b.totalRevenue - a.totalRevenue).slice(0, 3);
-  })();
-
-  // Calculate today's activities with proper error handling
-  const todayActivities = (() => {
-    if (!dashboardData) return { checkIns: [], checkOuts: [], cleanings: [] };
-    
-    const today = new Date();
-    const { checkIns = [], checkOuts = [], cleanings = [] } = dashboardData;
-    
-    return {
-      checkIns: checkIns.filter((item: any) => 
-        new Date(item.checkInDate).toDateString() === today.toDateString()
-      ),
-      checkOuts: checkOuts.filter((item: any) => 
-        new Date(item.checkOutDate).toDateString() === today.toDateString()
-      ),
-      cleanings: cleanings.filter((item: any) => 
-        new Date(item.scheduledDate).toDateString() === today.toDateString()
-      )
-    };
-  })();
-
-  // Calculate occupancy rates with improved formula
-  const ownerOccupancy = (() => {
-    if (!ownersData || !propertiesData || !reservationsData) return [];
-    
-    return ownersData.map((owner: any) => {
-      const ownerProperties = propertiesData.filter((prop: any) => prop.ownerId === owner.id);
-      const ownerReservations = reservationsData.filter((res: any) => 
-        ownerProperties.some((prop: any) => prop.id === res.propertyId)
-      );
-      
-      // Improved occupancy calculation - based on actual date ranges
-      const now = new Date();
-      const startOfYear = new Date(now.getFullYear(), 0, 1);
-      const totalDaysInPeriod = Math.ceil((now.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24));
-      const totalDaysAvailable = ownerProperties.length * totalDaysInPeriod;
-      
-      const totalDaysBooked = ownerReservations.reduce((sum: number, res: any) => {
-        if (res.checkInDate && res.checkOutDate) {
-          const checkIn = new Date(res.checkInDate);
-          const checkOut = new Date(res.checkOutDate);
-          const days = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
-          return sum + (days > 0 ? days : 0);
-        }
-        return sum;
-      }, 0);
-      
-      const occupancyRate = totalDaysAvailable > 0 ? 
-        Math.min(100, Math.round((totalDaysBooked / totalDaysAvailable) * 100)) : 0;
-      
-      return { ...owner, occupancyRate, reservationCount: ownerReservations.length };
-    }).filter((owner: any) => owner.reservationCount > 0 || owner.occupancyRate > 0)
-      .sort((a: any, b: any) => b.occupancyRate - a.occupancyRate)
-      .slice(0, 5);
-  })();
 
   // Handle date range change
   const handleDateRangeChange = (value: string) => {
@@ -224,9 +161,22 @@ export default function ReportsPage() {
     setSelectedPropertyId(value);
   };
 
-  // Calculate total revenue from reservations
-  const totalRevenueFromReservations = reservationsData ? 
-    reservationsData.reduce((sum: number, res: any) => sum + (parseFloat(res.totalAmount) || 0), 0) : 0;
+  // Prepare chart data for top properties
+  const topPropertiesData = (statistics?.topProperties || []) as PropertyStatistics[];
+  
+  // Prepare data for pie chart
+  const COLORS = ['#0ea5e9', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444'];
+  
+  const pieChartData = [
+    { name: t("reports.revenue", "Receita"), value: statistics?.totalRevenue || 0 },
+    { name: t("reports.operationalCosts", "Custos Operacionais"), value: statistics?.totalRevenue ? statistics.totalRevenue - statistics.netProfit : 0 }
+  ];
+
+  // Prepare occupation data for selected property
+  const occupancyData = [
+    { name: t("reports.occupied", "Ocupado"), value: propertyStats?.occupancyRate || 0 },
+    { name: t("reports.available", "Disponível"), value: 100 - (propertyStats?.occupancyRate || 0) }
+  ];
 
   return (
     <PageWithInspiration context="reports" quotePosition="before" rotating={true}>
@@ -255,10 +205,10 @@ export default function ReportsPage() {
               onValueChange={handlePropertyChange}
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder={t("reports.allProperties", "Todas as propriedades")} />
+                <SelectValue placeholder={t("reports.property", "Propriedade")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todas as propriedades</SelectItem>
+                <SelectItem value="all">{t("reports.allProperties", "Todas as propriedades")}</SelectItem>
                 {properties?.map((property) => (
                   <SelectItem key={property.id} value={property.id.toString()}>
                     {property.name}
@@ -267,65 +217,391 @@ export default function ReportsPage() {
               </SelectContent>
             </Select>
             
-            <Button variant="outline" className="w-full">
-              <Download className="h-4 w-4 mr-2" />
-              {t("reports.export", "Exportar")}
+            <Button variant="outline" className="w-full sm:w-auto">
+              <Download className="mr-2 h-4 w-4" />
+              {t("reports.exportReport", "Exportar Relatório")}
             </Button>
           </div>
         </div>
       </div>
-
-      <Tabs value={selectedTab} onValueChange={setSelectedTab} className="mt-6">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="general">{t("reports.overview", "Visão Geral")}</TabsTrigger>
-          <TabsTrigger value="operational">{t("reports.operational", "Operacional")}</TabsTrigger>
+      
+      <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
+        <TabsList className="grid grid-cols-3 mb-6">
+          <TabsTrigger value="general" className="flex items-center">
+            <Briefcase className="w-4 h-4 mr-2" />
+            <span className="whitespace-nowrap">{t("reports.overview", "Visão Geral")}</span>
+          </TabsTrigger>
+          <TabsTrigger value="owner" className="flex items-center">
+            <Users className="w-4 h-4 mr-2" />
+            <span className="whitespace-nowrap">{t("reports.owner", "Proprietário")}</span>
+          </TabsTrigger>
+          <TabsTrigger value="operational" className="flex items-center">
+            <ClipboardCheck className="w-4 h-4 mr-2" />
+            <span className="whitespace-nowrap">{t("reports.operational", "Operacional")}</span>
+          </TabsTrigger>
         </TabsList>
-
+        
+        {/* Conteúdo de Visão Geral */}
         <TabsContent value="general" className="space-y-6">
-          {/* Main KPI Cards */}
-          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-medium">{t("reports.overviewReport", "Relatório Geral")}</h3>
+            <Button variant="outline">
+              <Download className="mr-2 h-4 w-4" />
+              {t("reports.exportReport", "Exportar Relatório")}
+            </Button>
+          </div>
+          {/* Statistics Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <StatsCardWithQuote
-              title={t("dashboard.totalRevenue", "Receita Total")}
-              value={formatCurrency(statistics?.totalRevenue || 0)}
-              description={t("dashboard.comparedToPrevious", "Comparado ao período anterior")}
-              quote="Revenue is the lifeblood of business growth."
-              loading={isLoadingStats}
-            />
+              title={t("reports.totalRevenue", "Receita Total")}
+              quoteContext="finance"
+            >
+              {isLoadingStats ? (
+                <Skeleton className="h-10 w-full" />
+              ) : (
+                <div className="text-3xl font-bold">
+                  {formatCurrency(statistics?.totalRevenue || 0)}
+                </div>
+              )}
+            </StatsCardWithQuote>
             
             <StatsCardWithQuote
-              title={t("dashboard.netProfit", "Lucro Líquido")}
-              value={formatCurrency(statistics?.netProfit || 0)}
-              description={t("dashboard.comparedToPrevious", "Comparado ao período anterior")}
-              quote="Profit is the measure of true value creation."
-              loading={isLoadingStats}
-            />
+              title={t("reports.totalExpenses", "Despesas Totais")}
+              quoteContext="finance"
+            >
+              {isLoadingStats ? (
+                <Skeleton className="h-10 w-full" />
+              ) : (
+                <div className="text-3xl font-bold text-red-600">
+                  {formatCurrency(statistics?.totalRevenue ? statistics.totalRevenue - statistics.netProfit : 0)}
+                </div>
+              )}
+            </StatsCardWithQuote>
             
             <StatsCardWithQuote
-              title={t("dashboard.occupancyRate", "Taxa de Ocupação")}
-              value={`${statistics?.occupancyRate || 0}%`}
-              description={t("dashboard.comparedToPrevious", "Comparado ao período anterior")}
-              quote="High occupancy reflects excellent service quality."
-              loading={isLoadingStats}
-            />
+              title={t("reports.netProfit", "Lucro Líquido")}
+              quoteContext="finance"
+            >
+              {isLoadingStats ? (
+                <Skeleton className="h-10 w-full" />
+              ) : (
+                <div className="text-3xl font-bold text-green-600">
+                  {formatCurrency(statistics?.netProfit || 0)}
+                </div>
+              )}
+            </StatsCardWithQuote>
             
-            <StatsCardWithQuote
-              title={t("dashboard.totalReservations", "Total de Reservas")}
-              value={statistics?.reservationsCount || 0}
-              description={t("dashboard.comparedToPrevious", "Comparado ao período anterior")}
-              quote="Every reservation is a new opportunity to excel."
-              loading={isLoadingStats}
-            />
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg">Taxa de Ocupação</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {isLoadingStats ? (
+                  <Skeleton className="h-10 w-full" />
+                ) : (
+                  <div className="text-3xl font-bold">
+                    {Math.round(statistics?.occupancyRate || 0)}%
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg">Total de Reservas</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {isLoadingStats ? (
+                  <Skeleton className="h-10 w-full" />
+                ) : (
+                  <div className="text-3xl font-bold">
+                    {statistics?.reservationsCount || 0}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </div>
 
-          {/* Revenue and Performance Charts */}
-          <div className="grid gap-6 grid-cols-1 md:grid-cols-3">
+          {/* Charts - Primary Insights */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Revenue vs Profit */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Receita vs Lucro</CardTitle>
+                <CardDescription>Análise comparativa de receita e lucro</CardDescription>
+              </CardHeader>
+              <CardContent className="h-80">
+                {isLoadingStats ? (
+                  <div className="h-full flex items-center justify-center">
+                    <Skeleton className="h-full w-full" />
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={pieChartData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      >
+                        {pieChartData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip formatter={(value: ValueType) => formatCurrency(Number(value))} />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Detalhamento de Receitas */}
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("reports.revenueBreakdown", "Detalhamento de Receitas")}</CardTitle>
+                <CardDescription>Distribuição das fontes de receita</CardDescription>
+              </CardHeader>
+              <CardContent className="h-80">
+                {isLoadingStats ? (
+                  <div className="h-full flex items-center justify-center">
+                    <Skeleton className="h-full w-full" />
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: t("reports.fixedPaymentIncome", "Pagamentos Fixos"), value: 450 },
+                          { name: t("reports.commissionIncome", "Comissões"), value: 430 },
+                          { name: t("reports.checkInFeesIncome", "Taxas de Check-in"), value: 160 }
+                        ]}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      >
+                        <Cell fill="#4ade80" /> {/* Verde para pagamentos fixos */}
+                        <Cell fill="#60a5fa" /> {/* Azul para comissões */}
+                        <Cell fill="#f97316" /> {/* Laranja para taxas de check-in */}
+                      </Pie>
+                      <Tooltip formatter={(value: ValueType) => formatCurrency(Number(value))} />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Charts - Secondary Insights */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Detalhamento de Despesas */}
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("reports.expensesBreakdown", "Detalhamento de Despesas")}</CardTitle>
+                <CardDescription>Distribuição dos custos operacionais</CardDescription>
+              </CardHeader>
+              <CardContent className="h-80">
+                {isLoadingStats ? (
+                  <div className="h-full flex items-center justify-center">
+                    <Skeleton className="h-full w-full" />
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: t("reports.cleaningExpenses", "Limpeza"), value: 280 },
+                          { name: t("reports.maintenanceExpenses", "Manutenção"), value: 120 },
+                          { name: t("reports.suppliesExpenses", "Suprimentos"), value: 80 }
+                        ]}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      >
+                        <Cell fill="#f43f5e" /> {/* Vermelho para despesas de limpeza */}
+                        <Cell fill="#a78bfa" /> {/* Roxo para manutenção */}
+                        <Cell fill="#fbbf24" /> {/* Amarelo para suprimentos */}
+                      </Pie>
+                      <Tooltip formatter={(value: ValueType) => formatCurrency(Number(value))} />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                )}
+              </CardContent>
+            </Card>
+            
+            {/* Top Properties */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Propriedades com Maior Desempenho</CardTitle>
+                <CardDescription>
+                  {selectedPropertyId === "all" 
+                    ? "Taxa de ocupação e rentabilidade das propriedades" 
+                    : "Detalhes da propriedade selecionada"}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="h-80">
+                {(isLoadingStats && selectedPropertyId === "all") || 
+                 (isLoadingPropertyStats && selectedPropertyId !== "all") ? (
+                  <div className="h-full flex items-center justify-center">
+                    <Skeleton className="h-full w-full" />
+                  </div>
+                ) : selectedPropertyId === "all" ? (
+                  topPropertiesData.length > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={topPropertiesData}
+                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
+                        <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
+                        <Tooltip />
+                        <Legend />
+                        <Bar yAxisId="left" dataKey="occupancyRate" name="Ocupação (%)" fill="#8884d8" />
+                        <Bar yAxisId="right" dataKey="profit" name="Lucro (€)" fill="#82ca9d" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="h-full flex items-center justify-center">
+                      <p className="text-secondary-500">Não há dados disponíveis.</p>
+                    </div>
+                  )
+                ) : propertyStats ? (
+                  <div className="h-full flex flex-col">
+                    <div className="flex-1">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={occupancyData}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            outerRadius={80}
+                            fill="#8884d8"
+                            dataKey="value"
+                            label={({ name, value }) => `${name}: ${value}%`}
+                          >
+                            <Cell fill="#0ea5e9" />
+                            <Cell fill="#e2e8f0" />
+                          </Pie>
+                          <Tooltip />
+                          <Legend />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                    
+                    <div className="pt-4 grid grid-cols-2 gap-4 text-center">
+                      <div>
+                        <p className="text-sm text-secondary-500">Receita Total</p>
+                        <p className="text-lg font-bold">{formatCurrency(propertyStats.totalRevenue)}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-secondary-500">Lucro Líquido</p>
+                        <p className="text-lg font-bold text-green-600">{formatCurrency(propertyStats.profit)}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-secondary-500">Custos Totais</p>
+                        <p className="text-lg font-bold text-red-600">{formatCurrency(propertyStats.totalCosts)}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-secondary-500">Reservas</p>
+                        <p className="text-lg font-bold">{propertyStats.reservationsCount}</p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="h-full flex items-center justify-center">
+                    <p className="text-secondary-500">Não há dados disponíveis para esta propriedade.</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Property Occupancy */}
+          {selectedPropertyId === "all" && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Taxa de Ocupação por Propriedade</CardTitle>
+                <CardDescription>Análise detalhada da ocupação de cada propriedade</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {isLoadingStats ? (
+                  <div className="space-y-2">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <div key={i} className="flex items-center">
+                        <Skeleton className="h-4 w-36" />
+                        <div className="flex-1 mx-2">
+                          <Skeleton className="h-2 w-full" />
+                        </div>
+                        <Skeleton className="h-4 w-8" />
+                      </div>
+                    ))}
+                  </div>
+                ) : topPropertiesData.length > 0 ? (
+                  <div className="space-y-3">
+                    {topPropertiesData.map((property) => (
+                      <div key={property.id} className="flex items-center">
+                        <span className="text-sm font-medium text-secondary-900 w-36 truncate">{property.name}</span>
+                        <div className="flex-1 mx-2">
+                          <div className="h-2 bg-secondary-100 rounded-full overflow-hidden">
+                            <div 
+                              className={`h-2 ${calculateOccupancyColor(property.occupancyRate)} rounded-full`} 
+                              style={{ width: `${property.occupancyRate}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                        <span className="text-sm font-medium text-secondary-900">{Math.round(property.occupancyRate)}%</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-center text-secondary-500 py-4">
+                    Sem dados de ocupação disponíveis
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+        
+
+        {/* Relatório de Proprietário */}
+        <TabsContent value="owner" className="space-y-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-medium">{t("reports.ownerReport", "Relatório de Proprietário")}</h3>
+            <Button variant="outline" asChild>
+              <Link href="/reports/owner-report" className="inline-flex items-center">
+                <FileText className="mr-2 h-4 w-4" />
+                {t("reports.viewFullReport", "Ver relatório completo")}
+              </Link>
+            </Button>
+          </div>
+          
+          {/* Prévia do relatório de proprietário */}
+          <div className="grid gap-6 md:grid-cols-2">
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-base">Top Proprietários por Receita</CardTitle>
-                <CardDescription>Maiores geradores de receita</CardDescription>
+                <CardDescription>Baseado no período selecionado</CardDescription>
               </CardHeader>
               <CardContent>
-                {isLoadingStats || isLoadingOwners || isLoadingPropertiesData || isLoadingReservations ? (
+                {isLoadingStats || isLoadingOwners || isLoadingReservations || isLoadingPropertiesData ? (
                   <div className="space-y-3">
                     {[1, 2, 3].map(i => (
                       <div key={i} className="flex justify-between items-center">
@@ -334,56 +610,97 @@ export default function ReportsPage() {
                       </div>
                     ))}
                   </div>
-                ) : ownerRevenues.length === 0 ? (
+                ) : !ownersData || !reservationsData || !propertiesData ? (
                   <div className="text-center py-8 text-muted-foreground">
-                    <p>Nenhum dado de receita disponível</p>
+                    <p>Dados não disponíveis</p>
                   </div>
-                ) : (
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center pb-2 border-b">
-                      <span className="font-medium">Proprietário</span>
-                      <span className="font-medium">Receita Total</span>
-                    </div>
-                    {ownerRevenues.map((owner: any) => (
-                      <div key={owner.id} className="flex justify-between items-center">
-                        <span>{owner.name}</span>
-                        <span className="font-medium">{formatCurrency(owner.totalRevenue)}</span>
+                ) : (() => {
+                  // Calcular receita por proprietário
+                  const ownerRevenues = ownersData.map((owner: any) => {
+                    const ownerProperties = propertiesData.filter((prop: any) => prop.ownerId === owner.id);
+                    const ownerReservations = reservationsData.filter((res: any) => 
+                      ownerProperties.some((prop: any) => prop.id === res.propertyId)
+                    );
+                    const totalRevenue = ownerReservations.reduce((sum: number, res: any) => 
+                      sum + (parseFloat(res.totalAmount) || 0), 0
+                    );
+                    return { ...owner, totalRevenue };
+                  }).sort((a: any, b: any) => b.totalRevenue - a.totalRevenue).slice(0, 3);
+                  
+                  if (ownerRevenues.length === 0) {
+                    return (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <p>Nenhum dado de receita disponível</p>
                       </div>
-                    ))}
-                  </div>
-                )}
+                    );
+                  }
+                  
+                  return (
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center pb-2 border-b">
+                        <span className="font-medium">Proprietário</span>
+                        <span className="font-medium">Receita Total</span>
+                      </div>
+                      {ownerRevenues.map((owner: any) => (
+                        <div key={owner.id} className="flex justify-between items-center">
+                          <span>{owner.name}</span>
+                          <span className="font-medium">{formatCurrency(owner.totalRevenue)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()}
               </CardContent>
             </Card>
             
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-base">Receita Total</CardTitle>
-                <CardDescription>Valor total das reservas</CardDescription>
+                <CardTitle className="text-base">Visão Geral de Pagamentos</CardTitle>
+                <CardDescription>Receita total das reservas</CardDescription>
               </CardHeader>
               <CardContent className="h-48">
-                {isLoadingReservations ? (
+                {isLoadingStats || isLoadingReservations ? (
                   <div className="h-full flex items-center justify-center">
                     <Skeleton className="h-full w-full" />
                   </div>
-                ) : (
-                  <div className="h-full flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="text-3xl font-bold text-primary mb-2">
-                        {formatCurrency(totalRevenueFromReservations)}
-                      </div>
-                      <p className="text-sm text-muted-foreground">Receita Total das Reservas</p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {reservationsData?.length || 0} reserva{(reservationsData?.length || 0) !== 1 ? 's' : ''}
-                      </p>
-                    </div>
+                ) : !reservationsData || reservationsData.length === 0 ? (
+                  <div className="h-full flex items-center justify-center text-muted-foreground">
+                    <p>Dados não disponíveis</p>
                   </div>
-                )}
+                ) : (() => {
+                  // Calcular valores reais das reservas
+                  const totalRevenue = reservationsData.reduce((sum: number, res: any) => 
+                    sum + (parseFloat(res.totalAmount) || 0), 0
+                  );
+                  
+                  if (totalRevenue === 0) {
+                    return (
+                      <div className="h-full flex items-center justify-center text-muted-foreground">
+                        <p>Nenhuma receita registrada</p>
+                      </div>
+                    );
+                  }
+                  
+                  return (
+                    <div className="h-full flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-primary mb-2">
+                          {formatCurrency(totalRevenue)}
+                        </div>
+                        <p className="text-sm text-muted-foreground">Receita Total das Reservas</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {reservationsData.length} reserva{reservationsData.length !== 1 ? 's' : ''}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })()}
               </CardContent>
             </Card>
             
-            <Card>
+            <Card className="md:col-span-2">
               <CardHeader className="pb-2">
-                <CardTitle className="text-base">Desempenho por Proprietário</CardTitle>
+                <CardTitle className="text-base">Desempenho de Propriedades por Proprietário</CardTitle>
                 <CardDescription>Taxa de ocupação por proprietário</CardDescription>
               </CardHeader>
               <CardContent>
@@ -398,43 +715,89 @@ export default function ReportsPage() {
                       </div>
                     ))}
                   </div>
-                ) : ownerOccupancy.length === 0 ? (
+                ) : !ownersData || !propertiesData || !reservationsData ? (
                   <div className="text-center py-8 text-muted-foreground">
-                    <p>Nenhum dado de ocupação disponível</p>
+                    <p>Dados não disponíveis</p>
                   </div>
-                ) : (
-                  <div className="space-y-4">
-                    {ownerOccupancy.map((owner: any) => (
-                      <div key={owner.id} className="space-y-1">
-                        <div className="flex justify-between">
-                          <span className="font-medium">{owner.name}</span>
-                          <span>{owner.occupancyRate}%</span>
-                        </div>
-                        <div className="h-2 bg-secondary-100 rounded-full overflow-hidden">
-                          <div 
-                            className="h-2 bg-blue-500 rounded-full" 
-                            style={{ width: `${owner.occupancyRate}%` }}
-                          />
-                        </div>
+                ) : (() => {
+                  // Calcular taxa de ocupação por proprietário
+                  const ownerOccupancy = ownersData.map((owner: any) => {
+                    const ownerProperties = propertiesData.filter((prop: any) => prop.ownerId === owner.id);
+                    const ownerReservations = reservationsData.filter((res: any) => 
+                      ownerProperties.some((prop: any) => prop.id === res.propertyId)
+                    );
+                    
+                    // Calcular taxa de ocupação baseada em dias reais
+                    const totalDaysAvailable = ownerProperties.length * 30; // 30 dias por propriedade (aproximação mensal)
+                    const totalDaysBooked = ownerReservations.reduce((sum: number, res: any) => {
+                      if (res.checkInDate && res.checkOutDate) {
+                        const checkIn = new Date(res.checkInDate);
+                        const checkOut = new Date(res.checkOutDate);
+                        const days = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
+                        return sum + (days > 0 ? days : 0);
+                      }
+                      return sum;
+                    }, 0);
+                    
+                    const occupancyRate = totalDaysAvailable > 0 ? 
+                      Math.min(100, Math.round((totalDaysBooked / totalDaysAvailable) * 100)) : 0;
+                    
+                    return { ...owner, occupancyRate, reservationCount: ownerReservations.length };
+                  }).filter((owner: any) => owner.reservationCount > 0 || owner.occupancyRate > 0)
+                    .sort((a: any, b: any) => b.occupancyRate - a.occupancyRate)
+                    .slice(0, 5);
+                  
+                  if (ownerOccupancy.length === 0) {
+                    return (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <p>Nenhum dado de ocupação disponível</p>
                       </div>
-                    ))}
-                  </div>
-                )}
+                    );
+                  }
+                  
+                  return (
+                    <div className="space-y-4">
+                      {ownerOccupancy.map((owner: any) => (
+                        <div key={owner.id} className="space-y-1">
+                          <div className="flex justify-between">
+                            <span className="font-medium">{owner.name}</span>
+                            <span>{owner.occupancyRate}%</span>
+                          </div>
+                          <div className="h-2 bg-secondary-100 rounded-full overflow-hidden">
+                            <div 
+                              className="h-2 bg-blue-500 rounded-full" 
+                              style={{ width: `${owner.occupancyRate}%` }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()}
               </CardContent>
             </Card>
           </div>
         </TabsContent>
-
+        
+        {/* Relatório Operacional */}
         <TabsContent value="operational" className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h3 className="text-lg font-semibold">Relatórios Operacionais</h3>
-              <p className="text-muted-foreground">Acompanhe as atividades diárias do seu negócio</p>
-            </div>
-            <div className="mt-4 sm:mt-0 flex gap-3">
-              <Button variant="outline" size="sm">
-                <FileText className="h-4 w-4 mr-2" />
-                Gerar Relatório
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-medium">{t("reports.operationalReport", "Relatório Operacional")}</h3>
+            <div className="flex gap-2">
+              <Select defaultValue="today">
+                <SelectTrigger className="w-[150px]">
+                  <SelectValue placeholder="Período" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="today">Hoje</SelectItem>
+                  <SelectItem value="tomorrow">Amanhã</SelectItem>
+                  <SelectItem value="thisWeek">Esta semana</SelectItem>
+                  <SelectItem value="nextWeek">Próxima semana</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button variant="outline">
+                <Download className="mr-2 h-4 w-4" />
+                Exportar
               </Button>
             </div>
           </div>
@@ -446,40 +809,70 @@ export default function ReportsPage() {
                 <CardDescription>Entradas programadas</CardDescription>
               </CardHeader>
               <CardContent>
-                {isLoadingDashboard ? (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <Skeleton className="h-8 w-8" />
-                      <Skeleton className="h-4 w-16" />
+                {(() => {
+                  // Usar dados do dashboard para check-ins de hoje
+                  const { data: dashboardData, isLoading } = useQuery({
+                    queryKey: ['/api/reservations/dashboard'],
+                    retry: 1,
+                  });
+                  
+                  if (isLoading) {
+                    return (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <Skeleton className="h-8 w-8" />
+                          <Skeleton className="h-4 w-16" />
+                        </div>
+                        <Skeleton className="h-2 w-full" />
+                        <div className="flex justify-between">
+                          <Skeleton className="h-4 w-20" />
+                          <Skeleton className="h-4 w-16" />
+                        </div>
+                      </div>
+                    );
+                  }
+                  
+                  const { checkIns = [] } = dashboardData || {};
+                  const today = new Date();
+                  const todayCheckIns = checkIns.filter((item: any) => 
+                    new Date(item.checkInDate).toDateString() === today.toDateString()
+                  );
+                  
+                  const completedCheckIns = todayCheckIns.filter((item: any) => 
+                    item.status === 'checked-in' || item.status === 'completed'
+                  );
+                  const pendingCheckIns = todayCheckIns.filter((item: any) => 
+                    item.status === 'confirmed' || item.status === 'pending'
+                  );
+                  
+                  const totalCheckIns = todayCheckIns.length;
+                  const completedCount = completedCheckIns.length;
+                  const pendingCount = pendingCheckIns.length;
+                  const completedPercentage = totalCheckIns > 0 ? (completedCount / totalCheckIns) * 100 : 0;
+                  
+                  return (
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-2xl">{totalCheckIns}</span>
+                        <span className="text-muted-foreground">Previstos</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div 
+                          className="h-2 bg-green-500 rounded-full" 
+                          style={{ width: `${completedPercentage}%` }}
+                        />
+                        <div 
+                          className="h-2 bg-secondary-200 rounded-full" 
+                          style={{ width: `${100 - completedPercentage}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>{completedCount} Concluídos</span>
+                        <span>{pendingCount} Pendentes</span>
+                      </div>
                     </div>
-                    <Skeleton className="h-2 w-full" />
-                    <div className="flex justify-between">
-                      <Skeleton className="h-4 w-20" />
-                      <Skeleton className="h-4 w-16" />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-2xl">{todayActivities.checkIns.length}</span>
-                      <span className="text-muted-foreground">Previstos</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div 
-                        className="h-2 bg-green-500 rounded-full" 
-                        style={{ width: `${todayActivities.checkIns.length > 0 ? 70 : 0}%` }}
-                      />
-                      <div 
-                        className="h-2 bg-secondary-200 rounded-full" 
-                        style={{ width: `${todayActivities.checkIns.length > 0 ? 30 : 100}%` }}
-                      />
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>{todayActivities.checkIns.filter((ci: any) => ci.status === 'checked-in').length} Concluídos</span>
-                      <span>{todayActivities.checkIns.filter((ci: any) => ci.status === 'confirmed').length} Pendentes</span>
-                    </div>
-                  </div>
-                )}
+                  );
+                })()}
               </CardContent>
             </Card>
             
@@ -489,40 +882,70 @@ export default function ReportsPage() {
                 <CardDescription>Saídas programadas</CardDescription>
               </CardHeader>
               <CardContent>
-                {isLoadingDashboard ? (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <Skeleton className="h-8 w-8" />
-                      <Skeleton className="h-4 w-16" />
+                {(() => {
+                  // Usar dados do dashboard para check-outs de hoje
+                  const { data: dashboardData, isLoading } = useQuery({
+                    queryKey: ['/api/reservations/dashboard'],
+                    retry: 1,
+                  });
+                  
+                  if (isLoading) {
+                    return (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <Skeleton className="h-8 w-8" />
+                          <Skeleton className="h-4 w-16" />
+                        </div>
+                        <Skeleton className="h-2 w-full" />
+                        <div className="flex justify-between">
+                          <Skeleton className="h-4 w-20" />
+                          <Skeleton className="h-4 w-16" />
+                        </div>
+                      </div>
+                    );
+                  }
+                  
+                  const { checkOuts = [] } = dashboardData || {};
+                  const today = new Date();
+                  const todayCheckOuts = checkOuts.filter((item: any) => 
+                    new Date(item.checkOutDate).toDateString() === today.toDateString()
+                  );
+                  
+                  const completedCheckOuts = todayCheckOuts.filter((item: any) => 
+                    item.status === 'completed'
+                  );
+                  const pendingCheckOuts = todayCheckOuts.filter((item: any) => 
+                    item.status === 'checked-in' || item.status === 'confirmed' || item.status === 'pending'
+                  );
+                  
+                  const totalCheckOuts = todayCheckOuts.length;
+                  const completedCount = completedCheckOuts.length;
+                  const pendingCount = pendingCheckOuts.length;
+                  const completedPercentage = totalCheckOuts > 0 ? (completedCount / totalCheckOuts) * 100 : 0;
+                  
+                  return (
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-2xl">{totalCheckOuts}</span>
+                        <span className="text-muted-foreground">Previstos</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div 
+                          className="h-2 bg-blue-500 rounded-full" 
+                          style={{ width: `${completedPercentage}%` }}
+                        />
+                        <div 
+                          className="h-2 bg-secondary-200 rounded-full" 
+                          style={{ width: `${100 - completedPercentage}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>{completedCount} Concluídos</span>
+                        <span>{pendingCount} Pendentes</span>
+                      </div>
                     </div>
-                    <Skeleton className="h-2 w-full" />
-                    <div className="flex justify-between">
-                      <Skeleton className="h-4 w-20" />
-                      <Skeleton className="h-4 w-16" />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-2xl">{todayActivities.checkOuts.length}</span>
-                      <span className="text-muted-foreground">Previstos</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div 
-                        className="h-2 bg-blue-500 rounded-full" 
-                        style={{ width: `${todayActivities.checkOuts.length > 0 ? 75 : 0}%` }}
-                      />
-                      <div 
-                        className="h-2 bg-secondary-200 rounded-full" 
-                        style={{ width: `${todayActivities.checkOuts.length > 0 ? 25 : 100}%` }}
-                      />
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>{todayActivities.checkOuts.filter((co: any) => co.status === 'completed').length} Concluídos</span>
-                      <span>{todayActivities.checkOuts.filter((co: any) => co.status !== 'completed').length} Pendentes</span>
-                    </div>
-                  </div>
-                )}
+                  );
+                })()}
               </CardContent>
             </Card>
             
@@ -532,44 +955,273 @@ export default function ReportsPage() {
                 <CardDescription>Limpezas agendadas</CardDescription>
               </CardHeader>
               <CardContent>
-                {isLoadingDashboard ? (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <Skeleton className="h-8 w-8" />
-                      <Skeleton className="h-4 w-16" />
+                {(() => {
+                  // Usar dados do dashboard para limpezas de hoje
+                  const { data: dashboardData, isLoading } = useQuery({
+                    queryKey: ['/api/reservations/dashboard'],
+                    retry: 1,
+                  });
+                  
+                  if (isLoading) {
+                    return (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <Skeleton className="h-8 w-8" />
+                          <Skeleton className="h-4 w-16" />
+                        </div>
+                        <Skeleton className="h-2 w-full" />
+                        <div className="flex justify-between">
+                          <Skeleton className="h-4 w-20" />
+                          <Skeleton className="h-4 w-16" />
+                        </div>
+                      </div>
+                    );
+                  }
+                  
+                  const { cleanings = [] } = dashboardData || {};
+                  const today = new Date();
+                  const todayCleanings = cleanings.filter((item: any) => 
+                    new Date(item.scheduledDate).toDateString() === today.toDateString()
+                  );
+                  
+                  const completedCleanings = todayCleanings.filter((item: any) => 
+                    item.status === 'completed'
+                  );
+                  const pendingCleanings = todayCleanings.filter((item: any) => 
+                    item.status === 'scheduled' || item.status === 'in-progress' || item.status === 'pending'
+                  );
+                  
+                  const totalCleanings = todayCleanings.length;
+                  const completedCount = completedCleanings.length;
+                  const pendingCount = pendingCleanings.length;
+                  const completedPercentage = totalCleanings > 0 ? (completedCount / totalCleanings) * 100 : 0;
+                  
+                  return (
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-2xl">{totalCleanings}</span>
+                        <span className="text-muted-foreground">Agendadas</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div 
+                          className="h-2 bg-purple-500 rounded-full" 
+                          style={{ width: `${completedPercentage}%` }}
+                        />
+                        <div 
+                          className="h-2 bg-secondary-200 rounded-full" 
+                          style={{ width: `${100 - completedPercentage}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>{completedCount} Concluídas</span>
+                        <span>{pendingCount} Pendentes</span>
+                      </div>
                     </div>
-                    <Skeleton className="h-2 w-full" />
-                    <div className="flex justify-between">
-                      <Skeleton className="h-4 w-20" />
-                      <Skeleton className="h-4 w-16" />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-2xl">{todayActivities.cleanings.length}</span>
-                      <span className="text-muted-foreground">Agendadas</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div 
-                        className="h-2 bg-purple-500 rounded-full" 
-                        style={{ width: `${todayActivities.cleanings.length > 0 ? 60 : 0}%` }}
-                      />
-                      <div 
-                        className="h-2 bg-secondary-200 rounded-full" 
-                        style={{ width: `${todayActivities.cleanings.length > 0 ? 40 : 100}%` }}
-                      />
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>{todayActivities.cleanings.filter((cl: any) => cl.status === 'completed').length} Concluídas</span>
-                      <span>{todayActivities.cleanings.filter((cl: any) => cl.status !== 'completed').length} Pendentes</span>
-                    </div>
-                  </div>
-                )}
+                  );
+                })()}
               </CardContent>
             </Card>
           </div>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Programação de Atividades</CardTitle>
+              <CardDescription>Próximos check-ins, check-outs e limpezas</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {(() => {
+                // Usar o hook useQuery para buscar os dados do dashboard
+                const { data: dashboardData, isLoading, error } = useQuery({
+                  queryKey: ['/api/reservations/dashboard'],
+                  retry: 1,
+                });
+                
+                if (isLoading) {
+                  return (
+                    <div className="flex justify-center items-center py-8">
+                      <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                    </div>
+                  );
+                }
+                
+                if (error) {
+                  return (
+                    <Alert variant="destructive" className="my-4">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertTitle>Erro</AlertTitle>
+                      <AlertDescription>
+                        Não foi possível carregar as atividades agendadas.
+                      </AlertDescription>
+                    </Alert>
+                  );
+                }
+                
+                // Dados do dashboard (check-ins, check-outs, limpezas)
+                const { checkIns = [], checkOuts = [], cleanings = [] } = dashboardData || {};
+                
+                const today = new Date();
+                const tomorrow = new Date(Date.now() + 86400000);
+                
+                // Formatadores de data
+                const formatDay = (date: Date) => date.toLocaleDateString('pt-PT', { day: 'numeric', month: 'long' });
+                const todayLabel = formatDay(today);
+                const tomorrowLabel = formatDay(tomorrow);
+                
+                // Filtrar atividades de hoje
+                const todayCheckIns = checkIns.filter((item: any) => new Date(item.checkInDate).toDateString() === today.toDateString());
+                const todayCheckOuts = checkOuts.filter((item: any) => new Date(item.checkOutDate).toDateString() === today.toDateString());
+                const todayCleanings = cleanings.filter((item: any) => new Date(item.scheduledDate).toDateString() === today.toDateString());
+                
+                // Filtrar atividades de amanhã
+                const tomorrowCheckIns = checkIns.filter((item: any) => new Date(item.checkInDate).toDateString() === tomorrow.toDateString());
+                const tomorrowCheckOuts = checkOuts.filter((item: any) => new Date(item.checkOutDate).toDateString() === tomorrow.toDateString());
+                const tomorrowCleanings = cleanings.filter((item: any) => new Date(item.scheduledDate).toDateString() === tomorrow.toDateString());
+                
+                // Verificar se há atividades hoje ou amanhã
+                const hasTodayActivities = todayCheckIns.length > 0 || todayCheckOuts.length > 0 || todayCleanings.length > 0;
+                const hasTomorrowActivities = tomorrowCheckIns.length > 0 || tomorrowCheckOuts.length > 0 || tomorrowCleanings.length > 0;
+                
+                if (!hasTodayActivities && !hasTomorrowActivities) {
+                  return (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Calendar className="h-12 w-12 mx-auto mb-3 text-muted-foreground/50" />
+                      <p className="text-sm">Não há atividades agendadas para hoje ou amanhã.</p>
+                    </div>
+                  );
+                }
+                
+                return (
+                  <div className="space-y-4">
+                    {hasTodayActivities && (
+                      <div className="space-y-3">
+                        <h4 className="text-sm font-medium">Hoje, {todayLabel}</h4>
+                        
+                        {todayCheckIns.map((checkIn: any, index: number) => (
+                          <div key={`checkin-${checkIn.id}-${index}`} className="relative pl-6 border-l border-dashed border-secondary-200 pb-4">
+                            <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-green-500"></div>
+                            <div className="flex justify-between">
+                              <div>
+                                <p className="font-medium">Check-in: {checkIn.propertyName}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {checkIn.guestName} ({checkIn.adults} adultos{checkIn.children > 0 && `, ${checkIn.children} criança${checkIn.children > 1 ? 's' : ''}`})
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <p className="font-medium">{new Date(checkIn.checkInDate).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }) || '14:00'}</p>
+                                <p className="text-sm text-green-600">{checkIn.status === 'confirmed' ? 'Confirmado' : 'Pendente'}</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                        
+                        {todayCheckOuts.map((checkOut: any, index: number) => (
+                          <div key={`checkout-${checkOut.id}-${index}`} className="relative pl-6 border-l border-dashed border-secondary-200 pb-4">
+                            <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-blue-500"></div>
+                            <div className="flex justify-between">
+                              <div>
+                                <p className="font-medium">Check-out: {checkOut.propertyName}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {checkOut.guestName} ({checkOut.adults} adultos{checkOut.children > 0 && `, ${checkOut.children} criança${checkOut.children > 1 ? 's' : ''}`})
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <p className="font-medium">{new Date(checkOut.checkOutDate).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }) || '11:00'}</p>
+                                <p className="text-sm text-blue-600">{checkOut.status === 'completed' ? 'Concluído' : 'Pendente'}</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                        
+                        {todayCleanings.map((cleaning: any, index: number) => (
+                          <div key={`cleaning-${cleaning.id}-${index}`} className="relative pl-6 border-l border-dashed border-secondary-200 pb-4">
+                            <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-purple-500"></div>
+                            <div className="flex justify-between">
+                              <div>
+                                <p className="font-medium">Limpeza: {cleaning.propertyName}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {cleaning.teamName || 'Equipe de limpeza'}
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <p className="font-medium">{new Date(cleaning.scheduledDate).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }) || '12:00'}</p>
+                                <p className="text-sm text-purple-600">
+                                  {cleaning.status === 'completed' ? 'Concluída' : 
+                                   cleaning.status === 'in-progress' ? 'Em andamento' : 'Pendente'}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {hasTomorrowActivities && (
+                      <div className="space-y-3">
+                        <h4 className="text-sm font-medium">Amanhã, {tomorrowLabel}</h4>
+                        
+                        {tomorrowCheckIns.map((checkIn: any, index: number) => (
+                          <div key={`checkin-tomorrow-${checkIn.id}-${index}`} className="relative pl-6 border-l border-dashed border-secondary-200 pb-4">
+                            <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-green-500"></div>
+                            <div className="flex justify-between">
+                              <div>
+                                <p className="font-medium">Check-in: {checkIn.propertyName}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {checkIn.guestName} ({checkIn.adults} adultos{checkIn.children > 0 && `, ${checkIn.children} criança${checkIn.children > 1 ? 's' : ''}`})
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <p className="font-medium">{new Date(checkIn.checkInDate).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }) || '14:00'}</p>
+                                <p className="text-sm text-yellow-600">Pendente</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                        
+                        {tomorrowCheckOuts.map((checkOut: any, index: number) => (
+                          <div key={`checkout-tomorrow-${checkOut.id}-${index}`} className="relative pl-6 border-l border-dashed border-secondary-200 pb-4">
+                            <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-blue-500"></div>
+                            <div className="flex justify-between">
+                              <div>
+                                <p className="font-medium">Check-out: {checkOut.propertyName}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {checkOut.guestName} ({checkOut.adults} adultos{checkOut.children > 0 && `, ${checkOut.children} criança${checkOut.children > 1 ? 's' : ''}`})
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <p className="font-medium">{new Date(checkOut.checkOutDate).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }) || '11:00'}</p>
+                                <p className="text-sm text-yellow-600">Pendente</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                        
+                        {tomorrowCleanings.map((cleaning: any, index: number) => (
+                          <div key={`cleaning-tomorrow-${cleaning.id}-${index}`} className="relative pl-6 border-l border-dashed border-secondary-200 pb-4">
+                            <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-purple-500"></div>
+                            <div className="flex justify-between">
+                              <div>
+                                <p className="font-medium">Limpeza: {cleaning.propertyName}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {cleaning.teamName || 'Equipe de limpeza'}
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <p className="font-medium">{new Date(cleaning.scheduledDate).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }) || '10:00'}</p>
+                                <p className="text-sm text-yellow-600">Pendente</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+            </CardContent>
+          </Card>
         </TabsContent>
+        
+        {/* Relatório de Equipes de Limpeza */}
       </Tabs>
     </PageWithInspiration>
   );
