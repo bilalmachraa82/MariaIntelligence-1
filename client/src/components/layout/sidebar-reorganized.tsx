@@ -403,41 +403,16 @@ export function SidebarReorganized({
     }
   ];
 
-  // Utilidades - Simplificado com links diretos
+  // Utilidades - Apenas configurações gerais
   const otherNavItems = [
-    // Configurações gerais
+    // Configurações gerais - único item necessário
     {
       name: t("navigation.settings", "Configurações Gerais"),
       href: "/configuracoes",
       altHref: "/settings",
       icon: Settings,
       iconColor: "text-gray-500"
-    },
-    // Notificações
-    {
-      name: t("settings.tabs.notifications", "Notificações"),
-      href: "/configuracoes?tab=notifications",
-      altHref: "/settings?tab=notifications",
-      icon: BellRing,
-      iconColor: "text-amber-400"
-    },
-    // Idioma
-    {
-      name: t("settings.tabs.language", "Idioma"),
-      href: "/configuracoes?tab=language",
-      altHref: "/settings?tab=language",
-      icon: Globe,
-      iconColor: "text-blue-500"
-    },
-    // Integrações
-    {
-      name: t("settings.tabs.integrations", "Integrações"),
-      href: "/configuracoes?tab=api",
-      altHref: "/settings?tab=api",
-      icon: Key,
-      iconColor: "text-teal-500"
-    },
-    // Opção de Dados Demo removida conforme solicitado
+    }
   ];
 
   // Se modo colapsado, apenas mostre ícones
