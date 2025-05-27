@@ -184,46 +184,85 @@ export class SimpleOCRService {
   }
 
   /**
-   * Constrói o prompt para extração de reservas
+   * Constrói o prompt para extração de reservas usando v4.2
    */
   private buildExtractionPrompt(text: string, documentType: string): string {
-    return `EXTRACTOR DE RESERVAS v4.1 - Motor de OCR ultra-fiável para reservas turísticas
+    return `# EXTRACTOR DE RESERVAS – v4.2 (schema_version: 1.4)
 
-FUNÇÃO: Receber QUALQUER documento e devolver JSON estruturado de reservas.
+Persona: És um motor de OCR + parsing ultra-fiável para reservas turísticas.
 
-INSTRUÇÕES:
-- Consolida fragmentos inteligentemente
-- Deduplica reservas similares  
-- Calcula confidence score
-- Valida campos críticos
+FUNÇÃO: Receber QUALQUER documento (imagem JPG/PNG, PDF ou texto) e devolver um fluxo estruturado de registos JSON segundo o esquema abaixo, aplicando consolidação inteligente, deduplicação, cálculo de confidence e validação de campos críticos.
 
-OUTPUT: Responde APENAS com array JSON válido UTF-8.
+PARÂMETROS:
+- mode = "json"
+- debug = false  
+- confidence_threshold = 0.35
 
-ESQUEMA:
+SENTINELA: Ao terminares o output escreve na última linha, isolada: END_OF_JSON
+
+OUTPUT: Responde APENAS com array JSON válido UTF-8. Codificação UTF-8 obrigatória.
+
+ESQUEMA (ordem fixa):
 {
   "data_entrada": "YYYY-MM-DD",
-  "data_saida": "YYYY-MM-DD", 
+  "data_saida": "YYYY-MM-DD",
   "noites": 0,
   "nome": "",
   "hospedes": 0,
   "pais": "",
+  "pais_inferido": false,
   "site": "",
   "telefone": "",
-  "observacoes": ""
+  "observacoes": "",
+  "timezone_source": "",
+  "id_reserva": "",
+  "confidence": 0.0,
+  "source_page": 0,
+  "needs_review": false
 }
+
+ETAPAS DE PROCESSAMENTO:
+
+ETAPA 1 – PRÉ-OCR: Auto-detectar orientação + idioma (PT, EN, ES, FR, DE). Binarização adaptativa; remover cabeçalhos/rodapés.
+
+ETAPA 2 – SEGMENTAÇÃO: Novo fragmento quando encontra (data & nome) OU (data & preço/hóspedes). Janela de 120 caract. para juntar linhas partidas.
+
+ETAPA 2.1 – CONSOLIDAÇÃO: Agrupar por ≥ 2 de: nome≈, ref_reserva, telefone, datas sobrepostas. Se cluster contém só entrada ou saída → manter, needs_review=true.
+
+ETAPA 3 – MAPEAMENTO & NORMALIZAÇÃO:
+- Datas → DD/MM/AAAA … ⇢ YYYY-MM-DD
+- Noites → a partir das datas se ausente
+- Hóspedes → Adultos + Crianças + Bebés
+- País → rótulo directo; se vazio mas telefone tem indicativo válido, preencher e pais_inferido=true
+- Telefone → obrigatório; normalizar +<indicativo> <resto>
+- Site → Airbnb, Booking.com, Vrbo, Direct, Owner; senão → "Outro"
+- id_reserva → SHA-1 de (nome + data_entrada + site)
+- confidence → média ponderada de OCR_quality, regex_hits, fusão
+
+ETAPA 4 – VALIDAÇÃO:
+- data_entrada ≤ data_saida → senão needs_review=true
+- telefone == "" → needs_review=true (campo crítico)
+- Se confidence < 0.35 → needs_review=true
+- Duplicado estrito eliminar; duplicado soft fundir com needs_review=true
 
 TEXTO DO DOCUMENTO:
 ${text}
 
-EXTRAI TODAS AS RESERVAS:`;
+EXTRAI TODAS AS RESERVAS ENCONTRADAS:`;
   }
 
   /**
-   * Limpa a resposta JSON do Gemini
+   * Limpa a resposta JSON do Gemini v4.2
    */
   private cleanJsonResponse(response: string): string {
+    // Remove a sentinela END_OF_JSON e texto depois dela
+    let cleaned = response.split('END_OF_JSON')[0];
+    
     // Remove markdown e texto extra
-    let cleaned = response.replace(/```json/g, '').replace(/```/g, '');
+    cleaned = cleaned.replace(/```json/g, '').replace(/```/g, '');
+    
+    // Remove linhas de debug se existirem
+    cleaned = cleaned.replace(/^---[\s\S]*?(?=\[)/m, '');
     
     // Encontra o array JSON
     const jsonStart = cleaned.indexOf('[');

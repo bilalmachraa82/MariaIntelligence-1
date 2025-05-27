@@ -62,7 +62,7 @@ router.post('/process', upload.single('file'), async (req, res) => {
     console.log('📄 Processando arquivo:', req.file.filename, 'Tipo:', req.file.mimetype);
 
     // Processar o arquivo (PDF ou imagem)
-    const result = await ocrService.processFile(req.file.path, req.file.mimetype);
+    const result = await ocrService.processFile(req.file);
 
     // Limpar arquivo temporário
     try {
@@ -145,7 +145,7 @@ router.post('/process-multiple', upload.array('files', 10), async (req, res) => 
     for (const file of files) {
       console.log(`🔍 Processando: ${file.originalname}`);
       
-      const result = await ocrService.processFile(file.path, file.mimetype);
+      const result = await ocrService.processFile(file);
       
       if (result.success && result.reservations.length > 0) {
         // Adicionar tipo de documento e fonte aos dados
