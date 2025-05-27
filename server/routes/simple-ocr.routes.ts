@@ -190,7 +190,7 @@ router.post('/process-multiple', upload.array('files', 10), async (req, res) => 
 
     // Consolidar reservas de check-in e check-out
     console.log('🔄 Iniciando consolidação de reservas...');
-    const consolidatedReservations = await ocrService.consolidateReservations(allReservations);
+    const consolidatedReservations = await ocrService.consolidateReservations(allReservations, []);
 
     const consolidatedCount = consolidatedReservations.filter(r => r.source === 'consolidated').length;
 

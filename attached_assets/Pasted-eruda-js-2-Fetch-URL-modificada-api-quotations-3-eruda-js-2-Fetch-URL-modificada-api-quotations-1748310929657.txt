@@ -1,0 +1,3256 @@
+eruda.js:2 Fetch URL modificada: /api/quotations/3
+eruda.js:2 Fetch URL modificada: /api/quotations
+eruda.js:2 Fetch URL modificada: /api/quotations/2
+eruda.js:2 Fetch URL modificada: /api/quotations
+eruda.js:2 Fetch URL modificada: /api/quotations/1
+eruda.js:2 Fetch URL modificada: /api/quotations
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ VM29276 eruda.js:2
+parseMissingKeyHandler @ VM29317 config.ts:32
+translate @ VM29318 i18next.js:689
+t @ VM29318 i18next.js:2075
+fixedT @ VM29318 i18next.js:2059
+BottomNavSimplified @ VM29469 bottom-nav-simplified.tsx:46
+renderWithHooks @ VM29310 chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ VM29310 chunk-RPCDYKBN.js:14582
+beginWork @ VM29310 chunk-RPCDYKBN.js:15924
+beginWork$1 @ VM29310 chunk-RPCDYKBN.js:19753
+performUnitOfWork @ VM29310 chunk-RPCDYKBN.js:19198
+workLoopSync @ VM29310 chunk-RPCDYKBN.js:19137
+renderRootSync @ VM29310 chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ VM29310 chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ VM29310 chunk-RPCDYKBN.js:9119
+(anonymous) @ VM29310 chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ VM29276 eruda.js:2
+parseMissingKeyHandler @ VM29317 config.ts:32
+translate @ VM29318 i18next.js:689
+t @ VM29318 i18next.js:2075
+fixedT @ VM29318 i18next.js:2059
+BottomNavSimplified @ VM29469 bottom-nav-simplified.tsx:56
+renderWithHooks @ VM29310 chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ VM29310 chunk-RPCDYKBN.js:14582
+beginWork @ VM29310 chunk-RPCDYKBN.js:15924
+beginWork$1 @ VM29310 chunk-RPCDYKBN.js:19753
+performUnitOfWork @ VM29310 chunk-RPCDYKBN.js:19198
+workLoopSync @ VM29310 chunk-RPCDYKBN.js:19137
+renderRootSync @ VM29310 chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ VM29310 chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ VM29310 chunk-RPCDYKBN.js:9119
+(anonymous) @ VM29310 chunk-RPCDYKBN.js:18627
+eruda.js:2 Enviando dados de orçamento: {
+  "clientName": "bilal machraa",
+  "clientEmail": "bilal.machraa@gmail.com",
+  "clientPhone": "918911308",
+  "propertyType": "house_v5",
+  "propertyAddress": "Rua regueiro do tanque 3",
+  "propertyArea": 50,
+  "bedrooms": 1,
+  "bathrooms": 1,
+  "exteriorArea": 100,
+  "isDuplex": true,
+  "hasBBQ": true,
+  "hasGlassGarden": false,
+  "basePrice": "150.00",
+  "duplexSurcharge": "10.00",
+  "bbqSurcharge": "10.00",
+  "exteriorSurcharge": "0.00",
+  "glassGardenSurcharge": "0.00",
+  "additionalSurcharges": "30.00",
+  "totalPrice": "180.00",
+  "notes": "sdgsfh",
+  "internalNotes": "",
+  "validUntil": "2025-07-01",
+  "status": "draft"
+}
+eruda.js:2 Fetch URL modificada: /api/quotations
+eruda.js:2 i18next::translator: missingKey pt-PT translation common.saving common.saving
+eruda.js:2 Chave de tradução faltando: common.saving
+Mt.forEach.n.<computed> @ VM29276 eruda.js:2
+parseMissingKeyHandler @ VM29317 config.ts:32
+translate @ VM29318 i18next.js:689
+t @ VM29318 i18next.js:2075
+fixedT @ VM29318 i18next.js:2059
+SimpleQuotationForm @ VM29502 simple-quotation-form.tsx:1256
+renderWithHooks @ VM29310 chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ VM29310 chunk-RPCDYKBN.js:14582
+beginWork @ VM29310 chunk-RPCDYKBN.js:15924
+beginWork$1 @ VM29310 chunk-RPCDYKBN.js:19753
+performUnitOfWork @ VM29310 chunk-RPCDYKBN.js:19198
+workLoopSync @ VM29310 chunk-RPCDYKBN.js:19137
+renderRootSync @ VM29310 chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ VM29310 chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ VM29310 chunk-RPCDYKBN.js:9119
+(anonymous) @ VM29310 chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ VM29276 eruda.js:2
+parseMissingKeyHandler @ VM29317 config.ts:32
+translate @ VM29318 i18next.js:689
+t @ VM29318 i18next.js:2075
+fixedT @ VM29318 i18next.js:2059
+BottomNavSimplified @ VM29469 bottom-nav-simplified.tsx:46
+renderWithHooks @ VM29310 chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ VM29310 chunk-RPCDYKBN.js:14582
+beginWork @ VM29310 chunk-RPCDYKBN.js:15924
+beginWork$1 @ VM29310 chunk-RPCDYKBN.js:19753
+performUnitOfWork @ VM29310 chunk-RPCDYKBN.js:19198
+workLoopSync @ VM29310 chunk-RPCDYKBN.js:19137
+renderRootSync @ VM29310 chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ VM29310 chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ VM29310 chunk-RPCDYKBN.js:9119
+(anonymous) @ VM29310 chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ VM29276 eruda.js:2
+parseMissingKeyHandler @ VM29317 config.ts:32
+translate @ VM29318 i18next.js:689
+t @ VM29318 i18next.js:2075
+fixedT @ VM29318 i18next.js:2059
+BottomNavSimplified @ VM29469 bottom-nav-simplified.tsx:56
+renderWithHooks @ VM29310 chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ VM29310 chunk-RPCDYKBN.js:14582
+beginWork @ VM29310 chunk-RPCDYKBN.js:15924
+beginWork$1 @ VM29310 chunk-RPCDYKBN.js:19753
+performUnitOfWork @ VM29310 chunk-RPCDYKBN.js:19198
+workLoopSync @ VM29310 chunk-RPCDYKBN.js:19137
+renderRootSync @ VM29310 chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ VM29310 chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ VM29310 chunk-RPCDYKBN.js:9119
+(anonymous) @ VM29310 chunk-RPCDYKBN.js:18627
+eruda.js:2 Fetch URL modificada: /api/quotations
+eruda.js:2 Fetch URL modificada: /api/quotations
+eruda.js:2 Fetch URL modificada: /api/quotations
+eruda.js:2 Fetch URL modificada: /api/quotations
+eruda.js:2 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ VM29276 eruda.js:2
+(anonymous) @ VM29431 chunk-35NWVKDH.js:340
+commitHookEffectListMount @ VM29310 chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ VM29310 chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ VM29310 chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ VM29310 chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ VM29310 chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ VM29310 chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ VM29310 chunk-RPCDYKBN.js:19447
+commitRootImpl @ VM29310 chunk-RPCDYKBN.js:19416
+commitRoot @ VM29310 chunk-RPCDYKBN.js:19277
+performSyncWorkOnRoot @ VM29310 chunk-RPCDYKBN.js:18895
+flushSyncCallbacks @ VM29310 chunk-RPCDYKBN.js:9119
+(anonymous) @ VM29310 chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ VM29276 eruda.js:2
+parseMissingKeyHandler @ VM29317 config.ts:32
+translate @ VM29318 i18next.js:689
+t @ VM29318 i18next.js:2075
+fixedT @ VM29318 i18next.js:2059
+BottomNavSimplified @ VM29469 bottom-nav-simplified.tsx:46
+renderWithHooks @ VM29310 chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ VM29310 chunk-RPCDYKBN.js:14582
+beginWork @ VM29310 chunk-RPCDYKBN.js:15924
+beginWork$1 @ VM29310 chunk-RPCDYKBN.js:19753
+performUnitOfWork @ VM29310 chunk-RPCDYKBN.js:19198
+workLoopSync @ VM29310 chunk-RPCDYKBN.js:19137
+renderRootSync @ VM29310 chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ VM29310 chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ VM29310 chunk-RPCDYKBN.js:9119
+(anonymous) @ VM29310 chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ VM29276 eruda.js:2
+parseMissingKeyHandler @ VM29317 config.ts:32
+translate @ VM29318 i18next.js:689
+t @ VM29318 i18next.js:2075
+fixedT @ VM29318 i18next.js:2059
+BottomNavSimplified @ VM29469 bottom-nav-simplified.tsx:56
+renderWithHooks @ VM29310 chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ VM29310 chunk-RPCDYKBN.js:14582
+beginWork @ VM29310 chunk-RPCDYKBN.js:15924
+beginWork$1 @ VM29310 chunk-RPCDYKBN.js:19753
+performUnitOfWork @ VM29310 chunk-RPCDYKBN.js:19198
+workLoopSync @ VM29310 chunk-RPCDYKBN.js:19137
+renderRootSync @ VM29310 chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ VM29310 chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ VM29310 chunk-RPCDYKBN.js:9119
+(anonymous) @ VM29310 chunk-RPCDYKBN.js:18627
+eruda.js:2 Fetch URL modificada: /api/properties
+eruda.js:2 Fetch URL modificada: /api/reservations
+eruda.js:2 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ VM29276 eruda.js:2
+(anonymous) @ VM29431 chunk-35NWVKDH.js:340
+commitHookEffectListMount @ VM29310 chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ VM29310 chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ VM29310 chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ VM29310 chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ VM29310 chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ VM29310 chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ VM29310 chunk-RPCDYKBN.js:19447
+commitRootImpl @ VM29310 chunk-RPCDYKBN.js:19416
+commitRoot @ VM29310 chunk-RPCDYKBN.js:19277
+performSyncWorkOnRoot @ VM29310 chunk-RPCDYKBN.js:18895
+flushSyncCallbacks @ VM29310 chunk-RPCDYKBN.js:9119
+(anonymous) @ VM29310 chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ VM29276 eruda.js:2
+parseMissingKeyHandler @ VM29317 config.ts:32
+translate @ VM29318 i18next.js:689
+t @ VM29318 i18next.js:2075
+fixedT @ VM29318 i18next.js:2059
+BottomNavSimplified @ VM29469 bottom-nav-simplified.tsx:46
+renderWithHooks @ VM29310 chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ VM29310 chunk-RPCDYKBN.js:14582
+beginWork @ VM29310 chunk-RPCDYKBN.js:15924
+beginWork$1 @ VM29310 chunk-RPCDYKBN.js:19753
+performUnitOfWork @ VM29310 chunk-RPCDYKBN.js:19198
+workLoopSync @ VM29310 chunk-RPCDYKBN.js:19137
+renderRootSync @ VM29310 chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ VM29310 chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ VM29310 chunk-RPCDYKBN.js:9119
+(anonymous) @ VM29310 chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ VM29276 eruda.js:2
+parseMissingKeyHandler @ VM29317 config.ts:32
+translate @ VM29318 i18next.js:689
+t @ VM29318 i18next.js:2075
+fixedT @ VM29318 i18next.js:2059
+BottomNavSimplified @ VM29469 bottom-nav-simplified.tsx:56
+renderWithHooks @ VM29310 chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ VM29310 chunk-RPCDYKBN.js:14582
+beginWork @ VM29310 chunk-RPCDYKBN.js:15924
+beginWork$1 @ VM29310 chunk-RPCDYKBN.js:19753
+performUnitOfWork @ VM29310 chunk-RPCDYKBN.js:19198
+workLoopSync @ VM29310 chunk-RPCDYKBN.js:19137
+renderRootSync @ VM29310 chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ VM29310 chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ VM29310 chunk-RPCDYKBN.js:9119
+(anonymous) @ VM29310 chunk-RPCDYKBN.js:18627
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+eruda.js:2 [vite] connecting...
+eruda.js:2 [vite] connected.
+eruda.js:2 i18next: languageChanged pt-PT
+eruda.js:2 i18next: initialized {debug: true, initAsync: true, ns: Array(1), defaultNS: Array(1), fallbackLng: Array(1), …}
+eruda.js:2 i18n inicializado com os seguintes recursos: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:39
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:49
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+eruda.js:2 Fetch URL modificada: /api/quotations
+eruda.js:2 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:39
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:49
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Unrecognized feature: 'ambient-light-sensor'.
+Unrecognized feature: 'ambient-light-sensor'.
+Unrecognized feature: 'ambient-light-sensor'.
+Unrecognized feature: 'ambient-light-sensor'.
+Unrecognized feature: 'ambient-light-sensor'.
+Unrecognized feature: 'ambient-light-sensor'.
+Unrecognized feature: 'ambient-light-sensor'.
+Unrecognized feature: 'battery'.
+Unrecognized feature: 'battery'.
+Unrecognized feature: 'battery'.
+Unrecognized feature: 'battery'.
+Unrecognized feature: 'battery'.
+Unrecognized feature: 'battery'.
+Unrecognized feature: 'battery'.
+Unrecognized feature: 'execution-while-not-rendered'.
+Unrecognized feature: 'execution-while-not-rendered'.
+Unrecognized feature: 'execution-while-not-rendered'.
+Unrecognized feature: 'execution-while-not-rendered'.
+Unrecognized feature: 'execution-while-not-rendered'.
+Unrecognized feature: 'execution-while-not-rendered'.
+Unrecognized feature: 'execution-while-not-rendered'.
+Unrecognized feature: 'execution-while-out-of-viewport'.
+Unrecognized feature: 'execution-while-out-of-viewport'.
+Unrecognized feature: 'execution-while-out-of-viewport'.
+Unrecognized feature: 'execution-while-out-of-viewport'.
+Unrecognized feature: 'execution-while-out-of-viewport'.
+Unrecognized feature: 'execution-while-out-of-viewport'.
+Unrecognized feature: 'execution-while-out-of-viewport'.
+Unrecognized feature: 'layout-animations'.
+Unrecognized feature: 'layout-animations'.
+Unrecognized feature: 'layout-animations'.
+Unrecognized feature: 'layout-animations'.
+Unrecognized feature: 'layout-animations'.
+Unrecognized feature: 'layout-animations'.
+Unrecognized feature: 'layout-animations'.
+Unrecognized feature: 'legacy-image-formats'.
+Unrecognized feature: 'legacy-image-formats'.
+Unrecognized feature: 'legacy-image-formats'.
+Unrecognized feature: 'legacy-image-formats'.
+Unrecognized feature: 'legacy-image-formats'.
+Unrecognized feature: 'legacy-image-formats'.
+Unrecognized feature: 'legacy-image-formats'.
+Unrecognized feature: 'navigation-override'.
+Unrecognized feature: 'navigation-override'.
+Unrecognized feature: 'navigation-override'.
+Unrecognized feature: 'navigation-override'.
+Unrecognized feature: 'navigation-override'.
+Unrecognized feature: 'navigation-override'.
+Unrecognized feature: 'navigation-override'.
+Unrecognized feature: 'oversized-images'.
+Unrecognized feature: 'oversized-images'.
+Unrecognized feature: 'oversized-images'.
+Unrecognized feature: 'oversized-images'.
+Unrecognized feature: 'oversized-images'.
+Unrecognized feature: 'oversized-images'.
+Unrecognized feature: 'oversized-images'.
+Unrecognized feature: 'publickey-credentials'.
+Unrecognized feature: 'publickey-credentials'.
+Unrecognized feature: 'publickey-credentials'.
+Unrecognized feature: 'publickey-credentials'.
+Unrecognized feature: 'publickey-credentials'.
+Unrecognized feature: 'publickey-credentials'.
+Unrecognized feature: 'publickey-credentials'.
+Unrecognized feature: 'speaker-selection'.
+Unrecognized feature: 'speaker-selection'.
+Unrecognized feature: 'speaker-selection'.
+Unrecognized feature: 'speaker-selection'.
+Unrecognized feature: 'speaker-selection'.
+Unrecognized feature: 'speaker-selection'.
+Unrecognized feature: 'speaker-selection'.
+Unrecognized feature: 'unoptimized-images'.
+Unrecognized feature: 'unoptimized-images'.
+Unrecognized feature: 'unoptimized-images'.
+Unrecognized feature: 'unoptimized-images'.
+Unrecognized feature: 'unoptimized-images'.
+Unrecognized feature: 'unoptimized-images'.
+Unrecognized feature: 'unoptimized-images'.
+Unrecognized feature: 'unsized-media'.
+Unrecognized feature: 'unsized-media'.
+Unrecognized feature: 'unsized-media'.
+Unrecognized feature: 'unsized-media'.
+Unrecognized feature: 'unsized-media'.
+Unrecognized feature: 'unsized-media'.
+Unrecognized feature: 'unsized-media'.
+Allow attribute will take precedence over 'allowfullscreen'.
+Allow attribute will take precedence over 'allowfullscreen'.
+Allow attribute will take precedence over 'allowfullscreen'.
+Allow attribute will take precedence over 'allowfullscreen'.
+Allow attribute will take precedence over 'allowfullscreen'.
+Allow attribute will take precedence over 'allowfullscreen'.
+Allow attribute will take precedence over 'allowfullscreen'.
+Allow attribute will take precedence over 'allowpaymentrequest'.
+Allow attribute will take precedence over 'allowpaymentrequest'.
+Allow attribute will take precedence over 'allowpaymentrequest'.
+Allow attribute will take precedence over 'allowpaymentrequest'.
+Allow attribute will take precedence over 'allowpaymentrequest'.
+Allow attribute will take precedence over 'allowpaymentrequest'.
+Allow attribute will take precedence over 'allowpaymentrequest'.
+eruda.js:2 Navegando para orçamento 4
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:39
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+flushSync @ chunk-RPCDYKBN.js?v=eef0c531:18959
+flushSync$1 @ chunk-RPCDYKBN.js?v=eef0c531:21538
+dispatchDiscreteCustomEvent @ chunk-CPFL7ZFD.js?v=eef0c531:52
+handleSelect @ @radix-ui_react-dropdown-menu.js?v=eef0c531:432
+handleEvent @ chunk-OD433RWB.js?v=eef0c531:6
+callCallback2 @ chunk-RPCDYKBN.js?v=eef0c531:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=eef0c531:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=eef0c531:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=eef0c531:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=eef0c531:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=eef0c531:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=eef0c531:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=eef0c531:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=eef0c531:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=eef0c531:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=eef0c531:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=eef0c531:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=eef0c531:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=eef0c531:5449
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:49
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+flushSync @ chunk-RPCDYKBN.js?v=eef0c531:18959
+flushSync$1 @ chunk-RPCDYKBN.js?v=eef0c531:21538
+dispatchDiscreteCustomEvent @ chunk-CPFL7ZFD.js?v=eef0c531:52
+handleSelect @ @radix-ui_react-dropdown-menu.js?v=eef0c531:432
+handleEvent @ chunk-OD433RWB.js?v=eef0c531:6
+callCallback2 @ chunk-RPCDYKBN.js?v=eef0c531:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=eef0c531:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=eef0c531:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=eef0c531:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=eef0c531:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=eef0c531:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=eef0c531:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=eef0c531:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=eef0c531:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=eef0c531:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=eef0c531:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=eef0c531:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=eef0c531:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=eef0c531:5449
+eruda.js:2 Fetch URL modificada: /api/quotations/4
+eruda.js:2 Estado da consulta: {error: null, isLoading: false, quotation: {…}}
+eruda.js:2 Estado da consulta: {error: null, isLoading: false, quotation: {…}}
+eruda.js:2 [vite] hot updated: /src/App.tsx?v=uSL7FootNdRM-1LYWn7AQ
+eruda.js:2 [vite] hot updated: /src/index.css?v=uSL7FootNdRM-1LYWn7AQ
+eruda.js:2 Estado da consulta: {error: null, isLoading: false, quotation: {…}}
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:39
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+flushSync @ chunk-RPCDYKBN.js?v=eef0c531:18959
+scheduleRefresh @ chunk-RPCDYKBN.js?v=eef0c531:20004
+(anonymous) @ @react-refresh:267
+performReactRefresh @ @react-refresh:256
+(anonymous) @ @react-refresh:677
+setTimeout
+(anonymous) @ @react-refresh:666
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:728
+(anonymous) @ App.tsx?t=1748310177406&v=Wx1sS6r-wR52NIRHqLfzR:790
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:49
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+flushSync @ chunk-RPCDYKBN.js?v=eef0c531:18959
+scheduleRefresh @ chunk-RPCDYKBN.js?v=eef0c531:20004
+(anonymous) @ @react-refresh:267
+performReactRefresh @ @react-refresh:256
+(anonymous) @ @react-refresh:677
+setTimeout
+(anonymous) @ @react-refresh:666
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:728
+(anonymous) @ App.tsx?t=1748310177406&v=Wx1sS6r-wR52NIRHqLfzR:790
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+eruda.js:2 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+eruda.js:2 Estado da consulta: {error: null, isLoading: false, quotation: {…}}
+eruda.js:2 Estado da consulta: {error: null, isLoading: false, quotation: {…}}
+eruda.js:2 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61
+(anonymous) @ chunk-35NWVKDH.js?v=eef0c531:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=eef0c531:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=eef0c531:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=eef0c531:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=eef0c531:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=eef0c531:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=eef0c531:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=eef0c531:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=eef0c531:19416
+commitRoot @ chunk-RPCDYKBN.js?v=eef0c531:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:39
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=Wx1sS6r-wR52NIRHqLfzR:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ eruda.js:2
+(anonymous) @ chunk-35NWVKDH.js:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js:19447
+commitRootImpl @ chunk-RPCDYKBN.js:19416
+commitRoot @ chunk-RPCDYKBN.js:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation common.nif NIF
+eruda.js:2 Chave de tradução faltando: common.nif
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=Wx1sS6r-wR52NIRHqLfzR:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+CleaningTeamsPage @ index.tsx:188
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation cleaningTeams.statusActive Ativa
+eruda.js:2 Chave de tradução faltando: cleaningTeams.statusActive
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=Wx1sS6r-wR52NIRHqLfzR:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+(anonymous) @ index.tsx:247
+CleaningTeamsPage @ index.tsx:212
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation cleaningTeams.statusActive Ativa
+eruda.js:2 Chave de tradução faltando: cleaningTeams.statusActive
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=Wx1sS6r-wR52NIRHqLfzR:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+(anonymous) @ index.tsx:247
+CleaningTeamsPage @ index.tsx:212
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation cleaningTeams.statusActive Ativa
+eruda.js:2 Chave de tradução faltando: cleaningTeams.statusActive
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=Wx1sS6r-wR52NIRHqLfzR:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+(anonymous) @ index.tsx:247
+CleaningTeamsPage @ index.tsx:212
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation cleaningTeams.statusActive Ativa
+eruda.js:2 Chave de tradução faltando: cleaningTeams.statusActive
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=Wx1sS6r-wR52NIRHqLfzR:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+(anonymous) @ index.tsx:247
+CleaningTeamsPage @ index.tsx:212
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=Wx1sS6r-wR52NIRHqLfzR:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:46
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=Wx1sS6r-wR52NIRHqLfzR:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ eruda.js:2
+(anonymous) @ chunk-35NWVKDH.js:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js:19447
+commitRootImpl @ chunk-RPCDYKBN.js:19416
+commitRoot @ chunk-RPCDYKBN.js:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=Wx1sS6r-wR52NIRHqLfzR:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:46
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=Wx1sS6r-wR52NIRHqLfzR:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 Fetch URL modificada: /api/properties
+eruda.js:2 Fetch URL modificada: /api/reservations
+eruda.js:2 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ eruda.js:2
+(anonymous) @ chunk-35NWVKDH.js:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js:19447
+commitRootImpl @ chunk-RPCDYKBN.js:19416
+commitRoot @ chunk-RPCDYKBN.js:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation cleaningReports.title Relatórios de Limpeza e Pagamentos
+eruda.js:2 Chave de tradução faltando: cleaningReports.title
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=Wx1sS6r-wR52NIRHqLfzR:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+CleaningReportsPage @ index.tsx:207
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=Wx1sS6r-wR52NIRHqLfzR:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:46
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=Wx1sS6r-wR52NIRHqLfzR:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 [vite] hot updated: /src/App.tsx?v=uSL7FootNdRM-1LYWn7AQ
+eruda.js:2 [vite] hot updated: /src/index.css?v=uSL7FootNdRM-1LYWn7AQ
+eruda.js:2 [vite] hot updated: /src/pages/reservation-assistant/index.tsx
+eruda.js:2 [vite] hot updated: /src/pages/properties/estatisticas.tsx
+eruda.js:2 [vite] hot updated: /src/pages/payments/new.tsx
+eruda.js:2 [vite] hot updated: /src/pages/reports/monthly-invoice/index.tsx
+eruda.js:2 [vite] hot updated: /src/pages/quotations/[id]/edit.tsx
+eruda.js:2 [vite] hot updated: /src/pages/quotations/[id]/index.tsx
+eruda.js:2 [vite] hot updated: /src/pages/reports/owner-reports.tsx
+eruda.js:2 [vite] hot updated: /src/pages/properties/index.tsx
+eruda.js:2 [vite] hot updated: /src/pages/properties/edit.tsx
+eruda.js:2 [vite] hot updated: /src/pages/owners/[id].tsx
+eruda.js:2 [vite] hot updated: /src/pages/reservations/approval.tsx
+eruda.js:2 [vite] hot updated: /src/pages/reservations/index.tsx
+eruda.js:2 [vite] hot updated: /src/pages/reservations/[id].tsx
+eruda.js:2 [vite] hot updated: /src/pages/properties/[id].tsx
+eruda.js:2 [vite] hot updated: /src/pages/reports/index.tsx
+eruda.js:2 [vite] hot updated: /src/pages/reservations/new.tsx
+eruda.js:2 [vite] hot updated: /src/pages/payments/incoming/index.tsx
+eruda.js:2 [vite] hot updated: /src/pages/financial/documents/items/new.tsx
+eruda.js:2 [vite] hot updated: /src/pages/payments/outgoing/index.tsx
+eruda.js:2 [vite] hot updated: /src/pages/assistant/index.tsx
+eruda.js:2 [vite] hot updated: /src/pages/financial/documents/items/edit/[id].tsx
+eruda.js:2 [vite] hot updated: /src/pages/reports/owner-report/index.tsx
+eruda.js:2 [vite] hot updated: /src/pages/owners/index.tsx
+eruda.js:2 [vite] hot updated: /src/pages/owners/edit.tsx
+eruda.js:2 [vite] hot updated: /src/components/financial/document-form.tsx
+eruda.js:2 [vite] hot updated: /src/components/dashboard/new-modern-dashboard.tsx
+eruda.js:2 [vite] hot updated: /src/pages/financial/documents/new.tsx
+eruda.js:2 [vite] hot updated: /src/pages/financial/documents/edit/[id].tsx
+eruda.js:2 [vite] hot updated: /src/pages/financial/documents/[id].tsx
+eruda.js:2 [vite] hot updated: /src/pages/financial/documents/index.tsx
+eruda.js:2 [vite] hot updated: /src/pages/financial/documents/payments/new.tsx
+eruda.js:2 [vite] hot updated: /src/pages/financial/documents/payments/edit/[id].tsx
+eruda.js:2 [vite] hot updated: /src/components/quotations/quotation-list.tsx
+eruda.js:2 [vite] hot updated: /src/components/quotations/simple-quotation-form.tsx
+eruda.js:2 [vite] hot updated: /src/components/reports/property-insights.tsx
+eruda.js:2 i18next::translator: missingKey pt-PT translation cleaningReports.title Relatórios de Limpeza e Pagamentos
+eruda.js:2 Chave de tradução faltando: cleaningReports.title
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=Wx1sS6r-wR52NIRHqLfzR:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+CleaningReportsPage @ index.tsx:207
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+flushSync @ chunk-RPCDYKBN.js:18959
+scheduleRefresh @ chunk-RPCDYKBN.js:20004
+(anonymous) @ @react-refresh:188
+performReactRefresh @ @react-refresh:180
+(anonymous) @ @react-refresh:474
+setTimeout
+(anonymous) @ @react-refresh:465
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:512
+(anonymous) @ property-insights.tsx:663
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=Wx1sS6r-wR52NIRHqLfzR:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:46
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+flushSync @ chunk-RPCDYKBN.js:18959
+scheduleRefresh @ chunk-RPCDYKBN.js:20004
+(anonymous) @ @react-refresh:188
+performReactRefresh @ @react-refresh:180
+(anonymous) @ @react-refresh:474
+setTimeout
+(anonymous) @ @react-refresh:465
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:512
+(anonymous) @ property-insights.tsx:663
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=Wx1sS6r-wR52NIRHqLfzR:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+flushSync @ chunk-RPCDYKBN.js:18959
+scheduleRefresh @ chunk-RPCDYKBN.js:20004
+(anonymous) @ @react-refresh:188
+performReactRefresh @ @react-refresh:180
+(anonymous) @ @react-refresh:474
+setTimeout
+(anonymous) @ @react-refresh:465
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:512
+(anonymous) @ property-insights.tsx:663
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+eruda.js:2 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+eruda.js:2 i18next::translator: missingKey pt-PT translation cleaningReports.title Relatórios de Limpeza e Pagamentos
+eruda.js:2 Chave de tradução faltando: cleaningReports.title
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=Wx1sS6r-wR52NIRHqLfzR:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+CleaningReportsPage @ index.tsx:207
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js:18678
+workLoop @ chunk-RPCDYKBN.js:197
+flushWork @ chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js:384
+eruda.js:2 [vite] hot updated: /src/App.tsx?v=uSL7FootNdRM-1LYWn7AQ
+eruda.js:2 [vite] hot updated: /src/index.css?v=uSL7FootNdRM-1LYWn7AQ
+eruda.js:2 i18next::translator: missingKey pt-PT translation cleaningReports.title Relatórios de Limpeza e Pagamentos
+eruda.js:2 Chave de tradução faltando: cleaningReports.title
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=Wx1sS6r-wR52NIRHqLfzR:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+CleaningReportsPage @ index.tsx:207
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+flushSync @ chunk-RPCDYKBN.js:18959
+scheduleRefresh @ chunk-RPCDYKBN.js:20004
+(anonymous) @ @react-refresh:188
+performReactRefresh @ @react-refresh:180
+(anonymous) @ @react-refresh:474
+setTimeout
+(anonymous) @ @react-refresh:465
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:512
+(anonymous) @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/App.tsx?t=1748310358619&v=uSL7FootNdRM-1LYWn7AQ:790
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=Wx1sS6r-wR52NIRHqLfzR:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:46
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+flushSync @ chunk-RPCDYKBN.js:18959
+scheduleRefresh @ chunk-RPCDYKBN.js:20004
+(anonymous) @ @react-refresh:188
+performReactRefresh @ @react-refresh:180
+(anonymous) @ @react-refresh:474
+setTimeout
+(anonymous) @ @react-refresh:465
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:512
+(anonymous) @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/App.tsx?t=1748310358619&v=uSL7FootNdRM-1LYWn7AQ:790
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=Wx1sS6r-wR52NIRHqLfzR:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+flushSync @ chunk-RPCDYKBN.js:18959
+scheduleRefresh @ chunk-RPCDYKBN.js:20004
+(anonymous) @ @react-refresh:188
+performReactRefresh @ @react-refresh:180
+(anonymous) @ @react-refresh:474
+setTimeout
+(anonymous) @ @react-refresh:465
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:512
+(anonymous) @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/App.tsx?t=1748310358619&v=uSL7FootNdRM-1LYWn7AQ:790
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+eruda.js:2 🧹 Clean mode configurado - interceptors desativados
+eruda.js:2 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+eruda.js:2 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+replEnvironmentDesktop-babae5762233d5b8.js:1 Unrecognized feature: 'pointer-lock'.
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ main-278275d71375dfb7.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+navigateTo @ replEnvironmentDesktop-babae5762233d5b8.js:1
+push.96198.ne.refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+refresh @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+(anonymous) @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ replEnvironmentDesktop-babae5762233d5b8.js:1
+next @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+s @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+n.observers.next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+notify @ _app-dee5582c1475a0bc.js:26
+t.apply @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+next @ _app-dee5582c1475a0bc.js:6
+next @ _app-dee5582c1475a0bc.js:6
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+b @ _app-dee5582c1475a0bc.js:9
+y @ _app-dee5582c1475a0bc.js:9
+t.next @ _app-dee5582c1475a0bc.js:9
+(anonymous) @ _app-dee5582c1475a0bc.js:26
+(anonymous) @ main-278275d71375dfb7.js:1
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+Promise.then
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+Promise.then
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+Promise.then
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+Promise.then
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+Promise.then
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+Promise.then
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+Promise.then
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+Promise.then
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+Promise.then
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+Promise.then
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+Promise.then
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+Promise.then
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+Promise.then
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+Promise.then
+n @ main-278275d71375dfb7.js:1
+u @ main-278275d71375dfb7.js:1
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+eruda.js:2 [vite] connecting...
+eruda.js:2 [vite] connected.
+eruda.js:2 i18next: languageChanged pt-PT
+eruda.js:2 i18next: initialized {debug: true, initAsync: true, ns: Array(1), defaultNS: Array(1), fallbackLng: Array(1), …}
+eruda.js:2 i18n inicializado com os seguintes recursos: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+eruda.js:2 i18next::translator: missingKey pt-PT translation cleaningReports.title Relatórios de Limpeza e Pagamentos
+eruda.js:2 Chave de tradução faltando: cleaningReports.title
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+CleaningReportsPage @ index.tsx:207
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js:18678
+workLoop @ chunk-RPCDYKBN.js:197
+flushWork @ chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js:384
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:46
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js:18678
+workLoop @ chunk-RPCDYKBN.js:197
+flushWork @ chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js:384
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js:18678
+workLoop @ chunk-RPCDYKBN.js:197
+flushWork @ chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js:384
+eruda.js:2 🧹 Clean mode configurado - interceptors desativados
+eruda.js:2 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+eruda.js:2 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:46
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js:18678
+workLoop @ chunk-RPCDYKBN.js:197
+flushWork @ chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js:384
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js:18678
+workLoop @ chunk-RPCDYKBN.js:197
+flushWork @ chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js:384
+eruda.js:2 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ eruda.js:2
+(anonymous) @ chunk-35NWVKDH.js:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js:19447
+commitRootImpl @ chunk-RPCDYKBN.js:19416
+commitRoot @ chunk-RPCDYKBN.js:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:46
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:46
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 Enviando dados de orçamento: {
+  "clientName": "bilal machraa",
+  "clientEmail": "bilal.machraa@gmail.com",
+  "clientPhone": "918911308",
+  "propertyType": "apartment_t0t1",
+  "propertyAddress": "Rua regueiro do tanque 3",
+  "propertyArea": 50,
+  "bedrooms": 1,
+  "bathrooms": 1,
+  "exteriorArea": 8,
+  "isDuplex": true,
+  "hasBBQ": true,
+  "hasGlassGarden": false,
+  "basePrice": "47.00",
+  "duplexSurcharge": "10.00",
+  "bbqSurcharge": "10.00",
+  "exteriorSurcharge": "0.00",
+  "glassGardenSurcharge": "0.00",
+  "additionalSurcharges": "20.00",
+  "totalPrice": "67.00",
+  "notes": "",
+  "internalNotes": "",
+  "validUntil": "2025-06-30",
+  "status": "draft"
+}
+eruda.js:2 i18next::translator: missingKey pt-PT translation common.saving common.saving
+eruda.js:2 Chave de tradução faltando: common.saving
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+SimpleQuotationForm @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/components/quotations/simple-quotation-form.tsx?t=1748310358619:1256
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:46
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 [vite] hot updated: /src/pages/cleaning-reports/index.tsx
+eruda.js:2 [vite] hot updated: /src/index.css?v=uSL7FootNdRM-1LYWn7AQ
+eruda.js:2 [vite] hot updated: /src/pages/cleaning-reports/index.tsx
+eruda.js:2 [vite] hot updated: /src/index.css?v=uSL7FootNdRM-1LYWn7AQ
+eruda.js:2 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ eruda.js:2
+(anonymous) @ chunk-35NWVKDH.js:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js:19447
+commitRootImpl @ chunk-RPCDYKBN.js:19416
+commitRoot @ chunk-RPCDYKBN.js:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation common.nif NIF
+eruda.js:2 Chave de tradução faltando: common.nif
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+CleaningTeamsPage @ index.tsx:188
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation cleaningTeams.statusActive Ativa
+eruda.js:2 Chave de tradução faltando: cleaningTeams.statusActive
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+(anonymous) @ index.tsx:247
+CleaningTeamsPage @ index.tsx:212
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation cleaningTeams.statusActive Ativa
+eruda.js:2 Chave de tradução faltando: cleaningTeams.statusActive
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+(anonymous) @ index.tsx:247
+CleaningTeamsPage @ index.tsx:212
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation cleaningTeams.statusActive Ativa
+eruda.js:2 Chave de tradução faltando: cleaningTeams.statusActive
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+(anonymous) @ index.tsx:247
+CleaningTeamsPage @ index.tsx:212
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation cleaningTeams.statusActive Ativa
+eruda.js:2 Chave de tradução faltando: cleaningTeams.statusActive
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+(anonymous) @ index.tsx:247
+CleaningTeamsPage @ index.tsx:212
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:46
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ eruda.js:2
+(anonymous) @ chunk-35NWVKDH.js:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js:19447
+commitRootImpl @ chunk-RPCDYKBN.js:19416
+commitRoot @ chunk-RPCDYKBN.js:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation cleaningReports.title Relatórios de Limpeza e Pagamentos
+eruda.js:2 Chave de tradução faltando: cleaningReports.title
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+CleaningReportsPage @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/cleaning-reports/index.tsx?t=1748310489940:37
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation cleaningReports.title Relatórios de Limpeza e Pagamentos
+eruda.js:2 Chave de tradução faltando: cleaningReports.title
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+CleaningReportsPage @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/cleaning-reports/index.tsx?t=1748310489940:37
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+callCallback2 @ chunk-RPCDYKBN.js:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js:3733
+beginWork$1 @ chunk-RPCDYKBN.js:19765
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/cleaning-reports/index.tsx?t=1748310489940:43 Uncaught ReferenceError: Sparkles is not defined
+    at CleaningReportsPage (f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/cleaning-reports/index.tsx?t=1748310489940:43:34)
+    at renderWithHooks (chunk-RPCDYKBN.js:11548:26)
+    at mountIndeterminateComponent (chunk-RPCDYKBN.js:14926:21)
+    at beginWork (chunk-RPCDYKBN.js:15914:22)
+    at HTMLUnknownElement.callCallback2 (chunk-RPCDYKBN.js:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-RPCDYKBN.js:3699:24)
+    at invokeGuardedCallback (chunk-RPCDYKBN.js:3733:39)
+    at beginWork$1 (chunk-RPCDYKBN.js:19765:15)
+    at performUnitOfWork (chunk-RPCDYKBN.js:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js:19137:13)
+CleaningReportsPage @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/cleaning-reports/index.tsx?t=1748310489940:43
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+callCallback2 @ chunk-RPCDYKBN.js:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js:3733
+beginWork$1 @ chunk-RPCDYKBN.js:19765
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:46
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation cleaningReports.title Relatórios de Limpeza e Pagamentos
+eruda.js:2 Chave de tradução faltando: cleaningReports.title
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+CleaningReportsPage @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/cleaning-reports/index.tsx?t=1748310489940:37
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+recoverFromConcurrentError @ chunk-RPCDYKBN.js:18736
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18879
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation cleaningReports.title Relatórios de Limpeza e Pagamentos
+eruda.js:2 Chave de tradução faltando: cleaningReports.title
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+CleaningReportsPage @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/cleaning-reports/index.tsx?t=1748310489940:37
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+callCallback2 @ chunk-RPCDYKBN.js:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js:3733
+beginWork$1 @ chunk-RPCDYKBN.js:19765
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+recoverFromConcurrentError @ chunk-RPCDYKBN.js:18736
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18879
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/cleaning-reports/index.tsx?t=1748310489940:43 Uncaught ReferenceError: Sparkles is not defined
+    at CleaningReportsPage (f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/cleaning-reports/index.tsx?t=1748310489940:43:34)
+    at renderWithHooks (chunk-RPCDYKBN.js:11548:26)
+    at mountIndeterminateComponent (chunk-RPCDYKBN.js:14926:21)
+    at beginWork (chunk-RPCDYKBN.js:15914:22)
+    at HTMLUnknownElement.callCallback2 (chunk-RPCDYKBN.js:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-RPCDYKBN.js:3699:24)
+    at invokeGuardedCallback (chunk-RPCDYKBN.js:3733:39)
+    at beginWork$1 (chunk-RPCDYKBN.js:19765:15)
+    at performUnitOfWork (chunk-RPCDYKBN.js:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js:19137:13)
+CleaningReportsPage @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/cleaning-reports/index.tsx?t=1748310489940:43
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+callCallback2 @ chunk-RPCDYKBN.js:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js:3733
+beginWork$1 @ chunk-RPCDYKBN.js:19765
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+recoverFromConcurrentError @ chunk-RPCDYKBN.js:18736
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18879
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:46
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+recoverFromConcurrentError @ chunk-RPCDYKBN.js:18736
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18879
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=wtn85Wlkd3ED5ITR7hRJi:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+recoverFromConcurrentError @ chunk-RPCDYKBN.js:18736
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18879
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 The above error occurred in the <CleaningReportsPage> component:
+
+    at CleaningReportsPage (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/cleaning-reports/index.tsx?t=1748310489940:25:17)
+    at Route (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=eef0c531:323:16)
+    at Switch (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=eef0c531:379:17)
+    at Router
+    at main
+    at div
+    at div
+    at Layout (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/components/layout/layout.tsx:23:26)
+    at QueryClientProvider (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=eef0c531:2805:3)
+    at App (https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/App.tsx?t=1748310364288&v=wtn85Wlkd3ED5ITR7hRJi:751:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+Mt.forEach.n.<computed> @ eruda.js:2
+logCapturedError @ chunk-RPCDYKBN.js:14032
+update.callback @ chunk-RPCDYKBN.js:14052
+callCallback @ chunk-RPCDYKBN.js:11248
+commitUpdateQueue @ chunk-RPCDYKBN.js:11265
+commitLayoutEffectOnFiber @ chunk-RPCDYKBN.js:17093
+commitLayoutMountEffects_complete @ chunk-RPCDYKBN.js:17980
+commitLayoutEffects_begin @ chunk-RPCDYKBN.js:17969
+commitLayoutEffects @ chunk-RPCDYKBN.js:17920
+commitRootImpl @ chunk-RPCDYKBN.js:19353
+commitRoot @ chunk-RPCDYKBN.js:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+chunk-RPCDYKBN.js:9129 Uncaught ReferenceError: Sparkles is not defined
+    at CleaningReportsPage (f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/cleaning-reports/index.tsx?t=1748310489940:43:34)
+    at renderWithHooks (chunk-RPCDYKBN.js:11548:26)
+    at mountIndeterminateComponent (chunk-RPCDYKBN.js:14926:21)
+    at beginWork (chunk-RPCDYKBN.js:15914:22)
+    at beginWork$1 (chunk-RPCDYKBN.js:19753:22)
+    at performUnitOfWork (chunk-RPCDYKBN.js:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js:19137:13)
+    at renderRootSync (chunk-RPCDYKBN.js:19116:15)
+    at recoverFromConcurrentError (chunk-RPCDYKBN.js:18736:28)
+    at performSyncWorkOnRoot (chunk-RPCDYKBN.js:18879:28)
+CleaningReportsPage @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/cleaning-reports/index.tsx?t=1748310489940:43
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+recoverFromConcurrentError @ chunk-RPCDYKBN.js:18736
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18879
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 [vite] server connection lost. Polling for restart...
+client:602 
+            
+            
+           GET https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/index.css?t=1748310548676&v=uSL7FootNdRM-1LYWn7AQ net::ERR_ABORTED 502 (Bad Gateway)
+importUpdatedModule @ client:602
+fetchUpdate @ client:211
+queueUpdate @ client:186
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/index.css?t=1748310548676&v=uSL7FootNdRM-1LYWn7AQ:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/index.css?t=1748310548676&v=uSL7FootNdRM-1LYWn7AQ:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/index.css?t=1748310548676&v=uSL7FootNdRM-1LYWn7AQ:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/index.css?t=1748310548676&v=uSL7FootNdRM-1LYWn7AQ:1  Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+eruda.js:2 [hmr] Failed to reload /src/index.css?v=uSL7FootNdRM-1LYWn7AQ. This could be due to syntax errors or importing non-existent modules. (see errors above)
+Mt.forEach.n.<computed> @ eruda.js:2
+warnFailedUpdate @ client:176
+fetchUpdate @ client:213
+await in fetchUpdate
+queueUpdate @ client:186
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+client:602 
+            
+            
+           GET https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/cleaning-reports/index.tsx?t=1748310548676 net::ERR_ABORTED 502 (Bad Gateway)
+importUpdatedModule @ client:602
+fetchUpdate @ client:211
+queueUpdate @ client:186
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/cleaning-reports/index.tsx?t=1748310548676:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/cleaning-reports/index.tsx?t=1748310548676:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/cleaning-reports/index.tsx?t=1748310548676:1 
+            
+            
+           Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/pages/cleaning-reports/index.tsx?t=1748310548676:1  Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+eruda.js:2 [hmr] Failed to reload /src/pages/cleaning-reports/index.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+Mt.forEach.n.<computed> @ eruda.js:2
+warnFailedUpdate @ client:176
+fetchUpdate @ client:213
+await in fetchUpdate
+queueUpdate @ client:186
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+eruda.js:2 [vite] hot updated: /src/pages/cleaning-reports/index.tsx
+eruda.js:2 [vite] hot updated: /src/index.css?v=uSL7FootNdRM-1LYWn7AQ
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+[Violation] Added non-passive event listener to a scroll-blocking <some> event. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
+eruda.js:2 [vite] connecting...
+eruda.js:2 [vite] connected.
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+eruda.js:2 [vite] connecting...
+eruda.js:2 [vite] connected.
+eruda.js:2 i18next: languageChanged pt-PT
+eruda.js:2 i18next: initialized {debug: true, initAsync: true, ns: Array(1), defaultNS: Array(1), fallbackLng: Array(1), …}
+eruda.js:2 i18n inicializado com os seguintes recursos: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=1ovbTiYW9IVE6DZYkgzrM:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:46
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js:18678
+workLoop @ chunk-RPCDYKBN.js:197
+flushWork @ chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js:384
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=1ovbTiYW9IVE6DZYkgzrM:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js:18678
+workLoop @ chunk-RPCDYKBN.js:197
+flushWork @ chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js:384
+eruda.js:2 🧹 Clean mode configurado - interceptors desativados
+eruda.js:2 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+eruda.js:2 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=1ovbTiYW9IVE6DZYkgzrM:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:46
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js:18678
+workLoop @ chunk-RPCDYKBN.js:197
+flushWork @ chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js:384
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=1ovbTiYW9IVE6DZYkgzrM:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js:18678
+workLoop @ chunk-RPCDYKBN.js:197
+flushWork @ chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js:384
+framework-2a5414383c66f062.js:1 [Violation] 'message' handler took 169ms
+eruda.js:2 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ eruda.js:2
+(anonymous) @ chunk-35NWVKDH.js:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js:19447
+commitRootImpl @ chunk-RPCDYKBN.js:19416
+commitRoot @ chunk-RPCDYKBN.js:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=1ovbTiYW9IVE6DZYkgzrM:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:46
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=1ovbTiYW9IVE6DZYkgzrM:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ eruda.js:2
+(anonymous) @ chunk-35NWVKDH.js:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js:19447
+commitRootImpl @ chunk-RPCDYKBN.js:19416
+commitRoot @ chunk-RPCDYKBN.js:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=1ovbTiYW9IVE6DZYkgzrM:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:46
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=1ovbTiYW9IVE6DZYkgzrM:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ eruda.js:2
+(anonymous) @ chunk-35NWVKDH.js:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js:19447
+commitRootImpl @ chunk-RPCDYKBN.js:19416
+commitRoot @ chunk-RPCDYKBN.js:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation common.nif NIF
+eruda.js:2 Chave de tradução faltando: common.nif
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=1ovbTiYW9IVE6DZYkgzrM:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+CleaningTeamsPage @ index.tsx:188
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation cleaningTeams.statusActive Ativa
+eruda.js:2 Chave de tradução faltando: cleaningTeams.statusActive
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=1ovbTiYW9IVE6DZYkgzrM:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+(anonymous) @ index.tsx:247
+CleaningTeamsPage @ index.tsx:212
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation cleaningTeams.statusActive Ativa
+eruda.js:2 Chave de tradução faltando: cleaningTeams.statusActive
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=1ovbTiYW9IVE6DZYkgzrM:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+(anonymous) @ index.tsx:247
+CleaningTeamsPage @ index.tsx:212
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation cleaningTeams.statusActive Ativa
+eruda.js:2 Chave de tradução faltando: cleaningTeams.statusActive
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=1ovbTiYW9IVE6DZYkgzrM:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+(anonymous) @ index.tsx:247
+CleaningTeamsPage @ index.tsx:212
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation cleaningTeams.statusActive Ativa
+eruda.js:2 Chave de tradução faltando: cleaningTeams.statusActive
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=1ovbTiYW9IVE6DZYkgzrM:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+(anonymous) @ index.tsx:247
+CleaningTeamsPage @ index.tsx:212
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=1ovbTiYW9IVE6DZYkgzrM:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:46
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=1ovbTiYW9IVE6DZYkgzrM:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ eruda.js:2
+(anonymous) @ chunk-35NWVKDH.js:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js:19447
+commitRootImpl @ chunk-RPCDYKBN.js:19416
+commitRoot @ chunk-RPCDYKBN.js:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=1ovbTiYW9IVE6DZYkgzrM:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:46
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=1ovbTiYW9IVE6DZYkgzrM:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=1ovbTiYW9IVE6DZYkgzrM:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:46
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js:555
+flush @ @tanstack_react-query.js:569
+batch @ @tanstack_react-query.js:587
+dispatch_fn @ @tanstack_react-query.js:996
+setData @ @tanstack_react-query.js:696
+onSuccess @ @tanstack_react-query.js:897
+resolve @ @tanstack_react-query.js:456
+Promise.then
+run @ @tanstack_react-query.js:498
+start @ @tanstack_react-query.js:536
+fetch @ @tanstack_react-query.js:926
+executeFetch_fn @ @tanstack_react-query.js:2211
+onSubscribe @ @tanstack_react-query.js:1898
+subscribe @ @tanstack_react-query.js:24
+(anonymous) @ @tanstack_react-query.js:3022
+subscribeToStore @ chunk-RPCDYKBN.js:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js:19447
+commitRootImpl @ chunk-RPCDYKBN.js:19416
+commitRoot @ chunk-RPCDYKBN.js:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=1ovbTiYW9IVE6DZYkgzrM:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js:14926
+beginWork @ chunk-RPCDYKBN.js:15914
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js:555
+flush @ @tanstack_react-query.js:569
+batch @ @tanstack_react-query.js:587
+dispatch_fn @ @tanstack_react-query.js:996
+setData @ @tanstack_react-query.js:696
+onSuccess @ @tanstack_react-query.js:897
+resolve @ @tanstack_react-query.js:456
+Promise.then
+run @ @tanstack_react-query.js:498
+start @ @tanstack_react-query.js:536
+fetch @ @tanstack_react-query.js:926
+executeFetch_fn @ @tanstack_react-query.js:2211
+onSubscribe @ @tanstack_react-query.js:1898
+subscribe @ @tanstack_react-query.js:24
+(anonymous) @ @tanstack_react-query.js:3022
+subscribeToStore @ chunk-RPCDYKBN.js:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js:19447
+commitRootImpl @ chunk-RPCDYKBN.js:19416
+commitRoot @ chunk-RPCDYKBN.js:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+(anonymous) @ chunk-RPCDYKBN.js:18627
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=1ovbTiYW9IVE6DZYkgzrM:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:46
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js:18678
+workLoop @ chunk-RPCDYKBN.js:197
+flushWork @ chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js:384
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ eruda.js:2
+parseMissingKeyHandler @ f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/src/i18n/config.ts?v=1ovbTiYW9IVE6DZYkgzrM:32
+translate @ i18next.js:689
+t @ i18next.js:2075
+fixedT @ i18next.js:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:56
+renderWithHooks @ chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js:14582
+beginWork @ chunk-RPCDYKBN.js:15924
+beginWork$1 @ chunk-RPCDYKBN.js:19753
+performUnitOfWork @ chunk-RPCDYKBN.js:19198
+workLoopSync @ chunk-RPCDYKBN.js:19137
+renderRootSync @ chunk-RPCDYKBN.js:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js:18678
+workLoop @ chunk-RPCDYKBN.js:197
+flushWork @ chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js:384
+eruda.js:2 
+            
+            
+           POST https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/api/simple-ocr/process-multiple 500 (Internal Server Error)
+window.fetch @ eruda.js:2
+handleUpload @ SimpleOCR.tsx:47
+callCallback2 @ chunk-RPCDYKBN.js:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js:3736
+executeDispatch @ chunk-RPCDYKBN.js:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js:7034
+processDispatchQueue @ chunk-RPCDYKBN.js:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js:7051
+(anonymous) @ chunk-RPCDYKBN.js:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js:18913
+batchedUpdates @ chunk-RPCDYKBN.js:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js:5478
+dispatchEvent @ chunk-RPCDYKBN.js:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js:5449
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/api/simple-ocr/process-multiple:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/api/simple-ocr/process-multiple:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ VM30891 index.iife.js:24
+eruda.js:2 [vite] connecting...
+eruda.js:2 [vite] connected.
+eruda.js:2 i18next: languageChanged pt-PT
+eruda.js:2 i18next: initialized {debug: true, initAsync: true, ns: Array(1), defaultNS: Array(1), fallbackLng: Array(1), …}
+eruda.js:2 i18n inicializado com os seguintes recursos: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ VM30900 eruda.js:2
+parseMissingKeyHandler @ VM30941 config.ts:32
+translate @ VM30942 i18next.js:689
+t @ VM30942 i18next.js:2075
+fixedT @ VM30942 i18next.js:2059
+BottomNavSimplified @ VM31094 bottom-nav-simplified.tsx:46
+renderWithHooks @ VM30934 chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ VM30934 chunk-RPCDYKBN.js:14926
+beginWork @ VM30934 chunk-RPCDYKBN.js:15914
+beginWork$1 @ VM30934 chunk-RPCDYKBN.js:19753
+performUnitOfWork @ VM30934 chunk-RPCDYKBN.js:19198
+workLoopSync @ VM30934 chunk-RPCDYKBN.js:19137
+renderRootSync @ VM30934 chunk-RPCDYKBN.js:19116
+performConcurrentWorkOnRoot @ VM30934 chunk-RPCDYKBN.js:18678
+workLoop @ VM30934 chunk-RPCDYKBN.js:197
+flushWork @ VM30934 chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ VM30934 chunk-RPCDYKBN.js:384
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ VM30900 eruda.js:2
+parseMissingKeyHandler @ VM30941 config.ts:32
+translate @ VM30942 i18next.js:689
+t @ VM30942 i18next.js:2075
+fixedT @ VM30942 i18next.js:2059
+BottomNavSimplified @ VM31094 bottom-nav-simplified.tsx:56
+renderWithHooks @ VM30934 chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ VM30934 chunk-RPCDYKBN.js:14926
+beginWork @ VM30934 chunk-RPCDYKBN.js:15914
+beginWork$1 @ VM30934 chunk-RPCDYKBN.js:19753
+performUnitOfWork @ VM30934 chunk-RPCDYKBN.js:19198
+workLoopSync @ VM30934 chunk-RPCDYKBN.js:19137
+renderRootSync @ VM30934 chunk-RPCDYKBN.js:19116
+performConcurrentWorkOnRoot @ VM30934 chunk-RPCDYKBN.js:18678
+workLoop @ VM30934 chunk-RPCDYKBN.js:197
+flushWork @ VM30934 chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ VM30934 chunk-RPCDYKBN.js:384
+eruda.js:2 🧹 Clean mode configurado - interceptors desativados
+eruda.js:2 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+eruda.js:2 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ VM30900 eruda.js:2
+parseMissingKeyHandler @ VM30941 config.ts:32
+translate @ VM30942 i18next.js:689
+t @ VM30942 i18next.js:2075
+fixedT @ VM30942 i18next.js:2059
+BottomNavSimplified @ VM31094 bottom-nav-simplified.tsx:46
+renderWithHooks @ VM30934 chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ VM30934 chunk-RPCDYKBN.js:14926
+beginWork @ VM30934 chunk-RPCDYKBN.js:15914
+beginWork$1 @ VM30934 chunk-RPCDYKBN.js:19753
+performUnitOfWork @ VM30934 chunk-RPCDYKBN.js:19198
+workLoopSync @ VM30934 chunk-RPCDYKBN.js:19137
+renderRootSync @ VM30934 chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ VM30934 chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ VM30934 chunk-RPCDYKBN.js:9119
+(anonymous) @ VM30934 chunk-RPCDYKBN.js:18627
+setTimeout
+scheduleFn @ VM30948 @tanstack_react-query.js:555
+flush @ VM30948 @tanstack_react-query.js:569
+batch @ VM30948 @tanstack_react-query.js:587
+dispatch_fn @ VM30948 @tanstack_react-query.js:996
+setData @ VM30948 @tanstack_react-query.js:696
+onSuccess @ VM30948 @tanstack_react-query.js:897
+resolve @ VM30948 @tanstack_react-query.js:456
+Promise.then
+run @ VM30948 @tanstack_react-query.js:498
+start @ VM30948 @tanstack_react-query.js:536
+fetch @ VM30948 @tanstack_react-query.js:926
+executeFetch_fn @ VM30948 @tanstack_react-query.js:2211
+onSubscribe @ VM30948 @tanstack_react-query.js:1898
+subscribe @ VM30948 @tanstack_react-query.js:24
+(anonymous) @ VM30948 @tanstack_react-query.js:3022
+subscribeToStore @ VM30934 chunk-RPCDYKBN.js:11984
+commitHookEffectListMount @ VM30934 chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ VM30934 chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ VM30934 chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ VM30934 chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ VM30934 chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ VM30934 chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ VM30934 chunk-RPCDYKBN.js:19447
+performSyncWorkOnRoot @ VM30934 chunk-RPCDYKBN.js:18868
+flushSyncCallbacks @ VM30934 chunk-RPCDYKBN.js:9119
+commitRootImpl @ VM30934 chunk-RPCDYKBN.js:19432
+commitRoot @ VM30934 chunk-RPCDYKBN.js:19277
+finishConcurrentRender @ VM30934 chunk-RPCDYKBN.js:18805
+performConcurrentWorkOnRoot @ VM30934 chunk-RPCDYKBN.js:18718
+workLoop @ VM30934 chunk-RPCDYKBN.js:197
+flushWork @ VM30934 chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ VM30934 chunk-RPCDYKBN.js:384
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ VM30900 eruda.js:2
+parseMissingKeyHandler @ VM30941 config.ts:32
+translate @ VM30942 i18next.js:689
+t @ VM30942 i18next.js:2075
+fixedT @ VM30942 i18next.js:2059
+BottomNavSimplified @ VM31094 bottom-nav-simplified.tsx:56
+renderWithHooks @ VM30934 chunk-RPCDYKBN.js:11548
+mountIndeterminateComponent @ VM30934 chunk-RPCDYKBN.js:14926
+beginWork @ VM30934 chunk-RPCDYKBN.js:15914
+beginWork$1 @ VM30934 chunk-RPCDYKBN.js:19753
+performUnitOfWork @ VM30934 chunk-RPCDYKBN.js:19198
+workLoopSync @ VM30934 chunk-RPCDYKBN.js:19137
+renderRootSync @ VM30934 chunk-RPCDYKBN.js:19116
+performSyncWorkOnRoot @ VM30934 chunk-RPCDYKBN.js:18874
+flushSyncCallbacks @ VM30934 chunk-RPCDYKBN.js:9119
+(anonymous) @ VM30934 chunk-RPCDYKBN.js:18627
+setTimeout
+scheduleFn @ VM30948 @tanstack_react-query.js:555
+flush @ VM30948 @tanstack_react-query.js:569
+batch @ VM30948 @tanstack_react-query.js:587
+dispatch_fn @ VM30948 @tanstack_react-query.js:996
+setData @ VM30948 @tanstack_react-query.js:696
+onSuccess @ VM30948 @tanstack_react-query.js:897
+resolve @ VM30948 @tanstack_react-query.js:456
+Promise.then
+run @ VM30948 @tanstack_react-query.js:498
+start @ VM30948 @tanstack_react-query.js:536
+fetch @ VM30948 @tanstack_react-query.js:926
+executeFetch_fn @ VM30948 @tanstack_react-query.js:2211
+onSubscribe @ VM30948 @tanstack_react-query.js:1898
+subscribe @ VM30948 @tanstack_react-query.js:24
+(anonymous) @ VM30948 @tanstack_react-query.js:3022
+subscribeToStore @ VM30934 chunk-RPCDYKBN.js:11984
+commitHookEffectListMount @ VM30934 chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ VM30934 chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ VM30934 chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ VM30934 chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ VM30934 chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ VM30934 chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ VM30934 chunk-RPCDYKBN.js:19447
+performSyncWorkOnRoot @ VM30934 chunk-RPCDYKBN.js:18868
+flushSyncCallbacks @ VM30934 chunk-RPCDYKBN.js:9119
+commitRootImpl @ VM30934 chunk-RPCDYKBN.js:19432
+commitRoot @ VM30934 chunk-RPCDYKBN.js:19277
+finishConcurrentRender @ VM30934 chunk-RPCDYKBN.js:18805
+performConcurrentWorkOnRoot @ VM30934 chunk-RPCDYKBN.js:18718
+workLoop @ VM30934 chunk-RPCDYKBN.js:197
+flushWork @ VM30934 chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ VM30934 chunk-RPCDYKBN.js:384
+chunk-RPCDYKBN.js:18625 [Violation] 'setTimeout' handler took 75ms
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ VM30900 eruda.js:2
+parseMissingKeyHandler @ VM30941 config.ts:32
+translate @ VM30942 i18next.js:689
+t @ VM30942 i18next.js:2075
+fixedT @ VM30942 i18next.js:2059
+BottomNavSimplified @ VM31094 bottom-nav-simplified.tsx:46
+renderWithHooks @ VM30934 chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ VM30934 chunk-RPCDYKBN.js:14582
+beginWork @ VM30934 chunk-RPCDYKBN.js:15924
+beginWork$1 @ VM30934 chunk-RPCDYKBN.js:19753
+performUnitOfWork @ VM30934 chunk-RPCDYKBN.js:19198
+workLoopSync @ VM30934 chunk-RPCDYKBN.js:19137
+renderRootSync @ VM30934 chunk-RPCDYKBN.js:19116
+performConcurrentWorkOnRoot @ VM30934 chunk-RPCDYKBN.js:18678
+workLoop @ VM30934 chunk-RPCDYKBN.js:197
+flushWork @ VM30934 chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ VM30934 chunk-RPCDYKBN.js:384
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ VM30900 eruda.js:2
+parseMissingKeyHandler @ VM30941 config.ts:32
+translate @ VM30942 i18next.js:689
+t @ VM30942 i18next.js:2075
+fixedT @ VM30942 i18next.js:2059
+BottomNavSimplified @ VM31094 bottom-nav-simplified.tsx:56
+renderWithHooks @ VM30934 chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ VM30934 chunk-RPCDYKBN.js:14582
+beginWork @ VM30934 chunk-RPCDYKBN.js:15924
+beginWork$1 @ VM30934 chunk-RPCDYKBN.js:19753
+performUnitOfWork @ VM30934 chunk-RPCDYKBN.js:19198
+workLoopSync @ VM30934 chunk-RPCDYKBN.js:19137
+renderRootSync @ VM30934 chunk-RPCDYKBN.js:19116
+performConcurrentWorkOnRoot @ VM30934 chunk-RPCDYKBN.js:18678
+workLoop @ VM30934 chunk-RPCDYKBN.js:197
+flushWork @ VM30934 chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ VM30934 chunk-RPCDYKBN.js:384
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+eruda.js:2 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ VM30900 eruda.js:2
+parseMissingKeyHandler @ VM30941 config.ts:32
+translate @ VM30942 i18next.js:689
+t @ VM30942 i18next.js:2075
+fixedT @ VM30942 i18next.js:2059
+BottomNavSimplified @ VM31094 bottom-nav-simplified.tsx:46
+renderWithHooks @ VM30934 chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ VM30934 chunk-RPCDYKBN.js:14582
+beginWork @ VM30934 chunk-RPCDYKBN.js:15924
+beginWork$1 @ VM30934 chunk-RPCDYKBN.js:19753
+performUnitOfWork @ VM30934 chunk-RPCDYKBN.js:19198
+workLoopSync @ VM30934 chunk-RPCDYKBN.js:19137
+renderRootSync @ VM30934 chunk-RPCDYKBN.js:19116
+performConcurrentWorkOnRoot @ VM30934 chunk-RPCDYKBN.js:18678
+workLoop @ VM30934 chunk-RPCDYKBN.js:197
+flushWork @ VM30934 chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ VM30934 chunk-RPCDYKBN.js:384
+eruda.js:2 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+eruda.js:2 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ VM30900 eruda.js:2
+parseMissingKeyHandler @ VM30941 config.ts:32
+translate @ VM30942 i18next.js:689
+t @ VM30942 i18next.js:2075
+fixedT @ VM30942 i18next.js:2059
+BottomNavSimplified @ VM31094 bottom-nav-simplified.tsx:56
+renderWithHooks @ VM30934 chunk-RPCDYKBN.js:11548
+updateFunctionComponent @ VM30934 chunk-RPCDYKBN.js:14582
+beginWork @ VM30934 chunk-RPCDYKBN.js:15924
+beginWork$1 @ VM30934 chunk-RPCDYKBN.js:19753
+performUnitOfWork @ VM30934 chunk-RPCDYKBN.js:19198
+workLoopSync @ VM30934 chunk-RPCDYKBN.js:19137
+renderRootSync @ VM30934 chunk-RPCDYKBN.js:19116
+performConcurrentWorkOnRoot @ VM30934 chunk-RPCDYKBN.js:18678
+workLoop @ VM30934 chunk-RPCDYKBN.js:197
+flushWork @ VM30934 chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ VM30934 chunk-RPCDYKBN.js:384
+eruda.js:2 [vite] hot updated: /src/pages/cleaning-reports/index.tsx
+eruda.js:2 [vite] hot updated: /src/index.css?v=hzDbS1iRAJem9g_DZm6xf
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+Console.js:61 [vite] connecting...
+Console.js:61 [vite] connected.
+Console.js:61 i18next: languageChanged pt-PT
+Console.js:61 i18next: initialized {debug: true, initAsync: true, ns: Array(1), defaultNS: Array(1), fallbackLng: Array(1), …}
+Console.js:61 i18n inicializado com os seguintes recursos: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+Console.js:61 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+Console.js:61 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:39
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+Console.js:61 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:49
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 🧹 Clean mode configurado - interceptors desativados
+Console.js:61 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+Console.js:61 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+Console.js:61 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+Console.js:61 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:39
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=eef0c531:555
+flush @ @tanstack_react-query.js?v=eef0c531:569
+batch @ @tanstack_react-query.js?v=eef0c531:587
+dispatch_fn @ @tanstack_react-query.js?v=eef0c531:996
+setData @ @tanstack_react-query.js?v=eef0c531:696
+onSuccess @ @tanstack_react-query.js?v=eef0c531:897
+resolve @ @tanstack_react-query.js?v=eef0c531:456
+Promise.then
+run @ @tanstack_react-query.js?v=eef0c531:498
+start @ @tanstack_react-query.js?v=eef0c531:536
+fetch @ @tanstack_react-query.js?v=eef0c531:926
+executeFetch_fn @ @tanstack_react-query.js?v=eef0c531:2211
+onSubscribe @ @tanstack_react-query.js?v=eef0c531:1898
+subscribe @ @tanstack_react-query.js?v=eef0c531:24
+(anonymous) @ @tanstack_react-query.js?v=eef0c531:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=eef0c531:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=eef0c531:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=eef0c531:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=eef0c531:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=eef0c531:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=eef0c531:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=eef0c531:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=eef0c531:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=eef0c531:19432
+commitRoot @ chunk-RPCDYKBN.js?v=eef0c531:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=eef0c531:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18718
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+Console.js:61 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:49
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=eef0c531:555
+flush @ @tanstack_react-query.js?v=eef0c531:569
+batch @ @tanstack_react-query.js?v=eef0c531:587
+dispatch_fn @ @tanstack_react-query.js?v=eef0c531:996
+setData @ @tanstack_react-query.js?v=eef0c531:696
+onSuccess @ @tanstack_react-query.js?v=eef0c531:897
+resolve @ @tanstack_react-query.js?v=eef0c531:456
+Promise.then
+run @ @tanstack_react-query.js?v=eef0c531:498
+start @ @tanstack_react-query.js?v=eef0c531:536
+fetch @ @tanstack_react-query.js?v=eef0c531:926
+executeFetch_fn @ @tanstack_react-query.js?v=eef0c531:2211
+onSubscribe @ @tanstack_react-query.js?v=eef0c531:1898
+subscribe @ @tanstack_react-query.js?v=eef0c531:24
+(anonymous) @ @tanstack_react-query.js?v=eef0c531:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=eef0c531:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=eef0c531:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=eef0c531:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=eef0c531:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=eef0c531:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=eef0c531:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=eef0c531:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=eef0c531:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=eef0c531:19432
+commitRoot @ chunk-RPCDYKBN.js?v=eef0c531:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=eef0c531:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18718
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+Console.js:61 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:39
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+Console.js:61 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:49
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+Console.js:61 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:39
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+Console.js:61 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:49
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61
+(anonymous) @ chunk-35NWVKDH.js?v=eef0c531:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=eef0c531:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=eef0c531:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=eef0c531:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=eef0c531:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=eef0c531:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=eef0c531:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=eef0c531:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=eef0c531:19416
+commitRoot @ chunk-RPCDYKBN.js?v=eef0c531:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+Console.js:61 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:39
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+Console.js:61 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:49
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61
+(anonymous) @ chunk-35NWVKDH.js?v=eef0c531:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=eef0c531:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=eef0c531:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=eef0c531:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=eef0c531:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=eef0c531:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=eef0c531:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=eef0c531:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=eef0c531:19416
+commitRoot @ chunk-RPCDYKBN.js?v=eef0c531:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+Console.js:61 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:39
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+Console.js:61 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:49
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=eef0c531:14926
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+Console.js:61 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:39
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+Console.js:61 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:49
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=eef0c531:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:18627
+Console.js:61 i18next::translator: missingKey pt-PT translation navigation.reservations Reservas
+Console.js:61 Chave de tradução faltando: navigation.reservations
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:39
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+Console.js:61 i18next::translator: missingKey pt-PT translation navigation.finances Finanças
+Console.js:61 Chave de tradução faltando: navigation.finances
+Mt.forEach.n.<computed> @ Console.js:61
+parseMissingKeyHandler @ config.ts:39
+translate @ i18next.js?v=eef0c531:689
+t @ i18next.js?v=eef0c531:2075
+fixedT @ i18next.js?v=eef0c531:2059
+BottomNavSimplified @ bottom-nav-simplified.tsx:49
+renderWithHooks @ chunk-RPCDYKBN.js?v=eef0c531:11548
+updateFunctionComponent @ chunk-RPCDYKBN.js?v=eef0c531:14582
+beginWork @ chunk-RPCDYKBN.js?v=eef0c531:15924
+beginWork$1 @ chunk-RPCDYKBN.js?v=eef0c531:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=eef0c531:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=eef0c531:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=eef0c531:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=eef0c531:18678
+workLoop @ chunk-RPCDYKBN.js?v=eef0c531:197
+flushWork @ chunk-RPCDYKBN.js?v=eef0c531:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=eef0c531:384
+SimpleOCR.tsx:58 
+            
+            
+           POST https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/api/simple-ocr/process-multiple 500 (Internal Server Error)
+window.fetch @ Network.js:219
+handleUpload @ SimpleOCR.tsx:58
+callCallback2 @ chunk-RPCDYKBN.js?v=eef0c531:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=eef0c531:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=eef0c531:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=eef0c531:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=eef0c531:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=eef0c531:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=eef0c531:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=eef0c531:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=eef0c531:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=eef0c531:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=eef0c531:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=eef0c531:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=eef0c531:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=eef0c531:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=eef0c531:5449

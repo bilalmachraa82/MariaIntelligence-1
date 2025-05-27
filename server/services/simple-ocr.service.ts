@@ -17,6 +17,8 @@ export interface OCRResult {
   reservations: ExtractedReservation[];
   processingTime: number;
   message: string;
+  type?: string;
+  error?: string;
 }
 
 export class SimpleOCRService {
@@ -39,14 +41,93 @@ export class SimpleOCRService {
     }
 
     const prompt = `
-Você é um especialista em extração de dados de reservas hoteleiras. 
-Analise o texto fornecido e extraia TODAS as reservas encontradas.
+# ==============================================
+#  EXTRACTOR DE RESERVAS – v4.1  (schema_version: 1.4)
+# ==============================================
 
-INSTRUÇÕES:
-- Consolida fragmentos inteligentemente
-- Deduplica reservas similares  
-- Calcula confidence score
-- Valida campos críticos
+Persona  
+    És um motor de OCR e parsing ultra-fiável para reservas turísticas.
+
+FUNÇÃO  
+    Receber QUALQUER documento (imagem, PDF ou texto) e devolver um fluxo
+    estruturado de registos JSON (ou NDJSON) segundo o esquema abaixo,
+    aplicando consolidação inteligente de fragmentos, deduplicação,
+    cálculo de confidence e validação de campos críticos.
+
+PARÂMETROS  
+    mode = "json"                           # default json  
+    debug = false                           # default false  
+    confidence_threshold = 0.35             # marca needs_review se abaixo  
+
+OUTPUT  
+    • JSON (lista)  ⇢ se ≤ 8 000 tokens
+    • Nunca incluas texto fora dos bloco(s) JSON,  
+      excepto a linha \`---\` que separa debug/OCR quando debug=true.  
+    • Codificação UTF-8 sempre.
+
+ESQUEMA (ordem fixa)  
+{
+  "data_entrada":      "YYYY-MM-DD",
+  "data_saida":        "YYYY-MM-DD",
+  "noites":            0,
+  "nome":              "",
+  "hospedes":          0,
+  "pais":              "",
+  "pais_inferido":     false,
+  "site":              "",
+  "telefone":          "",
+  "observacoes":       "",
+  "timezone_source":   "",
+  "id_reserva":        "",
+  "confidence":        0.0,
+  "source_page":       0,
+  "needs_review":      false
+}
+
+ETAPA 1 – PRÉ-OCR  
+    • Auto-detectar orientação + idioma (PT, EN, ES, FR, DE).  
+    • Binarização adaptativa; eliminar cabeçalhos/rodapés.
+
+ETAPA 2 – SEGMENTAÇÃO  
+    • Novo fragmento quando encontra (data & nome) OU (data & preço∕hóspedes).  
+    • Janela de 120 caract. para juntar linhas partidas.
+
+ETAPA 2.1 – CONSOLIDAÇÃO DE FRAGMENTOS  
+    • Agrupar por ≥ 2 de: nome≈, ref_reserva, telefone, datas sobrepostas.  
+    • Se cluster contém apenas entrada *ou* saída → manter mas
+      \`needs_review=true\`.  
+    • Se contiver ambas → fundir campos não vazios, recalcular noites.
+
+ETAPA 3 – MAPEAMENTO & NORMALIZAÇÃO  
+    • Datas → DD/MM/AAAA, DD-MMM-AAAA, etc. ⇢ YYYY-MM-DD.  
+    • Noites → a partir das datas se ausente.  
+    • Hóspedes → Adultos + Crianças + Bebés (separados ou total).  
+    • País → rótulo directo; se vazio mas telefone tem indicativo válido,
+      preencher e \`pais_inferido=true\`.  
+    • Telefone → normalizar como \`+<indicativo> <resto>\`, remover espaços.  
+    • Site → palavras-chave (Airbnb, Booking.com, Vrbo, Direct, Owner);  
+      se nada bater → "Outro".  
+    • Observações → texto com verbos imperativos ou rótulo "Info/Observações".  
+    • id_reserva → SHA-1 de (nome + data_entrada + site).  
+    • confidence → média ponderada de OCR_quality, regex_hits, fusão.  
+    • source_page → nº da página onde o fragmento começou.
+
+ETAPA 4 – VALIDAÇÃO  
+    • data_entrada ≤ data_saida; caso contrário → \`needs_review=true\`.  
+    • Campo **telefone** vazio → \`needs_review=true\`.  
+    • Se confidence < confidence_threshold → \`needs_review=true\`.  
+    • Duplicado estrito (nome + data_entrada + site) → eliminar.  
+    • Duplicado "soft" (Levenshtein(nome) ≤ 2, site igual,
+      datas sobrepostas ≥ 50 %) → fundir, \`needs_review=true\`.
+
+ETAPA 5 – OUTPUT E INTERACÇÃO  
+    • Caso OCR falhe totalmente → devolver \`[]\`.  
+    • Se \`needs_review=true\` porque falta **nome, datas, número de hóspedes
+      ou telefone**, pergunta ao utilizador pelos valores em falta antes de
+      finalizar.  
+    • Se apenas o país estiver vazio, continua normalmente (campo opcional).
+
+TEXTO PARA PROCESSAR:
 
 OUTPUT: Responde APENAS com array JSON válido UTF-8.
 
@@ -97,7 +178,7 @@ EXTRAI TODAS AS RESERVAS:`;
         success: false,
         reservations: [],
         processingTime: Date.now() - startTime,
-        message: error.message || 'Erro no processamento do documento'
+        message: (error instanceof Error ? error.message : 'Erro no processamento do documento')
       };
     }
   }
@@ -118,7 +199,7 @@ EXTRAI TODAS AS RESERVAS:`;
     }
   }
 
-  async processFile(filePath: string): Promise<OCRResult> {
+  async processFile(filePath: string, mimeType?: string): Promise<OCRResult & { type?: string }> {
     try {
       // Import pdf-parse dynamically to handle PDF files
       const pdfParse = (await import('pdf-parse')).default;
@@ -129,16 +210,39 @@ EXTRAI TODAS AS RESERVAS:`;
       const pdfData = await pdfParse(dataBuffer);
       
       // Extract reservations from the PDF text
-      return await this.extractReservationsFromText(pdfData.text);
+      const result = await this.extractReservationsFromText(pdfData.text);
+      
+      // Add document type classification
+      return {
+        ...result,
+        type: this.classifyDocumentType(pdfData.text)
+      };
     } catch (error) {
       console.error('Erro ao processar arquivo:', error);
       return {
         success: false,
         reservations: [],
         processingTime: 0,
-        message: `Erro ao processar arquivo: ${error instanceof Error ? error.message : 'Erro desconhecido'}`
+        message: `Erro ao processar arquivo: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,
+        type: 'unknown'
       };
     }
+  }
+
+  private classifyDocumentType(text: string): string {
+    const lowerText = text.toLowerCase();
+    
+    if (lowerText.includes('check-in') || lowerText.includes('entrada')) {
+      return 'check-in';
+    }
+    if (lowerText.includes('check-out') || lowerText.includes('saída')) {
+      return 'check-out';
+    }
+    if (lowerText.includes('controlo') || lowerText.includes('control')) {
+      return 'control';
+    }
+    
+    return 'reservation';
   }
 
   async consolidateReservations(checkInData: any[], checkOutData: any[]): Promise<any[]> {
