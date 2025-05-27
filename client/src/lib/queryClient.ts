@@ -65,7 +65,7 @@ export async function apiRequest<T = unknown>(urlOrOptions: string | ApiRequestO
     console.error("Erro ao processar URL:", error);
   }
   
-  console.log("Fetch URL modificada:", cleanUrl);
+  // URL processada normalmente
   
   const fetchOptions: FetchOptions = {
     method,
