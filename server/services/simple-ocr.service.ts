@@ -423,12 +423,77 @@ TEXTO DO DOCUMENTO:
 ${text}
 
 EXTRAI TODAS AS RESERVAS:`;
+  }
 
-## FUNÇÃO  
-Receber QUALQUER documento (imagem, PDF ou texto) e devolver um fluxo
-estruturado de registos JSON segundo o esquema abaixo,
-aplicando consolidação inteligente de fragmentos, deduplicação,
-cálculo de confidence e validação de campos críticos.
+  /**
+   * Extrai texto de PDF usando pdf-parse
+   */
+  private async extractTextFromPDF(filePath: string): Promise<string> {
+    const dataBuffer = fs.readFileSync(filePath);
+    const data = await pdf(dataBuffer);
+    return data.text;
+  }
+
+  /**
+   * Extrai texto de imagem usando Gemini Vision
+   */
+  private async extractTextFromImage(filePath: string): Promise<string> {
+    const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    
+    const imageData = fs.readFileSync(filePath);
+    const base64Image = imageData.toString('base64');
+    
+    const result = await model.generateContent([
+      "Extraia todo o texto desta imagem de forma precisa. Mantenha a formatação e estrutura original.",
+      {
+        inlineData: {
+          data: base64Image,
+          mimeType: "image/jpeg"
+        }
+      }
+    ]);
+    
+    const response = await result.response;
+    return response.text();
+  }
+
+  /**
+   * Classifica o tipo de documento baseado no conteúdo
+   */
+  private async classifyDocument(text: string): Promise<'check-in' | 'check-out' | 'control-file' | 'unknown'> {
+    // Detectar arquivos de controle (múltiplas reservas)
+    const reservationIndicators = [
+      /check[\-\s]*in/gi,
+      /check[\-\s]*out/gi,
+      /\d{1,2}\/\d{1,2}\/\d{4}/g, // Datas
+      /\d{4}-\d{2}-\d{2}/g, // Datas ISO
+      /\b\d{1,2}\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/gi
+    ];
+    
+    let indicatorCount = 0;
+    for (const pattern of reservationIndicators) {
+      const matches = text.match(pattern);
+      if (matches) {
+        indicatorCount += matches.length;
+      }
+    }
+    
+    // Se tem muitos indicadores, é provavelmente um arquivo de controle
+    if (indicatorCount > 5) {
+      return 'control-file';
+    }
+    
+    // Detectar check-in vs check-out
+    if (text.toLowerCase().includes('check-in') || text.toLowerCase().includes('entrada')) {
+      return 'check-in';
+    }
+    
+    if (text.toLowerCase().includes('check-out') || text.toLowerCase().includes('saida')) {
+      return 'check-out';
+    }
+    
+    return 'control-file'; // Default para arquivos com múltiplas reservas
+  }
 
 ## PARÂMETROS  
 mode = "json"                               # output formato JSON
