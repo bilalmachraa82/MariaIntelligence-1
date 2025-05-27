@@ -1,5 +1,6 @@
 import { GeminiService } from './gemini.service.js';
 import { OpenRouterService } from './openrouter.service.js';
+import { processMultiReservationPDF } from './gemini-multi-processor.js';
 
 export interface ExtractedReservation {
   data_entrada: string;
@@ -20,6 +21,10 @@ export interface OCRResult {
   message: string;
   type?: string;
   error?: string;
+  reservationsCount?: number;
+  documentType?: string;
+  scenario?: string;
+  confidence?: number;
 }
 
 export class SimpleOCRService {
@@ -266,7 +271,52 @@ ${text}`;
   }
 
   async processFile(filePath: string, mimeType?: string): Promise<OCRResult & { type?: string }> {
+    console.log(`📄 Iniciando processamento OCR com Gemini 2.5 Flash: ${filePath}`);
+    const startTime = Date.now();
+
     try {
+      // Verificar se é PDF e usar o processador multi-reservas do Gemini 2.5 Flash
+      const isPdf = require('path').extname(filePath).toLowerCase() === '.pdf';
+      
+      if (isPdf) {
+        console.log('🤖 Usando processador Gemini 2.5 Flash para múltiplas reservas...');
+        
+        // Usar o processador working que estava funcionando com files (13) e (14)
+        const multiResult = await processMultiReservationPDF(filePath);
+        
+        if (multiResult.success && multiResult.reservations.length > 0) {
+          // Converter para formato esperado pela interface atual
+          const convertedReservations = multiResult.reservations.map(r => ({
+            data_entrada: r.checkInDate,
+            data_saida: r.checkOutDate,
+            noites: this.calculateNights(r.checkInDate, r.checkOutDate),
+            nome: r.guestName,
+            hospedes: r.numGuests || (r.adults || 0) + (r.children || 0),
+            pais: r.country || '',
+            site: r.platform || 'booking',
+            telefone: r.guestPhone || '',
+            observacoes: r.notes || `Ref: ${r.reference} - ${r.propertyName}`
+          }));
+
+          console.log(`✅ Gemini 2.5 Flash processou ${convertedReservations.length} reservas com sucesso`);
+
+          return {
+            success: true,
+            reservations: convertedReservations,
+            processingTime: Date.now() - startTime,
+            message: `Extraídas ${convertedReservations.length} reservas via Gemini 2.5 Flash`,
+            reservationsCount: convertedReservations.length,
+            documentType: multiResult.documentType,
+            scenario: multiResult.scenario,
+            confidence: multiResult.confidence,
+            type: multiResult.documentType
+          };
+        }
+      }
+
+      // Fallback para processamento tradicional se Gemini 2.5 Flash falhar
+      console.log('📄 Usando processamento tradicional como fallback...');
+      
       // Import pdf-parse dynamically to handle PDF files
       const pdfParse = (await import('pdf-parse')).default;
       const fs = await import('fs');
@@ -283,14 +333,15 @@ ${text}`;
       // Add document type classification
       return {
         ...result,
-        type: this.classifyDocumentType(pdfData.text)
+        type: this.classifyDocumentType(pdfData.text),
+        processingTime: Date.now() - startTime
       };
     } catch (error) {
       console.error('Erro ao processar arquivo:', error);
       return {
         success: false,
         reservations: [],
-        processingTime: 0,
+        processingTime: Date.now() - startTime,
         message: `Erro ao processar arquivo: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,
         type: 'unknown'
       };
