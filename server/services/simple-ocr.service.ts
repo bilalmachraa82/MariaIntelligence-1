@@ -109,7 +109,15 @@ export class SimpleOCRService {
     try {
       const model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
       
-      const buffer = file.buffer || fs.readFileSync(file.path);
+      let buffer;
+      if (file.buffer) {
+        buffer = file.buffer;
+      } else if (file.path) {
+        buffer = fs.readFileSync(file.path);
+      } else {
+        throw new Error('Ficheiro não encontrado - nem buffer nem path estão disponíveis');
+      }
+      
       const base64 = buffer.toString('base64');
       
       const result = await model.generateContent([
