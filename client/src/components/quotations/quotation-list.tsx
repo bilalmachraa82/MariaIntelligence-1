@@ -312,7 +312,7 @@ export function QuotationList() {
                     <TableRow key={quotation.id}>
                       <TableCell>{quotation.clientName}</TableCell>
                       <TableCell>
-                        {(() => {
+                        {quotation.propertyTypeDisplay || (() => {
                           const propertyTypes: Record<string, string> = {
                             'apartment_t0t1': 'Apartamento T0/T1',
                             'apartment_t2': 'Apartamento T2',
@@ -326,13 +326,7 @@ export function QuotationList() {
                             'house_v5': 'Moradia V5+'
                           };
                           
-                          // Usar sempre o tipo de propriedade dos dados reais do orçamento
-                          if (quotation.propertyType && propertyTypes[quotation.propertyType]) {
-                            return propertyTypes[quotation.propertyType];
-                          }
-                          
-                          // Se o tipo não estiver mapeado, mostrar o valor original
-                          return quotation.propertyType || 'Tipo não especificado';
+                          return propertyTypes[quotation.propertyType] || quotation.propertyType || 'Tipo não especificado';
                         })()}
                       </TableCell>
                       <TableCell className="text-right">
