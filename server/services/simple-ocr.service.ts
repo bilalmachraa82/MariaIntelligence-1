@@ -50,37 +50,78 @@ export class SimpleOCRService {
     let prompt;
     
     if (documentType === 'aroeira-control') {
-      prompt = `Você é um especialista em extração de dados de documentos de controle Aroeira.
-Analise este documento de CONTROLE AROEIRA e extraia TODAS as reservas.
+      prompt = `# ==============================================
+#  EXTRACTOR DE RESERVAS – v4.1  (schema_version: 1.4)
+# ==============================================
 
-FORMATO ESPERADO AROEIRA:
-Data entrada | Data saída | N.º noites | Nome | N.º hóspedes | País | Site | Info
+És um motor de OCR e parsing ultra-fiável para reservas turísticas.
 
-INSTRUÇÕES ESPECÍFICAS:
-- Procure por linhas com padrão DD/MM/YYYY
-- Extraia nome do hóspede, datas, número de hóspedes
-- Identifique país e plataforma (Booking, Airbnb, etc)
-- Use o formato de saída exato solicitado
+FUNÇÃO  
+    Receber QUALQUER documento (imagem, PDF ou texto) e devolver um fluxo
+    estruturado de registos JSON segundo o esquema abaixo,
+    aplicando consolidação inteligente de fragmentos, deduplicação,
+    cálculo de confidence e validação de campos críticos.
 
-FORMATO JSON OBRIGATÓRIO - responda APENAS com este JSON:
+PARÂMETROS  
+    mode = "json"
+    debug = false
+    confidence_threshold = 0.35
+
+OUTPUT  
+    • JSON (lista) - responda APENAS com o array JSON
+    • Nunca incluas texto fora do bloco JSON
+    • Codificação UTF-8 sempre
+
+ESQUEMA (ordem fixa)  
 {
-  "reservations": [
-    {
-      "data_entrada": "YYYY-MM-DD",
-      "data_saida": "YYYY-MM-DD", 
-      "noites": número,
-      "nome": "Nome do hóspede",
-      "hospedes": número,
-      "pais": "País",
-      "site": "Booking.com",
-      "telefone": "",
-      "observacoes": "AROEIRA"
-    }
-  ]
+  "data_entrada":      "YYYY-MM-DD",
+  "data_saida":        "YYYY-MM-DD",
+  "noites":            0,
+  "nome":              "",
+  "hospedes":          0,
+  "pais":              "",
+  "pais_inferido":     false,
+  "site":              "",
+  "telefone":          "",
+  "observacoes":       "",
+  "timezone_source":   "",
+  "id_reserva":        "",
+  "confidence":        0.85,
+  "source_page":       0,
+  "needs_review":      false
 }
 
+ETAPAS DE PROCESSAMENTO:
+
+ETAPA 1 – PRÉ-OCR  
+    • Auto-detectar orientação + idioma (PT, EN, ES, FR, DE)
+    • Binarização adaptativa; eliminar cabeçalhos/rodapés
+
+ETAPA 2 – SEGMENTAÇÃO  
+    • Novo fragmento quando encontra (data & nome) OU (data & preço/hóspedes)
+    • Janela de 120 caract. para juntar linhas partidas
+
+ETAPA 3 – MAPEAMENTO & NORMALIZAÇÃO  
+    • Datas → DD/MM/AAAA para YYYY-MM-DD
+    • Noites → calcular a partir das datas se ausente
+    • Hóspedes → Adultos + Crianças + Bebés (separados ou total)
+    • País → rótulo directo; se vazio mas telefone tem indicativo válido,
+      preencher e pais_inferido=true
+    • Telefone → normalizar como +<indicativo> <resto>, remover espaços
+    • Site → palavras-chave (Airbnb, Booking.com, Vrbo, Direct, Owner);  
+      se nada bater → "Booking.com"
+    • Observações → texto com verbos imperativos ou rótulo "Info/Observações"
+    • confidence → 0.85 para extrações bem-sucedidas
+
+ETAPA 4 – VALIDAÇÃO  
+    • data_entrada ≤ data_saida; caso contrário → needs_review=true
+    • Se confidence < 0.35 → needs_review=true
+    • Duplicado estrito (nome + data_entrada + site) → eliminar
+
 DOCUMENTO AROEIRA:
-${text}`;
+${text}
+
+Responda APENAS com o array JSON das reservas extraídas:`;
     } else {
       prompt = `Analise este texto e extraia todas as reservas. Responda APENAS com JSON válido:
 
@@ -139,6 +180,19 @@ ${text}`;
         }
         
         console.log(`✅ JSON parseado com sucesso: ${reservations.length} reservas`);
+        
+        // Converter formato v4.1 para formato interno se necessário
+        reservations = reservations.map(r => ({
+          data_entrada: r.data_entrada,
+          data_saida: r.data_saida,
+          noites: r.noites || this.calculateNights(r.data_entrada, r.data_saida),
+          nome: r.nome,
+          hospedes: r.hospedes || 2,
+          pais: r.pais || '',
+          site: r.site || 'Booking.com',
+          telefone: r.telefone || '',
+          observacoes: r.observacoes || 'Extraído com EXTRACTOR v4.1'
+        }));
         
         // Validar e limpar reservas
         reservations = reservations.filter(r => r.nome && r.data_entrada);
