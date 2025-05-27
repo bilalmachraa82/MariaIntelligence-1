@@ -120,7 +120,7 @@ export class SimpleOCRService {
    */
   private async extractTextFromImage(file: any): Promise<string> {
     try {
-      const model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const model = this.genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
       
       let buffer;
       if (file.buffer) {
@@ -183,7 +183,7 @@ export class SimpleOCRService {
    */
   private async extractReservationsWithGemini(text: string, documentType: string): Promise<ExtractedReservation[]> {
     try {
-      const model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const model = this.genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
       
       const prompt = this.buildExtractionPrompt(text, documentType);
       
