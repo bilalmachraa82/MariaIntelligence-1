@@ -76,7 +76,8 @@ export default function SimpleOCR() {
         formData.append('file', file);
 
         try {
-          const response = await fetch('/api/simple-ocr/process', {
+          // Use the working EXTRACTOR v4.2 that extracted 38 reservations
+          const response = await fetch('/api/extractor-working', {
             method: 'POST',
             body: formData,
           });
