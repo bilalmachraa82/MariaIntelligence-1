@@ -163,7 +163,8 @@ EXTRAI TODAS AS RESERVAS:`;
         reservations = JSON.parse(cleanResponse);
       } catch (parseError) {
         console.log('Erro no parse JSON:', parseError);
-        console.log('Resposta recebida:', response.substring(0, 500));
+        console.log('Resposta recebida completa:', response);
+        console.log('Tentando reparar JSON...');
         
         // Tentar reparar JSON mal formado
         try {
@@ -175,11 +176,17 @@ EXTRAI TODAS AS RESERVAS:`;
         }
       }
 
+      // Garantir que temos um array válido
+      const finalReservations = Array.isArray(reservations) ? reservations : 
+                               (reservations && typeof reservations === 'object') ? [reservations] : [];
+      
       return {
-        success: true,
-        reservations: Array.isArray(reservations) ? reservations : [reservations],
+        success: finalReservations.length > 0,
+        reservations: finalReservations,
         processingTime: Date.now() - startTime,
-        message: `Processamento concluído com sucesso. ${reservations.length || 0} reserva(s) encontrada(s).`
+        message: finalReservations.length > 0 
+          ? `Processamento concluído com sucesso. ${finalReservations.length} reserva(s) encontrada(s).`
+          : `Documento processado mas nenhuma reserva foi encontrada.`
       };
     } catch (error) {
       console.error('Erro no processamento OCR:', error);
