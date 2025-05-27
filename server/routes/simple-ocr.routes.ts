@@ -6,6 +6,48 @@ import { SimpleOCRService } from '../services/simple-ocr.service';
 
 const router = Router();
 
+// Endpoint de teste interno
+router.post('/test-internal', async (req, res) => {
+  try {
+    const ocrService = new SimpleOCRService();
+    
+    // Testar com um PDF existente
+    const pdfPath = './attached_assets/Check-outs Maria faz.pdf';
+    
+    if (fs.existsSync(pdfPath)) {
+      const buffer = fs.readFileSync(pdfPath);
+      const mockFile = {
+        originalname: 'Check-outs Maria faz.pdf',
+        mimetype: 'application/pdf',
+        buffer: buffer,
+        path: pdfPath
+      };
+      
+      console.log('🧪 Teste interno: Processando Check-outs Maria faz.pdf');
+      const result = await ocrService.processFile(mockFile);
+      
+      res.json({
+        success: true,
+        test: 'internal',
+        filename: 'Check-outs Maria faz.pdf',
+        result: result
+      });
+    } else {
+      res.json({
+        success: false,
+        error: 'PDF de teste não encontrado',
+        path: pdfPath
+      });
+    }
+  } catch (error) {
+    console.error('❌ Erro no teste interno:', error);
+    res.json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 // Configuração do multer para upload de PDFs
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

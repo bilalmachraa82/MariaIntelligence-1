@@ -125,9 +125,16 @@ export class SimpleOCRService {
       let buffer;
       if (file.buffer) {
         buffer = file.buffer;
-      } else if (file.path) {
+      } else if (file.path && fs.existsSync(file.path)) {
         buffer = fs.readFileSync(file.path);
       } else {
+        console.log('🔍 Debug ficheiro:', { 
+          hasBuffer: !!file.buffer, 
+          hasPath: !!file.path, 
+          pathExists: file.path ? fs.existsSync(file.path) : false,
+          originalname: file.originalname,
+          mimetype: file.mimetype
+        });
         throw new Error('Ficheiro não encontrado - nem buffer nem path estão disponíveis');
       }
       
