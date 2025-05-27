@@ -155,29 +155,47 @@ export class SimpleOCRService {
     const pdfData = await pdf(pdfBuffer);
     const extractedText = pdfData.text;
     
-    // Use enhanced prompt for multi-reservation extraction
-    const prompt = `Extract ALL reservations from this document. Return ONLY a JSON array with all found reservations:
+    // Use the exact working EXTRACTOR DE RESERVAS v4.2 prompt
+    const prompt = `# EXTRACTOR DE RESERVAS – v4.2 (schema_version: 1.4)
 
+És um motor de OCR + parsing ultra-fiável para reservas turísticas.
+
+FUNÇÃO: Receber QUALQUER documento e devolver um fluxo estruturado de registos JSON segundo o esquema abaixo.
+
+ESQUEMA (ordem fixa):
+{
+  "data_entrada": "YYYY-MM-DD",
+  "data_saida": "YYYY-MM-DD",
+  "noites": 0,
+  "nome": "",
+  "hospedes": 0,
+  "pais": "",
+  "pais_inferido": false,
+  "site": "",
+  "telefone": "",
+  "observacoes": "",
+  "timezone_source": "",
+  "id_reserva": "",
+  "confidence": 0.0,
+  "source_page": 0,
+  "needs_review": false
+}
+
+DOCUMENTO:
 ${extractedText}
 
-Return format:
-[{
-  "data_entrada": "YYYY-MM-DD",
-  "data_saida": "YYYY-MM-DD", 
-  "noites": number,
-  "nome": "guest name",
-  "hospedes": number,
-  "pais": "country",
-  "pais_inferido": false,
-  "site": "platform",
-  "telefone": "phone",
-  "observacoes": "notes",
-  "timezone_source": "document",
-  "id_reserva": "reference",
-  "confidence": 0.9,
-  "source_page": 1,
-  "needs_review": false
-}]`;
+INSTRUÇÕES:
+- Extrai TODAS as reservas do documento
+- Consolida fragmentos que pertencem à mesma reserva
+- Calcula 'noites' a partir das datas
+- Normaliza datas para YYYY-MM-DD
+- Preenche 'pais_inferido=true' se inferires país do telefone
+- Gera id_reserva único para cada reserva
+- Define confidence baseado na qualidade dos dados
+- Marca needs_review=true se faltarem dados críticos
+
+Devolve apenas o array JSON com todas as reservas encontradas.
+END_OF_JSON`;
 
     try {
       // Force fresh request by adding timestamp to bypass cache
