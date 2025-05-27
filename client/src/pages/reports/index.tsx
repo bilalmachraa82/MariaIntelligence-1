@@ -827,20 +827,70 @@ export default function ReportsPage() {
                 <CardDescription>Entradas programadas</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-2xl">3</span>
-                    <span className="text-muted-foreground">Previstos</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="h-2 bg-green-500 rounded-full w-2/3" />
-                    <div className="h-2 bg-secondary-200 rounded-full w-1/3" />
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span>2 Concluídos</span>
-                    <span>1 Pendente</span>
-                  </div>
-                </div>
+                {(() => {
+                  // Usar dados do dashboard para check-ins de hoje
+                  const { data: dashboardData, isLoading } = useQuery({
+                    queryKey: ['/api/reservations/dashboard'],
+                    retry: 1,
+                  });
+                  
+                  if (isLoading) {
+                    return (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <Skeleton className="h-8 w-8" />
+                          <Skeleton className="h-4 w-16" />
+                        </div>
+                        <Skeleton className="h-2 w-full" />
+                        <div className="flex justify-between">
+                          <Skeleton className="h-4 w-20" />
+                          <Skeleton className="h-4 w-16" />
+                        </div>
+                      </div>
+                    );
+                  }
+                  
+                  const { checkIns = [] } = dashboardData || {};
+                  const today = new Date();
+                  const todayCheckIns = checkIns.filter((item: any) => 
+                    new Date(item.checkInDate).toDateString() === today.toDateString()
+                  );
+                  
+                  const completedCheckIns = todayCheckIns.filter((item: any) => 
+                    item.status === 'checked-in' || item.status === 'completed'
+                  );
+                  const pendingCheckIns = todayCheckIns.filter((item: any) => 
+                    item.status === 'confirmed' || item.status === 'pending'
+                  );
+                  
+                  const totalCheckIns = todayCheckIns.length;
+                  const completedCount = completedCheckIns.length;
+                  const pendingCount = pendingCheckIns.length;
+                  const completedPercentage = totalCheckIns > 0 ? (completedCount / totalCheckIns) * 100 : 0;
+                  
+                  return (
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-2xl">{totalCheckIns}</span>
+                        <span className="text-muted-foreground">Previstos</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div 
+                          className="h-2 bg-green-500 rounded-full" 
+                          style={{ width: `${completedPercentage}%` }}
+                        />
+                        <div 
+                          className="h-2 bg-secondary-200 rounded-full" 
+                          style={{ width: `${100 - completedPercentage}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>{completedCount} Concluídos</span>
+                        <span>{pendingCount} Pendentes</span>
+                      </div>
+                    </div>
+                  );
+                })()}
               </CardContent>
             </Card>
             
@@ -850,20 +900,70 @@ export default function ReportsPage() {
                 <CardDescription>Saídas programadas</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-2xl">4</span>
-                    <span className="text-muted-foreground">Previstos</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="h-2 bg-blue-500 rounded-full w-3/4" />
-                    <div className="h-2 bg-secondary-200 rounded-full w-1/4" />
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span>3 Concluídos</span>
-                    <span>1 Pendente</span>
-                  </div>
-                </div>
+                {(() => {
+                  // Usar dados do dashboard para check-outs de hoje
+                  const { data: dashboardData, isLoading } = useQuery({
+                    queryKey: ['/api/reservations/dashboard'],
+                    retry: 1,
+                  });
+                  
+                  if (isLoading) {
+                    return (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <Skeleton className="h-8 w-8" />
+                          <Skeleton className="h-4 w-16" />
+                        </div>
+                        <Skeleton className="h-2 w-full" />
+                        <div className="flex justify-between">
+                          <Skeleton className="h-4 w-20" />
+                          <Skeleton className="h-4 w-16" />
+                        </div>
+                      </div>
+                    );
+                  }
+                  
+                  const { checkOuts = [] } = dashboardData || {};
+                  const today = new Date();
+                  const todayCheckOuts = checkOuts.filter((item: any) => 
+                    new Date(item.checkOutDate).toDateString() === today.toDateString()
+                  );
+                  
+                  const completedCheckOuts = todayCheckOuts.filter((item: any) => 
+                    item.status === 'completed'
+                  );
+                  const pendingCheckOuts = todayCheckOuts.filter((item: any) => 
+                    item.status === 'checked-in' || item.status === 'confirmed' || item.status === 'pending'
+                  );
+                  
+                  const totalCheckOuts = todayCheckOuts.length;
+                  const completedCount = completedCheckOuts.length;
+                  const pendingCount = pendingCheckOuts.length;
+                  const completedPercentage = totalCheckOuts > 0 ? (completedCount / totalCheckOuts) * 100 : 0;
+                  
+                  return (
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-2xl">{totalCheckOuts}</span>
+                        <span className="text-muted-foreground">Previstos</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div 
+                          className="h-2 bg-blue-500 rounded-full" 
+                          style={{ width: `${completedPercentage}%` }}
+                        />
+                        <div 
+                          className="h-2 bg-secondary-200 rounded-full" 
+                          style={{ width: `${100 - completedPercentage}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>{completedCount} Concluídos</span>
+                        <span>{pendingCount} Pendentes</span>
+                      </div>
+                    </div>
+                  );
+                })()}
               </CardContent>
             </Card>
             
@@ -873,20 +973,70 @@ export default function ReportsPage() {
                 <CardDescription>Limpezas agendadas</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-2xl">5</span>
-                    <span className="text-muted-foreground">Agendadas</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="h-2 bg-purple-500 rounded-full w-3/5" />
-                    <div className="h-2 bg-secondary-200 rounded-full w-2/5" />
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span>3 Concluídas</span>
-                    <span>2 Pendentes</span>
-                  </div>
-                </div>
+                {(() => {
+                  // Usar dados do dashboard para limpezas de hoje
+                  const { data: dashboardData, isLoading } = useQuery({
+                    queryKey: ['/api/reservations/dashboard'],
+                    retry: 1,
+                  });
+                  
+                  if (isLoading) {
+                    return (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <Skeleton className="h-8 w-8" />
+                          <Skeleton className="h-4 w-16" />
+                        </div>
+                        <Skeleton className="h-2 w-full" />
+                        <div className="flex justify-between">
+                          <Skeleton className="h-4 w-20" />
+                          <Skeleton className="h-4 w-16" />
+                        </div>
+                      </div>
+                    );
+                  }
+                  
+                  const { cleanings = [] } = dashboardData || {};
+                  const today = new Date();
+                  const todayCleanings = cleanings.filter((item: any) => 
+                    new Date(item.scheduledDate).toDateString() === today.toDateString()
+                  );
+                  
+                  const completedCleanings = todayCleanings.filter((item: any) => 
+                    item.status === 'completed'
+                  );
+                  const pendingCleanings = todayCleanings.filter((item: any) => 
+                    item.status === 'scheduled' || item.status === 'in-progress' || item.status === 'pending'
+                  );
+                  
+                  const totalCleanings = todayCleanings.length;
+                  const completedCount = completedCleanings.length;
+                  const pendingCount = pendingCleanings.length;
+                  const completedPercentage = totalCleanings > 0 ? (completedCount / totalCleanings) * 100 : 0;
+                  
+                  return (
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-2xl">{totalCleanings}</span>
+                        <span className="text-muted-foreground">Agendadas</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div 
+                          className="h-2 bg-purple-500 rounded-full" 
+                          style={{ width: `${completedPercentage}%` }}
+                        />
+                        <div 
+                          className="h-2 bg-secondary-200 rounded-full" 
+                          style={{ width: `${100 - completedPercentage}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>{completedCount} Concluídas</span>
+                        <span>{pendingCount} Pendentes</span>
+                      </div>
+                    </div>
+                  );
+                })()}
               </CardContent>
             </Card>
           </div>
