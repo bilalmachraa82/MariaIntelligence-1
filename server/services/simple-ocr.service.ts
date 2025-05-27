@@ -198,10 +198,49 @@ ${text}`;
         reservations = reservations.filter(r => r.nome && r.data_entrada);
         
       } catch (parseError) {
-        console.log('🔧 Erro no JSON, tentando extração manual para Aroeira...');
+        console.log('🔧 Erro no JSON, tentando reparar e extrair manualmente...');
+        console.log('JSON com erro:', cleanedResponse.substring(0, 500));
         
-        if (documentType === 'aroeira-control') {
-          reservations = this.extractAroeiraManually(text);
+        // Tentar reparar JSON quebrado
+        try {
+          let repairedJson = cleanedResponse;
+          
+          // Fechar strings não terminadas
+          if (repairedJson.includes('"') && !repairedJson.endsWith('"')) {
+            const lastQuote = repairedJson.lastIndexOf('"');
+            if (lastQuote > 0) {
+              repairedJson = repairedJson.substring(0, lastQuote + 1);
+            }
+          }
+          
+          // Fechar arrays não terminados
+          if (repairedJson.includes('[') && !repairedJson.includes(']')) {
+            repairedJson += ']';
+          }
+          
+          // Fechar objetos não terminados
+          const openBraces = (repairedJson.match(/\{/g) || []).length;
+          const closeBraces = (repairedJson.match(/\}/g) || []).length;
+          for (let i = 0; i < openBraces - closeBraces; i++) {
+            repairedJson += '}';
+          }
+          
+          console.log('Tentando JSON reparado:', repairedJson.substring(0, 200));
+          const repairedParsed = JSON.parse(repairedJson);
+          
+          if (Array.isArray(repairedParsed)) {
+            reservations = repairedParsed;
+            console.log('✅ JSON reparado com sucesso!');
+          } else if (repairedParsed.reservations) {
+            reservations = repairedParsed.reservations;
+            console.log('✅ JSON reparado com sucesso!');
+          }
+        } catch (repairError) {
+          console.log('❌ Não foi possível reparar JSON, usando extração manual');
+          
+          if (documentType === 'aroeira-control') {
+            reservations = this.extractAroeiraManually(text);
+          }
         }
       }
       
