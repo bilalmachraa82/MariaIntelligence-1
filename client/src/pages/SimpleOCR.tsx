@@ -48,20 +48,41 @@ export default function SimpleOCR() {
     setResults([]);
 
     try {
-      // Se múltiplos arquivos, usar endpoint de consolidação
+      // Para múltiplos arquivos, processar cada um individualmente com o extractor funcionando
       if (files.length > 1) {
-        const formData = new FormData();
-        files.forEach(file => {
-          formData.append('files', file);
-        });
-
-        const response = await fetch('/api/simple-ocr/process-multiple', {
-          method: 'POST',
-          body: formData,
-        });
-
-        const result = await response.json();
-        setResults([result]);
+        const allResults: OCRResult[] = [];
+        
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          console.log(`📄 Processando arquivo ${i + 1}/${files.length}: ${file.name}`);
+          
+          const formData = new FormData();
+          formData.append('file', file);
+          
+          try {
+            const response = await fetch('/api/extractor-working', {
+              method: 'POST',
+              body: formData,
+            });
+            
+            const data = await response.json();
+            allResults.push({
+              success: data.success,
+              type: 'check-in',
+              reservations: data.reservations || [],
+              error: data.error
+            });
+          } catch (error) {
+            allResults.push({
+              success: false,
+              type: 'unknown',
+              reservations: [],
+              error: `Erro ao processar ${file.name}`
+            });
+          }
+        }
+        
+        setResults(allResults);
         return;
       }
 
