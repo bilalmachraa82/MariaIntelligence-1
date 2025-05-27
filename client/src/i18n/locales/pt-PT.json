@@ -592,9 +592,25 @@
       "name": "Nome",
       "contact": "Contacto",
       "status": "Estado",
-      "statusActive": "Ativa",
+      "viewSchedules": "Ver Agendamentos",
       "scheduleDescription": "Visualize e gerencie o agendamento de limpezas.",
-      "viewSchedules": "Ver Agendamentos"
+      "select": "Selecionar",
+      "selectTeam": "Selecionar Equipa",
+      "schedules": {
+        "title": "Agendamentos de Limpeza",
+        "filters": "Filtros",
+        "filtersDescription": "Filtrar agendamentos por equipa, estado e tipo",
+        "status": "Estado",
+        "allStatuses": "Todos os Estados",
+        "type": "Tipo",
+        "allTypes": "Todos os Tipos",
+        "calendarView": "Vista de Calendário",
+        "listView": "Vista de Lista",
+        "calendarTitle": "Calendário de Agendamentos",
+        "calendarDescription": "Selecione uma data para ver os agendamentos",
+        "listTitle": "Lista de Agendamentos",
+        "listDescription": "Visualize todos os agendamentos futuros"
+      }
     },
     "cleaningReports": {
       "title": "Relatórios de Limpeza e Pagamentos"
