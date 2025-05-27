@@ -231,21 +231,16 @@ router.post('/process-multiple', upload.array('files', 10), async (req, res) => 
       });
     }
 
-    // Consolidar reservas de check-in e check-out
-    console.log('🔄 Iniciando consolidação de reservas...');
-    const consolidatedReservations = await ocrService.consolidateReservations(allReservations);
-
-    const consolidatedCount = consolidatedReservations.filter(r => r.source === 'consolidated').length;
-
-    console.log(`✅ Processamento múltiplo concluído: ${consolidatedReservations.length} reservas finais, ${consolidatedCount} consolidadas`);
+    // Retornar todas as reservas encontradas
+    console.log(`✅ Processamento múltiplo concluído: ${allReservations.length} reservas encontradas`);
 
     res.json({
       success: true,
-      type: 'multiple-consolidated',
-      reservations: consolidatedReservations,
-      consolidatedReservations: consolidatedCount,
+      type: 'multiple-files',
+      reservations: allReservations,
+      totalReservations: allReservations.length,
       fileResults,
-      message: `${consolidatedReservations.length} reserva(s) processada(s), ${consolidatedCount} consolidada(s) de check-in/check-out`
+      message: `${allReservations.length} reserva(s) processada(s) com sucesso`
     });
 
   } catch (error) {
