@@ -159,7 +159,10 @@ export default function SimpleOCR() {
             const normalizedDbProperty = normalizePropertyName(p.name);
             
             // Ignorar propriedades com "check-in" ou "check-out" no nome
-            if (normalizedDbProperty.includes('checkin') || normalizedDbProperty.includes('checkout')) {
+            if (p.name.toLowerCase().includes('check-in') || 
+                p.name.toLowerCase().includes('check-out') ||
+                p.name.toLowerCase().includes('checkin') || 
+                p.name.toLowerCase().includes('checkout')) {
               return false;
             }
             

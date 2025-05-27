@@ -2,14 +2,30 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import pdf from 'pdf-parse';
 import fs from 'fs';
 
-// Interface para os dados extraídos
+// Interface para os dados extraídos - v4.1
 interface ExtractedReservation {
-  guestName: string;
-  propertyName: string;
-  checkInDate: string;
-  checkOutDate: string;
-  totalAmount: number;
-  guestCount: number;
+  data_entrada: string;
+  data_saida: string;
+  noites: number;
+  nome: string;
+  hospedes: number;
+  pais: string;
+  pais_inferido: boolean;
+  site: string;
+  telefone: string;
+  observacoes: string;
+  timezone_source: string;
+  id_reserva: string;
+  confidence: number;
+  source_page: number;
+  needs_review: boolean;
+  // Campos legacy para compatibilidade
+  guestName?: string;
+  propertyName?: string;
+  checkInDate?: string;
+  checkOutDate?: string;
+  totalAmount?: number;
+  guestCount?: number;
   email?: string;
   phone?: string;
   notes?: string;
@@ -377,15 +393,20 @@ ${text}
 EXTRAIA TODAS AS RESERVAS ENCONTRADAS:`;
     }
 
-    // Usar o prompt estruturado melhorado
     return `
-⚙️ FUNÇÃO
-Converter QUALQUER documento (imagem, PDF, texto) que contenha reservas turísticas num fluxo estruturado de registos JSON.
+EXTRACTOR DE RESERVAS v4.1 - Motor de OCR ultra-fiável para reservas turísticas
 
-🎯 OUTPUT
-Por omissão: lista JSON. Não devolvas comentários, apenas JSON válido UTF-8.
+FUNÇÃO: Receber QUALQUER documento e devolver JSON estruturado de reservas.
 
-📑 CAMPOS (ordem fixa)
+INSTRUÇÕES:
+- Consolida fragmentos inteligentemente
+- Deduplica reservas similares  
+- Calcula confidence score
+- Valida campos críticos
+
+OUTPUT: Responde APENAS com array JSON válido UTF-8.
+
+ESQUEMA:
 {
   "data_entrada": "YYYY-MM-DD",
   "data_saida": "YYYY-MM-DD", 
@@ -393,18 +414,323 @@ Por omissão: lista JSON. Não devolvas comentários, apenas JSON válido UTF-8.
   "nome": "",
   "hospedes": 0,
   "pais": "",
-  "pais_inferido": false,
   "site": "",
   "telefone": "",
-  "observacoes": "",
-  "timezone_source": "",
-  "valor_total": 0.00,
-  "propriedade": ""
+  "observacoes": ""
 }
 
-📝 ETAPAS
+TEXTO DO DOCUMENTO:
+${text}
 
-1. **Pré-OCR**
+EXTRAI TODAS AS RESERVAS:`;
+
+## FUNÇÃO  
+Receber QUALQUER documento (imagem, PDF ou texto) e devolver um fluxo
+estruturado de registos JSON segundo o esquema abaixo,
+aplicando consolidação inteligente de fragmentos, deduplicação,
+cálculo de confidence e validação de campos críticos.
+
+## PARÂMETROS  
+mode = "json"                               # output formato JSON
+debug = false                               # sem debug
+confidence_threshold = 0.35                 # marca needs_review se abaixo  
+
+## OUTPUT  
+• JSON (lista) - responde APENAS com JSON válido UTF-8
+• Nunca incluas texto fora do bloco JSON
+• Codificação UTF-8 sempre
+
+## ESQUEMA (ordem fixa)  
+{
+  "data_entrada":      "YYYY-MM-DD",
+  "data_saida":        "YYYY-MM-DD",
+  "noites":            0,
+  "nome":              "",
+  "hospedes":          0,
+  "pais":              "",
+  "pais_inferido":     false,
+  "site":              "",
+  "telefone":          "",
+  "observacoes":       "",
+  "timezone_source":   "",
+  "id_reserva":        "",
+  "confidence":        0.0,
+  "source_page":       0,
+  "needs_review":      false
+}
+
+## ETAPAS DE PROCESSAMENTO
+
+### ETAPA 1 – PRÉ-OCR  
+• Auto-detectar orientação + idioma (PT, EN, ES, FR, DE)
+• Binarização adaptativa; eliminar cabeçalhos/rodapés
+
+### ETAPA 2 – SEGMENTAÇÃO  
+• Novo fragmento quando encontra (data & nome) OU (data & preço∕hóspedes)
+• Janela de 120 caract. para juntar linhas partidas
+
+### ETAPA 2.1 – CONSOLIDAÇÃO DE FRAGMENTOS  
+• Agrupar por ≥ 2 de: nome≈, ref_reserva, telefone, datas sobrepostas
+• Se cluster contém apenas entrada *ou* saída → manter mas `needs_review=true`
+• Se contiver ambas → fundir campos não vazios, recalcular noites
+
+### ETAPA 3 – MAPEAMENTO & NORMALIZAÇÃO  
+• Datas → DD/MM/AAAA, DD-MMM-AAAA, etc. ⇢ YYYY-MM-DD
+• Noites → a partir das datas se ausente
+• Hóspedes → Adultos + Crianças + Bebés (separados ou total)
+• País → rótulo directo; se vazio mas telefone tem indicativo válido, preencher e `pais_inferido=true`
+• Telefone → normalizar como `+<indicativo> <resto>`, remover espaços
+• Site → palavras-chave (Airbnb, Booking.com, Vrbo, Direct, Owner); se nada bater → "Outro"
+• Observações → texto com verbos imperativos ou rótulo "Info/Observações"
+• id_reserva → SHA-1 de (nome + data_entrada + site)
+• confidence → média ponderada de OCR_quality, regex_hits, fusão
+• source_page → nº da página onde o fragmento começou
+
+### ETAPA 4 – VALIDAÇÃO  
+• data_entrada ≤ data_saida; caso contrário → `needs_review=true`
+• Campo **telefone** vazio → `needs_review=true`
+• Se confidence < confidence_threshold → `needs_review=true`
+• Duplicado estrito (nome + data_entrada + site) → eliminar
+• Duplicado "soft" (Levenshtein(nome) ≤ 2, site igual, datas sobrepostas ≥ 50 %) → fundir, `needs_review=true`
+
+## FORMATO DE RESPOSTA
+Retorna APENAS array JSON com as reservas encontradas:
+[
+  {
+    "data_entrada": "2025-06-01",
+    "data_saida": "2025-06-03", 
+    "noites": 2,
+    "nome": "João Silva",
+    "hospedes": 2,
+    "pais": "Portugal",
+    "pais_inferido": false,
+    "site": "Booking.com",
+    "telefone": "+351 912 345 678",
+    "observacoes": "A169-4793477",
+    "timezone_source": "",
+    "id_reserva": "a1b2c3d4e5",
+    "confidence": 0.85,
+    "source_page": 1,
+    "needs_review": false
+  }
+]
+
+## TEXTO DO DOCUMENTO:
+${text}
+
+PROCESSA E EXTRAI TODAS AS RESERVAS ENCONTRADAS:`;
+  }
+
+  /**
+   * Converte dados do formato v4.1 para formato legacy
+   */
+  private convertV41ToLegacy(reservations: any[]): ExtractedReservation[] {
+    return reservations.map(r => ({
+      // Formato v4.1
+      data_entrada: r.data_entrada || r.checkInDate,
+      data_saida: r.data_saida || r.checkOutDate,
+      noites: r.noites || 0,
+      nome: r.nome || r.guestName,
+      hospedes: r.hospedes || r.guestCount || 1,
+      pais: r.pais || '',
+      pais_inferido: r.pais_inferido || false,
+      site: r.site || 'Outro',
+      telefone: r.telefone || r.phone || '',
+      observacoes: r.observacoes || r.notes || '',
+      timezone_source: r.timezone_source || '',
+      id_reserva: r.id_reserva || '',
+      confidence: r.confidence || 0.8,
+      source_page: r.source_page || 1,
+      needs_review: r.needs_review || false,
+      // Campos legacy para compatibilidade
+      guestName: r.nome || r.guestName,
+      propertyName: r.propriedade || r.propertyName || '',
+      checkInDate: r.data_entrada || r.checkInDate,
+      checkOutDate: r.data_saida || r.checkOutDate,
+      totalAmount: r.valor_total || r.totalAmount || 0,
+      guestCount: r.hospedes || r.guestCount || 1,
+      email: r.email || null,
+      phone: r.telefone || r.phone || null,
+      notes: r.observacoes || r.notes || null
+    }));
+  }
+
+  /**
+   * Valida e limpa as reservas extraídas
+   */
+  private validateAndCleanReservations(reservations: any[]): ExtractedReservation[] {
+    if (!Array.isArray(reservations)) return [];
+    
+    // Converter para formato compatível
+    const cleanedReservations = this.convertV41ToLegacy(reservations);
+    
+    return cleanedReservations.filter(reservation => {
+      // Validação básica
+      return reservation.nome && 
+             reservation.data_entrada && 
+             reservation.data_saida;
+    });
+  }
+
+  /**
+   * Processa múltiplos arquivos e consolida dados
+   */
+  async processMultipleFiles(files: Array<{path: string, mimeType: string}>): Promise<{
+    success: boolean;
+    consolidatedReservations: ExtractedReservation[];
+    totalReservations: number;
+    consolidatedCount: number;
+  }> {
+    try {
+      console.log(`📄 Processando ${files.length} arquivos para consolidação...`);
+      
+      let allReservations: ExtractedReservation[] = [];
+      
+      // Processar cada arquivo
+      for (const file of files) {
+        console.log(`🔍 Processando: ${file.path.split('/').pop()}`);
+        const result = await this.processFile(file.path, file.mimeType);
+        
+        if (result.success && result.reservations.length > 0) {
+          allReservations.push(...result.reservations);
+          console.log(`✅ OCR concluído, reservas encontradas: ${result.reservations.length}`);
+        }
+      }
+      
+      // Consolidar reservas (juntar check-in com check-out pelo nome)
+      const consolidatedReservations = this.consolidateReservations(allReservations);
+      
+      console.log(`✅ Consolidação concluída: ${consolidatedReservations.length} reservas finais`);
+      
+      return {
+        success: true,
+        consolidatedReservations,
+        totalReservations: allReservations.length,
+        consolidatedCount: allReservations.length - consolidatedReservations.length
+      };
+      
+    } catch (error) {
+      console.error('❌ Erro no processamento múltiplo:', error);
+      return {
+        success: false,
+        consolidatedReservations: [],
+        totalReservations: 0,
+        consolidatedCount: 0
+      };
+    }
+  }
+
+  /**
+   * Consolida reservas juntando check-in e check-out pelo nome do hóspede
+   */
+  private consolidateReservations(reservations: ExtractedReservation[]): ExtractedReservation[] {
+    const consolidated: ExtractedReservation[] = [];
+    const processed = new Set<number>();
+    
+    for (let i = 0; i < reservations.length; i++) {
+      if (processed.has(i)) continue;
+      
+      const current = reservations[i];
+      let hasMatch = false;
+      
+      // Procurar por correspondência de nome
+      for (let j = i + 1; j < reservations.length; j++) {
+        if (processed.has(j)) continue;
+        
+        const other = reservations[j];
+        
+        // Verificar se os nomes são similares (normalizado)
+        const currentName = this.normalizeName(current.nome || current.guestName || '');
+        const otherName = this.normalizeName(other.nome || other.guestName || '');
+        
+        if (currentName && otherName && this.isNameMatch(currentName, otherName)) {
+          // Consolidar os dados
+          const consolidated_reservation = this.mergeReservations(current, other);
+          consolidated.push(consolidated_reservation);
+          
+          processed.add(i);
+          processed.add(j);
+          hasMatch = true;
+          break;
+        }
+      }
+      
+      // Se não encontrou correspondência, adicionar como está
+      if (!hasMatch) {
+        consolidated.push(current);
+        processed.add(i);
+      }
+    }
+    
+    return consolidated;
+  }
+
+  /**
+   * Normaliza nome para comparação
+   */
+  private normalizeName(name: string): string {
+    return name.toLowerCase()
+      .trim()
+      .replace(/[àáâãä]/g, 'a')
+      .replace(/[èéêë]/g, 'e')
+      .replace(/[ìíîï]/g, 'i')
+      .replace(/[òóôõö]/g, 'o')
+      .replace(/[ùúûü]/g, 'u')
+      .replace(/[ç]/g, 'c')
+      .replace(/\s+/g, ' ');
+  }
+
+  /**
+   * Verifica se dois nomes correspondem
+   */
+  private isNameMatch(name1: string, name2: string): boolean {
+    if (name1 === name2) return true;
+    
+    // Verificar palavras em comum
+    const words1 = name1.split(' ').filter(w => w.length > 2);
+    const words2 = name2.split(' ').filter(w => w.length > 2);
+    
+    // Pelo menos 50% das palavras devem coincidir
+    const commonWords = words1.filter(w1 => 
+      words2.some(w2 => w1.includes(w2) || w2.includes(w1))
+    );
+    
+    return commonWords.length >= Math.min(words1.length, words2.length) * 0.5;
+  }
+
+  /**
+   * Junta dados de duas reservas (check-in + check-out)
+   */
+  private mergeReservations(res1: ExtractedReservation, res2: ExtractedReservation): ExtractedReservation {
+    return {
+      // Formato v4.1
+      data_entrada: res1.data_entrada || res1.checkInDate || res2.data_entrada || res2.checkInDate || '',
+      data_saida: res1.data_saida || res1.checkOutDate || res2.data_saida || res2.checkOutDate || '',
+      noites: res1.noites || res2.noites || 0,
+      nome: res1.nome || res1.guestName || res2.nome || res2.guestName || '',
+      hospedes: res1.hospedes || res1.guestCount || res2.hospedes || res2.guestCount || 1,
+      pais: res1.pais || res2.pais || '',
+      pais_inferido: res1.pais_inferido || res2.pais_inferido || false,
+      site: res1.site || res2.site || 'Outro',
+      telefone: res1.telefone || res1.phone || res2.telefone || res2.phone || '',
+      observacoes: [res1.observacoes || res1.notes, res2.observacoes || res2.notes].filter(Boolean).join('; '),
+      timezone_source: res1.timezone_source || res2.timezone_source || '',
+      id_reserva: res1.id_reserva || res2.id_reserva || '',
+      confidence: Math.max(res1.confidence || 0, res2.confidence || 0),
+      source_page: res1.source_page || res2.source_page || 1,
+      needs_review: res1.needs_review || res2.needs_review || false,
+      // Campos legacy
+      guestName: res1.nome || res1.guestName || res2.nome || res2.guestName,
+      propertyName: res1.propertyName || res2.propertyName || '',
+      checkInDate: res1.data_entrada || res1.checkInDate || res2.data_entrada || res2.checkInDate,
+      checkOutDate: res1.data_saida || res1.checkOutDate || res2.data_saida || res2.checkOutDate,
+      totalAmount: Math.max(res1.totalAmount || 0, res2.totalAmount || 0),
+      guestCount: res1.hospedes || res1.guestCount || res2.hospedes || res2.guestCount,
+      email: res1.email || res2.email || null,
+      phone: res1.telefone || res1.phone || res2.telefone || res2.phone || null,
+      notes: [res1.observacoes || res1.notes, res2.observacoes || res2.notes].filter(Boolean).join('; ') || null
+    };
+  }
    • Auto-detecta orientação, idioma e faz binarização adaptativa.
    • Remove cabeçalhos/rodapés e ISBN/IDs de impressão.
 
