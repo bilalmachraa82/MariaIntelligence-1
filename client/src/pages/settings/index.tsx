@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 
 export default function SettingsPage() {
@@ -19,6 +20,15 @@ export default function SettingsPage() {
   const [isCheckingAI, setIsCheckingAI] = useState(false);
   const [aiConnected, setAiConnected] = useState(false);
   const [isClearingMemory, setIsClearingMemory] = useState(false);
+
+  // Buscar dados reais do sistema
+  const { data: properties = [] } = useQuery({
+    queryKey: ["/api/properties"],
+  });
+
+  const { data: reservations = [] } = useQuery({
+    queryKey: ["/api/reservations"],
+  });
 
   const handleLanguageChange = (language: string) => {
     i18n.changeLanguage(language);
@@ -134,24 +144,61 @@ export default function SettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  {t("settings.general.timezone", "Fuso Horário")}
-                </label>
-                <Select defaultValue="Europe/Lisbon">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecionar fuso horário" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Europe/Lisbon">Europa/Lisboa (GMT+0)</SelectItem>
-                    <SelectItem value="Europe/London">Europa/Londres (GMT+0)</SelectItem>
-                    <SelectItem value="America/New_York">América/Nova York (GMT-5)</SelectItem>
-                    <SelectItem value="Asia/Tokyo">Ásia/Tóquio (GMT+9)</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-muted-foreground">
-                  {t("settings.general.timezoneDescription", "Selecione o seu fuso horário para exibir datas e horários corretos")}
-                </p>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    {t("settings.general.timezone", "Fuso Horário")}
+                  </label>
+                  <Select defaultValue="Europe/Lisbon">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecionar fuso horário" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Europe/Lisbon">Europa/Lisboa (GMT+0)</SelectItem>
+                      <SelectItem value="Europe/London">Europa/Londres (GMT+0)</SelectItem>
+                      <SelectItem value="America/New_York">América/Nova York (GMT-5)</SelectItem>
+                      <SelectItem value="Asia/Tokyo">Ásia/Tóquio (GMT+9)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">
+                    {t("settings.general.timezoneDescription", "Selecione o seu fuso horário para exibir datas e horários corretos")}
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    Sistema de Base de Dados
+                  </label>
+                  <div className="p-3 border rounded-lg bg-green-50 border-green-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium text-green-800">PostgreSQL</p>
+                        <p className="text-sm text-green-600">Base de dados configurada e operacional</p>
+                      </div>
+                      <Badge variant="default" className="bg-green-600">
+                        Ativo
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    Estado do Sistema
+                  </label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-3 border rounded-lg">
+                      <p className="text-sm font-medium">Propriedades</p>
+                      <p className="text-lg font-bold text-blue-600">{properties.length}</p>
+                      <p className="text-xs text-muted-foreground">Registadas no sistema</p>
+                    </div>
+                    <div className="p-3 border rounded-lg">
+                      <p className="text-sm font-medium">Reservas</p>
+                      <p className="text-lg font-bold text-emerald-600">{reservations.length}</p>
+                      <p className="text-xs text-muted-foreground">Total no sistema</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>

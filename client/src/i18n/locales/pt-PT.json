@@ -596,7 +596,10 @@
       "tabs": {
         "general": "Geral",
         "account": "Conta",
-        "ai": "Assistente IA"
+        "ai": "Assistente IA",
+        "notifications": "Notificações",
+        "language": "Idioma",
+        "integrations": "Integrações"
       },
       "general": {
         "title": "Configurações Gerais",
