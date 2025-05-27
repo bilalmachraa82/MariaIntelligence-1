@@ -81,6 +81,37 @@
       "revenueDistribution": "Distribuição de Receita",
       "revenueDistributionDesc": "Proporção entre receita, custos e lucro líquido"
     },
+    "navigation": {
+      "home": "Início",
+      "reservations": "Reservas",
+      "properties": "Imóveis", 
+      "finances": "Finanças",
+      "settings": "Configurações",
+      "mainMenu": "Menu",
+      "mainAppNav": "Navegação principal do aplicativo Maria Faz"
+    },
+    "cleaningReports": {
+      "title": "Relatórios de Limpeza e Pagamentos"
+    },
+    "cleaningTeams": {
+      "select": "Selecionar Prestador",
+      "selectTeam": "Todos os prestadores",
+      "schedules": {
+        "title": "Agendamentos de Limpeza",
+        "filters": "Filtros",
+        "filtersDescription": "Filtre os agendamentos por equipa, status e tipo",
+        "status": "Status",
+        "allStatuses": "Todos os status",
+        "type": "Tipo",
+        "allTypes": "Todos os tipos",
+        "calendarView": "Visualização de Calendário",
+        "listView": "Visualização em Lista",
+        "calendarTitle": "Calendário de Agendamentos",
+        "calendarDescription": "Selecione uma data para ver os agendamentos",
+        "listTitle": "Lista de Agendamentos",
+        "listDescription": "Visualize todos os agendamentos futuros"
+      }
+    },
     "dateRanges": {
       "currentMonth": "Mês Atual",
       "lastMonth": "Mês Passado",
