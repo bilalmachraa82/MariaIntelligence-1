@@ -43,24 +43,66 @@ export class SimpleOCRService {
       };
     }
 
-    const prompt = `Analisa este texto e extrai todas as reservas encontradas. Responde APENAS com um array JSON válido no formato:
+    // Classificar tipo de documento primeiro
+    const documentType = this.classifyDocumentType(text);
+    console.log(`📋 Tipo de documento identificado: ${documentType}`);
 
-[
-  {
-    "data_entrada": "YYYY-MM-DD",
-    "data_saida": "YYYY-MM-DD",
-    "noites": número,
-    "nome": "Nome do hóspede",
-    "hospedes": número,
-    "pais": "País",
-    "site": "Plataforma (Booking, Airbnb, etc)",
-    "telefone": "Telefone se disponível",
-    "observacoes": "Observações se disponíveis"
-  }
-]
+    let prompt;
+    
+    if (documentType === 'aroeira-control') {
+      prompt = `Você é um especialista em extração de dados de documentos de controle Aroeira.
+Analise este documento de CONTROLE AROEIRA e extraia TODAS as reservas.
+
+FORMATO ESPERADO AROEIRA:
+Data entrada | Data saída | N.º noites | Nome | N.º hóspedes | País | Site | Info
+
+INSTRUÇÕES ESPECÍFICAS:
+- Procure por linhas com padrão DD/MM/YYYY
+- Extraia nome do hóspede, datas, número de hóspedes
+- Identifique país e plataforma (Booking, Airbnb, etc)
+- Use o formato de saída exato solicitado
+
+FORMATO JSON OBRIGATÓRIO - responda APENAS com este JSON:
+{
+  "reservations": [
+    {
+      "data_entrada": "YYYY-MM-DD",
+      "data_saida": "YYYY-MM-DD", 
+      "noites": número,
+      "nome": "Nome do hóspede",
+      "hospedes": número,
+      "pais": "País",
+      "site": "Booking.com",
+      "telefone": "",
+      "observacoes": "AROEIRA"
+    }
+  ]
+}
+
+DOCUMENTO AROEIRA:
+${text}`;
+    } else {
+      prompt = `Analise este texto e extraia todas as reservas. Responda APENAS com JSON válido:
+
+{
+  "reservations": [
+    {
+      "data_entrada": "YYYY-MM-DD",
+      "data_saida": "YYYY-MM-DD",
+      "noites": número,
+      "nome": "Nome do hóspede", 
+      "hospedes": número,
+      "pais": "País",
+      "site": "Plataforma",
+      "telefone": "",
+      "observacoes": ""
+    }
+  ]
+}
 
 TEXTO:
 ${text}`;
+    }
 
     try {
       const response = await this.geminiService.generateText(prompt);
@@ -72,14 +114,12 @@ ${text}`;
       console.log('🤖 Resposta do Gemini recebida');
       console.log('Primeiros 500 chars:', response.substring(0, 500));
       
-      // Limpar e processar resposta
+      // Limpar resposta e extrair JSON
       let cleanedResponse = response.trim();
-      
-      // Remover markdown se presente
       cleanedResponse = cleanedResponse.replace(/```json\s*/g, '').replace(/```\s*/g, '');
       
-      // Tentar extrair array JSON
-      const jsonMatch = cleanedResponse.match(/\[[\s\S]*\]/);
+      // Tentar extrair objeto JSON com array de reservations
+      const jsonMatch = cleanedResponse.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         cleanedResponse = jsonMatch[0];
       }
@@ -88,61 +128,30 @@ ${text}`;
       
       try {
         const parsed = JSON.parse(cleanedResponse);
-        reservations = Array.isArray(parsed) ? parsed : [parsed];
-        console.log(`✅ JSON parseado com sucesso: ${reservations.length} reservas`);
-      } catch (parseError) {
-        console.log('🔧 Erro no JSON, tentando extrair manualmente...');
         
-        // Extração manual como fallback
-        const lines = text.split('\n');
-        for (const line of lines) {
-          const datePattern = /(\d{2}\/\d{2}\/\d{4})/g;
-          const dates = line.match(datePattern);
-          
-          if (dates && dates.length >= 2) {
-            // Encontrou linha com datas
-            const parts = line.split(/\s+/);
-            let nome = '';
-            let hospedes = 2;
-            let pais = '';
-            let site = 'Booking';
-            
-            for (const part of parts) {
-              if (!datePattern.test(part) && 
-                  !part.match(/^\d+$/) && 
-                  part.length > 1 && 
-                  !part.toLowerCase().includes('booking')) {
-                if (!nome) {
-                  nome = part;
-                } else if (!pais && part.length > 2) {
-                  pais = part;
-                }
-              } else if (part.match(/^\d+$/) && parseInt(part) <= 10) {
-                hospedes = parseInt(part);
-              }
-            }
-            
-            if (nome && dates[0] && dates[1]) {
-              const data_entrada = this.formatDateToISO(dates[0]);
-              const data_saida = this.formatDateToISO(dates[1]);
-              
-              reservations.push({
-                data_entrada,
-                data_saida,
-                noites: this.calculateNights(data_entrada, data_saida),
-                nome,
-                hospedes,
-                pais,
-                site,
-                telefone: '',
-                observacoes: ''
-              });
-            }
-          }
+        // Verificar se tem array de reservations
+        if (parsed.reservations && Array.isArray(parsed.reservations)) {
+          reservations = parsed.reservations;
+        } else if (Array.isArray(parsed)) {
+          reservations = parsed;
+        } else {
+          reservations = [parsed];
+        }
+        
+        console.log(`✅ JSON parseado com sucesso: ${reservations.length} reservas`);
+        
+        // Validar e limpar reservas
+        reservations = reservations.filter(r => r.nome && r.data_entrada);
+        
+      } catch (parseError) {
+        console.log('🔧 Erro no JSON, tentando extração manual para Aroeira...');
+        
+        if (documentType === 'aroeira-control') {
+          reservations = this.extractAroeiraManually(text);
         }
       }
       
-      console.log(`📊 Total de reservas processadas: ${reservations.length}`);
+      console.log(`📊 Total de reservas válidas: ${reservations.length}`);
       
       return {
         success: reservations.length > 0,
@@ -221,6 +230,61 @@ ${text}`;
     } catch {
       return 1;
     }
+  }
+
+  private extractAroeiraManually(text: string): ExtractedReservation[] {
+    console.log('🔧 Extração manual para documento Aroeira');
+    const reservations: ExtractedReservation[] = [];
+    
+    const lines = text.split('\n');
+    for (const line of lines) {
+      const datePattern = /(\d{2}\/\d{2}\/\d{4})/g;
+      const dates = line.match(datePattern);
+      
+      if (dates && dates.length >= 2) {
+        const parts = line.split(/\s+/);
+        let nome = '';
+        let hospedes = 2;
+        let pais = '';
+        let site = 'Booking.com';
+        
+        for (const part of parts) {
+          if (!datePattern.test(part) && 
+              !part.match(/^\d+$/) && 
+              part.length > 1 && 
+              !part.toLowerCase().includes('booking')) {
+            if (!nome) {
+              nome = part;
+            } else if (!pais && part.length > 2) {
+              pais = part;
+            }
+          } else if (part.match(/^\d+$/) && parseInt(part) <= 10) {
+            hospedes = parseInt(part);
+          }
+        }
+        
+        if (nome && dates[0] && dates[1]) {
+          const data_entrada = this.formatDateToISO(dates[0]);
+          const data_saida = this.formatDateToISO(dates[1]);
+          
+          reservations.push({
+            data_entrada,
+            data_saida,
+            noites: this.calculateNights(data_entrada, data_saida),
+            nome,
+            hospedes,
+            pais,
+            site,
+            telefone: '',
+            observacoes: 'Extraído manualmente do documento Aroeira'
+          });
+          
+          console.log(`✅ Reserva manual: ${nome} (${data_entrada} → ${data_saida})`);
+        }
+      }
+    }
+    
+    return reservations;
   }
 
   private classifyDocumentType(text: string): string {
