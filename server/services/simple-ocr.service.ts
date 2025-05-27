@@ -422,79 +422,36 @@ ESQUEMA:
 TEXTO DO DOCUMENTO:
 ${text}
 
-EXTRAI TODAS AS RESERVAS:`;
+EXTRAI TODAS AS RESERVAS:
 
-## FUNÇÃO  
-Receber QUALQUER documento (imagem, PDF ou texto) e devolver um fluxo
-estruturado de registos JSON segundo o esquema abaixo,
-aplicando consolidação inteligente de fragmentos, deduplicação,
-cálculo de confidence e validação de campos críticos.
-
-## PARÂMETROS  
-mode = "json"                               # output formato JSON
-debug = false                               # sem debug
-confidence_threshold = 0.35                 # marca needs_review se abaixo  
-
-## OUTPUT  
-• JSON (lista) - responde APENAS com JSON válido UTF-8
-• Nunca incluas texto fora do bloco JSON
-• Codificação UTF-8 sempre
-
-## ESQUEMA (ordem fixa)  
+Responde APENAS com JSON válido UTF-8 seguindo este esquema:
 {
-  "data_entrada":      "YYYY-MM-DD",
-  "data_saida":        "YYYY-MM-DD",
-  "noites":            0,
-  "nome":              "",
-  "hospedes":          0,
-  "pais":              "",
-  "pais_inferido":     false,
-  "site":              "",
-  "telefone":          "",
-  "observacoes":       "",
-  "timezone_source":   "",
-  "id_reserva":        "",
-  "confidence":        0.0,
-  "source_page":       0,
-  "needs_review":      false
+  "data_entrada": "YYYY-MM-DD",
+  "data_saida": "YYYY-MM-DD", 
+  "noites": 0,
+  "nome": "",
+  "hospedes": 0,
+  "pais": "",
+  "pais_inferido": false,
+  "site": "",
+  "telefone": "",
+  "observacoes": "",
+  "timezone_source": "",
+  "id_reserva": "",
+  "confidence": 0.0,
+  "source_page": 0,
+  "needs_review": false
 }
+`;
 
-## ETAPAS DE PROCESSAMENTO
-
-### ETAPA 1 – PRÉ-OCR  
-• Auto-detectar orientação + idioma (PT, EN, ES, FR, DE)
-• Binarização adaptativa; eliminar cabeçalhos/rodapés
-
-### ETAPA 2 – SEGMENTAÇÃO  
-• Novo fragmento quando encontra (data & nome) OU (data & preço∕hóspedes)
-• Janela de 120 caract. para juntar linhas partidas
-
-### ETAPA 2.1 – CONSOLIDAÇÃO DE FRAGMENTOS  
-• Agrupar por ≥ 2 de: nome≈, ref_reserva, telefone, datas sobrepostas
-• Se cluster contém apenas entrada *ou* saída → manter mas `needs_review=true`
-• Se contiver ambas → fundir campos não vazios, recalcular noites
-
-### ETAPA 3 – MAPEAMENTO & NORMALIZAÇÃO  
-• Datas → DD/MM/AAAA, DD-MMM-AAAA, etc. ⇢ YYYY-MM-DD
-• Noites → a partir das datas se ausente
-• Hóspedes → Adultos + Crianças + Bebés (separados ou total)
-• País → rótulo directo; se vazio mas telefone tem indicativo válido, preencher e `pais_inferido=true`
-• Telefone → normalizar como `+<indicativo> <resto>`, remover espaços
-• Site → palavras-chave (Airbnb, Booking.com, Vrbo, Direct, Owner); se nada bater → "Outro"
-• Observações → texto com verbos imperativos ou rótulo "Info/Observações"
-• id_reserva → SHA-1 de (nome + data_entrada + site)
-• confidence → média ponderada de OCR_quality, regex_hits, fusão
-• source_page → nº da página onde o fragmento começou
-
-### ETAPA 4 – VALIDAÇÃO  
-• data_entrada ≤ data_saida; caso contrário → `needs_review=true`
-• Campo **telefone** vazio → `needs_review=true`
-• Se confidence < confidence_threshold → `needs_review=true`
-• Duplicado estrito (nome + data_entrada + site) → eliminar
-• Duplicado "soft" (Levenshtein(nome) ≤ 2, site igual, datas sobrepostas ≥ 50 %) → fundir, `needs_review=true`
-
-## FORMATO DE RESPOSTA
-Retorna APENAS array JSON com as reservas encontradas:
+/*
+ETAPAS DE PROCESSAMENTO:
+1. PRE-OCR: Auto-detectar orientacao e idioma
+2. SEGMENTACAO: Fragmentar por data & nome OU data & preco/hospedes  
+3. CONSOLIDACAO: Agrupar fragmentos relacionados
+4. MAPEAMENTO: Normalizar datas, telefones, paises
+5. VALIDACAO: Verificar integridade e marcar needs_review
+*/
 [
   {
     "data_entrada": "2025-06-01",
