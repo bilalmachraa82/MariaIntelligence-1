@@ -1,4 +1,5 @@
 import { GeminiService } from './gemini.service.js';
+import { OpenRouterService } from './openrouter.service.js';
 
 export interface ExtractedReservation {
   data_entrada: string;
@@ -23,9 +24,11 @@ export interface OCRResult {
 
 export class SimpleOCRService {
   private geminiService: GeminiService;
+  private openRouterService: OpenRouterService;
 
   constructor() {
     this.geminiService = new GeminiService();
+    this.openRouterService = new OpenRouterService();
   }
 
   async extractReservationsFromText(text: string): Promise<OCRResult> {
