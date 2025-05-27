@@ -55,13 +55,26 @@ export class SimpleOCRService {
    */
   async processFile(file: any): Promise<OCRResult> {
     try {
-      console.log(`🔄 Processando arquivo: ${file.originalname || file.name}`);
+      console.log(`🔄 Processando arquivo: ${file.originalname || file.name || 'arquivo'}`);
+      
+      // Verificar se temos um ficheiro válido
+      if (!file) {
+        throw new Error('Nenhum ficheiro fornecido');
+      }
       
       let text = '';
       
       // Extrair texto do arquivo
       if (file.mimetype === 'application/pdf') {
-        const buffer = file.buffer || fs.readFileSync(file.path);
+        let buffer;
+        if (file.buffer) {
+          buffer = file.buffer;
+        } else if (file.path && fs.existsSync(file.path)) {
+          buffer = fs.readFileSync(file.path);
+        } else {
+          throw new Error('PDF não encontrado - sem buffer ou caminho válido');
+        }
+        
         const pdfData = await pdf(buffer);
         text = pdfData.text;
       } else {
