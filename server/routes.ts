@@ -4142,7 +4142,7 @@ Return this EXACT JSON structure:
   app.use('/api/reservation-assistant', reservationAssistantRouter);
 
   // EXTRACTOR DE RESERVAS v4.2 - Working implementation that extracted 38 reservations
-  app.post('/api/extractor-working', upload.single('file'), async (req: Request, res: Response) => {
+  app.post('/api/extractor-working', anyFileUpload.single('file'), async (req: Request, res: Response) => {
     console.log('🚀 EXTRACTOR v4.2 endpoint hit!');
     res.setHeader('Content-Type', 'application/json');
     try {
