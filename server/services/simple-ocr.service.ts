@@ -156,25 +156,12 @@ EXTRAI TODAS AS RESERVAS:`;
         throw new Error('Não foi possível processar o documento');
       }
 
-      // Primeiro, tentar extrair com parser dedicado para documentos Aroeira
-      if (text.includes('AROEIRA') && (text.includes('Data entrada') || text.includes('Data saída'))) {
-        console.log('📋 Detectado documento Aroeira - usando parser dedicado');
-        const aroeiraReservations = this.parseAroeiraDocument(text);
-        if (aroeiraReservations.length > 0) {
-          console.log(`✅ SUCESSO! ${aroeiraReservations.length} reservas extraídas via parser Aroeira`);
-          return {
-            success: true,
-            reservations: aroeiraReservations,
-            processingTime: Date.now() - startTime,
-            message: `Processamento concluído com sucesso. ${aroeiraReservations.length} reserva(s) encontrada(s).`
-          };
-        }
-      }
-
-      // Fallback: tentar com Gemini AI
-      console.log('Tentando processar com Gemini AI...');
+      // Processar resposta do Gemini 2.5 Flash
+      console.log('🤖 Processando resposta do Gemini 2.5 Flash...');
+      console.log('Resposta recebida (primeiros 1000 chars):', response.substring(0, 1000));
+      
       let reservations = this.fixMalformedJson(response);
-      console.log(`Resultado: ${reservations.length} reservas encontradas`);
+      console.log(`✅ ${reservations.length} reservas processadas pelo Gemini`);
 
       // Garantir que temos um array válido
       const finalReservations = Array.isArray(reservations) ? reservations : 
@@ -282,14 +269,12 @@ EXTRAI TODAS AS RESERVAS:`;
   }
 
   private fixMalformedJson(jsonStr: string): any[] {
-    try {
-      // Primeiro, tentar parsing normal
-      return JSON.parse(jsonStr);
-    } catch (error) {
-      console.log('🔧 JSON malformado, tentando corrigir...');
-      
-      // Técnicas de correção baseadas na versão que funcionava
-      let fixed = jsonStr.replace(/```json|```/g, '').trim();
+    console.log('🤖 Processando resposta do Gemini 2.5 Flash...');
+    
+    // Nunca tentar JSON.parse direto - sempre limpar primeiro
+    let fixed = jsonStr.replace(/```json|```/g, '').trim();
+    
+    console.log('🔧 Limpando e reparando resposta...');
       
       // 1. Remover vírgulas extras antes de } ou ]
       fixed = fixed.replace(/,(\s*[}\]])/g, '$1');
@@ -310,10 +295,12 @@ EXTRAI TODAS AS RESERVAS:`;
       }
       
       try {
+        // Tentar parsing com proteção adicional
         const parsed = JSON.parse(fixed);
+        console.log('✅ JSON reparado com sucesso!');
         return Array.isArray(parsed) ? parsed : [parsed];
       } catch (secondError) {
-        console.log('🔧 Segunda tentativa falhou, extraindo dados manualmente...');
+        console.log('🔧 JSON ainda malformado, extraindo dados manualmente...');
         
         // Como último recurso, extrair dados manualmente usando regex
         const reservations = [];
