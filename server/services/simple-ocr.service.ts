@@ -189,15 +189,60 @@ Responda APENAS com uma das categorias acima.`;
 
       console.log('📄 Resposta do Gemini (primeiros 500 chars):', responseText.substring(0, 500));
 
-      // Tentar extrair JSON da resposta
+      // Tentar extrair JSON da resposta com tratamento robusto
+      let jsonText = '';
       const jsonMatch = responseText.match(/\[[\s\S]*\]/);
-      if (!jsonMatch) {
-        console.log('❌ Nenhum JSON encontrado na resposta');
-        return [];
+      
+      if (jsonMatch) {
+        jsonText = jsonMatch[0];
+      } else {
+        // Tentar encontrar início e fim do array manualmente
+        const startIdx = responseText.indexOf('[');
+        const endIdx = responseText.lastIndexOf(']');
+        if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
+          jsonText = responseText.substring(startIdx, endIdx + 1);
+        } else {
+          console.log('❌ Nenhum JSON encontrado na resposta');
+          return [];
+        }
       }
 
-      const jsonText = jsonMatch[0];
-      const extractedReservations = JSON.parse(jsonText);
+      // Tentar reparar JSON quebrado antes do parse
+      let extractedReservations;
+      try {
+        extractedReservations = JSON.parse(jsonText);
+      } catch (parseError) {
+        console.log('🔧 JSON malformado, tentando reparar...');
+        
+        // Reparar JSON quebrado
+        let repairedJson = jsonText;
+        
+        // Fechar strings não terminadas
+        const openQuotes = (repairedJson.match(/"/g) || []).length;
+        if (openQuotes % 2 !== 0) {
+          repairedJson += '"';
+        }
+        
+        // Fechar objetos não terminados
+        const openBraces = (repairedJson.match(/\{/g) || []).length;
+        const closeBraces = (repairedJson.match(/\}/g) || []).length;
+        for (let i = 0; i < openBraces - closeBraces; i++) {
+          repairedJson += '}';
+        }
+        
+        // Fechar array se necessário
+        if (!repairedJson.endsWith(']')) {
+          repairedJson += ']';
+        }
+        
+        try {
+          extractedReservations = JSON.parse(repairedJson);
+          console.log('✅ JSON reparado com sucesso');
+        } catch (repairError) {
+          console.log('❌ Falha no reparo do JSON:', repairError.message);
+          return [];
+        }
+      }
 
       // Validar e processar reservas
       const validReservations = extractedReservations
