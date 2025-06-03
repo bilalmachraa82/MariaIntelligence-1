@@ -124,14 +124,14 @@ Maria Faz is an advanced property management platform with integrated artificial
 
 ### Connection Details
 
-- **Host Name**: ep-tiny-dream-a58ddhin.us-east-2.aws.neon.tech
-- **Database Name**: neondb
-- **User**: neondb_owner
-- **Password**: npg_5HAIWZB9tncz
-- **Complete Connection URL**: 
+The database connection is configured through environment variables. Check your `.env` file for the complete `DATABASE_URL` configuration.
+
+- **Connection URL Format**: 
   ```
-  postgresql://neondb_owner:npg_5HAIWZB9tncz@ep-tiny-dream-a58ddhin.us-east-2.aws.neon.tech/neondb?sslmode=require
+  postgresql://username:password@hostname/database?sslmode=require
   ```
+
+**Note**: Never expose database credentials in documentation or code. Always use environment variables for sensitive configuration.
 
 ### Database Access
 
