@@ -137,10 +137,10 @@ Maria Faz is an advanced property management platform with integrated artificial
 
 The database is hosted on the Neon PostgreSQL service, which offers a serverless PostgreSQL in the cloud. To connect:
 
-1. Use the connection URL directly in your applications
+1. Use the connection URL through the `DATABASE_URL` environment variable
 2. Or connect using a SQL client such as:
-   - psql: `psql "postgresql://neondb_owner:npg_5HAIWZB9tncz@ep-tiny-dream-a58ddhin.us-east-2.aws.neon.tech/neondb?sslmode=require"`
-   - Graphical tools like DBeaver, pgAdmin or TablePlus using the details above
+   - psql: `psql $DATABASE_URL`
+   - Graphical tools like DBeaver, pgAdmin or TablePlus using credentials from environment variables
 
 **Note**: This connection requires SSL (sslmode=require).
 

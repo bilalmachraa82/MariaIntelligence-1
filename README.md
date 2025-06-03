@@ -124,23 +124,25 @@ Maria Faz é uma plataforma avançada de gestão imobiliária com inteligência 
 
 ### Detalhes de Conexão
 
-- **Nome do Host**: ep-tiny-dream-a58ddhin.us-east-2.aws.neon.tech
-- **Nome da Base de Dados**: neondb
-- **Usuário**: neondb_owner
-- **Senha**: npg_5HAIWZB9tncz
+- **Nome do Host**: [Configure via variáveis de ambiente]
+- **Nome da Base de Dados**: [Configure via variáveis de ambiente]
+- **Usuário**: [Configure via variáveis de ambiente]
+- **Senha**: [Configure via variáveis de ambiente]
 - **URL de Conexão Completa**: 
   ```
-  postgresql://neondb_owner:npg_5HAIWZB9tncz@ep-tiny-dream-a58ddhin.us-east-2.aws.neon.tech/neondb?sslmode=require
+  postgresql://[username]:[password]@[host]/[database]?sslmode=require
   ```
+  
+  **Importante**: Configure as credenciais através das variáveis de ambiente `DATABASE_URL` por motivos de segurança.
 
 ### Acesso à Base de Dados
 
 A base de dados é hospedada no serviço Neon PostgreSQL, que oferece um PostgreSQL serverless na nuvem. Para conectar:
 
-1. Use a URL de conexão diretamente nos seus aplicativos
+1. Use a URL de conexão através da variável de ambiente `DATABASE_URL`
 2. Ou conecte-se usando um cliente SQL como:
-   - psql: `psql "postgresql://neondb_owner:npg_5HAIWZB9tncz@ep-tiny-dream-a58ddhin.us-east-2.aws.neon.tech/neondb?sslmode=require"`
-   - Ferramentas gráficas como DBeaver, pgAdmin ou TablePlus usando os detalhes acima
+   - psql: `psql $DATABASE_URL`
+   - Ferramentas gráficas como DBeaver, pgAdmin ou TablePlus usando as credenciais das variáveis de ambiente
 
 **Nota**: Esta conexão requer SSL (sslmode=require).
 
