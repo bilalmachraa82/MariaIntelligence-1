@@ -221,7 +221,7 @@ router.post('/process', upload.single('file'), async (req, res) => {
  */
 router.get('/status', async (req, res) => {
   try {
-    const hasGeminiKey = !!process.env.GEMINI_API_KEY;
+    const hasGeminiKey = !!(process.env.GOOGLE_GEMINI_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY);
     
     res.json({
       success: true,
