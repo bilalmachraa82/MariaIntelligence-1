@@ -92,114 +92,76 @@ const upload = multer({
 const ocrService = new SimpleOCRService();
 
 /**
- * Helper function to save extracted reservations to the database
+ * POST /api/simple-ocr/save-reservations
+ * Saves extracted reservations to the database
  */
-async function saveReservationsToDatabase(reservations: any[]): Promise<{
-  success: boolean;
-  savedCount: number;
-  errors: string[];
-}> {
-  const errors: string[] = [];
-  let savedCount = 0;
-
-  for (const reservation of reservations) {
-    try {
-      // Find property by name if propertyId is not provided
-      let propertyId = reservation.propertyId;
-      
-      if (!propertyId && reservation.propertyName) {
-        const properties = await dbStorage.getProperties();
-        
-        const normalizePropertyName = (name: string) => 
-          name.toLowerCase()
-            .replace(/\s+/g, '')
-            .replace(/[àáâãä]/g, 'a')
-            .replace(/[èéêë]/g, 'e')
-            .replace(/[ìíîï]/g, 'i')
-            .replace(/[òóôõö]/g, 'o')
-            .replace(/[ùúûü]/g, 'u')
-            .replace(/[ç]/g, 'c');
-        
-        const normalizedReservationProperty = normalizePropertyName(reservation.propertyName);
-        
-        const matchedProperty = properties.find((p: any) => {
-          const normalizedDbProperty = normalizePropertyName(p.name);
-          
-          // Skip properties with check-in/check-out in name
-          if (p.name.toLowerCase().includes('check-in') || 
-              p.name.toLowerCase().includes('check-out') ||
-              p.name.toLowerCase().includes('checkin') || 
-              p.name.toLowerCase().includes('checkout')) {
-            return false;
-          }
-          
-          return normalizedDbProperty.includes(normalizedReservationProperty) || 
-                 normalizedReservationProperty.includes(normalizedDbProperty);
-        });
-        
-        if (matchedProperty) {
-          propertyId = matchedProperty.id;
-        }
-      }
-
-      if (!propertyId) {
-        errors.push(`Reservation for ${reservation.guestName || 'unknown guest'}: Property not found`);
-        continue;
-      }
-
-      // Get property for cost calculations
-      const property = await dbStorage.getProperty(propertyId);
-      if (!property) {
-        errors.push(`Reservation for ${reservation.guestName || 'unknown guest'}: Invalid property ID`);
-        continue;
-      }
-
-      // Prepare reservation data
-      const reservationData: any = {
-        propertyId: propertyId,
-        guestName: reservation.guestName || reservation.nome || '',
-        guestEmail: reservation.guestEmail || reservation.email || null,
-        guestPhone: reservation.guestPhone || reservation.phone || reservation.telefone || null,
-        checkInDate: reservation.checkInDate || reservation.data_entrada || '',
-        checkOutDate: reservation.checkOutDate || reservation.data_saida || '',
-        guestCount: reservation.guestCount || reservation.num_guests || 1,
-        totalAmount: (reservation.totalAmount || reservation.valor_total || '0').toString(),
-        source: reservation.source || 'ocr',
-        status: 'confirmed' as const,
-        notes: reservation.notes || reservation.observacoes || null,
-        platformFee: (reservation.platformFee || '0').toString(),
-        cleaningFee: (property.cleaningCost || '0').toString(),
-        checkInFee: (property.checkInFee || '0').toString(),
-        commission: (Number(reservation.totalAmount || 0) * Number(property.commission || 0) / 100).toString(),
-        teamPayment: (property.teamPayment || '0').toString()
-      };
-
-      // Calculate net amount
-      const totalCosts = Number(reservationData.cleaningFee) + 
-                        Number(reservationData.checkInFee) + 
-                        Number(reservationData.commission) + 
-                        Number(reservationData.teamPayment) + 
-                        Number(reservationData.platformFee);
-
-      reservationData.netAmount = (Number(reservationData.totalAmount) - totalCosts).toString();
-
-      // Validate and create reservation
-      const validatedData = insertReservationSchema.parse(reservationData);
-      await dbStorage.createReservation(validatedData);
-      savedCount++;
-
-    } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-      errors.push(`Reservation for ${reservation.guestName || 'unknown guest'}: ${errorMsg}`);
+router.post('/save-reservations', async (req, res) => {
+  try {
+    const { reservations } = req.body;
+    
+    if (!reservations || !Array.isArray(reservations) || reservations.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'No reservations provided'
+      });
     }
-  }
 
-  return {
-    success: savedCount > 0,
-    savedCount,
-    errors
-  };
-}
+    console.log(`💾 Saving ${reservations.length} reservations to database...`);
+    
+    const errors: string[] = [];
+    let savedCount = 0;
+
+    for (const reservation of reservations) {
+      try {
+        // Use the existing /api/reservations endpoint for saving
+        const response = await fetch(`${req.protocol}://${req.get('host')}/api/reservations`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            propertyId: reservation.propertyId,
+            guestName: reservation.guestName || reservation.nome,
+            guestEmail: reservation.guestEmail || reservation.email || null,
+            guestPhone: reservation.guestPhone || reservation.phone || null,
+            checkInDate: reservation.checkInDate || reservation.data_entrada,
+            checkOutDate: reservation.checkOutDate || reservation.data_saida,
+            guestCount: reservation.guestCount || reservation.num_guests || 1,
+            totalAmount: (reservation.totalAmount || reservation.valor_total || '0').toString(),
+            source: 'ocr',
+            status: 'confirmed',
+            notes: reservation.notes || null
+          })
+        });
+
+        if (response.ok) {
+          savedCount++;
+        } else {
+          const errorData = await response.json();
+          errors.push(`${reservation.guestName || 'unknown'}: ${errorData.message || 'Save failed'}`);
+        }
+
+      } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+        errors.push(`${reservation.guestName || 'unknown'}: ${errorMsg}`);
+      }
+    }
+
+    res.json({
+      success: savedCount > 0,
+      savedCount,
+      totalReservations: reservations.length,
+      errors
+    });
+
+  } catch (error) {
+    console.error('Error saving reservations:', error);
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Internal server error'
+    });
+  }
+});
 
 /**
  * POST /api/simple-ocr/process
@@ -343,8 +305,109 @@ router.post('/process-multiple', upload.array('files', 10), async (req, res) => 
       });
     }
 
-    // Retornar todas as reservas encontradas
-    console.log(`✅ Processamento múltiplo concluído: ${allReservations.length} reservas encontradas`);
+    // Auto-save all extracted reservations to database
+    let savedCount = 0;
+    const saveErrors: string[] = [];
+    
+    if (allReservations.length > 0) {
+      console.log(`💾 Auto-salvando ${allReservations.length} reservas extraídas...`);
+      
+      for (const reservation of allReservations) {
+        try {
+          // Find property by name matching
+          const properties = await dbStorage.getProperties();
+          let propertyId = null;
+          
+          if (reservation.propertyName) {
+            const normalizePropertyName = (name: string) => 
+              name.toLowerCase()
+                .replace(/\s+/g, '')
+                .replace(/[àáâãä]/g, 'a')
+                .replace(/[èéêë]/g, 'e')
+                .replace(/[ìíîï]/g, 'i')
+                .replace(/[òóôõö]/g, 'o')
+                .replace(/[ùúûü]/g, 'u')
+                .replace(/[ç]/g, 'c');
+            
+            const normalizedReservationProperty = normalizePropertyName(reservation.propertyName);
+            
+            const matchedProperty = properties.find((p: any) => {
+              const normalizedDbProperty = normalizePropertyName(p.name);
+              
+              // Skip properties with check-in/check-out in name
+              if (p.name.toLowerCase().includes('check-in') || 
+                  p.name.toLowerCase().includes('check-out') ||
+                  p.name.toLowerCase().includes('checkin') || 
+                  p.name.toLowerCase().includes('checkout')) {
+                return false;
+              }
+              
+              return normalizedDbProperty.includes(normalizedReservationProperty) || 
+                     normalizedReservationProperty.includes(normalizedDbProperty);
+            });
+            
+            if (matchedProperty) {
+              propertyId = matchedProperty.id;
+            }
+          }
+
+          if (!propertyId) {
+            saveErrors.push(`${reservation.guestName || 'unknown'}: Property not found`);
+            continue;
+          }
+
+          // Get property for cost calculations
+          const property = await dbStorage.getProperty(propertyId);
+          if (!property) {
+            saveErrors.push(`${reservation.guestName || 'unknown'}: Invalid property`);
+            continue;
+          }
+
+          // Prepare reservation data
+          const reservationData: any = {
+            propertyId: propertyId,
+            guestName: reservation.guestName || reservation.nome || '',
+            guestEmail: reservation.guestEmail || reservation.email || null,
+            guestPhone: reservation.guestPhone || reservation.phone || null,
+            checkInDate: reservation.checkInDate || reservation.data_entrada || '',
+            checkOutDate: reservation.checkOutDate || reservation.data_saida || '',
+            guestCount: reservation.guestCount || reservation.num_guests || 1,
+            totalAmount: (reservation.totalAmount || reservation.valor_total || '0').toString(),
+            source: 'ocr',
+            status: 'confirmed',
+            notes: reservation.notes || null,
+            platformFee: (reservation.platformFee || '0').toString(),
+            cleaningFee: (property.cleaningCost || '0').toString(),
+            checkInFee: (property.checkInFee || '0').toString(),
+            commission: (Number(reservation.totalAmount || 0) * Number(property.commission || 0) / 100).toString(),
+            teamPayment: (property.teamPayment || '0').toString()
+          };
+
+          // Calculate net amount
+          const totalCosts = Number(reservationData.cleaningFee) + 
+                            Number(reservationData.checkInFee) + 
+                            Number(reservationData.commission) + 
+                            Number(reservationData.teamPayment) + 
+                            Number(reservationData.platformFee);
+
+          reservationData.netAmount = (Number(reservationData.totalAmount) - totalCosts).toString();
+
+          // Validate and create reservation
+          const validatedData = insertReservationSchema.parse(reservationData);
+          await dbStorage.createReservation(validatedData);
+          savedCount++;
+
+        } catch (error) {
+          const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+          saveErrors.push(`${reservation.guestName || 'unknown'}: ${errorMsg}`);
+        }
+      }
+      
+      console.log(`✅ ${savedCount} reservas salvas na base de dados`);
+      if (saveErrors.length > 0) {
+        console.log(`⚠️ ${saveErrors.length} erros ao salvar:`, saveErrors);
+      }
+    }
 
     res.json({
       success: true,
@@ -352,7 +415,10 @@ router.post('/process-multiple', upload.array('files', 10), async (req, res) => 
       reservations: allReservations,
       totalReservations: allReservations.length,
       fileResults,
-      message: `${allReservations.length} reserva(s) processada(s) com sucesso`
+      autoSaved: savedCount > 0,
+      savedCount,
+      saveErrors,
+      message: `${allReservations.length} reserva(s) processada(s) e ${savedCount} salva(s) com sucesso`
     });
 
   } catch (error) {
