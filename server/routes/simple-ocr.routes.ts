@@ -3,6 +3,8 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { SimpleOCRService } from '../services/simple-ocr.service';
+import { storage as dbStorage } from '../storage';
+import { insertReservationSchema } from '@shared/schema';
 
 const router = Router();
 
@@ -88,6 +90,116 @@ const upload = multer({
 
 // Instância do serviço OCR
 const ocrService = new SimpleOCRService();
+
+/**
+ * Helper function to save extracted reservations to the database
+ */
+async function saveReservationsToDatabase(reservations: any[]): Promise<{
+  success: boolean;
+  savedCount: number;
+  errors: string[];
+}> {
+  const errors: string[] = [];
+  let savedCount = 0;
+
+  for (const reservation of reservations) {
+    try {
+      // Find property by name if propertyId is not provided
+      let propertyId = reservation.propertyId;
+      
+      if (!propertyId && reservation.propertyName) {
+        const properties = await dbStorage.getProperties();
+        
+        const normalizePropertyName = (name: string) => 
+          name.toLowerCase()
+            .replace(/\s+/g, '')
+            .replace(/[àáâãä]/g, 'a')
+            .replace(/[èéêë]/g, 'e')
+            .replace(/[ìíîï]/g, 'i')
+            .replace(/[òóôõö]/g, 'o')
+            .replace(/[ùúûü]/g, 'u')
+            .replace(/[ç]/g, 'c');
+        
+        const normalizedReservationProperty = normalizePropertyName(reservation.propertyName);
+        
+        const matchedProperty = properties.find((p: any) => {
+          const normalizedDbProperty = normalizePropertyName(p.name);
+          
+          // Skip properties with check-in/check-out in name
+          if (p.name.toLowerCase().includes('check-in') || 
+              p.name.toLowerCase().includes('check-out') ||
+              p.name.toLowerCase().includes('checkin') || 
+              p.name.toLowerCase().includes('checkout')) {
+            return false;
+          }
+          
+          return normalizedDbProperty.includes(normalizedReservationProperty) || 
+                 normalizedReservationProperty.includes(normalizedDbProperty);
+        });
+        
+        if (matchedProperty) {
+          propertyId = matchedProperty.id;
+        }
+      }
+
+      if (!propertyId) {
+        errors.push(`Reservation for ${reservation.guestName || 'unknown guest'}: Property not found`);
+        continue;
+      }
+
+      // Get property for cost calculations
+      const property = await dbStorage.getProperty(propertyId);
+      if (!property) {
+        errors.push(`Reservation for ${reservation.guestName || 'unknown guest'}: Invalid property ID`);
+        continue;
+      }
+
+      // Prepare reservation data
+      const reservationData: any = {
+        propertyId: propertyId,
+        guestName: reservation.guestName || reservation.nome || '',
+        guestEmail: reservation.guestEmail || reservation.email || null,
+        guestPhone: reservation.guestPhone || reservation.phone || reservation.telefone || null,
+        checkInDate: reservation.checkInDate || reservation.data_entrada || '',
+        checkOutDate: reservation.checkOutDate || reservation.data_saida || '',
+        guestCount: reservation.guestCount || reservation.num_guests || 1,
+        totalAmount: (reservation.totalAmount || reservation.valor_total || '0').toString(),
+        source: reservation.source || 'ocr',
+        status: 'confirmed' as const,
+        notes: reservation.notes || reservation.observacoes || null,
+        platformFee: (reservation.platformFee || '0').toString(),
+        cleaningFee: (property.cleaningCost || '0').toString(),
+        checkInFee: (property.checkInFee || '0').toString(),
+        commission: (Number(reservation.totalAmount || 0) * Number(property.commission || 0) / 100).toString(),
+        teamPayment: (property.teamPayment || '0').toString()
+      };
+
+      // Calculate net amount
+      const totalCosts = Number(reservationData.cleaningFee) + 
+                        Number(reservationData.checkInFee) + 
+                        Number(reservationData.commission) + 
+                        Number(reservationData.teamPayment) + 
+                        Number(reservationData.platformFee);
+
+      reservationData.netAmount = (Number(reservationData.totalAmount) - totalCosts).toString();
+
+      // Validate and create reservation
+      const validatedData = insertReservationSchema.parse(reservationData);
+      await dbStorage.createReservation(validatedData);
+      savedCount++;
+
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      errors.push(`Reservation for ${reservation.guestName || 'unknown guest'}: ${errorMsg}`);
+    }
+  }
+
+  return {
+    success: savedCount > 0,
+    savedCount,
+    errors
+  };
+}
 
 /**
  * POST /api/simple-ocr/process

@@ -1,0 +1,315 @@
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://www.googletagmanager.com" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://td.doubleclick.net" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+1009-b31887f0fb2f3af2.js:1 Replit version a4a7eb4c, pid2 version 0.0.1373
+_app-59d4b8b10da893ae.js:37 
+      /////////////////////
+   ///////////////////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////        Curious and driven?
+  ///////////////@@@@@@@///////        Work with us!
+  ///////////////@@@@@@@///////
+  ///////////////@@@@@@@///////        https://join.replit.com/hack.with.us
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@#//////////////
+   ///////////////////////////
+      /////////////////////
+      
+chrome-extension://j…nt/index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://js.stripe.com" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+/~:1 Blocked aria-hidden on an element because its descendant retained focus. The focus must not be hidden from assistive technology users. Avoid using aria-hidden on a focused element or its ancestor. Consider using the inert attribute instead, which will also prevent focus. For more details, see the aria-hidden section of the WAI-ARIA specification at https://w3c.github.io/aria/#aria-hidden.
+Element with focus: <div.cm-content cm-lineWrapping>
+Ancestor with aria-hidden: <div. useView_view__C2mnv css-17qdd0f Surface_surfaceRoot__TeA2u> null
+_app-59d4b8b10da893ae.js:37 [LaunchDarkly] LaunchDarkly client initialized
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://www.google.com" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+MariaIntelligence-1:1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://td.doubleclick.net" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://js.stripe.com" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://m.stripe.network" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+framework-e5ff3ac173b1d6d8.js:1 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+_ @ framework-e5ff3ac173b1d6d8.js:1
+framework-e5ff3ac173b1d6d8.js:1 Unrecognized feature: 'ambient-light-sensor'.
+_ @ framework-e5ff3ac173b1d6d8.js:1
+framework-e5ff3ac173b1d6d8.js:1 Unrecognized feature: 'battery'.
+_ @ framework-e5ff3ac173b1d6d8.js:1
+framework-e5ff3ac173b1d6d8.js:1 Unrecognized feature: 'execution-while-not-rendered'.
+_ @ framework-e5ff3ac173b1d6d8.js:1
+framework-e5ff3ac173b1d6d8.js:1 Unrecognized feature: 'execution-while-out-of-viewport'.
+_ @ framework-e5ff3ac173b1d6d8.js:1
+framework-e5ff3ac173b1d6d8.js:1 Unrecognized feature: 'layout-animations'.
+_ @ framework-e5ff3ac173b1d6d8.js:1
+framework-e5ff3ac173b1d6d8.js:1 Unrecognized feature: 'legacy-image-formats'.
+_ @ framework-e5ff3ac173b1d6d8.js:1
+framework-e5ff3ac173b1d6d8.js:1 Unrecognized feature: 'navigation-override'.
+_ @ framework-e5ff3ac173b1d6d8.js:1
+framework-e5ff3ac173b1d6d8.js:1 Unrecognized feature: 'oversized-images'.
+_ @ framework-e5ff3ac173b1d6d8.js:1
+framework-e5ff3ac173b1d6d8.js:1 Unrecognized feature: 'publickey-credentials'.
+_ @ framework-e5ff3ac173b1d6d8.js:1
+framework-e5ff3ac173b1d6d8.js:1 Unrecognized feature: 'speaker-selection'.
+_ @ framework-e5ff3ac173b1d6d8.js:1
+framework-e5ff3ac173b1d6d8.js:1 Unrecognized feature: 'unoptimized-images'.
+_ @ framework-e5ff3ac173b1d6d8.js:1
+framework-e5ff3ac173b1d6d8.js:1 Unrecognized feature: 'unsized-media'.
+_ @ framework-e5ff3ac173b1d6d8.js:1
+framework-e5ff3ac173b1d6d8.js:1 Unrecognized feature: 'pointer-lock'.
+_ @ framework-e5ff3ac173b1d6d8.js:1
+framework-e5ff3ac173b1d6d8.js:1 Allow attribute will take precedence over 'allowfullscreen'.
+_ @ framework-e5ff3ac173b1d6d8.js:1
+framework-e5ff3ac173b1d6d8.js:1 Allow attribute will take precedence over 'allowpaymentrequest'.
+_ @ framework-e5ff3ac173b1d6d8.js:1
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+workspace_iframe.html:32 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Arsn%3A:32 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Arsn%3A:32 Unrecognized feature: 'ambient-light-sensor'.
+workspace_iframe.html:32 Unrecognized feature: 'battery'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Arsn%3A:32 Unrecognized feature: 'battery'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Arsn%3A:32 Unrecognized feature: 'execution-while-not-rendered'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Arsn%3A:32 Unrecognized feature: 'execution-while-out-of-viewport'.
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Arsn%3A:32 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Arsn%3A:32 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Arsn%3A:32 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Arsn%3A:32 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Arsn%3A:32 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Arsn%3A:32 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Arsn%3A:32 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Arsn%3A:32 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Arsn%3A:32 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Arsn%3A:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a frame with origin "https://replit.com". Protocols, domains, and ports must match.
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "font-src 'self' <URL>".
+
+Console.js:61 i18next: languageChanged pt-PT
+Console.js:61 i18next: initialized [object Object]
+Console.js:61 i18n inicializado com os seguintes recursos: [object Object],[object Object],[object Object],[object Object],[object Object],[object Object]
+Console.js:61 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+Console.js:61 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+Console.js:61 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+Refused to load the script '<URL>' because it violates the following Content Security Policy directive: "script-src 'self' 'unsafe-inline' 'unsafe-eval'". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback.
+
+Refused to load the script '<URL>' because it violates the following Content Security Policy directive: "script-src 'self' 'unsafe-inline' 'unsafe-eval'". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback.
+
+Refused to load the script '<URL>' because it violates the following Content Security Policy directive: "script-src 'self' 'unsafe-inline' 'unsafe-eval'". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback.
+
+Refused to load the script '<URL>' because it violates the following Content Security Policy directive: "script-src 'self' 'unsafe-inline' 'unsafe-eval'". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback.
+
+Refused to load the script '<URL>' because it violates the following Content Security Policy directive: "script-src 'self' 'unsafe-inline' 'unsafe-eval'". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback.
+
+dotdevproxy.janeway.repl.co/__reachability:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_RESET
+dotdevproxy.janeway.repl.co/__reachability:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_RESET
+Console.js:61 Fetch URL modificada: /api/reservations/dashboard
+Console.js:61 Fetch URL modificada: /api/reservations/dashboard?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/activities
+Console.js:61 Fetch URL modificada: /api/activities?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+Console.js:61 i18next: languageChanged pt-PT
+Console.js:61 i18next: initialized Object
+Console.js:61 i18n inicializado com os seguintes recursos: Array(6)
+Console.js:61 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+Console.js:61 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+Console.js:61 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
+Console.js:61 Fetch URL modificada: /api/reservations/dashboard
+Console.js:61 Fetch URL modificada: /api/reservations/dashboard?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/activities
+Console.js:61 Fetch URL modificada: /api/activities?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+dotdevproxy.janeway.repl.co/__reachability:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_RESET
+sp.replit.com/v1/t:1 
+            
+            
+           Failed to load resource: the server responded with a status of 400 ()
+dotdevproxy.worf.repl.co/__reachability:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_RESET
+dotdevproxy.worf.repl.co/__reachability:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_RESET
+dotdevproxy.worf.repl.co/__reachability:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_RESET
+Console.js:61 Fetch URL modificada: /api/simple-ocr/process-multiple?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 ⚠️ Pulando reserva Margine - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Olivier Baumard - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Alicia Boulay - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Ana Do Vale - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Francesca Raffa - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Teatro Extremo - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Joana Pires - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Thomas Baby - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Guimin Liao - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Mei Lun So - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Hatem Maaref - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Melina Conati Cuesta - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva João Pedro Afonso Nunes - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Andres Pelaez Flores - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Olena Kovalenko - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Lisa Barry - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Tobias Drössler - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva 豆豆 翟 - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Amadeo Marin Paz - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Adozinda Fortes - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Jenni Elliott Gallow - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Marco Fonseca - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Alicia Boulay - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Olivier Baumard - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Ana Do Vale - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Joana Pires - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Thomas Baby Thomas - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Teatro Extremo - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Guimin Liao - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Hatem Maaref - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Francesca Raffa - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Melina Conati Cuesta - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva João Pedro Afonso Nunes - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Andres Pelaez Flores - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Lisa Barry - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Tobias Drössler - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Olena Kovalenko - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Margine - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Olivier Baumard - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Alicia Boulay - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Ana Do Vale - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Francesca Raffa - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Teatro Extremo - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Joana Pires - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Thomas Baby - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Guimin Liao - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Mei Lun So - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Hatem Maaref - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Melina Conati Cuesta - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva João Pedro Afonso Nunes - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Andres Pelaez Flores - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Olena Kovalenko - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Lisa Barry - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Tobias Drössler - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva 豆豆 翟 - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Amadeo Marin Paz - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Adozinda Fortes - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Jenni Elliott Gallow - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Marco Fonseca - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Alicia Boulay - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Olivier Baumard - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Ana Do Vale - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Joana Pires - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Thomas Baby Thomas - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Teatro Extremo - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Guimin Liao - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Hatem Maaref - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Francesca Raffa - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Melina Conati Cuesta - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva João Pedro Afonso Nunes - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Andres Pelaez Flores - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Lisa Barry - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Tobias Drössler - nenhuma propriedade válida encontrada
+Console.js:61 ⚠️ Pulando reserva Olena Kovalenko - nenhuma propriedade válida encontrada
+Console.js:61 Fetch URL modificada: /api/reservations
+Console.js:61 Fetch URL modificada: /api/reservations?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/properties
+Console.js:61 Fetch URL modificada: /api/properties?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+Console.js:61 Fetch URL modificada: /api/enums?demoDataRemoved=true&hideDemoTasks=true&disableDemoData=true&forceCleanMode=true
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+workspace_iframe.html:32 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+index.iife.js:24 Uncaught SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "https://f36c39e0-6cbc-49c5-89a4-4e3fe0a565ee-00-1fs9nqqookwyn.riker.replit.dev" from accessing a cross-origin frame.
+    at index.iife.js:24:41133
+(anonymous) @ index.iife.js:24
+Console.js:61 i18next: languageChanged pt-PT
+Console.js:61 i18next: initialized {debug: true, initAsync: true, ns: Array(1), defaultNS: Array(1), fallbackLng: Array(1), …}
+Console.js:61 i18n inicializado com os seguintes recursos: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+Console.js:61 Fetch URL modificada: /api/reservations
+Console.js:61 Fetch URL modificada: /api/properties
+Console.js:61 🧹 ENFORCING CLEAN MODE - Bloqueando todos os dados demo...
+Console.js:61 🧹 CLEAN MODE ENFORCED - Todos os dados demo estão bloqueados
+Console.js:61 Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados
