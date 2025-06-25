@@ -1,0 +1,291 @@
+{
+  "name": "Maria Faz - PDF to Database",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "maria-faz-pdf",
+        "options": {
+          "rawBody": true
+        }
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "webhook-auth",
+          "name": "Maria Faz Webhook Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extrair arquivo PDF dos dados recebidos\nconst items = $input.all();\nconst item = items[0];\n\n// Verificar se temos dados de arquivo\nif (!item.binary || !item.binary.data) {\n  throw new Error('Nenhum arquivo PDF encontrado');\n}\n\n// Extrair metadados\nconst metadata = item.json.metadata ? JSON.parse(item.json.metadata) : {};\n\n// Preparar dados para próximo nó\nreturn {\n  json: {\n    filename: metadata.originalName || 'document.pdf',\n    size: metadata.size || 0,\n    uploadTimestamp: metadata.uploadTimestamp || new Date().toISOString(),\n    source: metadata.source || 'unknown'\n  },\n  binary: {\n    data: item.binary.data\n  }\n};"
+      },
+      "id": "file-processor",
+      "name": "File Processor",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4-vision-preview",
+        "messages": {
+          "messageType": "multiModal",
+          "multiModalMessageContent": [
+            {
+              "type": "text",
+              "text": "Analise este documento PDF e extraia as informações de reserva no formato JSON. \n\nEstrutura esperada:\n{\n  \"reservations\": [\n    {\n      \"propertyName\": \"nome da propriedade\",\n      \"guestName\": \"nome do hóspede\",\n      \"guestEmail\": \"email@exemplo.com\",\n      \"guestPhone\": \"+351999999999\",\n      \"checkInDate\": \"2024-01-15\",\n      \"checkOutDate\": \"2024-01-20\",\n      \"numAdults\": 2,\n      \"numChildren\": 0,\n      \"totalAmount\": \"150.00\",\n      \"platformFee\": \"15.00\",\n      \"cleaningFee\": \"25.00\",\n      \"reference\": \"BK123456\",\n      \"platform\": \"booking.com\",\n      \"status\": \"confirmed\",\n      \"country\": \"Portugal\",\n      \"notes\": \"observações adicionais\"\n    }\n  ]\n}\n\nSe houver múltiplas reservas no documento, inclua todas no array.\nRetorne apenas o JSON válido, sem texto adicional."
+            },
+            {
+              "type": "imageUrl",
+              "imageUrl": "={{ $binary.data.data }}"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.1,
+          "maxTokens": 2000
+        }
+      },
+      "id": "ai-extraction",
+      "name": "AI Extraction",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [680, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-cred",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Processar e validar dados extraídos\nconst items = $input.all();\nconst item = items[0];\n\n// Extrair JSON da resposta da IA\nlet extractedData;\ntry {\n  const aiResponse = item.json.message.content;\n  // Tentar extrair JSON da resposta\n  const jsonMatch = aiResponse.match(/\\{[\\s\\S]*\\}/);\n  if (jsonMatch) {\n    extractedData = JSON.parse(jsonMatch[0]);\n  } else {\n    throw new Error('Nenhum JSON encontrado na resposta da IA');\n  }\n} catch (error) {\n  throw new Error(`Erro ao processar resposta da IA: ${error.message}`);\n}\n\n// Validar estrutura\nif (!extractedData.reservations || !Array.isArray(extractedData.reservations)) {\n  throw new Error('Estrutura de dados inválida');\n}\n\n// Normalizar e validar cada reserva\nconst validatedReservations = extractedData.reservations.map((reservation, index) => {\n  // Campos obrigatórios\n  const required = ['propertyName', 'guestName', 'checkInDate', 'checkOutDate'];\n  for (const field of required) {\n    if (!reservation[field]) {\n      throw new Error(`Campo obrigatório '${field}' ausente na reserva ${index + 1}`);\n    }\n  }\n  \n  // Normalizar datas\n  const normalizeDate = (dateStr) => {\n    if (!dateStr) return null;\n    const date = new Date(dateStr);\n    return date.toISOString().split('T')[0];\n  };\n  \n  // Normalizar valores monetários\n  const normalizeAmount = (amount) => {\n    if (!amount) return '0.00';\n    if (typeof amount === 'number') return amount.toFixed(2);\n    return parseFloat(amount.toString().replace(/[^0-9.]/g, '')).toFixed(2);\n  };\n  \n  return {\n    propertyName: reservation.propertyName.trim(),\n    guestName: reservation.guestName.trim(),\n    guestEmail: reservation.guestEmail || '',\n    guestPhone: reservation.guestPhone || '',\n    checkInDate: normalizeDate(reservation.checkInDate),\n    checkOutDate: normalizeDate(reservation.checkOutDate),\n    numAdults: parseInt(reservation.numAdults || 1),\n    numChildren: parseInt(reservation.numChildren || 0),\n    totalAmount: normalizeAmount(reservation.totalAmount),\n    platformFee: normalizeAmount(reservation.platformFee),\n    cleaningFee: normalizeAmount(reservation.cleaningFee),\n    reference: reservation.reference || '',\n    platform: reservation.platform || 'direct',\n    status: reservation.status || 'confirmed',\n    country: reservation.country || 'Portugal',\n    notes: reservation.notes || ''\n  };\n});\n\n// Retornar dados processados\nreturn {\n  json: {\n    reservations: validatedReservations,\n    processingTime: Date.now() - new Date($node[\"Webhook Trigger\"].json.timestamp).getTime(),\n    totalReservations: validatedReservations.length,\n    aiProvider: 'openai-gpt4-vision'\n  }\n};"
+      },
+      "id": "data-validator",
+      "name": "Data Validator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "-- Primeiro, vamos buscar a propriedade pelo nome\nSELECT id FROM properties WHERE LOWER(name) LIKE LOWER($1) LIMIT 1",
+        "additionalFields": {
+          "queryParameters": "={{ $json.reservations[0].propertyName }}"
+        }
+      },
+      "id": "find-property",
+      "name": "Find Property",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [1120, 300],
+      "credentials": {
+        "postgres": {
+          "id": "postgres-cred",
+          "name": "Maria Faz Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Processar cada reserva para inserção na base de dados\nconst items = $input.all();\nconst dataItem = items[0];\nconst propertyResult = items[1];\n\n// Verificar se encontramos a propriedade\nlet propertyId = 1; // default\nif (propertyResult.json.length > 0) {\n  propertyId = propertyResult.json[0].id;\n}\n\n// Preparar queries de inserção\nconst insertQueries = [];\nconst reservations = dataItem.json.reservations;\n\nfor (const reservation of reservations) {\n  const insertQuery = {\n    query: `\n      INSERT INTO reservations (\n        property_id, guest_name, guest_email, guest_phone, \n        check_in_date, check_out_date, num_adults, num_children,\n        total_amount, platform_fee, cleaning_fee, reference,\n        platform, status, country, notes, created_at\n      ) VALUES (\n        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, NOW()\n      ) RETURNING id, reference, guest_name, check_in_date, check_out_date\n    `,\n    parameters: [\n      propertyId,\n      reservation.guestName,\n      reservation.guestEmail,\n      reservation.guestPhone,\n      reservation.checkInDate,\n      reservation.checkOutDate,\n      reservation.numAdults,\n      reservation.numChildren,\n      reservation.totalAmount,\n      reservation.platformFee,\n      reservation.cleaningFee,\n      reservation.reference,\n      reservation.platform,\n      reservation.status,\n      reservation.country,\n      reservation.notes\n    ]\n  };\n  \n  insertQueries.push(insertQuery);\n}\n\n// Retornar dados para próximo nó\nreturn {\n  json: {\n    queries: insertQueries,\n    totalReservations: reservations.length,\n    propertyId: propertyId\n  }\n};"
+      },
+      "id": "prepare-insert",
+      "name": "Prepare Insert",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "={{ $json.queries[0].query }}",
+        "additionalFields": {
+          "queryParameters": "={{ $json.queries[0].parameters }}"
+        }
+      },
+      "id": "insert-reservations",
+      "name": "Insert Reservations",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [1560, 300],
+      "credentials": {
+        "postgres": {
+          "id": "postgres-cred",
+          "name": "Maria Faz Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Preparar resposta final\nconst items = $input.all();\nconst insertResult = items[0];\n\n// Compilar estatísticas\nconst stats = {\n  success: true,\n  reservationsCreated: insertResult.json.length,\n  executionId: $execution.id,\n  processingTime: Date.now() - new Date($node[\"Webhook Trigger\"].json.timestamp).getTime(),\n  aiProvider: 'openai-gpt4-vision',\n  reservations: insertResult.json.map(r => ({\n    id: r.id,\n    reference: r.reference,\n    guestName: r.guest_name,\n    checkInDate: r.check_in_date,\n    checkOutDate: r.check_out_date\n  }))\n};\n\n// Log para monitorização\nconsole.log('✅ Processamento concluído:', stats);\n\nreturn { json: stats };"
+      },
+      "id": "response-handler",
+      "name": "Response Handler",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1780, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "webhook-response",
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [2000, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Handler de erro personalizado\nconst error = $input.first().json.error || { message: 'Erro desconhecido' };\n\nconst errorResponse = {\n  success: false,\n  error: error.message,\n  executionId: $execution.id,\n  timestamp: new Date().toISOString(),\n  step: $node.name || 'unknown'\n};\n\n// Log do erro\nconsole.error('❌ Erro no processamento:', errorResponse);\n\nreturn { json: errorResponse };"
+      },
+      "id": "error-handler",
+      "name": "Error Handler",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 480]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "responseCode": 500
+      },
+      "id": "error-response",
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1340, 480]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "File Processor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "File Processor": {
+      "main": [
+        [
+          {
+            "node": "AI Extraction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Extraction": {
+      "main": [
+        [
+          {
+            "node": "Data Validator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Validator": {
+      "main": [
+        [
+          {
+            "node": "Find Property",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Property": {
+      "main": [
+        [
+          {
+            "node": "Prepare Insert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Insert": {
+      "main": [
+        [
+          {
+            "node": "Insert Reservations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Reservations": {
+      "main": [
+        [
+          {
+            "node": "Response Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Response Handler": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Handler": {
+      "main": [
+        [
+          {
+            "node": "Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": {
+      "errorMode": "continueErrorOutput"
+    }
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "id": "maria-faz",
+      "name": "Maria Faz",
+      "color": "#0066cc"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-12-25T10:00:00.000Z",
+  "versionId": "1.0.0"
+}

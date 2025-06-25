@@ -27,6 +27,7 @@ import { registerSpeechRoutes } from "./api/speech-routes";
 import uploadControlFileRouter from "./api/upload-control-file";
 import reservationAssistantRouter from "./api/reservation-assistant";
 import { generateDemoData, resetDemoDataHandler } from "./api/demo-data";
+import n8nWebhookRouter from "./routes/n8n-webhook.routes";
 // Middleware de upload configurável
 // import { processMultipleReservations } from "./controllers/ocr-fixed.controller";
 import * as budgetController from "./controllers/budget.controller";
