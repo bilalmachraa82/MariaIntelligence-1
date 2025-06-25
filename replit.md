@@ -117,12 +117,19 @@ Maria Faz is an intelligent property management system designed for Portuguese h
 ### Current Limitations
 - **Database**: PostgreSQL on Replit has scalability constraints
 - **Authentication**: No user authentication system implemented
-- **OCR Complexity**: Multiple AI providers create unnecessary complexity
+- **OCR Complexity**: Multiple AI providers create unnecessary complexity (n8n integration available as solution)
 - **Deployment**: Limited deployment options on current platform
+
+### n8n Integration
+- **New Feature**: Webhook-based PDF processing via n8n workflow
+- **Benefits**: Simplified architecture, visual debugging, better reliability
+- **Status**: Implemented and ready for testing at `/n8n-test`
+- **Migration Path**: Can gradually replace current complex OCR system
 
 ## Changelog
 
 - June 25, 2025. Initial setup
+- June 25, 2025. Implemented n8n webhook integration for PDF processing
 
 ## User Preferences
 

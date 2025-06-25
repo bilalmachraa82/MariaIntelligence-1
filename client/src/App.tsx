@@ -223,6 +223,9 @@ function Router() {
       <Route path="/orcamentos/:id/editar" component={QuotationEditPage} />
       <Route path="/orcamentos/:id" component={QuotationDetailPage} />
       
+      {/* n8n Integration Test Page */}
+      <Route path="/n8n-test" component={N8nTest} />
+      
       {/* Página não encontrada */}
       <Route component={NotFound} />
     </Switch>

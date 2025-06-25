@@ -4130,6 +4130,9 @@ Return this EXACT JSON structure:
   
   // Registrar rotas do assistente de reservas com Gemini 2.5 Flash
   app.use('/api/reservation-assistant', reservationAssistantRouter);
+  
+  // Registrar rotas do webhook n8n
+  app.use('/api/n8n', n8nWebhookRouter);
 
   // Rotas de teste para desenvolvimento
   
