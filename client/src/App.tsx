@@ -65,6 +65,9 @@ import QuotationNewPage from "@/pages/quotations/new";
 import QuotationDetailPage from "@/pages/quotations/[id]";
 import QuotationEditPage from "@/pages/quotations/[id]/edit";
 
+// Import da página de teste n8n
+import N8nTest from "@/pages/N8nTest";
+
 // Aplicar sempre tema claro (dark mode removido)
 const initializeLightMode = () => {
   // Remove qualquer classe dark que possa existir
