@@ -16,12 +16,15 @@ const router = Router();
 const upload = multer({
   dest: 'uploads/',
   limits: {
-    fileSize: 10 * 1024 * 1024 // 10MB
+    fileSize: 10 * 1024 * 1024, // 10MB
+    fieldSize: 10 * 1024 * 1024
   },
   fileFilter: (req, file, cb) => {
-    if (file.mimetype === 'application/pdf') {
+    console.log(`📁 Arquivo recebido: ${file.originalname}, tipo: ${file.mimetype}`);
+    if (file.mimetype === 'application/pdf' || file.originalname.toLowerCase().endsWith('.pdf')) {
       cb(null, true);
     } else {
+      console.log(`❌ Tipo de arquivo rejeitado: ${file.mimetype}`);
       cb(new Error('Apenas arquivos PDF são permitidos'));
     }
   }

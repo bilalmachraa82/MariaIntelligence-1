@@ -75,7 +75,7 @@ export class ConsolidatedPDFProcessor {
         success: true,
         extractedData: enrichedData,
         validation,
-        propertyId,
+        propertyId: propertyId || undefined,
         message: `PDF processado com sucesso. Status: ${validation.status}`
       };
       
