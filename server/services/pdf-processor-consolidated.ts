@@ -166,8 +166,16 @@ Regras importantes:
         throw new Error(`Gemini API error: ${result.error?.message || 'Unknown error'}`);
       }
       
+      // Log da resposta completa para debug
+      console.log('🔍 Resposta completa do Gemini:', JSON.stringify(result, null, 2));
+      
       const generatedText = result.candidates?.[0]?.content?.parts?.[0]?.text;
       if (!generatedText) {
+        console.log('❌ Erro: Nenhum texto gerado pelo Gemini');
+        console.log('📊 Candidatos disponíveis:', result.candidates?.length || 0);
+        if (result.candidates?.[0]) {
+          console.log('📄 Primeiro candidato:', JSON.stringify(result.candidates[0], null, 2));
+        }
         throw new Error('Nenhum conteúdo retornado pelo Gemini');
       }
       
