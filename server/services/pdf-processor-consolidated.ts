@@ -176,9 +176,17 @@ Regras importantes:
         console.log('🚫 Razão de término:', result.candidates?.[0]?.finishReason);
         
         if (result.candidates?.[0]?.finishReason === 'MAX_TOKENS') {
-          console.log('⚠️ Limite de tokens atingido - tentando com texto menor');
-          // Tentar novamente com menos texto
-          return await this.parseWithGemini(text.substring(0, 1500));
+          console.log(`⚠️ Limite de tokens atingido na tentativa ${attempt}`);
+          
+          if (attempt >= 3) {
+            console.log('❌ Máximo de tentativas atingido - falha na extração');
+            throw new Error('MAX_TOKENS - Limite de tentativas excedido');
+          }
+          
+          // Reduzir significativamente o texto para a próxima tentativa
+          const newLength = Math.max(500, Math.floor(text.length / (attempt + 1)));
+          console.log(`🔄 Tentativa ${attempt + 1}: reduzindo texto para ${newLength} caracteres`);
+          return await this.parseWithGemini(text.substring(0, newLength), attempt + 1);
         }
         
         if (result.candidates?.[0]) {
@@ -187,13 +195,34 @@ Regras importantes:
         throw new Error('Nenhum conteúdo retornado pelo Gemini');
       }
       
-      // Extrair JSON da resposta
-      const jsonMatch = generatedText.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) {
-        throw new Error('Nenhum JSON válido encontrado na resposta');
+      // Extrair JSON da resposta (completo ou parcial)
+      let jsonText = generatedText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      
+      // Se não é um JSON válido completo, tentar completar com dados básicos
+      if (!jsonText.startsWith('{') || !jsonText.endsWith('}')) {
+        // Encontrar apenas a parte JSON
+        const jsonStart = jsonText.indexOf('{');
+        if (jsonStart !== -1) {
+          jsonText = jsonText.substring(jsonStart);
+          // Se não termina com }, tentar completar
+          if (!jsonText.endsWith('}')) {
+            jsonText = jsonText + '"}';
+          }
+        } else {
+          throw new Error('Nenhum JSON encontrado na resposta');
+        }
       }
       
-      const parsedData = JSON.parse(jsonMatch[0]);
+      let parsedData;
+      try {
+        parsedData = JSON.parse(jsonText);
+      } catch (parseError) {
+        console.log('🔧 Tentando reparar JSON incompleto...');
+        // Tentar reparar JSON incompleto
+        const repairedJson = this.repairIncompleteJson(jsonText);
+        parsedData = JSON.parse(repairedJson);
+      }
+      
       console.log('✅ Dados estruturados extraídos:', parsedData);
       
       return parsedData;
@@ -270,6 +299,38 @@ Regras importantes:
     };
   }
   
+  /**
+   * Repara JSON incompleto truncado pelo limite de tokens
+   */
+  private repairIncompleteJson(jsonText: string): string {
+    // Remove trailing commas e caracteres soltos
+    let cleaned = jsonText.trim();
+    
+    // Se termina com vírgula, remove
+    if (cleaned.endsWith(',')) {
+      cleaned = cleaned.slice(0, -1);
+    }
+    
+    // Se termina com : ou ", adiciona valor placeholder e fecha
+    if (cleaned.endsWith(':')) {
+      cleaned = cleaned + ' ""';
+    } else if (cleaned.endsWith('"')) {
+      // Se a última linha parece ser uma chave incompleta, adiciona valor
+      const lines = cleaned.split('\n');
+      const lastLine = lines[lines.length - 1].trim();
+      if (lastLine.includes(':') && !lastLine.includes('"')) {
+        cleaned = cleaned + '""';
+      }
+    }
+    
+    // Garantir que termina com }
+    if (!cleaned.endsWith('}')) {
+      cleaned = cleaned + '}';
+    }
+    
+    return cleaned;
+  }
+
   /**
    * Encontra propriedade correspondente na base de dados
    */
