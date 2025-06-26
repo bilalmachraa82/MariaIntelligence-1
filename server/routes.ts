@@ -4133,6 +4133,10 @@ Return this EXACT JSON structure:
   
   // Registrar rotas do webhook n8n
   app.use('/api/n8n', n8nWebhookRouter);
+  
+  // Registrar rotas simplificadas de PDF
+  const pdfRouter = await import('./routes/pdf-upload-simplified.routes');
+  app.use('/api/pdf', pdfRouter.default);
 
   // Rotas de teste para desenvolvimento
   
