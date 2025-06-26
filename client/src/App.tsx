@@ -18,6 +18,7 @@ import ReservationNewPage from "@/pages/reservations/new";
 import ReportsPage from "@/pages/reports";
 import SettingsPage from "@/pages/settings";
 import DocumentScanPage from "@/pages/pdf-upload";
+import TestConsolidatedPdf from "@/pages/test-consolidated-pdf";
 import SimpleOCR from "@/pages/SimpleOCR";
 import MultiOCR from "@/pages/MultiOCR";
 import AssistantPage from "@/pages/assistant";
@@ -132,6 +133,7 @@ function Router() {
       <Route path="/upload-pdf" component={() => <ProtectedRoute component={DocumentScanPage} />} />
       <Route path="/scan" component={() => <ProtectedRoute component={DocumentScanPage} />} />
       <Route path="/pdf-upload" component={() => <ProtectedRoute component={DocumentScanPage} />} />
+      <Route path="/test-consolidated-pdf" component={() => <ProtectedRoute component={TestConsolidatedPdf} />} />
       <Route path="/simple-ocr" component={() => <ProtectedRoute component={SimpleOCR} />} />
 
       <Route path="/ocr" component={() => <ProtectedRoute component={MultiOCR} />} />

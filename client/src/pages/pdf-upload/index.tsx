@@ -1,7 +1,9 @@
 import { UploadPDF } from "@/components/dashboard/upload-pdf";
+import { ConsolidatedPdfUpload } from "@/components/ConsolidatedPdfUpload";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { FileUp } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FileUp, Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export default function DocumentScanPage() {
@@ -41,7 +43,26 @@ export default function DocumentScanPage() {
           </div>
         </CardHeader>
         <CardContent className="px-6 pb-6">
-          <UploadPDF />
+          <Tabs defaultValue="consolidated" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="consolidated" className="flex items-center gap-2">
+                <Zap className="h-4 w-4" />
+                Sistema Consolidado
+              </TabsTrigger>
+              <TabsTrigger value="legacy" className="flex items-center gap-2">
+                <FileUp className="h-4 w-4" />
+                Sistema Anterior
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="consolidated" className="mt-6">
+              <ConsolidatedPdfUpload />
+            </TabsContent>
+            
+            <TabsContent value="legacy" className="mt-6">
+              <UploadPDF />
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
       
