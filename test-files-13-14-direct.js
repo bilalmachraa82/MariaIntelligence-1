@@ -2,8 +2,8 @@
  * Script para testar diretamente os arquivos file(13) e file(14)
  * com debugging detalhado do processamento Gemini
  */
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 async function extractTextFromPDF(filePath) {
   try {

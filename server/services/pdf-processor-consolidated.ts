@@ -109,7 +109,7 @@ export class ConsolidatedPDFProcessor {
   /**
    * Usa Gemini para estruturar dados de reserva
    */
-  private async parseWithGemini(text: string): Promise<ExtractedReservationData | null> {
+  private async parseWithGemini(text: string, attempt: number = 1): Promise<ExtractedReservationData | null> {
     try {
       // Verificar se Gemini está disponível
       if (!process.env.GOOGLE_API_KEY) {
@@ -119,8 +119,8 @@ export class ConsolidatedPDFProcessor {
       const prompt = `
 Analise este documento de reserva e extraia as informações no formato JSON.
 
-TEXTO DO DOCUMENTO:
-${text}
+TEXTO DO DOCUMENTO (excerto):
+${text.substring(0, 2500)}
 
 Retorne apenas um JSON válido com esta estrutura:
 {
@@ -155,7 +155,7 @@ Regras importantes:
           }],
           generationConfig: {
             temperature: 0.1,
-            maxOutputTokens: 1000
+            maxOutputTokens: 2048
           }
         })
       });
@@ -173,6 +173,14 @@ Regras importantes:
       if (!generatedText) {
         console.log('❌ Erro: Nenhum texto gerado pelo Gemini');
         console.log('📊 Candidatos disponíveis:', result.candidates?.length || 0);
+        console.log('🚫 Razão de término:', result.candidates?.[0]?.finishReason);
+        
+        if (result.candidates?.[0]?.finishReason === 'MAX_TOKENS') {
+          console.log('⚠️ Limite de tokens atingido - tentando com texto menor');
+          // Tentar novamente com menos texto
+          return await this.parseWithGemini(text.substring(0, 1500));
+        }
+        
         if (result.candidates?.[0]) {
           console.log('📄 Primeiro candidato:', JSON.stringify(result.candidates[0], null, 2));
         }
