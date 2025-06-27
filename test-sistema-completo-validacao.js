@@ -7,8 +7,8 @@
  * 3. Prompts otimizados (redução de tokens)
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 async function testSystemValidation() {
   console.log('🚀 TESTE COMPLETO DE VALIDAÇÃO - CORREÇÕES PARA 100%');

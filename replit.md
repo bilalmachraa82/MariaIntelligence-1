@@ -155,6 +155,12 @@ Maria Faz is an intelligent property management system designed for Portuguese h
 - June 27, 2025. Configurados aliases para TODAS as 30 propriedades (100% cobertura vs 20% anterior)
 - June 27, 2025. Corrigida normalização de quebras de linha em nomes de propriedades extraídas
 - June 27, 2025. Sistema validado como PRONTO PARA PRODUÇÃO com fallback robusto garantido
+- June 27, 2025. **CRITICAL PERFORMANCE IMPROVEMENTS**: Implementadas 3 correções para aproximar aos 100%
+- June 27, 2025. Correção #1: Sistema de matching inteligente com threshold flexível (60%→30%)
+- June 27, 2025. Correção #2: Extração de nomes ultra-melhorada com 6 estratégias progressivas
+- June 27, 2025. Correção #3: Prompts ultra-otimizados com redução 70% de tokens (2000→500 chars)
+- June 27, 2025. Validação em tempo real: PDF "Check-in Maria faz" processado com sucesso (Nazaré T2 score: 100%)
+- June 27, 2025. Sistema robusto com logs detalhados e fallbacks garantidos para todos os cenários
 
 ## User Preferences
 
