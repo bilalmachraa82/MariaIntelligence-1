@@ -3,200 +3,207 @@
  * Identifica lacunas específicas e erros encontrados no sistema
  */
 
-import fetch from 'node-fetch';
-
-const BASE_URL = 'http://localhost:5000';
-
 async function analisarProblemasEspecificos() {
-  console.log('🔍 ANÁLISE DETALHADA DOS 6.7% RESTANTES PARA 100%');
-  console.log('=' .repeat(50));
+  console.log('🔍 ANÁLISE DETALHADA PARA 100%');
+  console.log('=============================');
   
+  // 1. Obter estado atual
+  const response = await fetch('http://localhost:5000/api/activities');
+  const data = await response.json();
+  const atividades = data.activities;
+  
+  const total = atividades.length;
+  const comPropriedade = atividades.filter(a => a.entityId !== null).length;
+  const semPropriedade = atividades.filter(a => a.entityId === null).length;
+  const scoreAtual = ((comPropriedade / total) * 100).toFixed(1);
+  
+  console.log(`📊 ESTADO ATUAL:`);
+  console.log(`   Total: ${total} atividades`);
+  console.log(`   ✅ Com propriedade: ${comPropriedade}`);
+  console.log(`   ❌ Sem propriedade: ${semPropriedade}`);
+  console.log(`   📈 Score atual: ${scoreAtual}%`);
+  
+  // 2. Analisar atividades órfãs detalhadamente
+  console.log('\n🔍 ANÁLISE DAS ATIVIDADES ÓRFÃS:');
+  const orfas = atividades.filter(a => a.entityId === null);
+  
+  const padroes = {};
+  orfas.forEach(atividade => {
+    const desc = atividade.description || '';
+    console.log(`   📝 ID ${atividade.id}: "${desc}"`);
+    
+    // Extrair padrões
+    const match = desc.match(/(.+?)\s*-\s*(.+)/);
+    if (match) {
+      const [, possivel_hospede, possivel_propriedade] = match;
+      const propriedade = possivel_propriedade.trim();
+      
+      if (!padroes[propriedade]) {
+        padroes[propriedade] = { count: 0, exemplos: [] };
+      }
+      padroes[propriedade].count++;
+      padroes[propriedade].exemplos.push({
+        id: atividade.id,
+        hospede: possivel_hospede.trim(),
+        desc
+      });
+    }
+  });
+  
+  // 3. Identificar problemas por padrão
+  console.log('\n📋 PADRÕES IDENTIFICADOS:');
   const problemas = [];
-  const recomendacoes = [];
   
-  // 1. Verificar logs de erro recentes
-  console.log('\n📊 ANÁLISE DE LOGS DE ERRO:');
-  
-  // Baseado nos logs observados
-  problemas.push({
-    categoria: 'Extração de Nomes',
-    problema: 'Alguns hóspedes aparecem como "Hóspede desconhecido"',
-    impacto: '10%',
-    exemplo: 'Nazaré T2 processada mas nome incompleto'
-  });
-  
-  problemas.push({
-    categoria: 'Limite de Tokens AI',
-    problema: 'Alguns PDFs atingem MAX_TOKENS mesmo com 3 tentativas',
-    impacto: '15%',
-    exemplo: 'control2.pdf atingiu limite em todas as tentativas'
-  });
-  
-  problemas.push({
-    categoria: 'Matching de Propriedades',
-    problema: 'Quebras de linha ainda causam problema em alguns casos',
-    impacto: '5%',
-    exemplo: '"São João\\nBatista T3" score baixo (44.2%)'
-  });
-  
-  // 2. Analisar dados da base de dados
-  try {
-    const activitiesRes = await fetch(`${BASE_URL}/api/activities`);
-    const activities = await activitiesRes.json();
+  for (const [propriedade, info] of Object.entries(padroes)) {
+    console.log(`\n🏠 "${propriedade}" (${info.count} atividades):`);
+    info.exemplos.forEach(ex => {
+      console.log(`   - ID ${ex.id}: ${ex.hospede}`);
+    });
     
-    console.log(`\n📝 ANÁLISE DE ${activities.activities?.length || 0} ATIVIDADES:`);
-    
-    let processamentosComSucesso = 0;
-    let processamentosComProblemas = 0;
-    let propriedadesNaoEncontradas = 0;
-    
-    if (activities.activities) {
-      activities.activities.forEach(activity => {
-        if (activity.type === 'pdf_processed') {
-          if (activity.entityId === null) {
-            propriedadesNaoEncontradas++;
-            processamentosComProblemas++;
-          } else if (activity.description.includes('desconhecido')) {
-            processamentosComProblemas++;
-          } else {
-            processamentosComSucesso++;
-          }
-        }
-      });
-    }
-    
-    console.log(`   ✅ Processamentos bem-sucedidos: ${processamentosComSucesso}`);
-    console.log(`   ⚠️ Processamentos com problemas: ${processamentosComProblemas}`);
-    console.log(`   ❌ Propriedades não encontradas: ${propriedadesNaoEncontradas}`);
-    
-    if (propriedadesNaoEncontradas > 0) {
-      problemas.push({
-        categoria: 'Matching de Propriedades',
-        problema: `${propriedadesNaoEncontradas} propriedades não identificadas`,
-        impacto: '20%',
-        exemplo: 'entityId: null em atividades'
-      });
-    }
-    
-  } catch (error) {
-    console.log(`❌ Erro ao analisar atividades: ${error.message}`);
+    problemas.push({
+      propriedade,
+      count: info.count,
+      exemplos: info.exemplos,
+      tipo: classificarProblema(propriedade)
+    });
   }
   
-  // 3. Identificar melhorias específicas
-  console.log('\n🎯 PROBLEMAS IDENTIFICADOS E IMPACTO:');
-  problemas.forEach((p, i) => {
-    console.log(`${i + 1}. [${p.categoria}] ${p.problema}`);
-    console.log(`   Impacto: ${p.impacto} | Exemplo: ${p.exemplo}`);
+  // 4. Calcular soluções específicas
+  console.log('\n🎯 SOLUÇÕES IDENTIFICADAS:');
+  const solucoes = calcularSolucoesParaProblemas(problemas);
+  
+  let potencialMelhoria = 0;
+  solucoes.forEach(sol => {
+    console.log(`\n${sol.icone} ${sol.titulo}:`);
+    console.log(`   📊 Impact: +${sol.impacto} atividades (+${sol.percentual}%)`);
+    console.log(`   🔧 Ação: ${sol.acao}`);
+    console.log(`   ⏱️ Tempo: ${sol.tempo}`);
+    potencialMelhoria += sol.impacto;
   });
   
-  return problemas;
+  // 5. Cálculo para 100%
+  const scoreProjetado = ((comPropriedade + potencialMelhoria) / total * 100).toFixed(1);
+  const restante = total - (comPropriedade + potencialMelhoria);
+  
+  console.log('\n🏆 PROJEÇÃO PARA 100%:');
+  console.log(`   📈 Score atual: ${scoreAtual}%`);
+  console.log(`   🎯 Score com soluções: ${scoreProjetado}%`);
+  console.log(`   📊 Melhoria potencial: +${potencialMelhoria} atividades`);
+  console.log(`   ❓ Restantes não resolvidos: ${restante}`);
+  
+  if (restante === 0) {
+    console.log('\n🌟 EXCELENTE! Todas as atividades podem ser resolvidas!');
+  } else if (restante <= 2) {
+    console.log('\n✅ MUITO BOM! Quase todas as atividades resolvidas!');
+  } else {
+    console.log(`\n⚠️ ${restante} atividades precisarão de investigação manual`);
+  }
+  
+  // 6. Priorização de ações
+  console.log('\n📋 PLANO DE AÇÃO PRIORIZADO:');
+  const acoesPriorizadas = priorizarAcoes(solucoes);
+  acoesPriorizadas.forEach((acao, i) => {
+    console.log(`   ${i+1}. ${acao.titulo} (${acao.impacto} atividades, ${acao.tempo})`);
+  });
+  
+  return {
+    scoreAtual: parseFloat(scoreAtual),
+    scoreProjetado: parseFloat(scoreProjetado),
+    potencialMelhoria,
+    restante,
+    problemas,
+    solucoes,
+    acoesPriorizadas
+  };
+}
+
+function classificarProblema(propriedade) {
+  const prop = propriedade.toLowerCase();
+  
+  if (prop.includes('propriedade desconhecida')) return 'PROPRIEDADE_DESCONHECIDA';
+  if (prop.includes('almada')) return 'ALIAS_FALTANDO';
+  if (prop.includes('a203') || prop.includes('t3') || prop.includes('t2')) return 'CODIGO_PROPRIEDADE';
+  if (prop.includes('todos') || prop.includes('edif')) return 'NOME_AMBIGUO';
+  
+  return 'OUTROS';
 }
 
 function calcularSolucoesParaProblemas(problemas) {
-  console.log('\n🔧 SOLUÇÕES ESPECÍFICAS PARA CHEGAR A 100%:');
+  const solucoes = [];
   
-  const solucoes = [
-    {
-      problema: 'Extração de Nomes Incompletos',
-      solucao: 'Melhorar regex de extração manual para capturar nomes completos',
-      implementacao: 'Adicionar padrões para nomes com acentos e múltiplas palavras',
-      tempo: '30 minutos',
-      impacto: '+3%'
-    },
-    {
-      problema: 'Limite de Tokens MAX_TOKENS',
-      solucao: 'Otimizar prompts e implementar chunking de texto',
-      implementacao: 'Dividir PDFs grandes em seções menores',
-      tempo: '45 minutos',
-      impacto: '+2%'
-    },
-    {
-      problema: 'Matching com Quebras de Linha',
-      solucao: 'Aplicar normalização em mais pontos do código',
-      implementacao: 'Normalizar antes de todas as comparações',
-      tempo: '15 minutos',
-      impacto: '+1.7%'
-    }
-  ];
-  
-  solucoes.forEach((s, i) => {
-    console.log(`\n${i + 1}. SOLUÇÃO: ${s.solucao}`);
-    console.log(`   Problema: ${s.problema}`);
-    console.log(`   Como fazer: ${s.implementacao}`);
-    console.log(`   Tempo estimado: ${s.tempo}`);
-    console.log(`   Impacto esperado: ${s.impacto}`);
+  // Agrupar por tipo de problema
+  const porTipo = {};
+  problemas.forEach(p => {
+    if (!porTipo[p.tipo]) porTipo[p.tipo] = [];
+    porTipo[p.tipo].push(p);
   });
   
-  const impactoTotal = solucoes.reduce((acc, s) => {
-    return acc + parseFloat(s.impacto.replace('%', '').replace('+', ''));
-  }, 0);
+  // Solução 1: Aliases estratégicos
+  if (porTipo.ALIAS_FALTANDO || porTipo.CODIGO_PROPRIEDADE) {
+    const count = (porTipo.ALIAS_FALTANDO?.reduce((a,b) => a + b.count, 0) || 0) +
+                  (porTipo.CODIGO_PROPRIEDADE?.reduce((a,b) => a + b.count, 0) || 0);
+    
+    solucoes.push({
+      icone: '🔗',
+      titulo: 'Adicionar aliases para códigos de propriedades',
+      impacto: count,
+      percentual: (count * 2.94).toFixed(1), // baseado em 34 total
+      acao: 'UPDATE properties SET aliases = aliases || \'{"novo_alias"}\' WHERE...',
+      tempo: '30 min',
+      prioridade: 1
+    });
+  }
   
-  console.log(`\n📊 IMPACTO TOTAL DAS SOLUÇÕES: +${impactoTotal}%`);
-  console.log(`🎯 SCORE PROJETADO: 93.3% + ${impactoTotal}% = ${(93.3 + impactoTotal).toFixed(1)}%`);
+  // Solução 2: Investigação manual
+  if (porTipo.PROPRIEDADE_DESCONHECIDA) {
+    const count = porTipo.PROPRIEDADE_DESCONHECIDA.reduce((a,b) => a + b.count, 0);
+    
+    solucoes.push({
+      icone: '🔍',
+      titulo: 'Investigar "Propriedade desconhecida"',
+      impacto: Math.floor(count * 0.7), // 70% de sucesso estimado
+      percentual: (Math.floor(count * 0.7) * 2.94).toFixed(1),
+      acao: 'Analisar PDFs originais manualmente',
+      tempo: '1-2 horas',
+      prioridade: 2
+    });
+  }
+  
+  // Solução 3: Processar PDFs restantes
+  solucoes.push({
+    icone: '📄',
+    titulo: 'Processar PDFs restantes (16 arquivos)',
+    impacto: 8, // estimativa conservadora
+    percentual: (8 * 2.94).toFixed(1),
+    acao: 'node processar-pdfs-restantes.js',
+    tempo: '2-3 horas',
+    prioridade: 3
+  });
   
   return solucoes;
 }
 
 function priorizarAcoes(solucoes) {
-  console.log('\n🚀 PLANO DE AÇÃO PRIORIZADO:');
-  
-  const prioridades = [
-    {
-      ordem: 1,
-      acao: 'Corrigir normalização de quebras de linha',
-      justificativa: 'Baixo esforço, alto impacto imediato',
-      codigo: 'Aplicar .replace(/\\n/g, " ") em mais pontos'
-    },
-    {
-      ordem: 2,
-      acao: 'Melhorar regex de extração de nomes',
-      justificativa: 'Resolve problema de "Hóspede desconhecido"',
-      codigo: 'Expandir padrões para nomes complexos'
-    },
-    {
-      ordem: 3,
-      acao: 'Implementar chunking para PDFs grandes',
-      justificativa: 'Resolve problemas de limite de tokens',
-      codigo: 'Dividir texto em chunks menores'
-    }
-  ];
-  
-  prioridades.forEach(p => {
-    console.log(`${p.ordem}. ${p.acao}`);
-    console.log(`   Por quê: ${p.justificativa}`);
-    console.log(`   Implementação: ${p.codigo}\n`);
+  return solucoes.sort((a, b) => {
+    // Priorizar por impacto/tempo
+    const ratioA = a.impacto / parseFloat(a.tempo.match(/\d+/)[0]);
+    const ratioB = b.impacto / parseFloat(b.tempo.match(/\d+/)[0]);
+    return ratioB - ratioA;
   });
-  
-  return prioridades;
 }
 
 async function executarAnalise() {
-  console.log('🚀 ANÁLISE PARA OS 6.7% FINAIS ATÉ 100%\n');
-  
-  const problemas = await analisarProblemasEspecificos();
-  const solucoes = calcularSolucoesParaProblemas(problemas);
-  const prioridades = priorizarAcoes(solucoes);
-  
-  console.log('📋 RESUMO EXECUTIVO:');
-  console.log('=' .repeat(30));
-  console.log('• Score atual: 93.3%');
-  console.log('• Meta: 100%');
-  console.log('• Gap: 6.7%');
-  console.log('• Problemas identificados: 3 principais');
-  console.log('• Soluções viáveis: 3 implementações');
-  console.log('• Tempo total estimado: 90 minutos');
-  console.log('• Probabilidade de sucesso: 95%');
-  
-  console.log('\n✅ ANÁLISE COMPLETA - PRONTO PARA IMPLEMENTAR SOLUÇÕES');
-  
-  return {
-    problemas,
-    solucoes,
-    prioridades,
-    scoreAtual: 93.3,
-    meta: 100,
-    gap: 6.7
-  };
+  try {
+    const resultado = await analisarProblemasEspecificos();
+    
+    console.log('\n✅ ANÁLISE COMPLETA!');
+    console.log(`🎯 Para chegar a 100%: resolver ${resultado.restante} atividades restantes`);
+    
+    return resultado;
+  } catch (error) {
+    console.error('❌ Erro na análise:', error);
+  }
 }
 
-executarAnalise().catch(console.error);
+// Executar análise
+executarAnalise();

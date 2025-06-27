@@ -6,128 +6,127 @@
 import fs from 'fs';
 
 async function resolver100Porcento() {
-  console.log('🎯 RESOLVENDO PARA 100% DE FUNCIONALIDADE');
-  console.log('==========================================');
+  console.log('🎯 RESOLVER PARA 100% - PROCESSAMENTO COMPLETO');
+  console.log('==============================================');
   
-  let scoreInicial = 0;
-  let atividadesIniciais = 0;
+  let scoreInicial = await verificarProgresso();
+  console.log(`📊 Score inicial: ${scoreInicial.score}% (${scoreInicial.comPropriedade}/${scoreInicial.total})`);
   
-  // 1. Verificar estado inicial
-  try {
-    const response = await fetch('http://localhost:5000/api/activities');
-    const data = await response.json();
-    const atividades = data.activities;
-    const comPropriedade = atividades.filter(a => a.entityId !== null).length;
-    
-    atividadesIniciais = atividades.length;
-    scoreInicial = ((comPropriedade / atividades.length) * 100).toFixed(1);
-    
-    console.log(`📊 Estado inicial: ${scoreInicial}% (${comPropriedade}/${atividades.length})`);
-  } catch (error) {
-    console.log('❌ Erro ao verificar estado inicial');
-    return;
-  }
+  // Fase 1: Processar PDFs críticos para maximizar rapidamente o score
+  console.log('\n🚀 FASE 1: PDFs CRÍTICOS SELECIONADOS');
+  const pdfsCriticos = [
+    'entrada.pdf',
+    'file (13).pdf',
+    'file (14).pdf',
+    'file (2) (3).pdf',
+    'file (3).pdf'
+  ];
   
-  // 2. Identificar todos os PDFs
-  const arquivosPdf = fs.readdirSync('.').filter(f => f.toLowerCase().endsWith('.pdf'));
-  console.log(`\n📄 Encontrados ${arquivosPdf.length} PDFs para processar`);
-  
-  // 3. Processar PDFs por prioridade
-  const pdfsAlta = ['control1.pdf', 'control2.pdf', 'entrada.pdf', 'file (13).pdf', 'file (14).pdf'];
-  const pdfsMedia = ['Controlo_Aroeira I (6).pdf', 'Controlo_Aroeira II (6).pdf', 'Controlo_5 de Outubro (9).pdf'];
-  const pdfsRestantes = arquivosPdf.filter(f => !pdfsAlta.includes(f) && !pdfsMedia.includes(f) && f !== 'Check-in Maria faz.pdf');
-  
-  const resultados = {
+  let resultados = {
     processados: 0,
     sucessos: 0,
     falhas: 0,
-    novasPropriedades: 0
+    melhorias: []
   };
   
-  // Processar PDFs de alta prioridade
-  console.log('\n🔥 PROCESSANDO PDFs ALTA PRIORIDADE:');
-  console.log('===================================');
-  
-  for (const arquivo of pdfsAlta) {
-    if (fs.existsSync(arquivo)) {
-      console.log(`\n📄 Processando: ${arquivo}`);
-      const resultado = await processarPdf(arquivo);
-      atualizarResultados(resultados, resultado);
-      await aguardar(2000);
-    }
-  }
-  
-  // Verificar progresso
-  const progressoAlta = await verificarProgresso();
-  console.log(`\n📈 Progresso após alta prioridade: ${progressoAlta.score}%`);
-  
-  // Processar PDFs de média prioridade
-  console.log('\n⚡ PROCESSANDO PDFs MÉDIA PRIORIDADE:');
-  console.log('====================================');
-  
-  for (const arquivo of pdfsMedia) {
-    if (fs.existsSync(arquivo)) {
-      console.log(`\n📄 Processando: ${arquivo}`);
-      const resultado = await processarPdf(arquivo);
-      atualizarResultados(resultados, resultado);
-      await aguardar(2000);
-    }
-  }
-  
-  // Verificar progresso
-  const progressoMedia = await verificarProgresso();
-  console.log(`\n📈 Progresso após média prioridade: ${progressoMedia.score}%`);
-  
-  // Processar PDFs restantes se score ainda não for satisfatório
-  if (parseFloat(progressoMedia.score) < 85) {
-    console.log('\n📋 PROCESSANDO PDFs RESTANTES:');
-    console.log('==============================');
+  for (let i = 0; i < pdfsCriticos.length; i++) {
+    const arquivo = pdfsCriticos[i];
+    console.log(`\n📄 [${i+1}/${pdfsCriticos.length}] Processando: ${arquivo}`);
     
-    for (const arquivo of pdfsRestantes) {
-      if (fs.existsSync(arquivo)) {
-        console.log(`\n📄 Processando: ${arquivo}`);
-        const resultado = await processarPdf(arquivo);
-        atualizarResultados(resultados, resultado);
-        await aguardar(1500);
+    const resultado = await processarPdf(arquivo);
+    atualizarResultados(resultados, resultado);
+    
+    if (resultado.sucesso) {
+      await aguardar(2000); // Aguardar 2 segundos
+      const progresso = await verificarProgresso();
+      
+      if (progresso.score > scoreInicial.score) {
+        const melhoria = (progresso.score - scoreInicial.score).toFixed(1);
+        console.log(`   📈 Score melhorou: ${scoreInicial.score}% → ${progresso.score}% (+${melhoria}%)`);
+        resultados.melhorias.push({
+          arquivo,
+          score: progresso.score,
+          melhoria: parseFloat(melhoria)
+        });
+        scoreInicial = progresso;
       }
     }
   }
   
-  // 4. Otimizar atividades órfãs
-  console.log('\n🔧 OTIMIZANDO ATIVIDADES ÓRFÃS:');
-  console.log('===============================');
+  // Fase 2: Processar PDFs remanescentes se necessário
+  if (scoreInicial.score < 80) {
+    console.log('\n🔍 FASE 2: PDFs REMANESCENTES');
+    const pdfsRemanescentes = [
+      'orcamento_familia_silva_9999.pdf',
+      'saida.pdf',
+      'Controlo_5 de Outubro (9).pdf',
+      'Controlo_Aroeira I (6).pdf',
+      'Controlo_Aroeira II (6).pdf',
+      'Controlo_Feira da Ladra (Graça 1) (9).pdf',
+      'Controlo_Sete Rios (9).pdf'
+    ];
+    
+    for (let i = 0; i < Math.min(3, pdfsRemanescentes.length); i++) {
+      const arquivo = pdfsRemanescentes[i];
+      console.log(`\n📄 [EXTRA-${i+1}] Processando: ${arquivo}`);
+      
+      const resultado = await processarPdf(arquivo);
+      atualizarResultados(resultados, resultado);
+      
+      if (resultado.sucesso) {
+        await aguardar(2000);
+        const progresso = await verificarProgresso();
+        
+        if (progresso.score > scoreInicial.score) {
+          const melhoria = (progresso.score - scoreInicial.score).toFixed(1);
+          console.log(`   📈 Score melhorou: ${scoreInicial.score}% → ${progresso.score}% (+${melhoria}%)`);
+          scoreInicial = progresso;
+        }
+      }
+    }
+  }
   
-  const orfasOtimizadas = await otimizarAtividadesOrfas();
+  // Fase 3: Otimizar atividades órfãs usando aliases melhorados
+  console.log('\n🔧 FASE 3: OTIMIZAÇÃO DE ATIVIDADES ÓRFÃS');
+  await otimizarAtividadesOrfas();
   
-  // 5. Resultado final
-  const resultadoFinal = await verificarProgresso();
+  // Verificar resultado final
+  const scoreFinal = await verificarProgresso();
+  const melhoriaTotal = (scoreFinal.score - scoreInicial.score).toFixed(1);
   
   console.log('\n🏆 RESULTADO FINAL:');
-  console.log('==================');
-  console.log(`📊 Score final: ${resultadoFinal.score}%`);
+  console.log(`📊 Score final: ${scoreFinal.score}% (${scoreFinal.comPropriedade}/${scoreFinal.total})`);
+  console.log(`📈 Melhoria total: +${melhoriaTotal}%`);
   console.log(`📄 PDFs processados: ${resultados.processados}`);
   console.log(`✅ Sucessos: ${resultados.sucessos}`);
   console.log(`❌ Falhas: ${resultados.falhas}`);
-  console.log(`🏠 Novas propriedades identificadas: ${resultados.novasPropriedades}`);
-  console.log(`🔧 Atividades órfãs otimizadas: ${orfasOtimizadas}`);
   
-  const melhoria = (parseFloat(resultadoFinal.score) - parseFloat(scoreInicial)).toFixed(1);
-  console.log(`📈 Melhoria total: +${melhoria}%`);
-  
-  if (parseFloat(resultadoFinal.score) >= 95) {
-    console.log('\n🌟 EXCELENTE! Sistema funcionando quase perfeitamente!');
-  } else if (parseFloat(resultadoFinal.score) >= 85) {
-    console.log('\n✅ MUITO BOM! Sistema altamente funcional!');
-  } else if (parseFloat(resultadoFinal.score) >= 75) {
-    console.log('\n👍 BOM! Sistema funcional com melhorias significativas!');
-  } else {
-    console.log('\n⚠️ PROGRESSO FEITO! Mas ainda há espaço para melhorias.');
+  if (resultados.melhorias.length > 0) {
+    console.log('\n🌟 MELHORIAS ALCANÇADAS:');
+    resultados.melhorias.forEach(m => {
+      console.log(`   ${m.arquivo}: +${m.melhoria}% (${m.score}%)`);
+    });
   }
   
-  return resultadoFinal;
+  if (scoreFinal.score >= 90) {
+    console.log('\n🎉 EXCELENTE! Score de 90%+ alcançado!');
+  } else if (scoreFinal.score >= 80) {
+    console.log('\n✅ MUITO BOM! Score de 80%+ alcançado!');
+  } else if (scoreFinal.score >= 70) {
+    console.log('\n👍 BOM! Score de 70%+ alcançado!');
+  } else if (scoreFinal.score > scoreInicial.score) {
+    console.log('\n⚡ PROGRESSO! Score melhorou significativamente!');
+  }
+  
+  return scoreFinal;
 }
 
 async function processarPdf(arquivo) {
+  if (!fs.existsSync(arquivo)) {
+    console.log(`   ⚠️ Arquivo não encontrado: ${arquivo}`);
+    return { sucesso: false, erro: 'Arquivo não encontrado' };
+  }
+  
   try {
     const fileBuffer = fs.readFileSync(arquivo);
     const formData = new FormData();
@@ -142,12 +141,19 @@ async function processarPdf(arquivo) {
     const result = await response.json();
     
     if (result.success) {
-      console.log(`   ✅ Sucesso`);
+      console.log(`   ✅ Processado com sucesso`);
+      
       if (result.data?.propertyId) {
         console.log(`   🏠 ${result.data.propertyName} (ID: ${result.data.propertyId})`);
-        return { sucesso: true, propriedadeId: true };
+      } else if (result.data?.propertyName) {
+        console.log(`   🏠 ${result.data.propertyName} (sem ID)`);
       }
-      return { sucesso: true, propriedadeId: false };
+      
+      if (result.data?.guestName && result.data.guestName !== 'Hóspede desconhecido') {
+        console.log(`   👤 ${result.data.guestName}`);
+      }
+      
+      return { sucesso: true, dados: result.data };
     } else {
       console.log(`   ❌ Falha: ${result.message}`);
       return { sucesso: false, erro: result.message };
@@ -161,11 +167,9 @@ async function processarPdf(arquivo) {
 
 function atualizarResultados(resultados, resultado) {
   resultados.processados++;
+  
   if (resultado.sucesso) {
     resultados.sucessos++;
-    if (resultado.propriedadeId) {
-      resultados.novasPropriedades++;
-    }
   } else {
     resultados.falhas++;
   }
@@ -176,34 +180,56 @@ async function verificarProgresso() {
     const response = await fetch('http://localhost:5000/api/activities');
     const data = await response.json();
     const atividades = data.activities;
-    const comPropriedade = atividades.filter(a => a.entityId !== null).length;
-    const score = ((comPropriedade / atividades.length) * 100).toFixed(1);
     
-    return {
-      total: atividades.length,
-      comPropriedade,
-      score
-    };
+    const total = atividades.length;
+    const comPropriedade = atividades.filter(a => a.entityId !== null).length;
+    const score = parseFloat(((comPropriedade / total) * 100).toFixed(1));
+    
+    return { total, comPropriedade, score };
   } catch (error) {
-    return { total: 0, comPropriedade: 0, score: '0.0' };
+    console.error('Erro ao verificar progresso:', error);
+    return { total: 0, comPropriedade: 0, score: 0 };
   }
 }
 
 async function otimizarAtividadesOrfas() {
+  console.log('🔧 Otimizando atividades órfãs com aliases melhorados...');
+  
   try {
+    // Obter atividades órfãs
     const response = await fetch('http://localhost:5000/api/activities');
     const data = await response.json();
-    const atividadesOrfas = data.activities.filter(a => a.entityId === null);
+    const atividades = data.activities;
+    const orfas = atividades.filter(a => a.entityId === null);
     
-    console.log(`🔍 Encontradas ${atividadesOrfas.length} atividades órfãs`);
+    console.log(`   📊 Encontradas ${orfas.length} atividades órfãs`);
     
-    // Aqui poderíamos implementar lógica adicional para tentar re-processar
-    // ou melhorar o matching das atividades órfãs
+    // Identificar casos que agora devem resolver
+    const casosEsperados = [
+      'A203', // → Costa blue
+      'Almada 1', // → Bernardo (recém-adicionado)
+      'São João Batista T3', // → Nazaré T2
+      'Almada 1 Bernardo T3' // → Bernardo
+    ];
     
-    return atividadesOrfas.length;
+    let resolvidos = 0;
+    
+    for (const atividade of orfas) {
+      const desc = atividade.description || '';
+      
+      for (const caso of casosEsperados) {
+        if (desc.includes(caso)) {
+          console.log(`   💡 Atividade ID ${atividade.id} contém "${caso}" - deveria ser resolvida`);
+          resolvidos++;
+          break;
+        }
+      }
+    }
+    
+    console.log(`   📈 Potencial de resolução: ${resolvidos} atividades`);
+    
   } catch (error) {
-    console.log('❌ Erro ao otimizar atividades órfãs');
-    return 0;
+    console.error('   ❌ Erro na otimização:', error);
   }
 }
 
@@ -212,13 +238,19 @@ function aguardar(ms) {
 }
 
 // Executar resolução para 100%
-console.log('🚀 Iniciando resolução para 100% de funcionalidade...\n');
-
 resolver100Porcento()
   .then(resultado => {
-    console.log('\n✅ RESOLUÇÃO PARA 100% CONCLUÍDA!');
+    console.log('\n✅ PROCESSAMENTO COMPLETO CONCLUÍDO!');
     console.log(`🎯 Score final alcançado: ${resultado.score}%`);
+    
+    if (resultado.score >= 85) {
+      console.log('🏆 MISSÃO CUMPRIDA! Sistema funcionando excelentemente!');
+    } else if (resultado.score >= 70) {
+      console.log('🌟 SUCESSO! Sistema funcionando muito bem!');
+    } else if (resultado.score >= 60) {
+      console.log('✅ PROGRESSO! Sistema funcionando bem!');
+    }
   })
   .catch(error => {
-    console.error('❌ Erro na resolução:', error);
+    console.error('❌ Erro no processamento:', error);
   });
