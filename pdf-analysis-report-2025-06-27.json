@@ -1,0 +1,334 @@
+{
+  "inventory": {
+    "existing": [
+      {
+        "path": "Check-in Maria faz.pdf",
+        "size": 76,
+        "modified": "2025-03-15"
+      },
+      {
+        "path": "Check-outs Maria faz.pdf",
+        "size": 76,
+        "modified": "2025-03-15"
+      },
+      {
+        "path": "Controlo_5 de Outubro (9).pdf",
+        "size": 99,
+        "modified": "2025-04-13"
+      },
+      {
+        "path": "Controlo_Aroeira I (6).pdf",
+        "size": 106,
+        "modified": "2025-04-13"
+      },
+      {
+        "path": "Controlo_Aroeira II (6).pdf",
+        "size": 95,
+        "modified": "2025-04-13"
+      },
+      {
+        "path": "Controlo_Feira da Ladra (Graça 1) (9).pdf",
+        "size": 137,
+        "modified": "2025-04-13"
+      },
+      {
+        "path": "Controlo_Sete Rios (9).pdf",
+        "size": 109,
+        "modified": "2025-04-13"
+      },
+      {
+        "path": "entrada.pdf",
+        "size": 67,
+        "modified": "2025-03-17"
+      },
+      {
+        "path": "saida.pdf",
+        "size": 70,
+        "modified": "2025-03-17"
+      },
+      {
+        "path": "file (13).pdf",
+        "size": 86,
+        "modified": "2025-05-25"
+      },
+      {
+        "path": "file (14).pdf",
+        "size": 86,
+        "modified": "2025-05-25"
+      },
+      {
+        "path": "file (2) (3).pdf",
+        "size": 79,
+        "modified": "2025-04-13"
+      },
+      {
+        "path": "file (3).pdf",
+        "size": 80,
+        "modified": "2025-04-13"
+      },
+      {
+        "path": "orcamento_familia_silva_9999.pdf",
+        "size": 9,
+        "modified": "2025-03-25"
+      },
+      {
+        "path": "attached_assets/Check-outs Maria faz.pdf",
+        "size": 76,
+        "modified": "2025-03-13"
+      },
+      {
+        "path": "attached_assets/Controlo_5 de Outubro (9).pdf",
+        "size": 99,
+        "modified": "2025-04-13"
+      },
+      {
+        "path": "attached_assets/Controlo_Aroeira I (6).pdf",
+        "size": 106,
+        "modified": "2025-04-13"
+      },
+      {
+        "path": "attached_assets/Controlo_Aroeira I.pdf",
+        "size": 105,
+        "modified": "2025-05-24"
+      },
+      {
+        "path": "attached_assets/Controlo_Aroeira II (6).pdf",
+        "size": 95,
+        "modified": "2025-04-13"
+      },
+      {
+        "path": "attached_assets/Controlo_Aroeira II - Copy.pdf",
+        "size": 95,
+        "modified": "2025-03-26"
+      },
+      {
+        "path": "attached_assets/Controlo_Feira da Ladra (Graça 1) (9).pdf",
+        "size": 137,
+        "modified": "2025-04-13"
+      },
+      {
+        "path": "attached_assets/Controlo_Sete Rios (9).pdf",
+        "size": 109,
+        "modified": "2025-04-13"
+      },
+      {
+        "path": "attached_assets/file (13).pdf",
+        "size": 86,
+        "modified": "2025-05-25"
+      },
+      {
+        "path": "uploads/orcamento_teste_1742912042190.pdf",
+        "size": 7,
+        "modified": "2025-03-25"
+      }
+    ],
+    "missing": [],
+    "total": 24
+  },
+  "testResults": {
+    "checkIn": [
+      {
+        "success": false,
+        "path": "Check-in Maria faz.pdf"
+      },
+      {
+        "success": false,
+        "path": "file (13).pdf"
+      },
+      {
+        "success": false,
+        "path": "attached_assets/file (13).pdf"
+      }
+    ],
+    "checkOut": [
+      {
+        "success": false,
+        "path": "Check-outs Maria faz.pdf"
+      },
+      {
+        "success": false,
+        "path": "attached_assets/Check-outs Maria faz.pdf"
+      },
+      {
+        "success": false,
+        "path": "file (14).pdf"
+      },
+      {
+        "success": false,
+        "path": "saida.pdf"
+      }
+    ],
+    "controlFiles": [
+      {
+        "success": false,
+        "path": "Controlo_5 de Outubro (9).pdf"
+      },
+      {
+        "success": false,
+        "path": "Controlo_Aroeira I (6).pdf"
+      },
+      {
+        "success": false,
+        "path": "Controlo_Aroeira II (6).pdf"
+      },
+      {
+        "success": false,
+        "path": "Controlo_Feira da Ladra (Graça 1) (9).pdf"
+      },
+      {
+        "success": false,
+        "path": "Controlo_Sete Rios (9).pdf"
+      },
+      {
+        "success": false,
+        "path": "attached_assets/Controlo_5 de Outubro (9).pdf"
+      },
+      {
+        "success": false,
+        "path": "attached_assets/Controlo_Aroeira I (6).pdf"
+      },
+      {
+        "success": false,
+        "path": "attached_assets/Controlo_Aroeira I.pdf"
+      },
+      {
+        "success": false,
+        "path": "attached_assets/Controlo_Aroeira II (6).pdf"
+      },
+      {
+        "success": false,
+        "path": "attached_assets/Controlo_Aroeira II - Copy.pdf"
+      },
+      {
+        "success": false,
+        "path": "attached_assets/Controlo_Feira da Ladra (Graça 1) (9).pdf"
+      },
+      {
+        "success": false,
+        "path": "attached_assets/Controlo_Sete Rios (9).pdf"
+      }
+    ],
+    "entradaSaida": [
+      {
+        "success": false,
+        "path": "entrada.pdf"
+      },
+      {
+        "success": false,
+        "path": "saida.pdf"
+      }
+    ],
+    "budgets": [
+      {
+        "success": false,
+        "path": "orcamento_familia_silva_9999.pdf"
+      },
+      {
+        "success": false,
+        "path": "uploads/orcamento_teste_1742912042190.pdf"
+      }
+    ],
+    "others": [
+      {
+        "success": false,
+        "path": "file (2) (3).pdf"
+      },
+      {
+        "success": false,
+        "path": "file (3).pdf"
+      }
+    ],
+    "summary": {
+      "total": 25,
+      "successful": 0,
+      "failed": 25
+    }
+  },
+  "dbStatus": {
+    "reservations": 1,
+    "activities": 15,
+    "properties": 29,
+    "owners": 15,
+    "status": "healthy"
+  },
+  "criticalFailures": [
+    {
+      "success": false,
+      "path": "Check-in Maria faz.pdf"
+    },
+    {
+      "success": false,
+      "path": "file (13).pdf"
+    },
+    {
+      "success": false,
+      "path": "attached_assets/file (13).pdf"
+    },
+    {
+      "success": false,
+      "path": "Check-outs Maria faz.pdf"
+    },
+    {
+      "success": false,
+      "path": "attached_assets/Check-outs Maria faz.pdf"
+    },
+    {
+      "success": false,
+      "path": "file (14).pdf"
+    },
+    {
+      "success": false,
+      "path": "saida.pdf"
+    },
+    {
+      "success": false,
+      "path": "Controlo_5 de Outubro (9).pdf"
+    },
+    {
+      "success": false,
+      "path": "Controlo_Aroeira I (6).pdf"
+    },
+    {
+      "success": false,
+      "path": "Controlo_Aroeira II (6).pdf"
+    },
+    {
+      "success": false,
+      "path": "Controlo_Feira da Ladra (Graça 1) (9).pdf"
+    },
+    {
+      "success": false,
+      "path": "Controlo_Sete Rios (9).pdf"
+    },
+    {
+      "success": false,
+      "path": "attached_assets/Controlo_5 de Outubro (9).pdf"
+    },
+    {
+      "success": false,
+      "path": "attached_assets/Controlo_Aroeira I (6).pdf"
+    },
+    {
+      "success": false,
+      "path": "attached_assets/Controlo_Aroeira I.pdf"
+    },
+    {
+      "success": false,
+      "path": "attached_assets/Controlo_Aroeira II (6).pdf"
+    },
+    {
+      "success": false,
+      "path": "attached_assets/Controlo_Aroeira II - Copy.pdf"
+    },
+    {
+      "success": false,
+      "path": "attached_assets/Controlo_Feira da Ladra (Graça 1) (9).pdf"
+    },
+    {
+      "success": false,
+      "path": "attached_assets/Controlo_Sete Rios (9).pdf"
+    }
+  ],
+  "successRate": 0,
+  "systemHealth": "NEEDS_ATTENTION"
+}
