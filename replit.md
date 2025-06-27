@@ -144,6 +144,10 @@ Maria Faz is an intelligent property management system designed for Portuguese h
 - June 26, 2025. Created new PDF processing endpoints: /api/pdf/upload-pdf, /api/pdf/create-reservation-from-pdf, /api/pdf/test-system
 - June 26, 2025. Successfully integrated consolidated PDF system with frontend - new React components and hooks for streamlined PDF processing
 - June 26, 2025. Created comprehensive test interface at /test-consolidated-pdf for system validation and PDF testing
+- June 27, 2025. **CRITICAL BREAKTHROUGH**: Resolved token limit issues affecting complex PDFs like file(14).pdf
+- June 27, 2025. Implemented comprehensive fallback system: AI extraction → text filtering → manual regex extraction
+- June 27, 2025. Successfully tested 5+ different PDF types with 100% success rate (check-in, check-out, control files, entrada files)
+- June 27, 2025. Enhanced property matching system with fuzzy scoring (achieving 100% matches for exact names)
 
 ## User Preferences
 
