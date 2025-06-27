@@ -119,16 +119,16 @@ export class ConsolidatedPDFProcessor {
       // Preprocess text to extract only relevant reservation data
       const cleanedText = this.extractRelevantData(text);
       
-      // Prompt otimizado para reduzir tokens
-      const maxTextLength = Math.max(800, Math.floor(3000 / attempt)); // Reduzir progressivamente
+      // Prompt ultra-otimizado para evitar MAX_TOKENS
+      const maxTextLength = Math.max(500, Math.floor(2000 / attempt)); // Redução mais agressiva
       const shortText = cleanedText.substring(0, maxTextLength);
       
-      const prompt = `Extract from text, return JSON only:
+      const prompt = `Extract JSON from text:
 ${shortText}
 
-{"propertyName":"","guestName":"","checkInDate":"YYYY-MM-DD","checkOutDate":"YYYY-MM-DD","reference":""}`;
+{"propertyName":"","guestName":"","checkInDate":"YYYY-MM-DD","checkOutDate":"YYYY-MM-DD"}`;
       
-      console.log(`📝 Texto original: ${cleanedText.length} chars → Texto filtrado: ${shortText.length} chars`);
+      console.log(`📝 Texto original: ${cleanedText.length} chars → Texto ultra-filtrado: ${shortText.length} chars`);
 
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GOOGLE_API_KEY}`, {
         method: 'POST',
@@ -359,54 +359,146 @@ ${shortText}
       }
     }
     
-    // Extract guest names - sistema melhorado com múltiplas tentativas
+    // Extract guest names - sistema ultra melhorado com 6 estratégias
     let guestName = null;
     
-    // Tentativa 1: Padrão específico para arquivos de controle (nome repetido)
-    const controlNameMatch = text.match(/([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+)+)\s+\1\s+[\+\d]/);
-    if (controlNameMatch) {
+    console.log(`🔍 Iniciando extração de nome com 6 estratégias...`);
+    
+    // Estratégia 1: Padrão específico para arquivos de controle (nome repetido)
+    const controlNameMatch = text.match(/([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+){1,3})\s+\1\s+[\+\d]/);
+    if (controlNameMatch && controlNameMatch[1].length >= 8) {
       guestName = controlNameMatch[1].trim();
+      console.log(`👤 Estratégia 1 (controle) - Nome encontrado: ${guestName}`);
     } 
     
-    // Tentativa 2: Nome seguido por email
+    // Estratégia 2: Nome seguido por email - mais flexível
     if (!guestName) {
-      const nameEmailMatch = text.match(/([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+){1,3})\s*[a-zA-Z0-9._%+-]+@/);
-      if (nameEmailMatch) {
-        guestName = nameEmailMatch[1].trim();
-      }
-    }
-    
-    // Tentativa 3: Nome seguido por número de telefone
-    if (!guestName) {
-      const namePhoneMatch = text.match(/([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+){1,3})\s*[\+\d]{8,}/);
-      if (namePhoneMatch) {
-        guestName = namePhoneMatch[1].trim();
-      }
-    }
-    
-    // Tentativa 4: Padrão geral (nome com 2-4 palavras)
-    if (!guestName) {
-      const nameMatch = text.match(/\b([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+)*)\b/);
-      if (nameMatch) {
-        guestName = nameMatch[1].trim();
-      }
-    }
-    
-    // Tentativa 5: Buscar nomes em linhas específicas (para PDFs estruturados)
-    if (!guestName) {
-      const lines = text.split('\n');
-      for (const line of lines) {
-        const lineNameMatch = line.match(/^\s*([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+)*)\s*$/);
-        if (lineNameMatch && lineNameMatch[1].length > 8) { // Mínimo 8 chars para nome completo
-          guestName = lineNameMatch[1].trim();
+      const nameEmailPatterns = [
+        /([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+){1,3})\s*[:\-]?\s*[a-zA-Z0-9._%+-]+@/,
+        /([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+){1,3})\n.*@/
+      ];
+      
+      for (const pattern of nameEmailPatterns) {
+        const match = text.match(pattern);
+        if (match && match[1].length >= 8) {
+          guestName = match[1].trim();
+          console.log(`👤 Estratégia 2 (email) - Nome encontrado: ${guestName}`);
           break;
         }
       }
     }
     
+    // Estratégia 3: Nome seguido por telefone - mais robusto
+    if (!guestName) {
+      const namePhonePatterns = [
+        /([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+){1,3})\s*[:\-]?\s*[\+\d]{8,}/,
+        /([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+){1,3})\n.*[\+\d]{8,}/
+      ];
+      
+      for (const pattern of namePhonePatterns) {
+        const match = text.match(pattern);
+        if (match && match[1].length >= 8) {
+          guestName = match[1].trim();
+          console.log(`👤 Estratégia 3 (telefone) - Nome encontrado: ${guestName}`);
+          break;
+        }
+      }
+    }
+    
+    // Estratégia 4: Nomes após palavras-chave específicas
+    if (!guestName) {
+      const keywordPatterns = [
+        /(?:Nome|Name|Guest|Hóspede|Cliente|Client|Titular|Responsável)[:\s]+([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+){1,3})/i,
+        /^([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+){1,3})\s*$/m
+      ];
+      
+      for (const pattern of keywordPatterns) {
+        const match = text.match(pattern);
+        if (match && match[1].length >= 8 && !match[1].match(/PDF|Document|Report|Control|Check|Adult|Guest|Date|Time|Phone|Email|Property|Reservation/i)) {
+          guestName = match[1].trim();
+          console.log(`👤 Estratégia 4 (palavra-chave) - Nome encontrado: ${guestName}`);
+          break;
+        }
+      }
+    }
+    
+    // Estratégia 5: Busca por frequência de nomes (para documentos de controle)
+    if (!guestName) {
+      const nameFrequency: {[key: string]: number} = {};
+      const words = text.split(/\s+/);
+      
+      // Buscar combinações de 2-4 palavras que pareçam nomes
+      for (let wordCount = 2; wordCount <= 4; wordCount++) {
+        for (let i = 0; i <= words.length - wordCount; i++) {
+          const candidate = words.slice(i, i + wordCount).join(' ');
+          if (candidate.length >= 8 && 
+              /^[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+)*$/.test(candidate) && 
+              !candidate.match(/PDF|Document|Report|Control|Check|Adult|Guest|Date|Time|Phone|Email|Property|Reservation/i)) {
+            nameFrequency[candidate] = (nameFrequency[candidate] || 0) + 1;
+          }
+        }
+      }
+      
+      // Escolher o nome mais frequente
+      const mostFrequent = Object.entries(nameFrequency)
+        .filter(([, count]) => count > 1)
+        .sort(([,a], [,b]) => b - a)[0];
+      
+      if (mostFrequent) {
+        guestName = mostFrequent[0];
+        console.log(`👤 Estratégia 5 (frequência) - Nome encontrado: ${guestName} (${mostFrequent[1]}x)`);
+      }
+    }
+    
+    // Estratégia 6: Padrão geral mais flexível - último recurso
+    if (!guestName) {
+      const generalPatterns = [
+        /\b([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]{2,}\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]{2,}(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]{2,})*)\b/g
+      ];
+      
+      const potentialNames = [];
+      for (const pattern of generalPatterns) {
+        let match;
+        while ((match = pattern.exec(text)) !== null) {
+          const name = match[1];
+          if (name.length >= 8 && 
+              !name.match(/PDF|Document|Report|Control|Check|Adult|Guest|Date|Time|Phone|Email|Property|Reservation|Booking|Hotel|Casa|Apartamento/i)) {
+            potentialNames.push(name);
+          }
+        }
+      }
+      
+      if (potentialNames.length > 0) {
+        // Escolher o nome mais longo e provável
+        guestName = potentialNames.reduce((best, current) => {
+          const currentWords = current.split(' ').length;
+          const bestWords = best.split(' ').length;
+          // Preferir nomes com 2-3 palavras e mais longos
+          if (currentWords >= 2 && currentWords <= 3 && current.length > best.length) {
+            return current;
+          }
+          return best;
+        });
+        console.log(`👤 Estratégia 6 (geral) - Nome encontrado: ${guestName}`);
+      }
+    }
+    
     if (guestName) {
-      // Limpar quebras de linha e espaços extras
-      result.guestName = guestName.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+      // Limpar e validar nome final
+      const cleanName = guestName.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+      
+      // Validação final rigorosa
+      if (cleanName.length >= 8 && 
+          !cleanName.match(/^(Unknown|Desconhecido|Guest|Hóspede|Client|Cliente|Nome|Name|Titular|Responsável|PDF|Document|Report|Control|Check|Adult|Date|Time|Phone|Email|Property|Reservation|Booking|Hotel|Casa|Apartamento)$/i) &&
+          cleanName.split(' ').length >= 2 &&
+          cleanName.split(' ').length <= 4) {
+        result.guestName = cleanName;
+        console.log(`✅ Nome final validado: ${result.guestName}`);
+      } else {
+        console.log(`⚠️ Nome rejeitado por não passar na validação final: ${cleanName}`);
+      }
+    } else {
+      console.log(`❌ Nenhum nome encontrado após as 6 estratégias`);
     }
     
     // Extract email
