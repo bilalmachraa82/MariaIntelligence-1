@@ -116,35 +116,11 @@ export class ConsolidatedPDFProcessor {
         throw new Error('GOOGLE_API_KEY não configurada');
       }
       
-      const prompt = `
-Analise este documento de reserva e extraia as informações no formato JSON.
+      const prompt = `Extract reservation data from this text and return only JSON:
 
-TEXTO DO DOCUMENTO (excerto):
-${text.substring(0, 2500)}
+${text.substring(0, 3000)}
 
-Retorne apenas um JSON válido com esta estrutura:
-{
-  "propertyName": "nome da propriedade",
-  "guestName": "nome do hóspede",
-  "guestEmail": "email@exemplo.com",
-  "guestPhone": "+351999999999",
-  "checkInDate": "2024-01-15",
-  "checkOutDate": "2024-01-20",
-  "numGuests": 2,
-  "totalAmount": 150.00,
-  "platform": "booking.com",
-  "reference": "BK123456",
-  "platformFee": 15.00,
-  "cleaningFee": 25.00,
-  "notes": "observações"
-}
-
-Regras importantes:
-- Use formato de data YYYY-MM-DD
-- Valores numéricos devem ser números, não strings
-- Se não encontrar uma informação, omita o campo
-- Propriedades Aroeira: especifique o número (Aroeira I, Aroeira II, etc.)
-`;
+Format: {"propertyName":"","guestName":"","guestEmail":"","guestPhone":"","checkInDate":"YYYY-MM-DD","checkOutDate":"YYYY-MM-DD","numGuests":0,"platform":"","reference":""}. Omit missing fields.`;
 
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GOOGLE_API_KEY}`, {
         method: 'POST',
@@ -306,16 +282,29 @@ Regras importantes:
     let cleaned = jsonText.trim();
     console.log('🔧 JSON original:', cleaned);
     
-    // Se termina com vírgula, remove
+    // Remove trailing commas
     if (cleaned.endsWith(',')) {
       cleaned = cleaned.slice(0, -1);
     }
     
-    // Verificar se é um array ou objeto
-    const isArray = cleaned.startsWith('[');
-    
-    if (isArray) {
-      // Para arrays, garantir fechamento adequado
+    // Handle incomplete string at the end
+    if (cleaned.endsWith('",')) {
+      // Remove trailing comma after incomplete string
+      cleaned = cleaned.slice(0, -1);
+    } else if (cleaned.endsWith('"')) {
+      // If ends with quote but might be incomplete key-value
+      const lastColonIndex = cleaned.lastIndexOf(':');
+      const lastQuoteIndex = cleaned.lastIndexOf('"');
+      
+      // If there's a colon after the last quote, it's likely an incomplete value
+      if (lastColonIndex > lastQuoteIndex) {
+        cleaned = cleaned + '""';
+      }
+    } else if (cleaned.endsWith(':')) {
+      // Incomplete key-value pair
+      cleaned = cleaned + '""';
+    } else if (!cleaned.endsWith('}') && !cleaned.endsWith(']')) {
+      // Incomplete structure - try to determine what to close
       let openBraces = 0;
       let openBrackets = 0;
       
@@ -326,57 +315,24 @@ Regras importantes:
         if (char === ']') openBrackets--;
       }
       
-      // Fechar objetos em aberto
+      // Close any incomplete strings first
+      const lastQuote = cleaned.lastIndexOf('"');
+      const secondLastQuote = cleaned.lastIndexOf('"', lastQuote - 1);
+      
+      // If odd number of quotes, we have an incomplete string
+      const quoteCount = (cleaned.match(/"/g) || []).length;
+      if (quoteCount % 2 === 1) {
+        cleaned += '"';
+      }
+      
+      // Close braces and brackets
       while (openBraces > 0) {
         cleaned += '}';
         openBraces--;
       }
-      
-      // Fechar arrays em aberto  
       while (openBrackets > 0) {
         cleaned += ']';
         openBrackets--;
-      }
-      
-      // Se não termina com ] ou }, adicionar
-      if (!cleaned.endsWith(']') && !cleaned.endsWith('}')) {
-        // Se parece que está no meio de uma string, fechar a string primeiro
-        if (cleaned.endsWith('"')) {
-          // Se a linha anterior tem ":", adicionar valor vazio
-          const lastColonIndex = cleaned.lastIndexOf(':');
-          const afterColon = cleaned.slice(lastColonIndex + 1).trim();
-          if (afterColon === '"') {
-            cleaned = cleaned.slice(0, -1) + '""';
-          }
-        } else if (cleaned.endsWith(':')) {
-          cleaned += '""';
-        }
-        
-        // Fechar objeto atual se necessário
-        if (openBraces === 0) {
-          cleaned += '}';
-        }
-        
-        // Fechar array
-        if (!cleaned.endsWith(']')) {
-          cleaned += ']';
-        }
-      }
-    } else {
-      // Para objetos simples
-      if (cleaned.endsWith(':')) {
-        cleaned = cleaned + '""';
-      } else if (cleaned.endsWith('"')) {
-        const lines = cleaned.split('\n');
-        const lastLine = lines[lines.length - 1].trim();
-        if (lastLine.includes(':') && !lastLine.includes('""')) {
-          cleaned = cleaned + '"';
-        }
-      }
-      
-      // Garantir que termina com }
-      if (!cleaned.endsWith('}')) {
-        cleaned = cleaned + '}';
       }
     }
     
