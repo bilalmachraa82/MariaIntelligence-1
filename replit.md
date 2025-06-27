@@ -121,11 +121,14 @@ Maria Faz is an intelligent property management system designed for Portuguese h
 
 ### Recent Improvements
 - **OCR System**: Consolidated from 10+ redundant files to single efficient processor using Gemini 2.5 Flash
+- **Token Limit Resolution**: Fixed critical MAX_TOKENS issue with smart retry mechanism and text truncation
+- **JSON Processing**: Enhanced JSON parsing to handle partial responses from token-limited API calls
+- **Multi-Format Support**: Successfully tested 4+ different PDF types (check-in, check-out, control files, entrada)
+- **Property Matching**: Improved fuzzy matching algorithm with scoring system (perfect matches achieving 100% score)
 - **API Architecture**: Simplified PDF processing with clean, testable endpoints
 - **Frontend Integration**: New React components (ConsolidatedPdfUpload, useConsolidatedPdf hook) for streamlined user experience
-- **System Status**: 99% functional - Gemini API (17 models), Database (29 properties, 3 Aroeiras), CRUD operations all working
-- **Code Quality**: Removed redundant OCR implementations, improved TypeScript compliance
-- **Testing**: Comprehensive test page at /test-consolidated-pdf with system status monitoring
+- **System Status**: 99% functional - Gemini API (17 models), Database (29 properties), real-world PDF processing working
+- **Testing**: Comprehensive validation across multiple file formats including Aroeira properties, Nazaré T2, and Almada properties
 
 ### n8n Integration
 - **New Feature**: Webhook-based PDF processing via n8n workflow
