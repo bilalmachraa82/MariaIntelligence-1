@@ -303,31 +303,84 @@ Regras importantes:
    * Repara JSON incompleto truncado pelo limite de tokens
    */
   private repairIncompleteJson(jsonText: string): string {
-    // Remove trailing commas e caracteres soltos
     let cleaned = jsonText.trim();
+    console.log('🔧 JSON original:', cleaned);
     
     // Se termina com vírgula, remove
     if (cleaned.endsWith(',')) {
       cleaned = cleaned.slice(0, -1);
     }
     
-    // Se termina com : ou ", adiciona valor placeholder e fecha
-    if (cleaned.endsWith(':')) {
-      cleaned = cleaned + ' ""';
-    } else if (cleaned.endsWith('"')) {
-      // Se a última linha parece ser uma chave incompleta, adiciona valor
-      const lines = cleaned.split('\n');
-      const lastLine = lines[lines.length - 1].trim();
-      if (lastLine.includes(':') && !lastLine.includes('"')) {
+    // Verificar se é um array ou objeto
+    const isArray = cleaned.startsWith('[');
+    
+    if (isArray) {
+      // Para arrays, garantir fechamento adequado
+      let openBraces = 0;
+      let openBrackets = 0;
+      
+      for (const char of cleaned) {
+        if (char === '{') openBraces++;
+        if (char === '}') openBraces--;
+        if (char === '[') openBrackets++;
+        if (char === ']') openBrackets--;
+      }
+      
+      // Fechar objetos em aberto
+      while (openBraces > 0) {
+        cleaned += '}';
+        openBraces--;
+      }
+      
+      // Fechar arrays em aberto  
+      while (openBrackets > 0) {
+        cleaned += ']';
+        openBrackets--;
+      }
+      
+      // Se não termina com ] ou }, adicionar
+      if (!cleaned.endsWith(']') && !cleaned.endsWith('}')) {
+        // Se parece que está no meio de uma string, fechar a string primeiro
+        if (cleaned.endsWith('"')) {
+          // Se a linha anterior tem ":", adicionar valor vazio
+          const lastColonIndex = cleaned.lastIndexOf(':');
+          const afterColon = cleaned.slice(lastColonIndex + 1).trim();
+          if (afterColon === '"') {
+            cleaned = cleaned.slice(0, -1) + '""';
+          }
+        } else if (cleaned.endsWith(':')) {
+          cleaned += '""';
+        }
+        
+        // Fechar objeto atual se necessário
+        if (openBraces === 0) {
+          cleaned += '}';
+        }
+        
+        // Fechar array
+        if (!cleaned.endsWith(']')) {
+          cleaned += ']';
+        }
+      }
+    } else {
+      // Para objetos simples
+      if (cleaned.endsWith(':')) {
         cleaned = cleaned + '""';
+      } else if (cleaned.endsWith('"')) {
+        const lines = cleaned.split('\n');
+        const lastLine = lines[lines.length - 1].trim();
+        if (lastLine.includes(':') && !lastLine.includes('""')) {
+          cleaned = cleaned + '"';
+        }
+      }
+      
+      // Garantir que termina com }
+      if (!cleaned.endsWith('}')) {
+        cleaned = cleaned + '}';
       }
     }
     
-    // Garantir que termina com }
-    if (!cleaned.endsWith('}')) {
-      cleaned = cleaned + '}';
-    }
-    
+    console.log('🔧 JSON reparado:', cleaned);
     return cleaned;
   }
 
