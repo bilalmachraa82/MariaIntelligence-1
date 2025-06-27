@@ -6,33 +6,32 @@
 import fs from 'fs';
 
 async function processarPdfsCriticos() {
-  console.log('🚀 PROCESSAMENTO DE PDFs CRÍTICOS');
-  console.log('=================================');
+  console.log('📄 PROCESSAMENTO RÁPIDO DE PDFs CRÍTICOS');
+  console.log('=======================================');
   
-  // PDFs mais importantes para processar
+  const scoreInicial = await verificarScore();
+  console.log(`📊 Score inicial: ${scoreInicial.score}% (${scoreInicial.comPropriedade}/${scoreInicial.total})`);
+  
+  // PDFs estratégicos que provavelmente contêm múltiplas reservas
   const pdfsCriticos = [
-    'control1.pdf',
-    'control2.pdf', 
-    'entrada.pdf',
-    'file (13).pdf',
-    'file (14).pdf'
+    'Check-in Maria faz.pdf',  // Check-ins múltiplos
+    'Check-outs Maria faz.pdf', // Check-outs múltiplos
+    'file (13).pdf',           // Controle 1
+    'file (14).pdf',           // Controle 2
+    'file (3).pdf'             // Arquivo adicional
   ];
   
   let sucessos = 0;
-  let falhas = 0;
-  let novasAtividades = 0;
-  
-  console.log(`📄 Processando ${pdfsCriticos.length} PDFs críticos...\n`);
+  let melhorias = [];
   
   for (let i = 0; i < pdfsCriticos.length; i++) {
     const arquivo = pdfsCriticos[i];
+    console.log(`\n📄 [${i+1}/${pdfsCriticos.length}] Processando: ${arquivo}`);
     
     if (!fs.existsSync(arquivo)) {
-      console.log(`⚠️ [${i+1}/${pdfsCriticos.length}] Arquivo não encontrado: ${arquivo}`);
+      console.log(`   ⚠️ Arquivo não encontrado`);
       continue;
     }
-    
-    console.log(`📄 [${i+1}/${pdfsCriticos.length}] Processando: ${arquivo}`);
     
     try {
       const fileBuffer = fs.readFileSync(arquivo);
@@ -48,109 +47,89 @@ async function processarPdfsCriticos() {
       const result = await response.json();
       
       if (result.success) {
-        sucessos++;
         console.log(`   ✅ Processado com sucesso`);
+        sucessos++;
         
         if (result.data?.propertyId) {
-          novasAtividades++;
-          console.log(`   🏠 Propriedade: ${result.data.propertyName} (ID: ${result.data.propertyId})`);
+          console.log(`   🏠 ${result.data.propertyName} (ID: ${result.data.propertyId})`);
         }
         
         if (result.data?.guestName && result.data.guestName !== 'Hóspede desconhecido') {
-          console.log(`   👤 Hóspede: ${result.data.guestName}`);
+          console.log(`   👤 ${result.data.guestName}`);
         }
         
-        if (result.data?.checkInDate) {
-          console.log(`   📅 Check-in: ${result.data.checkInDate}`);
+        // Verificar melhoria no score
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        const novoScore = await verificarScore();
+        
+        if (novoScore.score > scoreInicial.score) {
+          const melhoria = (novoScore.score - scoreInicial.score).toFixed(1);
+          console.log(`   📈 Score melhorou: +${melhoria}% (agora ${novoScore.score}%)`);
+          melhorias.push({ arquivo, melhoria: parseFloat(melhoria) });
         }
         
       } else {
-        falhas++;
         console.log(`   ❌ Falha: ${result.message}`);
       }
       
     } catch (error) {
-      falhas++;
       console.log(`   ❌ Erro: ${error.message}`);
-    }
-    
-    // Pausa entre processamentos
-    if (i < pdfsCriticos.length - 1) {
-      console.log('   ⏳ Aguardando 3 segundos...\n');
-      await new Promise(resolve => setTimeout(resolve, 3000));
     }
   }
   
-  // Verificar score atualizado
-  console.log('\n📊 VERIFICANDO SCORE ATUALIZADO:');
-  console.log('================================');
+  const scoreFinal = await verificarScore();
+  const melhoriaTotal = (scoreFinal.score - scoreInicial.score).toFixed(1);
   
+  console.log('\n🏆 RESULTADO FINAL:');
+  console.log(`📊 Score final: ${scoreFinal.score}% (${scoreFinal.comPropriedade}/${scoreFinal.total})`);
+  console.log(`📈 Melhoria total: +${melhoriaTotal}%`);
+  console.log(`✅ PDFs processados com sucesso: ${sucessos}/${pdfsCriticos.length}`);
+  
+  if (melhorias.length > 0) {
+    console.log('\n🌟 MELHORIAS POR ARQUIVO:');
+    melhorias.forEach(m => {
+      console.log(`   ${m.arquivo}: +${m.melhoria}%`);
+    });
+  }
+  
+  if (scoreFinal.score >= 85) {
+    console.log('\n🎉 EXCELENTE! Score de 85%+ alcançado!');
+  } else if (scoreFinal.score >= 80) {
+    console.log('\n✅ MUITO BOM! Score de 80%+ alcançado!');
+  } else if (scoreFinal.score >= 75) {
+    console.log('\n👍 BOM! Score de 75%+ alcançado!');
+  }
+  
+  return scoreFinal;
+}
+
+async function verificarScore() {
   try {
     const response = await fetch('http://localhost:5000/api/activities');
     const data = await response.json();
     const atividades = data.activities;
     
-    const comPropriedade = atividades.filter(a => a.entityId !== null).length;
     const total = atividades.length;
-    const novoScore = ((comPropriedade / total) * 100).toFixed(1);
+    const comPropriedade = atividades.filter(a => a.entityId !== null).length;
+    const score = parseFloat(((comPropriedade / total) * 100).toFixed(1));
     
-    console.log(`📝 Total de atividades: ${total}`);
-    console.log(`✅ Com propriedade identificada: ${comPropriedade}`);
-    console.log(`📊 Score atualizado: ${novoScore}%`);
-    
-    // Calcular melhoria
-    const scorePrevio = 45.2; // Score anterior
-    const melhoria = (parseFloat(novoScore) - scorePrevio).toFixed(1);
-    
-    if (melhoria > 0) {
-      console.log(`📈 Melhoria: +${melhoria}% (${comPropriedade - 14} novas atividades identificadas)`);
-    }
-    
+    return { total, comPropriedade, score };
   } catch (error) {
-    console.log(`❌ Erro ao verificar score: ${error.message}`);
+    console.error('Erro ao verificar score:', error);
+    return { total: 0, comPropriedade: 0, score: 0 };
   }
-  
-  // Relatório final
-  console.log('\n🎯 RELATÓRIO DE PROCESSAMENTO:');
-  console.log('==============================');
-  
-  console.log(`📄 PDFs processados: ${sucessos + falhas}`);
-  console.log(`✅ Sucessos: ${sucessos}`);
-  console.log(`❌ Falhas: ${falhas}`);
-  console.log(`🏠 Novas atividades com propriedade: ${novasAtividades}`);
-  
-  const taxaSucesso = pdfsCriticos.length > 0 ? 
-    ((sucessos / pdfsCriticos.length) * 100).toFixed(1) : 0;
-  console.log(`📊 Taxa de sucesso: ${taxaSucesso}%`);
-  
-  if (sucessos >= 3) {
-    console.log('\n🌟 EXCELENTE! Processamento muito bem-sucedido');
-  } else if (sucessos >= 2) {
-    console.log('\n✅ BOM! Alguns PDFs processados com sucesso');
-  } else if (sucessos >= 1) {
-    console.log('\n⚠️ MÉDIO! Poucos PDFs processados');
-  } else {
-    console.log('\n❌ CRÍTICO! Nenhum PDF processado com sucesso');
-  }
-  
-  return {
-    sucessos,
-    falhas,
-    novasAtividades,
-    taxaSucesso: parseFloat(taxaSucesso)
-  };
 }
 
 // Executar processamento
-console.log('🚀 Iniciando processamento de PDFs críticos...\n');
-
 processarPdfsCriticos()
   .then(resultado => {
     console.log('\n✅ PROCESSAMENTO DE PDFs CRÍTICOS CONCLUÍDO!');
-    console.log(`🎯 Resultado: ${resultado.sucessos}/${resultado.sucessos + resultado.falhas} PDFs processados`);
+    console.log(`🎯 Score final: ${resultado.score}%`);
     
-    if (resultado.novasAtividades > 0) {
-      console.log(`🏆 Score melhorado com ${resultado.novasAtividades} novas identificações!`);
+    if (resultado.score >= 80) {
+      console.log('🏆 OBJETIVO ALCANÇADO! Sistema funcionando excelentemente!');
+    } else if (resultado.score >= 75) {
+      console.log('🌟 MUITO PRÓXIMO! Excelente progresso!');
     }
   })
   .catch(error => {

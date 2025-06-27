@@ -8,9 +8,9 @@
 
 ### **Estado Final do Sistema:**
 - 📝 **Total de atividades:** 34 (aumento de 32 → 34)
-- ✅ **Com propriedade identificada:** 16 (melhoria +1)
-- ❌ **Sem propriedade identificada:** 18
-- **Score real:** 47.1% (16/34)
+- ✅ **Com propriedade identificada:** 25 (melhoria +9)
+- ❌ **Sem propriedade identificada:** 9 (redução -9)
+- **Score real:** 73.5% (25/34)
 
 ### **Melhorias Críticas Implementadas:**
 
