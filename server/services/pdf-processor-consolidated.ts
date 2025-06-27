@@ -534,6 +534,8 @@ Format: {"propertyName":"","guestName":"","guestEmail":"","guestPhone":"","check
    */
   private normalizePropertyName(name: string): string {
     return name.toLowerCase()
+      .replace(/\n/g, ' ') // Remove quebras de linha
+      .replace(/\s+/g, ' ') // Normaliza espaços múltiplos
       .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove acentos
       .replace(/[^a-z0-9\s]/g, "") // Mantém apenas letras, números e espaços
       .trim();

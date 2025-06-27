@@ -22,13 +22,14 @@ console.log('================================');
 
 // Padrões atualizados que foram incluídos no código
 const propertyPatterns = [
-  // Padrões específicos para arquivos de controle
-  /São\s+João\s+Batista\s+T\d/i,
+  // Padrões para nomes quebrados em linhas (como "São João\nBatista T3")
+  /São\s+João[\s\n]*Batista\s+T\d/i,
+  /Almada[\s\n]*Noronha\s+\d+/i,
+  /Casa[\s\n]*dos[\s\n]*Barcos\s+T\d/i,
+  // Padrões diretos
   /Peniche\s+\d+\s+K/i,
   /Peniche\s+[A-Z]+\s*\([^\)]*\)/i,
   /Peniche\s+RC\s+[A-Z]/i,
-  /Almada\s+Noronha\s+\d+/i,
-  /Casa\s+dos\s+Barcos\s+T\d/i,
   // Padrões existentes
   /Almada\s+[^\n]+/i,
   /Aroeira\s+[IVX]+/i,
