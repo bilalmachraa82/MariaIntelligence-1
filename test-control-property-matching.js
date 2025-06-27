@@ -3,18 +3,17 @@
  * Analisa especificamente porque propriedades não estão sendo encontradas
  */
 
-const fs = require('fs');
-const path = require('path');
-
 async function testControlPropertyMatching() {
     console.log('🔍 DIAGNÓSTICO: Problema de Matching de Propriedades em Arquivos de Controle');
     console.log('================================================================================');
+    
+    let properties = [];
     
     // 1. Verificar propriedades disponíveis na BD
     console.log('\n1️⃣ PROPRIEDADES DISPONÍVEIS NA BASE DE DADOS:');
     try {
         const response = await fetch('http://localhost:5000/api/properties');
-        const properties = await response.json();
+        properties = await response.json();
         
         console.log(`📊 Total de propriedades: ${properties.length}`);
         
