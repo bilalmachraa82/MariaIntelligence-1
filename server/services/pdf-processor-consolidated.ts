@@ -328,8 +328,17 @@ Format: {"propertyName":"","guestName":"","guestEmail":"","guestPhone":"","check
     
     const result: any = {};
     
-    // Extract property names
+    // Extract property names - melhorado para nomes quebrados em linhas
     const propertyPatterns = [
+      // Padrões para nomes quebrados em linhas (como "São João\nBatista T3")
+      /São\s+João[\s\n]*Batista\s+T\d/i,
+      /Almada[\s\n]*Noronha\s+\d+/i,
+      /Casa[\s\n]*dos[\s\n]*Barcos\s+T\d/i,
+      // Padrões diretos
+      /Peniche\s+\d+\s+K/i,
+      /Peniche\s+[A-Z]+\s*\([^\)]*\)/i,
+      /Peniche\s+RC\s+[A-Z]/i,
+      // Padrões existentes
       /Almada\s+[^\n]+/i,
       /Aroeira\s+[IVX]+/i,
       /Nazaré?\s+T\d/i,
@@ -344,10 +353,24 @@ Format: {"propertyName":"","guestName":"","guestEmail":"","guestPhone":"","check
       }
     }
     
-    // Extract guest names (look for capitalized names)
-    const nameMatch = text.match(/([A-Z][a-z]+\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/);
-    if (nameMatch) {
-      result.guestName = nameMatch[1];
+    // Extract guest names - melhorado para arquivos de controle
+    let guestName = null;
+    
+    // Primeiro tentar padrão específico para arquivos de controle
+    const controlNameMatch = text.match(/([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+)+)\s+\1\s+[\+\d]/);
+    if (controlNameMatch) {
+      guestName = controlNameMatch[1].trim();
+    } else {
+      // Fallback para padrão geral
+      const nameMatch = text.match(/([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+)?)/);
+      if (nameMatch) {
+        guestName = nameMatch[1];
+      }
+    }
+    
+    if (guestName) {
+      // Limpar quebras de linha e espaços extras
+      result.guestName = guestName.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
     }
     
     // Extract email
