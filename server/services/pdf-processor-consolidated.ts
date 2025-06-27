@@ -348,7 +348,8 @@ Format: {"propertyName":"","guestName":"","guestEmail":"","guestPhone":"","check
     for (const pattern of propertyPatterns) {
       const match = text.match(pattern);
       if (match) {
-        result.propertyName = match[0].trim();
+        // Normalizar quebras de linha no nome da propriedade
+        result.propertyName = match[0].replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
         break;
       }
     }
