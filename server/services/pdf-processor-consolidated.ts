@@ -119,11 +119,16 @@ export class ConsolidatedPDFProcessor {
       // Preprocess text to extract only relevant reservation data
       const cleanedText = this.extractRelevantData(text);
       
-      const prompt = `Extract reservation data from this text and return only JSON:
+      // Prompt otimizado para reduzir tokens
+      const maxTextLength = Math.max(800, Math.floor(3000 / attempt)); // Reduzir progressivamente
+      const shortText = cleanedText.substring(0, maxTextLength);
+      
+      const prompt = `Extract from text, return JSON only:
+${shortText}
 
-${cleanedText.substring(0, 2500)}
-
-Format: {"propertyName":"","guestName":"","guestEmail":"","guestPhone":"","checkInDate":"YYYY-MM-DD","checkOutDate":"YYYY-MM-DD","numGuests":0,"platform":"","reference":""}. Omit missing fields.`;
+{"propertyName":"","guestName":"","checkInDate":"YYYY-MM-DD","checkOutDate":"YYYY-MM-DD","reference":""}`;
+      
+      console.log(`📝 Texto original: ${cleanedText.length} chars → Texto filtrado: ${shortText.length} chars`);
 
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GOOGLE_API_KEY}`, {
         method: 'POST',
@@ -354,18 +359,48 @@ Format: {"propertyName":"","guestName":"","guestEmail":"","guestPhone":"","check
       }
     }
     
-    // Extract guest names - melhorado para arquivos de controle
+    // Extract guest names - sistema melhorado com múltiplas tentativas
     let guestName = null;
     
-    // Primeiro tentar padrão específico para arquivos de controle
+    // Tentativa 1: Padrão específico para arquivos de controle (nome repetido)
     const controlNameMatch = text.match(/([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+)+)\s+\1\s+[\+\d]/);
     if (controlNameMatch) {
       guestName = controlNameMatch[1].trim();
-    } else {
-      // Fallback para padrão geral
-      const nameMatch = text.match(/([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+)?)/);
+    } 
+    
+    // Tentativa 2: Nome seguido por email
+    if (!guestName) {
+      const nameEmailMatch = text.match(/([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+){1,3})\s*[a-zA-Z0-9._%+-]+@/);
+      if (nameEmailMatch) {
+        guestName = nameEmailMatch[1].trim();
+      }
+    }
+    
+    // Tentativa 3: Nome seguido por número de telefone
+    if (!guestName) {
+      const namePhoneMatch = text.match(/([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+){1,3})\s*[\+\d]{8,}/);
+      if (namePhoneMatch) {
+        guestName = namePhoneMatch[1].trim();
+      }
+    }
+    
+    // Tentativa 4: Padrão geral (nome com 2-4 palavras)
+    if (!guestName) {
+      const nameMatch = text.match(/\b([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+)*)\b/);
       if (nameMatch) {
-        guestName = nameMatch[1];
+        guestName = nameMatch[1].trim();
+      }
+    }
+    
+    // Tentativa 5: Buscar nomes em linhas específicas (para PDFs estruturados)
+    if (!guestName) {
+      const lines = text.split('\n');
+      for (const line of lines) {
+        const lineNameMatch = line.match(/^\s*([A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+(?:\s+[A-ZÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ][a-záéíóúàèìòùâêîôûãõç]+)*)\s*$/);
+        if (lineNameMatch && lineNameMatch[1].length > 8) { // Mínimo 8 chars para nome completo
+          guestName = lineNameMatch[1].trim();
+          break;
+        }
       }
     }
     
@@ -501,6 +536,7 @@ Format: {"propertyName":"","guestName":"","guestEmail":"","guestPhone":"","check
       const properties = await storage.getProperties();
       if (!properties || properties.length === 0) return null;
       
+      // Aplicar normalização dupla para garantir compatibilidade
       const normalizedSearchName = this.normalizePropertyName(propertyName);
       console.log(`🔍 Procurando propriedade: "${propertyName}" → "${normalizedSearchName}"`);
       
@@ -515,8 +551,42 @@ Format: {"propertyName":"","guestName":"","guestEmail":"","guestPhone":"","check
         }
       }
       
-      // Aceitar apenas matches com score > 60
-      if (bestMatch.score > 60) {
+      // Sistema de matching mais inteligente
+      let threshold = 60;
+      
+      // Se o melhor match tem score baixo, tentar matching mais flexível
+      if (bestMatch.score < threshold && bestMatch.score > 30) {
+        console.log(`🔄 Score baixo (${bestMatch.score}), tentando matching flexível...`);
+        
+        // Tentar matching por palavras-chave
+        const searchWords = normalizedSearchName.split(' ').filter(w => w.length > 2);
+        
+        for (const property of properties) {
+          const propName = this.normalizePropertyName(property.name);
+          const propWords = propName.split(' ');
+          
+          // Verificar se pelo menos 60% das palavras fazem match
+          let matchingWords = 0;
+          for (const word of searchWords) {
+            if (propWords.some(pw => pw.includes(word) || word.includes(pw))) {
+              matchingWords++;
+            }
+          }
+          
+          const wordMatchScore = (matchingWords / searchWords.length) * 100;
+          if (wordMatchScore > 60 && wordMatchScore > bestMatch.score) {
+            bestMatch = { property, score: wordMatchScore };
+            console.log(`🎯 Match por palavras-chave: ${property.name} (${wordMatchScore.toFixed(1)}%)`);
+          }
+        }
+        
+        // Reduzir threshold se encontrou match por palavras
+        if (bestMatch.score > 30) {
+          threshold = 30;
+        }
+      }
+      
+      if (bestMatch.score > threshold) {
         console.log(`✅ Propriedade encontrada: ${bestMatch.property.name} (score: ${bestMatch.score})`);
         return bestMatch.property.id;
       } else {
