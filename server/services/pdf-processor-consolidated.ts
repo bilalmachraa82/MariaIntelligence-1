@@ -116,9 +116,12 @@ export class ConsolidatedPDFProcessor {
         throw new Error('GOOGLE_API_KEY não configurada');
       }
       
+      // Preprocess text to extract only relevant reservation data
+      const cleanedText = this.extractRelevantData(text);
+      
       const prompt = `Extract reservation data from this text and return only JSON:
 
-${text.substring(0, 3000)}
+${cleanedText.substring(0, 2500)}
 
 Format: {"propertyName":"","guestName":"","guestEmail":"","guestPhone":"","checkInDate":"YYYY-MM-DD","checkOutDate":"YYYY-MM-DD","numGuests":0,"platform":"","reference":""}. Omit missing fields.`;
 
@@ -155,8 +158,8 @@ Format: {"propertyName":"","guestName":"","guestEmail":"","guestPhone":"","check
           console.log(`⚠️ Limite de tokens atingido na tentativa ${attempt}`);
           
           if (attempt >= 3) {
-            console.log('❌ Máximo de tentativas atingido - falha na extração');
-            throw new Error('MAX_TOKENS - Limite de tentativas excedido');
+            console.log('❌ Máximo de tentativas atingido - tentando extração manual');
+            return this.manualExtraction(text);
           }
           
           // Reduzir significativamente o texto para a próxima tentativa
@@ -275,6 +278,130 @@ Format: {"propertyName":"","guestName":"","guestEmail":"","guestPhone":"","check
     };
   }
   
+  /**
+   * Extrai apenas dados relevantes de reserva do texto, removendo repetições
+   */
+  private extractRelevantData(text: string): string {
+    const lines = text.split('\n');
+    const relevantLines: string[] = [];
+    const seenLines = new Set<string>();
+    
+    for (const line of lines) {
+      const trimmed = line.trim();
+      
+      // Skip empty lines and very short lines
+      if (trimmed.length < 3) continue;
+      
+      // Skip header-type repetitive content
+      if (trimmed.includes('Check-in') && trimmed.includes('Check-out') && trimmed.includes('Estado')) continue;
+      if (trimmed.includes('Alojamento') && trimmed.includes('Todos')) continue;
+      if (trimmed.includes('Edifício') && trimmed.includes('Não mostrar')) continue;
+      
+      // Focus on lines with actual data - names, emails, phones, dates, references
+      const hasEmail = trimmed.includes('@');
+      const hasPhone = /\+?\d{9,}/.test(trimmed);
+      const hasDate = /\d{2}-\d{2}-\d{4}/.test(trimmed);
+      const hasReference = /[A-Z]\d{3}-/.test(trimmed);
+      const hasName = /[A-Z][a-z]+\s+[A-Z][a-z]+/.test(trimmed);
+      const hasProperty = trimmed.includes('Almada') || trimmed.includes('Aroeira') || trimmed.includes('Nazare');
+      
+      // Include lines with actual reservation data
+      if (hasEmail || hasPhone || hasDate || hasReference || hasName || hasProperty) {
+        // Avoid duplicates
+        if (!seenLines.has(trimmed)) {
+          relevantLines.push(trimmed);
+          seenLines.add(trimmed);
+        }
+      }
+    }
+    
+    const result = relevantLines.slice(0, 50).join('\n'); // Limit to first 50 relevant lines
+    console.log(`📝 Texto original: ${text.length} chars → Texto filtrado: ${result.length} chars`);
+    return result;
+  }
+
+  /**
+   * Extração manual usando regex para casos onde AI falha
+   */
+  private manualExtraction(text: string): any {
+    console.log('🔧 Iniciando extração manual por regex...');
+    
+    const result: any = {};
+    
+    // Extract property names
+    const propertyPatterns = [
+      /Almada\s+[^\n]+/i,
+      /Aroeira\s+[IVX]+/i,
+      /Nazaré?\s+T\d/i,
+      /EXCITING\s+LISBON\s+[^\n]+/i
+    ];
+    
+    for (const pattern of propertyPatterns) {
+      const match = text.match(pattern);
+      if (match) {
+        result.propertyName = match[0].trim();
+        break;
+      }
+    }
+    
+    // Extract guest names (look for capitalized names)
+    const nameMatch = text.match(/([A-Z][a-z]+\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/);
+    if (nameMatch) {
+      result.guestName = nameMatch[1];
+    }
+    
+    // Extract email
+    const emailMatch = text.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+    if (emailMatch) {
+      result.guestEmail = emailMatch[1];
+    }
+    
+    // Extract phone numbers
+    const phoneMatch = text.match(/(\+\d{1,3}\s?\d{8,})/);
+    if (phoneMatch) {
+      result.guestPhone = phoneMatch[1];
+    }
+    
+    // Extract dates (DD-MM-YYYY format)
+    const dateMatches = text.match(/(\d{2}-\d{2}-\d{4})/g);
+    if (dateMatches && dateMatches.length >= 2) {
+      const date1 = this.convertDate(dateMatches[0]);
+      const date2 = this.convertDate(dateMatches[1]);
+      
+      // Assign earlier date as check-in, later as check-out
+      if (new Date(date1) <= new Date(date2)) {
+        result.checkInDate = date1;
+        result.checkOutDate = date2;
+      } else {
+        result.checkInDate = date2;
+        result.checkOutDate = date1;
+      }
+    }
+    
+    // Extract reference
+    const refMatch = text.match(/([A-Z]\d{3}-[A-Z0-9]+)/);
+    if (refMatch) {
+      result.reference = refMatch[1];
+    }
+    
+    // Extract number of guests (look for adult count)
+    const guestMatch = text.match(/(\d+)\s*(?:Adult|Adul)/i);
+    if (guestMatch) {
+      result.numGuests = parseInt(guestMatch[1]);
+    }
+    
+    console.log('✅ Extração manual concluída:', result);
+    return result;
+  }
+
+  /**
+   * Converte data de DD-MM-YYYY para YYYY-MM-DD
+   */
+  private convertDate(dateStr: string): string {
+    const [day, month, year] = dateStr.split('-');
+    return `${year}-${month}-${day}`;
+  }
+
   /**
    * Repara JSON incompleto truncado pelo limite de tokens
    */
