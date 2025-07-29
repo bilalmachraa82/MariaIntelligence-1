@@ -12,7 +12,19 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "e2e": "playwright test",
-    "lint": "eslint . --ext .ts,.tsx"
+    "lint": "eslint . --ext .ts,.tsx",
+    "railway:deploy": "node scripts/railway-integration.js deploy",
+    "railway:status": "node scripts/railway-integration.js status",
+    "railway:monitor": "node scripts/railway-integration.js monitor",
+    "railway:scale": "node scripts/railway-integration.js scale",
+    "railway:logs": "node scripts/railway-integration.js logs",
+    "railway:health": "node scripts/railway-integration.js health",
+    "railway:setup": "node scripts/railway-integration.js setup",
+    "railway:cleanup": "node scripts/railway-integration.js cleanup",
+    "deploy": "bash scripts/deploy-to-railway.sh",
+    "health-check": "node scripts/health-checks.js",
+    "start-monitoring": "node scripts/railway-monitoring.js start",
+    "start-scaling": "node scripts/railway-scaling.js start"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.37.0",
@@ -146,9 +158,10 @@
     "@types/ws": "^8.5.13",
     "@vitejs/plugin-react": "^4.3.2",
     "autoprefixer": "^10.4.20",
-    "drizzle-kit": "^0.31.1",
+    "drizzle-kit": "^0.18.1",
     "esbuild": "^0.25.0",
     "jest": "^29.7.0",
+    "pino-pretty": "^13.0.0",
     "playwright": "^1.52.0",
     "postcss": "^8.4.47",
     "supertest": "^7.1.0",
@@ -157,7 +170,7 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.19.4",
     "typescript": "5.6.3",
-    "vite": "^5.4.19"
+    "vite": "^7.0.6"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.8"

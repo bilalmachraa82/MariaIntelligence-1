@@ -1,0 +1,59 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "NIXPACKS",
+    "buildCommand": "npm run build"
+  },
+  "deploy": {
+    "startCommand": "npm start",
+    "healthcheckPath": "/health",
+    "healthcheckTimeout": 300
+  },
+  "environments": {
+    "production": {
+      "variables": {
+        "NODE_ENV": "production",
+        "PORT": "${{RAILWAY_PORT}}",
+        "DATABASE_URL": "${{DATABASE_URL}}",
+        "GOOGLE_GEMINI_API_KEY": "${{GOOGLE_GEMINI_API_KEY}}",
+        "MISTRAL_API_KEY": "${{MISTRAL_API_KEY}}",
+        "SESSION_SECRET": "${{SESSION_SECRET}}",
+        "ENABLE_DEMO_DATA": "false",
+        "ENABLE_STREAMLINED_OCR": "true",
+        "ENABLE_ADVANCED_NAME_MATCHING": "true",
+        "UPLOAD_MAX_SIZE": "10485760",
+        "UPLOAD_DIR": "/tmp/uploads",
+        "RATE_LIMIT_WINDOW_MS": "900000",
+        "RATE_LIMIT_MAX_REQUESTS": "100",
+        "MCP_MODE": "production",
+        "MCP_NAMESPACE": "maria-faz",
+        "MCP_MONITORING": "true"
+      }
+    },
+    "staging": {
+      "variables": {
+        "NODE_ENV": "staging",
+        "PORT": "${{RAILWAY_PORT}}",
+        "DATABASE_URL": "${{STAGING_DATABASE_URL}}",
+        "GOOGLE_GEMINI_API_KEY": "${{GOOGLE_GEMINI_API_KEY}}",
+        "MISTRAL_API_KEY": "${{MISTRAL_API_KEY}}",
+        "SESSION_SECRET": "${{STAGING_SESSION_SECRET}}",
+        "ENABLE_DEMO_DATA": "true",
+        "ENABLE_STREAMLINED_OCR": "true",
+        "ENABLE_ADVANCED_NAME_MATCHING": "true",
+        "UPLOAD_MAX_SIZE": "10485760",
+        "UPLOAD_DIR": "/tmp/uploads",
+        "RATE_LIMIT_WINDOW_MS": "900000",
+        "RATE_LIMIT_MAX_REQUESTS": "200",
+        "MCP_MODE": "staging",
+        "MCP_NAMESPACE": "maria-faz-staging",
+        "MCP_MONITORING": "true"
+      }
+    }
+  },
+  "regions": ["us-west1"],
+  "restart": {
+    "policy": "ON_FAILURE",
+    "maxRestarts": 10
+  }
+}

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Círculo exterior -->
-  <circle cx="40" cy="40" r="38" fill="white" stroke="#2979FF" stroke-width="3"/>
-  
-  <!-- Texto "MF" -->
-  <path d="M24.5 58V22H30.5L39 44.5L47.5 22H53.5V58H47.5V32L40 51.5H38L30.5 32V58H24.5Z" fill="#2979FF"/>
-</svg>

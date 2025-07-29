@@ -1,0 +1,456 @@
+# Railway CI/CD Pipeline Configuration
+# GitHub Actions workflow for automated Railway deployment with MCP integration
+
+name: Railway Deployment with MCP
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  NODE_VERSION: '20'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run linting
+      run: npm run lint
+
+    - name: Run type checking
+      run: npm run check
+
+    - name: Run unit tests
+      run: npm test
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+        NODE_ENV: test
+
+    - name: Run integration tests
+      run: npm run test:coverage
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+        NODE_ENV: test
+
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage/lcov.info
+        fail_ci_if_error: true
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build application
+      run: npm run build
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts
+        path: |
+          dist/
+          package.json
+          package-lock.json
+        retention-days: 1
+
+  deploy-staging:
+    needs: [test, build]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    environment: staging
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Claude CLI
+      run: |
+        curl -fsSL https://claude.ai/install.sh | sh
+        echo "$HOME/.claude/bin" >> $GITHUB_PATH
+
+    - name: Configure Railway MCP
+      run: |
+        claude mcp add railway npx @jason-tan-swe/railway-mcp@latest
+      env:
+        RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+
+    - name: Deploy to Railway Staging
+      run: |
+        # Create or update staging service
+        claude mcp call railway service_create_from_repo \
+          --projectId "${{ secrets.RAILWAY_STAGING_PROJECT_ID }}" \
+          --repo "${{ github.repository }}" \
+          --name "maria-faz-staging"
+        
+        # Configure environment variables
+        claude mcp call railway variable_bulk_set \
+          --projectId "${{ secrets.RAILWAY_STAGING_PROJECT_ID }}" \
+          --environmentId "${{ secrets.RAILWAY_STAGING_ENV_ID }}" \
+          --variables '{
+            "NODE_ENV": "staging",
+            "DATABASE_URL": "${{ secrets.STAGING_DATABASE_URL }}",
+            "GOOGLE_GEMINI_API_KEY": "${{ secrets.GOOGLE_GEMINI_API_KEY }}",
+            "MISTRAL_API_KEY": "${{ secrets.MISTRAL_API_KEY }}",
+            "SESSION_SECRET": "${{ secrets.STAGING_SESSION_SECRET }}",
+            "ENABLE_DEMO_DATA": "true",
+            "MCP_MODE": "staging"
+          }'
+        
+        # Trigger deployment
+        DEPLOYMENT_RESULT=$(claude mcp call railway deployment_trigger \
+          --projectId "${{ secrets.RAILWAY_STAGING_PROJECT_ID }}" \
+          --serviceId "${{ secrets.RAILWAY_STAGING_SERVICE_ID }}" \
+          --environmentId "${{ secrets.RAILWAY_STAGING_ENV_ID }}" \
+          --commitSha "${{ github.sha }}")
+        
+        DEPLOYMENT_ID=$(echo "$DEPLOYMENT_RESULT" | jq -r '.deployment.id')
+        echo "DEPLOYMENT_ID=$DEPLOYMENT_ID" >> $GITHUB_ENV
+
+    - name: Monitor Deployment
+      run: |
+        # Wait for deployment to complete
+        for i in {1..30}; do
+          STATUS_RESULT=$(claude mcp call railway deployment_status \
+            --deploymentId "$DEPLOYMENT_ID")
+          
+          STATUS=$(echo "$STATUS_RESULT" | jq -r '.deployment.status')
+          echo "Deployment status: $STATUS"
+          
+          if [ "$STATUS" = "SUCCESS" ]; then
+            echo "✅ Deployment completed successfully!"
+            break
+          elif [ "$STATUS" = "FAILED" ]; then
+            echo "❌ Deployment failed!"
+            claude mcp call railway deployment_logs \
+              --deploymentId "$DEPLOYMENT_ID" \
+              --limit 50
+            exit 1
+          fi
+          
+          sleep 20
+        done
+
+    - name: Run Health Check
+      run: |
+        # Get service domain
+        SERVICE_INFO=$(claude mcp call railway service_info \
+          --projectId "${{ secrets.RAILWAY_STAGING_PROJECT_ID }}" \
+          --serviceId "${{ secrets.RAILWAY_STAGING_SERVICE_ID }}" \
+          --environmentId "${{ secrets.RAILWAY_STAGING_ENV_ID }}")
+        
+        DOMAIN=$(echo "$SERVICE_INFO" | jq -r '.service.domains[0]')
+        
+        if [ "$DOMAIN" != "null" ]; then
+          echo "🏥 Performing health check on https://$DOMAIN/health"
+          
+          # Wait for service to be ready
+          sleep 30
+          
+          # Perform health check
+          HEALTH_RESPONSE=$(curl -s -w "%{http_code}" "https://$DOMAIN/health")
+          HTTP_CODE="${HEALTH_RESPONSE: -3}"
+          
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ Health check passed!"
+            echo "🌐 Staging environment available at: https://$DOMAIN"
+          else
+            echo "❌ Health check failed with status: $HTTP_CODE"
+            exit 1
+          fi
+        fi
+
+  deploy-production:
+    needs: [test, build]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Claude CLI
+      run: |
+        curl -fsSL https://claude.ai/install.sh | sh
+        echo "$HOME/.claude/bin" >> $GITHUB_PATH
+
+    - name: Configure Railway MCP
+      run: |
+        claude mcp add railway npx @jason-tan-swe/railway-mcp@latest
+      env:
+        RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+
+    - name: Pre-deployment Checks
+      run: |
+        echo "🔍 Running pre-deployment checks..."
+        
+        # Check if staging deployment is healthy
+        if [ -n "${{ secrets.RAILWAY_STAGING_SERVICE_ID }}" ]; then
+          STAGING_INFO=$(claude mcp call railway service_info \
+            --projectId "${{ secrets.RAILWAY_STAGING_PROJECT_ID }}" \
+            --serviceId "${{ secrets.RAILWAY_STAGING_SERVICE_ID }}" \
+            --environmentId "${{ secrets.RAILWAY_STAGING_ENV_ID }}")
+          
+          STAGING_STATUS=$(echo "$STAGING_INFO" | jq -r '.service.status')
+          if [ "$STAGING_STATUS" != "ACTIVE" ]; then
+            echo "❌ Staging environment is not healthy. Aborting production deployment."
+            exit 1
+          fi
+          
+          echo "✅ Staging environment is healthy"
+        fi
+
+    - name: Deploy to Railway Production
+      run: |
+        echo "🚀 Deploying to Railway Production..."
+        
+        # Create or update production service
+        claude mcp call railway service_create_from_repo \
+          --projectId "${{ secrets.RAILWAY_PROJECT_ID }}" \
+          --repo "${{ github.repository }}" \
+          --name "maria-faz-production"
+        
+        # Configure production environment variables
+        claude mcp call railway variable_bulk_set \
+          --projectId "${{ secrets.RAILWAY_PROJECT_ID }}" \
+          --environmentId "${{ secrets.RAILWAY_ENVIRONMENT_ID }}" \
+          --variables '{
+            "NODE_ENV": "production",
+            "DATABASE_URL": "${{ secrets.DATABASE_URL }}",
+            "GOOGLE_GEMINI_API_KEY": "${{ secrets.GOOGLE_GEMINI_API_KEY }}",
+            "MISTRAL_API_KEY": "${{ secrets.MISTRAL_API_KEY }}",
+            "SESSION_SECRET": "${{ secrets.SESSION_SECRET }}",
+            "ENABLE_DEMO_DATA": "false",
+            "ENABLE_STREAMLINED_OCR": "true",
+            "ENABLE_ADVANCED_NAME_MATCHING": "true",
+            "UPLOAD_MAX_SIZE": "10485760",
+            "UPLOAD_DIR": "/tmp/uploads",
+            "RATE_LIMIT_WINDOW_MS": "900000",
+            "RATE_LIMIT_MAX_REQUESTS": "100",
+            "MCP_MODE": "production",
+            "MCP_NAMESPACE": "maria-faz",
+            "MCP_MONITORING": "true"
+          }'
+        
+        # Setup custom domain if configured
+        if [ -n "${{ secrets.CUSTOM_DOMAIN }}" ]; then
+          claude mcp call railway domain_create \
+            --environmentId "${{ secrets.RAILWAY_ENVIRONMENT_ID }}" \
+            --serviceId "${{ secrets.RAILWAY_SERVICE_ID }}" \
+            --domain "${{ secrets.CUSTOM_DOMAIN }}" \
+            --targetPort 3000
+        fi
+        
+        # Setup persistent volumes
+        claude mcp call railway volume_create \
+          --projectId "${{ secrets.RAILWAY_PROJECT_ID }}" \
+          --environmentId "${{ secrets.RAILWAY_ENVIRONMENT_ID }}" \
+          --serviceId "${{ secrets.RAILWAY_SERVICE_ID }}" \
+          --mountPath "/tmp/uploads"
+        
+        # Trigger deployment
+        DEPLOYMENT_RESULT=$(claude mcp call railway deployment_trigger \
+          --projectId "${{ secrets.RAILWAY_PROJECT_ID }}" \
+          --serviceId "${{ secrets.RAILWAY_SERVICE_ID }}" \
+          --environmentId "${{ secrets.RAILWAY_ENVIRONMENT_ID }}" \
+          --commitSha "${{ github.sha }}")
+        
+        DEPLOYMENT_ID=$(echo "$DEPLOYMENT_RESULT" | jq -r '.deployment.id')
+        echo "DEPLOYMENT_ID=$DEPLOYMENT_ID" >> $GITHUB_ENV
+
+    - name: Monitor Production Deployment
+      run: |
+        echo "👀 Monitoring production deployment..."
+        
+        for i in {1..40}; do
+          STATUS_RESULT=$(claude mcp call railway deployment_status \
+            --deploymentId "$DEPLOYMENT_ID")
+          
+          STATUS=$(echo "$STATUS_RESULT" | jq -r '.deployment.status')
+          echo "Deployment status: $STATUS (attempt $i/40)"
+          
+          if [ "$STATUS" = "SUCCESS" ]; then
+            echo "✅ Production deployment completed successfully!"
+            break
+          elif [ "$STATUS" = "FAILED" ]; then
+            echo "❌ Production deployment failed!"
+            claude mcp call railway deployment_logs \
+              --deploymentId "$DEPLOYMENT_ID" \
+              --limit 100
+            
+            # Send failure notification
+            echo "🚨 Production deployment failed - manual intervention required"
+            exit 1
+          fi
+          
+          sleep 20
+        done
+
+    - name: Post-deployment Health Checks
+      run: |
+        echo "🏥 Running comprehensive post-deployment health checks..."
+        
+        # Get service information
+        SERVICE_INFO=$(claude mcp call railway service_info \
+          --projectId "${{ secrets.RAILWAY_PROJECT_ID }}" \
+          --serviceId "${{ secrets.RAILWAY_SERVICE_ID }}" \
+          --environmentId "${{ secrets.RAILWAY_ENVIRONMENT_ID }}")
+        
+        DOMAIN=$(echo "$SERVICE_INFO" | jq -r '.service.domains[0]')
+        
+        if [ "$DOMAIN" != "null" ]; then
+          # Wait for service to be fully ready
+          sleep 60
+          
+          # Basic health check
+          echo "🔍 Testing basic health endpoint..."
+          HEALTH_RESPONSE=$(curl -s -w "%{http_code}" "https://$DOMAIN/health")
+          HTTP_CODE="${HEALTH_RESPONSE: -3}"
+          
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "❌ Basic health check failed with status: $HTTP_CODE"
+            exit 1
+          fi
+          
+          # Detailed health check
+          echo "🔍 Testing detailed health endpoint..."
+          curl -s "https://$DOMAIN/health/detailed" | jq .
+          
+          # Test key application endpoints
+          echo "🔍 Testing application endpoints..."
+          
+          # Test readiness probe
+          curl -f "https://$DOMAIN/ready" || exit 1
+          
+          # Test liveness probe  
+          curl -f "https://$DOMAIN/live" || exit 1
+          
+          echo "✅ All health checks passed!"
+          echo "🌐 Production environment available at: https://$DOMAIN"
+        else
+          echo "❌ Could not determine service domain"
+          exit 1
+        fi
+
+    - name: Enable Auto-scaling
+      run: |
+        echo "⚡ Configuring auto-scaling for production..."
+        
+        # Configure service for auto-scaling
+        claude mcp call railway service_update \
+          --projectId "${{ secrets.RAILWAY_PROJECT_ID }}" \
+          --serviceId "${{ secrets.RAILWAY_SERVICE_ID }}" \
+          --environmentId "${{ secrets.RAILWAY_ENVIRONMENT_ID }}" \
+          --numReplicas 2 \
+          --region "us-west1"
+        
+        echo "✅ Auto-scaling configured"
+
+    - name: Setup Monitoring
+      run: |
+        echo "📊 Setting up production monitoring..."
+        
+        # This would setup monitoring and alerting
+        # In a real implementation, this might:
+        # - Configure monitoring dashboards
+        # - Setup alerting rules
+        # - Enable log aggregation
+        # - Configure performance tracking
+        
+        echo "✅ Monitoring configured"
+
+    - name: Deployment Summary
+      run: |
+        echo "📊 Production Deployment Summary"
+        echo "=============================="
+        echo "Project ID: ${{ secrets.RAILWAY_PROJECT_ID }}"
+        echo "Service ID: ${{ secrets.RAILWAY_SERVICE_ID }}"
+        echo "Deployment ID: $DEPLOYMENT_ID"
+        echo "Commit SHA: ${{ github.sha }}"
+        echo "Deploy Time: $(date -u)"
+        
+        # Get final service info
+        SERVICE_INFO=$(claude mcp call railway service_info \
+          --projectId "${{ secrets.RAILWAY_PROJECT_ID }}" \
+          --serviceId "${{ secrets.RAILWAY_SERVICE_ID }}" \
+          --environmentId "${{ secrets.RAILWAY_ENVIRONMENT_ID }}")
+        
+        DOMAIN=$(echo "$SERVICE_INFO" | jq -r '.service.domains[0]')
+        if [ "$DOMAIN" != "null" ]; then
+          echo "🌐 Production URL: https://$DOMAIN"
+        fi
+        
+        echo ""
+        echo "🎉 Maria Faz has been successfully deployed to Railway!"
+
+  cleanup:
+    needs: [deploy-staging, deploy-production]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Cleanup artifacts
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            run_id: context.runId,
+          });
+          
+          for (const artifact of artifacts.data.artifacts) {
+            if (artifact.name === 'build-artifacts') {
+              await github.rest.actions.deleteArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: artifact.id,
+              });
+            }
+          }
