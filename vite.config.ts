@@ -33,4 +33,17 @@ export default defineConfig({
     outDir: path.resolve(__dirname, "dist/public"),
     emptyOutDir: true,
   },
+  server: {
+    port: 3000,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5100',
+        changeOrigin: true,
+      },
+      '/health': {
+        target: 'http://localhost:5100',
+        changeOrigin: true,
+      }
+    }
+  },
 });
