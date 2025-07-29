@@ -13,6 +13,12 @@
   "env": {
     "NODE_ENV": "production"
   },
-  "installCommand": "npm install --legacy-peer-deps",
-  "framework": null
+  "installCommand": "npm cache clean --force && npm install --legacy-peer-deps",
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
