@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import DailyTasksDashboard from "@/components/dashboard/daily-tasks-dashboard-responsive";
 import NewModernDashboard from "@/components/dashboard/new-modern-dashboard";
-import { motion } from "framer-motion";
+import { motion } from "@/lib/motion-fallback";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

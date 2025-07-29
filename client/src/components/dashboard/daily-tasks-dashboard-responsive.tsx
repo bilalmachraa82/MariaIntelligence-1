@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { type Property, type Reservation, type Activity } from "@shared/schema";
-import { motion } from "framer-motion";
+import { motion } from "@/lib/motion-fallback";
 
 // UI Components
 import {

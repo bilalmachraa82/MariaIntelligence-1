@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { format, subDays } from "date-fns";
-import { motion } from "framer-motion";
+import { motion } from "@/lib/motion-fallback";
 import { type Reservation, type Activity } from "@shared/schema";
 
 // UI Components

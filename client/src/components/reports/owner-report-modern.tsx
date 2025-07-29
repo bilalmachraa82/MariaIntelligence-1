@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "@/lib/motion-fallback";
 import { format, parseISO } from "date-fns";
 import { 
   Card,

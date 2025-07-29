@@ -16,7 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { motion } from "framer-motion";
+import { motion } from "@/lib/motion-fallback";
 
 /**
  * Componente para baixar o manual do usuário em PDF com um visual ultra moderno

@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import NewModernDashboard from "@/components/dashboard/new-modern-dashboard";
 import DailyTasksDashboard from "@/components/dashboard/daily-tasks-dashboard-responsive";
-import { motion } from "framer-motion";
+import { motion } from "@/lib/motion-fallback";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, Activity, ArrowRight, Check, LogOut, Sparkles, BarChart2 } from "lucide-react";

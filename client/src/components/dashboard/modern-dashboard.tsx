@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { format, subDays } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "wouter";
-import { motion } from "framer-motion";
+// import { motion } from "@/lib/motion-fallback"; // Temporarily disabled for build
 import { 
   FileUp, 
   Calendar as CalendarIcon, 
