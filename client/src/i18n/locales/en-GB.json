@@ -1,0 +1,222 @@
+{
+  "translation": {
+    "quotation.undefined": "Property type not defined",
+    "settings": {
+      "title": "Settings",
+      "tabs": {
+        "general": "General",
+        "notifications": "Notifications",
+        "account": "Account",
+        "language": "Language", 
+        "integrations": "Integrations",
+        "api": "API",
+        "manual": "Manual"
+      },
+      "general": {
+        "title": "General Settings",
+        "description": "Manage your account's basic settings",
+        "timezone": "Time Zone",
+        "darkMode": "Dark Mode",
+        "saveSuccess": "Settings saved successfully",
+        "saveSuccessDesc": "Your changes have been applied successfully.",
+        "saveError": "Error saving settings"
+      },
+      "integrations": {
+        "title": "Integrations",
+        "description": "Connect with other platforms and services",
+        "aiStatus": "AI Services Status"
+      }
+    },
+    "aiServices": {
+      "statusTitle": "AI Services",
+      "statusDescription": "Status of artificial intelligence services",
+      "currentService": "Current service",
+      "geminiDescription": "Google AI service",
+      "mistralDescription": "Service replaced by Google Gemini",
+      "active": "Active",
+      "error": "Error",
+      "notConfigured": "Not configured",
+      "deprecated": "Deprecated",
+      "noData": "No information available",
+      "ready": "Ready to use"
+    },
+    "aiAssistant": {
+      "title": "Maria Assistant",
+      "tabs": {
+        "chat": "Chat",
+        "suggestions": "Suggestions",
+        "quickAccess": "Quick Access",
+        "tools": "Tools"
+      },
+      "chatTitle": "Maria Assistant",
+      "chatDescription": "Ask questions about properties, bookings and reports",
+      "attachFile": "Attach file",
+      "placeholder": "Type your message here...",
+      "showMore": "Show more",
+      "showLess": "Show less",
+      "welcomeMessage": "Hello! I'm Maria, your Maria Faz intelligent assistant. How can I help you today?",
+      "clearConversation": "New conversation",
+      "uploadDocument": "Upload document",
+      "allSuggestions": "All suggestions",
+      "allSuggestionsDesc": "Explore suggestions by category to get useful information",
+      "contextProperty": "Property",
+      "contextReservation": "Booking",
+      "contextReport": "Report",
+      "contextSuggestion": "Suggestion"
+    },
+    "navigation": {
+      "mainMenu": "Menu",
+      "mainAppNav": "Maria Faz main application navigation",
+      "home": "Home",
+      "properties": "Properties",
+      "bookings": "Bookings",
+      "finances": "Finances",
+      "reports": {
+        "financial": "Reports",
+        "owner": "Owner Reports",
+        "monthly": "Monthly Invoices",
+        "trends": "Trends"
+      },
+      "payments": {
+        "income": "Income",
+        "expenses": "Expenses"
+      },
+      "documents": "Documents",
+      "cleaning": "Cleaning",
+      "maintenance": "Maintenance",
+      "owners": "Owners",
+      "assistant": "Maria AI",
+      "documentScan": "Scanner",
+      "settings": "Settings",
+      "demoData": "Demo Data",
+      "mobileOptimized": "Mobile Optimized",
+      "categories": {
+        "main": "Main",
+        "finances": "Finances",
+        "operations": "Operations",
+        "tools": "Tools",
+        "utilities": "Utilities"
+      }
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Overview of your property rental business",
+      "period": "Period",
+      "export": "Export",
+      "overview": "Overview",
+      "totalRevenue": "Total Revenue",
+      "netProfit": "Net Profit",
+      "occupancyRate": "Occupancy Rate",
+      "detailedDescription": "Detailed analysis of revenue, expenses and profitability by property.",
+      "comingSoon": "Detailed analysis is under development. Coming soon!",
+      "backToOverview": "Back to Overview",
+      "noDataAvailable": "No data available.",
+      "details": "Details",
+      "target": "Target",
+      "totalReservations": "Total Bookings",
+      "revenueVsProfit": "Revenue vs Profit",
+      "financialBreakdown": "Financial Breakdown",
+      "scheduleMaintenance": "Schedule Maintenance",
+      "maintenanceDescription": "Broken shower in apartment 3B",
+      "contactSupplier": "Contact Supplier",
+      "supplierDescription": "Confirm delivery of new sheets",
+      "monthlyInvoices": "Prepare Monthly Invoices",
+      "invoicesDescription": "Send to owners by tomorrow",
+      "dailyTasks": "Daily Tasks",
+      "financialView": "Financial View",
+      "maintenanceTask": "Check air conditioning",
+      "maintenanceReported": "Reported by previous guest", 
+      "plumbingIssue": "Plumbing Issue",
+      "plumbingDescription": "Leak reported in kitchen"
+    },
+    "dailyTasks": {
+      "title": "Daily Tasks",
+      "todayDate": "Today",
+      "assistant": "Assistant",
+      "viewAll": "View Complete Dashboard",
+      "todayCheckins": "Today's Check-ins",
+      "todayCheckouts": "Today's Check-outs",
+      "pendingCleanings": "Cleanings",
+      "maintenanceIssues": "Maintenance",
+      "checkins": "Check-ins",
+      "checkinsDescription": "Today's and tomorrow's guest arrivals",
+      "viewAllReservations": "View All Bookings",
+      "checkouts": "Check-outs",
+      "checkoutsDescription": "Today's guest departures",
+      "viewAllCleanings": "View All Cleanings",
+      "maintenance": "Maintenance & Tasks",
+      "maintenanceDescription": "Pending repairs and tasks",
+      "viewAllTasks": "View All Tasks",
+      "noCheckins": "No check-ins scheduled for today",
+      "noCheckouts": "No check-outs scheduled for today",
+      "maintenanceIssues": "Maintenance Issues",
+      "viewProperty": "View Property",
+      "markResolved": "Mark Resolved",
+      "otherTasks": "Other Tasks"
+    },
+    "status": {
+      "pending": "Pending",
+      "attention": "Attention",
+      "upcoming": "Scheduled"
+    },
+    "cleaningTeams": {
+      "title": "Service Providers",
+      "addTeam": "Add Provider",
+      "searchPlaceholder": "Search providers...",
+      "teams": "Providers",
+      "schedule": "Schedule",
+      "allTeams": "All Providers",
+      "managementDescription": "Manage all service providers for your operation.",
+      "name": "Name",
+      "contact": "Contact",
+      "status": "Status",
+      "statusActive": "Active",
+      "scheduleDescription": "View and manage cleaning schedules.",
+      "viewSchedules": "View Schedules"
+    },
+    "reservations": {
+      "recentReservations": "Recent Bookings",
+      "recentReservationsSubtitle": "Most recent bookings across all properties"
+    },
+    "activities": {
+      "recentActivity": "Recent Activity",
+      "recentActivitySubtitle": "Record of actions and events in the system"
+    },
+    "demoData": {
+      "title": "Demo Data",
+      "description": "Load sample data to visualize dashboard features.",
+      "load": "Load Demo Data",
+      "loadTitle": "Load Demo Data",
+      "loadDescription": "Select which types of data you wish to generate for visualization.",
+      "owners": "Owners",
+      "ownersDesc": "Sample owners to associate with properties",
+      "properties": "Properties",
+      "propertiesDesc": "Rental properties with complete data",
+      "reservations": "Bookings",
+      "reservationsDesc": "Booking history and future bookings",
+      "activities": "Activities",
+      "activitiesDesc": "System activity history",
+      "reset": "Remove Demo Data",
+      "resetTitle": "Remove Demo Data",
+      "resetWarning": "This action will remove all data marked as demo. Real data will not be affected.",
+      "resetInfo": "All data marked as demo will be permanently removed. This action cannot be undone.",
+      "confirmReset": "Yes, remove data",
+      "footer": "Demo data is identified with [DEMO] and does not affect real data.",
+      "generateDescription": "Generate demo data to visualize features",
+      "warningText": "This is demo data and does not represent real transactions"
+    },
+    "common": {
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "logout": "Logout",
+      "nif": "Tax ID"
+    },
+    "pdfUpload": {
+      "uploadButton": "Import PDF"
+    },
+    "voiceInput": {
+      "temporaryDisabled": "Voice input temporarily unavailable",
+      "useTextInput": "Voice input is temporarily unavailable due to technical limitations. Please type your message in the text field."
+    }
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "navigation": {
+    "dashboard": "Dashboard",
+    "properties": "Properties",
+    "bookings": "Bookings",
+    "owners": "Owners",
+    "pdfUpload": "PDF Upload",
+    "cleaningTeams": "Cleaning Teams",
+    "reports": "Reports",
+    "settings": "Settings",
+    "aiAssistant": "Maria AI",
+    "pendingTasks": "Pending Tasks",
+    "requestMaintenance": "Request Maintenance",
+    "outgoingPayments": "Outgoing Payments",
+    "incomingPayments": "Incoming Payments",
+    "demoData": "Demo Data",
+    "maintenance": "Maintenance",
+    "payments": "Payments",
+    "cleaning": "Cleaning",
+    "documents": "Documents",
+    "assistant": "Maria AI",
+    "home": "Home",
+    "operations": "Operations",
+    "reports": {
+      "financial": "Financial",
+      "invoices": "Invoices",
+      "analytics": "Analytics"
+    },
+    "payments": {
+      "income": "Income",
+      "expenses": "Expenses"
+    },
+    "categories": {
+      "main": "Main",
+      "tools": "Tools",
+      "management": "Management",
+      "finances": "Finances",
+      "operations": "Operations",
+      "settings": "Settings",
+      "utilities": "Utilities"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "search": "Search...",
+    "filter": "Filter",
+    "name": "Name",
+    "status": "Status",
+    "actions": "Actions",
+    "language": "Language",
+    "profile": "Profile",
+    "help": "Help",
+    "logout": "Logout",
+    "confirm": "Confirm"
+  },
+  "demoData": {
+    "title": "Demo Data",
+    "description": "Load demo data to visualize dashboard functionality.",
+    "load": "Load demo data",
+    "loadTitle": "Load demo data",
+    "loadDescription": "Select which types of data you want to generate for visualization.",
+    "owners": "Owners",
+    "ownersDesc": "Sample owners to associate with properties",
+    "properties": "Properties",
+    "propertiesDesc": "Rental properties with complete data",
+    "reservations": "Reservations",
+    "reservationsDesc": "History and future reservations",
+    "activities": "Activities",
+    "activitiesDesc": "System activity history",
+    "reset": "Remove demo data",
+    "resetTitle": "Remove demo data",
+    "resetWarning": "This action will remove all data marked as demo. Real data will not be affected.",
+    "resetInfo": "All data marked as demo will be permanently removed. This action cannot be undone.",
+    "confirmReset": "Yes, remove data",
+    "footer": "Demo data is identified with [DEMO] and does not affect real data."
+  },
+  "dashboard": {
+    "details": "Details",
+    "target": "Target",
+    "totalReservations": "Total Reservations",
+    "revenueVsProfit": "Revenue vs Profit",
+    "financialBreakdown": "Financial Breakdown",
+    "detailedDescription": "Detailed analysis of revenue, expenses, and profitability by property.",
+    "comingSoon": "Detailed analysis in development. Coming soon!",
+    "backToOverview": "Back to Overview",
+    "noDataAvailable": "No data available."
+  },
+  "reservations": {
+    "recentReservations": "Recent Reservations",
+    "recentReservationsSubtitle": "Most recent reservations across all properties"
+  },
+  "activities": {
+    "recentActivity": "Recent Activity",
+    "recentActivitySubtitle": "Log of actions and events in the system"
+  }
+}

@@ -1,18 +1,324 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@import '@fontsource/playfair-display/400.css';
+@import '@fontsource/playfair-display/500.css';
+@import '@fontsource/playfair-display/700.css';
+@import '@fontsource/open-sans/400.css';
+@import '@fontsource/open-sans/500.css';
+@import '@fontsource/open-sans/600.css';
+@import '@fontsource/open-sans/700.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos personalizados para Markdown no chat */
+.markdown-content {
+  @apply text-sm leading-relaxed;
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4 {
+  @apply font-semibold my-2;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.markdown-content h1 {
+  @apply text-lg;
+}
+
+.markdown-content h2 {
+  @apply text-base;
+}
+
+.markdown-content h3,
+.markdown-content h4 {
+  @apply text-sm;
+}
+
+.markdown-content p {
+  @apply my-1.5;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  @apply pl-4 my-1.5;
+}
+
+.markdown-content ul {
+  @apply list-disc;
+}
+
+.markdown-content ol {
+  @apply list-decimal;
+}
+
+.markdown-content li {
+  @apply my-0.5;
+}
+
+.markdown-content pre {
+  @apply my-2 p-2 rounded bg-muted/50 overflow-x-auto text-xs;
+}
+
+.markdown-content code {
+  @apply px-1 py-0.5 rounded bg-muted/50 text-xs;
+}
+
+.markdown-content blockquote {
+  @apply pl-2 my-2 border-l-2 border-primary/30 italic;
+}
+
+.markdown-content a {
+  @apply text-primary underline;
+}
+
+.markdown-content table {
+  @apply w-full my-2 border-collapse;
+}
+
+.markdown-content th,
+.markdown-content td {
+  @apply border border-border/50 px-2 py-1 text-xs;
+}
+
+.markdown-content th {
+  @apply bg-muted/30;
+}
+
+:root {
+  --primary: #E5A4A4;
+  --primary-light: #F8E6E6;
+  --accent: #98D8D8;
+  --dark: #2C2C2C;
+  --gray: #757575;
+  --white: #FFFFFF;
+  
+  /* Variáveis de tema claro (padrão) */
+  --background: 0 0% 100%;
+  --foreground: 222 47% 11%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --ring: 355 77% 77%;
+}
+
+.dark {
+  /* Variáveis de tema escuro */
+  --background: 222 47% 11%;
+  --foreground: 210 40% 98%;
+  --card: 222 47% 11%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222 47% 11%;
+  --popover-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --ring: 355 77% 77%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply antialiased bg-background text-foreground;
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+  }
+
+  h1 {
+    @apply text-2xl font-bold md:text-3xl lg:text-4xl xl:text-5xl tracking-tight;
+  }
+
+  h2 {
+    @apply text-xl font-bold md:text-2xl lg:text-3xl xl:text-4xl tracking-tight;
+  }
+
+  h3 {
+    @apply text-lg font-bold md:text-xl lg:text-2xl xl:text-3xl tracking-tight;
+  }
+  
+  p {
+    @apply text-sm md:text-base leading-relaxed;
+  }
+  
+  /* Container com menor padding em mobile */
+  .container {
+    @apply px-4 md:px-6 mx-auto;
+  }
+  
+  /* Espaçamento vertical mobile-first */
+  .content-section {
+    @apply py-4 md:py-6 lg:py-8;
+  }
+  
+  .section-header {
+    @apply mb-4 md:mb-6;
+  }
+}
+
+@layer components {
+  /* Gradientes e efeitos visuais */
+  .card-gradient {
+    @apply bg-gradient-to-br from-primary-light to-white dark:from-primary/20 dark:to-background;
+  }
+  
+  .accent-gradient {
+    @apply bg-gradient-to-br from-accent to-white dark:from-accent/20 dark:to-background;
+  }
+
+  .primary-gradient {
+    @apply bg-gradient-to-br from-primary to-primary-light dark:from-primary/50 dark:to-primary/20;
+  }
+  
+  /* Classe para gráficos de alto contraste */
+  .high-contrast-chart {
+    @apply bg-white/30 p-2 rounded-lg;
+  }
+  
+  .high-contrast-chart svg text {
+    @apply fill-black !important;
+  }
+  
+  .high-contrast-chart [data-testid="tremor-chart"] {
+    @apply !text-black;
+  }
+  
+  .high-contrast-chart [data-testid="tremor-chart"] path,
+  .high-contrast-chart [data-testid="tremor-chart"] line {
+    @apply !stroke-gray-400;
+  }
+  
+  /* Sobrescrever cores do SVG para garantir visibilidade */
+  [data-testid="tremor-chart"] path.recharts-sector {
+    @apply !fill-fuchsia-500;
+  }
+  
+  [data-testid="tremor-chart"] path.recharts-rectangle {
+    @apply !fill-fuchsia-500;
+  }
+
+  .glass-effect {
+    @apply bg-white/15 backdrop-blur border border-white/20 dark:bg-black/20;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
+  }
+  
+  /* Cartões com bordas arredondadas e sombras */
+  .card {
+    @apply rounded-lg border shadow-sm p-4 bg-white dark:bg-slate-900 transition-all duration-200;
+  }
+  
+  .card-hover {
+    @apply hover:shadow-md hover:scale-[1.01] transition-all duration-200;
+  }
+  
+  /* Mobile-friendly buttons */
+  .btn-mobile {
+    @apply flex items-center justify-center w-full py-3 rounded-lg md:w-auto;
+  }
+  
+  /* Navbars responsivos */
+  .mobile-nav {
+    @apply fixed bottom-0 left-0 right-0 flex items-center justify-between bg-white dark:bg-slate-900 border-t p-2 md:hidden z-10;
+  }
+  
+  .mobile-nav-item {
+    @apply flex flex-col items-center justify-center p-2 text-xs;
+  }
+  
+  /* Lista adaptável para mobile e desktop */
+  .responsive-list {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
+  }
+  
+  /* Layout em coluna (mobile) ou em linha (desktop) */
+  .flex-col-md-row {
+    @apply flex flex-col md:flex-row gap-4;
+  }
+  
+  /* Forms responsivos */
+  .form-container {
+    @apply space-y-4 md:space-y-6;
+  }
+  
+  .form-row {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+  }
+  
+  /* Botões flutuantes para mobile (FAB) */
+  .floating-action-button {
+    @apply fixed bottom-20 right-4 rounded-full p-4 shadow-lg bg-primary text-white z-20 md:hidden;
+  }
+  
+  /* Status badges */
+  .status-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .status-badge-pending {
+    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
+  }
+  
+  .status-badge-success {
+    @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
+  }
+  
+  .status-badge-error {
+    @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200;
+  }
+  
+  /* Estilizações específicas para aplicativo Maria Faz */
+  .maria-faz-section {
+    @apply rounded-lg border bg-white dark:bg-slate-900 p-4 shadow-sm;
+  }
+  
+  /* Seção específica para Manutenção e Pagamentos */
+  .maintenance-card {
+    @apply border-l-4 border-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-r-lg;
+  }
+  
+  .payment-card {
+    @apply border-l-4 border-green-400 bg-green-50 dark:bg-green-900/20 p-4 rounded-r-lg;
+  }
+  
+  /* Estilizações para tema escuro adicionais */
+  .dark .shadow-card {
+    @apply shadow-lg shadow-slate-900/10;
+  }
+  
+  .dark .hover-card {
+    @apply hover:bg-slate-800/50;
+  }
+  
+  /* Adaptações para toque em dispositivos móveis */
+  @media (max-width: 768px) {
+    .touch-target {
+      @apply min-h-[44px] min-w-[44px]; /* Área de toque mínima recomendada */
+    }
+    
+    .touch-list-item {
+      @apply py-3; /* Maior espaçamento vertical para itens de lista em mobile */
+    }
+  }
 }

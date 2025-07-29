@@ -1,67 +1,135 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
+/* ─── Carregar variáveis .env logo no arranque ───────── */
+import 'dotenv/config';
 
-// Load environment variables
-dotenv.config();
+/* ─── Imports do servidor ────────────────────────────── */
+import express, { Request, Response, NextFunction } from 'express';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import pino from 'pino';
+import pinoHttp from 'pino-http';
+import { registerRoutes } from './routes';
+import { setupVite, serveStatic, log } from './vite';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
+/* ─── Inicialização da app ─────────────────────────── */
+console.log('Inicializando aplicação…');
 const app = express();
-const PORT = process.env.PORT || 5100;
+export { app };
 
-// Middleware
-app.use(cors());
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+/* ─── Configuração de segurança ───────────────────── */
+// Helmet para proteção de headers HTTP
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "blob:"],
+      connectSrc: ["'self'", "https://*"],
+    },
+  },
+  crossOriginEmbedderPolicy: false,
+}));
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    timestamp: new Date().toISOString(),
-    service: 'Maria Faz API',
-    version: '1.0.0',
-    environment: process.env.NODE_ENV || 'development'
-  });
+// Rate limiting para proteção contra ataques de força bruta
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // limite de 100 requisições por janela
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Demasiadas requisições, por favor tente novamente mais tarde.' }
 });
 
-// API routes
-app.get('/api/status', (req, res) => {
-  res.json({
-    message: 'Maria Faz API está funcionando!',
-    database: process.env.DATABASE_URL ? 'Connected' : 'Not configured',
-    ocr: 'Available',
-    timestamp: new Date().toISOString()
-  });
+// Aplicar rate limiting apenas às rotas da API
+app.use('/api/', apiLimiter);
+
+// Configurar Pino para logs em formato JSON
+const logger = pino({
+  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+  transport: process.env.NODE_ENV !== 'production' ? {
+    target: 'pino-pretty',
+    options: {
+      colorize: true,
+      translateTime: 'SYS:dd-mm-yyyy HH:MM:ss',
+      ignore: 'pid,hostname',
+    }
+  } : undefined,
 });
 
-// Serve static files in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../dist/public')));
+// Middleware de logging HTTP com Pino
+app.use(pinoHttp({
+  logger,
+  customLogLevel: function (req, res, err) {
+    if (res.statusCode >= 400 && res.statusCode < 500) return 'warn';
+    if (res.statusCode >= 500 || err) return 'error';
+    if (req.method === 'POST') return 'info';
+    return 'debug';
+  },
+  // Excluir headers sensíveis dos logs
+  redact: {
+    paths: ['req.headers.authorization', 'req.headers.cookie'],
+    remove: true
+  }
+}));
+
+// Parsers para JSON e formulários
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+/* End‑point de saúde */
+app.get('/api/health', (_req, res) => {
+  res.json({ status: 'ok', time: new Date().toISOString() });
+});
+
+/* Logger simples p/ rotas /api */
+app.use((req, res, next) => {
+  const start = Date.now();
+  const path = req.path;
+  let captured: any;
+
+  const originalJson = res.json;
+  res.json = function (body: any) {
+    captured = body;
+    return originalJson.call(this, body);
+  };
+
+  res.on('finish', () => {
+    if (path.startsWith('/api')) {
+      const dur = Date.now() - start;
+      let line = `${req.method} ${path} ${res.statusCode} in ${dur}ms`;
+      if (captured) line += ` :: ${JSON.stringify(captured)}`;
+      if (line.length > 120) line = line.slice(0, 119) + '…';
+      log(line);
+    }
+  });
+
+  next();
+});
+
+/* ─── Bootstrap async ────────────────────────────────── */
+(async () => {
+  const server = await registerRoutes(app);
+
+  /* Error‑handler */
+  app.use(
+    (err: any, _req: Request, res: Response, _next: NextFunction) => {
+      const status = err.status || err.statusCode || 500;
+      res.status(status).json({ message: err.message || 'Internal Error' });
+      console.error(err);
+    },
+  );
+
+  /* Vite em dev, static em prod */
+  if (app.get('env') === 'development') {
+    await setupVite(app, server);
+  } else {
+    serveStatic(app);
+  }
+
+  /* ─── Listen (host + port separados) ───────────────── */
+  // O servidor já foi inicializado na função registerRoutes
+  // Apenas log da informação
+  const port = Number(process.env.PORT) || 5100;
+  const host = process.env.HOST || '0.0.0.0';
   
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../dist/public/index.html'));
-  });
-}
-
-// Error handling middleware
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error('Error:', err);
-  res.status(500).json({ 
-    error: 'Internal Server Error',
-    message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
-  });
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Maria Faz Server running on port ${PORT}`);
-  console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🔗 Health check: http://localhost:${PORT}/health`);
-});
-
-export default app;
+  console.log(`Server listening on port ${port}`);
+})();

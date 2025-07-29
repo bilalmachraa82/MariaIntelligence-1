@@ -1,10 +1,8 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import { createRoot } from "react-dom/client";
+import App from "./App";
+import "./index.css";
+import "./animations.css"; // Importando animações
+import "./styles/chart-styles.css"; // Importando estilos dos gráficos
+import "./i18n/config"; // Importando configuração i18n
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-)
+createRoot(document.getElementById("root")!).render(<App />);
