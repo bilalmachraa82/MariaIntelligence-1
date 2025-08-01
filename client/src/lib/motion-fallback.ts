@@ -1,4 +1,6 @@
 // Fallback for framer-motion during build
+import * as React from 'react';
+
 export const motion = {
   div: ({ children, className, ...props }) => {
     return React.createElement('div', { className, ...props }, children);
