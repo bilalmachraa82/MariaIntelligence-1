@@ -1,5 +1,19 @@
 {
   "mcpServers": {
+    "vercel-api-mcp-fork": {
+      "command": "wsl",
+      "args": [
+        "npx",
+        "-y",
+        "@smithery/cli@latest",
+        "run",
+        "@ssdavidai/vercel-api-mcp-fork",
+        "--key",
+        "da60059a-5384-43a1-a941-0a88c3197fd0",
+        "--profile",
+        "numerous-mackerel-ASTWTK"
+      ]
+    },
     "supabase": {
       "command": "npx",
       "args": [

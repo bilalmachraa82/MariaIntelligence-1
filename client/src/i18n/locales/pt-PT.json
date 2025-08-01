@@ -32,7 +32,8 @@
       "markResolved": "Marcar Resolvido",
       "otherTasks": "Outras Tarefas",
       "viewAllTasks": "Ver Todas as Tarefas",
-      "viewReports": "Ver Relatórios"
+      "viewReports": "Ver Relatórios",
+      "noMaintenanceTasks": "Não há tarefas de manutenção pendentes"
     },
     "voiceInput": {
       "temporaryDisabled": "Entrada por voz temporariamente indisponível",
