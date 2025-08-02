@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { motion, AnimatePresence } from "framer-motion";
+
 import { format, parseISO } from "date-fns";
 import { 
   Card,
@@ -74,6 +74,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PropertyReservationsTable } from "@/components/reports/property-reservations-table";
+import { motion, AnimatePresence } from "@/lib/motion-fallback";
 
 // A interface FixedPaymentInfo é importada de use-owner-report.ts
 

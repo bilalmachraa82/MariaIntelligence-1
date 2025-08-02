@@ -48,7 +48,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { motion, AnimatePresence } from "framer-motion";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -56,6 +56,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { cn } from "@/lib/utils";
 import { useProperties } from "@/hooks/use-properties";
 import { useReservations } from "@/hooks/use-reservations";
+import { motion, AnimatePresence } from "@/lib/motion-fallback";
 
 // Interfaces para os componentes do assistente
 interface SuggestionCardProps {

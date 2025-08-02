@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { motion, AnimatePresence } from "framer-motion";
+
 import { jsPDF } from "jspdf";
 import { saveAs } from "file-saver";
 import {
@@ -59,6 +59,7 @@ import { cn, formatCurrency } from "@/lib/utils";
 import { Card as ShadcnCard, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DateRange } from "@/components/ui/date-range-picker";
+import { motion, AnimatePresence } from "@/lib/motion-fallback";
 
 // Definição dos tipos
 interface TrendsReportProps {

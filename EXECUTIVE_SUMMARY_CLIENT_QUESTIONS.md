@@ -28,20 +28,20 @@ Realizei uma análise arquitetural completa do sistema Maria Faz com 3 agentes e
 ### 🔴 URGENTE - Decisões de Arquitetura
 
 **P1: Offline-First é realmente necessário?**
-- O sistema DEVE funcionar 100% sem internet?
-- OU pode funcionar online com cache local?
-- Isto impacta TODO o desenvolvimento (80-120 horas extras)
+- O sistema DEVE funcionar 100% sem internet? nao é necessario acho ate melhor funcionar online nao precisamos de funcionar offline
+- OU pode funcionar online com cache local?NA
+- Isto impacta TODO o desenvolvimento (80-120 horas extras) ja respondido
 
 **P2: Importação PDF - Qual o escopo exato?**
-- Quais tipos de PDF? (Booking.com, Airbnb, outros?)
-- Quantos formatos diferentes?
-- Precisa reconhecer TODOS os campos ou apenas básicos?
-- Volume esperado? (10, 100, 1000 PDFs/mês?)
+- Quais tipos de PDF? (Booking.com, Airbnb, outros?) vou adicionar exemplos que tenho para analisares e testar, mas nao te esqueca que tens todos os ficheiro q comença por "test-..."  q ja foram criado para fazer isso.  se forem irelevante ou redundantes apaga e cria os teus
+- Quantos formatos diferentes?  ja falamos sobre isso mas basicamente ha uns que tem check in e check out na mesma pagina e outros que tem em pdf diferentes 
+- Precisa reconhecer TODOS os campos ou apenas básicos?  todos necessario para gerir as reservas ve os campos fundamentais e outros poden ser opcionais
+- Volume esperado? (10, 100, 1000 PDFs/mês?) penso que deve ter no maximo 100 por mes
 
 **P3: Dados Demo ou Sistema Vazio?**
-- Entregar com dados de exemplo?
-- OU completamente vazio?
-- Precisa tutorial/onboarding?
+- Entregar com dados de exemplo? nao so quero dados reais.
+- OU completamente vazio? sim 
+- Precisa tutorial/onboarding? seria optimo mas a prioriedade é funcionar o site
 
 ### 🟡 IMPORTANTE - Funcionalidades
 
@@ -65,24 +65,24 @@ Atualmente temos 11 módulos:
 - Apenas responder perguntas?
 - Executar ações no sistema?
 - Analisar documentos importados?
-- Sugerir otimizações?
+- Sugerir otimizações? diz-me tu quais as best practic e aplica aqui
 
 **P6: Segurança e Privacidade**
-- Dados ficam APENAS no navegador do usuário?
-- Precisa backup/export de dados?
-- Requisitos LGPD/GDPR?
+- Dados ficam APENAS no navegador do usuário? temos uma base de dados nao? neon?
+- Precisa backup/export de dados? sim tudo no neon
+- Requisitos LGPD/GDPR? nao é prioritario mas desejavel
 
 ### 🟢 DEPLOYMENT - Decisões Finais
 
 **P7: Ambiente de Produção**
-- Continua no Vercel?
-- Domínio próprio já existe?
-- Certificado SSL necessário?
+- Continua no Vercel? sim
+- Domínio próprio já existe? ainda nao
+- Certificado SSL necessário? diz-me tu
 
 **P8: Suporte e Manutenção**
-- Quem mantém após entrega?
-- Precisa documentação técnica?
-- Treinamento para usuários?
+- Quem mantém após entrega? nos ( eu)
+- Precisa documentação técnica? nao
+- Treinamento para usuários? seria desejavel sim mas somente depois de tudo funcionar
 
 ## 📊 Estimativas baseadas nas respostas
 
