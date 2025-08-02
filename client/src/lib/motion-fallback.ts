@@ -1,29 +1,62 @@
-// Fallback for framer-motion during build
-import * as React from 'react';
+import React from 'react';
+
+// Fallback for AnimatePresence
+export const AnimatePresence: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+  return React.createElement(React.Fragment, null, children);
+};
+
+// Fallback for motion components
+const createMotionFallback = (Component: React.ElementType) => {
+  return React.forwardRef<any, any>((props, ref) => {
+    const {
+      initial,
+      animate,
+      exit,
+      transition,
+      whileHover,
+      whileTap,
+      layout,
+      layoutId,
+      ...rest
+    } = props;
+    return React.createElement(Component, { ref, ...rest });
+  });
+};
 
 export const motion = {
-  div: ({ children, className, ...props }) => {
-    return React.createElement('div', { className, ...props }, children);
-  },
-  section: ({ children, className, ...props }) => {
-    return React.createElement('section', { className, ...props }, children);
-  },
-  span: ({ children, className, ...props }) => {
-    return React.createElement('span', { className, ...props }, children);
-  },
-  p: ({ children, className, ...props }) => {
-    return React.createElement('p', { className, ...props }, children);
-  },
-  h1: ({ children, className, ...props }) => {
-    return React.createElement('h1', { className, ...props }, children);
-  },
-  h2: ({ children, className, ...props }) => {
-    return React.createElement('h2', { className, ...props }, children);
-  },
-  h3: ({ children, className, ...props }) => {
-    return React.createElement('h3', { className, ...props }, children);
-  },
-  button: ({ children, className, ...props }) => {
-    return React.createElement('button', { className, ...props }, children);
-  }
+  div: createMotionFallback('div'),
+  span: createMotionFallback('span'),
+  p: createMotionFallback('p'),
+  h1: createMotionFallback('h1'),
+  h2: createMotionFallback('h2'),
+  h3: createMotionFallback('h3'),
+  h4: createMotionFallback('h4'),
+  h5: createMotionFallback('h5'),
+  h6: createMotionFallback('h6'),
+  button: createMotionFallback('button'),
+  a: createMotionFallback('a'),
+  ul: createMotionFallback('ul'),
+  li: createMotionFallback('li'),
+  img: createMotionFallback('img'),
+  svg: createMotionFallback('svg'),
+  path: createMotionFallback('path'),
+  section: createMotionFallback('section'),
+  form: createMotionFallback('form'),
+  input: createMotionFallback('input'),
+  textarea: createMotionFallback('textarea'),
+  select: createMotionFallback('select'),
+  option: createMotionFallback('option'),
+  label: createMotionFallback('label'),
+  table: createMotionFallback('table'),
+  thead: createMotionFallback('thead'),
+  tbody: createMotionFallback('tbody'),
+  tr: createMotionFallback('tr'),
+  td: createMotionFallback('td'),
+  th: createMotionFallback('th'),
+  nav: createMotionFallback('nav'),
+  header: createMotionFallback('header'),
+  footer: createMotionFallback('footer'),
+  main: createMotionFallback('main'),
+  aside: createMotionFallback('aside'),
+  article: createMotionFallback('article'),
 };

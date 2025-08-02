@@ -3,44 +3,36 @@ import 'dotenv/config';
 
 /* ─── Imports do servidor ────────────────────────────── */
 import express, { Request, Response, NextFunction } from 'express';
-import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
 import pino from 'pino';
 import pinoHttp from 'pino-http';
 import { registerRoutes } from './routes';
 import { setupVite, serveStatic, log } from './vite';
 
+/* ─── Imports de segurança ─────────────────────────── */
+import {
+  securityMiddlewareStack,
+  apiRateLimiter,
+  pdfImportRateLimiter,
+  strictRateLimiter,
+  securityLogger
+} from './middleware/security';
+
 /* ─── Inicialização da app ─────────────────────────── */
-console.log('Inicializando aplicação…');
+console.log('Inicializando aplicação com segurança aprimorada…');
 const app = express();
 export { app };
 
-/* ─── Configuração de segurança ───────────────────── */
-// Helmet para proteção de headers HTTP
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", "data:", "blob:"],
-      connectSrc: ["'self'", "https://*"],
-    },
-  },
-  crossOriginEmbedderPolicy: false,
-}));
+/* ─── Configuração de segurança aprimorada ───────────────────── */
+// Aplicar stack completo de middleware de segurança
+app.use(securityMiddlewareStack);
 
-// Rate limiting para proteção contra ataques de força bruta
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100, // limite de 100 requisições por janela
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: 'Demasiadas requisições, por favor tente novamente mais tarde.' }
-});
-
-// Aplicar rate limiting apenas às rotas da API
-app.use('/api/', apiLimiter);
+// Rate limiting diferenciado por tipo de operação
+app.use('/api/', apiRateLimiter); // 100 req/15min para API geral
+app.use('/api/upload', pdfImportRateLimiter); // 10 req/hour para upload de PDF
+app.use('/api/ocr', pdfImportRateLimiter); // 10 req/hour para OCR
+app.use('/api/ai', strictRateLimiter); // 20 req/hour para operações de IA
+app.use('/api/gemini', strictRateLimiter); // 20 req/hour para Gemini API
+app.use('/api/assistant', strictRateLimiter); // 20 req/hour para assistente
 
 // Configurar Pino para logs em formato JSON
 const logger = pino({

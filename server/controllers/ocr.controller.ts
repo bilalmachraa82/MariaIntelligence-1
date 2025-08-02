@@ -1,6 +1,6 @@
 /**
  * Controlador para OCR de documentos
- * Suporta múltiplos fornecedores: OpenRouter (Mistral OCR), RolmOCR e fallback com extrator nativo (pdf-parse)
+ * Suporta múltiplos fornecedores: Mistral OCR API, OpenRouter, RolmOCR e fallback com extrator nativo (pdf-parse)
  */
 
 import { Request, Response } from 'express';
@@ -17,11 +17,12 @@ const aiAdapter = AIAdapter.getInstance();
 const handwritingDetector = new HandwritingDetector();
 
 // Definição de tipos para serviços OCR
-type OCRService = 'mistral' | 'openrouter' | 'rolm' | 'native' | 'auto';
+type OCRService = 'mistral' | 'mistral-ocr' | 'openrouter' | 'rolm' | 'native' | 'auto';
 
 // Mapeamento entre tipos OCRService e AIServiceType
 const serviceTypeMap: Record<OCRService, AIServiceType> = {
-  mistral: AIServiceType.OPENROUTER, // Mistral é fornecido via OpenRouter
+  mistral: AIServiceType.MISTRAL_OCR, // Mistral OCR API dedicada
+  'mistral-ocr': AIServiceType.MISTRAL_OCR, // Alias para Mistral OCR
   openrouter: AIServiceType.OPENROUTER,
   rolm: AIServiceType.ROLM,
   native: AIServiceType.AUTO, // Usando AUTO como equivalente para o modo nativo
@@ -77,7 +78,7 @@ export async function postOcr(req: Request, res: Response) {
     let provider = (req.query.provider as string) || 'auto';
     
     // Se for "auto", verificar se o documento contém manuscritos
-    // Nova ordem de prioridade: OpenRouter (Mistral) > RolmOCR > Extrator nativo
+    // Nova ordem de prioridade: Mistral OCR API > OpenRouter > RolmOCR > Extrator nativo
     if (provider === 'auto') {
       try {
         // Verificar se o documento contém manuscritos
@@ -89,17 +90,22 @@ export async function postOcr(req: Request, res: Response) {
           provider = 'rolm';
           console.log('🖋️ Detectado manuscrito, usando RolmOCR');
         }
-        // 2. Se tivermos OpenRouter, usar como primeira opção para texto normal
+        // 2. Se tivermos Mistral OCR, usar como primeira opção
+        else if (process.env.MISTRAL_API_KEY) {
+          provider = 'mistral-ocr';
+          console.log('🚀 Usando Mistral OCR API como provedor primário');
+        }
+        // 3. Se tivermos OpenRouter, usar como segunda opção
         else if (process.env.OPENROUTER_API_KEY) {
           provider = 'openrouter';
-          console.log('🔄 Usando OpenRouter (Mistral) como provedor primário OCR');
+          console.log('🔄 Usando OpenRouter como provedor secundário OCR');
         }
-        // 3. Fallback para RolmOCR mesmo para texto normal se OpenRouter não estiver disponível
+        // 4. Fallback para RolmOCR mesmo para texto normal
         else if (process.env.HF_TOKEN) {
           provider = 'rolm';
-          console.log('🔄 OpenRouter indisponível, usando RolmOCR como fallback');
+          console.log('🔄 Mistral e OpenRouter indisponíveis, usando RolmOCR como fallback');
         }
-        // 4. Último recurso: extrator nativo
+        // 5. Último recurso: extrator nativo
         else {
           provider = 'native';
           console.log('📄 Nenhum serviço OCR disponível, usando extrator nativo (pdf-parse)');
@@ -108,12 +114,15 @@ export async function postOcr(req: Request, res: Response) {
         console.error('Erro no detector de manuscritos:', detectorError);
         
         // Em caso de erro, seguir a mesma ordem de prioridade
-        if (process.env.OPENROUTER_API_KEY) {
+        if (process.env.MISTRAL_API_KEY) {
+          provider = 'mistral-ocr';
+          console.log('🚀 Erro no detector, usando Mistral OCR API como provedor primário');
+        } else if (process.env.OPENROUTER_API_KEY) {
           provider = 'openrouter';
-          console.log('🔄 Erro no detector, usando OpenRouter (Mistral)');
+          console.log('🔄 Erro no detector, usando OpenRouter como provedor secundário');
         } else if (process.env.HF_TOKEN) {
           provider = 'rolm';
-          console.log('🔄 Erro no detector, usando RolmOCR');
+          console.log('🔄 Erro no detector, usando RolmOCR como fallback');
         } else {
           provider = 'native';
           console.log('📄 Erro no detector, usando extrator nativo como último recurso');
@@ -352,12 +361,15 @@ export async function processOCR(req: Request, res: Response) {
         console.error('Erro no detector de manuscritos:', detectorError);
         
         // Em caso de erro, seguir a mesma ordem de prioridade
-        if (process.env.OPENROUTER_API_KEY) {
+        if (process.env.MISTRAL_API_KEY) {
+          provider = 'mistral-ocr';
+          console.log('🚀 Erro no detector, usando Mistral OCR API como provedor primário');
+        } else if (process.env.OPENROUTER_API_KEY) {
           provider = 'openrouter';
-          console.log('🔄 Erro no detector, usando OpenRouter (Mistral)');
+          console.log('🔄 Erro no detector, usando OpenRouter como provedor secundário');
         } else if (process.env.HF_TOKEN) {
           provider = 'rolm';
-          console.log('🔄 Erro no detector, usando RolmOCR');
+          console.log('🔄 Erro no detector, usando RolmOCR como fallback');
         } else {
           provider = 'native';
           console.log('📄 Erro no detector, usando extrator nativo como último recurso');

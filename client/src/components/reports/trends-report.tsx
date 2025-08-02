@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { motion } from "@/lib/motion-fallback";
+import { motion, AnimatePresence } from "framer-motion";
 import { jsPDF } from "jspdf";
 import { saveAs } from "file-saver";
 import {

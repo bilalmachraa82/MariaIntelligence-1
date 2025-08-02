@@ -22,8 +22,7 @@ export default function SettingsPage() {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [browserNotifications, setBrowserNotifications] = useState(false);
   const [browserNotificationsSupported, setBrowserNotificationsSupported] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState(i18n.language || "pt-PT");
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  // Remover states desnecessários de idioma e dark mode
   
   // Estado para testes de integração
   const [isTestingIntegrations, setIsTestingIntegrations] = useState(false);
@@ -73,38 +72,8 @@ export default function SettingsPage() {
       }
     };
     
-    // Verifica tema atual
-    let isDark = false;
-    
-    // Verifica preferência no localStorage (legacy)
-    const darkModePreference = localStorage.getItem("darkMode");
-    if (darkModePreference === "true") {
-      isDark = true;
-    } else {
-      // Verifica no objeto de tema
-      try {
-        const themeStr = localStorage.getItem("theme");
-        if (themeStr) {
-          const theme = JSON.parse(themeStr);
-          if (theme.appearance === "dark") {
-            isDark = true;
-          } else if (theme.appearance === "system") {
-            // Se for "system", verifica a preferência do sistema
-            isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-          }
-        }
-      } catch (e) {
-        console.error("Erro ao processar tema:", e);
-      }
-    }
-    
-    // Atualiza o estado e aplica o tema
-    setIsDarkMode(isDark);
-    if (isDark) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    // Garantir que sempre use light mode
+    document.documentElement.classList.remove("dark");
     
     // Verifica suporte a notificações
     const notificationsSupported = 'Notification' in window;
@@ -168,47 +137,7 @@ export default function SettingsPage() {
     }
   };
 
-  const handleDarkModeToggle = (checked: boolean) => {
-    setIsDarkMode(checked);
-    
-    // Atualiza o localStorage para compatibilidade com código legado
-    localStorage.setItem("darkMode", checked.toString());
-    
-    // Atualiza a classe no elemento html
-    if (checked) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-    
-    // Cria o objeto do tema
-    const themeObject = {
-      appearance: checked ? "dark" : "light",
-      primary: "#E5A4A4",
-      variant: "professional",
-      radius: 0.8
-    };
-    
-    // Atualiza o localStorage
-    localStorage.setItem("theme", JSON.stringify(themeObject));
-    
-    // Atualiza também o arquivo theme.json via requisição ao servidor
-    fetch('/theme.json', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(themeObject)
-    }).catch(error => {
-      console.error('Erro ao atualizar theme.json:', error);
-      // Fallback silencioso - continuará usando o localStorage
-    });
-    
-    // Força atualização da página para aplicar o tema corretamente
-    setTimeout(() => {
-      window.location.reload();
-    }, 200);
-  };
+  // Remover função de toggle do dark mode
 
   const handleSaveGeneral = async () => {
     try {
@@ -224,7 +153,7 @@ export default function SettingsPage() {
         },
         body: JSON.stringify({
           timezone: selectedTimezone,
-          language: currentLanguage,
+          language: 'pt-PT',
           notifications: {
             email: emailNotifications,
             browser: browserNotifications
@@ -262,7 +191,7 @@ export default function SettingsPage() {
         },
         body: JSON.stringify({
           timezone: timezone,
-          language: currentLanguage,
+          language: 'pt-PT',
           notifications: {
             email: emailNotifications,
             browser: browserNotifications
@@ -292,18 +221,7 @@ export default function SettingsPage() {
 
   // Função de configuração de API removida - agora a chave é gerenciada internamente
 
-  const changeLanguage = (lang: string) => {
-    i18n.changeLanguage(lang);
-    setCurrentLanguage(lang);
-    
-    // Salva a preferência de idioma no localStorage
-    localStorage.setItem("i18nextLng", lang);
-    
-    toast({
-      title: t("settings.language.changeSuccess"),
-      description: t("settings.language.changeSuccessDesc"),
-    });
-  };
+  // Remover função de mudança de idioma
   
   // Definição dos tipos de teste fora da função para reutilização
   interface TestResult {
@@ -444,10 +362,6 @@ export default function SettingsPage() {
             <BellRing className="h-4 w-4 mr-1" />
             <span className="whitespace-nowrap">{t("settings.tabs.notifications")}</span>
           </TabsTrigger>
-          <TabsTrigger value="language" className="min-w-fit">
-            <Globe className="h-4 w-4 mr-1" />
-            <span className="whitespace-nowrap">{t("settings.tabs.language")}</span>
-          </TabsTrigger>
           <TabsTrigger value="general" className="min-w-fit">
             <Settings className="h-4 w-4 mr-1" />
             <span className="whitespace-nowrap">{t("settings.tabs.general")}</span>
@@ -486,14 +400,6 @@ export default function SettingsPage() {
                 </select>
               </div>
               
-              <div className="flex items-center space-x-2">
-                <Switch 
-                  id="dark-mode" 
-                  checked={isDarkMode}
-                  onCheckedChange={handleDarkModeToggle}
-                />
-                <Label htmlFor="dark-mode">{t("settings.general.darkMode")}</Label>
-              </div>
               
               <Button onClick={handleSaveGeneral}>{t("common.save")}</Button>
             </CardContent>
@@ -619,50 +525,6 @@ export default function SettingsPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="language" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("settings.language.title")}</CardTitle>
-              <CardDescription>
-                {t("settings.language.selectLanguage")}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card 
-                  className={`cursor-pointer hover:border-primary transition-colors ${currentLanguage === 'pt-PT' || currentLanguage === 'pt' ? 'border-primary bg-primary-50/30' : ''}`}
-                  onClick={() => changeLanguage('pt-PT')}
-                >
-                  <CardContent className="pt-4 sm:pt-6 flex items-center">
-                    <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 mr-3 sm:mr-4 bg-gray-100 flex items-center justify-center text-xl">
-                      🇵🇹
-                    </div>
-                    <div className="min-w-0">
-                      <h3 className="font-medium text-base sm:text-lg truncate">Português (Portugal)</h3>
-                      <p className="text-xs sm:text-sm text-muted-foreground truncate">Idioma padrão do sistema</p>
-                      <Badge className="mt-1" variant="outline">Recomendado</Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card 
-                  className={`cursor-pointer hover:border-primary transition-colors ${currentLanguage === 'en-GB' || currentLanguage === 'en' ? 'border-primary bg-primary-50/30' : ''}`}
-                  onClick={() => changeLanguage('en-GB')}
-                >
-                  <CardContent className="pt-4 sm:pt-6 flex items-center">
-                    <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 mr-3 sm:mr-4 bg-gray-100 flex items-center justify-center text-xl">
-                      🇬🇧
-                    </div>
-                    <div className="min-w-0">
-                      <h3 className="font-medium text-base sm:text-lg truncate">English (UK)</h3>
-                      <p className="text-xs sm:text-sm text-muted-foreground truncate">Alternativa em inglês</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         <TabsContent value="api" className="space-y-4">
           <Card>

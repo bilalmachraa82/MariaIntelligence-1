@@ -1,20 +1,15 @@
 import React, { useState } from "react";
 import { useLocation } from "wouter";
-import { useTheme } from "@/hooks/use-theme";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import {
   Bell,
   Menu,
   Search,
-  Sun,
-  Moon,
-  Laptop,
   LifeBuoy,
   LogOut,
   Settings,
   User,
-  GlobeIcon,
   Bot
 } from "lucide-react";
 
@@ -23,11 +18,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -43,15 +34,8 @@ interface HeaderProps {
 
 export function Header({ onMenuClick, isSidebarOpen }: HeaderProps) {
   const [location, navigate] = useLocation();
-  const { t, i18n } = useTranslation();
-  const { theme, setTheme } = useTheme();
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
-
-  const isPortuguese = i18n.language?.startsWith("pt");
-
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
-  };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,7 +115,7 @@ export function Header({ onMenuClick, isSidebarOpen }: HeaderProps) {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => navigate(isPortuguese ? "/assistente" : "/assistant")}
+            onClick={() => navigate("/assistente")}
             aria-label="Maria AI Assistant"
             className="relative"
           >
@@ -144,57 +128,9 @@ export function Header({ onMenuClick, isSidebarOpen }: HeaderProps) {
             </Badge>
           </Button>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label="Language">
-                <GlobeIcon className="h-5 w-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>{t("common.language", "Idioma")}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => changeLanguage("pt-PT")}>
-                Português
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => changeLanguage("en-US")}>
-                English
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => changeLanguage("es-ES")}>
-                Español
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => changeLanguage("fr-FR")}>
-                Français
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
           <Button variant="ghost" size="icon" aria-label="Notifications">
             <Bell className="h-5 w-5" />
           </Button>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label="Theme">
-                <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                <span className="sr-only">Toggle theme</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setTheme("light")}>
-                <Sun className="mr-2 h-4 w-4" />
-                <span>Light</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme("dark")}>
-                <Moon className="mr-2 h-4 w-4" />
-                <span>Dark</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme("system")}>
-                <Laptop className="mr-2 h-4 w-4" />
-                <span>System</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -226,7 +162,7 @@ export function Header({ onMenuClick, isSidebarOpen }: HeaderProps) {
                 <User className="mr-2 h-4 w-4" />
                 <span>{t("common.profile", "Perfil")}</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate(isPortuguese ? "/configuracoes" : "/settings")}>
+              <DropdownMenuItem onClick={() => navigate("/configuracoes")}>
                 <Settings className="mr-2 h-4 w-4" />
                 <span>{t("navigation.settings", "Configurações")}</span>
               </DropdownMenuItem>

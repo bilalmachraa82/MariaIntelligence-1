@@ -117,8 +117,7 @@ export function SidebarReorganized({
       closeDrawer();
     }
   };
-  const { t, i18n } = useTranslation();
-  const isPortuguese = i18n.language?.startsWith("pt");
+  const { t } = useTranslation();
   const [sheetOpen, setSheetOpen] = useState(false);
   
   // Estado para controle dos menus expansíveis
@@ -319,8 +318,7 @@ export function SidebarReorganized({
     // Acesso direto aos relatórios adicionado ao menu principal
     {
       name: t("navigation.reports.financial", "Relatórios"),
-      href: isPortuguese ? "/relatorios" : "/reports",
-      altHref: isPortuguese ? "/reports" : "/relatorios",
+      href: "/relatorios",
       icon: BarChart3,
       iconColor: "text-emerald-500"
     }
@@ -375,8 +373,7 @@ export function SidebarReorganized({
     // Item de relatórios
     {
       name: t("navigation.reports.financial", "Relatórios"),
-      href: isPortuguese ? "/relatorios" : "/reports",
-      altHref: isPortuguese ? "/reports" : "/relatorios",
+      href: "/relatorios",
       icon: BarChart3,
       iconColor: "text-emerald-500"
     }

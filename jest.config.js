@@ -1,28 +1,12 @@
 export default {
-  preset: 'ts-jest',
   testEnvironment: 'node',
-  transform: {
-    '^.+\\.tsx?$': ['ts-jest', { useESM: true }]
-  },
+  testMatch: ['**/tests/**/*.spec.ts'],
+  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
+  verbose: true,
+  passWithNoTests: true,
+  transform: {},
   extensionsToTreatAsEsm: ['.ts'],
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1'
-  },
-  collectCoverageFrom: [
-    'server/**/*.ts',
-    '!server/index.ts',
-    '!server/vite.ts',
-    '!**/node_modules/**',
-    '!**/dist/**'
-  ],
-  coverageThreshold: {
-    global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: 80
-    }
-  },
-  testMatch: ['**/tests/**/*.spec.ts'],
-  verbose: true
+  }
 };

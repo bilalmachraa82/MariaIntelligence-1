@@ -109,22 +109,7 @@
   --ring: 355 77% 77%;
 }
 
-.dark {
-  /* Variáveis de tema escuro */
-  --background: 222 47% 11%;
-  --foreground: 210 40% 98%;
-  --card: 222 47% 11%;
-  --card-foreground: 210 40% 98%;
-  --popover: 222 47% 11%;
-  --popover-foreground: 210 40% 98%;
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 210 40% 98%;
-  --ring: 355 77% 77%;
-}
+/* Tema escuro removido - apenas light mode */
 
 @layer base {
   * {
@@ -176,17 +161,17 @@
 }
 
 @layer components {
-  /* Gradientes e efeitos visuais */
+  /* Gradientes e efeitos visuais - apenas light mode */
   .card-gradient {
-    @apply bg-gradient-to-br from-primary-light to-white dark:from-primary/20 dark:to-background;
+    @apply bg-gradient-to-br from-primary-light to-white;
   }
   
   .accent-gradient {
-    @apply bg-gradient-to-br from-accent to-white dark:from-accent/20 dark:to-background;
+    @apply bg-gradient-to-br from-accent to-white;
   }
 
   .primary-gradient {
-    @apply bg-gradient-to-br from-primary to-primary-light dark:from-primary/50 dark:to-primary/20;
+    @apply bg-gradient-to-br from-primary to-primary-light;
   }
   
   /* Classe para gráficos de alto contraste */

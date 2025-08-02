@@ -35,3 +35,23 @@ claude-flow
 claude-flow.bat
 claude-flow.ps1
 hive-mind-prompt-*.txt
+
+.vercel
+
+# Validation reports with potential sensitive data
+VALIDATION_REPORT.md
+*_VALIDATION_REPORT.md
+*_SECURITY_REPORT.md
+
+# Claude Flow metrics
+.claude-flow/metrics/
+
+# Temporary test files
+test-ocr*.ts
+check-*.js
+check-*.mjs
+
+# Deployment scripts with potential secrets
+deploy-*.js
+deploy-*.mjs
+setup-*.sh

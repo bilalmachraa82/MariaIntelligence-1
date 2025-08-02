@@ -1352,6 +1352,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // PDF Import Routes
+  const {
+    handlePDFImport,
+    handleSuggestProperties,
+    handleLearnFromMatch,
+    handleConfirmMatches,
+    handleGetImportReport,
+    handleGetImportStats
+  } = await import('./controllers/pdfImport.controller');
+
+  // PDF import endpoints with rate limiting
+  const { pdfImportRateLimiter } = await import('./middleware/security');
+  app.use('/api/pdf-import', pdfImportRateLimiter);
+
+  // PDF import routes
+  app.post('/api/pdf-import', handlePDFImport);
+  app.post('/api/pdf-import/suggest', handleSuggestProperties);
+  app.post('/api/pdf-import/learn', handleLearnFromMatch);
+  app.post('/api/pdf-import/confirm', handleConfirmMatches);
+  app.get('/api/pdf-import/report/:sessionId', handleGetImportReport);
+  app.get('/api/pdf-import/stats', handleGetImportStats);
+
+  // Security Monitoring Routes
+  const {
+    getSecurityMetrics,
+    getRecentSecurityEvents,
+    generateSecurityReport,
+    getThreatPatterns,
+    getSecurityStatus,
+    getIPAnalysis,
+    testSecurityEvent
+  } = await import('./api/security-monitoring');
+
+  // Apply strict rate limiting to security endpoints
+  const { strictRateLimiter } = await import('./middleware/security');
+  app.use('/api/security', strictRateLimiter);
+
+  // Security monitoring endpoints
+  app.get('/api/security/metrics', getSecurityMetrics);
+  app.get('/api/security/events', getRecentSecurityEvents);
+  app.get('/api/security/report', generateSecurityReport);
+  app.get('/api/security/patterns', getThreatPatterns);
+  app.get('/api/security/status', getSecurityStatus);
+  app.get('/api/security/ip-analysis', getIPAnalysis);
+  
+  // Development/testing endpoint (only available in dev mode)
+  if (process.env.NODE_ENV !== 'production') {
+    app.post('/api/security/test-event', testSecurityEvent);
+  }
+
   // Criar o servidor HTTP sem inicializar o listen (isso é feito no index.ts)
   const server = createServer(app);
   return server; 

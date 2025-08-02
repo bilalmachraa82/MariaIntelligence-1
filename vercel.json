@@ -1,7 +1,7 @@
 {
   "version": 2,
   "buildCommand": "npm run vercel-build",
-  "outputDirectory": "dist/public",
+  "outputDirectory": "dist",
   "functions": {
     "api/health.ts": {
       "maxDuration": 30

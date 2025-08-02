@@ -12,6 +12,7 @@
 import { GeminiService } from './gemini.service';
 import { OpenRouterService } from './openrouter.service';
 import { RolmService } from './rolm.service';
+import { MistralOCRService, mistralOCRService } from './mistral-ocr.service';
 import { HandwritingDetector } from './handwriting-detector';
 import { ragService } from './rag-enhanced.service';
 import pdfParse from 'pdf-parse';
@@ -21,6 +22,7 @@ export enum AIServiceType {
   GEMINI = 'gemini',
   OPENROUTER = 'openrouter',
   ROLM = 'rolm',
+  MISTRAL_OCR = 'mistral-ocr',
   AUTO = 'auto'
 }
 
@@ -33,6 +35,7 @@ export class AIAdapter {
     openrouter: new OpenRouterService(),
     gemini: new GeminiService(),
     rolm: new RolmService(),
+    mistralOcr: mistralOCRService,
   };
   
   // Valor padrão para o serviço de IA
@@ -45,6 +48,7 @@ export class AIAdapter {
   public geminiService: GeminiService;
   public openRouterService: OpenRouterService;
   public rolmService: RolmService;
+  public mistralOCRService: MistralOCRService;
   
   private currentService: AIServiceType = AIServiceType.AUTO;
   
@@ -53,6 +57,7 @@ export class AIAdapter {
     this.geminiService = AIAdapter.services.gemini;
     this.openRouterService = AIAdapter.services.openrouter;
     this.rolmService = AIAdapter.services.rolm;
+    this.mistralOCRService = AIAdapter.services.mistralOcr;
     
     // Definir serviço primário com base na variável de ambiente
     const primaryAI = process.env.PRIMARY_AI || 'openrouter';
@@ -63,10 +68,16 @@ export class AIAdapter {
     }
     
     // Verificar configuração dos serviços
-    if (process.env.OPENROUTER_API_KEY) {
-      console.log("✅ OpenRouter API configurada corretamente");
+    if (process.env.MISTRAL_API_KEY) {
+      console.log("✅ Mistral OCR API configurada corretamente");
     } else {
-      console.warn("⚠️ OPENROUTER_API_KEY não está configurada. OCR via OpenRouter não funcionará.");
+      console.warn("⚠️ MISTRAL_API_KEY não está configurada. OCR via Mistral API não funcionará.");
+    }
+    
+    if (process.env.OPENROUTER_API_KEY) {
+      console.log("✅ OpenRouter API configurada corretamente (fallback)");
+    } else {
+      console.warn("⚠️ OPENROUTER_API_KEY não está configurada. Fallback via OpenRouter não funcionará.");
     }
     
     if (process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY) {
@@ -105,6 +116,11 @@ export class AIAdapter {
       case AIServiceType.GEMINI:
         if (!(process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
           throw new Error("GOOGLE_GEMINI_API_KEY não configurada. Não é possível usar o Gemini.");
+        }
+        break;
+      case AIServiceType.MISTRAL_OCR:
+        if (!process.env.MISTRAL_API_KEY) {
+          throw new Error("MISTRAL_API_KEY não configurada. Não é possível usar o Mistral OCR.");
         }
         break;
       case AIServiceType.OPENROUTER:
@@ -371,11 +387,14 @@ export class AIAdapter {
         if (handwritingScore > 0.4 && process.env.HF_TOKEN) {
           selectedProvider = 'rolm'; // Usar Rolm para manuscritos
           console.log('🔍 Detectado texto manuscrito, usando RolmOCR');
+        } else if (process.env.MISTRAL_API_KEY) {
+          selectedProvider = 'mistral-ocr'; // Usar Mistral OCR como primeira opção
+          console.log('🔍 Usando Mistral OCR API como provedor principal');
         } else if (process.env.OPENROUTER_API_KEY) {
-          selectedProvider = 'openrouter'; // Usar OpenRouter para PDFs normais
-          console.log('🔍 Usando OpenRouter como provedor principal para OCR');
+          selectedProvider = 'openrouter'; // Usar OpenRouter como fallback
+          console.log('🔍 Usando OpenRouter como provedor secundário para OCR');
         } else {
-          selectedProvider = 'native'; // Usar extrator nativo como fallback (sem IA)
+          selectedProvider = 'native'; // Usar extrator nativo como último recurso
           console.log('🔍 Usando extrator nativo de PDF como fallback (sem IA)');
         }
       }
@@ -398,6 +417,47 @@ export class AIAdapter {
       
       // Usar o provedor selecionado
       switch (selectedProvider) {
+        case 'mistral-ocr':
+          try {
+            console.log('🔄 Processando com Mistral OCR API...');
+            const mistralResult = await mistralOCRService.processPdf(pdfBuffer);
+            
+            if (mistralResult && mistralResult.text) {
+              console.log(`✅ Mistral OCR processou com sucesso: ${mistralResult.text.length} caracteres extraídos`);
+              
+              // Se houver imagens extraídas, incluí-las no texto
+              let fullText = mistralResult.text;
+              if (mistralResult.images && mistralResult.images.length > 0) {
+                console.log(`📸 ${mistralResult.images.length} imagens encontradas no documento`);
+                // Adicionar descrições das imagens ao texto se disponíveis
+                mistralResult.images.forEach((img, index) => {
+                  if (img.caption) {
+                    fullText += `\n\n[Imagem ${index + 1}: ${img.caption}]`;
+                  }
+                });
+              }
+              
+              return fullText;
+            } else {
+              throw new Error('Mistral OCR retornou resposta vazia');
+            }
+          } catch (mistralError: any) {
+            console.error('❌ Erro no Mistral OCR:', mistralError);
+            failures.push(`Mistral OCR: ${mistralError.message}`);
+            
+            // Tentar com OpenRouter como fallback
+            if (process.env.OPENROUTER_API_KEY) {
+              console.log('🔄 Tentando com OpenRouter como fallback...');
+              selectedProvider = 'openrouter';
+              // Continuar para o próximo case
+            } else {
+              // Tentar com extrator nativo
+              console.log('🔄 Tentando com extrator nativo como fallback...');
+              return await extractWithPdfParse();
+            }
+          }
+          // Se não houve break, continuar para o próximo case
+          
         case 'openrouter':
           try {
             const result = await this.openRouterService.ocrPdf(pdfBuffer);
