@@ -3,6 +3,8 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
+// Importar configuração i18n
+import "./i18n/config";
 import DashboardFull from "@/pages/dashboard-full";
 import { enforceCleanMode } from "./enforce-clean-mode";
 import PropertiesPage from "@/pages/properties";

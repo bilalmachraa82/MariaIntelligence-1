@@ -349,6 +349,18 @@
       }
     },
     "settings": {
+      "title": "Definições",
+      "general": {
+        "title": "Geral",
+        "description": "Configurações gerais do sistema",
+        "timezone": "Fuso Horário"
+      },
+      "tabs": {
+        "general": "Geral",
+        "notifications": "Notificações",
+        "account": "Conta",
+        "integrations": "Integrações"
+      },
       "manual": {
         "documents": {
           "types": {
@@ -437,6 +449,27 @@
       "profit": "Lucro",
       "avgOccupancy": "Ocupação Média",
       "viewDetails": "Ver Detalhes"
+    },
+    "navigation": {
+      "home": "Início",
+      "bookings": "Reservas",
+      "properties": "Propriedades",
+      "owners": "Proprietários",
+      "reports": "Relatórios",
+      "cleaning": {
+        "teams": "Equipas de Limpeza",
+        "schedules": "Calendário de Limpeza"
+      },
+      "payments": {
+        "expected": "Pagamentos Esperados",
+        "income": "Rendimentos Consolidados"
+      },
+      "quotations": "Orçamentos",
+      "categories": {
+        "main": "Principal",
+        "financial": "Financeiro",
+        "operations": "Operações"
+      }
     }
   }
 }
