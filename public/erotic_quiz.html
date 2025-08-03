@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Questionário Psicosexual para Casais</title>
+  <style>
+    /* Estilo base para um visual moderno e sensorial. Usamos cores suaves e
+       contrastes elevados para que o questionário seja legível em qualquer
+       dispositivo. Optámos por tons escuros com destaques quentes que evocam
+       intimidade sem recorrer a imagens explícitas. */
+    :root {
+      --bg-color: #0f0f15;
+      --card-color: #1a1a2e;
+      --accent-color: #e67e7e;
+      --text-color: #f5f5f5;
+      --muted-color: #8a8aa0;
+      --radius: 8px;
+      --transition: all 0.3s ease;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.5;
+      padding: 20px;
+    }
+    h1, h2, h3 {
+      color: var(--accent-color);
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    p {
+      margin-bottom: 15px;
+      color: var(--muted-color);
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .card {
+      background: var(--card-color);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: var(--transition);
+    }
+    .card:hover {
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    input[type="radio"], input[type="checkbox"] {
+      margin-right: 8px;
+    }
+    select, button {
+      appearance: none;
+      border: none;
+      background: var(--accent-color);
+      color: var(--text-color);
+      padding: 10px 16px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 10px;
+      transition: var(--transition);
+    }
+    button:hover {
+      background: #d16363;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    .question-title {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .result-category {
+      margin-bottom: 15px;
+    }
+    .hidden {
+      display: none;
+    }
+    .flex-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .half {
+      flex: 1 1 45%;
+    }
+    @media (max-width: 600px) {
+      .half {
+        flex: 1 1 100%;
+      }
+    }
+    .toggle-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .toggle-group label {
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Questionário Psicosexual para Casais</h1>
+    <div id="intro-section" class="card">
+      <p>Bem‑vindo ao questionário psicosexual. Esta ferramenta foi concebida para
+      casais ou indivíduos que desejam explorar desejos inconscientes,
+      fantasias ocultas e dinâmicas eróticas de uma forma consciente e sem
+      julgamento. As tuas respostas permanecerão no teu navegador; tens a
+      opção de manter o anonimato e imprimir os resultados no fim.</p>
+      <div class="toggle-group">
+        <label><input type="radio" name="mode" value="solo" checked>Modo individual</label>
+        <label><input type="radio" name="mode" value="duo">Modo casal</label>
+      </div>
+      <div class="toggle-group">
+        <label><input type="checkbox" id="anonymous" checked>Manter anonimato</label>
+      </div>
+      <button id="startQuizBtn">Começar o questionário</button>
+    </div>
+
+    <form id="quiz-section" class="hidden">
+      <!-- Os questionários serão aqui inseridos dinamicamente via JavaScript -->
+    </form>
+
+    <div id="results-section" class="card hidden">
+      <h2>Resultados</h2>
+      <div id="results-content"></div>
+      <button id="printBtn">Imprimir / Guardar</button>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // Definição das perguntas e mapeamento de pontuações. Cada pergunta tem
+      // cinco opções. Para cada opção, especificamos os efeitos em diferentes
+      // dimensões: blueprint (energético, sensual, sexual, kinky, shapeshifter),
+      // polarity (masculino, feminino, equilibrado, fluido, neutro), dominance
+      // (dom, sub, switch, tender, none), fantasy (exploratory, intimate,
+      // impersonal, sadomaso, mixed), fetish readiness (valor numérico),
+      // flow blocks (ansiedade, culpa, overthinking, trauma, none).
+      const questions = [
+        {
+          text: 'Quando imaginas ser tocado(a) intimamente, qual destas imagens te excita mais?',
+          options: [
+            { text: 'Sentir a energia e a antecipação sem contacto físico.', effects: { blueprint: 'energetic' } },
+            { text: 'O toque de tecidos, aromas, sons, sabores e ambiente.', effects: { blueprint: 'sensual' } },
+            { text: 'Contacto directo e firme, como uma penetração ou estimulação manual.', effects: { blueprint: 'sexual' } },
+            { text: 'O êxtase de actos tabu como ser amarrado(a), vendado(a) ou dominado(a).', effects: { blueprint: 'kinky' } },
+            { text: 'Todos estes dependendo do momento.', effects: { blueprint: 'shapeshifter' } }
+          ]
+        },
+        {
+          text: 'O prelúdio ideal para sexo inclui:',
+          options: [
+            { text: 'Troca de olhares e sentir a tensão a aumentar à distância.', effects: { blueprint: 'energetic' } },
+            { text: 'Massagem, velas perfumadas e música suave.', effects: { blueprint: 'sensual' } },
+            { text: 'Beijos intensos que conduzem rapidamente ao acto.', effects: { blueprint: 'sexual' } },
+            { text: 'Ser comandado(a) ou comandar o(a) parceiro(a) num role‑play.', effects: { blueprint: 'kinky' } },
+            { text: 'Improvisação espontânea consoante o ambiente.', effects: { blueprint: 'shapeshifter' } }
+          ]
+        },
+        {
+          text: 'Em termos de dinâmica de poder, normalmente:',
+          options: [
+            { text: 'Gosto de estar no controlo e guiar a experiência.', effects: { dominance: 'dom' } },
+            { text: 'Prefiro entregar‑me e ser conduzido(a).', effects: { dominance: 'sub' } },
+            { text: 'Gosto de alternar os papéis.', effects: { dominance: 'switch' } },
+            { text: 'Prefiro quando somos iguais e focados em ternura e conexão.', effects: { dominance: 'tender' } },
+            { text: 'Ainda não sei; estou a explorar.', effects: { dominance: 'none' } }
+          ]
+        },
+        {
+          text: 'Quando fantasio com sexo, o cenário envolve mais vezes:',
+          options: [
+            { text: 'Explorar com várias pessoas ou alguém do mesmo sexo.', effects: { fantasy: 'exploratory' } },
+            { text: 'Intimidade romântica com alguém que conheço profundamente.', effects: { fantasy: 'intimate' } },
+            { text: 'Ver ou ser visto(a) por estranhos, voyeurismo/exibicionismo.', effects: { fantasy: 'impersonal' } },
+            { text: 'Brincar com dor, restrição, humilhação ou sensações extremas.', effects: { fantasy: 'sadomaso' } },
+            { text: 'As minhas fantasias mudam; não me encaixo em nenhum destes.', effects: { fantasy: 'mixed' } }
+          ]
+        },
+        {
+          text: 'Como te sentes relativamente a explorar práticas de BDSM (bondage, disciplina, dominação/submissão, sadomasoquismo, role‑play)?',
+          options: [
+            { text: 'Estou um pouco curioso(a) mas experimentei pouco.', effects: { fetish: 1 } },
+            { text: 'Estou muito interessado(a) e pratico regularmente.', effects: { fetish: 2 } },
+            { text: 'Não tenho interesse.', effects: { fetish: 0 } },
+            { text: 'Fantasio com isso mas sinto vergonha ou medo.', effects: { fetish: 1, flow: 'shame' } },
+            { text: 'Depende da pessoa e do momento.', effects: { fetish: 1 } }
+          ]
+        },
+        {
+          text: 'Quando pensas em energias masculinas e femininas, identificas‑te mais com:',
+          options: [
+            { text: 'Uma essência predominantemente masculina (directivo, com propósito, protector).', effects: { polarity: 'masculine' } },
+            { text: 'Uma essência predominantemente feminina (receptiva, nutritiva, intuitiva).', effects: { polarity: 'feminine' } },
+            { text: 'Um equilíbrio de ambas, mudando consoante o contexto.', effects: { polarity: 'balanced' } },
+            { text: 'Variável; mudo consoante o(a) parceiro(a).', effects: { polarity: 'fluid' } },
+            { text: 'Não gosto de rótulos de género; prefiro descobrir a minha própria forma.', effects: { polarity: 'neutral' } }
+          ]
+        },
+        {
+          text: 'Em situações sexuais, os teus gatilhos de excitação incluem:',
+          options: [
+            { text: 'Anticipação, tensão e energia subtil.', effects: { blueprint: 'energetic' } },
+            { text: 'Detalhes sensoriais como sabores, cheiros, texturas suaves e música.', effects: { blueprint: 'sensual' } },
+            { text: 'Imagens visuais ou linguagem explicitamente sexual.', effects: { blueprint: 'sexual' } },
+            { text: 'Troca de poder, cenários tabu ou dor misturada com prazer.', effects: { blueprint: 'kinky' } },
+            { text: 'Conexão emocional e vulnerabilidade.', effects: { blueprint: 'shapeshifter' } }
+          ]
+        },
+        {
+          text: 'Quão confortável estás em partilhar as tuas fantasias sexuais com o(a) parceiro(a)?',
+          options: [
+            { text: 'Muito confortável; falamos abertamente.', effects: { flow: 'none' } },
+            { text: 'Partilho algumas mas guardo desejos mais profundos.', effects: { flow: 'overthinking' } },
+            { text: 'Raramente falo sobre as minhas fantasias por medo de julgamento.', effects: { flow: 'shame' } },
+            { text: 'Prefiro agir do que falar sobre elas.', effects: { flow: 'none' } },
+            { text: 'Ainda estou a descobrir as minhas fantasias.', effects: { flow: 'none' } }
+          ]
+        },
+        {
+          text: 'O teu corpo tende a reagir (tensão, sensações) quando:',
+          options: [
+            { text: 'És convidado(a) a render-te ou a entregar o controlo.', effects: { flow: 'somatic', dominance: 'sub' } },
+            { text: 'Estás a comandar ou a instruir o(a) parceiro(a).', effects: { flow: 'none', dominance: 'dom' } },
+            { text: 'Experimentas sensações fortes como dor ou pressão intensa.', effects: { flow: 'somatic', fetish: 1 } },
+            { text: 'Estás num ambiente seguro e sensual com uma construção lenta.', effects: { flow: 'none', blueprint: 'sensual' } },
+            { text: 'Quebras regras ou fazes algo tabu.', effects: { flow: 'none', blueprint: 'kinky' } }
+          ]
+        },
+        {
+          text: 'O que mais te excita em termos de cenários?',
+          options: [
+            { text: 'Experiências com vários parceiros ou explorar a tua orientação.', effects: { fantasy: 'exploratory' } },
+            { text: 'Fazer amor com romantismo e contacto visual profundo.', effects: { fantasy: 'intimate' } },
+            { text: 'Ser observado(a) ou observar, exibir‑se.', effects: { fantasy: 'impersonal' } },
+            { text: 'Restrição, disciplina ou humilhação.', effects: { fantasy: 'sadomaso' } },
+            { text: 'Mistura imprevisível de tudo.', effects: { fantasy: 'mixed' } }
+          ]
+        },
+        {
+          text: 'A tua relação com objetos ou fetiches:',
+          options: [
+            { text: 'Fico excitado(a) por texturas ou objetos específicos (por exemplo, seda, couro).', effects: { blueprint: 'sensual' } },
+            { text: 'Estou mais excitado(a) por actos físicos do que por objetos.', effects: { blueprint: 'sexual' } },
+            { text: 'Gosto de incluir brinquedos e acessórios na intimidade.', effects: { blueprint: 'kinky', fetish: 1 } },
+            { text: 'Sinto curiosidade por fetiches pouco usuais (por exemplo, pés, roupa interior).', effects: { blueprint: 'kinky', fetish: 1 } },
+            { text: 'Não tenho interesse em objetos ou fetiches.', effects: { blueprint: 'shapeshifter' } }
+          ]
+        },
+        {
+          text: 'Quando ouves falar de “safe word” numa prática sexual, sentes:',
+          options: [
+            { text: 'Um alívio; gosto de saber que existe um limite claro.', effects: { fetish: 1 } },
+            { text: 'Não vejo necessidade, prefiro confiar na intuição mútua.', effects: { fetish: 0 } },
+            { text: 'Fico curioso(a) e quero experimentar.', effects: { fetish: 2 } },
+            { text: 'Sinto desconforto; a ideia de precisar de uma palavra de segurança assusta‑me.', effects: { fetish: 0, flow: 'fear' } },
+            { text: 'Já uso e considero essencial.', effects: { fetish: 2 } }
+          ]
+        },
+        {
+          text: 'Qual é a tua atitude em relação a misturar dor e prazer (mordidelas, arranhões, palmadas)?',
+          options: [
+            { text: 'Dá‑me arrepios de prazer quando feito com cuidado.', effects: { fetish: 1 } },
+            { text: 'Pode ser interessante se discutirmos antes.', effects: { fetish: 1 } },
+            { text: 'Não me agrada; prefiro que o toque seja suave.', effects: { fetish: 0 } },
+            { text: 'Excita‑me intensamente sentir dor com prazer.', effects: { fetish: 2 } },
+            { text: 'Nunca experimentei, mas estou aberto(a).', effects: { fetish: 1 } }
+          ]
+        },
+        {
+          text: 'Que emoções mais bloqueiam o teu desejo sexual?',
+          options: [
+            { text: 'Ansiedade ou medo de rejeição.', effects: { flow: 'fear' } },
+            { text: 'Culpa ou vergonha por desejos considerados “errados”.', effects: { flow: 'shame' } },
+            { text: 'Pensar demais e não conseguir relaxar.', effects: { flow: 'overthinking' } },
+            { text: 'Memórias de trauma ou experiências dolorosas.', effects: { flow: 'trauma' } },
+            { text: 'Nenhuma; sinto‑me aberto(a) e relaxado(a).', effects: { flow: 'none' } }
+          ]
+        },
+        {
+          text: 'Quando és surpreendido(a) com algo novo na intimidade:',
+          options: [
+            { text: 'Gosto de entregar‑me e confiar no processo.', effects: { polarity: 'feminine' } },
+            { text: 'Preciso de tempo para processar antes de experimentar.', effects: { polarity: 'balanced' } },
+            { text: 'Fico excitado(a) e quero explorar imediatamente.', effects: { polarity: 'masculine' } },
+            { text: 'Sinto resistência e fecho‑me.', effects: { flow: 'fear' } },
+            { text: 'Depende da situação e da pessoa.', effects: { polarity: 'fluid' } }
+          ]
+        },
+        {
+          text: 'Que papel desempenham as fantasias tabu (como ser dominado(a) ou dominar) na tua vida sexual?',
+          options: [
+            { text: 'São uma parte significativa das minhas fantasias.', effects: { fantasy: 'sadomaso' } },
+            { text: 'Aparecem ocasionalmente, mas não são centrais.', effects: { fantasy: 'mixed' } },
+            { text: 'Nunca penso nisso.', effects: { fantasy: 'intimate' } },
+            { text: 'Evito pensar, sinto culpa ou medo.', effects: { fantasy: 'mixed', flow: 'shame' } },
+            { text: 'Adoro a ideia mas ainda não realizei.', effects: { fantasy: 'sadomaso', flow: 'fear' } }
+          ]
+        },
+        {
+          text: 'Preferes explorar a tua sexualidade:',
+          options: [
+            { text: 'Através de longas conversas e compreensão emocional.', effects: { fantasy: 'intimate' } },
+            { text: 'Através de práticas corporais e toque consciente.', effects: { blueprint: 'sensual' } },
+            { text: 'Através de fantasia e role‑play.', effects: { fantasy: 'exploratory' } },
+            { text: 'Através de experiências mais extremas e sensações intensas.', effects: { fantasy: 'sadomaso' } },
+            { text: 'Uma mistura de todas.', effects: { fantasy: 'mixed' } }
+          ]
+        },
+        {
+          text: 'Quando pensas em partilhar controlo com o(a) parceiro(a):',
+          options: [
+            { text: 'Sinto prazer em liderar e ser responsável pela experiência.', effects: { dominance: 'dom' } },
+            { text: 'Sinto prazer em ser guiado(a) e seguir.', effects: { dominance: 'sub' } },
+            { text: 'Prefiro alternar e explorar as duas posições.', effects: { dominance: 'switch' } },
+            { text: 'Sinto-me mais excitado(a) quando não há papéis definidos.', effects: { dominance: 'tender' } },
+            { text: 'Evito pensar nisso; o controlo assusta‑me.', effects: { flow: 'fear' } }
+          ]
+        },
+        {
+          text: 'Como reages ao risco de ser visto(a) (por exemplo, fazer amor num local público ou com portas entreabertas)?',
+          options: [
+            { text: 'Isso excita‑me; adoro o risco e ser observado(a).', effects: { fantasy: 'impersonal' } },
+            { text: 'Pode ser excitante se for discreto.', effects: { fantasy: 'impersonal' } },
+            { text: 'Nunca, prefiro total privacidade.', effects: { fantasy: 'intimate' } },
+            { text: 'Só de pensar fico nervoso(a) ou envergonhado(a).', effects: { flow: 'shame' } },
+            { text: 'Depende do contexto e confiança.', effects: { fantasy: 'mixed' } }
+          ]
+        },
+        {
+          text: 'Em que medida te identificas com as histórias de “masculino domina/feminino rende‑se”?',
+          options: [
+            { text: 'Muitíssimo; sinto que esse padrão me atrai.', effects: { polarity: 'masculine', dominance: 'dom' } },
+            { text: 'Em parte; às vezes gosto, outras vezes não.', effects: { polarity: 'balanced' } },
+            { text: 'Pouco; prefiro papéis invertidos.', effects: { polarity: 'feminine', dominance: 'sub' } },
+            { text: 'Quase nada; prefiro igualdade.', effects: { polarity: 'neutral', dominance: 'tender' } },
+            { text: 'Não tenho certeza; gosto de experimentar.', effects: { polarity: 'fluid', dominance: 'switch' } }
+          ]
+        },
+        {
+          text: 'Qual destas afirmações melhor descreve a tua relação com o teu corpo durante o sexo?',
+          options: [
+            { text: 'Sinto‑me plenamente presente e consciente das sensações.', effects: { flow: 'none' } },
+            { text: 'Às vezes sinto-me desligado(a) ou a observar‑me de fora.', effects: { flow: 'overthinking' } },
+            { text: 'A minha mente divaga e perco a conexão com o corpo.', effects: { flow: 'overthinking' } },
+            { text: 'Sinto tensão em partes do corpo e é difícil relaxar.', effects: { flow: 'somatic' } },
+            { text: 'Depende do(a) parceiro(a) e do tipo de prática.', effects: { flow: 'none' } }
+          ]
+        },
+        {
+          text: 'O que te atrai mais no mundo do tantra?',
+          options: [
+            { text: 'A união entre energia sexual e espiritualidade.', effects: { blueprint: 'energetic' } },
+            { text: 'Técnicas de respiração e prolongar a excitação.', effects: { blueprint: 'sensual' } },
+            { text: 'A oportunidade de transcender tabus e limites.', effects: { blueprint: 'kinky' } },
+            { text: 'O jogo entre polaridades masculinas e femininas.', effects: { polarity: 'balanced' } },
+            { text: 'Não me atrai.', effects: { blueprint: 'shapeshifter' } }
+          ]
+        },
+        {
+          text: 'Sentes-te mais vivo(a) sexualmente quando:',
+          options: [
+            { text: 'Existe um forte magnetismo entre energias opostas.', effects: { polarity: 'masculine' } },
+            { text: 'Existe uma profunda segurança emocional e ternura.', effects: { fantasy: 'intimate' } },
+            { text: 'Existem estímulos sensoriais intensos e variados.', effects: { blueprint: 'sensual' } },
+            { text: 'Existem desafios, transgressão e risco.', effects: { blueprint: 'kinky' } },
+            { text: 'Mudanças e variedade constantes.', effects: { blueprint: 'shapeshifter' } }
+          ]
+        },
+        {
+          text: 'Quando tens uma fantasia que te surpreende, normalmente:',
+          options: [
+            { text: 'Partilho-a com o(a) parceiro(a) sem culpa.', effects: { flow: 'none' } },
+            { text: 'Escrevo-a no meu diário ou reflito sobre ela.', effects: { flow: 'overthinking' } },
+            { text: 'Sinto vergonha e tento esquecê-la.', effects: { flow: 'shame' } },
+            { text: 'Tento vivê-la de forma segura.', effects: { fetish: 1 } },
+            { text: 'Ignoro-a, acho que não é importante.', effects: { flow: 'none' } }
+          ]
+        },
+        {
+          text: 'Os teus limites corporais:',
+          options: [
+            { text: 'São claros; sei o que gosto e o que não gosto.', effects: { fetish: 0 } },
+            { text: 'Mudam consoante a confiança e o ambiente.', effects: { fetish: 1 } },
+            { text: 'Ainda estou a descobri-los.', effects: { fetish: 1 } },
+            { text: 'Gosto de ir além deles e surpreender-me.', effects: { fetish: 2 } },
+            { text: 'Respeito-os rigidamente, raramente os estico.', effects: { fetish: 0 } }
+          ]
+        },
+        {
+          text: 'A tua expressão de desejo é mais verbal ou corporal?',
+          options: [
+            { text: 'Verbal: gosto de usar palavras e descrições sensuais.', effects: { blueprint: 'energetic' } },
+            { text: 'Corporal: prefiro usar movimentos, toques e olhares.', effects: { blueprint: 'sensual' } },
+            { text: 'Equilibrada: combino palavras e corpo.', effects: { blueprint: 'shapeshifter' } },
+            { text: 'Quase não expresso; sinto-me tímido(a).', effects: { flow: 'shame' } },
+            { text: 'Depende muito da situação.', effects: { blueprint: 'shapeshifter' } }
+          ]
+        },
+        {
+          text: 'Em relação ao medo de julgamento sexual:',
+          options: [
+            { text: 'Não temo; sinto-me livre para explorar.', effects: { flow: 'none' } },
+            { text: 'Às vezes penso no que os outros pensariam.', effects: { flow: 'overthinking' } },
+            { text: 'Sinto bastante medo de ser rotulado(a).', effects: { flow: 'shame' } },
+            { text: 'Tento ignorar esse medo e sigo em frente.', effects: { flow: 'none' } },
+            { text: 'Ainda não explorei o suficiente para sentir medo.', effects: { flow: 'none' } }
+          ]
+        },
+        {
+          text: 'O teu maior prazer secreto que nunca contaste a ninguém é mais sobre:',
+          options: [
+            { text: 'Explorar papéis de poder (dominação, submissão).', effects: { fantasy: 'sadomaso' } },
+            { text: 'Participar em fantasias em grupo ou swingers.', effects: { fantasy: 'exploratory' } },
+            { text: 'Ser observado(a) ou observar outros.', effects: { fantasy: 'impersonal' } },
+            { text: 'Receber sensações fortes (dor, humilhação).', effects: { fantasy: 'sadomaso' } },
+            { text: 'Algo totalmente diferente e não classificado.', effects: { fantasy: 'mixed' } }
+          ]
+        },
+        {
+          text: 'Ao pensar em fantasias com pessoas do mesmo sexo:',
+          options: [
+            { text: 'Sinto-me excitado(a) e curioso(a).', effects: { fantasy: 'exploratory' } },
+            { text: 'Já experimentei e gostei.', effects: { fantasy: 'exploratory' } },
+            { text: 'Não sinto interesse.', effects: { fantasy: 'intimate' } },
+            { text: 'Sinto curiosidade mas também medo ou culpa.', effects: { fantasy: 'exploratory', flow: 'shame' } },
+            { text: 'Nunca pensei nisso.', effects: { fantasy: 'intimate' } }
+          ]
+        },
+        {
+          text: 'Se o(a) teu/tua parceiro(a) expressar desejo por algo que te incomoda:',
+          options: [
+            { text: 'Pergunto mais para compreender e encontrar um meio termo.', effects: { flow: 'none' } },
+            { text: 'Recuso-me; não estou preparado(a).', effects: { flow: 'fear' } },
+            { text: 'Sinto-me tentado(a) e posso tentar.', effects: { fetish: 1 } },
+            { text: 'Fico ofendido(a) ou magoado(a).', effects: { flow: 'shame' } },
+            { text: 'Sugiro explorar lentamente e com segurança.', effects: { fetish: 1 } }
+          ]
+        },
+        {
+          text: 'Quando ouves a palavra “kink”, pensas:',
+          options: [
+            { text: 'Em liberdade e autoexpressão.', effects: { fetish: 2 } },
+            { text: 'Em algo intrigante mas possivelmente perigoso.', effects: { fetish: 1 } },
+            { text: 'Em algo sujo ou vergonhoso.', effects: { flow: 'shame' } },
+            { text: 'Em diversão e criatividade.', effects: { fetish: 2 } },
+            { text: 'Não penso muito; é irrelevante para mim.', effects: { fetish: 0 } }
+          ]
+        },
+        {
+          text: 'A tua fantasia preferida sobre submissão/dominância envolve:',
+          options: [
+            { text: 'Ser totalmente rendido(a) a alguém de confiança.', effects: { dominance: 'sub' } },
+            { text: 'Tomar conta e controlar cada movimento.', effects: { dominance: 'dom' } },
+            { text: 'Alternar entre controlar e ser controlado(a).', effects: { dominance: 'switch' } },
+            { text: 'Apenas sinais subtis, não gosto de cenários extremos.', effects: { dominance: 'tender' } },
+            { text: 'Nenhuma destas; não se aplica.', effects: { dominance: 'none' } }
+          ]
+        },
+        {
+          text: 'Que importância tem para ti a estética e o ambiente (luz, decoração, música) no acto sexual?',
+          options: [
+            { text: 'Essencial; sem ambiente adequado não consigo relaxar.', effects: { blueprint: 'sensual' } },
+            { text: 'Importante mas posso ajustar-me.', effects: { blueprint: 'shapeshifter' } },
+            { text: 'Pouco importante; foco-me nas sensações físicas.', effects: { blueprint: 'sexual' } },
+            { text: 'Importante apenas quando quero experimentar algo novo ou tabu.', effects: { blueprint: 'kinky' } },
+            { text: 'Depende do dia.', effects: { blueprint: 'shapeshifter' } }
+          ]
+        },
+        {
+          text: 'Sobre a tua imaginação sexual:',
+          options: [
+            { text: 'É muito vívida, cheia de detalhes sensoriais.', effects: { blueprint: 'sensual' } },
+            { text: 'Centra-se mais na emoção do que nas imagens.', effects: { blueprint: 'energetic' } },
+            { text: 'É directa e visual.', effects: { blueprint: 'sexual' } },
+            { text: 'Tem sempre elementos fora do comum ou proibidos.', effects: { blueprint: 'kinky' } },
+            { text: 'Muda constantemente e surpreende-me.', effects: { blueprint: 'shapeshifter' } }
+          ]
+        },
+        {
+          text: 'Experimentar com a respiração, sons ou movimento durante a intimidade:',
+          options: [
+            { text: 'É algo que faço conscientemente e adoro.', effects: { blueprint: 'sensual' } },
+            { text: 'Faço ocasionalmente quando o meu corpo pede.', effects: { blueprint: 'sensual' } },
+            { text: 'Nunca experimentei mas estou curioso(a).', effects: { blueprint: 'energetic' } },
+            { text: 'Assusta-me; prefiro ficar quieto(a).', effects: { flow: 'fear' } },
+            { text: 'Não me atrai.', effects: { blueprint: 'sexual' } }
+          ]
+        },
+        {
+          text: 'O que significaria para ti sentir‑te completamente livre na sexualidade?',
+          options: [
+            { text: 'Não haver julgamentos nem tabus dentro da relação.', effects: { flow: 'none' } },
+            { text: 'Explorar tanto emoção como corpo sem medo.', effects: { flow: 'none' } },
+            { text: 'Sentir poder e rendição equilibrados.', effects: { dominance: 'switch' } },
+            { text: 'Poder realizar todas as minhas fantasias sem restrições.', effects: { fantasy: 'mixed', fetish: 2 } },
+            { text: 'Ainda estou a tentar imaginar isso.', effects: { flow: 'overthinking' } }
+          ]
+        },
+        {
+          text: 'Que tipo de prática gostarias de experimentar para crescer sexualmente?',
+          options: [
+            { text: 'Meditação tântrica e respiração.', effects: { blueprint: 'energetic' } },
+            { text: 'Escrita de fantasias e diário erótico.', effects: { flow: 'overthinking' } },
+            { text: 'Workshops de BDSM ou kink.', effects: { fetish: 2 } },
+            { text: 'Terapia somática ou massagem erótica.', effects: { flow: 'somatic' } },
+            { text: 'Sair da rotina com experiências espontâneas.', effects: { blueprint: 'shapeshifter' } }
+          ]
+        },
+        {
+          text: 'Quando o sexo se torna monótono, a tua resposta é:',
+          options: [
+            { text: 'Conversar abertamente sobre o que falta.', effects: { flow: 'none' } },
+            { text: 'Procurar novas inspirações e aprender juntos.', effects: { blueprint: 'shapeshifter' } },
+            { text: 'Experimentar fantasias mais ousadas.', effects: { fantasy: 'sadomaso', fetish: 1 } },
+            { text: 'Distanciar-me e perder interesse.', effects: { flow: 'trauma' } },
+            { text: 'Aceitar e concentrar-me noutras áreas da relação.', effects: { flow: 'none' } }
+          ]
+        },
+        {
+          text: 'O que mais te excita na ideia de submissão?',
+          options: [
+            { text: 'A sensação de confiança e entrega.', effects: { dominance: 'sub' } },
+            { text: 'A libertação de não ter de decidir nada.', effects: { dominance: 'sub' } },
+            { text: 'A intensidade do prazer devido à restrição.', effects: { dominance: 'sub', fetish: 1 } },
+            { text: 'Não me excita; prefiro dominar.', effects: { dominance: 'dom' } },
+            { text: 'Não se aplica.', effects: { dominance: 'none' } }
+          ]
+        },
+        {
+          text: 'Em que medida sentes que o teu crescimento sexual está bloqueado por factores externos (cultura, religião, educação)?',
+          options: [
+            { text: 'Muito; sinto-me preso(a) por condicionamentos.', effects: { flow: 'trauma' } },
+            { text: 'Moderadamente; trabalho para superar estes condicionamentos.', effects: { flow: 'overthinking' } },
+            { text: 'Pouco; consigo desligar-me das normas sociais.', effects: { flow: 'none' } },
+            { text: 'Nada; sinto-me livre para explorar.', effects: { flow: 'none' } },
+            { text: 'Não tenho a certeza; nunca pensei nisso.', effects: { flow: 'overthinking' } }
+          ]
+        }
+      ];
+
+      // Helper: create quiz fields for a participant
+      function createQuizForm(containerId, participantIndex) {
+        const container = document.getElementById(containerId);
+        questions.forEach((q, qi) => {
+          const qDiv = document.createElement('div');
+          qDiv.className = 'card question';
+          const title = document.createElement('div');
+          title.className = 'question-title';
+          title.textContent = (qi + 1) + '. ' + q.text;
+          qDiv.appendChild(title);
+          q.options.forEach((opt, oi) => {
+            const label = document.createElement('label');
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.name = 'q' + qi + '_p' + participantIndex;
+            input.value = oi;
+            label.appendChild(input);
+            label.appendChild(document.createTextNode(opt.text));
+            qDiv.appendChild(label);
+          });
+          container.appendChild(qDiv);
+        });
+      }
+
+      // Build the quiz when user clicks start
+      document.getElementById('startQuizBtn').addEventListener('click', function() {
+        const mode = document.querySelector('input[name="mode"]:checked').value;
+        document.getElementById('intro-section').classList.add('hidden');
+        const form = document.getElementById('quiz-section');
+        form.innerHTML = '';
+        form.classList.remove('hidden');
+        if (mode === 'solo') {
+          createQuizForm('quiz-section', 1);
+          const submitBtn = document.createElement('button');
+          submitBtn.textContent = 'Submeter';
+          submitBtn.type = 'button';
+          submitBtn.addEventListener('click', function() {
+            handleSubmit(1);
+          });
+          form.appendChild(submitBtn);
+        } else {
+          // modo casal: criar duas secções
+          const container1 = document.createElement('div');
+          container1.className = 'half';
+          const header1 = document.createElement('h2');
+          header1.textContent = 'Parceiro(a) 1';
+          container1.appendChild(header1);
+          form.appendChild(container1);
+          createQuizForm(container1.id = 'p1', 1);
+          const container2 = document.createElement('div');
+          container2.className = 'half';
+          const header2 = document.createElement('h2');
+          header2.textContent = 'Parceiro(a) 2';
+          container2.appendChild(header2);
+          form.appendChild(container2);
+          createQuizForm(container2.id = 'p2', 2);
+          const submitBtn = document.createElement('button');
+          submitBtn.textContent = 'Submeter';
+          submitBtn.type = 'button';
+          submitBtn.addEventListener('click', function() {
+            handleSubmit(2);
+          });
+          form.appendChild(submitBtn);
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      function initScores() {
+        return {
+          blueprint: { energetic: 0, sensual: 0, sexual: 0, kinky: 0, shapeshifter: 0 },
+          polarity: { masculine: 0, feminine: 0, balanced: 0, fluid: 0, neutral: 0 },
+          dominance: { dom: 0, sub: 0, switch: 0, tender: 0, none: 0 },
+          fantasy: { exploratory: 0, intimate: 0, impersonal: 0, sadomaso: 0, mixed: 0 },
+          fetish: 0,
+          flow: { fear: 0, shame: 0, overthinking: 0, trauma: 0, somatic: 0, none: 0 }
+        };
+      }
+
+      // Process results for each participant
+      function handleSubmit(numParticipants) {
+        const results = [];
+        for (let p = 1; p <= numParticipants; p++) {
+          const scores = initScores();
+          let answeredAll = true;
+          questions.forEach((q, qi) => {
+            const selected = document.querySelector('input[name="q' + qi + '_p' + p + '"]:checked');
+            if (selected) {
+              const effects = q.options[selected.value].effects;
+              // apply blueprint
+              if (effects.blueprint) {
+                scores.blueprint[effects.blueprint]++;
+              }
+              if (effects.polarity) {
+                scores.polarity[effects.polarity]++;
+              }
+              if (effects.dominance) {
+                scores.dominance[effects.dominance]++;
+              }
+              if (effects.fantasy) {
+                scores.fantasy[effects.fantasy]++;
+              }
+              if (typeof effects.fetish !== 'undefined') {
+                scores.fetish += effects.fetish;
+              }
+              if (effects.flow) {
+                scores.flow[effects.flow]++;
+              }
+            } else {
+              answeredAll = false;
+            }
+          });
+          if (!answeredAll) {
+            alert('Por favor responde a todas as perguntas.');
+            return;
+          }
+          results.push(scores);
+        }
+        showResults(results);
+      }
+
+      // Determine highest scoring category
+      function topKey(obj) {
+        return Object.keys(obj).reduce((a, b) => obj[a] > obj[b] ? a : b);
+      }
+
+      function showResults(results) {
+        document.getElementById('quiz-section').classList.add('hidden');
+        const resultDiv = document.getElementById('results-content');
+        resultDiv.innerHTML = '';
+        results.forEach((scores, index) => {
+          const anon = document.getElementById('anonymous').checked;
+          const header = document.createElement('h3');
+          header.textContent = anon ? 'Pessoa ' + (index + 1) : 'Resultados do Participante ' + (index + 1);
+          resultDiv.appendChild(header);
+          // Sensory Profile/Erotic Blueprint
+          const bp = topKey(scores.blueprint);
+          const bpDesc = {
+            energetic: 'Perfil Energético: és sensível à antecipação e a ligações subtis; a excitação surge do espaço e da presença.' ,
+            sensual: 'Perfil Sensual: necessitas que todos os sentidos sejam estimulados. Aromas, texturas e sons criam o teu prazer.' ,
+            sexual: 'Perfil Sexual: valorizas o contacto directo e a expressão física do desejo. Gostas de ir direito ao assunto.' ,
+            kinky: 'Perfil Kinky: és atraído(a) por explorar tabus, poder e transgressão. A experimentação e a novidade excitam‑te.' ,
+            shapeshifter: 'Perfil Metamorfo: tens apetites variáveis e podes adaptar‑te a qualquer estilo quando confias.'
+          };
+          addResultSection(resultDiv, 'Perfil Sensório / Erotic Blueprint', bpDesc[bp]);
+          // Polarity
+          const pol = topKey(scores.polarity);
+          const polDesc = {
+            masculine: 'Polaridade Masculina: tendes a liderar, direccionar e agir com propósito. A energia de dar estrutura excita‑te.',
+            feminine: 'Polaridade Feminina: aprecias receber, fluir e ser nutrido(a). A rendição consciente é o teu portal para a excitação.',
+            balanced: 'Polaridade Equilibrada: navegas entre liderar e render‑te, escolhendo o papel conforme o momento.',
+            fluid: 'Polaridade Fluida: adaptas‑te às energias dos teus parceiros, explorando diferentes expressões sem te prenderes a uma identidade.',
+            neutral: 'Polaridade Neutra: rejeitas rótulos tradicionais de género e procuras a tua própria forma de expressão.'
+          };
+          addResultSection(resultDiv, 'Polaridade Erótica', polDesc[pol]);
+          // Dominance
+          const dom = topKey(scores.dominance);
+          const domDesc = {
+            dom: 'Arquetipo Dominante: sentes‑te vivo(a) quando estás no controlo e gostas de conduzir a experiência, respeitando sempre os limites alheios.',
+            sub: 'Arquetipo Submisso: retiras prazer em entregar o controlo a alguém de confiança. A vulnerabilidade consente‑te relaxar.',
+            switch: 'Arquetipo Switch: aprecias alternar entre dominar e submeter‑te; a versatilidade faz parte do teu erotismo.',
+            tender: 'Arquetipo Terno/Egalitário: procuras igualdade e conexão emocional, valorizando a partilha sem hierarquias.',
+            none: 'Arquetipo Indefinido: ainda estás a descobrir como as dinâmicas de poder se manifestam em ti.'
+          };
+          addResultSection(resultDiv, 'Arquetipo de Poder', domDesc[dom]);
+          // Fantasy
+          const fan = topKey(scores.fantasy);
+          const fanDesc = {
+            exploratory: 'Sombras Exploradoras: tens curiosidade por experiências fora do comum – múltiplos parceiros, explorar orientações ou contextos desconhecidos.',
+            intimate: 'Sombras Íntimas: as tuas fantasias centram‑se em conexão profunda e romantismo.',
+            impersonal: 'Sombras Impessoais: fantasiares com voyeurismo, exibicionismo ou ser observado(a) excitam‑te.',
+            sadomaso: 'Sombras Sadomasoquistas: tens interesse por poder, dor, humilhação ou jogos psicológicos.',
+            mixed: 'Sombras Variadas: as tuas fantasias mudam e combinam elementos de várias categorias.'
+          };
+          addResultSection(resultDiv, 'Sombras e Fantasias', fanDesc[fan]);
+          // Fetish readiness
+          const fetishLevel = scores.fetish;
+          let fetishCategory;
+          if (fetishLevel <= 5) fetishCategory = 'Baixa';
+          else if (fetishLevel <= 10) fetishCategory = 'Média';
+          else fetishCategory = 'Alta';
+          const fetishDesc = {
+            'Baixa': 'Fetish Readiness Baixa: preferes focar‑te em práticas mais tradicionais; a curiosidade é moderada.',
+            'Média': 'Fetish Readiness Média: sentes alguma curiosidade e estás aberto(a) a explorar com segurança e comunicação.',
+            'Alta': 'Fetish Readiness Alta: estás pronto(a) para experimentar práticas kink/BDSM e integrá‑las de forma consciente.'
+          };
+          addResultSection(resultDiv, 'Preparação para Fetiches', fetishDesc[fetishCategory]);
+          // Flow Blocks
+          const flowKey = topKey(scores.flow);
+          const flowDesc = {
+            fear: 'Bloqueio por Ansiedade ou Medo: emoções de medo, rejeição ou insegurança podem impedir o fluxo sexual. Trabalha na segurança e no relaxamento.',
+            shame: 'Bloqueio por Culpa ou Vergonha: crenças culturais ou pessoais criam vergonha em relação ao prazer. Explora estas crenças e pratica auto‑aceitação.',
+            overthinking: 'Bloqueio por Pensamento Excessivo: a mente hiperactiva pode impedir a entrega ao momento. Práticas de mindfulness e respiração podem ajudar.',
+            trauma: 'Bloqueio por Trauma: experiências passadas ainda afectam o teu corpo e desejo. Considera terapia somática ou apoio profissional para integrar estas memórias.',
+            somatic: 'Bloqueio por Tensão Corporal: a tensão física impede a energia de fluir. Exercícios de respiração, movimento e consciência corporal podem libertar o bloqueio.',
+            none: 'Sem Bloqueios Significativos: sentes‑te globalmente livre para explorar e expressar a tua sexualidade.'
+          };
+          addResultSection(resultDiv, 'Bloqueios do Fluxo Sexual', flowDesc[flowKey]);
+
+          // Conselhos e próximos passos
+          const nextSteps = document.createElement('div');
+          nextSteps.className = 'result-category';
+          nextSteps.innerHTML = '<h4>Próximos Passos e Práticas Sugeridas</h4>' +
+            '<p>• Comunica abertamente com o(a) parceiro(a) sobre as descobertas deste perfil.<br>' +
+            '• Experimenta jogos de comunicação erótica: partilhem fantasias em voz alta ou escrevam‑nas e troquem cartas.<br>' +
+            '• Pratica toque guiado: alternem entre dar e receber carícias conscientes, explorando diferentes pressões e ritmos.<br>' +
+            '• Mantém um diário erótico: regista fantasias, sensações corporais e emoções para aumentar a autoconsciência.<br>' +
+            '• Se surgirem bloqueios profundos, considera terapia somática ou acompanhamento profissional para integrar experiências passadas.<br>' +
+            '• Para despertar polaridade, experimentem exercícios tântricos de respiração e olhares prolongados.</p>';
+          resultDiv.appendChild(nextSteps);
+        });
+        document.getElementById('results-section').classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function addResultSection(parent, title, description) {
+        const section = document.createElement('div');
+        section.className = 'result-category';
+        const t = document.createElement('h4');
+        t.textContent = title;
+        const d = document.createElement('p');
+        d.textContent = description;
+        section.appendChild(t);
+        section.appendChild(d);
+        parent.appendChild(section);
+      }
+
+      document.getElementById('printBtn').addEventListener('click', function() {
+        window.print();
+      });
+    })();
+  </script>
+</body>
+</html>
