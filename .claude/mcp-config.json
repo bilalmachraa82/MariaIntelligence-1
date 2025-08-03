@@ -1,0 +1,34 @@
+{
+  "mcpServers": {
+    "playwright-mcp": {
+      "command": "wsl",
+      "args": [
+        "npx",
+        "-y",
+        "@smithery/cli@latest",
+        "run",
+        "@cloudflare/playwright-mcp",
+        "--key",
+        "da60059a-5384-43a1-a941-0a88c3197fd0",
+        "--profile",
+        "numerous-mackerel-ASTWTK"
+      ]
+    },
+    "claude-flow": {
+      "command": "npx",
+      "args": ["claude-flow@alpha", "mcp", "start"]
+    },
+    "ruv-swarm": {
+      "command": "npx",
+      "args": ["ruv-swarm", "mcp", "start"]
+    },
+    "neon": {
+      "command": "npx",
+      "args": ["@neondatabase/mcp-server-neon"]
+    },
+    "railway": {
+      "command": "npx",
+      "args": ["@railway/mcp-server"]
+    }
+  }
+}
