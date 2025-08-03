@@ -15,12 +15,9 @@ const missingTranslations = {
       financial: "Relatórios Financeiros"
     },
     categories: {
-      main: "Principal",
-      finances: "Finanças", 
-      financial: "Financeiro",
-      operations: "Operações",
-      tools: "Ferramentas",
-      utilities: "Utilidades"
+      finances: "Finanças",
+      tools: "Ferramentas", 
+      utilities: "Utilitários"
     },
     payments: {
       expenses: "Despesas",
@@ -33,8 +30,8 @@ const missingTranslations = {
     },
     documentScan: "Scanner de Documentos",
     assistant: "Assistente Maria",
-    settings: "Definições",
-    demoData: "Dados Demo"
+    settings: "Configurações",
+    demoData: "Dados de Demonstração"
   },
   settings: {
     ...translations.translation.settings,
@@ -44,52 +41,70 @@ const missingTranslations = {
     }
   },
   dashboard: {
-    ...translations.translation.dashboard,
     fullDashboard: "Painel Completo",
-    welcomeName: "Olá, {{name}}!",
+    welcomeName: "Bem-vindo",
     fullDashboardDescription: "Visão geral completa do seu negócio",
-    backToOverview: "Voltar à Vista Geral",
+    backToOverview: "Voltar à Visão Geral",
     dailyTasks: "Tarefas Diárias",
     financialSummary: "Resumo Financeiro",
-    todaysSchedule: "Agenda de Hoje"
+    todaysSchedule: "Agenda de Hoje",
+    ...translations.translation.dashboard
   }
 };
 
-// Atualizar as traduções mantendo a estrutura existente
+// Mesclar com as traduções existentes preservando as existentes
 const updatedTranslations = {
   translation: {
     ...translations.translation,
-    navigation: missingTranslations.navigation,
+    navigation: {
+      ...translations.translation.navigation,
+      ...missingTranslations.navigation,
+      // Garantir que as subcategorias são mescladas corretamente
+      reports: {
+        ...translations.translation.navigation?.reports,
+        ...missingTranslations.navigation.reports
+      },
+      categories: {
+        ...translations.translation.navigation?.categories,
+        ...missingTranslations.navigation.categories
+      },
+      payments: {
+        ...translations.translation.navigation?.payments,
+        ...missingTranslations.navigation.payments
+      },
+      maintenance: {
+        ...translations.translation.navigation?.maintenance,
+        ...missingTranslations.navigation.maintenance
+      }
+    },
     settings: missingTranslations.settings,
-    dashboard: {
-      ...translations.translation.dashboard,
-      ...missingTranslations.dashboard
-    }
+    dashboard: missingTranslations.dashboard
   }
 };
 
 // Salvar o arquivo atualizado
 fs.writeFileSync(translationFile, JSON.stringify(updatedTranslations, null, 2));
 
-console.log('✅ Traduções atualizadas com sucesso!');
-console.log('\n📝 Chaves corrigidas:');
-console.log('   - navigation.reports.financial');
-console.log('   - navigation.categories.finances');
-console.log('   - navigation.categories.tools');
-console.log('   - navigation.categories.utilities');
-console.log('   - navigation.payments.expenses');
-console.log('   - navigation.maintenance.pending');
-console.log('   - navigation.maintenance.request');
-console.log('   - navigation.documentScan');
-console.log('   - navigation.assistant');
-console.log('   - navigation.settings');
-console.log('   - navigation.demoData');
-console.log('   - settings.tabs.language');
-console.log('   - dashboard.fullDashboard');
-console.log('   - dashboard.welcomeName');
-console.log('   - dashboard.fullDashboardDescription');
-console.log('   - dashboard.backToOverview');
-console.log('   - dashboard.dailyTasks');
-console.log('   - dashboard.financialSummary');
-console.log('   - dashboard.todaysSchedule');
-console.log('\n🚀 Próximo passo: Fazer commit e push!');
+console.log('✅ Todas as traduções foram adicionadas com sucesso!');
+console.log('\n📝 Chaves traduzidas:');
+console.log('   ✓ navigation.reports.financial');
+console.log('   ✓ navigation.categories.finances');
+console.log('   ✓ navigation.categories.tools');
+console.log('   ✓ navigation.categories.utilities');
+console.log('   ✓ navigation.payments.expenses');
+console.log('   ✓ navigation.maintenance.pending');
+console.log('   ✓ navigation.maintenance.request');
+console.log('   ✓ navigation.documentScan');
+console.log('   ✓ navigation.assistant');
+console.log('   ✓ navigation.settings');
+console.log('   ✓ navigation.demoData');
+console.log('   ✓ settings.tabs.language');
+console.log('   ✓ dashboard.fullDashboard');
+console.log('   ✓ dashboard.welcomeName');
+console.log('   ✓ dashboard.fullDashboardDescription');
+console.log('   ✓ dashboard.backToOverview');
+console.log('   ✓ dashboard.dailyTasks');
+console.log('   ✓ dashboard.financialSummary');
+console.log('   ✓ dashboard.todaysSchedule');
+
+console.log('\n🚀 Próximo passo: Fazer commit e push das alterações');

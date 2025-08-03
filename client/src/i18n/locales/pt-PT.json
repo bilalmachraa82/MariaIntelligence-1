@@ -475,22 +475,16 @@
         "financial": "Financeiro",
         "operations": "Operações",
         "tools": "Ferramentas",
-        "utilities": "Utilidades"
+        "utilities": "Utilitários"
       },
       "maintenance": {
         "pending": "Manutenção Pendente",
         "request": "Solicitar Manutenção"
       },
-      "documentScan": {
-        "_self": "Scanner de Documentos",
-        "description": "Digitalizar e processar documentos"
-      },
-      "assistant": {
-        "_self": "Assistente Maria",
-        "description": "Assistente inteligente"
-      },
-      "settings": "Definições",
-      "demoData": "Dados Demo"
+      "documentScan": "Scanner de Documentos",
+      "assistant": "Assistente Maria",
+      "settings": "Configurações",
+      "demoData": "Dados de Demonstração"
     },
     "dashboard": {
       "fullDashboard": "Painel Completo",
