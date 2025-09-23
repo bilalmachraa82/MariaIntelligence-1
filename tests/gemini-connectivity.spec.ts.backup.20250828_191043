@@ -1,0 +1,366 @@
+/**
+ * Comprehensive Gemini API Connectivity Tests
+ * 
+ * This test suite validates:
+ * - API connection establishment
+ * - Error handling for various failure scenarios
+ * - Rate limiting behavior
+ * - Timeout handling
+ * - Retry logic
+ * - Health checks
+ * - Recovery mechanisms
+ */
+
+import { describe, it, expect, beforeEach, afterEach, vi, beforeAll, afterAll } from 'vitest';
+import { GeminiService } from '../server/services/gemini.service';
+import { rateLimiter, RateLimiterService } from '../server/services/rate-limiter.service';
+
+// Mock fetch for testing
+const mockFetch = vi.fn();
+global.fetch = mockFetch;
+
+describe('Gemini API Connectivity', () => {
+  let geminiService: GeminiService;
+  let originalEnv: typeof process.env;
+
+  beforeAll(() => {
+    // Save original env
+    originalEnv = { ...process.env };
+  });
+
+  afterAll(() => {
+    // Restore original env
+    process.env = originalEnv;
+  });
+
+  beforeEach(() => {
+    // Reset mocks
+    vi.clearAllMocks();
+    
+    // Set up test environment
+    process.env.GOOGLE_GEMINI_API_KEY = 'test-api-key';
+    
+    // Create fresh service instance
+    geminiService = new GeminiService();
+  });
+
+  afterEach(() => {
+    // Clean up health checks
+    if (geminiService && typeof geminiService.stopHealthChecks === 'function') {
+      geminiService.stopHealthChecks();
+    }
+  });
+
+  describe('Connection Establishment', () => {
+    it('should successfully validate API key with proper response', async () => {
+      // Mock successful API response
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          models: [
+            { name: 'gemini-1.5-pro' },
+            { name: 'gemini-1.5-flash' }
+          ]
+        }),
+        text: async () => '',
+        headers: new Map()
+      });
+
+      const result = await geminiService.testConnection();
+      
+      expect(result.success).toBe(true);
+      expect(result.message).toContain('Conectado com sucesso');
+      expect(result.latency).toBeGreaterThan(0);
+      expect(result.details?.consecutiveFailures).toBe(0);
+    });
+
+    it('should handle API key validation failure', async () => {
+      // Mock 403 Forbidden response
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 403,
+        statusText: 'Forbidden',
+        text: async () => 'Invalid API key',
+        headers: new Map()
+      });
+
+      const result = await geminiService.testConnection();
+      
+      expect(result.success).toBe(false);
+      expect(result.message).toContain('inválida');
+      expect(result.details?.errorType).toBeDefined();
+    });
+
+    it('should handle network timeouts properly', async () => {
+      // Mock timeout scenario
+      mockFetch.mockImplementation(() => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            const error = new Error('Request timeout');
+            error.name = 'AbortError';
+            reject(error);
+          }, 100);
+        });
+      });
+
+      const result = await geminiService.testConnection();
+      
+      expect(result.success).toBe(false);
+      expect(result.message).toContain('Timeout');
+      expect(result.details?.timeout).toBeTruthy();
+    }, 10000);
+
+    it('should track connection status correctly', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({ models: [] }),
+        text: async () => '',
+        headers: new Map()
+      });
+
+      await geminiService.testConnection();
+      const status = geminiService.getConnectionStatus();
+
+      expect(status).toMatchObject({
+        isConnected: expect.any(Boolean),
+        isInitialized: expect.any(Boolean),
+        consecutiveFailures: expect.any(Number),
+        currentRequests: expect.any(Number),
+        maxConcurrentRequests: expect.any(Number)
+      });
+    });
+  });
+
+  describe('Error Handling', () => {
+    it('should handle 429 rate limit errors', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 429,
+        statusText: 'Too Many Requests',
+        text: async () => 'Rate limit exceeded',
+        headers: new Map()
+      });
+
+      const result = await geminiService.testConnection();
+      
+      expect(result.success).toBe(false);
+      expect(result.message).toContain('Limite de requisições');
+    });
+
+    it('should handle 500 internal server errors', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error',
+        text: async () => 'Server error',
+        headers: new Map()
+      });
+
+      const result = await geminiService.testConnection();
+      
+      expect(result.success).toBe(false);
+      expect(result.message).toContain('Erro interno do servidor');
+    });
+
+    it('should increment consecutive failures counter', async () => {
+      mockFetch.mockResolvedValue({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error',
+        text: async () => 'Server error',
+        headers: new Map()
+      });
+
+      // First failure
+      await geminiService.testConnection();
+      let status = geminiService.getConnectionStatus();
+      expect(status.consecutiveFailures).toBe(1);
+
+      // Second failure
+      await geminiService.testConnection();
+      status = geminiService.getConnectionStatus();
+      expect(status.consecutiveFailures).toBe(2);
+    });
+
+    it('should reset consecutive failures on successful connection', async () => {
+      // First, simulate failures
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error',
+        text: async () => 'Server error',
+        headers: new Map()
+      });
+
+      await geminiService.testConnection();
+      let status = geminiService.getConnectionStatus();
+      expect(status.consecutiveFailures).toBe(1);
+
+      // Then simulate success
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({ models: [] }),
+        text: async () => '',
+        headers: new Map()
+      });
+
+      await geminiService.testConnection();
+      status = geminiService.getConnectionStatus();
+      expect(status.consecutiveFailures).toBe(0);
+    });
+  });
+
+  describe('Rate Limiting', () => {
+    it('should respect concurrent request limits', async () => {
+      const promises: Promise<any>[] = [];
+      
+      // Mock slow responses
+      mockFetch.mockImplementation(() => {
+        return new Promise(resolve => {
+          setTimeout(() => resolve({
+            ok: true,
+            status: 200,
+            json: async () => ({ models: [] }),
+            text: async () => '',
+            headers: new Map()
+          }), 100);
+        });
+      });
+
+      // Start multiple concurrent requests
+      for (let i = 0; i < 5; i++) {
+        promises.push(geminiService.testConnection());
+      }
+
+      const results = await Promise.all(promises);
+      
+      // At least one should fail due to concurrent limit
+      const rejectedCount = results.filter(r => !r.success).length;
+      expect(rejectedCount).toBeGreaterThan(0);
+    }, 10000);
+
+    it('should handle rate limit backoff correctly', async () => {
+      const rateLimiterInstance = RateLimiterService.getInstance();
+      
+      // Get initial status
+      const initialStatus = rateLimiterInstance.getRateLimitStatus();
+      expect(initialStatus).toMatchObject({
+        recentRequests: expect.any(Number),
+        maxRequestsPerMinute: expect.any(Number),
+        queueSize: expect.any(Number),
+        canMakeRequest: expect.any(Boolean),
+        adaptiveRateLimiting: expect.any(Boolean)
+      });
+    });
+  });
+
+  describe('Reconnection Logic', () => {
+    it('should successfully force reconnection', async () => {
+      mockFetch.mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => ({ models: [] }),
+        text: async () => '',
+        headers: new Map()
+      });
+
+      const result = await geminiService.forceReconnect();
+      
+      expect(result.success).toBe(true);
+      expect(result.message).toContain('Reconexão bem-sucedida');
+    });
+
+    it('should handle failed reconnection attempts', async () => {
+      mockFetch.mockResolvedValue({
+        ok: false,
+        status: 403,
+        statusText: 'Forbidden',
+        text: async () => 'Invalid API key',
+        headers: new Map()
+      });
+
+      const result = await geminiService.forceReconnect();
+      
+      expect(result.success).toBe(false);
+      expect(result.message).toContain('Falha na reconexão');
+    });
+  });
+
+  describe('Configuration Validation', () => {
+    it('should handle missing API key gracefully', async () => {
+      delete process.env.GOOGLE_GEMINI_API_KEY;
+      delete process.env.GOOGLE_API_KEY;
+
+      const serviceWithoutKey = new GeminiService();
+      const configured = serviceWithoutKey.isConfigured();
+      
+      expect(configured).toBe(false);
+    });
+
+    it('should detect configured state correctly', async () => {
+      process.env.GOOGLE_GEMINI_API_KEY = 'test-key';
+      
+      // Mock successful validation
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({ models: [] }),
+        text: async () => '',
+        headers: new Map()
+      });
+
+      const serviceWithKey = new GeminiService();
+      
+      // Give it time to initialize
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      // After successful validation, should be configured
+      await serviceWithKey.checkApiConnection();
+      const configured = serviceWithKey.isConfigured();
+      
+      expect(configured).toBe(true);
+    });
+  });
+
+  describe('Logging and Monitoring', () => {
+    it('should log connection attempts with proper detail', async () => {
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({ 
+          models: [{ name: 'gemini-1.5-pro' }] 
+        }),
+        text: async () => '',
+        headers: new Map()
+      });
+
+      await geminiService.testConnection();
+      
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Validando chave API Gemini')
+      );
+      
+      consoleSpy.mockRestore();
+      consoleErrorSpy.mockRestore();
+    });
+
+    it('should provide comprehensive connection status', async () => {
+      const status = geminiService.getConnectionStatus();
+      
+      expect(status).toEqual({
+        isConnected: expect.any(Boolean),
+        isInitialized: expect.any(Boolean),
+        consecutiveFailures: expect.any(Number),
+        lastHealthCheck: expect.any(Object), // Date or null
+        currentRequests: expect.any(Number),
+        maxConcurrentRequests: expect.any(Number)
+      });
+    });
+  });
+});

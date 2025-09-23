@@ -118,10 +118,25 @@ app.use((req, res, next) => {
   }
 
   /* ─── Listen (host + port separados) ───────────────── */
-  // O servidor já foi inicializado na função registerRoutes
-  // Apenas log da informação
+  // Iniciar o servidor HTTP
   const port = Number(process.env.PORT) || 5100;
   const host = process.env.HOST || '0.0.0.0';
   
-  console.log(`Server listening on port ${port}`);
+  server.listen(port, host, () => {
+    console.log(`Server listening on port ${port}`);
+    console.log(`Server running at http://${host}:${port}`);
+  });
+
+  server.on('error', (error: any) => {
+    console.error('Server error:', error);
+    if (error.code === 'EADDRINUSE') {
+      console.error(`Port ${port} is already in use`);
+    } else if (error.code === 'EACCES') {
+      console.error(`Permission denied to bind to port ${port}`);
+    }
+  });
+
+  server.on('listening', () => {
+    console.log(`Server successfully started and listening on port ${port}`);
+  });
 })();

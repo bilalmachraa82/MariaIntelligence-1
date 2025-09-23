@@ -1,0 +1,5 @@
+npm error Missing script: "check"
+npm error
+npm error To see a list of scripts, run:
+npm error   npm run
+npm error A complete log of this run can be found in: /Users/bilal/.npm/_logs/2025-08-28T10_06_08_385Z-debug-0.log

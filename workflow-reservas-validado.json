@@ -1,0 +1,92 @@
+{
+  "name": "Fluxo de Reservas - OCR Gemini PostgreSQL Slack",
+  "nodes": [
+    {
+      "id": "webhook-trigger",
+      "name": "Webhook - Nova Reserva",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [100, 100],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "reservas",
+        "responseMode": "onReceived",
+        "responseData": "firstEntryJson"
+      }
+    },
+    {
+      "id": "gemini-ocr",
+      "name": "Google Gemini - OCR PDF",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [300, 100],
+      "parameters": {
+        "resource": "document",
+        "operation": "analyze",
+        "modelId": "models/gemini-1.5-flash",
+        "prompt": "Extraia as seguintes informações deste PDF de reserva: nome do hóspede, datas de check-in/check-out, número da reserva, valor total, tipo de acomodação. Retorne em formato JSON estruturado."
+      }
+    },
+    {
+      "id": "postgres-insert",
+      "name": "PostgreSQL - Salvar Reserva",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [500, 100],
+      "parameters": {
+        "operation": "insert",
+        "table": "reservas",
+        "schema": "public",
+        "columns": "nome_hospede,data_checkin,data_checkout,numero_reserva,valor_total,tipo_acomodacao"
+      }
+    },
+    {
+      "id": "slack-notification",
+      "name": "Slack - Notificar Equipe",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [700, 100],
+      "parameters": {
+        "resource": "message",
+        "operation": "post",
+        "text": "🆕 Nova reserva recebida!",
+        "channel": "#reservas"
+      }
+    }
+  ],
+  "connections": {
+    "Webhook - Nova Reserva": {
+      "main": [
+        [
+          {
+            "node": "Google Gemini - OCR PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini - OCR PDF": {
+      "main": [
+        [
+          {
+            "node": "PostgreSQL - Salvar Reserva",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PostgreSQL - Salvar Reserva": {
+      "main": [
+        [
+          {
+            "node": "Slack - Notificar Equipe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

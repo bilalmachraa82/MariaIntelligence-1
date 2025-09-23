@@ -1,0 +1,240 @@
+{
+  "typescript_fix_plan": {
+    "version": "1.0.0",
+    "generated": "2025-08-28T10:06:00Z",
+    "total_errors": 121,
+    "priority": "CRITICAL",
+    "estimated_time": "90 minutes",
+    "phases": [
+      {
+        "phase": 1,
+        "name": "Emergency File Recovery",
+        "priority": "BLOCKER",
+        "estimated_time": "30 minutes",
+        "tasks": [
+          {
+            "id": "RECOVERY-001",
+            "description": "Backup corrupted files for forensic analysis",
+            "command": "cp server/middleware/performance-monitor.ts server/middleware/performance-monitor.ts.corrupted",
+            "dependencies": [],
+            "estimated_time": "2 minutes"
+          },
+          {
+            "id": "RECOVERY-002", 
+            "description": "Backup security-enhanced middleware",
+            "command": "cp server/middleware/security-enhanced.ts server/middleware/security-enhanced.ts.corrupted",
+            "dependencies": ["RECOVERY-001"],
+            "estimated_time": "2 minutes"
+          },
+          {
+            "id": "RECOVERY-003",
+            "description": "Identify last known good commit for performance-monitor",
+            "command": "git log --oneline -20 -- server/middleware/performance-monitor.ts",
+            "dependencies": ["RECOVERY-002"],
+            "estimated_time": "5 minutes"
+          },
+          {
+            "id": "RECOVERY-004",
+            "description": "Identify last known good commit for security-enhanced", 
+            "command": "git log --oneline -20 -- server/middleware/security-enhanced.ts",
+            "dependencies": ["RECOVERY-003"],
+            "estimated_time": "5 minutes"
+          },
+          {
+            "id": "RECOVERY-005",
+            "description": "Restore performance-monitor from git history",
+            "command": "git checkout HEAD~1 -- server/middleware/performance-monitor.ts",
+            "dependencies": ["RECOVERY-004"],
+            "estimated_time": "3 minutes"
+          },
+          {
+            "id": "RECOVERY-006",
+            "description": "Restore security-enhanced from git history",
+            "command": "git checkout HEAD~1 -- server/middleware/security-enhanced.ts", 
+            "dependencies": ["RECOVERY-005"],
+            "estimated_time": "3 minutes"
+          },
+          {
+            "id": "RECOVERY-007",
+            "description": "Verify file encoding and integrity",
+            "command": "file server/middleware/*.ts && hexdump -C server/middleware/performance-monitor.ts | head -5",
+            "dependencies": ["RECOVERY-006"],
+            "estimated_time": "5 minutes"
+          },
+          {
+            "id": "RECOVERY-008",
+            "description": "Run initial TypeScript compilation test",
+            "command": "npx tsc --noEmit server/middleware/performance-monitor.ts server/middleware/security-enhanced.ts",
+            "dependencies": ["RECOVERY-007"],
+            "estimated_time": "5 minutes"
+          }
+        ]
+      },
+      {
+        "phase": 2,
+        "name": "Validation & Testing",
+        "priority": "HIGH",
+        "estimated_time": "30 minutes",
+        "tasks": [
+          {
+            "id": "VALIDATE-001",
+            "description": "Full TypeScript compilation check",
+            "command": "npx tsc --noEmit",
+            "dependencies": ["RECOVERY-008"],
+            "estimated_time": "5 minutes"
+          },
+          {
+            "id": "VALIDATE-002",
+            "description": "Test server startup with restored files",
+            "command": "timeout 10s npm run dev:server || echo 'Server test completed'",
+            "dependencies": ["VALIDATE-001"],
+            "estimated_time": "5 minutes"
+          },
+          {
+            "id": "VALIDATE-003",
+            "description": "Verify performance middleware loading",
+            "command": "grep -n 'performance' server/index.ts && grep -n 'import.*performance' server/**/*.ts",
+            "dependencies": ["VALIDATE-002"],
+            "estimated_time": "3 minutes"
+          },
+          {
+            "id": "VALIDATE-004",
+            "description": "Verify security middleware loading",
+            "command": "grep -n 'security' server/index.ts && grep -n 'import.*security' server/**/*.ts",
+            "dependencies": ["VALIDATE-003"],
+            "estimated_time": "3 minutes"
+          },
+          {
+            "id": "VALIDATE-005",
+            "description": "Test middleware functionality",
+            "command": "curl -s http://localhost:3000/health || echo 'Middleware test completed'",
+            "dependencies": ["VALIDATE-004"],
+            "estimated_time": "5 minutes"
+          },
+          {
+            "id": "VALIDATE-006",
+            "description": "Run focused middleware tests",
+            "command": "npm run test -- server/middleware/",
+            "dependencies": ["VALIDATE-005"],
+            "estimated_time": "5 minutes"
+          },
+          {
+            "id": "VALIDATE-007",
+            "description": "Verify no new TypeScript errors introduced",
+            "command": "npx tsc --noEmit 2>&1 | tee validation-results.log",
+            "dependencies": ["VALIDATE-006"],
+            "estimated_time": "4 minutes"
+          }
+        ]
+      },
+      {
+        "phase": 3,
+        "name": "Prevention & Safeguards",
+        "priority": "MEDIUM",
+        "estimated_time": "30 minutes",
+        "tasks": [
+          {
+            "id": "PREVENT-001",
+            "description": "Create pre-commit hook for file integrity",
+            "command": "echo 'npm run typecheck' > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
+            "dependencies": ["VALIDATE-007"],
+            "estimated_time": "5 minutes"
+          },
+          {
+            "id": "PREVENT-002",
+            "description": "Add file encoding validation script",
+            "command": "cat > scripts/validate-encoding.sh << 'EOF'\n#!/bin/bash\nfind server/ -name '*.ts' -exec file {} \\; | grep -v 'UTF-8' && exit 1 || exit 0\nEOF\nchmod +x scripts/validate-encoding.sh",
+            "dependencies": ["PREVENT-001"],
+            "estimated_time": "8 minutes"
+          },
+          {
+            "id": "PREVENT-003",
+            "description": "Create automated backup script for critical files",
+            "command": "mkdir -p backups/middleware && cp server/middleware/*.ts backups/middleware/",
+            "dependencies": ["PREVENT-002"], 
+            "estimated_time": "3 minutes"
+          },
+          {
+            "id": "PREVENT-004",
+            "description": "Add TypeScript checking to CI/CD",
+            "command": "echo 'typecheck: npx tsc --noEmit' >> package.json",
+            "dependencies": ["PREVENT-003"],
+            "estimated_time": "5 minutes"
+          },
+          {
+            "id": "PREVENT-005",
+            "description": "Document corruption investigation findings",
+            "command": "echo 'File corruption analysis completed - see docs/typescript-errors-analysis.md' > corruption-investigation.md",
+            "dependencies": ["PREVENT-004"],
+            "estimated_time": "4 minutes"
+          },
+          {
+            "id": "PREVENT-006",
+            "description": "Create monitoring alert for future corruption",
+            "command": "echo 'TODO: Implement file corruption monitoring' >> TODO.md",
+            "dependencies": ["PREVENT-005"],
+            "estimated_time": "5 minutes"
+          }
+        ]
+      }
+    ],
+    "error_mapping": {
+      "critical_files": [
+        {
+          "file": "server/middleware/performance-monitor.ts",
+          "error_count": 116,
+          "error_types": ["TS1435", "TS1127", "TS1434", "TS1128"],
+          "corruption_scope": "entire_file",
+          "recovery_method": "git_restore"
+        },
+        {
+          "file": "server/middleware/security-enhanced.ts", 
+          "error_count": 5,
+          "error_types": ["TS1161", "TS1109", "TS1124", "TS1351"],
+          "corruption_scope": "lines_501-502",
+          "recovery_method": "git_restore"
+        }
+      ]
+    },
+    "dependencies_graph": {
+      "phase1_dependencies": [
+        "RECOVERY-001 -> RECOVERY-002",
+        "RECOVERY-002 -> RECOVERY-003",
+        "RECOVERY-003 -> RECOVERY-004", 
+        "RECOVERY-004 -> RECOVERY-005",
+        "RECOVERY-005 -> RECOVERY-006",
+        "RECOVERY-006 -> RECOVERY-007",
+        "RECOVERY-007 -> RECOVERY-008"
+      ],
+      "phase2_dependencies": [
+        "RECOVERY-008 -> VALIDATE-001",
+        "VALIDATE-001 -> VALIDATE-002",
+        "VALIDATE-002 -> VALIDATE-003",
+        "VALIDATE-003 -> VALIDATE-004",
+        "VALIDATE-004 -> VALIDATE-005",
+        "VALIDATE-005 -> VALIDATE-006",
+        "VALIDATE-006 -> VALIDATE-007"
+      ],
+      "phase3_dependencies": [
+        "VALIDATE-007 -> PREVENT-001",
+        "PREVENT-001 -> PREVENT-002",
+        "PREVENT-002 -> PREVENT-003",
+        "PREVENT-003 -> PREVENT-004", 
+        "PREVENT-004 -> PREVENT-005",
+        "PREVENT-005 -> PREVENT-006"
+      ]
+    },
+    "success_criteria": {
+      "typescript_compilation": "0 errors",
+      "server_startup": "successful",
+      "middleware_loading": "functional",
+      "file_integrity": "verified",
+      "encoding_validation": "passed"
+    },
+    "rollback_plan": {
+      "if_phase1_fails": "Restore entire server/middleware/ directory from git",
+      "if_phase2_fails": "Check for additional corrupted files or missing dependencies",
+      "if_phase3_fails": "Continue with manual prevention measures"
+    }
+  }
+}

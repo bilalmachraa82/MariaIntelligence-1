@@ -1,0 +1,82 @@
+{
+  "ocr-multi-provider-dependencies": {
+    "required": [
+      {
+        "name": "sharp",
+        "version": "^0.33.0",
+        "purpose": "Image preprocessing for better OCR accuracy",
+        "install": "npm install sharp"
+      },
+      {
+        "name": "pdf-parse",
+        "version": "^1.1.1",
+        "purpose": "Native PDF text extraction fallback",
+        "install": "npm install pdf-parse"
+      },
+      {
+        "name": "axios",
+        "version": "^1.6.0",
+        "purpose": "HTTP client for API requests",
+        "install": "npm install axios"
+      },
+      {
+        "name": "multer",
+        "version": "^1.4.5-lts.1",
+        "purpose": "File upload handling",
+        "install": "npm install multer @types/multer"
+      }
+    ],
+    "optional": [
+      {
+        "name": "jimp",
+        "version": "^0.22.0",
+        "purpose": "Alternative image processing library",
+        "install": "npm install jimp"
+      },
+      {
+        "name": "canvas",
+        "version": "^2.11.0",
+        "purpose": "Advanced image manipulation",
+        "install": "npm install canvas"
+      }
+    ],
+    "environment_variables": {
+      "required": [],
+      "optional": [
+        {
+          "name": "GOOGLE_GEMINI_API_KEY",
+          "description": "Primary OCR provider - Google Gemini API key",
+          "example": "AIzaSyD..."
+        },
+        {
+          "name": "OPENROUTER_API_KEY", 
+          "description": "Backup OCR provider - OpenRouter API key",
+          "example": "sk-or-v1-..."
+        },
+        {
+          "name": "OCR_MAX_CONCURRENT_REQUESTS",
+          "description": "Maximum concurrent OCR requests",
+          "default": "5"
+        },
+        {
+          "name": "OCR_DEFAULT_TIMEOUT",
+          "description": "Default timeout for OCR requests (ms)",
+          "default": "60000"
+        },
+        {
+          "name": "OCR_ENABLE_PREPROCESSING",
+          "description": "Enable image preprocessing",
+          "default": "true"
+        }
+      ]
+    },
+    "configuration_notes": [
+      "At least one OCR provider (Gemini or OpenRouter) should be configured",
+      "Native PDF extraction always available as fallback",
+      "Gemini provides best quality for structured data extraction",
+      "OpenRouter good for backup and cost optimization",
+      "Image preprocessing improves OCR accuracy but increases processing time",
+      "Rate limiting automatically applied to prevent API quota exceeded"
+    ]
+  }
+}

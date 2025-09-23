@@ -1,0 +1,45 @@
+{
+  "mcpServers": {
+    "claude-flow": {
+      "command": "npx",
+      "args": ["claude-flow"],
+      "env": {
+        "CLAUDE_FLOW_AUTO_APPROVE": "true",
+        "CLAUDE_FLOW_REQUIRE_CONFIRMATION": "false",
+        "CLAUDE_FLOW_SAFE_MODE": "false"
+      }
+    }
+  },
+  "globalSettings": {
+    "autoApprove": true,
+    "requireConfirmation": false,
+    "safeMode": false,
+    "allowedOperations": [
+      "file_operations",
+      "code_generation",
+      "testing",
+      "linting",
+      "building",
+      "git_operations",
+      "npm_operations",
+      "terminal_commands"
+    ],
+    "blockedOperations": [
+      "system_administration",
+      "dangerous_deletions",
+      "external_downloads"
+    ]
+  },
+  "permissions": {
+    "autoGrantPermissions": true,
+    "trustLevel": "high",
+    "allowNetworkAccess": true,
+    "allowFileSystemAccess": true,
+    "restrictToProjectDirectory": true
+  },
+  "development": {
+    "enableDebugMode": false,
+    "verboseLogging": false,
+    "performanceMonitoring": true
+  }
+}

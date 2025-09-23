@@ -1,0 +1,99 @@
+{
+  "name": "Fluxo de Reservas - OCR Gemini PostgreSQL (Sem Slack)",
+  "nodes": [
+    {
+      "id": "webhook-trigger",
+      "name": "Webhook - Receber Reservas",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [250, 300],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "reservas-ocr",
+        "responseMode": "responseNode",
+        "options": {
+          "onError": "continueRegularOutput"
+        }
+      }
+    },
+    {
+      "id": "gemini-ocr",
+      "name": "Google Gemini - OCR PDF",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [500, 300],
+      "parameters": {
+        "modelId": "gemini-1.5-flash",
+        "options": {},
+        "prompt": "Extraia as seguintes informações deste documento de reserva:\n- Nome do hóspede\n- Data de check-in\n- Data de check-out\n- Número do quarto\n- Valor da reserva\n\nRetorne em formato JSON estruturado."
+      }
+    },
+    {
+      "id": "postgres-insert",
+      "name": "PostgreSQL - Salvar Dados",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [750, 300],
+      "parameters": {
+        "schema": "public",
+        "table": "reservas",
+        "columns": "nome_hospede,data_checkin,data_checkout,quarto,valor",
+        "additionalFields": {
+          "retryOnFail": true
+        }
+      },
+      "retryOnFail": true
+    },
+    {
+      "id": "webhook-response",
+      "name": "Webhook - Resposta de Sucesso",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [750, 450],
+      "parameters": {
+        "options": {
+          "responseCode": 200,
+          "responseData": "{{ JSON.stringify({ status: 'success', message: 'Reserva processada com sucesso' }) }}"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook - Receber Reservas": {
+      "main": [
+        [
+          {
+            "node": "Google Gemini - OCR PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini - OCR PDF": {
+      "main": [
+        [
+          {
+            "node": "PostgreSQL - Salvar Dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PostgreSQL - Salvar Dados": {
+      "main": [
+        [
+          {
+            "node": "Webhook - Resposta de Sucesso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

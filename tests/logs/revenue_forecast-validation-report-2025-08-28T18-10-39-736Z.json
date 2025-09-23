@@ -1,0 +1,139 @@
+[
+  {
+    "model_name": "revenue_forecast",
+    "validation_type": "accuracy",
+    "passed": false,
+    "score": 0.8111547422334601,
+    "threshold": 0.85,
+    "details": {
+      "current_accuracy": 0.8111547422334601,
+      "target_accuracy": 0.85,
+      "accuracy_gap": 0.03884525776653991,
+      "validation_time_ms": 0
+    },
+    "timestamp": "2025-08-28T18:10:37.620Z",
+    "warnings": [
+      "Accuracy 81.12% below target 85%"
+    ],
+    "recommendations": [
+      "Consider retraining with more data or adjusting hyperparameters"
+    ]
+  },
+  {
+    "model_name": "revenue_forecast",
+    "validation_type": "performance",
+    "passed": true,
+    "score": 0.9771,
+    "threshold": 2000,
+    "details": {
+      "avg_prediction_time_ms": 91.6,
+      "max_prediction_time_ms": 142,
+      "min_prediction_time_ms": 52,
+      "std_deviation_ms": 27.792804824270615,
+      "test_runs": 10,
+      "validation_time_ms": 916
+    },
+    "timestamp": "2025-08-28T18:10:38.536Z",
+    "warnings": [],
+    "recommendations": []
+  },
+  {
+    "model_name": "revenue_forecast",
+    "validation_type": "stability",
+    "passed": false,
+    "score": 0,
+    "threshold": 0.05,
+    "details": {
+      "predictions": [
+        1318.3760971150905,
+        997.7482139789274,
+        566.4670970729413,
+        683.3064456377225,
+        786.6226981431431
+      ],
+      "mean_prediction": 870.5041103895649,
+      "variance": 70259.58817344398,
+      "coefficient_of_variation": 0.3044962677455892,
+      "test_runs": 5,
+      "validation_time_ms": 496
+    },
+    "timestamp": "2025-08-28T18:10:39.032Z",
+    "warnings": [
+      "High prediction variability detected - model may be unstable"
+    ],
+    "recommendations": [
+      "Check model determinism and random seed settings"
+    ]
+  },
+  {
+    "model_name": "revenue_forecast",
+    "validation_type": "data_quality",
+    "passed": true,
+    "score": 1,
+    "threshold": 0.8,
+    "details": {
+      "total_tests": 5,
+      "passed_tests": 5,
+      "success_rate": 1,
+      "test_results": [
+        {
+          "name": "normal_input",
+          "success": true,
+          "expected": true,
+          "confidence": 0.9232281549190869
+        },
+        {
+          "name": "zero_values",
+          "success": true,
+          "expected": true,
+          "confidence": 0.827799501254261
+        },
+        {
+          "name": "negative_values",
+          "success": true,
+          "expected": true,
+          "confidence": 0.7450544747704302
+        },
+        {
+          "name": "large_values",
+          "success": true,
+          "expected": true,
+          "confidence": 0.8280051814399099
+        },
+        {
+          "name": "mixed_values",
+          "success": true,
+          "expected": true,
+          "confidence": 0.9233150964735465
+        }
+      ],
+      "validation_time_ms": 571
+    },
+    "timestamp": "2025-08-28T18:10:39.603Z",
+    "warnings": [],
+    "recommendations": []
+  },
+  {
+    "model_name": "revenue_forecast",
+    "validation_type": "drift",
+    "passed": false,
+    "score": 0.7766107740698381,
+    "threshold": 0.1,
+    "details": {
+      "drift_score": 0.2233892259301619,
+      "drift_detected": true,
+      "retrain_recommended": true,
+      "drift_recommendation": "Significant drift detected. Immediate retraining recommended.",
+      "validation_time_ms": 1
+    },
+    "timestamp": "2025-08-28T18:10:39.604Z",
+    "warnings": [
+      "Model drift detected with score 0.223",
+      "Drift score approaching threshold - monitor closely"
+    ],
+    "recommendations": [
+      "Significant drift detected. Immediate retraining recommended.",
+      "Consider scheduled model retraining"
+    ]
+  }
+]

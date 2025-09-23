@@ -171,7 +171,7 @@ export async function parseReservationData(text: string): Promise<ParseResult> {
       const match = text.match(regex);
       if (match) {
         // Se for um dos padrões específicos de tabela, pegar o terceiro grupo de captura
-        if (regex.toString().includes('data.*saída') || regex.toString().includes('\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}')) {
+        if (regex.toString().includes('data.*saída') || regex.toString().includes('\\d{1,2}/\\d{1,2}/\\d{2,4}')) {
           reservation.guestName = (match[3] || match[1]).trim();
         } else {
           reservation.guestName = match[1].trim();
@@ -322,7 +322,7 @@ export async function parseReservationData(text: string): Promise<ParseResult> {
       const match = text.match(regex);
       if (match) {
         // Se for o padrão tabular, usar o grupo de captura correto
-        if (regex.toString().includes('\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}')) {
+        if (regex.toString().includes('\\d{1,2}/\\d{1,2}/\\d{2,4}')) {
           reservation.numGuests = parseInt(match[3]);
         } else {
           reservation.numGuests = parseInt(match[1]);

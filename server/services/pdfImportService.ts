@@ -191,7 +191,7 @@ export class PDFImportService {
   // ===== PUBLIC METHODS =====
 
   /**
-   * Import reservations from PDF files
+   * Import reservations from PDF files with enhanced parallel processing
    * @param pdfFiles Array of PDF files (base64 encoded)
    * @param options Import options
    * @returns Import results with detailed report
@@ -203,6 +203,7 @@ export class PDFImportService {
       confidenceThreshold?: number;
       createUnmatchedProperties?: boolean;
       batchSize?: number;
+      parallelConcurrency?: number;
     } = {}
   ): Promise<PDFImportResult> {
     const startTime = Date.now();
@@ -210,40 +211,91 @@ export class PDFImportService {
       autoMatch = true,
       confidenceThreshold = 0.7,
       createUnmatchedProperties = false,
-      batchSize = 10
+      batchSize = 8, // Reduced for better parallel processing
+      parallelConcurrency = Math.min(4, Math.ceil(pdfFiles.length / 2)) // Dynamic concurrency
     } = options;
 
-    console.log(`📄 Starting PDF import for ${pdfFiles.length} files`);
+    console.log(`📄 Starting parallel PDF import for ${pdfFiles.length} files with concurrency ${parallelConcurrency}`);
 
     try {
-      // Update properties list and cache
-      await this.updatePropertiesList();
+      // **PARALLEL OPTIMIZATION**: Update properties list concurrently with initial validation
+      const [_, validationResults] = await Promise.all([
+        this.updatePropertiesList(),
+        // Pre-validate files in parallel
+        this.validatePDFFiles(pdfFiles)
+      ]);
+
+      const validFiles = pdfFiles.filter((_, index) => validationResults[index].valid);
+      console.log(`✅ ${validFiles.length}/${pdfFiles.length} files passed validation`);
 
       const allReservations: ProcessedReservation[] = [];
-      const errors: string[] = [];
+      const errors: string[] = validationResults
+        .filter(result => !result.valid)
+        .map(result => result.error);
       const unmatchedPropertiesMap = new Map<string, UnmatchedProperty>();
 
-      // Process files in batches
-      for (let i = 0; i < pdfFiles.length; i += batchSize) {
-        const batch = pdfFiles.slice(i, i + batchSize);
-        
-        console.log(`📦 Processing batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(pdfFiles.length / batchSize)}`);
+      // **ENHANCED PARALLEL PROCESSING**: Use Promise.allSettled with controlled concurrency
+      console.log(`⚡ Processing ${validFiles.length} files in parallel batches`);
 
-        const batchPromises = batch.map(async (file) => {
+      // Create batches for controlled parallel processing
+      const batches: Array<{ content: string; filename: string }[]> = [];
+      for (let i = 0; i < validFiles.length; i += batchSize) {
+        batches.push(validFiles.slice(i, i + batchSize));
+      }
+
+      const semaphore = new Map<string, boolean>(); // Simple semaphore for concurrency control
+      let activeTasks = 0;
+
+      const processWithConcurrency = async (file: { content: string; filename: string }) => {
+        // Wait for available slot
+        while (activeTasks >= parallelConcurrency) {
+          await new Promise(resolve => setTimeout(resolve, 10));
+        }
+
+        activeTasks++;
+        try {
+          return await this.processPDFFile(file.content, file.filename);
+        } finally {
+          activeTasks--;
+        }
+      };
+
+      // Process all batches with controlled concurrency
+      const batchPromises = batches.map(async (batch, batchIndex) => {
+        console.log(`📦 Processing batch ${batchIndex + 1}/${batches.length} (${batch.length} files)`);
+
+        // Process files in batch with Promise.allSettled for better error handling
+        const filePromises = batch.map(async (file) => {
           try {
-            return await this.processPDFFile(file.content, file.filename);
+            const result = await processWithConcurrency(file);
+            return { success: true, reservations: result, filename: file.filename };
           } catch (error) {
             const errorMsg = `Error processing ${file.filename}: ${error instanceof Error ? error.message : 'Unknown error'}`;
-            errors.push(errorMsg);
-            console.error(errorMsg);
-            return [];
+            return { success: false, error: errorMsg, filename: file.filename };
           }
         });
 
-        const batchResults = await Promise.all(batchPromises);
-        
-        for (const fileReservations of batchResults) {
-          allReservations.push(...fileReservations);
+        return await Promise.allSettled(filePromises);
+      });
+
+      // Wait for all batches to complete
+      const allBatchResults = await Promise.all(batchPromises);
+
+      // Process results from all batches
+      for (const batchResults of allBatchResults) {
+        for (const result of batchResults) {
+          if (result.status === 'fulfilled') {
+            const fileResult = result.value;
+            if (fileResult.success) {
+              allReservations.push(...fileResult.reservations);
+            } else {
+              errors.push(fileResult.error);
+              console.error(fileResult.error);
+            }
+          } else {
+            errors.push(`Batch processing failed: ${result.reason}`);
+            console.error('Batch processing failed:', result.reason);
+          }
         }
       }
 
@@ -263,15 +315,15 @@ export class PDFImportService {
 
         // Track unmatched properties
         if (processed.status === 'unmatched') {
-          const key = propertyMatch.normalizedName;
+          const key = processed.propertyMatch.normalizedName;
           if (unmatchedPropertiesMap.has(key)) {
             unmatchedPropertiesMap.get(key)!.count++;
           } else {
             unmatchedPropertiesMap.set(key, {
-              originalName: propertyMatch.originalName,
-              normalizedName: propertyMatch.normalizedName,
+              originalName: processed.propertyMatch.originalName,
+              normalizedName: processed.propertyMatch.normalizedName,
               count: 1,
-              suggestions: propertyMatch.suggestions
+              suggestions: processed.propertyMatch.suggestions
             });
           }
         }
@@ -983,17 +1035,17 @@ export class PDFImportService {
         try {
           let year, month, day;
           
-          if (format.source.includes('(\\d{4})-(\\d{2})-(\\d{2})')) {
+          if (format.source.includes('(\\\\d{4})-(\\\\d{2})-(\\\\d{2})')) {
             // YYYY-MM-DD
             [, year, month, day] = match;
-          } else if (format.source.includes('(\\d{2})[\\\/\\-](\\d{2})[\\\/\\-](\\d{4})')) {
+          } else if (format.source.includes('(\\\\d{2})[\\\\\/\\\\-](\\\\d{2})[\\\\\/\\\\-](\\\\d{4})')) {
             // DD/MM/YYYY
             [, day, month, year] = match;
-          } else if (format.source.includes('(\\d{2})[\\\/\\-](\\d{2})[\\\/\\-](\\d{2})')) {
+          } else if (format.source.includes('(\\\\d{2})[\\\\\/\\\\-](\\\\d{2})[\\\\\/\\\\-](\\\\d{2})')) {
             // DD/MM/YY
             [, day, month, year] = match;
             year = parseInt(year) < 50 ? `20${year}` : `19${year}`;
-          } else if (format.source.includes('(\\d{1,2})\\s+(\\w+)\\s+(\\d{4})')) {
+          } else if (format.source.includes('(\\\\d{1,2})\\\\s+(\\\\w+)\\\\s+(\\\\d{4})')) {
             // DD Month YYYY
             [, day, month, year] = match;
             month = this.monthNameToNumber(month);

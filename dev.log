@@ -1,0 +1,42 @@
+npm warn using --force Recommended protections disabled.
+
+> rest-express@1.0.0 dev
+> concurrently "tsx server/index.ts" "vite"
+
+[1] Port 5173 is in use, trying another one...
+[1] 
+[1]   VITE v7.0.6  ready in 92 ms
+[1] 
+[1]   ➜  Local:   http://localhost:5174/
+[1]   ➜  Network: use --host to expose
+[0] DATABASE_URL não está definida. Usando armazenamento em memória.
+[0] Usando armazenamento em memória
+[0] Usando armazenamento em memória por configuração
+[0] Serviço RAG Aprimorado inicializado
+[0] Nenhuma chave Gemini configurada (GOOGLE_GEMINI_API_KEY ou GOOGLE_API_KEY). Algumas funcionalidades estarão indisponíveis.
+[0] 🔧 Inicializando GeminiService em modo mock (implementação direta da API em desenvolvimento)
+[0] ✅ Mistral OCR API configurada corretamente
+[0] ✅ OpenRouter API configurada corretamente (fallback)
+[0] ⚠️ Nenhuma chave de API do Gemini configurada. Funcionalidades de IA Gemini estarão limitadas.
+[0] ✅ Hugging Face Token configurado corretamente
+[0] 🤖 Serviço de IA primário configurado para: auto
+[0] Inicializando aplicação com segurança aprimorada...
+[0] ######### USANDO MemStorage #########
+[0] Warning: Indexing all PDF objects
+[0] file:///Users/bilal/Programac%CC%A7ao/MariaIntelligence-1/node_modules/@neondatabase/serverless/index.mjs:1524
+[0] queryCallback:u,resultCallback:c,authToken:h}={}){if(!r)throw new Error("No data\
+[0]                                                               ^
+[0] 
+[0] Error: No database connection string was provided to `neon()`. Perhaps an environment variable has not been set?
+[0]     at neon (file:///Users/bilal/Programac%CC%A7ao/MariaIntelligence-1/node_modules/@neondatabase/serverless/index.mjs:1524:63)
+[0]     at createDrizzleClient (/Users/bilal/Programaçao/MariaIntelligence-1/server/db/index.ts:10:15)
+[0]     at getDrizzle (/Users/bilal/Programaçao/MariaIntelligence-1/server/db/index.ts:16:23)
+[0]     at <anonymous> (/Users/bilal/Programaçao/MariaIntelligence-1/server/db/index.ts:47:19)
+[0]     at ModuleJob.run (node:internal/modules/esm/module_job:371:25)
+[0]     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:669:26)
+[0]     at async registerRoutes (/Users/bilal/Programaçao/MariaIntelligence-1/server/routes.ts:1363:7)
+[0]     at async <anonymous> (/Users/bilal/Programaçao/MariaIntelligence-1/server/index.ts:102:18)
+[0] 
+[0] Node.js v24.6.0
+[0] tsx server/index.ts exited with code 1
+[1] vite exited with code 143

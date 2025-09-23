@@ -3,26 +3,25 @@
   "buildCommand": "npm run vercel-build",
   "outputDirectory": "dist",
   "functions": {
-    "api/health.ts": {
-      "maxDuration": 30
-    },
-    "api/status.ts": {
+    "api/index.js": {
+      "runtime": "nodejs18.x",
       "maxDuration": 30
     }
   },
   "env": {
     "NODE_ENV": "production"
   },
-  "installCommand": "npm cache clean --force && npm install --legacy-peer-deps",
+  "installCommand": "npm install",
   "framework": null,
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "src": "/api/(.*)",
+      "dest": "/api/index.js"
     },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/(.*)",
+      "dest": "/dist/$1"
     }
-  ]
+  ],
+  "regions": ["fra1"]
 }

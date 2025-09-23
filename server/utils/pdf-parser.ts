@@ -67,10 +67,10 @@ export async function extractTextFromPDF(filePath: string): Promise<string> {
     
     // Remover espaços em branco excessivos
     extractedText = extractedText.replace(/\s+/g, ' ').trim();
-    
+
     // Remover caracteres de controle
     extractedText = extractedText.replace(/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/g, '');
-    
+
     // Substituir quebras de linha múltiplas por uma única
     extractedText = extractedText.replace(/\n{2,}/g, '\n');
     

@@ -223,10 +223,10 @@ class ReservationTransformer {
     const reservationRegexes = [
       // Pattern: Nome: João Silva, Check-in: 15/01/2024, Check-out: 20/01/2024
       /Nome:\s*([^,\n]+).*?Check-in:\s*(\d{1,2}\/\d{1,2}\/\d{4}).*?Check-out:\s*(\d{1,2}\/\d{1,2}\/\d{4})/gi,
-      
+
       // Pattern: Guest: John Doe | Entrada: 2024-01-15 | Saída: 2024-01-20
       /Guest:\s*([^|\n]+).*?Entrada:\s*(\d{4}-\d{2}-\d{2}).*?Saída:\s*(\d{4}-\d{2}-\d{2})/gi,
-      
+
       // Pattern: Hóspede: Maria Santos - De 10/01/2024 a 15/01/2024
       /Hóspede:\s*([^-\n]+)\s*-\s*De\s*(\d{1,2}\/\d{1,2}\/\d{4})\s*a\s*(\d{1,2}\/\d{1,2}\/\d{4})/gi
     ];

@@ -1,0 +1,493 @@
+npm warn using --force Recommended protections disabled.
+
+> rest-express@1.0.0 dev:server
+> tsx server/index.ts
+
+Usando armazenamento PostgreSQL
+Serviço RAG Aprimorado inicializado
+🔧 Chave API Gemini encontrada, inicializando serviço...
+✅ Mistral OCR API configurada corretamente
+✅ OpenRouter API configurada corretamente (fallback)
+✅ Gemini API configurada corretamente
+✅ Hugging Face Token configurado corretamente
+🤖 Serviço de IA primário configurado para: auto
+The `fetchConnectionCache` option is deprecated (now always `true`)
+{"level":30,"time":1756222460251,"pid":18931,"hostname":"MBP-de-Bilal","name":"database","host":"ep-tiny-dream-a58ddhin.us-east-2.aws.neon.tech","database":"neondb","ssl":"require","msg":"Database configuration loaded"}
+Inicializando aplicação com segurança aprimorada…
+🔍 Initializing database connection...
+Warning: Indexing all PDF objects
+{"level":30,"time":1756222460326,"pid":18931,"hostname":"MBP-de-Bilal","name":"database","msg":"Initializing database connection..."}
+Tentativa 1/5
+Validando chave API Gemini...
+✅ Gemini API configurada corretamente
+🔄 Health checks iniciados (intervalo: 5 minutos)
+Erro na API Gemini: 400 - Bad Request
+Detalhes do erro: {
+  "error": {
+    "code": 400,
+    "message": "API key not valid. Please pass a valid API key.",
+    "status": "INVALID_ARGUMENT",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "API_KEY_INVALID",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "generativelanguage.googleapis.com"
+        }
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+        "locale": "en-US",
+        "message": "API key not valid. Please pass a valid API key."
+      }
+    ]
+  }
+}
+
+Erro de autorização na API Gemini: API retornou status 400: {
+  "error": {
+    "code": 400,
+    "message": "API key not valid. Please pass a valid API key.",
+    "status": "INVALID_ARGUMENT",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "API_KEY_INVALID",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "generativelanguage.googleapis.com"
+        }
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+        "locale": "en-US",
+        "message": "API key not valid. Please pass a valid API key."
+      }
+    ]
+  }
+}
+
+❌ Erro ao validar chave API do Gemini após várias tentativas: Error: API retornou status 400: {
+  "error": {
+    "code": 400,
+    "message": "API key not valid. Please pass a valid API key.",
+    "status": "INVALID_ARGUMENT",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "API_KEY_INVALID",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "generativelanguage.googleapis.com"
+        }
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+        "locale": "en-US",
+        "message": "API key not valid. Please pass a valid API key."
+      }
+    ]
+  }
+}
+
+    at <anonymous> (/Users/bilal/Programaçao/MariaIntelligence-1/server/services/gemini.service.ts:385:21)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async GeminiService.withRetry (/Users/bilal/Programaçao/MariaIntelligence-1/server/services/gemini.service.ts:112:16)
+    at async GeminiService.validateApiKey (/Users/bilal/Programaçao/MariaIntelligence-1/server/services/gemini.service.ts:354:14)
+❌ Chave API do Gemini inválida ou API indisponível
+🔧 Inicializando GeminiService em modo mock (implementação direta da API em desenvolvimento)
+❌ Database initialization failed: Database connection failed: password authentication failed for user 'neondb_owner'
+{"level":50,"time":1756222460685,"pid":18931,"hostname":"MBP-de-Bilal","name":"database","error":"password authentication failed for user 'neondb_owner'","latency":359,"errorType":"AUTH_ERROR","suggestion":"Check your database credentials in DATABASE_URL","msg":"Database connection failed"}
+{"level":50,"time":1756222460686,"pid":18931,"hostname":"MBP-de-Bilal","name":"database","error":"Database connection failed: password authentication failed for user 'neondb_owner'","msg":"Database initialization error"}
+{"level":50,"time":1756222460686,"pid":18931,"hostname":"MBP-de-Bilal","name":"database","details":{"error":"Database connection failed: password authentication failed for user 'neondb_owner'","connection":false,"migrations":false,"schema":false,"details":{"connection":{"healthy":false,"error":"password authentication failed for user 'neondb_owner'","errorType":"AUTH_ERROR","suggestion":"Check your database credentials in DATABASE_URL","details":{"ssl":false,"connected":false}}}},"msg":"Database initialization failed"}
+🚀 Server listening on http://0.0.0.0:5100
+Erro ao verificar conexão com banco de dados: error: password authentication failed for user 'neondb_owner'
+    at /Users/bilal/Programaçao/MariaIntelligence-1/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async checkDatabaseConnection (/Users/bilal/Programaçao/MariaIntelligence-1/server/db.ts:60:20)
+    at async createStorage (/Users/bilal/Programaçao/MariaIntelligence-1/server/storage.ts:3236:23)
+    at async <anonymous> (/Users/bilal/Programaçao/MariaIntelligence-1/server/storage.ts:3263:23) {
+  length: 75,
+  severity: 'ERROR',
+  code: 'XX000',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: undefined,
+  line: undefined,
+  routine: undefined
+}
+Banco de dados não disponível, usando armazenamento em memória
+######### USANDO MemStorage #########
+Erro ao verificar conexão PostgreSQL: error: password authentication failed for user 'neondb_owner'
+    at /Users/bilal/Programaçao/MariaIntelligence-1/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  length: 75,
+  severity: 'ERROR',
+  code: 'XX000',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: undefined,
+  line: undefined,
+  routine: undefined
+}
+{"level":50,"time":1756222478503,"pid":18931,"hostname":"MBP-de-Bilal","name":"database","error":"password authentication failed for user 'neondb_owner'","latency":350,"errorType":"AUTH_ERROR","suggestion":"Check your database credentials in DATABASE_URL","msg":"Database connection failed"}
+4:34:38 PM [express] GET /api/database/troubleshoot 503 in 357ms :: {"status":"needs_attention","diagnostics":{"environment":{"hasConnection…
+[26-08-2025 16:34:38] [31mERROR[39m: [36mrequest errored[39m
+    [35mreq[39m: {
+      "id": 1,
+      "method": "GET",
+      "url": "/api/database/troubleshoot",
+      "query": {},
+      "params": {},
+      "headers": {
+        "host": "localhost:5100",
+        "user-agent": "curl/8.7.1",
+        "accept": "*/*"
+      },
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 51842
+    }
+    [35mres[39m: {
+      "statusCode": 503,
+      "headers": {
+        "content-security-policy": "default-src 'self';script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com;style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net;img-src 'self' data: blob: https: http://localhost:*;connect-src 'self' https://api.openai.com https://api.anthropic.com https://generativelanguage.googleapis.com https://api.mistral.ai wss://localhost:* ws://localhost:*;font-src 'self' https://fonts.gstatic.com data:;object-src 'none';media-src 'self' blob: data:;frame-src 'none';child-src 'none';worker-src 'self' blob:;manifest-src 'self';form-action 'self';base-uri 'self';frame-ancestors 'self';script-src-attr 'none'",
+        "cross-origin-opener-policy": "same-origin",
+        "cross-origin-resource-policy": "cross-origin",
+        "origin-agent-cluster": "?1",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+        "x-content-type-options": "nosniff",
+        "x-dns-prefetch-control": "off",
+        "x-download-options": "noopen",
+        "x-frame-options": "DENY",
+        "x-permitted-cross-domain-policies": "none",
+        "x-xss-protection": "1; mode=block",
+        "vary": "Origin",
+        "access-control-allow-credentials": "true",
+        "access-control-expose-headers": "X-Total-Count,X-Rate-Limit-Remaining",
+        "permissions-policy": "camera=(), microphone=(), geolocation=()",
+        "ratelimit-policy": "100;w=900",
+        "ratelimit-limit": "100",
+        "ratelimit-remaining": "99",
+        "ratelimit-reset": "900",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "790",
+        "etag": "W/\"316-BYCduw4BylCixgi0uLqctWaEun4\""
+      }
+    }
+    [35mresponseTime[39m: 357
+    err: {
+      "type": "Error",
+      "message": "failed with status code 503",
+      "stack":
+          Error: failed with status code 503
+              at onResFinished (/Users/bilal/Programaçao/MariaIntelligence-1/node_modules/pino-http/logger.js:115:39)
+              at ServerResponse.onResponseComplete (/Users/bilal/Programaçao/MariaIntelligence-1/node_modules/pino-http/logger.js:178:14)
+              at ServerResponse.emit (node:events:520:35)
+              at onFinish (node:_http_outgoing:1024:10)
+              at callback (node:internal/streams/writable:764:21)
+              at afterWrite (node:internal/streams/writable:708:5)
+              at afterWriteTick (node:internal/streams/writable:694:10)
+              at process.processTicksAndRejections (node:internal/process/task_queues:89:21)
+    }
+🔍 Executando health check da API Gemini...
+Tentativa 1/5
+Validando chave API Gemini...
+Erro na API Gemini: 400 - Bad Request
+Detalhes do erro: {
+  "error": {
+    "code": 400,
+    "message": "API key not valid. Please pass a valid API key.",
+    "status": "INVALID_ARGUMENT",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "API_KEY_INVALID",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "generativelanguage.googleapis.com"
+        }
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+        "locale": "en-US",
+        "message": "API key not valid. Please pass a valid API key."
+      }
+    ]
+  }
+}
+
+Erro de autorização na API Gemini: API retornou status 400: {
+  "error": {
+    "code": 400,
+    "message": "API key not valid. Please pass a valid API key.",
+    "status": "INVALID_ARGUMENT",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "API_KEY_INVALID",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "generativelanguage.googleapis.com"
+        }
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+        "locale": "en-US",
+        "message": "API key not valid. Please pass a valid API key."
+      }
+    ]
+  }
+}
+
+❌ Erro ao validar chave API do Gemini após várias tentativas: Error: API retornou status 400: {
+  "error": {
+    "code": 400,
+    "message": "API key not valid. Please pass a valid API key.",
+    "status": "INVALID_ARGUMENT",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "API_KEY_INVALID",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "generativelanguage.googleapis.com"
+        }
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+        "locale": "en-US",
+        "message": "API key not valid. Please pass a valid API key."
+      }
+    ]
+  }
+}
+
+    at <anonymous> (/Users/bilal/Programaçao/MariaIntelligence-1/server/services/gemini.service.ts:385:21)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async GeminiService.withRetry (/Users/bilal/Programaçao/MariaIntelligence-1/server/services/gemini.service.ts:112:16)
+    at async GeminiService.validateApiKey (/Users/bilal/Programaçao/MariaIntelligence-1/server/services/gemini.service.ts:354:14)
+    at async GeminiService.testConnection (/Users/bilal/Programaçao/MariaIntelligence-1/server/services/gemini.service.ts:308:23)
+    at async Timeout._onTimeout (/Users/bilal/Programaçao/MariaIntelligence-1/server/services/gemini.service.ts:200:24)
+⚠️ Health check falhou: Chave de API inválida ou API indisponível
+🔍 Executando health check da API Gemini...
+Tentativa 1/5
+Validando chave API Gemini...
+Erro na API Gemini: 400 - Bad Request
+Detalhes do erro: {
+  "error": {
+    "code": 400,
+    "message": "API key not valid. Please pass a valid API key.",
+    "status": "INVALID_ARGUMENT",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "API_KEY_INVALID",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "generativelanguage.googleapis.com"
+        }
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+        "locale": "en-US",
+        "message": "API key not valid. Please pass a valid API key."
+      }
+    ]
+  }
+}
+
+Erro de autorização na API Gemini: API retornou status 400: {
+  "error": {
+    "code": 400,
+    "message": "API key not valid. Please pass a valid API key.",
+    "status": "INVALID_ARGUMENT",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "API_KEY_INVALID",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "generativelanguage.googleapis.com"
+        }
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+        "locale": "en-US",
+        "message": "API key not valid. Please pass a valid API key."
+      }
+    ]
+  }
+}
+
+❌ Erro ao validar chave API do Gemini após várias tentativas: Error: API retornou status 400: {
+  "error": {
+    "code": 400,
+    "message": "API key not valid. Please pass a valid API key.",
+    "status": "INVALID_ARGUMENT",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "API_KEY_INVALID",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "generativelanguage.googleapis.com"
+        }
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+        "locale": "en-US",
+        "message": "API key not valid. Please pass a valid API key."
+      }
+    ]
+  }
+}
+
+    at <anonymous> (/Users/bilal/Programaçao/MariaIntelligence-1/server/services/gemini.service.ts:385:21)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async GeminiService.withRetry (/Users/bilal/Programaçao/MariaIntelligence-1/server/services/gemini.service.ts:112:16)
+    at async GeminiService.validateApiKey (/Users/bilal/Programaçao/MariaIntelligence-1/server/services/gemini.service.ts:354:14)
+    at async GeminiService.testConnection (/Users/bilal/Programaçao/MariaIntelligence-1/server/services/gemini.service.ts:308:23)
+    at async Timeout._onTimeout (/Users/bilal/Programaçao/MariaIntelligence-1/server/services/gemini.service.ts:200:24)
+⚠️ Health check falhou: Chave de API inválida ou API indisponível
+{"level":50,"time":1756223082855,"pid":18931,"hostname":"MBP-de-Bilal","name":"database","error":"password authentication failed for user 'neondb_owner'","latency":437,"errorType":"AUTH_ERROR","suggestion":"Check your database credentials in DATABASE_URL","msg":"Database connection failed"}
+4:44:42 PM [express] GET /api/database/health 503 in 444ms :: {"status":"unhealthy","database":{"healthy":false,"ssl":false,"connected":fals…
+[26-08-2025 16:44:42] [31mERROR[39m: [36mrequest errored[39m
+    [35mreq[39m: {
+      "id": 2,
+      "method": "GET",
+      "url": "/api/database/health",
+      "query": {},
+      "params": {},
+      "headers": {
+        "host": "localhost:5100",
+        "user-agent": "curl/8.7.1",
+        "accept": "*/*"
+      },
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52445
+    }
+    [35mres[39m: {
+      "statusCode": 503,
+      "headers": {
+        "content-security-policy": "default-src 'self';script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com;style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net;img-src 'self' data: blob: https: http://localhost:*;connect-src 'self' https://api.openai.com https://api.anthropic.com https://generativelanguage.googleapis.com https://api.mistral.ai wss://localhost:* ws://localhost:*;font-src 'self' https://fonts.gstatic.com data:;object-src 'none';media-src 'self' blob: data:;frame-src 'none';child-src 'none';worker-src 'self' blob:;manifest-src 'self';form-action 'self';base-uri 'self';frame-ancestors 'self';script-src-attr 'none'",
+        "cross-origin-opener-policy": "same-origin",
+        "cross-origin-resource-policy": "cross-origin",
+        "origin-agent-cluster": "?1",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+        "x-content-type-options": "nosniff",
+        "x-dns-prefetch-control": "off",
+        "x-download-options": "noopen",
+        "x-frame-options": "DENY",
+        "x-permitted-cross-domain-policies": "none",
+        "x-xss-protection": "1; mode=block",
+        "vary": "Origin",
+        "access-control-allow-credentials": "true",
+        "access-control-expose-headers": "X-Total-Count,X-Rate-Limit-Remaining",
+        "permissions-policy": "camera=(), microphone=(), geolocation=()",
+        "ratelimit-policy": "100;w=900",
+        "ratelimit-limit": "100",
+        "ratelimit-remaining": "98",
+        "ratelimit-reset": "296",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "185",
+        "etag": "W/\"b9-Ftob2uuZVD8E++DGPdLuQmGQBRo\""
+      }
+    }
+    [35mresponseTime[39m: 443
+    err: {
+      "type": "Error",
+      "message": "failed with status code 503",
+      "stack":
+          Error: failed with status code 503
+              at onResFinished (/Users/bilal/Programaçao/MariaIntelligence-1/node_modules/pino-http/logger.js:115:39)
+              at ServerResponse.onResponseComplete (/Users/bilal/Programaçao/MariaIntelligence-1/node_modules/pino-http/logger.js:178:14)
+              at ServerResponse.emit (node:events:520:35)
+              at onFinish (node:_http_outgoing:1024:10)
+              at callback (node:internal/streams/writable:764:21)
+              at afterWrite (node:internal/streams/writable:708:5)
+              at afterWriteTick (node:internal/streams/writable:694:10)
+              at process.processTicksAndRejections (node:internal/process/task_queues:89:21)
+    }
+{"level":50,"time":1756223091865,"pid":18931,"hostname":"MBP-de-Bilal","name":"database","operation":"validate-schema","attempt":1,"error":"password authentication failed for user 'neondb_owner'","msg":"Database operation failed"}
+{"level":50,"time":1756223091865,"pid":18931,"hostname":"MBP-de-Bilal","name":"database","error":"password authentication failed for user 'neondb_owner'","msg":"Schema validation failed"}
+{"level":50,"time":1756223091867,"pid":18931,"hostname":"MBP-de-Bilal","name":"database","error":"password authentication failed for user 'neondb_owner'","latency":344,"errorType":"AUTH_ERROR","suggestion":"Check your database credentials in DATABASE_URL","msg":"Database connection failed"}
+4:44:51 PM [express] GET /api/database/status 503 in 344ms :: {"overall":{"healthy":false,"status":"degraded"},"connection":{"healthy":false…
+[26-08-2025 16:44:51] [31mERROR[39m: [36mrequest errored[39m
+    [35mreq[39m: {
+      "id": 3,
+      "method": "GET",
+      "url": "/api/database/status",
+      "query": {},
+      "params": {},
+      "headers": {
+        "host": "localhost:5100",
+        "user-agent": "curl/8.7.1",
+        "accept": "*/*"
+      },
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 52473
+    }
+    [35mres[39m: {
+      "statusCode": 503,
+      "headers": {
+        "content-security-policy": "default-src 'self';script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com;style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net;img-src 'self' data: blob: https: http://localhost:*;connect-src 'self' https://api.openai.com https://api.anthropic.com https://generativelanguage.googleapis.com https://api.mistral.ai wss://localhost:* ws://localhost:*;font-src 'self' https://fonts.gstatic.com data:;object-src 'none';media-src 'self' blob: data:;frame-src 'none';child-src 'none';worker-src 'self' blob:;manifest-src 'self';form-action 'self';base-uri 'self';frame-ancestors 'self';script-src-attr 'none'",
+        "cross-origin-opener-policy": "same-origin",
+        "cross-origin-resource-policy": "cross-origin",
+        "origin-agent-cluster": "?1",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+        "x-content-type-options": "nosniff",
+        "x-dns-prefetch-control": "off",
+        "x-download-options": "noopen",
+        "x-frame-options": "DENY",
+        "x-permitted-cross-domain-policies": "none",
+        "x-xss-protection": "1; mode=block",
+        "vary": "Origin",
+        "access-control-allow-credentials": "true",
+        "access-control-expose-headers": "X-Total-Count,X-Rate-Limit-Remaining",
+        "permissions-policy": "camera=(), microphone=(), geolocation=()",
+        "ratelimit-policy": "100;w=900",
+        "ratelimit-limit": "100",
+        "ratelimit-remaining": "97",
+        "ratelimit-reset": "287",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "393",
+        "etag": "W/\"189-uiNCLBs+hnWt7lCMdriDBvv9UUw\""
+      }
+    }
+    [35mresponseTime[39m: 344
+    err: {
+      "type": "Error",
+      "message": "failed with status code 503",
+      "stack":
+          Error: failed with status code 503
+              at onResFinished (/Users/bilal/Programaçao/MariaIntelligence-1/node_modules/pino-http/logger.js:115:39)
+              at ServerResponse.onResponseComplete (/Users/bilal/Programaçao/MariaIntelligence-1/node_modules/pino-http/logger.js:178:14)
+              at ServerResponse.emit (node:events:520:35)
+              at onFinish (node:_http_outgoing:1024:10)
+              at callback (node:internal/streams/writable:764:21)
+              at afterWrite (node:internal/streams/writable:708:5)
+              at afterWriteTick (node:internal/streams/writable:694:10)
+              at process.processTicksAndRejections (node:internal/process/task_queues:89:21)
+    }

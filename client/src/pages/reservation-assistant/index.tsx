@@ -225,7 +225,7 @@ export default function ReservationAssistant() {
             .replace(/\*(.*?)\*/g, '<em>$1</em>')
             .replace(/\n\n/g, '<br/><br/>')
             .replace(/\n/g, '<br/>')
-            .replace(/\|\s*([^|]*)\s*\|\s*([^|]*)\s*\|\s*([^|]*)\s*\|\s*([^|]*)\s*\|\s*([^|]*)\s*\|\s*([^|]*)\s*\|/g, 
+            .replace(/\|\s*([^|]*)\s*\|\s*([^|]*)\s*\|\s*([^|]*)\s*\|\s*([^|]*)\s*\|\s*([^|]*)\s*\|\s*([^|]*)\s*\|/g,
               '<div class="grid grid-cols-6 gap-2 border-b py-1"><div>$1</div><div>$2</div><div>$3</div><div>$4</div><div>$5</div><div>$6</div></div>')
         }} 
       />

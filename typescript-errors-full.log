@@ -1,0 +1,122 @@
+npm warn using --force Recommended protections disabled.
+server/middleware/performance-monitor.ts(1,125): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,127): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,128): error TS1435: Unknown keyword or identifier. Did you mean 'import'?
+server/middleware/performance-monitor.ts(1,172): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,187): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,188): error TS1435: Unknown keyword or identifier. Did you mean 'import'?
+server/middleware/performance-monitor.ts(1,196): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,202): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,217): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,218): error TS1435: Unknown keyword or identifier. Did you mean 'import'?
+server/middleware/performance-monitor.ts(1,226): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,229): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,239): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,240): error TS1435: Unknown keyword or identifier. Did you mean 'import'?
+server/middleware/performance-monitor.ts(1,248): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,253): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,265): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,266): error TS1435: Unknown keyword or identifier. Did you mean 'import'?
+server/middleware/performance-monitor.ts(1,274): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,277): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,287): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,288): error TS1435: Unknown keyword or identifier. Did you mean 'import'?
+server/middleware/performance-monitor.ts(1,296): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,304): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,319): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,321): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,322): error TS1435: Unknown keyword or identifier. Did you mean 'interface'?
+server/middleware/performance-monitor.ts(1,333): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,353): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,354): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,375): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,376): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,394): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,395): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,411): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,412): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,434): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,435): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,459): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,460): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,495): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,496): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,525): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,526): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,555): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,558): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,560): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,561): error TS1435: Unknown keyword or identifier. Did you mean 'interface'?
+server/middleware/performance-monitor.ts(1,572): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,587): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,588): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,609): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,610): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,619): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,620): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,639): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,640): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,665): error TS1011: An element access expression should take an argument.
+server/middleware/performance-monitor.ts(1,667): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,673): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,674): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,686): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,687): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,706): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,707): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,725): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,726): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,745): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,746): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,768): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,769): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,792): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,798): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,799): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,809): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,810): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,821): error TS1109: Expression expected.
+server/middleware/performance-monitor.ts(1,830): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,836): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,837): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,850): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,851): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,876): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,882): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,885): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,887): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,888): error TS1435: Unknown keyword or identifier. Did you mean 'class'?
+server/middleware/performance-monitor.ts(1,895): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,915): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,916): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,919): error TS1128: Declaration or statement expected.
+server/middleware/performance-monitor.ts(1,933): error TS1109: Expression expected.
+server/middleware/performance-monitor.ts(1,941): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,942): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,945): error TS1128: Declaration or statement expected.
+server/middleware/performance-monitor.ts(1,987): error TS1011: An element access expression should take an argument.
+server/middleware/performance-monitor.ts(1,994): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,995): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,998): error TS1128: Declaration or statement expected.
+server/middleware/performance-monitor.ts(1,1041): error TS1011: An element access expression should take an argument.
+server/middleware/performance-monitor.ts(1,1048): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,1049): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,1052): error TS1128: Declaration or statement expected.
+server/middleware/performance-monitor.ts(1,1083): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,1084): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,1087): error TS1128: Declaration or statement expected.
+server/middleware/performance-monitor.ts(1,1112): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,1113): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,1116): error TS1128: Declaration or statement expected.
+server/middleware/performance-monitor.ts(1,1139): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,1140): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,1143): error TS1128: Declaration or statement expected.
+server/middleware/performance-monitor.ts(1,1169): error TS1127: Invalid character.
+server/middleware/performance-monitor.ts(1,1170): error TS1434: Unexpected keyword or identifier.
+server/middleware/performance-monitor.ts(1,1173): error TS1128: Declaration or statement expected.
+server/middleware/performance-monitor.ts(1,11772): error TS1005: '}' expected.
+server/middleware/security-enhanced.ts(501,7): error TS1161: Unterminated regular expression literal.
+server/middleware/security-enhanced.ts(502,8): error TS1109: Expression expected.
+server/middleware/security-enhanced.ts(502,11): error TS1124: Digit expected.
+server/middleware/security-enhanced.ts(502,14): error TS1124: Digit expected.
+server/middleware/security-enhanced.ts(502,16): error TS1351: An identifier or keyword cannot immediately follow a numeric literal.

@@ -1,0 +1,38 @@
+/// <reference types="vitest" />
+import { defineConfig } from 'vitest/config'
+import path from 'path'
+
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'node', // Use node environment for API testing
+    setupFiles: ['./test-setup.ts'],
+    css: false,
+    reporters: ['verbose'],
+    coverage: {
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/',
+        'test-setup.ts',
+        'run-all-tests.ts',
+        '**/*.d.ts',
+        '**/*.config.*',
+        '**/coverage/**'
+      ]
+    },
+    testTimeout: 30000, // Increase timeout for integration tests
+    hookTimeout: 30000,
+    teardownTimeout: 10000,
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        singleThread: true // Prevent database connection conflicts
+      }
+    }
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, '../client/src')
+    }
+  }
+})

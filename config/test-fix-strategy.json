@@ -1,0 +1,257 @@
+{
+  "testFixStrategy": {
+    "metadata": {
+      "version": "1.0.0",
+      "createdAt": "2025-08-28T10:05:00Z",
+      "totalFailures": 38,
+      "analysisComplete": true
+    },
+    "phases": [
+      {
+        "phase": 1,
+        "name": "Critical Infrastructure Fixes",
+        "priority": "CRITICAL",
+        "estimatedDuration": "4-6 hours",
+        "failuresAddressed": 27,
+        "description": "Resolve module resolution and database mock issues",
+        "tasks": [
+          {
+            "id": "fix-db-module-resolution",
+            "title": "Fix Database Module Resolution",
+            "description": "Update vitest config path mappings and fix ../server/db/index imports",
+            "files": [
+              "tests/vitest.config.ts",
+              "tests/pdf-import-service.spec.ts"
+            ],
+            "priority": "CRITICAL",
+            "estimatedTime": "2 hours",
+            "dependencies": []
+          },
+          {
+            "id": "update-path-mappings",
+            "title": "Update Test Path Mappings",
+            "description": "Configure proper path resolution for server modules in tests",
+            "files": [
+              "tests/vitest.config.ts"
+            ],
+            "priority": "CRITICAL",
+            "estimatedTime": "1 hour",
+            "dependencies": ["fix-db-module-resolution"]
+          },
+          {
+            "id": "validate-pdf-service-tests",
+            "title": "Validate PDF Service Tests",
+            "description": "Ensure all 27 PDF import service tests pass after path fixes",
+            "files": [
+              "tests/pdf-import-service.spec.ts"
+            ],
+            "priority": "HIGH",
+            "estimatedTime": "2 hours",
+            "dependencies": ["update-path-mappings"]
+          }
+        ]
+      },
+      {
+        "phase": 2,
+        "name": "API Integration Fixes",
+        "priority": "HIGH",
+        "estimatedDuration": "6-8 hours",
+        "failuresAddressed": 8,
+        "description": "Fix API service mocks and integration test expectations",
+        "tasks": [
+          {
+            "id": "fix-gemini-service-mocks",
+            "title": "Fix Gemini Service Mocks",
+            "description": "Correct mock responses and assertions for error scenarios",
+            "files": [
+              "tests/gemini-connectivity.spec.ts",
+              "tests/mcp/mocks/mock-services.ts"
+            ],
+            "priority": "HIGH",
+            "estimatedTime": "3 hours",
+            "dependencies": []
+          },
+          {
+            "id": "fix-error-handling-tests",
+            "title": "Fix Error Handling Test Expectations",
+            "description": "Align test expectations with actual service behavior",
+            "files": [
+              "tests/gemini-connectivity.spec.ts"
+            ],
+            "priority": "HIGH",
+            "estimatedTime": "2 hours",
+            "dependencies": ["fix-gemini-service-mocks"]
+          },
+          {
+            "id": "fix-ml-input-validation",
+            "title": "Fix ML Input Validation",
+            "description": "Ensure ML service rejects empty features properly",
+            "files": [
+              "tests/ml-pattern-recognition.spec.ts",
+              "server/services/ml-pattern-recognition.service.ts"
+            ],
+            "priority": "MEDIUM",
+            "estimatedTime": "2 hours",
+            "dependencies": []
+          },
+          {
+            "id": "validate-api-integration-tests",
+            "title": "Validate API Integration Tests",
+            "description": "Run and validate all API integration tests pass",
+            "files": [
+              "tests/gemini-connectivity.spec.ts",
+              "tests/ml-pattern-recognition.spec.ts"
+            ],
+            "priority": "HIGH",
+            "estimatedTime": "1 hour",
+            "dependencies": ["fix-error-handling-tests", "fix-ml-input-validation"]
+          }
+        ]
+      },
+      {
+        "phase": 3,
+        "name": "Business Logic Fixes",
+        "priority": "MEDIUM",
+        "estimatedDuration": "2-4 hours",
+        "failuresAddressed": 2,
+        "description": "Fix business logic assertions and performance measurements",
+        "tasks": [
+          {
+            "id": "fix-pattern-analysis",
+            "title": "Fix Pattern Analysis Logic",
+            "description": "Ensure pattern analysis returns valid results for time series data",
+            "files": [
+              "tests/ml-pattern-recognition.spec.ts",
+              "server/services/ml-pattern-recognition.service.ts"
+            ],
+            "priority": "MEDIUM",
+            "estimatedTime": "2 hours",
+            "dependencies": []
+          },
+          {
+            "id": "fix-performance-measurements",
+            "title": "Fix Performance Measurement Logic",
+            "description": "Correct timing logic for caching performance tests",
+            "files": [
+              "tests/pdf-import-service.spec.ts"
+            ],
+            "priority": "LOW",
+            "estimatedTime": "1 hour",
+            "dependencies": []
+          }
+        ]
+      },
+      {
+        "phase": 4,
+        "name": "Test Environment Improvements",
+        "priority": "LOW",
+        "estimatedDuration": "4-6 hours",
+        "failuresAddressed": 1,
+        "description": "Improve test infrastructure and add monitoring",
+        "tasks": [
+          {
+            "id": "implement-test-isolation",
+            "title": "Implement Proper Test Isolation",
+            "description": "Ensure tests don't interfere with each other",
+            "files": [
+              "tests/test-setup.ts",
+              "tests/vitest.config.ts"
+            ],
+            "priority": "LOW",
+            "estimatedTime": "2 hours",
+            "dependencies": []
+          },
+          {
+            "id": "standardize-mocks",
+            "title": "Standardize Mock Configurations",
+            "description": "Create consistent mock patterns across all tests",
+            "files": [
+              "tests/mcp/mocks/mock-services.ts",
+              "tests/mcp/setup.ts"
+            ],
+            "priority": "LOW",
+            "estimatedTime": "2 hours",
+            "dependencies": []
+          },
+          {
+            "id": "add-test-fixtures",
+            "title": "Add Test Data Fixtures",
+            "description": "Create reusable test data and fixtures",
+            "files": [
+              "tests/fixtures/"
+            ],
+            "priority": "LOW",
+            "estimatedTime": "1 hour",
+            "dependencies": []
+          },
+          {
+            "id": "implement-test-monitoring",
+            "title": "Implement Test Monitoring",
+            "description": "Add test result tracking and failure alerting",
+            "files": [
+              "tests/monitoring/",
+              ".github/workflows/test.yml"
+            ],
+            "priority": "LOW",
+            "estimatedTime": "1 hour",
+            "dependencies": []
+          }
+        ]
+      }
+    ],
+    "failureCategories": {
+      "moduleResolution": {
+        "count": 27,
+        "severity": "CRITICAL",
+        "files": ["tests/pdf-import-service.spec.ts"],
+        "rootCause": "Database module path resolution failure",
+        "businessImpact": "PDF processing completely untestable"
+      },
+      "apiIntegration": {
+        "count": 8,
+        "severity": "HIGH", 
+        "files": ["tests/gemini-connectivity.spec.ts", "tests/ml-pattern-recognition.spec.ts"],
+        "rootCause": "Mock configuration and assertion mismatches",
+        "businessImpact": "AI service reliability cannot be verified"
+      },
+      "businessLogic": {
+        "count": 2,
+        "severity": "MEDIUM",
+        "files": ["tests/ml-pattern-recognition.spec.ts", "tests/pdf-import-service.spec.ts"],
+        "rootCause": "Algorithm logic and timing measurement issues",
+        "businessImpact": "Data processing accuracy concerns"
+      },
+      "testInfrastructure": {
+        "count": 1,
+        "severity": "LOW",
+        "files": ["tests/pdf-import-service.spec.ts"],
+        "rootCause": "Performance measurement timing logic",
+        "businessImpact": "Test reliability and maintenance overhead"
+      }
+    },
+    "successMetrics": {
+      "phase1Complete": "27/38 failures resolved (71% improvement)",
+      "phase2Complete": "35/38 failures resolved (92% improvement)", 
+      "phase3Complete": "37/38 failures resolved (97% improvement)",
+      "phase4Complete": "38/38 failures resolved (100% test stability)"
+    },
+    "riskAssessment": {
+      "productionReadiness": "NOT_READY",
+      "criticalBlockers": [
+        "Core PDF processing cannot be validated",
+        "API error handling unverified",
+        "Data integrity mechanisms untested"
+      ],
+      "highRiskAreas": [
+        "AI service failures in production will be unhandled",
+        "Performance optimizations not validated", 
+        "User data processing reliability unknown"
+      ],
+      "complianceRisks": [
+        "Financial data processing untested",
+        "Error logging/monitoring gaps",
+        "Recovery mechanisms unverified"
+      ]
+    }
+  }
+}

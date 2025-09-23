@@ -1,26 +1,12 @@
 import { db } from './index';
-import { owners, properties, reservations, cleaningTeams, users } from './schema';
-import { hash } from 'bcryptjs';
+import { owners, properties, reservations, cleaningTeams } from '../../shared/schema';
 import { v4 as uuidv4 } from 'uuid';
 
 console.log('🌱 Iniciando seed do banco de dados...\n');
 
 async function seed() {
   try {
-    // 1. Criar usuário admin
-    console.log('👤 Criando usuário admin...');
-    const adminPassword = await hash('admin123', 10);
-    const [adminUser] = await db.insert(users).values({
-      id: uuidv4(),
-      email: 'admin@mariafaz.com',
-      name: 'Administrador',
-      password: adminPassword,
-      role: 'admin',
-      isActive: true,
-    }).returning();
-    console.log('✅ Usuário admin criado: admin@mariafaz.com (senha: admin123)');
-
-    // 2. Criar proprietários
+    // 1. Criar proprietários
     console.log('\n🏠 Criando proprietários...');
     const ownersData = [
       {

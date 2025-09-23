@@ -607,7 +607,7 @@ export class GeminiService {
                 role: 'user',
                 parts: [
                   { 
-                    text: `Você é um especialista em OCR. Extraia todo o texto visível deste documento PDF em base64, 
+                    text: `Você é um especialista em OCR. Extraia todo o texto visível deste documento PDF em base64,
                     organizando o texto por seções. Preserve tabelas e formatação estruturada.
                     Preste atenção especial em datas, valores monetários e informações de contato.`
                   },
@@ -1136,122 +1136,163 @@ export class GeminiService {
   
   /**
    * Processa um documento (PDF ou imagem) para extrair informações de reserva
-   * Versão melhorada compatível com a interface do AIAdapter
+   * Versão melhorada compatível com a interface do AIAdapter com processamento paralelo
    * @param fileBase64 Arquivo em base64
    * @param mimeType Tipo MIME do arquivo
    * @returns Objeto com todos os dados extraídos
    */
   async processReservationDocument(fileBase64: string, mimeType: string): Promise<any> {
     this.checkInitialization();
-    
-    console.log(`🔍 GeminiService: Processando documento ${mimeType}`);
-    
+
+    console.log(`🔍 GeminiService: Processando documento ${mimeType} com processamento paralelo`);
+
     // Determinar o tipo de arquivo
     const isPDF = mimeType.includes('pdf');
-    
-    // Extrair texto do documento
-    let extractedText;
+
     try {
-      console.log(`📄 Extraindo texto do ${isPDF ? 'PDF' : 'imagem'}...`);
-      
-      if (isPDF) {
-        extractedText = await this.extractTextFromPDF(fileBase64);
-      } else {
-        extractedText = await this.extractTextFromImage(fileBase64, mimeType);
-      }
-      
-      console.log(`✅ Texto extraído: ${extractedText.length} caracteres`);
-      
-      if (extractedText.length < 50) {
-        console.warn("⚠️ Texto extraído muito curto, possível falha na extração");
-        // Fallback quando o texto extraído é muito curto
-        if (isPDF) {
-          // Criar mensagem de erro mais detalhada para o usuário
-          return {
-            success: false,
-            error: "Texto extraído do PDF muito curto ou vazio",
-            details: "Verifique se o PDF contém texto selecionável ou use uma imagem do documento",
-            extractedLength: extractedText.length
-          };
+      // **PARALLEL OPTIMIZATION**: Execute text extraction and visual analysis concurrently
+      console.log(`⚡ Iniciando processamento paralelo: extração de texto + análise visual`);
+
+      const [extractedText, visualAnalysis] = await Promise.allSettled([
+        // Text extraction
+        (async () => {
+          console.log(`📄 Extraindo texto do ${isPDF ? 'PDF' : 'imagem'}...`);
+
+          if (isPDF) {
+            return await this.extractTextFromPDF(fileBase64);
+          } else {
+            return await this.extractTextFromImage(fileBase64, mimeType);
+          }
+        })(),
+
+        // Visual analysis
+        (async () => {
+          console.log(`🔍 Analisando documento visualmente...`);
+          return await this.analyzeDocumentVisually(fileBase64, mimeType);
+        })()
+      ]);
+
+      // Handle text extraction result
+      let textResult: string;
+      if (extractedText.status === 'fulfilled') {
+        textResult = extractedText.value;
+        console.log(`✅ Texto extraído: ${textResult.length} caracteres`);
+
+        if (textResult.length < 50) {
+          console.warn("⚠️ Texto extraído muito curto, possível falha na extração");
+          if (isPDF) {
+            return {
+              success: false,
+              error: "Texto extraído do PDF muito curto ou vazio",
+              details: "Verifique se o PDF contém texto selecionável ou use uma imagem do documento",
+              extractedLength: textResult.length
+            };
+          }
         }
-      }
-    } catch (error: any) {
-      console.error("❌ Erro na extração de texto:", error);
-      return {
-        success: false,
-        error: "Falha na extração de texto",
-        details: error.message || "Erro desconhecido na extração",
-        service: "gemini"
-      };
-    }
-    
-    try {
-      // Analisar o documento visualmente (em paralelo)
-      console.log(`🔍 Analisando documento visualmente...`);
-      const visualAnalysisPromise = this.analyzeDocumentVisually(fileBase64, mimeType);
-      
-      // Extrair dados estruturados
-      console.log(`🔍 Extraindo dados estruturados do texto...`);
-      let structuredData;
-      try {
-        structuredData = await this.parseReservationData(extractedText);
-        console.log(`✅ Dados estruturados extraídos com sucesso`);
-      } catch (structuredError: any) {
-        console.error("❌ Erro na extração de dados estruturados:", structuredError);
+      } else {
+        console.error("❌ Erro na extração de texto:", extractedText.reason);
         return {
           success: false,
-          error: "Falha na extração de dados estruturados",
-          details: structuredError.message || "Erro desconhecido",
-          rawText: extractedText,
+          error: "Falha na extração de texto",
+          details: extractedText.reason?.message || "Erro desconhecido na extração",
           service: "gemini"
         };
       }
-      
-      // Obter resultado da análise visual
-      let visualAnalysis;
-      try {
-        visualAnalysis = await visualAnalysisPromise;
-      } catch (visualError) {
+
+      // Handle visual analysis result
+      let visualResult: any;
+      if (visualAnalysis.status === 'fulfilled') {
+        visualResult = visualAnalysis.value;
+        console.log(`✅ Análise visual concluída com sucesso`);
+      } else {
         console.warn("⚠️ Erro na análise visual, usando resultado padrão");
-        visualAnalysis = { 
-          type: isPDF ? "reserva_pdf" : "reserva_imagem", 
+        visualResult = {
+          type: isPDF ? "reserva_pdf" : "reserva_imagem",
           confidence: 0.5,
           details: "Análise visual falhou, usando tipo padrão"
         };
       }
-      
-      // Garantir que todos os campos requeridos estejam presentes
+
+      // **PARALLEL OPTIMIZATION**: Process structured data extraction and document classification concurrently
+      console.log(`⚡ Processamento paralelo: extração de dados + classificação`);
+
+      const [structuredDataResult, classificationResult] = await Promise.allSettled([
+        // Structured data extraction
+        (async () => {
+          console.log(`🔍 Extraindo dados estruturados do texto...`);
+          return await this.parseReservationData(textResult);
+        })(),
+
+        // Document classification
+        (async () => {
+          console.log(`🏷️ Classificando tipo de documento...`);
+          return await this.classifyDocument(textResult);
+        })()
+      ]);
+
+      // Handle structured data result
+      let structuredData: any;
+      if (structuredDataResult.status === 'fulfilled') {
+        structuredData = structuredDataResult.value;
+        console.log(`✅ Dados estruturados extraídos com sucesso`);
+      } else {
+        console.error("❌ Erro na extração de dados estruturados:", structuredDataResult.reason);
+        return {
+          success: false,
+          error: "Falha na extração de dados estruturados",
+          details: structuredDataResult.reason?.message || "Erro desconhecido",
+          rawText: textResult,
+          service: "gemini"
+        };
+      }
+
+      // Handle classification result
+      let classification: any;
+      if (classificationResult.status === 'fulfilled') {
+        classification = classificationResult.value;
+        console.log(`✅ Classificação de documento concluída: ${classification.type}`);
+      } else {
+        console.warn("⚠️ Erro na classificação, usando tipo padrão");
+        classification = {
+          type: "reserva",
+          confidence: 0.5,
+          details: "Classificação falhou, usando tipo padrão"
+        };
+      }
+
+      // Validate required fields
       const requiredFields = ['propertyName', 'guestName', 'checkInDate', 'checkOutDate'];
       const missingFields = requiredFields.filter(field => !structuredData[field]);
-      
+
       if (missingFields.length > 0) {
         console.warn(`⚠️ Dados incompletos. Campos ausentes: ${missingFields.join(', ')}`);
       }
-      
-      // Adicionar documentType se não estiver presente
+
+      // Merge document type from classification
       if (!structuredData.documentType) {
-        structuredData.documentType = 'reserva';
+        structuredData.documentType = classification.type || 'reserva';
       }
-      
-      // Combinar resultados
+
+      // Combine all results
       return {
         success: true,
-        rawText: extractedText,
+        rawText: textResult,
         data: structuredData,
         documentInfo: {
-          ...visualAnalysis,
+          ...visualResult,
+          classification,
           mimeType,
           isPDF,
-          service: "gemini"
+          service: "gemini",
+          processingMethod: "parallel"
         }
       };
     } catch (error: any) {
-      console.error("❌ Erro geral no processamento:", error);
+      console.error("❌ Erro geral no processamento paralelo:", error);
       return {
         success: false,
         error: "Falha no processamento do documento",
         details: error.message || "Erro desconhecido",
-        rawText: extractedText,
         service: "gemini"
       };
     }

@@ -1,0 +1,58 @@
+{
+  "mcp_servers": {
+    "hostinger": {
+      "command": "hostinger-api-mcp",
+      "args": ["--api-token", "${HOSTINGER_API_TOKEN}"],
+      "capabilities": [
+        "vps_management",
+        "domain_management", 
+        "ssl_management",
+        "backup_management",
+        "monitoring"
+      ],
+      "endpoints": {
+        "vps": "https://api.hostinger.com/v1/vps",
+        "domains": "https://api.hostinger.com/v1/domains",
+        "monitoring": "https://api.hostinger.com/v1/monitoring"
+      }
+    }
+  },
+  "agent_assignments": {
+    "Hostinger-MCP-Agent": {
+      "mcp_server": "hostinger",
+      "capabilities": [
+        "vps_create",
+        "vps_start",
+        "vps_stop", 
+        "vps_restart",
+        "vps_backup",
+        "ssl_setup",
+        "domain_setup"
+      ]
+    },
+    "Database-Agent": {
+      "mcp_server": "hostinger",
+      "capabilities": [
+        "database_create",
+        "database_backup",
+        "query_optimization"
+      ]
+    },
+    "Security-Agent": {
+      "mcp_server": "hostinger", 
+      "capabilities": [
+        "firewall_config",
+        "ssl_monitoring",
+        "security_scan",
+        "backup_automation"
+      ]
+    }
+  },
+  "deployment_config": {
+    "vps_template": "Ubuntu 24.04 with Node.js and OpenLiteSpeed",
+    "database": "PostgreSQL 15+",
+    "ssl": "auto",
+    "backup_frequency": "daily",
+    "monitoring": "enabled"
+  }
+}

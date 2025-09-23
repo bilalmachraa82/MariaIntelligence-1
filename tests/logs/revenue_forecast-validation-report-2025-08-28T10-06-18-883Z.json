@@ -1,0 +1,129 @@
+[
+  {
+    "model_name": "revenue_forecast",
+    "validation_type": "accuracy",
+    "passed": true,
+    "score": 0.8861803759830237,
+    "threshold": 0.85,
+    "details": {
+      "current_accuracy": 0.8861803759830237,
+      "target_accuracy": 0.85,
+      "accuracy_gap": -0.036180375983023705,
+      "validation_time_ms": 0
+    },
+    "timestamp": "2025-08-28T10:06:16.854Z",
+    "warnings": [],
+    "recommendations": []
+  },
+  {
+    "model_name": "revenue_forecast",
+    "validation_type": "performance",
+    "passed": true,
+    "score": 0.974425,
+    "threshold": 2000,
+    "details": {
+      "avg_prediction_time_ms": 102.3,
+      "max_prediction_time_ms": 141,
+      "min_prediction_time_ms": 57,
+      "std_deviation_ms": 30.00349979585715,
+      "test_runs": 10,
+      "validation_time_ms": 1023
+    },
+    "timestamp": "2025-08-28T10:06:17.877Z",
+    "warnings": [],
+    "recommendations": []
+  },
+  {
+    "model_name": "revenue_forecast",
+    "validation_type": "stability",
+    "passed": false,
+    "score": 0,
+    "threshold": 0.05,
+    "details": {
+      "predictions": [
+        980.1945263216876,
+        840.7656246119409,
+        798.5024071404418,
+        923.5500985761366,
+        1422.36108656826
+      ],
+      "mean_prediction": 993.0747486436933,
+      "variance": 50068.56047282867,
+      "coefficient_of_variation": 0.22532045187512809,
+      "test_runs": 5,
+      "validation_time_ms": 464
+    },
+    "timestamp": "2025-08-28T10:06:18.341Z",
+    "warnings": [
+      "High prediction variability detected - model may be unstable"
+    ],
+    "recommendations": [
+      "Check model determinism and random seed settings"
+    ]
+  },
+  {
+    "model_name": "revenue_forecast",
+    "validation_type": "data_quality",
+    "passed": true,
+    "score": 1,
+    "threshold": 0.8,
+    "details": {
+      "total_tests": 5,
+      "passed_tests": 5,
+      "success_rate": 1,
+      "test_results": [
+        {
+          "name": "normal_input",
+          "success": true,
+          "expected": true,
+          "confidence": 0.7008412432159092
+        },
+        {
+          "name": "zero_values",
+          "success": true,
+          "expected": true,
+          "confidence": 0.837066642534561
+        },
+        {
+          "name": "negative_values",
+          "success": true,
+          "expected": true,
+          "confidence": 0.9301725809837761
+        },
+        {
+          "name": "large_values",
+          "success": true,
+          "expected": true,
+          "confidence": 0.815259109864555
+        },
+        {
+          "name": "mixed_values",
+          "success": true,
+          "expected": true,
+          "confidence": 0.7557994436982769
+        }
+      ],
+      "validation_time_ms": 441
+    },
+    "timestamp": "2025-08-28T10:06:18.782Z",
+    "warnings": [],
+    "recommendations": []
+  },
+  {
+    "model_name": "revenue_forecast",
+    "validation_type": "drift",
+    "passed": true,
+    "score": 0.9552519342673598,
+    "threshold": 0.1,
+    "details": {
+      "drift_score": 0.04474806573264025,
+      "drift_detected": false,
+      "retrain_recommended": false,
+      "drift_recommendation": "Model performing within acceptable parameters",
+      "validation_time_ms": 0
+    },
+    "timestamp": "2025-08-28T10:06:18.783Z",
+    "warnings": [],
+    "recommendations": []
+  }
+]

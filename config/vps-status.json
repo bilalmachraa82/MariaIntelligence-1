@@ -1,0 +1,57 @@
+{
+  "vps_configuration": {
+    "provider": "Hostinger",
+    "plan": "VPS Business",
+    "os": "Ubuntu 24.04 LTS",
+    "template": "Node.js with OpenLiteSpeed",
+    "resources": {
+      "cpu": "4 vCPU cores",
+      "ram": "8 GB",
+      "storage": "200 GB NVMe SSD",
+      "bandwidth": "Unlimited"
+    },
+    "network": {
+      "ip_address": "TBD",
+      "domain": "TBD",
+      "ssl": "Let's Encrypt Auto-SSL"
+    }
+  },
+  "setup_requirements": {
+    "node_version": "18.20.4",
+    "npm_version": "10.x",
+    "pm2": "latest",
+    "nginx_proxy": false,
+    "openlitespeed": true,
+    "postgresql": "16.x",
+    "redis": "7.x"
+  },
+  "security_configuration": {
+    "ssh_port": 22,
+    "firewall_enabled": true,
+    "fail2ban": true,
+    "auto_updates": true,
+    "ssl_certificate": "auto_renewal"
+  },
+  "deployment_structure": {
+    "app_directory": "/var/www/mariaintelligence",
+    "logs_directory": "/var/log/mariaintelligence",
+    "config_directory": "/etc/mariaintelligence",
+    "backup_directory": "/var/backups/mariaintelligence"
+  },
+  "status": {
+    "setup_phase": "foundation",
+    "last_updated": "2025-08-27T20:30:34.000Z",
+    "ready_for_deployment": false,
+    "prerequisites_met": false
+  },
+  "checklist": {
+    "vps_provisioned": false,
+    "ssh_access_configured": false,
+    "node_installed": false,
+    "openlitespeed_configured": false,
+    "firewall_configured": false,
+    "ssl_configured": false,
+    "database_ready": false,
+    "environment_variables_set": false
+  }
+}

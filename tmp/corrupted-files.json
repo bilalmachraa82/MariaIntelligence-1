@@ -1,0 +1,347 @@
+{
+  "timestamp": "2025-09-21T19:24:14.360Z",
+  "totalFilesScanned": 385,
+  "corruptedFilesFound": 11,
+  "files": [
+    {
+      "path": "/Users/bilal/Programaçao/MariaIntelligence-1/server/parsers/parseReservations.ts",
+      "relativePath": "server/parsers/parseReservations.ts",
+      "size": 21988,
+      "matches": [
+        {
+          "line": 79,
+          "column": 28,
+          "pattern": "escaped-newline",
+          "context": "propriedade[\\s:]+([^\\n\\.]+)/i,"
+        },
+        {
+          "line": 80,
+          "column": 25,
+          "pattern": "escaped-newline",
+          "context": "  /property[\\s:]+([^\\n\\.]+)/i,"
+        },
+        {
+          "line": 81,
+          "column": 27,
+          "pattern": "escaped-newline",
+          "context": "/alojamento[\\s:]+([^\\n\\.]+)/i,"
+        },
+        {
+          "line": 82,
+          "column": 23,
+          "pattern": "escaped-newline",
+          "context": "    /imóvel[\\s:]+([^\\n\\.]+)/i,"
+        },
+        {
+          "line": 83,
+          "column": 28,
+          "pattern": "escaped-newline",
+          "context": "localização[\\s:]+([^\\n\\.]+)/i,"
+        },
+        {
+          "line": 84,
+          "column": 26,
+          "pattern": "escaped-newline",
+          "context": " /localização ([^,\\.\\n]+)/i,"
+        },
+        {
+          "line": 85,
+          "column": 25,
+          "pattern": "escaped-newline",
+          "context": "  /location[\\s:]+([^\\n\\.]+)/i,"
+        },
+        {
+          "line": 86,
+          "column": 28,
+          "pattern": "escaped-newline",
+          "context": "apartamento[\\s:]+([^\\n\\.]+)/i,"
+        },
+        {
+          "line": 87,
+          "column": 26,
+          "pattern": "escaped-newline",
+          "context": " /apartment[\\s:]+([^\\n\\.]+)/i,"
+        },
+        {
+          "line": 88,
+          "column": 23,
+          "pattern": "escaped-newline",
+          "context": "    /morada[\\s:]+([^\\n\\.]+)/i,"
+        }
+      ],
+      "severity": "critical"
+    },
+    {
+      "path": "/Users/bilal/Programaçao/MariaIntelligence-1/server/services/pdfImportService.ts",
+      "relativePath": "server/services/pdfImportService.ts",
+      "size": 36781,
+      "matches": [
+        {
+          "line": 104,
+          "column": 35,
+          "pattern": "escaped-newline",
+          "context": "modation:\\s*(.+?)(?:\\n|$)/i,"
+        },
+        {
+          "line": 105,
+          "column": 30,
+          "pattern": "escaped-newline",
+          "context": "property:\\s*(.+?)(?:\\n|$)/i,"
+        },
+        {
+          "line": 106,
+          "column": 27,
+          "pattern": "escaped-newline",
+          "context": "  /hotel:\\s*(.+?)(?:\\n|$)/i,"
+        },
+        {
+          "line": 107,
+          "column": 15,
+          "pattern": "escaped-newline",
+          "context": "        /(?:^|\\n)(.+?)\\s*(?:apartm"
+        },
+        {
+          "line": 110,
+          "column": 27,
+          "pattern": "escaped-newline",
+          "context": "  /guest:\\s*(.+?)(?:\\n|$)/i,"
+        },
+        {
+          "line": 111,
+          "column": 26,
+          "pattern": "escaped-newline",
+          "context": "   /name:\\s*(.+?)(?:\\n|$)/i,"
+        },
+        {
+          "line": 112,
+          "column": 28,
+          "pattern": "escaped-newline",
+          "context": " /booker:\\s*(.+?)(?:\\n|$)/i"
+        },
+        {
+          "line": 115,
+          "column": 36,
+          "pattern": "escaped-newline",
+          "context": "\\-\\s]?in:\\s*(.+?)(?:\\n|$)/i,"
+        },
+        {
+          "line": 116,
+          "column": 29,
+          "pattern": "escaped-newline",
+          "context": "/arrival:\\s*(.+?)(?:\\n|$)/i,"
+        },
+        {
+          "line": 117,
+          "column": 26,
+          "pattern": "escaped-newline",
+          "context": "   /from:\\s*(.+?)(?:\\n|$)/i"
+        }
+      ],
+      "severity": "critical"
+    },
+    {
+      "path": "/Users/bilal/Programaçao/MariaIntelligence-1/server/services/handwriting-detector.ts",
+      "relativePath": "server/services/handwriting-detector.ts",
+      "size": 3885,
+      "matches": [
+        {
+          "line": 57,
+          "column": 37,
+          "pattern": "escaped-newline",
+          "context": "mattedParagraphs = /\\n\\s*\\n/.test(text);"
+        },
+        {
+          "line": 57,
+          "column": 42,
+          "pattern": "escaped-newline",
+          "context": "dParagraphs = /\\n\\s*\\n/.test(text);"
+        },
+        {
+          "line": 58,
+          "column": 31,
+          "pattern": "escaped-newline",
+          "context": "hasNumberedLists = /\\n\\s*\\d+\\.\\s/.test(t"
+        },
+        {
+          "line": 59,
+          "column": 29,
+          "pattern": "escaped-newline",
+          "context": "t hasTabularData = /\\n\\s*\\|/.test(text) "
+        },
+        {
+          "line": 59,
+          "column": 53,
+          "pattern": "escaped-tab",
+          "context": "*\\|/.test(text) || /\\t/.test(text);"
+        }
+      ],
+      "severity": "critical"
+    },
+    {
+      "path": "/Users/bilal/Programaçao/MariaIntelligence-1/server/utils/ocr-validation.utils.ts",
+      "relativePath": "server/utils/ocr-validation.utils.ts",
+      "size": 16110,
+      "matches": [
+        {
+          "line": 416,
+          "column": 36,
+          "pattern": "escaped-newline",
+          "context": "raphs = text.split(/\\n\\s*\\n/).filter(p ="
+        },
+        {
+          "line": 416,
+          "column": 41,
+          "pattern": "escaped-newline",
+          "context": " = text.split(/\\n\\s*\\n/).filter(p => p.t"
+        },
+        {
+          "line": 444,
+          "column": 40,
+          "pattern": "escaped-newline",
+          "context": "leanedText.replace(/\\n{3,}/g, '\\n\\n');"
+        }
+      ],
+      "severity": "critical"
+    },
+    {
+      "path": "/Users/bilal/Programaçao/MariaIntelligence-1/src/lib/mcp-transformers.ts",
+      "relativePath": "src/lib/mcp-transformers.ts",
+      "size": 16337,
+      "matches": [
+        {
+          "line": 225,
+          "column": 20,
+          "pattern": "escaped-newline",
+          "context": "      /Nome:\\s*([^,\\n]+).*?Check-in:\\s*"
+        },
+        {
+          "line": 228,
+          "column": 21,
+          "pattern": "escaped-newline",
+          "context": "      /Guest:\\s*([^|\\n]+).*?Entrada:\\s*("
+        },
+        {
+          "line": 231,
+          "column": 23,
+          "pattern": "escaped-newline",
+          "context": "    /Hóspede:\\s*([^-\\n]+)\\s*-\\s*De\\s*(\\d"
+        }
+      ],
+      "severity": "critical"
+    },
+    {
+      "path": "/Users/bilal/Programaçao/MariaIntelligence-1/client/src/pages/reservation-assistant/index.tsx",
+      "relativePath": "client/src/pages/reservation-assistant/index.tsx",
+      "size": 16656,
+      "matches": [
+        {
+          "line": 226,
+          "column": 23,
+          "pattern": "escaped-newline",
+          "context": "          .replace(/\\n\\n/g, '<br/><br/>'"
+        },
+        {
+          "line": 226,
+          "column": 25,
+          "pattern": "escaped-newline",
+          "context": "        .replace(/\\n\\n/g, '<br/><br/>')"
+        },
+        {
+          "line": 227,
+          "column": 23,
+          "pattern": "escaped-newline",
+          "context": "          .replace(/\\n/g, '<br/>')"
+        }
+      ],
+      "severity": "critical"
+    },
+    {
+      "path": "/Users/bilal/Programaçao/MariaIntelligence-1/server/db/mcp-migration-system.ts",
+      "relativePath": "server/db/mcp-migration-system.ts",
+      "size": 21081,
+      "matches": [
+        {
+          "line": 233,
+          "column": 64,
+          "pattern": "escaped-newline",
+          "context": "lback SQL \\(DOWN\\)[^\\n]*\\n([\\s\\S]*?)$/);"
+        },
+        {
+          "line": 233,
+          "column": 68,
+          "pattern": "escaped-newline",
+          "context": "k SQL \\(DOWN\\)[^\\n]*\\n([\\s\\S]*?)$/);"
+        }
+      ],
+      "severity": "critical"
+    },
+    {
+      "path": "/Users/bilal/Programaçao/MariaIntelligence-1/server/services/gemini.service.ts",
+      "relativePath": "server/services/gemini.service.ts",
+      "size": 66146,
+      "matches": [
+        {
+          "line": 1292,
+          "column": 49,
+          "pattern": "escaped-newline",
+          "context": "userPrompt.replace(/\\nTimestamp: \\d+$/g,"
+        },
+        {
+          "line": 1365,
+          "column": 37,
+          "pattern": "escaped-newline",
+          "context": "omptString.replace(/\\nTimestamp: \\d+$/g,"
+        }
+      ],
+      "severity": "critical"
+    },
+    {
+      "path": "/Users/bilal/Programaçao/MariaIntelligence-1/server/utils/pdf-parser.ts",
+      "relativePath": "server/utils/pdf-parser.ts",
+      "size": 2742,
+      "matches": [
+        {
+          "line": 75,
+          "column": 44,
+          "pattern": "escaped-newline",
+          "context": "ractedText.replace(/\\n{2,}/g, '\\n');"
+        }
+      ],
+      "severity": "critical"
+    },
+    {
+      "path": "/Users/bilal/Programaçao/MariaIntelligence-1/server/middleware/security.middleware.ts",
+      "relativePath": "server/middleware/security.middleware.ts",
+      "size": 9198,
+      "matches": [
+        {
+          "line": 17,
+          "column": 11,
+          "pattern": "double-backslash",
+          "context": "  /(\\.\\.[/\\\\]|\\.\\.%2f|\\.\\.%5c)"
+        }
+      ],
+      "severity": "low"
+    },
+    {
+      "path": "/Users/bilal/Programaçao/MariaIntelligence-1/server/services/security-audit.service.ts",
+      "relativePath": "server/services/security-audit.service.ts",
+      "size": 19313,
+      "matches": [
+        {
+          "line": 157,
+          "column": 26,
+          "pattern": "double-backslash",
+          "context": "   pattern: /(\\.\\.[/\\\\]){2,}/g,"
+        }
+      ],
+      "severity": "low"
+    }
+  ],
+  "summary": {
+    "critical": 9,
+    "high": 0,
+    "medium": 0,
+    "low": 2
+  }
+}

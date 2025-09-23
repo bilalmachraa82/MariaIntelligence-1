@@ -52,7 +52,7 @@ export class HandwritingDetector {
     const nonAlphanumericCount = (text.match(/[^a-zA-Z0-9\s]/g) || []).length;
     const nonAlphanumericRatio = nonAlphanumericCount / Math.max(1, contentLength);
     const noiseScore = Math.min(1, nonAlphanumericRatio * 5); // Normalizar
-    
+
     // 3. Verificar padrões de formatação típicos de documentos digitais
     const hasFormattedParagraphs = /\n\s*\n/.test(text);
     const hasNumberedLists = /\n\s*\d+\.\s/.test(text);

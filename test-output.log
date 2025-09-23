@@ -1,0 +1,2174 @@
+npm warn using --force Recommended protections disabled.
+
+> rest-express@1.0.0 test
+> vitest
+
+
+ RUN  v3.2.4 /Users/bilal/Programaçao/MariaIntelligence-1
+
+stdout | tests/gemini-api-integration.spec.ts > Gemini API Integration - Basic > should create Gemini service instance without errors
+Tentativa 1/5
+Validando chave API Gemini...
+✅ Gemini API configurada corretamente
+
+ ❯ tests/gemini-api-integration.spec.ts (5 tests | 1 failed) 117ms
+   ✓ Gemini API Integration - Basic > should have proper environment setup 1ms
+   ✓ Gemini API Integration - Basic > should be able to import Gemini service 89ms
+   ✓ Gemini API Integration - Basic > should be able to import rate limiter service 0ms
+   × Gemini API Integration - Basic > should have rate limiter configured correctly 4ms
+     → expected { recentRequests: +0, …(4) } to match object { recentRequests: Any<Number>, …(5) }
+(1 matching property omitted from actual)
+   ✓ Gemini API Integration - Basic > should create Gemini service instance without errors 22ms
+stderr | tests/ocr-providers.spec.ts
+⚠️ MISTRAL_API_KEY não está configurada. O serviço Mistral OCR não funcionará.
+
+stderr | tests/ai-performance-benchmarks.spec.ts
+⚠️ MISTRAL_API_KEY não está configurada. O serviço Mistral OCR não funcionará.
+
+stderr | tests/ocr-integration.spec.ts
+⚠️ MISTRAL_API_KEY não está configurada. O serviço Mistral OCR não funcionará.
+
+stderr | tests/ocr-validation.spec.ts
+⚠️ MISTRAL_API_KEY não está configurada. O serviço Mistral OCR não funcionará.
+
+stdout | tests/ocr-providers.spec.ts > OCR Providers Specific Tests
+Found 10 PDF files for provider testing
+
+stderr | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > Mistral OCR Provider Tests > should test Mistral OCR connection
+⚠️ MISTRAL_API_KEY não está configurada. O serviço Mistral OCR não funcionará.
+
+stderr | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > Mistral OCR Provider Tests > should test Mistral OCR connection
+MISTRAL_API_KEY not configured, skipping Mistral tests
+
+stderr | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > Mistral OCR Provider Tests > should process PDF with Mistral OCR
+⚠️ MISTRAL_API_KEY não está configurada. O serviço Mistral OCR não funcionará.
+
+stderr | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > Mistral OCR Provider Tests > should process PDF with Mistral OCR
+Skipping Mistral PDF test - no API key or PDFs
+
+stderr | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > Mistral OCR Provider Tests > should handle multiple PDFs with Mistral OCR batch processing
+⚠️ MISTRAL_API_KEY não está configurada. O serviço Mistral OCR não funcionará.
+
+stderr | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > Mistral OCR Provider Tests > should handle multiple PDFs with Mistral OCR batch processing
+Skipping Mistral batch test
+
+stderr | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > OpenRouter Provider Tests > should test OpenRouter connection
+⚠️ OPENROUTER_API_KEY não está configurada. O serviço OpenRouter não funcionará.
+
+stderr | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > OpenRouter Provider Tests > should test OpenRouter connection
+OPENROUTER_API_KEY not configured, skipping OpenRouter tests
+
+stderr | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > OpenRouter Provider Tests > should process PDF with OpenRouter
+⚠️ OPENROUTER_API_KEY não está configurada. O serviço OpenRouter não funcionará.
+
+stderr | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > OpenRouter Provider Tests > should process PDF with OpenRouter
+Skipping OpenRouter PDF test
+
+stderr | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > OpenRouter Provider Tests > should handle different PDF complexities with OpenRouter
+⚠️ OPENROUTER_API_KEY não está configurada. O serviço OpenRouter não funcionará.
+
+stderr | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > OpenRouter Provider Tests > should handle different PDF complexities with OpenRouter
+Skipping OpenRouter complexity test
+
+stderr | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > RolmOCR Provider Tests > should test RolmOCR connection
+⚠️ HF_TOKEN não está configurado. O serviço RolmOCR não funcionará para manuscritos.
+
+stderr | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > RolmOCR Provider Tests > should test RolmOCR connection
+HF_TOKEN not configured, skipping RolmOCR tests
+
+stderr | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > RolmOCR Provider Tests > should process PDF with RolmOCR
+⚠️ HF_TOKEN não está configurado. O serviço RolmOCR não funcionará para manuscritos.
+
+stderr | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > RolmOCR Provider Tests > should process PDF with RolmOCR
+Skipping RolmOCR PDF test
+
+stdout | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > Gemini Provider Tests > should test Gemini connection
+🔧 Inicializando GeminiService em modo mock (implementação direta da API em desenvolvimento)
+
+stderr | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > Gemini Provider Tests > should test Gemini connection
+Nenhuma chave Gemini configurada (GOOGLE_GEMINI_API_KEY ou GOOGLE_API_KEY). Algumas funcionalidades estarão indisponíveis.
+
+stderr | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > Gemini Provider Tests > should test Gemini connection
+Gemini API key not configured, skipping Gemini tests
+
+stdout | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > Gemini Provider Tests > should process PDF with Gemini visual analysis
+🔧 Inicializando GeminiService em modo mock (implementação direta da API em desenvolvimento)
+
+stderr | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > Gemini Provider Tests > should process PDF with Gemini visual analysis
+Nenhuma chave Gemini configurada (GOOGLE_GEMINI_API_KEY ou GOOGLE_API_KEY). Algumas funcionalidades estarão indisponíveis.
+
+stderr | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > Gemini Provider Tests > should process PDF with Gemini visual analysis
+Skipping Gemini visual analysis test
+
+stdout | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > Handwriting Detection Tests > should analyze PDFs for handwriting content
+📝 Análise de manuscrito: pontuação 0.30
+
+stdout | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > Handwriting Detection Tests > should analyze PDFs for handwriting content
+Handwriting detection for Controlo_5 de Outubro.pdf: 0.299
+  -> Moderate handwriting probability detected
+
+stdout | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > Handwriting Detection Tests > should test handwriting detection with multiple PDFs
+📝 Análise de manuscrito: pontuação 0.30
+
+stdout | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > Handwriting Detection Tests > should test handwriting detection with multiple PDFs
+📝 Análise de manuscrito: pontuação 0.27
+
+stdout | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > Handwriting Detection Tests > should test handwriting detection with multiple PDFs
+📝 Análise de manuscrito: pontuação 0.27
+
+stdout | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > Handwriting Detection Tests > should test handwriting detection with multiple PDFs
+
+Handwriting Detection Results:
+  Controlo_5 de Outubro.pdf: 0.299 (MEDIUM)
+  Controlo_Aroeira I.pdf: 0.267 (MEDIUM)
+  Controlo_Aroeira II - Copy.pdf: 0.268 (MEDIUM)
+
+stdout | tests/ocr-providers.spec.ts > OCR Providers Specific Tests > Provider Comparison and Performance > should compare provider performance on same PDF
+
+Provider Performance Comparison for Controlo_5 de Outubro.pdf (98.7KB):
+================================================================================
+
+ ❯ tests/ocr-providers.spec.ts (13 tests | 1 failed) 25ms
+   ✓ OCR Providers Specific Tests > Mistral OCR Provider Tests > should test Mistral OCR connection 1ms
+   ✓ OCR Providers Specific Tests > Mistral OCR Provider Tests > should process PDF with Mistral OCR 1ms
+   ✓ OCR Providers Specific Tests > Mistral OCR Provider Tests > should handle multiple PDFs with Mistral OCR batch processing 0ms
+   ✓ OCR Providers Specific Tests > OpenRouter Provider Tests > should test OpenRouter connection 1ms
+   ✓ OCR Providers Specific Tests > OpenRouter Provider Tests > should process PDF with OpenRouter 1ms
+   ✓ OCR Providers Specific Tests > OpenRouter Provider Tests > should handle different PDF complexities with OpenRouter 0ms
+   ✓ OCR Providers Specific Tests > RolmOCR Provider Tests > should test RolmOCR connection 0ms
+   ✓ OCR Providers Specific Tests > RolmOCR Provider Tests > should process PDF with RolmOCR 0ms
+   ✓ OCR Providers Specific Tests > Gemini Provider Tests > should test Gemini connection 0ms
+   ✓ OCR Providers Specific Tests > Gemini Provider Tests > should process PDF with Gemini visual analysis 0ms
+   ✓ OCR Providers Specific Tests > Handwriting Detection Tests > should analyze PDFs for handwriting content 3ms
+   ✓ OCR Providers Specific Tests > Handwriting Detection Tests > should test handwriting detection with multiple PDFs 5ms
+   × OCR Providers Specific Tests > Provider Comparison and Performance > should compare provider performance on same PDF 9ms
+     → expected 0 to be greater than 0
+stderr | tests/ocr-api-endpoints.spec.ts
+⚠️ MISTRAL_API_KEY não está configurada. O serviço Mistral OCR não funcionará.
+
+stderr | tests/ocr-validation.spec.ts
+DATABASE_URL não está definida. Usando armazenamento em memória.
+
+stdout | tests/ocr-validation.spec.ts
+Usando armazenamento em memória
+Usando armazenamento em memória por configuração
+
+stdout | tests/ocr-validation.spec.ts
+######### USANDO MemStorage #########
+
+stdout | tests/ocr-validation.spec.ts
+Serviço RAG Aprimorado inicializado
+
+stdout | tests/ocr-validation.spec.ts
+🔧 Inicializando GeminiService em modo mock (implementação direta da API em desenvolvimento)
+🤖 Serviço de IA primário configurado para: auto
+
+stderr | tests/ocr-validation.spec.ts
+⚠️ OPENROUTER_API_KEY não está configurada. O serviço OpenRouter não funcionará.
+Nenhuma chave Gemini configurada (GOOGLE_GEMINI_API_KEY ou GOOGLE_API_KEY). Algumas funcionalidades estarão indisponíveis.
+⚠️ HF_TOKEN não está configurado. O serviço RolmOCR não funcionará para manuscritos.
+⚠️ MISTRAL_API_KEY não está configurada. OCR via Mistral API não funcionará.
+⚠️ OPENROUTER_API_KEY não está configurada. Fallback via OpenRouter não funcionará.
+⚠️ Nenhuma chave de API do Gemini configurada. Funcionalidades de IA Gemini estarão limitadas.
+⚠️ HF_TOKEN não está configurado. Processamento de manuscritos via RolmOCR não funcionará.
+
+stderr | tests/ocr-integration.spec.ts
+DATABASE_URL não está definida. Usando armazenamento em memória.
+
+stdout | tests/ocr-integration.spec.ts
+Usando armazenamento em memória
+Usando armazenamento em memória por configuração
+
+stdout | tests/ocr-integration.spec.ts
+######### USANDO MemStorage #########
+
+stdout | tests/ocr-integration.spec.ts
+Serviço RAG Aprimorado inicializado
+
+stderr | tests/ai-performance-benchmarks.spec.ts
+DATABASE_URL não está definida. Usando armazenamento em memória.
+
+ ✓ tests/setup.spec.ts (1 test) 2ms
+stderr | tests/ocr-api-endpoints.spec.ts
+DATABASE_URL não está definida. Usando armazenamento em memória.
+
+stdout | tests/ai-performance-benchmarks.spec.ts
+Usando armazenamento em memória
+Usando armazenamento em memória por configuração
+
+stdout | tests/ai-performance-benchmarks.spec.ts
+######### USANDO MemStorage #########
+
+stdout | tests/ocr-integration.spec.ts
+🔧 Inicializando GeminiService em modo mock (implementação direta da API em desenvolvimento)
+🤖 Serviço de IA primário configurado para: auto
+
+stderr | tests/ocr-integration.spec.ts
+⚠️ OPENROUTER_API_KEY não está configurada. O serviço OpenRouter não funcionará.
+Nenhuma chave Gemini configurada (GOOGLE_GEMINI_API_KEY ou GOOGLE_API_KEY). Algumas funcionalidades estarão indisponíveis.
+⚠️ HF_TOKEN não está configurado. O serviço RolmOCR não funcionará para manuscritos.
+⚠️ MISTRAL_API_KEY não está configurada. OCR via Mistral API não funcionará.
+⚠️ OPENROUTER_API_KEY não está configurada. Fallback via OpenRouter não funcionará.
+⚠️ Nenhuma chave de API do Gemini configurada. Funcionalidades de IA Gemini estarão limitadas.
+⚠️ HF_TOKEN não está configurado. Processamento de manuscritos via RolmOCR não funcionará.
+
+stdout | tests/ai-performance-benchmarks.spec.ts
+Serviço RAG Aprimorado inicializado
+
+stdout | tests/ocr-api-endpoints.spec.ts
+Usando armazenamento em memória
+Usando armazenamento em memória por configuração
+
+stdout | tests/ocr-api-endpoints.spec.ts
+######### USANDO MemStorage #########
+
+stdout | tests/ocr-api-endpoints.spec.ts
+Serviço RAG Aprimorado inicializado
+
+stdout | tests/ocr-validation.spec.ts
+Warning: Indexing all PDF objects
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests
+Found 10 PDF files for validation testing
+
+stdout | tests/ai-performance-benchmarks.spec.ts
+🔧 Inicializando GeminiService em modo mock (implementação direta da API em desenvolvimento)
+🤖 Serviço de IA primário configurado para: auto
+
+stderr | tests/ai-performance-benchmarks.spec.ts
+⚠️ OPENROUTER_API_KEY não está configurada. O serviço OpenRouter não funcionará.
+Nenhuma chave Gemini configurada (GOOGLE_GEMINI_API_KEY ou GOOGLE_API_KEY). Algumas funcionalidades estarão indisponíveis.
+⚠️ HF_TOKEN não está configurado. O serviço RolmOCR não funcionará para manuscritos.
+⚠️ MISTRAL_API_KEY não está configurada. OCR via Mistral API não funcionará.
+⚠️ OPENROUTER_API_KEY não está configurada. Fallback via OpenRouter não funcionará.
+⚠️ Nenhuma chave de API do Gemini configurada. Funcionalidades de IA Gemini estarão limitadas.
+⚠️ HF_TOKEN não está configurado. Processamento de manuscritos via RolmOCR não funcionará.
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Text Parsing and Data Extraction > should parse valid reservation data correctly
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Nome do hóspede extraído: "Name: João Silva"
+✅ Número de hóspedes extraído: 2
+✅ Propriedade identificada: "Aroeira II"
+✅ Extraídas 1 reservas do texto OCR
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Text Parsing and Data Extraction > should handle partial reservation data
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Nome do hóspede extraído: "Maria Santos"
+✅ Propriedade identificada: "Sete Rios"
+✅ Extraídas 1 reservas do texto OCR
+⚠️ Campos obrigatórios ausentes: numGuests
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Text Parsing and Data Extraction > should handle partial reservation data
+Missing fields identified: [ [32m'numGuests'[39m ]
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Text Parsing and Data Extraction > should extract multiple reservations from single text
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Nome do hóspede extraído: "Ana Rodrigues"
+✅ Propriedade identificada: "Aroeira I"
+✅ Extraídas 1 reservas do texto OCR
+⚠️ Campos obrigatórios ausentes: numGuests
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Text Parsing and Data Extraction > should extract multiple reservations from single text
+Extracted 1 reservations from text
+Reservation 1: {
+  guest: [32m'Ana Rodrigues'[39m,
+  property: [32m'Aroeira I'[39m,
+  checkIn: [90mundefined[39m,
+  checkOut: [90mundefined[39m
+}
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Text Parsing and Data Extraction > should handle invalid or empty text gracefully
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Propriedade identificada: "This is just random text that doesn't contain"
+✅ Extraídas 1 reservas do texto OCR
+⚠️ Campos obrigatórios ausentes: guestName, checkInDate, checkOutDate, numGuests, totalAmount
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Text Parsing and Data Extraction > should handle invalid or empty text gracefully
+Result for invalid text: {
+  reservations: [
+    {
+      propertyName: [32m"This is just random text that doesn't contain"[39m,
+      platform: [32m'other'[39m,
+      status: [32m'confirmed'[39m,
+      notes: [32m'Extraído via OCR nativo (9/21/2025)'[39m
+    }
+  ],
+  boxes: {},
+  missing: [
+    [32m'guestName'[39m,
+    [32m'checkInDate'[39m,
+    [32m'checkOutDate'[39m,
+    [32m'numGuests'[39m,
+    [32m'totalAmount'[39m
+  ]
+}
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Text Parsing and Data Extraction > should validate required fields completeness
+Required fields validation passed
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Data Normalization and Validation > should normalize monetary amounts
+€500.00 -> 500
+500€ -> 500
+500 euros -> 500
+$500 -> 500
+500.50 -> 500.5
+1,500.00 -> 1500
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Real PDF Data Validation > should validate data extracted from real PDFs
+📝 Análise de manuscrito: pontuação 0.30
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Real PDF Data Validation > should validate data extracted from real PDFs
+📝 Pontuação de manuscrito: 0.30
+🔍 Usando extrator nativo de PDF como fallback (sem IA)
+📝 Extraindo texto com pdf-parse (método nativo)
+
+stdout | tests/ocr-integration.spec.ts
+Warning: Indexing all PDF objects
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests
+Found 10 PDF files for testing: [
+  [32m'Controlo_5 de Outubro.pdf'[39m,
+  [32m'Controlo_Aroeira I.pdf'[39m,
+  [32m'Controlo_Aroeira II - Copy.pdf'[39m,
+  [32m'Controlo_Aroeira II.pdf'[39m,
+  [32m'Controlo_Feira da Ladra (Graça 1).pdf'[39m,
+  [32m'Controlo_Sete Rios.pdf'[39m,
+  [32m'file (1).pdf'[39m,
+  [32m'file (13).pdf'[39m,
+  [32m'file (14).pdf'[39m,
+  [32m'file.pdf'[39m
+]
+
+stderr | tests/ocr-integration.spec.ts > OCR Integration Tests
+⚠️ MISTRAL_API_KEY não está configurada. O serviço Mistral OCR não funcionará.
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > PDF File Discovery and Validation > should categorize PDF types correctly
+Control files found: [
+  [32m'Controlo_5 de Outubro.pdf'[39m,
+  [32m'Controlo_Aroeira I.pdf'[39m,
+  [32m'Controlo_Aroeira II - Copy.pdf'[39m,
+  [32m'Controlo_Aroeira II.pdf'[39m,
+  [32m'Controlo_Feira da Ladra (Graça 1).pdf'[39m,
+  [32m'Controlo_Sete Rios.pdf'[39m
+]
+Generic files found: [ [32m'file (1).pdf'[39m, [32m'file (13).pdf'[39m, [32m'file (14).pdf'[39m, [32m'file.pdf'[39m ]
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > OCR Service Configuration > should detect available OCR providers
+Available OCR providers: {
+  mistral: [33mfalse[39m,
+  openrouter: [33mfalse[39m,
+  huggingface: [33mfalse[39m,
+  gemini: [33mfalse[39m
+}
+
+stderr | tests/ocr-integration.spec.ts > OCR Integration Tests > OCR Service Configuration > should test Mistral OCR connection if configured
+MISTRAL_API_KEY not configured, skipping Mistral connection test
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Single PDF OCR Processing > should process a Controlo PDF with auto provider
+📝 Análise de manuscrito: pontuação 0.30
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Single PDF OCR Processing > should process a Controlo PDF with auto provider
+📝 Pontuação de manuscrito: 0.30
+🔍 Usando extrator nativo de PDF como fallback (sem IA)
+📝 Extraindo texto com pdf-parse (método nativo)
+
+stdout | tests/ocr-api-endpoints.spec.ts
+🔧 Inicializando GeminiService em modo mock (implementação direta da API em desenvolvimento)
+🤖 Serviço de IA primário configurado para: auto
+
+stderr | tests/ocr-api-endpoints.spec.ts
+⚠️ OPENROUTER_API_KEY não está configurada. O serviço OpenRouter não funcionará.
+Nenhuma chave Gemini configurada (GOOGLE_GEMINI_API_KEY ou GOOGLE_API_KEY). Algumas funcionalidades estarão indisponíveis.
+⚠️ HF_TOKEN não está configurado. O serviço RolmOCR não funcionará para manuscritos.
+⚠️ MISTRAL_API_KEY não está configurada. OCR via Mistral API não funcionará.
+⚠️ OPENROUTER_API_KEY não está configurada. Fallback via OpenRouter não funcionará.
+⚠️ Nenhuma chave de API do Gemini configurada. Funcionalidades de IA Gemini estarão limitadas.
+⚠️ HF_TOKEN não está configurado. Processamento de manuscritos via RolmOCR não funcionará.
+
+stdout | tests/ai-performance-benchmarks.spec.ts
+Warning: Indexing all PDF objects
+
+stdout | tests/ai-performance-benchmarks.spec.ts > AI Performance Benchmarks > Individual Service Benchmarks > should benchmark Gemini service performance
+⏸️  Skipping Gemini benchmarks - no API key
+
+stdout | tests/ai-performance-benchmarks.spec.ts > AI Performance Benchmarks > Individual Service Benchmarks > should benchmark OpenRouter service performance
+⏸️  Skipping OpenRouter benchmarks - no API key
+
+stdout | tests/ai-performance-benchmarks.spec.ts > AI Performance Benchmarks > Individual Service Benchmarks > should benchmark Mistral OCR service performance
+⏸️  Skipping Mistral OCR benchmarks - no API key
+
+stdout | tests/ai-performance-benchmarks.spec.ts > AI Performance Benchmarks > Load Testing and Concurrent Operations > should test concurrent text generation requests
+⏸️  Skipping concurrent tests - no AI services available
+
+stdout | tests/ai-performance-benchmarks.spec.ts > AI Performance Benchmarks > Load Testing and Concurrent Operations > should test rate limiter performance under load
+⏱️  [RateLimiter] rateLimitedFunction: 1ms ✅ 
+
+stdout | tests/ai-performance-benchmarks.spec.ts > AI Performance Benchmarks > Load Testing and Concurrent Operations > should test rate limiter performance under load
+⏱️  [RateLimiter] rateLimitedFunction: 0ms ✅ 
+
+stdout | tests/ai-performance-benchmarks.spec.ts > AI Performance Benchmarks > Load Testing and Concurrent Operations > should test rate limiter performance under load
+⏱️  [RateLimiter] rateLimitedFunction: 0ms ✅ 
+
+stdout | tests/ai-performance-benchmarks.spec.ts > AI Performance Benchmarks > Load Testing and Concurrent Operations > should test rate limiter performance under load
+⏱️  [RateLimiter] rateLimitedFunction: 0ms ✅ 
+
+stdout | tests/ai-performance-benchmarks.spec.ts > AI Performance Benchmarks > Load Testing and Concurrent Operations > should test rate limiter performance under load
+⏱️  [RateLimiter] rateLimitedFunction: 1ms ✅ 
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Single PDF OCR Processing > should process a Controlo PDF with auto provider
+Warning: TT: undefined function: 32
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Single PDF OCR Processing > should process a Controlo PDF with auto provider
+Processed Controlo_5 de Outubro.pdf: 613 chars in 38ms
+
+stderr | tests/ocr-integration.spec.ts > OCR Integration Tests > Single PDF OCR Processing > should process with Mistral OCR specifically
+MISTRAL_API_KEY not configured, skipping Mistral-specific test
+
+stderr | tests/ocr-integration.spec.ts > OCR Integration Tests > Single PDF OCR Processing > should process with OpenRouter fallback
+OPENROUTER_API_KEY not configured, skipping OpenRouter test
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Single PDF OCR Processing > should handle native extraction as fallback
+📝 Análise de manuscrito: pontuação 0.30
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Single PDF OCR Processing > should handle native extraction as fallback
+📝 Pontuação de manuscrito: 0.30
+📝 Extraindo texto com pdf-parse (método nativo)
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Single PDF OCR Processing > should handle native extraction as fallback
+Warning: TT: undefined function: 32
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Batch PDF Processing > should process multiple PDFs in sequence
+📝 Análise de manuscrito: pontuação 0.30
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Batch PDF Processing > should process multiple PDFs in sequence
+📝 Pontuação de manuscrito: 0.30
+🔍 Usando extrator nativo de PDF como fallback (sem IA)
+📝 Extraindo texto com pdf-parse (método nativo)
+
+ ❯ tests/pdf-import-service.spec.ts (30 tests | 29 failed) 359ms
+   × PDFImportService > Property Name Normalization > should normalize property names correctly 6ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Property Name Normalization > should handle empty and null inputs 1ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Fuzzy Matching Algorithms > should calculate Levenshtein distance correctly 1ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Fuzzy Matching Algorithms > should calculate fuzzy scores accurately 0ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Fuzzy Matching Algorithms > should handle token-based matching 0ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Property Matching > should find exact property matches 0ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Property Matching > should find alias matches 1ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Property Matching > should provide suggestions for partial matches 1ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Property Matching > should handle unmatched properties 1ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Property Matching > should cache property matches 1ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Date Normalization > should normalize various date formats 0ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Date Normalization > should handle invalid dates gracefully 0ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Platform Detection > should detect Booking.com platform 0ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Platform Detection > should detect Airbnb platform 0ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Platform Detection > should return null for unknown platforms 0ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Property Suggestions > should provide relevant property suggestions 0ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Property Suggestions > should limit suggestions to requested number 0ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Property Suggestions > should sort suggestions by score 0ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Learning from Matches > should learn from high-confidence matches 0ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Learning from Matches > should not learn from low-confidence matches 0ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Pattern Extraction > should extract reservation data using patterns 0ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Pattern Extraction > should handle missing patterns gracefully 0ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Report Generation > should generate accurate import reports 0ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Integration Tests > should process PDF files end-to-end 0ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Integration Tests > should handle batch processing 0ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Integration Tests > should handle errors gracefully 0ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Confidence Scoring > should assign appropriate confidence scores 0ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   × PDFImportService > Confidence Scoring > should handle confidence thresholds correctly 0ms
+     → Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+   ✓ Performance Tests > should handle large property lists efficiently  340ms
+   × Performance Tests > should cache property matches for performance 1ms
+     → expected 0 to be less than 0
+stdout | tests/ocr-api-endpoints.spec.ts
+Warning: Indexing all PDF objects
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Batch PDF Processing > should process multiple PDFs in sequence
+Warning: TT: undefined function: 32
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Batch PDF Processing > should process multiple PDFs in sequence
+📝 Análise de manuscrito: pontuação 0.27
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Batch PDF Processing > should process multiple PDFs in sequence
+📝 Pontuação de manuscrito: 0.27
+🔍 Usando extrator nativo de PDF como fallback (sem IA)
+📝 Extraindo texto com pdf-parse (método nativo)
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests
+Test server started on http://localhost:50198
+Found 10 PDF files for API testing
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Real PDF Data Validation > should validate data extracted from real PDFs
+Warning: TT: undefined function: 32
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Real PDF Data Validation > should validate data extracted from real PDFs
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Propriedade identificada: "EXCITING LISBON  5 DE OUTUBRO"
+✅ Extraídas 1 reservas do texto OCR
+⚠️ Campos obrigatórios ausentes: guestName, numGuests, totalAmount
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Real PDF Data Validation > should validate data extracted from real PDFs
+Data validation for Controlo_5 de Outubro.pdf:
+  Text length: 613 chars
+  Reservations found: 1
+  Missing fields: 3
+  Sample extracted data: {
+  guest: [90mundefined[39m,
+  property: [32m'EXCITING LISBON  5 DE OUTUBRO'[39m,
+  checkIn: [90mundefined[39m,
+  checkOut: [90mundefined[39m,
+  amount: [90mundefined[39m
+}
+  Missing fields: [ [32m'guestName'[39m, [32m'numGuests'[39m, [32m'totalAmount'[39m ]
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Real PDF Data Validation > should test property matching with real extracted data
+📝 Análise de manuscrito: pontuação 0.30
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Real PDF Data Validation > should test property matching with real extracted data
+📝 Pontuação de manuscrito: 0.30
+🔍 Usando extrator nativo de PDF como fallback (sem IA)
+📝 Extraindo texto com pdf-parse (método nativo)
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Server Setup and Health > should have PDF files available for testing
+Available test PDFs: [
+  [32m'Controlo_5 de Outubro.pdf'[39m,
+  [32m'Controlo_Aroeira I.pdf'[39m,
+  [32m'Controlo_Aroeira II - Copy.pdf'[39m,
+  [32m'Controlo_Aroeira II.pdf'[39m,
+  [32m'Controlo_Feira da Ladra (Graça 1).pdf'[39m,
+  [32m'Controlo_Sete Rios.pdf'[39m,
+  [32m'file (1).pdf'[39m,
+  [32m'file (13).pdf'[39m,
+  [32m'file (14).pdf'[39m,
+  [32m'file.pdf'[39m
+]
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Real PDF Data Validation > should test property matching with real extracted data
+Warning: TT: undefined function: 32
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > File Upload Endpoint Tests > should upload and process PDF via /api/ocr/upload
+📑 Processando OCR [Rota unificada]...
+
+stderr | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > File Upload Endpoint Tests > should upload and process PDF via /api/ocr/upload
+Erro ao ler arquivo: TypeError: The "path" argument must be of type string or an instance of Buffer or URL. Received undefined
+[90m    at Object.openSync (node:fs:561:5)[39m
+[90m    at Object.readFileSync (node:fs:444:35)[39m
+    at postOcr [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/controllers/ocr.controller.ts:68:22[90m)[39m
+    at Layer.handle [as handle_request] [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/lib/router/layer.js:95:5[90m)[39m
+    at next [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/lib/router/route.js:149:13[90m)[39m
+    at done [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:47:7[90m)[39m
+    at indicateDone [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:51:68[90m)[39m
+    at Multipart.<anonymous> [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:168:7[90m)[39m
+[90m    at Multipart.emit (node:events:508:28)[39m
+[90m    at emitCloseNT (node:internal/streams/destroy:148:10)[39m {
+  code: [32m'ERR_INVALID_ARG_TYPE'[39m
+}
+
+stderr | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > File Upload Endpoint Tests > should upload and process PDF via /api/ocr/upload
+Upload failed: { success: [33mfalse[39m, message: [32m'Erro ao ler o arquivo PDF'[39m }
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > File Upload Endpoint Tests > should process PDF via /api/ocr/process with file upload
+📑 Iniciando processamento OCR...
+📄 Processando arquivo enviado via multipart/form-data.
+
+stderr | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > File Upload Endpoint Tests > should process PDF via /api/ocr/process with file upload
+Erro ao ler arquivo enviado: TypeError: The "path" argument must be of type string or an instance of Buffer or URL. Received undefined
+[90m    at Object.openSync (node:fs:561:5)[39m
+[90m    at Object.readFileSync (node:fs:444:35)[39m
+    at processOCR [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/controllers/ocr.controller.ts:284:24[90m)[39m
+    at Layer.handle [as handle_request] [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/lib/router/layer.js:95:5[90m)[39m
+    at next [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/lib/router/route.js:149:13[90m)[39m
+    at done [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:47:7[90m)[39m
+    at indicateDone [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:51:68[90m)[39m
+    at Multipart.<anonymous> [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:168:7[90m)[39m
+[90m    at Multipart.emit (node:events:508:28)[39m
+[90m    at emitCloseNT (node:internal/streams/destroy:148:10)[39m {
+  code: [32m'ERR_INVALID_ARG_TYPE'[39m
+}
+
+stderr | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > File Upload Endpoint Tests > should reject non-PDF files
+Test server error: Error: Only PDF files are allowed
+    at fileFilter [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mtests/ocr-api-endpoints.spec.ts:69:14[90m)[39m
+    at wrappedFileFilter [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/index.js:44:7[90m)[39m
+    at Multipart.<anonymous> [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:109:7[90m)[39m
+[90m    at Multipart.emit (node:events:508:28)[39m
+    at HeaderParser.cb [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mbusboy[24m/lib/types/multipart.js:358:14[90m)[39m
+    at HeaderParser.push [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mbusboy[24m/lib/types/multipart.js:162:20[90m)[39m
+    at SBMH.ssCb [as _cb] [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mbusboy[24m/lib/types/multipart.js:394:37[90m)[39m
+    at feed [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mstreamsearch[24m/lib/sbmh.js:219:14[90m)[39m
+    at SBMH.push [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mstreamsearch[24m/lib/sbmh.js:104:16[90m)[39m
+    at Multipart._write [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mbusboy[24m/lib/types/multipart.js:567:19[90m)[39m {
+  storageErrors: []
+}
+
+stderr | tests/comprehensive-test-suite.spec.ts
+DATABASE_URL não está definida. Usando armazenamento em memória.
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Real PDF Data Validation > should test property matching with real extracted data
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Propriedade identificada: "EXCITING LISBON  5 DE OUTUBRO"
+✅ Extraídas 1 reservas do texto OCR
+⚠️ Campos obrigatórios ausentes: guestName, numGuests, totalAmount
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Real PDF Data Validation > should test property matching with real extracted data
+Testing property matching for: "EXCITING LISBON  5 DE OUTUBRO"
+  Matched to: 5 de Outubro (ID: 4)
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Error Handling and Edge Cases > should handle empty or whitespace-only text
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Extraídas 0 reservas do texto OCR
+⚠️ Campos obrigatórios ausentes: propertyName, guestName, checkInDate, checkOutDate, numGuests, totalAmount
+
+stderr | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Error Handling and Edge Cases > should handle empty or whitespace-only text
+⚠️ Dados insuficientes para criar uma reserva válida
+⚠️ Campos em falta: propertyName, guestName, checkInDate, checkOutDate, numGuests, totalAmount
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Error Handling and Edge Cases > should handle empty or whitespace-only text
+Empty text handling result: {
+  reservations: [],
+  boxes: {},
+  missing: [
+    [32m'propertyName'[39m,
+    [32m'guestName'[39m,
+    [32m'checkInDate'[39m,
+    [32m'checkOutDate'[39m,
+    [32m'numGuests'[39m,
+    [32m'totalAmount'[39m
+  ]
+}
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Extraídas 0 reservas do texto OCR
+⚠️ Campos obrigatórios ausentes: propertyName, guestName, checkInDate, checkOutDate, numGuests, totalAmount
+
+stderr | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Error Handling and Edge Cases > should handle empty or whitespace-only text
+⚠️ Dados insuficientes para criar uma reserva válida
+⚠️ Campos em falta: propertyName, guestName, checkInDate, checkOutDate, numGuests, totalAmount
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Error Handling and Edge Cases > should handle empty or whitespace-only text
+Empty text handling result: {
+  reservations: [],
+  boxes: {},
+  missing: [
+    [32m'propertyName'[39m,
+    [32m'guestName'[39m,
+    [32m'checkInDate'[39m,
+    [32m'checkOutDate'[39m,
+    [32m'numGuests'[39m,
+    [32m'totalAmount'[39m
+  ]
+}
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Extraídas 0 reservas do texto OCR
+⚠️ Campos obrigatórios ausentes: propertyName, guestName, checkInDate, checkOutDate, numGuests, totalAmount
+
+stderr | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Error Handling and Edge Cases > should handle empty or whitespace-only text
+⚠️ Dados insuficientes para criar uma reserva válida
+⚠️ Campos em falta: propertyName, guestName, checkInDate, checkOutDate, numGuests, totalAmount
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Error Handling and Edge Cases > should handle empty or whitespace-only text
+Empty text handling result: {
+  reservations: [],
+  boxes: {},
+  missing: [
+    [32m'propertyName'[39m,
+    [32m'guestName'[39m,
+    [32m'checkInDate'[39m,
+    [32m'checkOutDate'[39m,
+    [32m'numGuests'[39m,
+    [32m'totalAmount'[39m
+  ]
+}
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Extraídas 0 reservas do texto OCR
+⚠️ Campos obrigatórios ausentes: propertyName, guestName, checkInDate, checkOutDate, numGuests, totalAmount
+
+stderr | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Error Handling and Edge Cases > should handle empty or whitespace-only text
+⚠️ Dados insuficientes para criar uma reserva válida
+⚠️ Campos em falta: propertyName, guestName, checkInDate, checkOutDate, numGuests, totalAmount
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Error Handling and Edge Cases > should handle empty or whitespace-only text
+Empty text handling result: {
+  reservations: [],
+  boxes: {},
+  missing: [
+    [32m'propertyName'[39m,
+    [32m'guestName'[39m,
+    [32m'checkInDate'[39m,
+    [32m'checkOutDate'[39m,
+    [32m'numGuests'[39m,
+    [32m'totalAmount'[39m
+  ]
+}
+
+{"level":30,"time":1758484392185,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"ML models initialized successfully"}
+stdout | tests/comprehensive-test-suite.spec.ts
+Usando armazenamento em memória
+Usando armazenamento em memória por configuração
+
+stdout | tests/comprehensive-test-suite.spec.ts
+######### USANDO MemStorage #########
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Batch PDF Processing > should process multiple PDFs in sequence
+Warning: TT: undefined function: 32
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Batch PDF Processing > should process multiple PDFs in sequence
+📝 Análise de manuscrito: pontuação 0.27
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Batch PDF Processing > should process multiple PDFs in sequence
+📝 Pontuação de manuscrito: 0.27
+🔍 Usando extrator nativo de PDF como fallback (sem IA)
+📝 Extraindo texto com pdf-parse (método nativo)
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Batch PDF Processing > should process multiple PDFs in sequence
+Warning: TT: undefined function: 32
+
+stderr | tests/ai-api-integration.spec.ts
+⚠️ MISTRAL_API_KEY não está configurada. O serviço Mistral OCR não funcionará.
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Batch PDF Processing > should process multiple PDFs in sequence
+Batch processing: 3/3 successful, avg time: 44.67ms
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Data Extraction and Validation > should extract structured data from PDF text
+📝 Análise de manuscrito: pontuação 0.30
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Data Extraction and Validation > should extract structured data from PDF text
+📝 Pontuação de manuscrito: 0.30
+🔍 Usando extrator nativo de PDF como fallback (sem IA)
+📝 Extraindo texto com pdf-parse (método nativo)
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Data Extraction and Validation > should extract structured data from PDF text
+Warning: TT: undefined function: 32
+
+stderr | tests/ai-api-integration.spec.ts
+[vitest] skipping suite: AI API integration tests skipped (set AI_SERVICE_MODE=live to enable)
+
+stderr | tests/ml-pattern-recognition.spec.ts
+[vitest] skipping suite: Skipping ML Predictions API tests (ENABLE_FULL_STACK_TESTS=true to enable)
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Data Extraction and Validation > should extract structured data from PDF text
+📝 AIAdapter: Extraindo dados de reserva (skipQualityCheck=false)
+
+stderr | tests/ocr-integration.spec.ts > OCR Integration Tests > Data Extraction and Validation > should extract structured data from PDF text
+Erro ao extrair dados de reserva com Gemini: Error: Chave Gemini não configurada. Configure GOOGLE_GEMINI_API_KEY ou GOOGLE_API_KEY nas configurações.
+    at GeminiService.checkInitialization [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/services/gemini.service.ts:546:13[90m)[39m
+    at GeminiService.parseReservationData [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/services/gemini.service.ts:783:10[90m)[39m
+    at AIAdapter.parseReservationData [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/services/ai-adapter.service.ts:681:39[90m)[39m
+    at [90m/Users/bilal/Programaçao/MariaIntelligence-1/[39mtests/ocr-integration.spec.ts:295:48
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mfile:///Users/bilal/Programac%CC%A7ao/MariaIntelligence-1/[39mnode_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:20
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Data Extraction and Validation > should extract structured data from PDF text
+No structured reservation data found, which is expected for non-reservation PDFs
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Error Handling and Edge Cases > should handle corrupted PDF files gracefully
+📝 Análise de manuscrito: pontuação 0.45
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Error Handling and Edge Cases > should handle corrupted PDF files gracefully
+📝 Pontuação de manuscrito: 0.45
+🔍 Usando extrator nativo de PDF como fallback (sem IA)
+📝 Extraindo texto com pdf-parse (método nativo)
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Error Handling and Edge Cases > should handle corrupted PDF files gracefully
+Warning: Indexing all PDF objects
+
+ ↓ tests/ai-api-integration.spec.ts (14 tests | 14 skipped)
+stdout | tests/comprehensive-test-suite.spec.ts
+Serviço RAG Aprimorado inicializado
+
+{"level":30,"time":1758484392258,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Starting model training"}
+stderr | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > File Upload Endpoint Tests > should handle oversized files
+Test server error: MulterError: File too large
+    at abortWithCode [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:73:22[90m)[39m
+    at FileStream.<anonymous> [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:136:11[90m)[39m
+[90m    at FileStream.emit (node:events:508:28)[39m
+    at SBMH.ssCb [as _cb] [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mbusboy[24m/lib/types/multipart.js:479:32[90m)[39m
+    at feed [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mstreamsearch[24m/lib/sbmh.js:219:14[90m)[39m
+    at SBMH.push [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mstreamsearch[24m/lib/sbmh.js:104:16[90m)[39m
+    at Multipart._write [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mbusboy[24m/lib/types/multipart.js:567:19[90m)[39m
+[90m    at writeOrBuffer (node:internal/streams/writable:570:12)[39m
+[90m    at _write (node:internal/streams/writable:499:10)[39m
+[90m    at Multipart.Writable.write (node:internal/streams/writable:508:10)[39m {
+  code: [32m'LIMIT_FILE_SIZE'[39m,
+  field: [32m'file'[39m,
+  storageErrors: []
+}
+
+stderr | tests/ocr-integration.spec.ts > OCR Integration Tests > Error Handling and Edge Cases > should handle corrupted PDF files gracefully
+❌ Erro ao extrair texto com pdf-parse: Error: 
+    at InvalidPDFExceptionClosure [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/src/shared/util.js:412:35[90m)[39m
+    at Object.<anonymous> [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/src/shared/util.js:406:28[90m)[39m
+    at __w_pdfjs_require__ [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/webpack/bootstrap c9be985464785b4e5413:19:1[90m)[39m
+    at Object.<anonymous> [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/src/pdf.js:24:23[90m)[39m
+    at __w_pdfjs_require__ [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/webpack/bootstrap c9be985464785b4e5413:19:1[90m)[39m
+    at [90m/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/webpack/bootstrap c9be985464785b4e5413:62:1
+    at [90m/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/pdf.js:91:10
+    at webpackUniversalModuleDefinition [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/webpack/universalModuleDefinition:3:1[90m)[39m
+    at Object.<anonymous> [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/webpack/universalModuleDefinition:10:2[90m)[39m
+[90m    at Module._compile (node:internal/modules/cjs/loader:1738:14)[39m {
+  message: [32m'Invalid PDF structure'[39m
+}
+
+stderr | tests/ocr-integration.spec.ts > OCR Integration Tests > Error Handling and Edge Cases > should handle corrupted PDF files gracefully
+❌ Erro ao extrair texto do PDF: Error: Falha na extração básica de texto: Invalid PDF structure
+    at extractWithPdfParse [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/services/ai-adapter.service.ts:411:17[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at AIAdapter.extractTextFromPDF [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/services/ai-adapter.service.ts:523:18[90m)[39m
+    at [90m/Users/bilal/Programaçao/MariaIntelligence-1/[39mtests/ocr-integration.spec.ts:337:9
+    at [90m/Users/bilal/Programaçao/MariaIntelligence-1/[39mtests/ocr-integration.spec.ts:336:7
+    at [90mfile:///Users/bilal/Programac%CC%A7ao/MariaIntelligence-1/[39mnode_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:20
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Error Handling and Edge Cases > should handle empty PDF files
+📝 Análise de manuscrito: pontuação 0.67
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Error Handling and Edge Cases > should handle empty PDF files
+📝 Pontuação de manuscrito: 0.67
+🔍 Usando extrator nativo de PDF como fallback (sem IA)
+📝 Extraindo texto com pdf-parse (método nativo)
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Error Handling and Edge Cases > should handle empty PDF files
+Warning: Indexing all PDF objects
+
+stderr | tests/ocr-integration.spec.ts > OCR Integration Tests > Error Handling and Edge Cases > should handle empty PDF files
+❌ Erro ao extrair texto com pdf-parse: Error: 
+    at UnknownErrorExceptionClosure [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/src/shared/util.js:400:37[90m)[39m
+    at Object.<anonymous> [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/src/shared/util.js:393:30[90m)[39m
+    at __w_pdfjs_require__ [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/webpack/bootstrap c9be985464785b4e5413:19:1[90m)[39m
+    at Object.<anonymous> [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/src/pdf.js:24:23[90m)[39m
+    at __w_pdfjs_require__ [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/webpack/bootstrap c9be985464785b4e5413:19:1[90m)[39m
+    at [90m/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/webpack/bootstrap c9be985464785b4e5413:62:1
+    at [90m/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/pdf.js:91:10
+    at webpackUniversalModuleDefinition [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/webpack/universalModuleDefinition:3:1[90m)[39m
+    at Object.<anonymous> [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/webpack/universalModuleDefinition:10:2[90m)[39m
+[90m    at Module._compile (node:internal/modules/cjs/loader:1738:14)[39m {
+  message: [32m'bad XRef entry'[39m,
+  details: [32m'FormatError: bad XRef entry'[39m
+}
+
+stderr | tests/ocr-integration.spec.ts > OCR Integration Tests > Error Handling and Edge Cases > should handle empty PDF files
+❌ Erro ao extrair texto do PDF: Error: Falha na extração básica de texto: bad XRef entry
+    at extractWithPdfParse [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/services/ai-adapter.service.ts:411:17[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at AIAdapter.extractTextFromPDF [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/services/ai-adapter.service.ts:523:18[90m)[39m
+    at [90m/Users/bilal/Programaçao/MariaIntelligence-1/[39mtests/ocr-integration.spec.ts:347:24
+    at [90mfile:///Users/bilal/Programac%CC%A7ao/MariaIntelligence-1/[39mnode_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:20
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Base64 Upload Endpoint Tests > should process PDF via base64 upload
+📑 Iniciando processamento OCR...
+📄 Processando arquivo enviado via JSON (base64).
+🤖 Modo de provedor automático ativado.
+📝 Análise de manuscrito: pontuação 0.30
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Base64 Upload Endpoint Tests > should process PDF via base64 upload
+📝 Pontuação de manuscrito para "Controlo_5 de Outubro.pdf": 0.30
+📄 Nenhum serviço OCR disponível, usando extrator nativo (pdf-parse)
+🔍 Provedor selecionado: native
+📝 Análise de manuscrito: pontuação 0.30
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Base64 Upload Endpoint Tests > should process PDF via base64 upload
+📝 Pontuação de manuscrito: 0.30
+📝 Extraindo texto com pdf-parse (método nativo)
+
+stdout | tests/comprehensive-test-suite.spec.ts
+🔧 Inicializando GeminiService em modo mock (implementação direta da API em desenvolvimento)
+✅ Mistral OCR API configurada corretamente
+✅ OpenRouter API configurada corretamente (fallback)
+✅ Hugging Face Token configurado corretamente
+🤖 Serviço de IA primário configurado para: auto
+
+stderr | tests/comprehensive-test-suite.spec.ts
+Nenhuma chave Gemini configurada (GOOGLE_GEMINI_API_KEY ou GOOGLE_API_KEY). Algumas funcionalidades estarão indisponíveis.
+⚠️ Nenhuma chave de API do Gemini configurada. Funcionalidades de IA Gemini estarão limitadas.
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Base64 Upload Endpoint Tests > should process PDF via base64 upload
+Warning: TT: undefined function: 32
+
+stderr | tests/ai-functionality-comprehensive.spec.ts
+⚠️ MISTRAL_API_KEY não está configurada. O serviço Mistral OCR não funcionará.
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Performance and Metrics > should complete OCR within acceptable time limits
+📝 Análise de manuscrito: pontuação 0.30
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Performance and Metrics > should complete OCR within acceptable time limits
+📝 Pontuação de manuscrito: 0.30
+🔍 Usando extrator nativo de PDF como fallback (sem IA)
+📝 Extraindo texto com pdf-parse (método nativo)
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Base64 Upload Endpoint Tests > should process PDF via base64 upload
+✅ Texto extraído com sucesso (613 caracteres)
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Propriedade identificada: "EXCITING LISBON  5 DE OUTUBRO"
+✅ Extraídas 1 reservas do texto OCR
+⚠️ Campos obrigatórios ausentes: guestName, numGuests, totalAmount
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Base64 Upload Endpoint Tests > should process PDF via base64 upload
+⏱️ OCR processado em 91ms via native
+Armazenamento já está inicializado
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Base64 Upload Endpoint Tests > should process PDF via base64 upload
+Chamando método: getProperties com args: []
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Base64 Upload Endpoint Tests > should process PDF via base64 upload
+Método getProperties completado com sucesso, resultado: object [33m35[39m
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Base64 Upload Endpoint Tests > should process PDF via base64 upload
+⚠️ Propriedade não encontrada: EXCITING LISBON  5 DE OUTUBRO
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Performance and Metrics > should complete OCR within acceptable time limits
+Warning: TT: undefined function: 32
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Base64 Upload Endpoint Tests > should process PDF via base64 upload
+Base64 upload test successful for Controlo_5 de Outubro.pdf
+  Provider: native
+  Text length: 613 chars
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Base64 Upload Endpoint Tests > should handle invalid base64 data
+📑 Iniciando processamento OCR...
+📄 Processando arquivo enviado via JSON (base64).
+🤖 Modo de provedor automático ativado.
+📝 Análise de manuscrito: pontuação 0.63
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Base64 Upload Endpoint Tests > should handle invalid base64 data
+📝 Pontuação de manuscrito para "test.pdf": 0.63
+📄 Nenhum serviço OCR disponível, usando extrator nativo (pdf-parse)
+🔍 Provedor selecionado: native
+📝 Análise de manuscrito: pontuação 0.63
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Base64 Upload Endpoint Tests > should handle invalid base64 data
+📝 Pontuação de manuscrito: 0.63
+📝 Extraindo texto com pdf-parse (método nativo)
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Base64 Upload Endpoint Tests > should handle invalid base64 data
+Warning: Indexing all PDF objects
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests > Performance and Metrics > should complete OCR within acceptable time limits
+Performance metrics for Controlo_5 de Outubro.pdf:
+  File size: 98.74 KB
+  Processing time: 15 ms
+  Text extracted: 613 chars
+  Throughput: 40.87 chars/ms
+  File throughput: 6.43 MB/s
+
+stdout | tests/comprehensive-test-suite.spec.ts
+Warning: Indexing all PDF objects
+
+stderr | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Base64 Upload Endpoint Tests > should handle invalid base64 data
+❌ Erro ao extrair texto com pdf-parse: Error: 
+    at InvalidPDFExceptionClosure [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/src/shared/util.js:412:35[90m)[39m
+    at Object.<anonymous> [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/src/shared/util.js:406:28[90m)[39m
+    at __w_pdfjs_require__ [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/webpack/bootstrap c9be985464785b4e5413:19:1[90m)[39m
+    at Object.<anonymous> [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/src/pdf.js:24:23[90m)[39m
+    at __w_pdfjs_require__ [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/webpack/bootstrap c9be985464785b4e5413:19:1[90m)[39m
+    at [90m/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/webpack/bootstrap c9be985464785b4e5413:62:1
+    at [90m/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/pdf.js:91:10
+    at webpackUniversalModuleDefinition [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/webpack/universalModuleDefinition:3:1[90m)[39m
+    at Object.<anonymous> [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mpdf-parse[24m/lib/pdf.js/v1.10.100/build/webpack:/webpack/universalModuleDefinition:10:2[90m)[39m
+[90m    at Module._compile (node:internal/modules/cjs/loader:1738:14)[39m {
+  message: [32m'Invalid PDF structure'[39m
+}
+
+stderr | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Base64 Upload Endpoint Tests > should handle invalid base64 data
+❌ Erro ao extrair texto do PDF: Error: Falha na extração básica de texto: Invalid PDF structure
+    at extractWithPdfParse [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/services/ai-adapter.service.ts:411:17[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at AIAdapter.extractTextFromPDF [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/services/ai-adapter.service.ts:523:18[90m)[39m
+    at processOCR [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/controllers/ocr.controller.ts:391:23[90m)[39m
+
+stderr | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Base64 Upload Endpoint Tests > should handle invalid base64 data
+Erro ao extrair texto do PDF: Error: Falha na extração de texto: Falha na extração básica de texto: Invalid PDF structure
+    at AIAdapter.extractTextFromPDF [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/services/ai-adapter.service.ts:560:13[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at processOCR [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/controllers/ocr.controller.ts:391:23[90m)[39m
+
+stderr | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Provider Selection Tests > should accept provider parameter in query string
+OPENROUTER_API_KEY not configured, skipping provider selection test
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Provider Selection Tests > should test all available providers
+📑 Processando OCR [Rota unificada]...
+
+stderr | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Provider Selection Tests > should test all available providers
+Erro ao ler arquivo: TypeError: The "path" argument must be of type string or an instance of Buffer or URL. Received undefined
+[90m    at Object.openSync (node:fs:561:5)[39m
+[90m    at Object.readFileSync (node:fs:444:35)[39m
+    at postOcr [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/controllers/ocr.controller.ts:68:22[90m)[39m
+    at Layer.handle [as handle_request] [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/lib/router/layer.js:95:5[90m)[39m
+    at next [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/lib/router/route.js:149:13[90m)[39m
+    at done [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:47:7[90m)[39m
+    at indicateDone [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:51:68[90m)[39m
+    at Multipart.<anonymous> [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:168:7[90m)[39m
+[90m    at Multipart.emit (node:events:508:28)[39m
+[90m    at emitCloseNT (node:internal/streams/destroy:148:10)[39m {
+  code: [32m'ERR_INVALID_ARG_TYPE'[39m
+}
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Provider Selection Tests > should test all available providers
+Skipping mistral-ocr - MISTRAL_API_KEY not configured
+Skipping openrouter - OPENROUTER_API_KEY not configured
+Skipping rolm - HF_TOKEN not configured
+
+stderr | tests/ocr-integration.spec.ts > OCR Integration Tests > API Endpoint Integration > should test OCR endpoint if server is running
+Server not running, skipping API endpoint test
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Provider Selection Tests > should test all available providers
+📑 Processando OCR [Rota unificada]...
+
+stdout | tests/ocr-integration.spec.ts > OCR Integration Tests
+
+=== OCR Integration Test Summary ===
+
+Total tests: 2
+Successful: 2 (100.0%)
+Failed: 0
+Average processing time: 27.00ms
+Average text length: 613 characters
+Provider usage: auto: 1, native: 1
+
+Failed tests:
+
+  
+
+stderr | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Provider Selection Tests > should test all available providers
+Erro ao ler arquivo: TypeError: The "path" argument must be of type string or an instance of Buffer or URL. Received undefined
+[90m    at Object.openSync (node:fs:561:5)[39m
+[90m    at Object.readFileSync (node:fs:444:35)[39m
+    at postOcr [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/controllers/ocr.controller.ts:68:22[90m)[39m
+    at Layer.handle [as handle_request] [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/lib/router/layer.js:95:5[90m)[39m
+    at next [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/lib/router/route.js:149:13[90m)[39m
+    at done [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:47:7[90m)[39m
+    at indicateDone [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:51:68[90m)[39m
+    at Multipart.<anonymous> [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:168:7[90m)[39m
+[90m    at Multipart.emit (node:events:508:28)[39m
+[90m    at emitCloseNT (node:internal/streams/destroy:148:10)[39m {
+  code: [32m'ERR_INVALID_ARG_TYPE'[39m
+}
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Provider Selection Tests > should test all available providers
+
+Provider API Test Results:
+======================================================================
+auto         | FAILED  | Request failed with status code 500
+native       | FAILED  | Request failed with status code 500
+
+ ❯ tests/ocr-integration.spec.ts (18 tests | 2 failed) 396ms
+   ✓ OCR Integration Tests > PDF File Discovery and Validation > should find PDF files in public directory 2ms
+   ✓ OCR Integration Tests > PDF File Discovery and Validation > should validate PDF file accessibility 2ms
+   ✓ OCR Integration Tests > PDF File Discovery and Validation > should categorize PDF types correctly 0ms
+   × OCR Integration Tests > OCR Service Configuration > should have at least one OCR service configured 6ms
+     → expected false to be true // Object.is equality
+   × OCR Integration Tests > OCR Service Configuration > should detect available OCR providers 0ms
+     → expected 0 to be greater than 0
+   ✓ OCR Integration Tests > OCR Service Configuration > should test Mistral OCR connection if configured 0ms
+   ✓ OCR Integration Tests > Single PDF OCR Processing > should process a Controlo PDF with auto provider 39ms
+   ✓ OCR Integration Tests > Single PDF OCR Processing > should process with Mistral OCR specifically 0ms
+   ✓ OCR Integration Tests > Single PDF OCR Processing > should process with OpenRouter fallback 0ms
+   ✓ OCR Integration Tests > Single PDF OCR Processing > should handle native extraction as fallback 16ms
+   ✓ OCR Integration Tests > Batch PDF Processing > should process multiple PDFs in sequence 143ms
+   ✓ OCR Integration Tests > Data Extraction and Validation > should extract structured data from PDF text 12ms
+   ✓ OCR Integration Tests > Data Extraction and Validation > should handle property name matching 0ms
+   ✓ OCR Integration Tests > Error Handling and Edge Cases > should handle corrupted PDF files gracefully 16ms
+   ✓ OCR Integration Tests > Error Handling and Edge Cases > should handle empty PDF files 1ms
+   ✓ OCR Integration Tests > Error Handling and Edge Cases > should handle network timeouts gracefully 101ms
+   ✓ OCR Integration Tests > Performance and Metrics > should complete OCR within acceptable time limits 16ms
+   ✓ OCR Integration Tests > API Endpoint Integration > should test OCR endpoint if server is running 37ms
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Response Format Validation > should return properly structured response
+📑 Processando OCR [Rota unificada]...
+
+stderr | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Response Format Validation > should return properly structured response
+Erro ao ler arquivo: TypeError: The "path" argument must be of type string or an instance of Buffer or URL. Received undefined
+[90m    at Object.openSync (node:fs:561:5)[39m
+[90m    at Object.readFileSync (node:fs:444:35)[39m
+    at postOcr [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/controllers/ocr.controller.ts:68:22[90m)[39m
+    at Layer.handle [as handle_request] [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/lib/router/layer.js:95:5[90m)[39m
+    at next [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/lib/router/route.js:149:13[90m)[39m
+    at done [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:47:7[90m)[39m
+    at indicateDone [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:51:68[90m)[39m
+    at Multipart.<anonymous> [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:168:7[90m)[39m
+[90m    at Multipart.emit (node:events:508:28)[39m
+[90m    at emitCloseNT (node:internal/streams/destroy:148:10)[39m {
+  code: [32m'ERR_INVALID_ARG_TYPE'[39m
+}
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Response Format Validation > should include reservation data when detected
+📑 Processando OCR [Rota unificada]...
+
+stderr | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Response Format Validation > should include reservation data when detected
+Erro ao ler arquivo: TypeError: The "path" argument must be of type string or an instance of Buffer or URL. Received undefined
+[90m    at Object.openSync (node:fs:561:5)[39m
+[90m    at Object.readFileSync (node:fs:444:35)[39m
+    at postOcr [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/controllers/ocr.controller.ts:68:22[90m)[39m
+    at Layer.handle [as handle_request] [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/lib/router/layer.js:95:5[90m)[39m
+    at next [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/lib/router/route.js:149:13[90m)[39m
+    at done [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:47:7[90m)[39m
+    at indicateDone [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:51:68[90m)[39m
+    at Multipart.<anonymous> [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:168:7[90m)[39m
+[90m    at Multipart.emit (node:events:508:28)[39m
+[90m    at emitCloseNT (node:internal/streams/destroy:148:10)[39m {
+  code: [32m'ERR_INVALID_ARG_TYPE'[39m
+}
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Error Handling Tests > should handle missing file parameter
+📑 Processando OCR [Rota unificada]...
+
+stderr | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Error Handling Tests > should handle malformed JSON in base64 endpoint
+Test server error: SyntaxError: Unexpected token '"', ""invalid json"" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at createStrictSyntaxError [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/node_modules/[4mbody-parser[24m/lib/types/json.js:169:10[90m)[39m
+    at parse [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/node_modules/[4mbody-parser[24m/lib/types/json.js:86:15[90m)[39m
+    at [90m/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/node_modules/[4mbody-parser[24m/lib/read.js:128:18
+[90m    at AsyncResource.runInAsyncScope (node:async_hooks:214:14)[39m
+    at invokeCallback [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/node_modules/[4mraw-body[24m/index.js:238:16[90m)[39m
+    at done [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/node_modules/[4mraw-body[24m/index.js:227:7[90m)[39m
+    at IncomingMessage.onEnd [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/node_modules/[4mraw-body[24m/index.js:287:7[90m)[39m
+[90m    at IncomingMessage.emit (node:events:508:28)[39m
+[90m    at endReadableNT (node:internal/streams/readable:1701:12)[39m {
+  expose: [33mtrue[39m,
+  statusCode: [33m400[39m,
+  status: [33m400[39m,
+  body: [32m'"invalid json"'[39m,
+  type: [32m'entity.parse.failed'[39m
+}
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Error Handling Tests > should handle server errors gracefully
+📑 Processando OCR [Rota unificada]...
+
+stderr | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Error Handling Tests > should handle server errors gracefully
+Erro ao ler arquivo: TypeError: The "path" argument must be of type string or an instance of Buffer or URL. Received undefined
+[90m    at Object.openSync (node:fs:561:5)[39m
+[90m    at Object.readFileSync (node:fs:444:35)[39m
+    at postOcr [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/controllers/ocr.controller.ts:68:22[90m)[39m
+    at Layer.handle [as handle_request] [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/lib/router/layer.js:95:5[90m)[39m
+    at next [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/lib/router/route.js:149:13[90m)[39m
+    at done [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:47:7[90m)[39m
+    at indicateDone [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:51:68[90m)[39m
+    at Multipart.<anonymous> [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:168:7[90m)[39m
+[90m    at Multipart.emit (node:events:508:28)[39m
+[90m    at emitCloseNT (node:internal/streams/destroy:148:10)[39m {
+  code: [32m'ERR_INVALID_ARG_TYPE'[39m
+}
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Performance and Load Tests > should handle concurrent requests
+📑 Processando OCR [Rota unificada]...
+
+stderr | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Performance and Load Tests > should handle concurrent requests
+Erro ao ler arquivo: TypeError: The "path" argument must be of type string or an instance of Buffer or URL. Received undefined
+[90m    at Object.openSync (node:fs:561:5)[39m
+[90m    at Object.readFileSync (node:fs:444:35)[39m
+    at postOcr [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/controllers/ocr.controller.ts:68:22[90m)[39m
+    at Layer.handle [as handle_request] [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/lib/router/layer.js:95:5[90m)[39m
+    at next [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/lib/router/route.js:149:13[90m)[39m
+    at done [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:47:7[90m)[39m
+    at indicateDone [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:51:68[90m)[39m
+    at Multipart.<anonymous> [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:168:7[90m)[39m
+[90m    at Multipart.emit (node:events:508:28)[39m
+[90m    at emitCloseNT (node:internal/streams/destroy:148:10)[39m {
+  code: [32m'ERR_INVALID_ARG_TYPE'[39m
+}
+
+stderr | tests/test-runner.spec.ts
+DATABASE_URL não está definida. Usando armazenamento em memória.
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Performance and Load Tests > should handle concurrent requests
+📑 Processando OCR [Rota unificada]...
+
+stderr | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Performance and Load Tests > should handle concurrent requests
+Erro ao ler arquivo: TypeError: The "path" argument must be of type string or an instance of Buffer or URL. Received undefined
+[90m    at Object.openSync (node:fs:561:5)[39m
+[90m    at Object.readFileSync (node:fs:444:35)[39m
+    at postOcr [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/controllers/ocr.controller.ts:68:22[90m)[39m
+    at Layer.handle [as handle_request] [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/lib/router/layer.js:95:5[90m)[39m
+    at next [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/lib/router/route.js:149:13[90m)[39m
+    at done [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:47:7[90m)[39m
+    at indicateDone [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:51:68[90m)[39m
+    at Multipart.<anonymous> [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:168:7[90m)[39m
+[90m    at Multipart.emit (node:events:508:28)[39m
+[90m    at emitCloseNT (node:internal/streams/destroy:148:10)[39m {
+  code: [32m'ERR_INVALID_ARG_TYPE'[39m
+}
+
+stdout | tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests
+Test server closed
+
+stdout | tests/test-runner.spec.ts
+Usando armazenamento em memória
+Usando armazenamento em memória por configuração
+
+stdout | tests/test-runner.spec.ts
+######### USANDO MemStorage #########
+
+stdout | tests/ocr-api-endpoints.spec.ts
+📑 Processando OCR [Rota unificada]...
+
+stderr | tests/ocr-api-endpoints.spec.ts
+Erro ao ler arquivo: TypeError: The "path" argument must be of type string or an instance of Buffer or URL. Received undefined
+[90m    at Object.openSync (node:fs:561:5)[39m
+[90m    at Object.readFileSync (node:fs:444:35)[39m
+    at postOcr [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mserver/controllers/ocr.controller.ts:68:22[90m)[39m
+    at Layer.handle [as handle_request] [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/lib/router/layer.js:95:5[90m)[39m
+    at next [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mexpress[24m/lib/router/route.js:149:13[90m)[39m
+    at done [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:47:7[90m)[39m
+    at indicateDone [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:51:68[90m)[39m
+    at Multipart.<anonymous> [90m(/Users/bilal/Programaçao/MariaIntelligence-1/[39mnode_modules/[4mmulter[24m/lib/make-middleware.js:168:7[90m)[39m
+[90m    at Multipart.emit (node:events:508:28)[39m
+[90m    at emitCloseNT (node:internal/streams/destroy:148:10)[39m {
+  code: [32m'ERR_INVALID_ARG_TYPE'[39m
+}
+
+ ❯ tests/ocr-api-endpoints.spec.ts (16 tests | 8 failed) 349ms
+   ✓ OCR API Endpoints Tests > Server Setup and Health > should start test server successfully 29ms
+   ✓ OCR API Endpoints Tests > Server Setup and Health > should have PDF files available for testing 0ms
+   × OCR API Endpoints Tests > File Upload Endpoint Tests > should upload and process PDF via /api/ocr/upload 16ms
+     → Request failed with status code 500
+   × OCR API Endpoints Tests > File Upload Endpoint Tests > should process PDF via /api/ocr/process with file upload 6ms
+     → Request failed with status code 500
+   × OCR API Endpoints Tests > File Upload Endpoint Tests > should reject non-PDF files 7ms
+     → expected 500 to be 422 // Object.is equality
+   ✓ OCR API Endpoints Tests > File Upload Endpoint Tests > should handle oversized files 94ms
+   ✓ OCR API Endpoints Tests > Base64 Upload Endpoint Tests > should process PDF via base64 upload 107ms
+   ✓ OCR API Endpoints Tests > Base64 Upload Endpoint Tests > should handle invalid base64 data 33ms
+   ✓ OCR API Endpoints Tests > Provider Selection Tests > should accept provider parameter in query string 0ms
+   × OCR API Endpoints Tests > Provider Selection Tests > should test all available providers 10ms
+     → expected 0 to be greater than 0
+   × OCR API Endpoints Tests > Response Format Validation > should return properly structured response 6ms
+     → Request failed with status code 500
+   × OCR API Endpoints Tests > Response Format Validation > should include reservation data when detected 14ms
+     → Request failed with status code 500
+   ✓ OCR API Endpoints Tests > Error Handling Tests > should handle missing file parameter 7ms
+   ✓ OCR API Endpoints Tests > Error Handling Tests > should handle malformed JSON in base64 endpoint 3ms
+   × OCR API Endpoints Tests > Error Handling Tests > should handle server errors gracefully 5ms
+     → expected { success: false, …(1) } to have property "error"
+   × OCR API Endpoints Tests > Performance and Load Tests > should handle concurrent requests 6ms
+     → Request failed with status code 500
+stdout | tests/test-runner.spec.ts
+Serviço RAG Aprimorado inicializado
+
+stdout | tests/test-runner.spec.ts
+🔧 Inicializando GeminiService em modo mock (implementação direta da API em desenvolvimento)
+✅ Mistral OCR API configurada corretamente
+✅ OpenRouter API configurada corretamente (fallback)
+✅ Hugging Face Token configurado corretamente
+🤖 Serviço de IA primário configurado para: auto
+
+stderr | tests/test-runner.spec.ts
+Nenhuma chave Gemini configurada (GOOGLE_GEMINI_API_KEY ou GOOGLE_API_KEY). Algumas funcionalidades estarão indisponíveis.
+⚠️ Nenhuma chave de API do Gemini configurada. Funcionalidades de IA Gemini estarão limitadas.
+
+stdout | tests/test-runner.spec.ts
+Warning: Indexing all PDF objects
+
+stderr | tests/deployment-validation.spec.ts
+[vitest] skipping suite: Deployment validation tests skipped (ENABLE_FULL_STACK_TESTS=true to enable)
+
+ ↓ tests/deployment-validation.spec.ts (11 tests | 11 skipped)
+stdout | tests/comprehensive-test-suite.spec.ts
+Inicializando aplicação com segurança aprimorada…
+
+stderr | tests/ai-functionality-comprehensive.spec.ts
+DATABASE_URL não está definida. Usando armazenamento em memória.
+
+stdout | tests/ai-functionality-comprehensive.spec.ts
+Usando armazenamento em memória
+Usando armazenamento em memória por configuração
+
+stdout | tests/ai-functionality-comprehensive.spec.ts
+######### USANDO MemStorage #########
+
+stdout | tests/ai-functionality-comprehensive.spec.ts
+Serviço RAG Aprimorado inicializado
+
+stderr | tests/ai-functionality-comprehensive.spec.ts
+⚠️ OPENROUTER_API_KEY não está configurada. O serviço OpenRouter não funcionará.
+Nenhuma chave Gemini configurada (GOOGLE_GEMINI_API_KEY ou GOOGLE_API_KEY). Algumas funcionalidades estarão indisponíveis.
+⚠️ HF_TOKEN não está configurado. O serviço RolmOCR não funcionará para manuscritos.
+⚠️ MISTRAL_API_KEY não está configurada. OCR via Mistral API não funcionará.
+⚠️ OPENROUTER_API_KEY não está configurada. Fallback via OpenRouter não funcionará.
+⚠️ Nenhuma chave de API do Gemini configurada. Funcionalidades de IA Gemini estarão limitadas.
+⚠️ HF_TOKEN não está configurado. Processamento de manuscritos via RolmOCR não funcionará.
+
+stdout | tests/ai-functionality-comprehensive.spec.ts
+🔧 Inicializando GeminiService em modo mock (implementação direta da API em desenvolvimento)
+🤖 Serviço de IA primário configurado para: auto
+
+stdout | tests/ai-functionality-comprehensive.spec.ts
+Warning: Indexing all PDF objects
+
+stderr | tests/ai-functionality-comprehensive.spec.ts
+[vitest] skipping suite: AI functionality comprehensive suite skipped (AI_SERVICE_MODE=live required)
+
+ ↓ tests/ai-functionality-comprehensive.spec.ts (17 tests | 17 skipped)
+stdout | tests/test-runner.spec.ts
+Inicializando aplicação com segurança aprimorada…
+
+stderr | tests/gemini-health-endpoints.spec.ts
+DATABASE_URL não está definida. Usando armazenamento em memória.
+
+stdout | tests/gemini-health-endpoints.spec.ts
+Usando armazenamento em memória
+Usando armazenamento em memória por configuração
+
+stdout | tests/gemini-health-endpoints.spec.ts
+######### USANDO MemStorage #########
+
+stdout | tests/gemini-health-endpoints.spec.ts
+Serviço RAG Aprimorado inicializado
+
+stderr | tests/performance-benchmarks.spec.ts
+DATABASE_URL não está definida. Usando armazenamento em memória.
+
+stdout | tests/performance-benchmarks.spec.ts
+Usando armazenamento em memória
+Usando armazenamento em memória por configuração
+
+stdout | tests/performance-benchmarks.spec.ts
+######### USANDO MemStorage #########
+
+stderr | tests/gemini-health-endpoints.spec.ts
+Nenhuma chave Gemini configurada (GOOGLE_GEMINI_API_KEY ou GOOGLE_API_KEY). Algumas funcionalidades estarão indisponíveis.
+⚠️ Nenhuma chave de API do Gemini configurada. Funcionalidades de IA Gemini estarão limitadas.
+
+stdout | tests/gemini-health-endpoints.spec.ts
+🔧 Inicializando GeminiService em modo mock (implementação direta da API em desenvolvimento)
+✅ Mistral OCR API configurada corretamente
+✅ OpenRouter API configurada corretamente (fallback)
+✅ Hugging Face Token configurado corretamente
+🤖 Serviço de IA primário configurado para: auto
+
+stdout | tests/gemini-health-endpoints.spec.ts
+Warning: Indexing all PDF objects
+
+stdout | tests/performance-benchmarks.spec.ts
+Serviço RAG Aprimorado inicializado
+
+stdout | tests/performance-benchmarks.spec.ts
+🔧 Inicializando GeminiService em modo mock (implementação direta da API em desenvolvimento)
+✅ Mistral OCR API configurada corretamente
+✅ OpenRouter API configurada corretamente (fallback)
+✅ Hugging Face Token configurado corretamente
+🤖 Serviço de IA primário configurado para: auto
+
+stderr | tests/performance-benchmarks.spec.ts
+Nenhuma chave Gemini configurada (GOOGLE_GEMINI_API_KEY ou GOOGLE_API_KEY). Algumas funcionalidades estarão indisponíveis.
+⚠️ Nenhuma chave de API do Gemini configurada. Funcionalidades de IA Gemini estarão limitadas.
+
+stderr | tests/security-tests.spec.ts
+DATABASE_URL não está definida. Usando armazenamento em memória.
+
+stdout | tests/security-tests.spec.ts
+Usando armazenamento em memória
+Usando armazenamento em memória por configuração
+
+stdout | tests/security-tests.spec.ts
+######### USANDO MemStorage #########
+
+stdout | tests/performance-benchmarks.spec.ts
+Warning: Indexing all PDF objects
+
+stdout | tests/gemini-health-endpoints.spec.ts
+Inicializando aplicação com segurança aprimorada…
+
+stderr | tests/gemini-health-endpoints.spec.ts
+[vitest] skipping suite: Gemini health endpoint tests skipped (ENABLE_FULL_STACK_TESTS=true required)
+
+ ↓ tests/gemini-health-endpoints.spec.ts (14 tests | 14 skipped)
+stdout | tests/security-tests.spec.ts
+Serviço RAG Aprimorado inicializado
+
+stderr | tests/security-tests.spec.ts
+Nenhuma chave Gemini configurada (GOOGLE_GEMINI_API_KEY ou GOOGLE_API_KEY). Algumas funcionalidades estarão indisponíveis.
+⚠️ Nenhuma chave de API do Gemini configurada. Funcionalidades de IA Gemini estarão limitadas.
+
+stdout | tests/security-tests.spec.ts
+🔧 Inicializando GeminiService em modo mock (implementação direta da API em desenvolvimento)
+✅ Mistral OCR API configurada corretamente
+✅ OpenRouter API configurada corretamente (fallback)
+✅ Hugging Face Token configurado corretamente
+🤖 Serviço de IA primário configurado para: auto
+
+stdout | tests/security-tests.spec.ts
+Warning: Indexing all PDF objects
+
+stdout | tests/performance-benchmarks.spec.ts
+Inicializando aplicação com segurança aprimorada…
+
+stderr | tests/performance-benchmarks.spec.ts
+[vitest] skipping suite: Performance benchmarks skipped (ENABLE_FULL_STACK_TESTS=true required)
+
+ ↓ tests/performance-benchmarks.spec.ts (16 tests | 16 skipped)
+stdout | tests/security-tests.spec.ts
+Inicializando aplicação com segurança aprimorada…
+
+stderr | tests/security-tests.spec.ts
+[vitest] skipping suite: Security validation tests skipped (ENABLE_FULL_STACK_TESTS=true required)
+
+ ↓ tests/security-tests.spec.ts (12 tests | 12 skipped)
+{"level":30,"time":1758484393883,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Model training completed"}
+{"level":30,"time":1758484393884,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Starting model training"}
+{"level":30,"time":1758484394152,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Model training completed"}
+{"level":30,"time":1758484394153,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Starting model training"}
+{"level":30,"time":1758484395105,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Model training completed"}
+{"level":20,"time":1758484395185,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484395245,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484395349,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484395405,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484395463,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":30,"time":1758484395465,"pid":3958,"hostname":"Mac","name":"ml-model-validation","msg":"Starting comprehensive model validation"}
+{"level":30,"time":1758484395463,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Starting pattern analysis"}
+{"level":30,"time":1758484395464,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Starting pattern analysis"}
+{"level":30,"time":1758484395464,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Starting pattern analysis"}
+{"level":30,"time":1758484395465,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Drift detection completed"}
+{"level":20,"time":1758484395551,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484395694,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484395820,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484395886,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484396012,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484396140,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484396215,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484396296,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484396360,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484396425,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484396479,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484396601,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484396734,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484396811,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484396869,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484397008,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484397067,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484397214,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484397284,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484397427,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":30,"time":1758484397428,"pid":3958,"hostname":"Mac","name":"ml-model-validation","msg":"Model validation completed"}
+{"level":30,"time":1758484397427,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Drift detection completed"}
+{"level":30,"time":1758484397428,"pid":3958,"hostname":"Mac","name":"ml-model-validation","msg":"Performing cross-validation"}
+{"level":30,"time":1758484397428,"pid":3958,"hostname":"Mac","name":"ml-model-validation","msg":"Cross-validation completed"}
+{"level":30,"time":1758484397428,"pid":3958,"hostname":"Mac","name":"ml-model-validation","msg":"Checking model health"}
+{"level":20,"time":1758484397509,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":30,"time":1758484397510,"pid":3958,"hostname":"Mac","name":"ml-model-validation","msg":"Validation report exported"}
+{"level":20,"time":1758484397611,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484397679,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484397681,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484397692,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484397718,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":20,"time":1758484397743,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Prediction completed"}
+{"level":30,"time":1758484397743,"pid":3958,"hostname":"Mac","name":"ml-pattern-recognition","msg":"Starting pattern analysis"}
+ ✓ tests/ml-pattern-recognition.spec.ts (34 tests | 9 skipped) 5487ms
+   ✓ ML Pattern Recognition Service > Model Training > should train revenue forecasting model successfully  1626ms
+   ✓ ML Pattern Recognition Service > Model Training > should handle training with insufficient data  952ms
+   ✓ Model Validation Utils > should perform comprehensive model validation  1963ms
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Error Handling and Edge Cases > should handle extremely long text
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Nome do hóspede extraído: "Name: João Silva"
+✅ Número de hóspedes extraído: 2
+✅ Propriedade identificada: "Aroeira II"
+✅ Extraídas 1 reservas do texto OCR
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Error Handling and Edge Cases > should handle special characters and encoding
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Nome do hóspede extraído: "José María Núñez-González"
+✅ Propriedade identificada: "Çasa do Açúcar"
+✅ Extraídas 1 reservas do texto OCR
+⚠️ Campos obrigatórios ausentes: checkOutDate, numGuests
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Error Handling and Edge Cases > should handle special characters and encoding
+Special characters handled correctly: José María Núñez-González
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Error Handling and Edge Cases > should handle inconsistent date formats
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Nome do hóspede extraído: "Test User"
+✅ Propriedade identificada: "Test Property"
+✅ Extraídas 1 reservas do texto OCR
+⚠️ Campos obrigatórios ausentes: numGuests
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Error Handling and Edge Cases > should validate data consistency
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Nome do hóspede extraído: "John Doe"
+✅ Propriedade identificada: "Test Property"
+✅ Extraídas 1 reservas do texto OCR
+⚠️ Campos obrigatórios ausentes: numGuests, totalAmount
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Performance and Efficiency Tests > should process data extraction efficiently
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Nome do hóspede extraído: "Name: João Silva"
+✅ Número de hóspedes extraído: 2
+✅ Propriedade identificada: "Aroeira II"
+✅ Extraídas 1 reservas do texto OCR
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Performance and Efficiency Tests > should process data extraction efficiently
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Nome do hóspede extraído: "Name: João Silva"
+✅ Número de hóspedes extraído: 2
+✅ Propriedade identificada: "Aroeira II"
+✅ Extraídas 1 reservas do texto OCR
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Performance and Efficiency Tests > should process data extraction efficiently
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Nome do hóspede extraído: "Name: João Silva"
+✅ Número de hóspedes extraído: 2
+✅ Propriedade identificada: "Aroeira II"
+✅ Extraídas 1 reservas do texto OCR
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Performance and Efficiency Tests > should process data extraction efficiently
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Nome do hóspede extraído: "Name: João Silva"
+✅ Número de hóspedes extraído: 2
+✅ Propriedade identificada: "Aroeira II"
+✅ Extraídas 1 reservas do texto OCR
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Performance and Efficiency Tests > should process data extraction efficiently
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Nome do hóspede extraído: "Name: João Silva"
+✅ Número de hóspedes extraído: 2
+✅ Propriedade identificada: "Aroeira II"
+✅ Extraídas 1 reservas do texto OCR
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Performance and Efficiency Tests > should process data extraction efficiently
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Nome do hóspede extraído: "Name: João Silva"
+✅ Número de hóspedes extraído: 2
+✅ Propriedade identificada: "Aroeira II"
+✅ Extraídas 1 reservas do texto OCR
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Performance and Efficiency Tests > should process data extraction efficiently
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Nome do hóspede extraído: "Name: João Silva"
+✅ Número de hóspedes extraído: 2
+✅ Propriedade identificada: "Aroeira II"
+✅ Extraídas 1 reservas do texto OCR
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Performance and Efficiency Tests > should process data extraction efficiently
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Nome do hóspede extraído: "Name: João Silva"
+✅ Número de hóspedes extraído: 2
+✅ Propriedade identificada: "Aroeira II"
+✅ Extraídas 1 reservas do texto OCR
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Performance and Efficiency Tests > should process data extraction efficiently
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Nome do hóspede extraído: "Name: João Silva"
+✅ Número de hóspedes extraído: 2
+✅ Propriedade identificada: "Aroeira II"
+✅ Extraídas 1 reservas do texto OCR
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Performance and Efficiency Tests > should process data extraction efficiently
+🔍 Iniciando extração de dados de reserva a partir do texto OCR
+🔍 Usando parser nativo sem IA
+✅ Nome do hóspede extraído: "Name: João Silva"
+✅ Número de hóspedes extraído: 2
+✅ Propriedade identificada: "Aroeira II"
+✅ Extraídas 1 reservas do texto OCR
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Performance and Efficiency Tests > should process data extraction efficiently
+Data extraction performance: 0.10ms average over 10 iterations
+
+stdout | tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Performance and Efficiency Tests > should handle batch property matching efficiently
+Property matching performance: 0ms for 7 properties
+Matching results:
+  "Aroeira I" -> Aroeira I
+  "aroeira 2" -> Aroeira II
+  "SETE RIOS" -> Sete Rios
+  "feira ladra" -> Feira da Ladra (Graça 1)
+  "5 de outubro" -> 5 de Outubro
+  "non-existent property" -> No match
+  "another unknown property" -> No match
+
+ ❯ tests/ocr-validation.spec.ts (25 tests | 3 failed) 7106ms
+   × OCR Data Validation and Processing Tests > Text Parsing and Data Extraction > should parse valid reservation data correctly 79ms
+     → expected undefined to be truthy
+   ✓ OCR Data Validation and Processing Tests > Text Parsing and Data Extraction > should handle partial reservation data 3ms
+   ✓ OCR Data Validation and Processing Tests > Text Parsing and Data Extraction > should extract multiple reservations from single text 1ms
+   ✓ OCR Data Validation and Processing Tests > Text Parsing and Data Extraction > should handle invalid or empty text gracefully 2ms
+   ✓ OCR Data Validation and Processing Tests > Text Parsing and Data Extraction > should validate required fields completeness 0ms
+   ✓ OCR Data Validation and Processing Tests > Property Name Matching > should match exact property names 0ms
+   ✓ OCR Data Validation and Processing Tests > Property Name Matching > should match property aliases 0ms
+   ✓ OCR Data Validation and Processing Tests > Property Name Matching > should handle case-insensitive matching 0ms
+   ✓ OCR Data Validation and Processing Tests > Property Name Matching > should handle partial matches 0ms
+   × OCR Data Validation and Processing Tests > Property Name Matching > should return null for no matches 0ms
+     → expected undefined to be null
+   ✓ OCR Data Validation and Processing Tests > Property Name Matching > should handle special characters and numbers 0ms
+   × OCR Data Validation and Processing Tests > Data Normalization and Validation > should normalize date formats 2ms
+     → expected false to be true // Object.is equality
+   ✓ OCR Data Validation and Processing Tests > Data Normalization and Validation > should normalize monetary amounts 0ms
+   ✓ OCR Data Validation and Processing Tests > Data Normalization and Validation > should validate email formats 0ms
+   ✓ OCR Data Validation and Processing Tests > Data Normalization and Validation > should validate phone number formats 0ms
+   ✓ OCR Data Validation and Processing Tests > Data Normalization and Validation > should calculate nights correctly 0ms
+   ✓ OCR Data Validation and Processing Tests > Real PDF Data Validation > should validate data extracted from real PDFs 119ms
+   ✓ OCR Data Validation and Processing Tests > Real PDF Data Validation > should test property matching with real extracted data 35ms
+   ✓ OCR Data Validation and Processing Tests > Error Handling and Edge Cases > should handle empty or whitespace-only text 1ms
+   ✓ OCR Data Validation and Processing Tests > Error Handling and Edge Cases > should handle extremely long text  6859ms
+   ✓ OCR Data Validation and Processing Tests > Error Handling and Edge Cases > should handle special characters and encoding 1ms
+   ✓ OCR Data Validation and Processing Tests > Error Handling and Edge Cases > should handle inconsistent date formats 0ms
+   ✓ OCR Data Validation and Processing Tests > Error Handling and Edge Cases > should validate data consistency 0ms
+   ✓ OCR Data Validation and Processing Tests > Performance and Efficiency Tests > should process data extraction efficiently 1ms
+   ✓ OCR Data Validation and Processing Tests > Performance and Efficiency Tests > should handle batch property matching efficiently 0ms
+stdout | tests/ai-performance-benchmarks.spec.ts > AI Performance Benchmarks > Load Testing and Concurrent Operations > should measure memory usage during AI operations
+⏸️  Skipping memory tests - no AI services available
+
+stdout | tests/ai-performance-benchmarks.spec.ts > AI Performance Benchmarks > Cost and Efficiency Analysis > should measure token usage efficiency
+⏸️  Skipping token efficiency tests - no AI services available
+
+stdout | tests/ai-performance-benchmarks.spec.ts > AI Performance Benchmarks > Cost and Efficiency Analysis > should estimate operational costs
+💰 Cost Estimation Analysis:
+  Daily Usage Estimate:
+    Text Generation: 100 requests
+    OCR Processing: 50 requests
+    Vision Processing: 25 requests
+  Estimated Monthly Cost: $4.50 USD
+  Cost per Request (avg): $0.0009 USD
+⏱️  [CostEstimation] calculateMonthlyCost: 1ms ✅ 
+
+stdout | tests/ai-performance-benchmarks.spec.ts > AI Performance Benchmarks
+
+📊 Performance Analysis Summary:
+====================================================================================================
+📈 RateLimiter - rateLimitedFunction:
+   Success Rate: 100.0% (5/5)
+   Average: 0ms
+   Min/Max: 0ms / 1ms
+   95th Percentile: 1ms
+   Average Throughput: Infinity KB/s
+
+📈 CostEstimation - calculateMonthlyCost:
+   Success Rate: 100.0% (1/1)
+   Average: 1ms
+   Min/Max: 1ms / 1ms
+   95th Percentile: 1ms
+   Average Throughput: 2.93 KB/s
+
+🎯 Overall Performance:
+   Total Tests: 6
+   Success Rate: 100.0%
+   Average Duration: 1ms
+====================================================================================================
+
+ ❯ tests/ai-performance-benchmarks.spec.ts (8 tests | 1 failed) 60012ms
+   ✓ AI Performance Benchmarks > Individual Service Benchmarks > should benchmark Gemini service performance 2ms
+   ✓ AI Performance Benchmarks > Individual Service Benchmarks > should benchmark OpenRouter service performance 0ms
+   ✓ AI Performance Benchmarks > Individual Service Benchmarks > should benchmark Mistral OCR service performance 0ms
+   ✓ AI Performance Benchmarks > Load Testing and Concurrent Operations > should test concurrent text generation requests 0ms
+   × AI Performance Benchmarks > Load Testing and Concurrent Operations > should test rate limiter performance under load 60006ms
+     → Test timed out in 60000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ AI Performance Benchmarks > Load Testing and Concurrent Operations > should measure memory usage during AI operations 1ms
+   ✓ AI Performance Benchmarks > Cost and Efficiency Analysis > should measure token usage efficiency 0ms
+   ✓ AI Performance Benchmarks > Cost and Efficiency Analysis > should estimate operational costs 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/ai-chat-best-practices.spec.ts [ tests/ai-chat-best-practices.spec.ts ]
+ FAIL  tests/pdf-import.spec.ts [ tests/pdf-import.spec.ts ]
+ FAIL  tests/system-validation.spec.ts [ tests/system-validation.spec.ts ]
+Error: Do not import `@jest/globals` outside of the Jest test environment
+ ❯ Object.<anonymous> node_modules/@jest/globals/build/index.js:12:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/52]⎯
+
+ FAIL  tests/comprehensive-test-suite.spec.ts [ tests/comprehensive-test-suite.spec.ts ]
+ FAIL  tests/test-runner.spec.ts [ tests/test-runner.spec.ts ]
+Error: No database connection string was provided to `neon()`. Perhaps an environment variable has not been set?
+ ❯ neon ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/@neondatabase/serverless/index.mjs:1524:63
+ ❯ createDrizzleClient server/db/index.ts:10:15
+      8| 
+      9| function createDrizzleClient() {
+     10|   const sql = neon(process.env.DATABASE_URL!);
+       |               ^
+     11|   return drizzle(sql, { schema });
+     12| }
+ ❯ getDrizzle server/db/index.ts:16:23
+ ❯ server/db/index.ts:47:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/52]⎯
+
+ FAIL  tests/gemini-connectivity.spec.ts [ tests/gemini-connectivity.spec.ts ]
+Error: Cannot find package '@server/services/gemini.service' imported from '/Users/bilal/Programaçao/MariaIntelligence-1/tests/gemini-connectivity.spec.ts'
+ ❯ tests/gemini-connectivity.spec.ts:6:1
+      4| 
+      5| import { describe, it, expect, beforeEach, afterEach, vi, type SpyInst…
+      6| import { GeminiService } from '@server/services/gemini.service';
+       | ^
+      7| 
+      8| const mockResponse = (overrides: Partial<Pick<Response, 'ok' | 'status…
+
+Caused by: Error: Failed to load url @server/services/gemini.service (resolved id: @server/services/gemini.service) in /Users/bilal/Programaçao/MariaIntelligence-1/tests/gemini-connectivity.spec.ts. Does the file exist?
+ ❯ loadAndTransform ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/vite/dist/node/chunks/dep-BHkUv4Z8.js:26444:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/52]⎯
+
+ FAIL  tests/security-validation.spec.ts [ tests/security-validation.spec.ts ]
+SyntaxError: Invalid regular expression: /[';\\--]/g: Range out of order in character class
+ ❯ literalRegExp ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/rollup/dist/es/shared/parseAst.js:1720:20
+ ❯ convertNode ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/rollup/dist/es/shared/parseAst.js:2048:12
+ ❯ convertNodeList ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/rollup/dist/es/shared/parseAst.js:2057:38
+ ❯ callExpression ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/rollup/dist/es/shared/parseAst.js:1219:24
+ ❯ convertNode ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/rollup/dist/es/shared/parseAst.js:2048:12
+ ❯ variableDeclarator ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/rollup/dist/es/shared/parseAst.js:2016:47
+ ❯ convertNode ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/rollup/dist/es/shared/parseAst.js:2048:12
+ ❯ convertNodeList ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/rollup/dist/es/shared/parseAst.js:2057:38
+ ❯ variableDeclaration ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/rollup/dist/es/shared/parseAst.js:2006:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/52]⎯
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 45 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/ai-performance-benchmarks.spec.ts > AI Performance Benchmarks > Load Testing and Concurrent Operations > should test rate limiter performance under load
+Error: Test timed out in 60000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/ai-performance-benchmarks.spec.ts:353:5
+    351|     }, TEST_TIMEOUT);
+    352| 
+    353|     it('should test rate limiter performance under load', async () => {
+       |     ^
+    354|       // Test the rate limiter itself with high-frequency requests
+    355|       const testFunction = rateLimiter.rateLimitedFunction(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/52]⎯
+
+ FAIL  tests/gemini-api-integration.spec.ts > Gemini API Integration - Basic > should have rate limiter configured correctly
+AssertionError: expected { recentRequests: +0, …(4) } to match object { recentRequests: Any<Number>, …(5) }
+(1 matching property omitted from actual)
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "adaptiveRateLimiting": Any<Boolean>,[39m
+[2m    "canMakeRequest": Any<Boolean>,[22m
+[32m-   "isInBackoff": Any<Boolean>,[39m
+[2m    "maxRequestsPerMinute": Any<Number>,[22m
+[2m    "queueSize": Any<Number>,[22m
+[2m    "recentRequests": Any<Number>,[22m
+[2m  }[22m
+
+ ❯ tests/gemini-api-integration.spec.ts:36:20
+     34|     const status = rateLimiter.getRateLimitStatus();
+     35|     
+     36|     expect(status).toMatchObject({
+       |                    ^
+     37|       recentRequests: expect.any(Number),
+     38|       maxRequestsPerMinute: expect.any(Number),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/52]⎯
+
+ FAIL  tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > File Upload Endpoint Tests > should upload and process PDF via /api/ocr/upload
+AxiosError: Request failed with status code 500
+ ❯ settle ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/axios/lib/core/settle.js:19:12
+ ❯ IncomingMessage.handleStreamEnd ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/axios/lib/adapters/http.js:599:11
+ ❯ Axios.request ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/axios/lib/core/Axios.js:45:41
+ ❯ tests/ocr-api-endpoints.spec.ts:142:54
+    140| 
+    141|       try {
+    142|         const response: AxiosResponse<OCRResponse> = await axios.post(
+       |                                                      ^
+    143|           `${serverBaseUrl}/api/ocr/upload`,
+    144|           form,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/52]⎯
+
+ FAIL  tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > File Upload Endpoint Tests > should process PDF via /api/ocr/process with file upload
+AxiosError: Request failed with status code 500
+ ❯ settle ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/axios/lib/core/settle.js:19:12
+ ❯ IncomingMessage.handleStreamEnd ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/axios/lib/adapters/http.js:599:11
+ ❯ Axios.request ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/axios/lib/core/Axios.js:45:41
+ ❯ tests/ocr-api-endpoints.spec.ts:184:52
+    182|       form.append('file', fs.createReadStream(filePath));
+    183| 
+    184|       const response: AxiosResponse<OCRResponse> = await axios.post(
+       |                                                    ^
+    185|         `${serverBaseUrl}/api/ocr/process`,
+    186|         form,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/52]⎯
+
+ FAIL  tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > File Upload Endpoint Tests > should reject non-PDF files
+AssertionError: expected 500 to be 422 // Object.is equality
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 422[39m
+[31m+ 500[39m
+
+ ❯ tests/ocr-api-endpoints.spec.ts:226:42
+    224|       } catch (error) {
+    225|         if (axios.isAxiosError(error)) {
+    226|           expect(error.response?.status).toBe(422);
+       |                                          ^
+    227|           expect(error.response?.data.success).toBe(false);
+    228|           expect(error.response?.data.message).toContain('PDF');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/52]⎯
+
+ FAIL  tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Provider Selection Tests > should test all available providers
+AssertionError: expected 0 to be greater than 0
+ ❯ tests/ocr-api-endpoints.spec.ts:445:38
+    443| 
+    444|       const successfulTests = results.filter(r => r.success);
+    445|       expect(successfulTests.length).toBeGreaterThan(0);
+       |                                      ^
+    446|     }, TEST_CONFIG.TIMEOUT * 6);
+    447|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/52]⎯
+
+ FAIL  tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Response Format Validation > should return properly structured response
+AxiosError: Request failed with status code 500
+ ❯ settle ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/axios/lib/core/settle.js:19:12
+ ❯ IncomingMessage.handleStreamEnd ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/axios/lib/adapters/http.js:599:11
+ ❯ Axios.request ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/axios/lib/core/Axios.js:45:41
+ ❯ tests/ocr-api-endpoints.spec.ts:459:52
+    457|       form.append('file', fs.createReadStream(filePath));
+    458| 
+    459|       const response: AxiosResponse<OCRResponse> = await axios.post(
+       |                                                    ^
+    460|         `${serverBaseUrl}/api/ocr/upload`,
+    461|         form,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/52]⎯
+
+ FAIL  tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Response Format Validation > should include reservation data when detected
+AxiosError: Request failed with status code 500
+ ❯ settle ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/axios/lib/core/settle.js:19:12
+ ❯ IncomingMessage.handleStreamEnd ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/axios/lib/adapters/http.js:599:11
+ ❯ Axios.request ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/axios/lib/core/Axios.js:45:41
+ ❯ tests/ocr-api-endpoints.spec.ts:508:52
+    506|       form.append('file', fs.createReadStream(filePath));
+    507| 
+    508|       const response: AxiosResponse<OCRResponse> = await axios.post(
+       |                                                    ^
+    509|         `${serverBaseUrl}/api/ocr/upload`,
+    510|         form,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/52]⎯
+
+ FAIL  tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Error Handling Tests > should handle server errors gracefully
+AssertionError: expected { success: false, …(1) } to have property "error"
+ ❯ tests/ocr-api-endpoints.spec.ts:619:29
+    617|       expect(response.data).toHaveProperty('success');
+    618|       expect(response.data.success).toBe(false);
+    619|       expect(response.data).toHaveProperty('error');
+       |                             ^
+    620|     }, TEST_CONFIG.TIMEOUT);
+    621|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/52]⎯
+
+ FAIL  tests/ocr-api-endpoints.spec.ts > OCR API Endpoints Tests > Performance and Load Tests > should handle concurrent requests
+AxiosError: Request failed with status code 500
+ ❯ settle ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/axios/lib/core/settle.js:19:12
+ ❯ IncomingMessage.handleStreamEnd ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/axios/lib/adapters/http.js:599:11
+ ❯ Axios.request ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/axios/lib/core/Axios.js:45:41
+ ❯ tests/ocr-api-endpoints.spec.ts:648:25
+    646| 
+    647|       const startTime = Date.now();
+    648|       const responses = await Promise.all(promises);
+       |                         ^
+    649|       const totalTime = Date.now() - startTime;
+    650| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/52]⎯
+
+ FAIL  tests/ocr-integration.spec.ts > OCR Integration Tests > OCR Service Configuration > should have at least one OCR service configured
+AssertionError: expected false to be true // Object.is equality
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+ ❯ tests/ocr-integration.spec.ts:111:29
+    109|     it('should have at least one OCR service configured', () => {
+    110|       const hasAnyService = aiAdapter.isServiceAvailable();
+    111|       expect(hasAnyService).toBe(true);
+       |                             ^
+    112|     });
+    113| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/52]⎯
+
+ FAIL  tests/ocr-integration.spec.ts > OCR Integration Tests > OCR Service Configuration > should detect available OCR providers
+AssertionError: expected 0 to be greater than 0
+ ❯ tests/ocr-integration.spec.ts:126:41
+    124|       // At least one provider should be available
+    125|       const availableProviders = Object.values(providers).filter(Boole…
+    126|       expect(availableProviders.length).toBeGreaterThan(0);
+       |                                         ^
+    127|     });
+    128| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/52]⎯
+
+ FAIL  tests/ocr-providers.spec.ts > OCR Providers Specific Tests > Provider Comparison and Performance > should compare provider performance on same PDF
+AssertionError: expected 0 to be greater than 0
+ ❯ tests/ocr-providers.spec.ts:551:40
+    549| 
+    550|       const successfulResults = providerResults.filter(r => r.success);
+    551|       expect(successfulResults.length).toBeGreaterThan(0);
+       |                                        ^
+    552|       
+    553|       if (successfulResults.length > 1) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/52]⎯
+
+ FAIL  tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Text Parsing and Data Extraction > should parse valid reservation data correctly
+AssertionError: expected undefined to be truthy
+
+[32m- Expected:[39m 
+true
+
+[31m+ Received:[39m 
+undefined
+
+ ❯ tests/ocr-validation.spec.ts:145:37
+    143|         expect(reservation.guestName).toContain('João Silva');
+    144|         expect(reservation.propertyName).toContain('Aroeira');
+    145|         expect(reservation.checkIn).toBeTruthy();
+       |                                     ^
+    146|         expect(reservation.checkOut).toBeTruthy();
+    147|         expect(reservation.totalAmount).toBeTruthy();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/52]⎯
+
+ FAIL  tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Property Name Matching > should return null for no matches
+AssertionError: expected undefined to be null
+
+[32m- Expected:[39m 
+null
+
+[31m+ Received:[39m 
+undefined
+
+ ❯ tests/ocr-validation.spec.ts:253:23
+    251|     it('should return null for no matches', () => {
+    252|       const noMatch = matchPropertyByAlias('Property That Does Not Exi…
+    253|       expect(noMatch).toBeNull();
+       |                       ^
+    254|     });
+    255| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/52]⎯
+
+ FAIL  tests/ocr-validation.spec.ts > OCR Data Validation and Processing Tests > Data Normalization and Validation > should normalize date formats
+AssertionError: expected false to be true // Object.is equality
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+ ❯ tests/ocr-validation.spec.ts:277:40
+    275|         expect(date).toBeInstanceOf(Date);
+    276|         // Should be a valid date (not NaN)
+    277|         expect(!isNaN(date.getTime())).toBe(true);
+       |                                        ^
+    278|       });
+    279|     });
+ ❯ tests/ocr-validation.spec.ts:273:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/52]⎯
+
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Property Name Normalization > should normalize property names correctly
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Property Name Normalization > should handle empty and null inputs
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Fuzzy Matching Algorithms > should calculate Levenshtein distance correctly
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Fuzzy Matching Algorithms > should calculate fuzzy scores accurately
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Fuzzy Matching Algorithms > should handle token-based matching
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Property Matching > should find exact property matches
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Property Matching > should find alias matches
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Property Matching > should provide suggestions for partial matches
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Property Matching > should handle unmatched properties
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Property Matching > should cache property matches
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Date Normalization > should normalize various date formats
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Date Normalization > should handle invalid dates gracefully
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Platform Detection > should detect Booking.com platform
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Platform Detection > should detect Airbnb platform
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Platform Detection > should return null for unknown platforms
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Property Suggestions > should provide relevant property suggestions
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Property Suggestions > should limit suggestions to requested number
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Property Suggestions > should sort suggestions by score
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Learning from Matches > should learn from high-confidence matches
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Learning from Matches > should not learn from low-confidence matches
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Pattern Extraction > should extract reservation data using patterns
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Pattern Extraction > should handle missing patterns gracefully
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Report Generation > should generate accurate import reports
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Integration Tests > should process PDF files end-to-end
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Integration Tests > should handle batch processing
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Integration Tests > should handle errors gracefully
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Confidence Scoring > should assign appropriate confidence scores
+ FAIL  tests/pdf-import-service.spec.ts > PDFImportService > Confidence Scoring > should handle confidence thresholds correctly
+Error: Cannot find module '../server/db/index'
+Require stack:
+- /Users/bilal/Programaçao/MariaIntelligence-1/tests/pdf-import-service.spec.ts
+ ❯ tests/pdf-import-service.spec.ts:86:20
+     84| 
+     85|     // Mock database queries
+     86|     const { db } = require('../server/db/index');
+       |                    ^
+     87|     db.select.mockReturnValue(mockProperties);
+     88|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/52]⎯
+
+ FAIL  tests/pdf-import-service.spec.ts > Performance Tests > should cache property matches for performance
+AssertionError: expected 0 to be less than 0
+ ❯ tests/pdf-import-service.spec.ts:595:35
+    593|     
+    594|     // Cached call should be faster
+    595|     expect(endTime2 - startTime2).toBeLessThan(endTime1 - startTime1);
+       |                                   ^
+    596|   });
+    597| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/52]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 2 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Error: No database connection string was provided to `neon()`. Perhaps an environment variable has not been set?
+ ❯ neon ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/@neondatabase/serverless/index.mjs:1524:63
+ ❯ createDrizzleClient server/db/index.ts:10:15
+      8| 
+      9| function createDrizzleClient() {
+     10|   const sql = neon(process.env.DATABASE_URL!);
+       |               ^
+     11|   return drizzle(sql, { schema });
+     12| }
+ ❯ getDrizzle server/db/index.ts:16:23
+ ❯ server/db/index.ts:47:19
+ ❯ processTicksAndRejections node:internal/process/task_queues:105:5
+ ❯ VitestExecutor.runModule ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/vite-node/dist/client.mjs:397:4
+ ❯ VitestExecutor.directRequest ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/vite-node/dist/client.mjs:375:3
+
+This error originated in "tests/comprehensive-test-suite.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Error: No database connection string was provided to `neon()`. Perhaps an environment variable has not been set?
+ ❯ neon ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/@neondatabase/serverless/index.mjs:1524:63
+ ❯ createDrizzleClient server/db/index.ts:10:15
+      8| 
+      9| function createDrizzleClient() {
+     10|   const sql = neon(process.env.DATABASE_URL!);
+       |               ^
+     11|   return drizzle(sql, { schema });
+     12| }
+ ❯ getDrizzle server/db/index.ts:16:23
+ ❯ server/db/index.ts:47:19
+ ❯ processTicksAndRejections node:internal/process/task_queues:105:5
+ ❯ VitestExecutor.runModule ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/vite-node/dist/client.mjs:397:4
+ ❯ VitestExecutor.directRequest ../../Programac%CC%A7ao/MariaIntelligence-1/node_modules/vite-node/dist/client.mjs:375:3
+
+This error originated in "tests/test-runner.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  14 failed | 2 passed | 6 skipped (22)
+      Tests  45 failed | 96 passed | 93 skipped (234)
+     Errors  2 errors
+   Start at  20:53:10
+   Duration  61.61s (transform 1.28s, setup 0ms, collect 8.87s, tests 73.85s, environment 12ms, prepare 1.60s)
+

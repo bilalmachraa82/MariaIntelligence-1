@@ -1,11 +1,24 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
+import { fileURLToPath, URL } from 'node:url';
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 // https://vitejs.dev/config/
 export default defineConfig({
   root: './client',
-  plugins: [react()],
+  plugins: [
+    react({
+      // Enable React optimization features
+      babel: {
+        plugins: [
+          // Remove development only code in production
+          ['babel-plugin-transform-remove-console', { exclude: ['error', 'warn'] }]
+        ]
+      }
+    })
+  ],
   resolve: {
     alias: {
       '@': resolve(__dirname, './client/src'),
@@ -15,5 +28,59 @@ export default defineConfig({
   build: {
     outDir: '../dist',
     emptyOutDir: true,
+    // Performance optimizations
+    target: 'esnext',
+    minify: 'esbuild',
+    cssMinify: true,
+    sourcemap: false, // Disable sourcemaps in production for smaller bundles
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Split vendor libraries for better caching
+          'react-vendor': ['react', 'react-dom'],
+          'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select'],
+          'query-vendor': ['@tanstack/react-query'],
+          'form-vendor': ['react-hook-form', '@hookform/resolvers'],
+          'chart-vendor': ['recharts'],
+          'utils': ['clsx', 'class-variance-authority', 'tailwind-merge']
+        },
+        // Optimize chunk file names
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js',
+        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]'
+      }
+    },
+    // Reduce bundle size
+    chunkSizeWarningLimit: 1000,
+    // Enable compression
+    reportCompressedSize: true
   },
+  // Development optimizations
+  server: {
+    hmr: {
+      overlay: false // Disable error overlay for better performance
+    },
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5001',
+        changeOrigin: true,
+        secure: false
+      }
+    }
+  },
+  // Optimization settings
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      '@tanstack/react-query',
+      'recharts',
+      'lucide-react'
+    ],
+    exclude: ['@vite/client', '@vite/env']
+  },
+  // CSS optimizations
+  css: {
+    devSourcemap: false
+  }
 });

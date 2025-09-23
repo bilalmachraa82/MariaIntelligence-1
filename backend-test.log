@@ -1,0 +1,113 @@
+npm warn using --force Recommended protections disabled.
+
+> rest-express@1.0.0 start
+> NODE_ENV=production node dist/index.js
+
+Usando armazenamento PostgreSQL
+Serviço RAG Aprimorado inicializado
+🔧 Chave API Gemini encontrada, inicializando serviço...
+✅ Mistral OCR API configurada corretamente
+✅ OpenRouter API configurada corretamente (fallback)
+✅ Gemini API configurada corretamente
+✅ Hugging Face Token configurado corretamente
+🤖 Serviço de IA primário configurado para: auto
+The `fetchConnectionCache` option is deprecated (now always `true`)
+{"level":30,"time":1756230811467,"pid":75118,"hostname":"MBP-de-Bilal","name":"database","host":"ep-tiny-dream-a58ddhin.us-east-2.aws.neon.tech","database":"neondb","ssl":"require","msg":"Database configuration loaded"}
+Inicializando aplicação com segurança aprimorada…
+🔍 Initializing database connection...
+{"level":30,"time":1756230811474,"pid":75118,"hostname":"MBP-de-Bilal","name":"database","msg":"Initializing database connection..."}
+Warning: Indexing all PDF objects
+Tentativa 1/5
+Validando chave API Gemini...
+✅ Gemini API configurada corretamente
+🔄 Health checks iniciados (intervalo: 5 minutos)
+Erro na API Gemini: 400 - Bad Request
+Detalhes do erro: {
+  "error": {
+    "code": 400,
+    "message": "API key not valid. Please pass a valid API key.",
+    "status": "INVALID_ARGUMENT",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "API_KEY_INVALID",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "generativelanguage.googleapis.com"
+        }
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+        "locale": "en-US",
+        "message": "API key not valid. Please pass a valid API key."
+      }
+    ]
+  }
+}
+
+Erro de autorização na API Gemini: API retornou status 400: {
+  "error": {
+    "code": 400,
+    "message": "API key not valid. Please pass a valid API key.",
+    "status": "INVALID_ARGUMENT",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "API_KEY_INVALID",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "generativelanguage.googleapis.com"
+        }
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+        "locale": "en-US",
+        "message": "API key not valid. Please pass a valid API key."
+      }
+    ]
+  }
+}
+
+❌ Erro ao validar chave API do Gemini após várias tentativas: Error: API retornou status 400: {
+  "error": {
+    "code": 400,
+    "message": "API key not valid. Please pass a valid API key.",
+    "status": "INVALID_ARGUMENT",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "API_KEY_INVALID",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "generativelanguage.googleapis.com"
+        }
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+        "locale": "en-US",
+        "message": "API key not valid. Please pass a valid API key."
+      }
+    ]
+  }
+}
+
+    at file:///Users/bilal/Programac%CC%A7ao/MariaIntelligence-1/dist/index.js:3843:25
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async GeminiService.withRetry (file:///Users/bilal/Programac%CC%A7ao/MariaIntelligence-1/dist/index.js:3640:20)
+    at async GeminiService.validateApiKey (file:///Users/bilal/Programac%CC%A7ao/MariaIntelligence-1/dist/index.js:3819:18)
+❌ Chave API do Gemini inválida ou API indisponível
+🔧 Inicializando GeminiService em modo mock (implementação direta da API em desenvolvimento)
+{"level":50,"time":1756230811912,"pid":75118,"hostname":"MBP-de-Bilal","name":"database","error":"password authentication failed for user 'neondb_owner'","latency":438,"errorType":"AUTH_ERROR","suggestion":"Check your database credentials in DATABASE_URL","msg":"Database connection failed"}
+❌ Database initialization failed: Database connection failed: password authentication failed for user 'neondb_owner'
+{"level":50,"time":1756230811912,"pid":75118,"hostname":"MBP-de-Bilal","name":"database","error":"Database connection failed: password authentication failed for user 'neondb_owner'","msg":"Database initialization error"}
+{"level":50,"time":1756230811912,"pid":75118,"hostname":"MBP-de-Bilal","name":"database","details":{"error":"Database connection failed: password authentication failed for user 'neondb_owner'","connection":false,"migrations":false,"schema":false,"details":{"connection":{"healthy":false,"error":"password authentication failed for user 'neondb_owner'","errorType":"AUTH_ERROR","suggestion":"Check your database credentials in DATABASE_URL","details":{"ssl":false,"connected":false}}}},"msg":"Database initialization failed"}
+file:///Users/bilal/Programac%CC%A7ao/MariaIntelligence-1/dist/index.js:8269
+    throw new Error(
+          ^
+
+Error: Could not find the build directory: /Users/bilal/Programaçao/MariaIntelligence-1/dist/public, make sure to build the client first
+    at serveStatic (file:///Users/bilal/Programac%CC%A7ao/MariaIntelligence-1/dist/index.js:8269:11)
+    at file:///Users/bilal/Programac%CC%A7ao/MariaIntelligence-1/dist/index.js:15457:5
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+
+Node.js v24.6.0

@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+// import { ptBR } from "date-fns/locale"; // Removido - não utilizado
 import { DatePicker } from "@/components/ui/date-picker";
 import { useBudgetCalculator } from "@/hooks/use-budget-calculator";
 import { BudgetEstimate } from "@/lib/budget";
@@ -22,7 +22,7 @@ export function BudgetCalculator() {
   const [isCalculating, setIsCalculating] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { getNights, calculateBudget, calculateBudgetFromDates } = useBudgetCalculator();
+  const { getNights, calculateBudgetFromDates } = useBudgetCalculator();
 
   useEffect(() => {
     if (checkInDate && checkOutDate) {

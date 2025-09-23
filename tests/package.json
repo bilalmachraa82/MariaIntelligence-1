@@ -1,0 +1,41 @@
+{
+  "name": "mariaintelligence-testing",
+  "version": "1.0.0",
+  "description": "Comprehensive testing suite for MariaIntelligence application",
+  "scripts": {
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "test:all": "vitest run --reporter=verbose",
+    "test:critical": "vitest run page-test-framework.test.tsx individual-page-tests.test.tsx",
+    "test:performance": "vitest run performance-metrics-tests.test.tsx",
+    "test:mobile": "vitest run responsive-mobile-tests.test.tsx",
+    "test:i18n": "vitest run translation-test.test.tsx",
+    "test:errors": "vitest run error-handling-tests.test.tsx",
+    "test:report": "npm run test:all && echo 'Test report generated'",
+    "test:watch": "vitest",
+    "lint": "eslint **/*.{ts,tsx}",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/user-event": "^14.5.1",
+    "@types/node": "^20.8.0",
+    "@vitest/coverage-v8": "^1.0.0",
+    "@vitest/ui": "^1.0.0",
+    "eslint": "^8.52.0",
+    "jsdom": "^23.2.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2",
+    "vitest": "^1.0.0",
+    "supertest": "^6.3.3"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "wouter": "^2.12.1"
+  }
+}

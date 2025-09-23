@@ -154,7 +154,7 @@ export class SecurityAuditService {
         id: 'path-traversal',
         name: 'Path Traversal',
         description: 'Detects directory traversal attempts',
-        pattern: /(\.\.[\/\\]){2,}/g,
+        pattern: /(\.\.[/\\]){2,}/g,
         severity: 'medium',
         actions: ['log', 'alert'],
         enabled: true,

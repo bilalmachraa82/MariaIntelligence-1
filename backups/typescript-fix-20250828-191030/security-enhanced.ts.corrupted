@@ -1,0 +1,910 @@
+/**
+ * Enhanced Security Middleware for MariaIntelligence - Production-Ready
+ * 
+ * Advanced threat detection and prevention for Hostinger deployment
+ * Includes intrusion detection, automated threat response, and security monitoring
+ */
+
+import { Request, Response, NextFunction } from 'express';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import cors from 'cors';
+import { createHash, randomBytes } from 'crypto';
+import pino from 'pino';
+import { promisify } from 'util';
+import fs from 'fs/promises';
+import path from 'path';
+
+// Enhanced security logger with structured logging
+const securityLogger = pino({
+  name: 'security-enhanced',
+  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+  transport: process.env.NODE_ENV !== 'production' ? {
+    target: 'pino-pretty',
+    options: {
+      colorize: true,
+      translateTime: 'SYS:dd-mm-yyyy HH:MM:ss',
+      ignore: 'pid,hostname',
+    }
+  } : undefined,
+  formatters: {
+    level: (label) => ({ level: label }),
+    log: (object) => ({ ...object, service: 'mariaintelligence-security' })
+  }
+});
+
+// Advanced security event types
+export enum AdvancedSecurityEventType {
+  // Existing types
+  RATE_LIMIT_EXCEEDED = 'RATE_LIMIT_EXCEEDED',
+  SUSPICIOUS_REQUEST = 'SUSPICIOUS_REQUEST',
+  CORS_VIOLATION = 'CORS_VIOLATION',
+  VALIDATION_FAILED = 'VALIDATION_FAILED',
+  XSS_ATTEMPT = 'XSS_ATTEMPT',
+  SQL_INJECTION_ATTEMPT = 'SQL_INJECTION_ATTEMPT',
+  FILE_UPLOAD_REJECTED = 'FILE_UPLOAD_REJECTED',
+  IP_BLOCKED = 'IP_BLOCKED',
+  AUTHENTICATION_FAILED = 'AUTHENTICATION_FAILED',
+  PERMISSION_DENIED = 'PERMISSION_DENIED',
+  
+  // Enhanced types
+  BRUTE_FORCE_DETECTED = 'BRUTE_FORCE_DETECTED',
+  DDoS_DETECTED = 'DDoS_DETECTED',
+  BOT_TRAFFIC_DETECTED = 'BOT_TRAFFIC_DETECTED',
+  PAYLOAD_TOO_LARGE = 'PAYLOAD_TOO_LARGE',
+  SUSPICIOUS_FILE_UPLOAD = 'SUSPICIOUS_FILE_UPLOAD',
+  DIRECTORY_TRAVERSAL = 'DIRECTORY_TRAVERSAL',
+  COMMAND_INJECTION = 'COMMAND_INJECTION',
+  CSRF_TOKEN_MISSING = 'CSRF_TOKEN_MISSING',
+  INSECURE_PROTOCOL = 'INSECURE_PROTOCOL',
+  GEOLOCATION_BLOCKED = 'GEOLOCATION_BLOCKED',
+  THREAT_INTELLIGENCE_MATCH = 'THREAT_INTELLIGENCE_MATCH',
+  ANOMALOUS_BEHAVIOR = 'ANOMALOUS_BEHAVIOR'
+}
+
+// Enhanced security event interface
+interface EnhancedSecurityEvent {
+  id: string;
+  type: AdvancedSecurityEventType;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  ip: string;
+  userAgent: string;
+  url: string;
+  method: string;
+  timestamp: Date;
+  details?: any;
+  userId?: string;
+  country?: string;
+  asn?: string;
+  requestId?: string;
+  responseTime?: number;
+  payloadSize?: number;
+  fingerprint?: string;
+}
+
+// Security metrics tracking
+interface SecurityMetrics {
+  totalRequests: number;
+  blockedRequests: number;
+  suspiciousRequests: number;
+  rateLimit: number;
+  xssAttempts: number;
+  sqlInjectionAttempts: number;
+  ddosDetections: number;
+  bruteForceAttempts: number;
+  lastReset: Date;
+}
+
+// Enhanced threat detection stores
+const enhancedBlockedIPs = new Map<string, { reason: string; blockedAt: Date; attempts: number }>();
+const ipMetrics = new Map<string, { 
+  requests: number; 
+  suspicious: number; 
+  lastRequest: Date;
+  rateLimit: number;
+  userAgents: Set<string>;
+  countries: Set<string>;
+}>();
+const sessionFingerprints = new Map<string, Set<string>>();
+const csrfTokens = new Map<string, { token: string; expires: Date }>();
+const securityMetrics: SecurityMetrics = {
+  totalRequests: 0,
+  blockedRequests: 0,
+  suspiciousRequests: 0,
+  rateLimit: 0,
+  xssAttempts: 0,
+  sqlInjectionAttempts: 0,
+  ddosDetections: 0,
+  bruteForceAttempts: 0,
+  lastReset: new Date()
+};
+
+// Known malicious IP ranges (simplified example - in production use threat intelligence feeds)
+const maliciousIPRanges = [
+  '10.0.0.0/8',     // RFC1918 - should not be public
+  '172.16.0.0/12',  // RFC1918 - should not be public  
+  '192.168.0.0/16', // RFC1918 - should not be public
+  // Add more known malicious ranges from threat intelligence
+];
+
+// Bot detection patterns
+const botUserAgentPatterns = [
+  /crawler/i, /spider/i, /bot/i, /scraper/i, /scanner/i,
+  /curl/i, /wget/i, /python/i, /requests/i,
+  /automated/i, /headless/i, /phantom/i, /selenium/i
+];
+
+/**
+ * Enhanced Helmet Configuration with Strict CSP
+ */
+export const enhancedHelmetConfig = helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: [
+        "'self'",
+        "'nonce-" + generateNonce() + "'",
+        "https://cdn.jsdelivr.net",
+        "https://unpkg.com",
+        ...(process.env.NODE_ENV === 'development' ? ["'unsafe-inline'", "'unsafe-eval'"] : [])
+      ],
+      styleSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        "https://fonts.googleapis.com",
+        "https://cdn.jsdelivr.net",
+      ],
+      imgSrc: [
+        "'self'",
+        "data:",
+        "blob:",
+        "https:",
+        ...(process.env.NODE_ENV === 'development' ? ["http://localhost:*"] : [])
+      ],
+      connectSrc: [
+        "'self'",
+        "https://api.openai.com",
+        "https://api.anthropic.com", 
+        "https://generativelanguage.googleapis.com",
+        "https://api.mistral.ai",
+        ...(process.env.NODE_ENV === 'development' ? ["wss://localhost:*", "ws://localhost:*"] : [])
+      ],
+      fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'", "blob:", "data:"],
+      frameSrc: ["'none'"],
+      childSrc: ["'none'"],
+      workerSrc: ["'self'", "blob:"],
+      manifestSrc: ["'self'"],
+      formAction: ["'self'"],
+      baseUri: ["'self'"],
+      upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
+    },
+  },
+  crossOriginEmbedderPolicy: process.env.NODE_ENV === 'production',
+  crossOriginResourcePolicy: { policy: "same-origin" },
+  dnsPrefetchControl: { allow: false },
+  frameguard: { action: 'deny' },
+  hidePoweredBy: true,
+  hsts: {
+    maxAge: 31536000, // 1 year
+    includeSubDomains: true,
+    preload: true
+  },
+  ieNoOpen: true,
+  noSniff: true,
+  originAgentCluster: true,
+  permittedCrossDomainPolicies: false,
+  referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+  xssFilter: true,
+});
+
+/**
+ * Enhanced CORS with Strict Origin Validation
+ */
+const productionOrigins = [
+  'https://mariafaz.vercel.app',
+  'https://mariafaz-git-main-bilals-projects-4c123456.vercel.app',
+  process.env.PRODUCTION_URL,
+  process.env.HOSTINGER_DOMAIN
+].filter(Boolean);
+
+const developmentOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000', 
+  'http://localhost:5100',
+  'http://localhost:5001'
+];
+
+const allowedOrigins = process.env.NODE_ENV === 'production' 
+  ? productionOrigins 
+  : [...productionOrigins, ...developmentOrigins];
+
+export const enhancedCorsConfig = cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, Postman, etc.)
+    if (!origin && process.env.NODE_ENV === 'development') {
+      return callback(null, true);
+    }
+    
+    if (!origin && process.env.NODE_ENV === 'production') {
+      return callback(new Error('Origin header required in production'));
+    }
+    
+    if (allowedOrigins.includes(origin!)) {
+      return callback(null, true);
+    }
+    
+    // Log CORS violation with enhanced details
+    logEnhancedSecurityEvent({
+      id: generateEventId(),
+      type: AdvancedSecurityEventType.CORS_VIOLATION,
+      severity: 'high',
+      ip: 'unknown',
+      userAgent: 'unknown',
+      url: 'CORS_CHECK',
+      method: 'OPTIONS',
+      timestamp: new Date(),
+      details: { origin, allowedOrigins, environment: process.env.NODE_ENV }
+    });
+    
+    callback(new Error(`CORS policy violation: origin ${origin} not allowed`));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: [
+    'Origin', 'X-Requested-With', 'Content-Type', 'Accept',
+    'Authorization', 'Cache-Control', 'X-File-Type', 
+    'X-Upload-Type', 'X-CSRF-Token', 'X-Request-ID'
+  ],
+  exposedHeaders: ['X-Total-Count', 'X-Rate-Limit-Remaining', 'X-Request-ID'],
+  maxAge: 86400 // 24 hours
+});
+
+/**
+ * Enhanced Rate Limiting with Adaptive Limits
+ */
+export const adaptiveApiRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: (req) => {
+    const ip = getClientIP(req);
+    const metrics = ipMetrics.get(ip);
+    
+    // Reduce limits for suspicious IPs
+    if (metrics && metrics.suspicious > 5) {
+      return 25; // Strict limit
+    }
+    
+    // Normal limit
+    return 100;
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => {
+    // Skip rate limiting for health checks
+    return req.path === '/api/health';
+  },
+  keyGenerator: (req) => {
+    return `${getClientIP(req)}_${req.headers['user-agent']}`;
+  },
+  handler: async (req, res) => {
+    const ip = getClientIP(req);
+    const event = await createSecurityEvent(req, AdvancedSecurityEventType.RATE_LIMIT_EXCEEDED, 'medium', {
+      limit: 100,
+      window: '15min',
+      adaptiveLimit: true
+    });
+    
+    await logEnhancedSecurityEvent(event);
+    securityMetrics.rateLimit++;
+    
+    res.status(429).json({
+      error: 'Rate limit exceeded',
+      code: 'RATE_LIMIT_EXCEEDED',
+      retryAfter: 900,
+      requestId: req.headers['x-request-id']
+    });
+  }
+});
+
+/**
+ * DDoS Detection Middleware
+ */
+export const ddosProtectionMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const ip = getClientIP(req);
+  const now = new Date();
+  const windowSize = 60000; // 1 minute
+  
+  // Initialize or update IP metrics
+  const metrics = ipMetrics.get(ip) || {
+    requests: 0,
+    suspicious: 0,
+    lastRequest: now,
+    rateLimit: 0,
+    userAgents: new Set(),
+    countries: new Set()
+  };
+  
+  // Reset metrics if window expired
+  if (now.getTime() - metrics.lastRequest.getTime() > windowSize) {
+    metrics.requests = 0;
+    metrics.suspicious = 0;
+  }
+  
+  metrics.requests++;
+  metrics.lastRequest = now;
+  metrics.userAgents.add(req.get('User-Agent') || 'unknown');
+  
+  // DDoS detection logic
+  const requestsPerMinute = metrics.requests;
+  const uniqueUserAgents = metrics.userAgents.size;
+  
+  // Potential DDoS indicators
+  if (requestsPerMinute > 200 || // More than 200 requests per minute
+      (requestsPerMinute > 50 && uniqueUserAgents === 1)) { // High requests from single UA
+    
+    enhancedBlockedIPs.set(ip, {
+      reason: 'DDoS attack detected',
+      blockedAt: now,
+      attempts: requestsPerMinute
+    });
+    
+    const event = await createSecurityEvent(req, AdvancedSecurityEventType.DDoS_DETECTED, 'critical', {
+      requestsPerMinute,
+      uniqueUserAgents,
+      windowSize: '1 minute'
+    });
+    
+    await logEnhancedSecurityEvent(event);
+    securityMetrics.ddosDetections++;
+    
+    return res.status(429).json({
+      error: 'DDoS protection activated',
+      code: 'DDOS_DETECTED'
+    });
+  }
+  
+  ipMetrics.set(ip, metrics);
+  next();
+};
+
+/**
+ * Bot Detection Middleware
+ */
+export const botDetectionMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const userAgent = req.get('User-Agent') || '';
+  const ip = getClientIP(req);
+  
+  // Check for bot patterns
+  const isBot = botUserAgentPatterns.some(pattern => pattern.test(userAgent));
+  
+  if (isBot && !isAllowedBot(userAgent)) {
+    const event = createSecurityEvent(req, AdvancedSecurityEventType.BOT_TRAFFIC_DETECTED, 'medium', {
+      userAgent,
+      allowedBot: false
+    });
+    
+    logEnhancedSecurityEvent(event);
+    
+    // Rate limit bots more aggressively
+    const metrics = ipMetrics.get(ip) || {
+      requests: 0, suspicious: 0, lastRequest: new Date(),
+      rateLimit: 0, userAgents: new Set(), countries: new Set()
+    };
+    metrics.suspicious++;
+    ipMetrics.set(ip, metrics);
+  }
+  
+  next();
+};
+
+/**
+ * Advanced Content Validation with Threat Detection
+ */
+export const advancedContentValidation = async (req: Request, res: Response, next: NextFunction) => {
+  if (!['POST', 'PUT', 'PATCH'].includes(req.method)) {
+    return next();
+  }
+  
+  const ip = getClientIP(req);
+  
+  // Check payload size
+  const contentLength = parseInt(req.get('Content-Length') || '0');
+  const maxSize = 10 * 1024 * 1024; // 10MB
+  
+  if (contentLength > maxSize) {
+    const event = await createSecurityEvent(req, AdvancedSecurityEventType.PAYLOAD_TOO_LARGE, 'high', {
+      contentLength,
+      maxSize,
+      ratio: contentLength / maxSize
+    });
+    
+    await logEnhancedSecurityEvent(event);
+    
+    return res.status(413).json({
+      error: 'Payload too large',
+      code: 'PAYLOAD_TOO_LARGE',
+      maxSize: `${maxSize / 1024 / 1024}MB`
+    });
+  }
+  
+  if (req.body && typeof req.body === 'object') {
+    const bodyStr = JSON.stringify(req.body);
+    
+    // Enhanced XSS detection
+    const advancedXSSPatterns = [
+      /<script[^>]*>[\s\S]*?<\/script>/gi,
+      /javascript:/gi,
+      /on\w+\s*=\s*["'][^"']*["']/gi,
+      /<iframe[^>]*>[\s\S]*?<\/iframe>/gi,
+      /<object[^>]*>[\s\S]*?<\/object>/gi,
+      /<embed[^>]*>/gi,
+      /expression\s*\(/gi,
+      /url\s*\(\s*javascript:/gi,
+      /&\#x[0-9a-f]+;/gi,
+      /&\#\d+;/gi
+    ];
+    
+    for (const pattern of advancedXSSPatterns) {
+      if (pattern.test(bodyStr)) {
+        const event = await createSecurityEvent(req, AdvancedSecurityEventType.XSS_ATTEMPT, 'critical', {
+          pattern: pattern.toString(),
+          detectedContent: bodyStr.substring(0, 200),
+          fullDetection: true
+        });
+        
+        await logEnhancedSecurityEvent(event);
+        securityMetrics.xssAttempts++;
+        
+        return res.status(400).json({
+          error: 'Malicious content detected',
+          code: 'XSS_DETECTED'
+        });
+      }
+    }
+    
+    // Enhanced SQL injection detection
+    const advancedSQLPatterns = [
+      /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|EXECUTE|UNION|DECLARE)\b)/gi,
+      /(UNION\s+(ALL\s+)?SELECT)/gi,
+      /('|\"|;|--|\|\|)/g,
+      /(OR\s+\d+\s*[=><]+\s*\d+)/gi,
+      /(AND\s+\d+\s*[=><]+\s*\d+)/gi,
+      /(HAVING\s+\d+\s*[=><]+\s*\d+)/gi,
+      /(ORDER\s+BY\s+\d+)/gi,
+      /(GROUP\s+BY\s+\d+)/gi,
+      /(WAITFOR\s+DELAY)/gi,
+      /(BENCHMARK\s*\()/gi
+    ];
+    
+    for (const pattern of advancedSQLPatterns) {
+      if (pattern.test(bodyStr)) {
+        const event = await createSecurityEvent(req, AdvancedSecurityEventType.SQL_INJECTION_ATTEMPT, 'critical', {
+          pattern: pattern.toString(),
+          detectedContent: bodyStr.substring(0, 200),
+          enhancedDetection: true
+        });
+        
+        await logEnhancedSecurityEvent(event);
+        securityMetrics.sqlInjectionAttempts++;
+        
+        return res.status(400).json({
+          error: 'Malicious content detected',
+          code: 'SQL_INJECTION_DETECTED'
+        });
+      }
+    }
+    
+    // Directory traversal detection
+    const directoryTraversalPatterns = [
+      /\.\.\//g,
+      /\.\.\\\\g,
+      /%2e%2e%2f/gi,
+      /%2e%2e%5c/gi,
+      /\.\.%2f/gi,
+      /\.\.%5c/gi
+    ];
+    
+    for (const pattern of directoryTraversalPatterns) {
+      if (pattern.test(bodyStr) || pattern.test(req.url)) {
+        const event = await createSecurityEvent(req, AdvancedSecurityEventType.DIRECTORY_TRAVERSAL, 'high', {
+          pattern: pattern.toString(),
+          location: 'body_and_url'
+        });
+        
+        await logEnhancedSecurityEvent(event);
+        
+        return res.status(400).json({
+          error: 'Directory traversal detected',
+          code: 'DIRECTORY_TRAVERSAL_DETECTED'
+        });
+      }
+    }
+    
+    // Command injection detection
+    const commandInjectionPatterns = [
+      /[;&|`$(){}]/g,
+      /\s*(curl|wget|nc|netcat|bash|sh|cmd|powershell)\s+/gi,
+      /\s*eval\s*\(/gi,
+      /\s*exec\s*\(/gi,
+      /\s*system\s*\(/gi
+    ];
+    
+    for (const pattern of commandInjectionPatterns) {
+      if (pattern.test(bodyStr)) {
+        const event = await createSecurityEvent(req, AdvancedSecurityEventType.COMMAND_INJECTION, 'critical', {
+          pattern: pattern.toString(),
+          detectedContent: bodyStr.substring(0, 200)
+        });
+        
+        await logEnhancedSecurityEvent(event);
+        
+        return res.status(400).json({
+          error: 'Command injection detected',
+          code: 'COMMAND_INJECTION_DETECTED'
+        });
+      }
+    }
+  }
+  
+  next();
+};
+
+/**
+ * Enhanced IP Tracking with Behavioral Analysis
+ */
+export const enhancedIPTrackingMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const ip = getClientIP(req);
+  const requestId = req.headers['x-request-id'] as string || generateEventId();
+  
+  // Add request ID to request
+  req.headers['x-request-id'] = requestId;
+  
+  // Check if IP is blocked
+  const blocked = enhancedBlockedIPs.get(ip);
+  if (blocked) {
+    const event = createSecurityEvent(req, AdvancedSecurityEventType.IP_BLOCKED, 'critical', {
+      reason: blocked.reason,
+      blockedAt: blocked.blockedAt,
+      attempts: blocked.attempts
+    });
+    
+    logEnhancedSecurityEvent(event);
+    securityMetrics.blockedRequests++;
+    
+    return res.status(403).json({
+      error: 'IP address blocked',
+      code: 'IP_BLOCKED',
+      requestId
+    });
+  }
+  
+  // Track response for behavioral analysis
+  res.on('finish', async () => {
+    const metrics = ipMetrics.get(ip) || {
+      requests: 0, suspicious: 0, lastRequest: new Date(),
+      rateLimit: 0, userAgents: new Set(), countries: new Set()
+    };
+    
+    securityMetrics.totalRequests++;
+    
+    if (res.statusCode >= 400) {
+      metrics.suspicious++;
+      
+      // Enhanced blocking logic
+      if (metrics.suspicious >= 10) { // Lower threshold for enhanced security
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+        if (metrics.lastRequest > oneHourAgo) {
+          enhancedBlockedIPs.set(ip, {
+            reason: 'Multiple suspicious requests',
+            blockedAt: new Date(),
+            attempts: metrics.suspicious
+          });
+          
+          const event = await createSecurityEvent(req, AdvancedSecurityEventType.IP_BLOCKED, 'critical', {
+            reason: 'Behavioral analysis - multiple suspicious requests',
+            suspiciousRequests: metrics.suspicious,
+            timeWindow: '1 hour',
+            automated: true
+          });
+          
+          await logEnhancedSecurityEvent(event);
+          securityMetrics.blockedRequests++;
+        }
+      }
+    }
+    
+    ipMetrics.set(ip, metrics);
+  });
+  
+  next();
+};
+
+/**
+ * CSRF Protection Middleware
+ */
+export const csrfProtectionMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
+    return next();
+  }
+  
+  const token = req.headers['x-csrf-token'] as string;
+  const sessionId = req.headers['x-session-id'] as string || getClientIP(req);
+  
+  if (!token) {
+    const event = createSecurityEvent(req, AdvancedSecurityEventType.CSRF_TOKEN_MISSING, 'high', {
+      sessionId,
+      hasSessionId: !!sessionId
+    });
+    
+    logEnhancedSecurityEvent(event);
+    
+    return res.status(403).json({
+      error: 'CSRF token required',
+      code: 'CSRF_TOKEN_MISSING'
+    });
+  }
+  
+  const validToken = csrfTokens.get(sessionId);
+  if (!validToken || validToken.token !== token || validToken.expires < new Date()) {
+    const event = createSecurityEvent(req, AdvancedSecurityEventType.CSRF_TOKEN_MISSING, 'high', {
+      tokenProvided: !!token,
+      tokenValid: !!validToken,
+      tokenExpired: validToken ? validToken.expires < new Date() : false
+    });
+    
+    logEnhancedSecurityEvent(event);
+    
+    return res.status(403).json({
+      error: 'Invalid CSRF token',
+      code: 'INVALID_CSRF_TOKEN'
+    });
+  }
+  
+  next();
+};
+
+/**
+ * Protocol Security Middleware
+ */
+export const protocolSecurityMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  // Enforce HTTPS in production
+  if (process.env.NODE_ENV === 'production' && !req.secure && req.get('X-Forwarded-Proto') !== 'https') {
+    const event = createSecurityEvent(req, AdvancedSecurityEventType.INSECURE_PROTOCOL, 'medium', {
+      protocol: req.protocol,
+      forwardedProto: req.get('X-Forwarded-Proto'),
+      environment: 'production'
+    });
+    
+    logEnhancedSecurityEvent(event);
+    
+    return res.redirect(301, `https://${req.get('Host')}${req.url}`);
+  }
+  
+  next();
+};
+
+/**
+ * Utility Functions
+ */
+
+// Generate cryptographically secure nonce
+function generateNonce(): string {
+  return randomBytes(16).toString('base64');
+}
+
+// Generate unique event ID
+function generateEventId(): string {
+  return `${Date.now()}-${randomBytes(8).toString('hex')}`;
+}
+
+// Get real client IP with enhanced detection
+function getClientIP(req: Request): string {
+  const forwarded = req.headers['x-forwarded-for'] as string;
+  const realIP = req.headers['x-real-ip'] as string;
+  const cfIP = req.headers['cf-connecting-ip'] as string; // Cloudflare
+  const remoteIP = req.connection.remoteAddress || req.socket.remoteAddress;
+  
+  return (
+    cfIP ||
+    (forwarded && forwarded.split(',')[0].trim()) ||
+    realIP ||
+    remoteIP ||
+    'unknown'
+  );
+}
+
+// Create standardized security event
+async function createSecurityEvent(
+  req: Request,
+  type: AdvancedSecurityEventType,
+  severity: 'low' | 'medium' | 'high' | 'critical',
+  details?: any
+): Promise<EnhancedSecurityEvent> {
+  const ip = getClientIP(req);
+  
+  return {
+    id: generateEventId(),
+    type,
+    severity,
+    ip,
+    userAgent: req.get('User-Agent') || 'unknown',
+    url: req.originalUrl,
+    method: req.method,
+    timestamp: new Date(),
+    details,
+    requestId: req.headers['x-request-id'] as string,
+    payloadSize: parseInt(req.get('Content-Length') || '0'),
+    fingerprint: generateRequestFingerprint(req)
+  };
+}
+
+// Generate request fingerprint for anomaly detection
+function generateRequestFingerprint(req: Request): string {
+  const components = [
+    req.get('User-Agent') || '',
+    req.get('Accept') || '',
+    req.get('Accept-Language') || '',
+    req.get('Accept-Encoding') || '',
+    req.method,
+    req.protocol
+  ];
+  
+  return createHash('sha256')
+    .update(components.join('|'))
+    .digest('hex')
+    .substring(0, 16);
+}
+
+// Check if bot is allowed (search engines, etc.)
+function isAllowedBot(userAgent: string): boolean {
+  const allowedBots = [
+    /googlebot/i,
+    /bingbot/i,
+    /slurp/i, // Yahoo
+    /duckduckbot/i,
+    /baiduspider/i,
+    /yandexbot/i,
+    /facebookexternalhit/i,
+    /twitterbot/i,
+    /linkedinbot/i
+  ];
+  
+  return allowedBots.some(pattern => pattern.test(userAgent));
+}
+
+// Enhanced security event logging with persistence
+async function logEnhancedSecurityEvent(event: EnhancedSecurityEvent): Promise<void> {
+  // Log to console/file
+  securityLogger.warn({
+    eventId: event.id,
+    event: event.type,
+    severity: event.severity,
+    ip: event.ip,
+    userAgent: event.userAgent,
+    url: event.url,
+    method: event.method,
+    timestamp: event.timestamp,
+    details: event.details,
+    requestId: event.requestId,
+    fingerprint: event.fingerprint
+  }, `Security Event: ${event.type}`);
+  
+  // Persist to security audit log
+  try {
+    await persistSecurityEvent(event);
+  } catch (error) {
+    securityLogger.error('Failed to persist security event:', error);
+  }
+  
+  // Real-time alerting for critical events
+  if (event.severity === 'critical') {
+    await sendSecurityAlert(event);
+  }
+  
+  securityMetrics.suspiciousRequests++;
+}
+
+// Persist security events to file system
+async function persistSecurityEvent(event: EnhancedSecurityEvent): Promise<void> {
+  const logDir = path.join(process.cwd(), 'logs', 'security');
+  const logFile = path.join(logDir, `security-audit-${new Date().toISOString().split('T')[0]}.json`);
+  
+  try {
+    // Ensure log directory exists
+    await fs.mkdir(logDir, { recursive: true });
+    
+    // Append event to daily log file
+    const logEntry = JSON.stringify(event) + '\n';
+    await fs.appendFile(logFile, logEntry);
+  } catch (error) {
+    securityLogger.error('Failed to write security event to file:', error);
+  }
+}
+
+// Send security alerts for critical events
+async function sendSecurityAlert(event: EnhancedSecurityEvent): Promise<void> {
+  if (process.env.NODE_ENV !== 'production') {
+    return; // Skip alerts in development
+  }
+  
+  const alertPayload = {
+    service: 'mariaintelligence-security',
+    event: event.type,
+    severity: event.severity,
+    timestamp: event.timestamp,
+    ip: event.ip,
+    details: event.details,
+    environment: process.env.NODE_ENV || 'unknown'
+  };
+  
+  // In production, integrate with monitoring services
+  // Examples: Datadog, Sentry, PagerDuty, Slack webhooks
+  console.error(`🚨 CRITICAL SECURITY ALERT: ${event.type}`, alertPayload);
+  
+  // TODO: Implement webhook notifications
+  // await sendWebhookAlert(alertPayload);
+}
+
+// Generate CSRF token
+export function generateCSRFToken(sessionId: string): string {
+  const token = randomBytes(32).toString('hex');
+  const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+  
+  csrfTokens.set(sessionId, { token, expires });
+  
+  // Cleanup expired tokens
+  setTimeout(() => {
+    const storedToken = csrfTokens.get(sessionId);
+    if (storedToken && storedToken.expires < new Date()) {
+      csrfTokens.delete(sessionId);
+    }
+  }, 60 * 60 * 1000);
+  
+  return token;
+}
+
+// Get security metrics
+export function getSecurityMetrics(): SecurityMetrics {
+  return { ...securityMetrics };
+}
+
+// Reset security metrics (for periodic reporting)
+export function resetSecurityMetrics(): void {
+  securityMetrics.totalRequests = 0;
+  securityMetrics.blockedRequests = 0;
+  securityMetrics.suspiciousRequests = 0;
+  securityMetrics.rateLimit = 0;
+  securityMetrics.xssAttempts = 0;
+  securityMetrics.sqlInjectionAttempts = 0;
+  securityMetrics.ddosDetections = 0;
+  securityMetrics.bruteForceAttempts = 0;
+  securityMetrics.lastReset = new Date();
+}
+
+/**
+ * Complete Enhanced Security Middleware Stack
+ */
+export const enhancedSecurityMiddlewareStack = [
+  enhancedHelmetConfig,
+  enhancedCorsConfig,
+  protocolSecurityMiddleware,
+  enhancedIPTrackingMiddleware,
+  ddosProtectionMiddleware,
+  botDetectionMiddleware,
+  advancedContentValidation,
+  csrfProtectionMiddleware
+];
+
+// Export enhanced components
+export {
+  securityLogger,
+  getClientIP,
+  logEnhancedSecurityEvent,
+  enhancedBlockedIPs,
+  ipMetrics,
+  AdvancedSecurityEventType,
+  generateEventId,
+  generateNonce,
+  createSecurityEvent
+};

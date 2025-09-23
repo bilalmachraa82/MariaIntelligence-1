@@ -1742,48 +1742,42 @@ export class DatabaseStorage implements IStorage {
   async getReservations(): Promise<Reservation[]> {
     if (!db) return [];
     try {
-      // Calcular data mínima (hoje + 3 dias)
-      const today = new Date();
-      const minDate = new Date();
-      minDate.setDate(today.getDate() + 3);
-      const minDateStr = minDate.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-      
-      console.log(`Buscando reservas a partir de ${minDateStr} (hoje + 3 dias)`);
-      
+      // Buscar todas as reservas (remover filtro de data)
+      console.log(`Buscando todas as reservas disponíveis`);
+
       // Abordagem alternativa com SQL direto via pool de conexão para evitar problemas com o Drizzle ORM
       if (this.poolInstance) {
         const query = `
-          SELECT * FROM reservations 
-          WHERE check_in_date >= $1::DATE
+          SELECT * FROM reservations
           ORDER BY created_at DESC
         `;
-        
-        const result = await this.poolInstance.query(query, [minDateStr]);
-        console.log(`Encontradas ${result.rows.length} reservas futuras a partir de ${minDateStr}`);
-        
+
+        const result = await this.poolInstance.query(query);
+        console.log(`Encontradas ${result.rows.length} reservas no total`);
+
         // Mapear resultado para o formato esperado pelo sistema
         return result.rows.map(row => ({
           id: row.id,
-          propertyId: row.property_id,
-          guestName: row.guest_name,
-          guestEmail: row.guest_email,
-          guestPhone: row.guest_phone,
-          checkInDate: row.check_in_date,
-          checkOutDate: row.check_out_date,
-          numGuests: row.num_guests,
-          totalAmount: row.total_amount,
+          propertyId: row.propertyId || row.property_id,
+          guestName: row.guestName || row.guest_name,
+          guestEmail: row.guestEmail || row.guest_email,
+          guestPhone: row.guestPhone || row.guest_phone,
+          checkInDate: row.checkInDate || row.check_in_date,
+          checkOutDate: row.checkOutDate || row.check_out_date,
+          numGuests: row.numGuests || row.num_guests,
+          totalAmount: row.totalAmount || row.total_amount,
           status: row.status,
           notes: row.notes,
           checkInFee: row.check_in_fee,
-          commission: row.commission_fee, // Mapeando do campo DB commission_fee para campo da aplicação commission
+          commission: row.commission_fee,
           teamPayment: row.team_payment,
           ownerRevenue: row.owner_revenue,
-          source: row.platform, // Mapeando do campo DB platform para campo da aplicação source
+          source: row.source || 'manual',
           platformFee: row.platform_fee,
           cleaningFee: row.cleaning_fee,
           netAmount: row.net_amount,
-          createdAt: row.created_at,
-          updatedAt: row.updated_at
+          createdAt: row.createdAt || row.created_at,
+          updatedAt: row.updatedAt || row.updated_at
         }));
       }
       

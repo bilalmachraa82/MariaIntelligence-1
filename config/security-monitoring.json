@@ -1,0 +1,281 @@
+{
+  "version": "2.0.0",
+  "service": "mariaintelligence-security",
+  "environment": "production",
+  
+  "monitoring": {
+    "enabled": true,
+    "realtime_alerts": true,
+    "log_level": "info",
+    "retention_days": 90,
+    "metrics_interval": 60,
+    "alert_cooldown": 300
+  },
+  
+  "threat_detection": {
+    "enabled": true,
+    "sensitivity": "high",
+    "machine_learning": false,
+    "behavioral_analysis": true,
+    "ip_reputation": true,
+    "geolocation_filtering": false
+  },
+  
+  "rate_limiting": {
+    "enabled": true,
+    "adaptive": true,
+    "global_requests_per_minute": 1000,
+    "per_ip_requests_per_minute": 60,
+    "burst_protection": true,
+    "whitelist_ips": [
+      "127.0.0.1",
+      "::1"
+    ]
+  },
+  
+  "ddos_protection": {
+    "enabled": true,
+    "threshold_requests_per_minute": 200,
+    "threshold_requests_per_second": 20,
+    "block_duration_minutes": 60,
+    "progressive_blocking": true,
+    "challenge_mode": false
+  },
+  
+  "intrusion_detection": {
+    "enabled": true,
+    "failed_login_threshold": 5,
+    "suspicious_request_threshold": 10,
+    "block_duration_hours": 24,
+    "ip_whitelist": [],
+    "patterns": {
+      "sql_injection": true,
+      "xss_attempts": true,
+      "command_injection": true,
+      "directory_traversal": true,
+      "file_inclusion": true
+    }
+  },
+  
+  "bot_protection": {
+    "enabled": true,
+    "challenge_bots": false,
+    "allowed_bots": [
+      "googlebot",
+      "bingbot",
+      "slurp",
+      "duckduckbot",
+      "baiduspider",
+      "yandexbot",
+      "facebookexternalhit",
+      "twitterbot",
+      "linkedinbot"
+    ],
+    "rate_limit_bots": true,
+    "fingerprint_analysis": true
+  },
+  
+  "ssl_tls": {
+    "enforce_https": true,
+    "hsts_enabled": true,
+    "hsts_max_age": 31536000,
+    "hsts_include_subdomains": true,
+    "hsts_preload": true,
+    "certificate_monitoring": true,
+    "renewal_alert_days": 30,
+    "cipher_suites": "modern",
+    "protocols": ["TLSv1.2", "TLSv1.3"]
+  },
+  
+  "content_security": {
+    "csp_enabled": true,
+    "csp_report_only": false,
+    "xss_protection": true,
+    "content_type_validation": true,
+    "file_upload_scanning": true,
+    "payload_size_limit_mb": 10,
+    "mime_type_filtering": true
+  },
+  
+  "session_security": {
+    "csrf_protection": true,
+    "csrf_token_rotation": true,
+    "session_timeout_minutes": 60,
+    "concurrent_session_limit": 5,
+    "session_fingerprinting": true,
+    "secure_cookies": true,
+    "httponly_cookies": true
+  },
+  
+  "logging": {
+    "security_events": true,
+    "access_logs": true,
+    "error_logs": true,
+    "audit_trail": true,
+    "log_format": "json",
+    "log_rotation": true,
+    "compress_logs": true,
+    "remote_logging": false
+  },
+  
+  "alerting": {
+    "channels": {
+      "email": {
+        "enabled": false,
+        "recipients": [],
+        "smtp_server": "",
+        "smtp_port": 587,
+        "smtp_username": "",
+        "smtp_password": "",
+        "smtp_secure": true
+      },
+      "webhook": {
+        "enabled": true,
+        "url": "",
+        "timeout_seconds": 30,
+        "retry_attempts": 3,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "slack": {
+        "enabled": false,
+        "webhook_url": "",
+        "channel": "#security-alerts",
+        "username": "Security Bot"
+      },
+      "discord": {
+        "enabled": false,
+        "webhook_url": "",
+        "username": "Security Monitor"
+      }
+    },
+    "severity_thresholds": {
+      "low": false,
+      "medium": true,
+      "high": true,
+      "critical": true
+    }
+  },
+  
+  "compliance": {
+    "gdpr_compliance": true,
+    "ccpa_compliance": false,
+    "audit_logging": true,
+    "data_retention_days": 365,
+    "anonymize_logs": false,
+    "right_to_deletion": true
+  },
+  
+  "performance": {
+    "cache_security_checks": true,
+    "async_logging": true,
+    "batch_processing": true,
+    "memory_monitoring": true,
+    "cpu_monitoring": true
+  },
+  
+  "integration": {
+    "fail2ban": {
+      "enabled": false,
+      "jail_name": "mariaintelligence",
+      "ban_time": 3600,
+      "max_retry": 5,
+      "find_time": 600
+    },
+    "cloudflare": {
+      "enabled": false,
+      "api_token": "",
+      "zone_id": "",
+      "security_level": "medium"
+    },
+    "firewall": {
+      "enabled": false,
+      "auto_block_ips": true,
+      "whitelist_management": true
+    }
+  },
+  
+  "development": {
+    "debug_mode": false,
+    "test_mode": false,
+    "bypass_security": false,
+    "mock_threats": false,
+    "performance_testing": false
+  },
+  
+  "emergency": {
+    "lockdown_mode": false,
+    "emergency_contacts": [],
+    "auto_lockdown_threshold": 100,
+    "maintenance_mode": false,
+    "incident_response": true
+  },
+  
+  "hostinger_specific": {
+    "shared_hosting_optimizations": true,
+    "resource_limits": {
+      "memory_mb": 512,
+      "cpu_percentage": 25,
+      "concurrent_connections": 100
+    },
+    "file_permissions": {
+      "strict_mode": true,
+      "monitor_changes": true
+    }
+  },
+  
+  "api_security": {
+    "rate_limiting": {
+      "general_api": {
+        "requests_per_minute": 100,
+        "burst_limit": 20
+      },
+      "ai_endpoints": {
+        "requests_per_hour": 20,
+        "cost_tracking": true
+      },
+      "upload_endpoints": {
+        "requests_per_hour": 10,
+        "size_limit_mb": 20
+      }
+    },
+    "authentication": {
+      "jwt_validation": true,
+      "api_key_validation": true,
+      "oauth_support": false,
+      "multi_factor_auth": false
+    },
+    "input_validation": {
+      "strict_validation": true,
+      "sanitization": true,
+      "schema_validation": true,
+      "parameter_pollution": true
+    }
+  },
+  
+  "database_security": {
+    "connection_encryption": true,
+    "query_monitoring": true,
+    "injection_detection": true,
+    "access_logging": true,
+    "backup_encryption": true
+  },
+  
+  "file_security": {
+    "upload_scanning": true,
+    "virus_scanning": false,
+    "file_type_validation": true,
+    "file_size_limits": true,
+    "quarantine_suspicious": true,
+    "allowed_extensions": [
+      ".pdf",
+      ".jpg",
+      ".jpeg",
+      ".png",
+      ".webp",
+      ".heic",
+      ".heif"
+    ]
+  }
+}
