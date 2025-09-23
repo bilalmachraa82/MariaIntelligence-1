@@ -4,9 +4,81 @@
     "api/index.js": {
       "runtime": "nodejs18.x",
       "maxDuration": 30
+    },
+    "api/activities.ts": {
+      "runtime": "nodejs18.x",
+      "maxDuration": 30
+    },
+    "api/enums.ts": {
+      "runtime": "nodejs18.x",
+      "maxDuration": 30
+    },
+    "api/health.ts": {
+      "runtime": "nodejs18.x",
+      "maxDuration": 30
+    },
+    "api/owners.ts": {
+      "runtime": "nodejs18.x",
+      "maxDuration": 30
+    },
+    "api/properties.ts": {
+      "runtime": "nodejs18.x",
+      "maxDuration": 30
+    },
+    "api/reservations.ts": {
+      "runtime": "nodejs18.x",
+      "maxDuration": 30
+    },
+    "api/reservations/dashboard.ts": {
+      "runtime": "nodejs18.x",
+      "maxDuration": 30
+    },
+    "api/statistics.ts": {
+      "runtime": "nodejs18.x",
+      "maxDuration": 30
+    },
+    "api/status.ts": {
+      "runtime": "nodejs18.x",
+      "maxDuration": 30
     }
   },
   "routes": [
+    {
+      "src": "/api/activities",
+      "dest": "/api/activities.ts"
+    },
+    {
+      "src": "/api/enums",
+      "dest": "/api/enums.ts"
+    },
+    {
+      "src": "/api/health",
+      "dest": "/api/health.ts"
+    },
+    {
+      "src": "/api/owners",
+      "dest": "/api/owners.ts"
+    },
+    {
+      "src": "/api/properties",
+      "dest": "/api/properties.ts"
+    },
+    {
+      "src": "/api/reservations",
+      "dest": "/api/reservations.ts"
+    },
+    {
+      "src": "/api/reservations/dashboard",
+      "dest": "/api/reservations/dashboard.ts"
+    },
+    {
+      "src": "/api/statistics",
+      "dest": "/api/statistics.ts"
+    },
+    {
+      "src": "/api/status",
+      "dest": "/api/status.ts"
+    },
     {
       "src": "/assets/(.*)",
       "headers": { "cache-control": "public, max-age=31536000, immutable" },

@@ -52,8 +52,8 @@ temp
 .vercel
 
 # Scripts that might have credentials
-fix-motion.cjs
-scripts/
+# fix-motion.cjs
+# scripts/
 
 # Development files
 *.bak
