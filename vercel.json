@@ -1,44 +1,16 @@
 {
   "version": 2,
   "functions": {
-    "api/index.js": {
-      "runtime": "nodejs18.x",
+    "api/*.js": {
+      "runtime": "nodejs22.x",
       "maxDuration": 30
     },
-    "api/activities.ts": {
-      "runtime": "nodejs18.x",
+    "api/*.ts": {
+      "runtime": "nodejs22.x",
       "maxDuration": 30
     },
-    "api/enums.ts": {
-      "runtime": "nodejs18.x",
-      "maxDuration": 30
-    },
-    "api/health.ts": {
-      "runtime": "nodejs18.x",
-      "maxDuration": 30
-    },
-    "api/owners.ts": {
-      "runtime": "nodejs18.x",
-      "maxDuration": 30
-    },
-    "api/properties.ts": {
-      "runtime": "nodejs18.x",
-      "maxDuration": 30
-    },
-    "api/reservations.ts": {
-      "runtime": "nodejs18.x",
-      "maxDuration": 30
-    },
-    "api/reservations/dashboard.ts": {
-      "runtime": "nodejs18.x",
-      "maxDuration": 30
-    },
-    "api/statistics.ts": {
-      "runtime": "nodejs18.x",
-      "maxDuration": 30
-    },
-    "api/status.ts": {
-      "runtime": "nodejs18.x",
+    "api/**/*.ts": {
+      "runtime": "nodejs22.x",
       "maxDuration": 30
     }
   },
@@ -46,6 +18,10 @@
     {
       "src": "/api/activities",
       "dest": "/api/activities.ts"
+    },
+    {
+      "src": "/api/check-gemini-key",
+      "dest": "/api/check-gemini-key.js"
     },
     {
       "src": "/api/enums",
