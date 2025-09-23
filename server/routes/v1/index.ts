@@ -9,6 +9,7 @@ import { API_CONFIG } from '../../config/api.config.js';
 
 // Import route modules
 import { propertiesRoutes } from './properties.routes.js';
+import propertiesRouter from '../properties.js';
 
 /**
  * Setup all v1 API routes
@@ -26,6 +27,7 @@ export async function setupV1Routes(app: Express): Promise<void> {
 
   // Register route modules
   v1Router.use('/properties', propertiesRoutes);
+  v1Router.use('/properties-api', propertiesRouter);
 
   // Mount v1 router
   app.use(API_CONFIG.prefix, v1Router);

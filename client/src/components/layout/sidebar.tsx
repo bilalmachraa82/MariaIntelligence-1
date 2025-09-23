@@ -66,6 +66,18 @@ export function Sidebar({ className }: SidebarProps) {
       description: "Gerencie todas as propriedades",
     },
     {
+      title: "Dashboard Propriedades",
+      href: "/properties-dashboard",
+      icon: Building2,
+      description: "Dashboard completo das propriedades",
+    },
+    {
+      title: "Dashboard Financeiro",
+      href: "/financial-dashboard",
+      icon: Calculator,
+      description: "Análise financeira e rentabilidade",
+    },
+    {
       title: t("navigation.reservations"),
       href: isPortuguese ? "/reservas" : "/reservations",
       icon: CalendarDays,
