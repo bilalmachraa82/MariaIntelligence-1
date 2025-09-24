@@ -1,0 +1,52 @@
+services:
+  - type: web
+    name: mariafaz-web
+    env: node
+    plan: starter
+    region: frankfurt
+    branch: main
+    autoDeploy: true
+    rootDir: .
+    buildCommand: npm install --legacy-peer-deps && npm run build:render
+    startCommand: npm run start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mariafaz-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: mariafaz-redis
+          type: redis
+          property: connectionString
+      - key: SESSION_SECRET
+        sync: false
+      - key: GOOGLE_GEMINI_API_KEY
+        sync: false
+      - key: EMAIL_HOST
+        sync: false
+      - key: EMAIL_PORT
+        sync: false
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASS
+        sync: false
+    postDeployCommand: npm run db:migrate
+
+  - type: redis
+    name: mariafaz-redis
+    plan: starter
+    region: frankfurt
+    ipAllowList: []
+
+
+databases:
+  - name: mariafaz-db
+    plan: starter
+    region: frankfurt
+    databaseName: mariafaz
+    user: mariafaz
+    ipAllowList: []

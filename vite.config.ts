@@ -26,7 +26,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: '../dist',
+    outDir: '../dist/public',
     emptyOutDir: true,
     // Performance optimizations
     target: 'esnext',
@@ -62,7 +62,7 @@ export default defineConfig({
     },
     proxy: {
       '/api': {
-        target: 'http://localhost:5001',
+        target: 'http://localhost:5100',
         changeOrigin: true,
         secure: false
       }
