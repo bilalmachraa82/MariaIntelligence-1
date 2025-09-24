@@ -3,6 +3,7 @@
   "buildCommand": "npm run build:client",
   "outputDirectory": "dist",
   "installCommand": "npm install",
+  "public": true,
   "routes": [
     {
       "src": "/assets/(.*)",
