@@ -1,68 +1,20 @@
 {
   "version": 2,
-  "functions": {
-    "api/*.js": {
-      "runtime": "nodejs22.x",
-      "maxDuration": 30
-    },
-    "api/*.ts": {
-      "runtime": "nodejs22.x",
-      "maxDuration": 30
-    },
-    "api/**/*.ts": {
-      "runtime": "nodejs22.x",
-      "maxDuration": 30
-    }
-  },
+  "buildCommand": "npm run build:client",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
   "routes": [
-    {
-      "src": "/api/activities",
-      "dest": "/api/activities.ts"
-    },
-    {
-      "src": "/api/check-gemini-key",
-      "dest": "/api/check-gemini-key.js"
-    },
-    {
-      "src": "/api/enums",
-      "dest": "/api/enums.ts"
-    },
-    {
-      "src": "/api/health",
-      "dest": "/api/health.ts"
-    },
-    {
-      "src": "/api/owners",
-      "dest": "/api/owners.ts"
-    },
-    {
-      "src": "/api/properties",
-      "dest": "/api/properties.ts"
-    },
-    {
-      "src": "/api/reservations",
-      "dest": "/api/reservations.ts"
-    },
-    {
-      "src": "/api/reservations/dashboard",
-      "dest": "/api/reservations/dashboard.ts"
-    },
-    {
-      "src": "/api/statistics",
-      "dest": "/api/statistics.ts"
-    },
-    {
-      "src": "/api/status",
-      "dest": "/api/status.ts"
-    },
     {
       "src": "/assets/(.*)",
       "headers": { "cache-control": "public, max-age=31536000, immutable" },
-      "dest": "/dist/assets/$1"
+      "dest": "/assets/$1"
+    },
+    {
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",
-      "dest": "/api/index.js"
+      "dest": "/index.html"
     }
   ]
 }
