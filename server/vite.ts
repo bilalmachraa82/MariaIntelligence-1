@@ -71,39 +71,24 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  // Check multiple possible locations for the built client files
-  const possiblePaths = [
-    path.resolve(__dirname, "public"),                    // Development: server/public
-    path.resolve(__dirname, "..", "public"),              // Build: dist/server/../public = dist/public
-    path.resolve(process.cwd(), "dist", "public"),        // Fallback: from project root
-    path.resolve(process.cwd(), "public"),                // Fallback: direct public in root
-  ];
+  const distPath = path.resolve(process.cwd(), "dist", "client");
 
-  let distPath = null;
-  for (const candidatePath of possiblePaths) {
-    if (fs.existsSync(candidatePath)) {
-      distPath = candidatePath;
-      console.log(`✅ Found client build at: ${distPath}`);
-      break;
-    }
-  }
+  console.log(`Attempting to serve static files from: ${distPath}`);
 
-  if (!distPath) {
-    const errorMsg = `Could not find the build directory. Searched paths: ${possiblePaths.join(', ')}`;
+  if (!fs.existsSync(distPath)) {
+    const errorMsg = `Build directory not found at ${distPath}. Make sure the client has been built.`;
     console.error(`❌ ${errorMsg}`);
+    // Em produção, é melhor lançar um erro para parar o arranque se o build não estiver presente.
     throw new Error(errorMsg);
   }
 
-  if (!fs.existsSync(distPath)) {
-    throw new Error(
-      `Could not find the build directory: ${distPath}, make sure to build the client first`,
-    );
-  }
+  console.log(`✅ Found client build at: ${distPath}`);
 
+  // Servir os ficheiros estáticos (JS, CSS, imagens) a partir de dist/client
   app.use(express.static(distPath));
 
-  // fall through to index.html if the file doesn't exist
-  app.use("*", (_req, res) => {
+  // Para qualquer outra rota (SPA fallback), servir o index.html
+  app.get("*", (_req, res) => {
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }
