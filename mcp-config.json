@@ -37,6 +37,13 @@
         "-y",
         "@modelcontextprotocol/server-sequential-thinking"
       ]
+    },
+    "render": {
+      "url": "https://mcp.render.com/mcp",
+      "headers": {
+        "Authorization": "Bearer rnd_1QmgebqyrTGCRy2xHbPJh0m7zUg3"
+      },
+      "type": "sse"
     }
   }
 }
