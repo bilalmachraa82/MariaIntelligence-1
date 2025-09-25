@@ -71,22 +71,34 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  // Constrói um caminho absoluto para dist/client a partir da localização de vite.ts
   const distPath = path.resolve(__dirname, "..", "client");
-
-  console.log(`Attempting to serve static files from absolute path: ${distPath}`);
+  console.log(`[PROD_STATIC] Serving from calculated path: ${distPath}`);
 
   if (!fs.existsSync(distPath)) {
-    const errorMsg = `Build directory not found at ${distPath}. Make sure the client has been built.`;
-    console.error(`❌ ${errorMsg}`);
+    const errorMsg = `[PROD_STATIC_ERROR] Build directory NOT FOUND at ${distPath}`;
+    console.error(errorMsg);
     throw new Error(errorMsg);
   }
+  console.log(`[PROD_STATIC] Build directory FOUND at ${distPath}`);
 
-  console.log(`✅ Found client build at: ${distPath}`);
+  const indexPath = path.resolve(distPath, "index.html");
+  if (!fs.existsSync(indexPath)) {
+    const errorMsg = `[PROD_STATIC_ERROR] index.html NOT FOUND at ${indexPath}`;
+    console.error(errorMsg);
+    // Listar o conteúdo do diretório para depuração
+    try {
+      const files = fs.readdirSync(distPath);
+      console.log(`[PROD_STATIC_DEBUG] Contents of ${distPath}: ${files.join(", ")}`);
+    } catch (e: any) {
+      console.error(`[PROD_STATIC_DEBUG] Could not read directory ${distPath}: ${e.message}`);
+    }
+    throw new Error(errorMsg);
+  }
+  console.log(`[PROD_STATIC] index.html FOUND at ${indexPath}`);
 
   app.use(express.static(distPath));
 
   app.get("*", (_req, res) => {
-    res.sendFile(path.resolve(distPath, "index.html"));
+    res.sendFile(indexPath);
   });
 }
