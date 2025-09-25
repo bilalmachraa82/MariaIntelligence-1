@@ -71,23 +71,21 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(process.cwd(), "dist", "client");
+  // Constrói um caminho absoluto para dist/client a partir da localização de vite.ts
+  const distPath = path.resolve(__dirname, "..", "client");
 
-  console.log(`Attempting to serve static files from: ${distPath}`);
+  console.log(`Attempting to serve static files from absolute path: ${distPath}`);
 
   if (!fs.existsSync(distPath)) {
     const errorMsg = `Build directory not found at ${distPath}. Make sure the client has been built.`;
     console.error(`❌ ${errorMsg}`);
-    // Em produção, é melhor lançar um erro para parar o arranque se o build não estiver presente.
     throw new Error(errorMsg);
   }
 
   console.log(`✅ Found client build at: ${distPath}`);
 
-  // Servir os ficheiros estáticos (JS, CSS, imagens) a partir de dist/client
   app.use(express.static(distPath));
 
-  // Para qualquer outra rota (SPA fallback), servir o index.html
   app.get("*", (_req, res) => {
     res.sendFile(path.resolve(distPath, "index.html"));
   });
