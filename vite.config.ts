@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { resolve } from 'path';
+import path, { resolve } from 'path';
 import { fileURLToPath, URL } from 'node:url';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
@@ -10,10 +10,8 @@ export default defineConfig({
   root: './client',
   plugins: [
     react({
-      // Enable React optimization features
       babel: {
         plugins: [
-          // Remove development only code in production
           ['babel-plugin-transform-remove-console', { exclude: ['error', 'warn'] }]
         ]
       }
@@ -26,17 +24,18 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: '../dist/public',
+    outDir: '../dist/client',
     emptyOutDir: true,
-    // Performance optimizations
     target: 'esnext',
     minify: 'esbuild',
     cssMinify: true,
-    sourcemap: false, // Disable sourcemaps in production for smaller bundles
+    sourcemap: false,
     rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, "client/index.html"),
+      },
       output: {
         manualChunks: {
-          // Split vendor libraries for better caching
           'react-vendor': ['react', 'react-dom'],
           'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select'],
           'query-vendor': ['@tanstack/react-query'],
@@ -44,21 +43,17 @@ export default defineConfig({
           'chart-vendor': ['recharts'],
           'utils': ['clsx', 'class-variance-authority', 'tailwind-merge']
         },
-        // Optimize chunk file names
         chunkFileNames: 'assets/js/[name]-[hash].js',
         entryFileNames: 'assets/js/[name]-[hash].js',
         assetFileNames: 'assets/[ext]/[name]-[hash].[ext]'
       }
     },
-    // Reduce bundle size
     chunkSizeWarningLimit: 1000,
-    // Enable compression
     reportCompressedSize: true
   },
-  // Development optimizations
   server: {
     hmr: {
-      overlay: false // Disable error overlay for better performance
+      overlay: false
     },
     proxy: {
       '/api': {
@@ -68,7 +63,6 @@ export default defineConfig({
       }
     }
   },
-  // Optimization settings
   optimizeDeps: {
     include: [
       'react',
@@ -79,7 +73,6 @@ export default defineConfig({
     ],
     exclude: ['@vite/client', '@vite/env']
   },
-  // CSS optimizations
   css: {
     devSourcemap: false
   }
