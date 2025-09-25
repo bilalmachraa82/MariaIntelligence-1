@@ -7754,7 +7754,7 @@ var init_vite_config = __esm({
         }
       },
       build: {
-        outDir: "../dist",
+        outDir: "../dist/public",
         emptyOutDir: true,
         // Performance optimizations
         target: "esnext",
@@ -7792,7 +7792,7 @@ var init_vite_config = __esm({
         },
         proxy: {
           "/api": {
-            target: "http://localhost:5001",
+            target: "http://localhost:5100",
             changeOrigin: true,
             secure: false
           }
