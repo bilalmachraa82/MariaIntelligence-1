@@ -7727,7 +7727,7 @@ var init_demo_data = __esm({
 // vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { resolve } from "path";
+import path2, { resolve } from "path";
 import { fileURLToPath, URL } from "node:url";
 var __dirname, vite_config_default;
 var init_vite_config = __esm({
@@ -7738,10 +7738,8 @@ var init_vite_config = __esm({
       root: "./client",
       plugins: [
         react({
-          // Enable React optimization features
           babel: {
             plugins: [
-              // Remove development only code in production
               ["babel-plugin-transform-remove-console", { exclude: ["error", "warn"] }]
             ]
           }
@@ -7754,18 +7752,18 @@ var init_vite_config = __esm({
         }
       },
       build: {
-        outDir: "../dist/public",
+        outDir: "../dist/client",
         emptyOutDir: true,
-        // Performance optimizations
         target: "esnext",
         minify: "esbuild",
         cssMinify: true,
         sourcemap: false,
-        // Disable sourcemaps in production for smaller bundles
         rollupOptions: {
+          input: {
+            main: path2.resolve(__dirname, "client/index.html")
+          },
           output: {
             manualChunks: {
-              // Split vendor libraries for better caching
               "react-vendor": ["react", "react-dom"],
               "ui-vendor": ["@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-select"],
               "query-vendor": ["@tanstack/react-query"],
@@ -7773,32 +7771,26 @@ var init_vite_config = __esm({
               "chart-vendor": ["recharts"],
               "utils": ["clsx", "class-variance-authority", "tailwind-merge"]
             },
-            // Optimize chunk file names
             chunkFileNames: "assets/js/[name]-[hash].js",
             entryFileNames: "assets/js/[name]-[hash].js",
             assetFileNames: "assets/[ext]/[name]-[hash].[ext]"
           }
         },
-        // Reduce bundle size
         chunkSizeWarningLimit: 1e3,
-        // Enable compression
         reportCompressedSize: true
       },
-      // Development optimizations
       server: {
         hmr: {
           overlay: false
-          // Disable error overlay for better performance
         },
         proxy: {
           "/api": {
-            target: "http://localhost:5100",
+            target: "http://localhost:5001",
             changeOrigin: true,
             secure: false
           }
         }
       },
-      // Optimization settings
       optimizeDeps: {
         include: [
           "react",
@@ -7809,7 +7801,6 @@ var init_vite_config = __esm({
         ],
         exclude: ["@vite/client", "@vite/env"]
       },
-      // CSS optimizations
       css: {
         devSourcemap: false
       }
@@ -7820,7 +7811,7 @@ var init_vite_config = __esm({
 // server/vite.ts
 import express from "express";
 import fs3 from "fs";
-import path2, { dirname } from "path";
+import path3, { dirname } from "path";
 import { fileURLToPath as fileURLToPath2 } from "url";
 import { createServer as createViteServer, createLogger } from "vite";
 import { nanoid } from "nanoid";
@@ -7856,7 +7847,7 @@ async function setupVite(app2, server) {
   app2.use("*", async (req, res, next) => {
     const url = req.originalUrl;
     try {
-      const clientTemplate = path2.resolve(
+      const clientTemplate = path3.resolve(
         __dirname2,
         "..",
         "client",
@@ -7876,15 +7867,30 @@ async function setupVite(app2, server) {
   });
 }
 function serveStatic(app2) {
-  const distPath = path2.resolve(__dirname2, "public");
+  const distPath = path3.resolve(__dirname2, "..", "client");
+  console.log(`[PROD_STATIC] Serving from calculated path: ${distPath}`);
   if (!fs3.existsSync(distPath)) {
-    throw new Error(
-      `Could not find the build directory: ${distPath}, make sure to build the client first`
-    );
+    const errorMsg = `[PROD_STATIC_ERROR] Build directory NOT FOUND at ${distPath}`;
+    console.error(errorMsg);
+    throw new Error(errorMsg);
   }
+  console.log(`[PROD_STATIC] Build directory FOUND at ${distPath}`);
+  const indexPath = path3.resolve(distPath, "index.html");
+  if (!fs3.existsSync(indexPath)) {
+    const errorMsg = `[PROD_STATIC_ERROR] index.html NOT FOUND at ${indexPath}`;
+    console.error(errorMsg);
+    try {
+      const files = fs3.readdirSync(distPath);
+      console.log(`[PROD_STATIC_DEBUG] Contents of ${distPath}: ${files.join(", ")}`);
+    } catch (e) {
+      console.error(`[PROD_STATIC_DEBUG] Could not read directory ${distPath}: ${e.message}`);
+    }
+    throw new Error(errorMsg);
+  }
+  console.log(`[PROD_STATIC] index.html FOUND at ${indexPath}`);
   app2.use(express.static(distPath));
-  app2.use("*", (_req, res) => {
-    res.sendFile(path2.resolve(distPath, "index.html"));
+  app2.get("*", (_req, res) => {
+    res.sendFile(indexPath);
   });
 }
 var __filename, __dirname2, viteLogger;
@@ -7900,7 +7906,7 @@ var init_vite = __esm({
 
 // server/services/pdf-extract.ts
 import fs4 from "fs";
-import path3 from "path";
+import path4 from "path";
 import os from "os";
 import crypto3 from "crypto";
 import pdfParse2 from "pdf-parse";
@@ -7930,7 +7936,7 @@ async function parseReservationFromText(text2, apiKey, timeout = 25e3, options =
   const useCache = false;
   if (useCache) {
     const cacheKey = createCacheKey(text2);
-    const cachePath = path3.join(os.tmpdir(), `pdf-extract-${cacheKey}.json`);
+    const cachePath = path4.join(os.tmpdir(), `pdf-extract-${cacheKey}.json`);
     if (fs4.existsSync(cachePath)) {
       try {
         log(`Cache encontrado para este PDF, usando dados em cache`, "pdf-extract");
@@ -7962,7 +7968,7 @@ async function parseReservationFromText(text2, apiKey, timeout = 25e3, options =
         if (useCache) {
           try {
             const cacheKey = createCacheKey(text2);
-            const cachePath = path3.join(os.tmpdir(), `pdf-extract-${cacheKey}.json`);
+            const cachePath = path4.join(os.tmpdir(), `pdf-extract-${cacheKey}.json`);
             fs4.writeFileSync(cachePath, JSON.stringify(extractedData));
             log(`Dados salvos em cache: ${cachePath}`, "pdf-extract");
           } catch (cacheError) {
@@ -8132,13 +8138,13 @@ __export(pdf_pair_processor_exports, {
   processPdfPair: () => processPdfPair
 });
 import fs5 from "fs";
-import path4 from "path";
+import path5 from "path";
 async function identifyDocumentType(filePath) {
   const result = {
     path: filePath,
     type: "unknown" /* UNKNOWN */,
     text: "",
-    filename: path4.basename(filePath)
+    filename: path5.basename(filePath)
   };
   try {
     if (!fs5.existsSync(filePath)) {
@@ -11046,7 +11052,7 @@ __export(security_audit_service_exports, {
 import pino from "pino";
 import { createHash } from "crypto";
 import fs6 from "fs/promises";
-import path5 from "path";
+import path6 from "path";
 var auditLogger, SecurityAuditService, securityAuditService;
 var init_security_audit_service = __esm({
   "server/services/security-audit.service.ts"() {
@@ -11072,7 +11078,7 @@ var init_security_audit_service = __esm({
       alertThresholds = {};
       auditLogDir;
       constructor() {
-        this.auditLogDir = path5.join(process.cwd(), "logs", "security");
+        this.auditLogDir = path6.join(process.cwd(), "logs", "security");
         this.initializeMetrics();
         this.initializeThreatPatterns();
         this.initializeAlertThresholds();
@@ -11345,7 +11351,7 @@ var init_security_audit_service = __esm({
       async writeToAuditLog(event) {
         try {
           const date2 = (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
-          const logFile = path5.join(this.auditLogDir, `security-audit-${date2}.json`);
+          const logFile = path6.join(this.auditLogDir, `security-audit-${date2}.json`);
           const logEntry = {
             ...event,
             timestamp: event.timestamp.toISOString()
@@ -13432,12 +13438,12 @@ async function estimate(req, res) {
 init_schema();
 init_db();
 import fs7 from "fs";
-import path6 from "path";
+import path7 from "path";
 import { sql as sql3 } from "drizzle-orm";
 var pdfUpload = multer2({
   storage: multer2.diskStorage({
     destination: function(req, file, cb) {
-      const uploadDir = path6.join(process.cwd(), "uploads");
+      const uploadDir = path7.join(process.cwd(), "uploads");
       if (!fs7.existsSync(uploadDir)) {
         fs7.mkdirSync(uploadDir, { recursive: true });
       }
@@ -13463,7 +13469,7 @@ var pdfUpload = multer2({
 var imageUpload = multer2({
   storage: multer2.diskStorage({
     destination: function(req, file, cb) {
-      const uploadDir = path6.join(process.cwd(), "uploads", "images");
+      const uploadDir = path7.join(process.cwd(), "uploads", "images");
       if (!fs7.existsSync(uploadDir)) {
         fs7.mkdirSync(uploadDir, { recursive: true });
       }
@@ -13491,11 +13497,11 @@ var anyFileUpload = multer2({
     destination: function(req, file, cb) {
       let uploadDir;
       if (file.mimetype === "application/pdf") {
-        uploadDir = path6.join(process.cwd(), "uploads");
+        uploadDir = path7.join(process.cwd(), "uploads");
       } else if (file.mimetype.startsWith("image/")) {
-        uploadDir = path6.join(process.cwd(), "uploads", "images");
+        uploadDir = path7.join(process.cwd(), "uploads", "images");
       } else {
-        uploadDir = path6.join(process.cwd(), "uploads", "other");
+        uploadDir = path7.join(process.cwd(), "uploads", "other");
       }
       if (!fs7.existsSync(uploadDir)) {
         fs7.mkdirSync(uploadDir, { recursive: true });
@@ -14795,7 +14801,7 @@ app.get("/api/health", (_req, res) => {
 });
 app.use((req, res, next) => {
   const start = Date.now();
-  const path7 = req.path;
+  const path8 = req.path;
   let captured;
   const originalJson = res.json;
   res.json = function(body) {
@@ -14803,9 +14809,9 @@ app.use((req, res, next) => {
     return originalJson.call(this, body);
   };
   res.on("finish", () => {
-    if (path7.startsWith("/api")) {
+    if (path8.startsWith("/api")) {
       const dur = Date.now() - start;
-      let line = `${req.method} ${path7} ${res.statusCode} in ${dur}ms`;
+      let line = `${req.method} ${path8} ${res.statusCode} in ${dur}ms`;
       if (captured) line += ` :: ${JSON.stringify(captured)}`;
       if (line.length > 120) line = line.slice(0, 119) + "\u2026";
       log(line);
