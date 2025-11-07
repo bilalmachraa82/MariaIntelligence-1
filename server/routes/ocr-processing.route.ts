@@ -7,7 +7,7 @@ import express from 'express';
 import multer from 'multer';
 import { Request, Response } from 'express';
 import { ocrMultiProviderService, OCRResult } from '../services/ocr-multi-provider.service';
-import { storage } from '../storage';
+import { storage } from '../storage.js';
 import { matchPropertyByAlias } from '../utils/matchPropertyByAlias';
 import { rateLimiter } from '../services/rate-limiter.service';
 const { getAvailableProviders, getOptimalProvider, validateConfiguration } = require('../config/ocr-providers.config');

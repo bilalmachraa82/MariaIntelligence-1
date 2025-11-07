@@ -220,9 +220,9 @@ export default function FinancialDashboard() {
 
   if (loading) {
     return (
-      <div className=\"flex items-center justify-center h-64\">
-        <div className=\"text-center\">
-          <Calculator className=\"h-8 w-8 animate-spin mx-auto mb-2\" />
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <Calculator className="h-8 w-8 animate-spin mx-auto mb-2" />
           <p>Carregando dados financeiros...</p>
         </div>
       </div>
@@ -230,22 +230,22 @@ export default function FinancialDashboard() {
   }
 
   return (
-    <div className=\"container mx-auto p-6 space-y-6\">
+    <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
-      <div className=\"flex items-center justify-between\">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className=\"text-3xl font-bold\">Dashboard Financeiro</h1>
-          <p className=\"text-muted-foreground\">
+          <h1 className="text-3xl font-bold">Dashboard Financeiro</h1>
+          <p className="text-muted-foreground">
             Análise completa de receitas, custos e rentabilidade
           </p>
         </div>
-        <div className=\"flex gap-2\">
-          <Button variant=\"outline\">
-            <Download className=\"h-4 w-4 mr-2\" />
+        <div className="flex gap-2">
+          <Button variant="outline">
+            <Download className="h-4 w-4 mr-2" />
             Exportar
           </Button>
           <Button>
-            <Calculator className=\"h-4 w-4 mr-2\" />
+            <Calculator className="h-4 w-4 mr-2" />
             Novo Relatório
           </Button>
         </div>
@@ -253,26 +253,26 @@ export default function FinancialDashboard() {
 
       {/* Filtros */}
       <Card>
-        <CardContent className=\"p-4\">
-          <div className=\"flex gap-4\">
+        <CardContent className="p-4">
+          <div className="flex gap-4">
             <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-              <SelectTrigger className=\"w-48\">
-                <SelectValue placeholder=\"Selecionar período\" />
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Selecionar período" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value=\"current-month\">Mês Atual</SelectItem>
-                <SelectItem value=\"last-month\">Mês Anterior</SelectItem>
-                <SelectItem value=\"current-year\">Ano Atual</SelectItem>
-                <SelectItem value=\"all\">Todos os Períodos</SelectItem>
+                <SelectItem value="current-month">Mês Atual</SelectItem>
+                <SelectItem value="last-month">Mês Anterior</SelectItem>
+                <SelectItem value="current-year">Ano Atual</SelectItem>
+                <SelectItem value="all">Todos os Períodos</SelectItem>
               </SelectContent>
             </Select>
 
             <Select value={selectedProperty} onValueChange={setSelectedProperty}>
-              <SelectTrigger className=\"w-48\">
-                <SelectValue placeholder=\"Todas as propriedades\" />
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Todas as propriedades" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value=\"all\">Todas as Propriedades</SelectItem>
+                <SelectItem value="all">Todas as Propriedades</SelectItem>
                 {properties.map(property => (
                   <SelectItem key={property.id} value={property.id.toString()}>
                     {property.name}
@@ -285,17 +285,17 @@ export default function FinancialDashboard() {
       </Card>
 
       {/* Resumo Financeiro */}
-      <div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4\">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
-          <CardContent className=\"p-6\">
-            <div className=\"flex items-center justify-between\">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
               <div>
-                <p className=\"text-sm font-medium text-muted-foreground\">Receita Total</p>
-                <p className=\"text-2xl font-bold text-green-600\">€{financialSummary.totalRevenue.toFixed(2)}</p>
+                <p className="text-sm font-medium text-muted-foreground">Receita Total</p>
+                <p className="text-2xl font-bold text-green-600">€{financialSummary.totalRevenue.toFixed(2)}</p>
               </div>
-              <Euro className=\"h-8 w-8 text-green-600\" />
+              <Euro className="h-8 w-8 text-green-600" />
             </div>
-            <div className=\"mt-2\">
+            <div className="mt-2">
               <Badge>
                 {filteredReservations.length} reservas
               </Badge>
@@ -304,21 +304,21 @@ export default function FinancialDashboard() {
         </Card>
 
         <Card>
-          <CardContent className=\"p-6\">
-            <div className=\"flex items-center justify-between\">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
               <div>
-                <p className=\"text-sm font-medium text-muted-foreground\">Lucro Líquido</p>
+                <p className="text-sm font-medium text-muted-foreground">Lucro Líquido</p>
                 <p className={`text-2xl font-bold ${financialSummary.netProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                   €{financialSummary.netProfit.toFixed(2)}
                 </p>
               </div>
               {financialSummary.netProfit >= 0 ?
-                <TrendingUp className=\"h-8 w-8 text-green-600\" /> :
-                <TrendingDown className=\"h-8 w-8 text-red-600\" />
+                <TrendingUp className="h-8 w-8 text-green-600" /> :
+                <TrendingDown className="h-8 w-8 text-red-600" />
               }
             </div>
-            <div className=\"mt-2\">
-              <Badge variant={financialSummary.netProfit >= 0 ? \"default\" : \"destructive\"}>
+            <div className="mt-2">
+              <Badge variant={financialSummary.netProfit >= 0 ? "default" : "destructive"}>
                 {((financialSummary.netProfit / financialSummary.totalRevenue) * 100).toFixed(1)}% margem
               </Badge>
             </div>
@@ -326,18 +326,18 @@ export default function FinancialDashboard() {
         </Card>
 
         <Card>
-          <CardContent className=\"p-6\">
-            <div className=\"flex items-center justify-between\">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
               <div>
-                <p className=\"text-sm font-medium text-muted-foreground\">Custos Totais</p>
-                <p className=\"text-2xl font-bold text-orange-600\">
+                <p className="text-sm font-medium text-muted-foreground">Custos Totais</p>
+                <p className="text-2xl font-bold text-orange-600">
                   €{(financialSummary.totalCleaningCosts + financialSummary.totalCommissions + financialSummary.totalTeamPayments).toFixed(2)}
                 </p>
               </div>
-              <DollarSign className=\"h-8 w-8 text-orange-600\" />
+              <DollarSign className="h-8 w-8 text-orange-600" />
             </div>
-            <div className=\"mt-2 flex gap-1\">
-              <Badge variant=\"outline\" className=\"text-xs\">
+            <div className="mt-2 flex gap-1">
+              <Badge variant="outline" className="text-xs">
                 Limpeza: €{financialSummary.totalCleaningCosts.toFixed(0)}
               </Badge>
             </div>
@@ -345,16 +345,16 @@ export default function FinancialDashboard() {
         </Card>
 
         <Card>
-          <CardContent className=\"p-6\">
-            <div className=\"flex items-center justify-between\">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
               <div>
-                <p className=\"text-sm font-medium text-muted-foreground\">Valor Médio Reserva</p>
-                <p className=\"text-2xl font-bold\">€{financialSummary.averageBookingValue.toFixed(2)}</p>
+                <p className="text-sm font-medium text-muted-foreground">Valor Médio Reserva</p>
+                <p className="text-2xl font-bold">€{financialSummary.averageBookingValue.toFixed(2)}</p>
               </div>
-              <BarChart3 className=\"h-8 w-8 text-blue-600\" />
+              <BarChart3 className="h-8 w-8 text-blue-600" />
             </div>
-            <div className=\"mt-2\">
-              <Badge variant=\"outline\">
+            <div className="mt-2">
+              <Badge variant="outline">
                 {financialSummary.propertiesWithRevenue} propriedades
               </Badge>
             </div>
@@ -362,20 +362,20 @@ export default function FinancialDashboard() {
         </Card>
       </div>
 
-      <div className=\"grid grid-cols-1 lg:grid-cols-2 gap-6\">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Gráfico de Receitas por Propriedade */}
         <Card>
           <CardHeader>
             <CardTitle>Top Propriedades por Receita</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width=\"100%\" height={300}>
+            <ResponsiveContainer width="100%" height={300}>
               <BarChart data={chartData.revenueByProperty}>
-                <CartesianGrid strokeDasharray=\"3 3\" />
+                <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
-                  dataKey=\"name\"
+                  dataKey="name"
                   angle={-45}
-                  textAnchor=\"end\"
+                  textAnchor="end"
                   height={80}
                   fontSize={12}
                 />
@@ -384,7 +384,7 @@ export default function FinancialDashboard() {
                   formatter={(value) => [`€${value}`, 'Receita']}
                   labelFormatter={(label) => `Propriedade: ${label}`}
                 />
-                <Bar dataKey=\"revenue\" fill=\"#3b82f6\" />
+                <Bar dataKey="revenue" fill="#3b82f6" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -396,16 +396,16 @@ export default function FinancialDashboard() {
             <CardTitle>Distribuição Financeira</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width=\"100%\" height={300}>
+            <ResponsiveContainer width="100%" height={300}>
               <RechartsPieChart>
                 <Pie
                   data={chartData.costDistribution}
-                  cx=\"50%\"
-                  cy=\"50%\"
+                  cx="50%"
+                  cy="50%"
                   innerRadius={60}
                   outerRadius={120}
                   paddingAngle={5}
-                  dataKey=\"value\"
+                  dataKey="value"
                 >
                   {chartData.costDistribution.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
@@ -414,14 +414,14 @@ export default function FinancialDashboard() {
                 <Tooltip formatter={(value) => [`€${value}`, '']} />
               </RechartsPieChart>
             </ResponsiveContainer>
-            <div className=\"grid grid-cols-2 gap-2 mt-4\">
+            <div className="grid grid-cols-2 gap-2 mt-4">
               {chartData.costDistribution.map((item, index) => (
-                <div key={index} className=\"flex items-center gap-2\">
+                <div key={index} className="flex items-center gap-2">
                   <div
-                    className=\"w-3 h-3 rounded-full\"
+                    className="w-3 h-3 rounded-full"
                     style={{ backgroundColor: item.color }}
                   />
-                  <span className=\"text-sm\">{item.name}</span>
+                  <span className="text-sm">{item.name}</span>
                 </div>
               ))}
             </div>
@@ -435,37 +435,37 @@ export default function FinancialDashboard() {
           <CardTitle>Rentabilidade por Propriedade</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className=\"space-y-4\">
+          <div className="space-y-4">
             {propertyProfitability.slice(0, 10).map((item, index) => (
-              <div key={item.property.id} className=\"flex items-center justify-between p-4 border rounded-lg\">
-                <div className=\"flex items-center gap-4\">
-                  <div className=\"text-center\">
-                    <div className=\"text-2xl font-bold text-muted-foreground\">#{index + 1}</div>
+              <div key={item.property.id} className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="flex items-center gap-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-muted-foreground">#{index + 1}</div>
                   </div>
                   <div>
-                    <h3 className=\"font-semibold\">{item.property.name}</h3>
-                    <p className=\"text-sm text-muted-foreground\">{item.reservations} reservas</p>
+                    <h3 className="font-semibold">{item.property.name}</h3>
+                    <p className="text-sm text-muted-foreground">{item.reservations} reservas</p>
                   </div>
                 </div>
 
-                <div className=\"flex items-center gap-6\">
-                  <div className=\"text-right\">
-                    <p className=\"text-sm text-muted-foreground\">Receita</p>
-                    <p className=\"font-semibold text-green-600\">€{item.revenue.toFixed(2)}</p>
+                <div className="flex items-center gap-6">
+                  <div className="text-right">
+                    <p className="text-sm text-muted-foreground">Receita</p>
+                    <p className="font-semibold text-green-600">€{item.revenue.toFixed(2)}</p>
                   </div>
-                  <div className=\"text-right\">
-                    <p className=\"text-sm text-muted-foreground\">Custos</p>
-                    <p className=\"font-semibold text-orange-600\">€{item.costs.toFixed(2)}</p>
+                  <div className="text-right">
+                    <p className="text-sm text-muted-foreground">Custos</p>
+                    <p className="font-semibold text-orange-600">€{item.costs.toFixed(2)}</p>
                   </div>
-                  <div className=\"text-right\">
-                    <p className=\"text-sm text-muted-foreground\">Lucro</p>
+                  <div className="text-right">
+                    <p className="text-sm text-muted-foreground">Lucro</p>
                     <p className={`font-semibold ${item.profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                       €{item.profit.toFixed(2)}
                     </p>
                   </div>
-                  <div className=\"text-right min-w-20\">
-                    <p className=\"text-sm text-muted-foreground\">Margem</p>
-                    <Badge variant={item.profitMargin >= 0 ? \"default\" : \"destructive\"}>
+                  <div className="text-right min-w-20">
+                    <p className="text-sm text-muted-foreground">Margem</p>
+                    <Badge variant={item.profitMargin >= 0 ? "default" : "destructive"}>
                       {item.profitMargin.toFixed(1)}%
                     </Badge>
                   </div>

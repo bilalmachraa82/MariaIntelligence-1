@@ -99,7 +99,8 @@ app.use((req, res, next) => {
 
 /* ─── Bootstrap async ────────────────────────────────── */
 (async () => {
-  const server = await registerRoutes(app);
+  // Register routes first
+  await registerRoutes(app);
 
   /* Error‑handler */
   app.use(
@@ -109,6 +110,10 @@ app.use((req, res, next) => {
       console.error(err);
     },
   );
+
+  // Create HTTP server from Express app
+  const http = await import('http');
+  const server = http.createServer(app);
 
   /* Vite em dev, static em prod */
   if (app.get('env') === 'development') {

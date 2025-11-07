@@ -29,7 +29,7 @@ import {
   InsertPaymentRecord,
   InsertMaintenanceTask
 } from '../../shared/schema';
-import { IStorage } from '../storage';
+import { IStorage } from '../storage.js';
 
 export class PgStorage implements IStorage {
   private db = getDrizzle();
