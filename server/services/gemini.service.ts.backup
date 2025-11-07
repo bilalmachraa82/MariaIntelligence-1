@@ -1,25 +1,24 @@
 
 /**
- * Serviço para interação com o Google Gemini 2.0 Flash
+ * Serviço para interação com o Google Gemini 2.5 Pro
  * Fornece funcionalidades para processamento de documentos, extração de dados e análises avançadas
- *
- * Migrado para @google/genai SDK com Gemini 2.0 Flash (20% mais barato, melhor performance)
- * Data de migração: 2025-11-07
+ * 
+ * Este serviço é projetado como substituto para o MistralService
+ * mantendo compatibilidade de interfaces para facilitar a migração
  */
 
 // Importações necessárias
-import { GoogleGenerativeAI, GenerativeModel } from '@google/genai';
+// Nota: Estamos usando implementação direta com fetch em vez da biblioteca oficial
+// pois a implementação atual é mais robusta e inclui recursos de fallback/retry
 import { rateLimiter } from './rate-limiter.service';
 import crypto from 'crypto';
 
 // Interface para tipos de modelos disponíveis
 export enum GeminiModel {
-  TEXT = 'gemini-2.0-flash',          // Gemini 2.0 Flash - Modelo principal (33% mais barato)
-  VISION = 'gemini-2.0-flash',        // Gemini 2.0 Flash suporta multimodal nativo
-  FLASH = 'gemini-2.0-flash',         // Gemini 2.0 Flash - Versão mais rápida e barata
-  FLASH_LITE = 'gemini-2.0-flash-lite', // Ainda mais econômico para contextos >128K
-  LEGACY_PRO = 'gemini-1.5-pro',      // Legado - Para compatibilidade se necessário
-  AUDIO = 'gemini-2.0-flash'          // Gemini 2.0 Flash suporta áudio/vídeo
+  TEXT = 'gemini-1.5-pro',          // Para processamento de texto
+  VISION = 'gemini-1.5-pro-vision', // Para processamento de imagens
+  FLASH = 'gemini-1.5-flash',       // Versão mais rápida e mais barata
+  AUDIO = 'gemini-2.5-pro-exp-03-25' // Experimental - Para processamento de áudio (inclui voz)
 }
 
 // Interface para configuração de geração
@@ -54,13 +53,22 @@ interface ImageProcessingParams {
   responseFormat?: 'text' | 'json';
 }
 
+// Simulação de tipos para desenvolvimento sem a biblioteca instalada
+interface GenerativeModelMock {
+  generateContent(params: any): Promise<any>;
+  startChat(params?: any): any;
+}
+
+interface GoogleGenerativeAIMock {
+  getGenerativeModel(params: any): GenerativeModelMock;
+}
+
 export class GeminiService {
-  private genAI: GoogleGenerativeAI | null = null;
-  private defaultModel: GenerativeModel | null = null;
-  private visionModel: GenerativeModel | null = null;
-  private flashModel: GenerativeModel | null = null;
-  private flashLiteModel: GenerativeModel | null = null;
-  private audioModel: GenerativeModel | null = null;
+  private genAI: any; // GoogleGenerativeAI quando o pacote estiver disponível
+  private defaultModel: any; // GenerativeModel
+  private visionModel: any; // GenerativeModel
+  private flashModel: any; // GenerativeModel
+  private audioModel: any; // GenerativeModel para processamento de áudio
   private isInitialized: boolean = false;
   private apiKey: string = '';
   private isApiConnected: boolean = false;
@@ -240,64 +248,75 @@ export class GeminiService {
   }
 
   /**
-   * Inicializa os modelos com a API key usando @google/genai SDK oficial
+   * Inicializa os modelos com a API key
    * @param apiKey Chave API do Google
    */
   private initialize(apiKey: string): void {
     try {
+      // Tentar integração direta com a API Gemini usando fetch
+      // Em vez de usar a biblioteca @google/generative-ai, vamos usar fetch diretamente
       this.apiKey = apiKey;
-
-      // Inicializar SDK oficial do Google
-      this.genAI = new GoogleGenerativeAI(apiKey);
-
-      console.log("✅ Google Generative AI SDK inicializado");
-      console.log("🚀 Usando @google/genai v1.x com Gemini 2.0 Flash");
-
-      // Inicializar todos os modelos Gemini 2.0 Flash
-      this.defaultModel = this.genAI.getGenerativeModel({
-        model: GeminiModel.TEXT,
-        generationConfig: {
-          temperature: 0.2,
-          topP: 0.95,
-          topK: 40,
-          maxOutputTokens: 8192,
-        }
-      });
-
-      this.flashModel = this.genAI.getGenerativeModel({
-        model: GeminiModel.FLASH,
-        generationConfig: {
-          temperature: 0.1,
-          topP: 0.95,
-          topK: 40,
-          maxOutputTokens: 8192,
-        }
-      });
-
-      this.flashLiteModel = this.genAI.getGenerativeModel({
-        model: GeminiModel.FLASH_LITE,
-        generationConfig: {
-          temperature: 0.1,
-          topP: 0.95,
-          topK: 40,
-          maxOutputTokens: 8192,
-        }
-      });
-
-      // Gemini 2.0 Flash é multimodal nativo (texto + imagem + áudio + vídeo)
-      this.visionModel = this.defaultModel;
-      this.audioModel = this.defaultModel;
-
-      // Validar API key de forma assíncrona
+      
+      // Verificar se a chave API é válida de forma assíncrona
       this.validateApiKey(apiKey)
         .then(isValid => {
           this.isApiConnected = isValid;
           this.isInitialized = isValid;
           if (isValid) {
-            console.log("✅ Gemini 2.0 Flash API conectada e validada com sucesso");
-            console.log("💰 Economia de ~20% vs Gemini 1.5 Pro");
+            console.log("✅ API Gemini conectada com sucesso");
+            console.log("🚀 Usando implementação direta da API Gemini via fetch");
+            
+            // Inicializar modelos reais para API Gemini
+            this.genAI = {
+              getGenerativeModel: (params: any) => {
+                return {
+                  generateContent: async (requestParams: any) => {
+                    const apiUrl = 'https://generativelanguage.googleapis.com/v1/models/' + 
+                      (params.model || 'gemini-1.5-pro') + ':generateContent' + 
+                      '?key=' + this.apiKey;
+                    
+                    const response = await fetch(apiUrl, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(requestParams)
+                    });
+                    
+                    if (!response.ok) {
+                      const errorText = await response.text();
+                      throw new Error(`API Gemini erro ${response.status}: ${errorText}`);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    return {
+                      response: {
+                        text: () => {
+                          const candidates = result.candidates || [];
+                          if (candidates.length === 0) {
+                            throw new Error('Sem resposta da API Gemini');
+                          }
+                          
+                          const content = candidates[0].content || {};
+                          const parts = content.parts || [];
+                          
+                          // Extrair texto das partes
+                          return parts.map((part: any) => part.text || '').join('');
+                        }
+                      }
+                    };
+                  }
+                };
+              }
+            };
+            
+            // Inicializar os diferentes modelos
+            this.defaultModel = this.genAI.getGenerativeModel({ model: GeminiModel.TEXT });
+            this.visionModel = this.genAI.getGenerativeModel({ model: GeminiModel.VISION });
+            this.flashModel = this.genAI.getGenerativeModel({ model: GeminiModel.FLASH });
+            this.audioModel = this.genAI.getGenerativeModel({ model: GeminiModel.AUDIO });
           } else {
             console.error("❌ Chave API do Gemini inválida ou API indisponível");
+            // Usar mock em caso de API inválida
             this.mockInitialization();
           }
         })
@@ -306,10 +325,12 @@ export class GeminiService {
           console.log("⚠️ Usando modo de simulação (mock) como fallback");
           this.mockInitialization();
         });
-
-      console.log("✅ Gemini 2.0 Flash SDK configurado corretamente");
+      
+      // Configurar o serviço sem mock - será automaticamente conectado quando
+      // a verificação da API for concluída com sucesso
+      console.log("✅ Gemini API configurada corretamente");
     } catch (error) {
-      console.error("Erro ao inicializar Gemini 2.0 Flash:", error);
+      console.error("Erro ao inicializar Gemini:", error);
       this.mockInitialization();
     }
   }

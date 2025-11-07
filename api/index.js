@@ -3540,6 +3540,7 @@ __export(gemini_service_exports, {
   GeminiModel: () => GeminiModel,
   GeminiService: () => GeminiService
 });
+import { GoogleGenerativeAI } from "@google/genai";
 import crypto2 from "crypto";
 var GeminiModel, GeminiService;
 var init_gemini_service = __esm({
@@ -3547,23 +3548,21 @@ var init_gemini_service = __esm({
     "use strict";
     init_rate_limiter_service();
     GeminiModel = /* @__PURE__ */ ((GeminiModel2) => {
-      GeminiModel2["TEXT"] = "gemini-1.5-pro";
-      GeminiModel2["VISION"] = "gemini-1.5-pro-vision";
-      GeminiModel2["FLASH"] = "gemini-1.5-flash";
-      GeminiModel2["AUDIO"] = "gemini-2.5-pro-exp-03-25";
+      GeminiModel2["TEXT"] = "gemini-2.0-flash";
+      GeminiModel2["VISION"] = "gemini-2.0-flash";
+      GeminiModel2["FLASH"] = "gemini-2.0-flash";
+      GeminiModel2["FLASH_LITE"] = "gemini-2.0-flash-lite";
+      GeminiModel2["LEGACY_PRO"] = "gemini-1.5-pro";
+      GeminiModel2["AUDIO"] = "gemini-2.0-flash";
       return GeminiModel2;
     })(GeminiModel || {});
     GeminiService = class {
-      genAI;
-      // GoogleGenerativeAI quando o pacote estiver disponível
-      defaultModel;
-      // GenerativeModel
-      visionModel;
-      // GenerativeModel
-      flashModel;
-      // GenerativeModel
-      audioModel;
-      // GenerativeModel para processamento de áudio
+      genAI = null;
+      defaultModel = null;
+      visionModel = null;
+      flashModel = null;
+      flashLiteModel = null;
+      audioModel = null;
       isInitialized = false;
       apiKey = "";
       isApiConnected = false;
@@ -3696,54 +3695,50 @@ var init_gemini_service = __esm({
         console.log("Gemini Service: Inicializando com chave API fornecida, valida\xE7\xE3o em andamento...");
       }
       /**
-       * Inicializa os modelos com a API key
+       * Inicializa os modelos com a API key usando @google/genai SDK oficial
        * @param apiKey Chave API do Google
        */
       initialize(apiKey) {
         try {
           this.apiKey = apiKey;
+          this.genAI = new GoogleGenerativeAI(apiKey);
+          console.log("\u2705 Google Generative AI SDK inicializado");
+          console.log("\u{1F680} Usando @google/genai v1.x com Gemini 2.0 Flash");
+          this.defaultModel = this.genAI.getGenerativeModel({
+            model: "gemini-2.0-flash" /* TEXT */,
+            generationConfig: {
+              temperature: 0.2,
+              topP: 0.95,
+              topK: 40,
+              maxOutputTokens: 8192
+            }
+          });
+          this.flashModel = this.genAI.getGenerativeModel({
+            model: "gemini-2.0-flash" /* FLASH */,
+            generationConfig: {
+              temperature: 0.1,
+              topP: 0.95,
+              topK: 40,
+              maxOutputTokens: 8192
+            }
+          });
+          this.flashLiteModel = this.genAI.getGenerativeModel({
+            model: "gemini-2.0-flash-lite" /* FLASH_LITE */,
+            generationConfig: {
+              temperature: 0.1,
+              topP: 0.95,
+              topK: 40,
+              maxOutputTokens: 8192
+            }
+          });
+          this.visionModel = this.defaultModel;
+          this.audioModel = this.defaultModel;
           this.validateApiKey(apiKey).then((isValid) => {
             this.isApiConnected = isValid;
             this.isInitialized = isValid;
             if (isValid) {
-              console.log("\u2705 API Gemini conectada com sucesso");
-              console.log("\u{1F680} Usando implementa\xE7\xE3o direta da API Gemini via fetch");
-              this.genAI = {
-                getGenerativeModel: (params) => {
-                  return {
-                    generateContent: async (requestParams) => {
-                      const apiUrl = "https://generativelanguage.googleapis.com/v1/models/" + (params.model || "gemini-1.5-pro") + ":generateContent?key=" + this.apiKey;
-                      const response = await fetch(apiUrl, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(requestParams)
-                      });
-                      if (!response.ok) {
-                        const errorText = await response.text();
-                        throw new Error(`API Gemini erro ${response.status}: ${errorText}`);
-                      }
-                      const result = await response.json();
-                      return {
-                        response: {
-                          text: () => {
-                            const candidates = result.candidates || [];
-                            if (candidates.length === 0) {
-                              throw new Error("Sem resposta da API Gemini");
-                            }
-                            const content = candidates[0].content || {};
-                            const parts = content.parts || [];
-                            return parts.map((part) => part.text || "").join("");
-                          }
-                        }
-                      };
-                    }
-                  };
-                }
-              };
-              this.defaultModel = this.genAI.getGenerativeModel({ model: "gemini-1.5-pro" /* TEXT */ });
-              this.visionModel = this.genAI.getGenerativeModel({ model: "gemini-1.5-pro-vision" /* VISION */ });
-              this.flashModel = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" /* FLASH */ });
-              this.audioModel = this.genAI.getGenerativeModel({ model: "gemini-2.5-pro-exp-03-25" /* AUDIO */ });
+              console.log("\u2705 Gemini 2.0 Flash API conectada e validada com sucesso");
+              console.log("\u{1F4B0} Economia de ~20% vs Gemini 1.5 Pro");
             } else {
               console.error("\u274C Chave API do Gemini inv\xE1lida ou API indispon\xEDvel");
               this.mockInitialization();
@@ -3753,9 +3748,9 @@ var init_gemini_service = __esm({
             console.log("\u26A0\uFE0F Usando modo de simula\xE7\xE3o (mock) como fallback");
             this.mockInitialization();
           });
-          console.log("\u2705 Gemini API configurada corretamente");
+          console.log("\u2705 Gemini 2.0 Flash SDK configurado corretamente");
         } catch (error) {
-          console.error("Erro ao inicializar Gemini:", error);
+          console.error("Erro ao inicializar Gemini 2.0 Flash:", error);
           this.mockInitialization();
         }
       }
@@ -4556,13 +4551,13 @@ var init_gemini_service = __esm({
         this.checkInitialization();
         let systemPrompt;
         let userPrompt;
-        let modelType = "gemini-1.5-pro" /* TEXT */;
+        let modelType = "gemini-2.0-flash" /* TEXT */;
         let tempValue = temperature;
         let maxOutputTokens = maxTokens || 1024;
         if (typeof prompt === "object") {
           systemPrompt = prompt.systemPrompt;
           userPrompt = prompt.userPrompt;
-          modelType = prompt.model || "gemini-1.5-pro" /* TEXT */;
+          modelType = prompt.model || "gemini-2.0-flash" /* TEXT */;
           tempValue = prompt.temperature || temperature;
           maxOutputTokens = prompt.maxOutputTokens || maxTokens || 1024;
         } else {
@@ -4634,7 +4629,7 @@ var init_gemini_service = __esm({
           textPrompt,
           imageBase64,
           mimeType,
-          model = "gemini-1.5-pro-vision" /* VISION */,
+          model = "gemini-2.0-flash" /* VISION */,
           temperature = 0.2,
           maxOutputTokens = 1024,
           responseFormat = "text"
@@ -4647,7 +4642,7 @@ var init_gemini_service = __esm({
               maxOutputTokens: maxOutputTokens || 1024,
               ...responseFormat === "json" ? { responseFormat: { type: "json_object" } } : {}
             };
-            const targetModel = model === "gemini-1.5-pro-vision" /* VISION */ ? this.visionModel : this.defaultModel;
+            const targetModel = model === "gemini-2.0-flash" /* VISION */ ? this.visionModel : this.defaultModel;
             const result = await this.withRetry(async () => {
               return await targetModel.generateContent({
                 contents: [
@@ -4704,7 +4699,7 @@ var init_gemini_service = __esm({
         const {
           systemPrompt,
           userPrompt,
-          model = "gemini-1.5-flash" /* FLASH */,
+          model = "gemini-2.0-flash" /* FLASH */,
           temperature = 0.1,
           maxOutputTokens = 1024,
           functionDefinitions = [],
@@ -4723,7 +4718,7 @@ var init_gemini_service = __esm({
               role: "user",
               parts: [{ text: userPrompt }]
             });
-            const targetModel = model === "gemini-1.5-pro-vision" /* VISION */ ? this.visionModel : model === "gemini-1.5-flash" /* FLASH */ ? this.flashModel : this.defaultModel;
+            const targetModel = model === "gemini-2.0-flash" /* VISION */ ? this.visionModel : model === "gemini-2.0-flash" /* FLASH */ ? this.flashModel : this.defaultModel;
             const requestConfig = {
               contents,
               generationConfig: {
@@ -8558,7 +8553,7 @@ async function mariaAssistant(req, res) {
       content: msg.content
     })).slice(-5) : [];
     const isSimpleQuery = message.length < 50 && !message.includes("?") && formattedHistory.length < 3;
-    const modelToUse = isSimpleQuery ? "gemini-1.5-flash" /* FLASH */ : "gemini-1.5-pro" /* TEXT */;
+    const modelToUse = isSimpleQuery ? "gemini-2.0-flash" /* FLASH */ : "gemini-2.0-flash" /* TEXT */;
     console.log(`Utilizando modelo Gemini: ${modelToUse} para resposta ao usu\xE1rio`);
     let contextHints = "";
     const lowerMessage = message.toLowerCase();
