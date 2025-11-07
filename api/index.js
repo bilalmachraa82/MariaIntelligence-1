@@ -3540,7 +3540,7 @@ __export(gemini_service_exports, {
   GeminiModel: () => GeminiModel,
   GeminiService: () => GeminiService
 });
-import { GoogleGenerativeAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import crypto2 from "crypto";
 var GeminiModel, GeminiService;
 var init_gemini_service = __esm({
@@ -3548,12 +3548,12 @@ var init_gemini_service = __esm({
     "use strict";
     init_rate_limiter_service();
     GeminiModel = /* @__PURE__ */ ((GeminiModel2) => {
-      GeminiModel2["TEXT"] = "gemini-2.0-flash";
-      GeminiModel2["VISION"] = "gemini-2.0-flash";
-      GeminiModel2["FLASH"] = "gemini-2.0-flash";
-      GeminiModel2["FLASH_LITE"] = "gemini-2.0-flash-lite";
+      GeminiModel2["TEXT"] = "gemini-2.0-flash-exp";
+      GeminiModel2["VISION"] = "gemini-2.0-flash-exp";
+      GeminiModel2["FLASH"] = "gemini-2.0-flash-exp";
+      GeminiModel2["PRO"] = "gemini-1.5-pro";
       GeminiModel2["LEGACY_PRO"] = "gemini-1.5-pro";
-      GeminiModel2["AUDIO"] = "gemini-2.0-flash";
+      GeminiModel2["AUDIO"] = "gemini-2.0-flash-exp";
       return GeminiModel2;
     })(GeminiModel || {});
     GeminiService = class {
@@ -3561,7 +3561,7 @@ var init_gemini_service = __esm({
       defaultModel = null;
       visionModel = null;
       flashModel = null;
-      flashLiteModel = null;
+      proModel = null;
       audioModel = null;
       isInitialized = false;
       apiKey = "";
@@ -3705,7 +3705,7 @@ var init_gemini_service = __esm({
           console.log("\u2705 Google Generative AI SDK inicializado");
           console.log("\u{1F680} Usando @google/genai v1.x com Gemini 2.0 Flash");
           this.defaultModel = this.genAI.getGenerativeModel({
-            model: "gemini-2.0-flash" /* TEXT */,
+            model: "gemini-2.0-flash-exp" /* TEXT */,
             generationConfig: {
               temperature: 0.2,
               topP: 0.95,
@@ -3714,7 +3714,7 @@ var init_gemini_service = __esm({
             }
           });
           this.flashModel = this.genAI.getGenerativeModel({
-            model: "gemini-2.0-flash" /* FLASH */,
+            model: "gemini-2.0-flash-exp" /* FLASH */,
             generationConfig: {
               temperature: 0.1,
               topP: 0.95,
@@ -3722,10 +3722,10 @@ var init_gemini_service = __esm({
               maxOutputTokens: 8192
             }
           });
-          this.flashLiteModel = this.genAI.getGenerativeModel({
-            model: "gemini-2.0-flash-lite" /* FLASH_LITE */,
+          this.proModel = this.genAI.getGenerativeModel({
+            model: "gemini-1.5-pro" /* PRO */,
             generationConfig: {
-              temperature: 0.1,
+              temperature: 0.2,
               topP: 0.95,
               topK: 40,
               maxOutputTokens: 8192
@@ -4551,13 +4551,13 @@ var init_gemini_service = __esm({
         this.checkInitialization();
         let systemPrompt;
         let userPrompt;
-        let modelType = "gemini-2.0-flash" /* TEXT */;
+        let modelType = "gemini-2.0-flash-exp" /* TEXT */;
         let tempValue = temperature;
         let maxOutputTokens = maxTokens || 1024;
         if (typeof prompt === "object") {
           systemPrompt = prompt.systemPrompt;
           userPrompt = prompt.userPrompt;
-          modelType = prompt.model || "gemini-2.0-flash" /* TEXT */;
+          modelType = prompt.model || "gemini-2.0-flash-exp" /* TEXT */;
           tempValue = prompt.temperature || temperature;
           maxOutputTokens = prompt.maxOutputTokens || maxTokens || 1024;
         } else {
@@ -4629,7 +4629,7 @@ var init_gemini_service = __esm({
           textPrompt,
           imageBase64,
           mimeType,
-          model = "gemini-2.0-flash" /* VISION */,
+          model = "gemini-2.0-flash-exp" /* VISION */,
           temperature = 0.2,
           maxOutputTokens = 1024,
           responseFormat = "text"
@@ -4642,7 +4642,7 @@ var init_gemini_service = __esm({
               maxOutputTokens: maxOutputTokens || 1024,
               ...responseFormat === "json" ? { responseFormat: { type: "json_object" } } : {}
             };
-            const targetModel = model === "gemini-2.0-flash" /* VISION */ ? this.visionModel : this.defaultModel;
+            const targetModel = model === "gemini-2.0-flash-exp" /* VISION */ ? this.visionModel : this.defaultModel;
             const result = await this.withRetry(async () => {
               return await targetModel.generateContent({
                 contents: [
@@ -4699,7 +4699,7 @@ var init_gemini_service = __esm({
         const {
           systemPrompt,
           userPrompt,
-          model = "gemini-2.0-flash" /* FLASH */,
+          model = "gemini-2.0-flash-exp" /* FLASH */,
           temperature = 0.1,
           maxOutputTokens = 1024,
           functionDefinitions = [],
@@ -4718,7 +4718,7 @@ var init_gemini_service = __esm({
               role: "user",
               parts: [{ text: userPrompt }]
             });
-            const targetModel = model === "gemini-2.0-flash" /* VISION */ ? this.visionModel : model === "gemini-2.0-flash" /* FLASH */ ? this.flashModel : this.defaultModel;
+            const targetModel = model === "gemini-2.0-flash-exp" /* VISION */ ? this.visionModel : model === "gemini-2.0-flash-exp" /* FLASH */ ? this.flashModel : this.defaultModel;
             const requestConfig = {
               contents,
               generationConfig: {
@@ -8553,7 +8553,7 @@ async function mariaAssistant(req, res) {
       content: msg.content
     })).slice(-5) : [];
     const isSimpleQuery = message.length < 50 && !message.includes("?") && formattedHistory.length < 3;
-    const modelToUse = isSimpleQuery ? "gemini-2.0-flash" /* FLASH */ : "gemini-2.0-flash" /* TEXT */;
+    const modelToUse = isSimpleQuery ? "gemini-2.0-flash-exp" /* FLASH */ : "gemini-2.0-flash-exp" /* TEXT */;
     console.log(`Utilizando modelo Gemini: ${modelToUse} para resposta ao usu\xE1rio`);
     let contextHints = "";
     const lowerMessage = message.toLowerCase();

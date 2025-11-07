@@ -3,23 +3,23 @@
  * Serviço para interação com o Google Gemini 2.0 Flash
  * Fornece funcionalidades para processamento de documentos, extração de dados e análises avançadas
  *
- * Migrado para @google/genai SDK com Gemini 2.0 Flash (20% mais barato, melhor performance)
+ * Usando @google/generative-ai (official stable SDK) com Gemini 2.0 Flash Experimental
  * Data de migração: 2025-11-07
  */
 
 // Importações necessárias
-import { GoogleGenerativeAI, GenerativeModel } from '@google/genai';
+import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai';
 import { rateLimiter } from './rate-limiter.service';
 import crypto from 'crypto';
 
 // Interface para tipos de modelos disponíveis
 export enum GeminiModel {
-  TEXT = 'gemini-2.0-flash',          // Gemini 2.0 Flash - Modelo principal (33% mais barato)
-  VISION = 'gemini-2.0-flash',        // Gemini 2.0 Flash suporta multimodal nativo
-  FLASH = 'gemini-2.0-flash',         // Gemini 2.0 Flash - Versão mais rápida e barata
-  FLASH_LITE = 'gemini-2.0-flash-lite', // Ainda mais econômico para contextos >128K
-  LEGACY_PRO = 'gemini-1.5-pro',      // Legado - Para compatibilidade se necessário
-  AUDIO = 'gemini-2.0-flash'          // Gemini 2.0 Flash suporta áudio/vídeo
+  TEXT = 'gemini-2.0-flash-exp',      // Gemini 2.0 Flash Experimental - Melhor performance
+  VISION = 'gemini-2.0-flash-exp',    // Gemini 2.0 Flash suporta multimodal nativo
+  FLASH = 'gemini-2.0-flash-exp',     // Gemini 2.0 Flash Experimental
+  PRO = 'gemini-1.5-pro',             // Gemini 1.5 Pro - Estável para produção
+  LEGACY_PRO = 'gemini-1.5-pro',      // Alias para compatibilidade
+  AUDIO = 'gemini-2.0-flash-exp'      // Gemini 2.0 Flash suporta áudio/vídeo
 }
 
 // Interface para configuração de geração
@@ -59,7 +59,7 @@ export class GeminiService {
   private defaultModel: GenerativeModel | null = null;
   private visionModel: GenerativeModel | null = null;
   private flashModel: GenerativeModel | null = null;
-  private flashLiteModel: GenerativeModel | null = null;
+  private proModel: GenerativeModel | null = null;
   private audioModel: GenerativeModel | null = null;
   private isInitialized: boolean = false;
   private apiKey: string = '';
@@ -274,10 +274,10 @@ export class GeminiService {
         }
       });
 
-      this.flashLiteModel = this.genAI.getGenerativeModel({
-        model: GeminiModel.FLASH_LITE,
+      this.proModel = this.genAI.getGenerativeModel({
+        model: GeminiModel.PRO,
         generationConfig: {
-          temperature: 0.1,
+          temperature: 0.2,
           topP: 0.95,
           topK: 40,
           maxOutputTokens: 8192,

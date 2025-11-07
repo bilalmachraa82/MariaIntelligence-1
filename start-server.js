@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 
 /**
- * Render Server Launcher with Debug Info
- * This script helps debug server startup issues on Render
+ * ==========================================
+ * MariaIntelligence Production Server Launcher
+ * ==========================================
+ * Robust startup script with comprehensive diagnostics
+ * Handles multiple deployment scenarios (Render, Docker, etc.)
  */
 
 import fs from 'fs';
@@ -12,91 +15,282 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-console.log('🚀 Starting Maria Intelligence Server...');
-console.log('📍 Current working directory:', process.cwd());
-console.log('📍 __dirname:', __dirname);
+// ANSI color codes for better visibility
+const colors = {
+  reset: '\x1b[0m',
+  bright: '\x1b[1m',
+  green: '\x1b[32m',
+  red: '\x1b[31m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+  cyan: '\x1b[36m'
+};
 
-// Check possible server file locations
-const possiblePaths = [
-    'dist/server/index.js',
-    './dist/server/index.js',
-    'dist/index.js',
-    './dist/index.js',
-    path.join(__dirname, 'dist/server/index.js'),
-    path.join(__dirname, 'dist/index.js')
-];
-
-console.log('\n🔍 Checking server file locations:');
-possiblePaths.forEach((filePath, index) => {
-    const exists = fs.existsSync(filePath);
-    const absolutePath = path.resolve(filePath);
-    console.log(`${index + 1}. ${filePath} -> ${exists ? '✅ EXISTS' : '❌ NOT FOUND'} (${absolutePath})`);
-});
-
-// Check dist directory structure
-console.log('\n📁 Checking dist directory structure:');
-try {
-    if (fs.existsSync('dist')) {
-        const distContents = fs.readdirSync('dist', { withFileTypes: true });
-        distContents.forEach(item => {
-            const type = item.isDirectory() ? '📁' : '📄';
-            console.log(`   ${type} ${item.name}`);
-
-            if (item.isDirectory()) {
-                try {
-                    const subContents = fs.readdirSync(path.join('dist', item.name));
-                    subContents.forEach(subItem => {
-                        console.log(`      📄 ${subItem}`);
-                    });
-                } catch (err) {
-                    console.log(`      ❌ Could not read directory: ${err.message}`);
-                }
-            }
-        });
-    } else {
-        console.log('❌ dist directory does not exist');
-    }
-} catch (err) {
-    console.log('❌ Error reading dist directory:', err.message);
+function log(message, color = 'reset') {
+  console.log(`${colors[color]}${message}${colors.reset}`);
 }
 
-// Try to start the server with the first available path
-console.log('\n🚀 Attempting to start server...');
+// ──────────────────────────────────────────
+// Environment Check
+// ──────────────────────────────────────────
+log('==========================================', 'cyan');
+log('🚀 MariaIntelligence Server Startup', 'bright');
+log('==========================================', 'cyan');
+log('');
 
+log('📊 Environment Information:', 'blue');
+log(`   • Node Version: ${process.version}`);
+log(`   • NODE_ENV: ${process.env.NODE_ENV || 'not set'}`);
+log(`   • Platform: ${process.platform}`);
+log(`   • CWD: ${process.cwd()}`);
+log(`   • __dirname: ${__dirname}`);
+log(`   • Memory: ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB used`);
+log('');
+
+// ──────────────────────────────────────────
+// Required Environment Variables Check
+// ──────────────────────────────────────────
+log('🔐 Checking Required Environment Variables:', 'blue');
+
+const requiredEnvVars = [
+  'DATABASE_URL',
+  'SESSION_SECRET'
+];
+
+const optionalEnvVars = [
+  'GOOGLE_GEMINI_API_KEY',
+  'EMAIL_HOST',
+  'EMAIL_USER',
+  'PORT'
+];
+
+let missingRequired = [];
+let missingOptional = [];
+
+requiredEnvVars.forEach(varName => {
+  if (process.env[varName]) {
+    log(`   ✅ ${varName}: configured`, 'green');
+  } else {
+    log(`   ❌ ${varName}: MISSING`, 'red');
+    missingRequired.push(varName);
+  }
+});
+
+optionalEnvVars.forEach(varName => {
+  if (process.env[varName]) {
+    log(`   ✅ ${varName}: configured`, 'green');
+  } else {
+    log(`   ⚠️  ${varName}: not set (optional)`, 'yellow');
+    missingOptional.push(varName);
+  }
+});
+
+log('');
+
+if (missingRequired.length > 0) {
+  log('❌ FATAL: Missing required environment variables:', 'red');
+  missingRequired.forEach(v => log(`   • ${v}`, 'red'));
+  log('');
+  log('Please set these variables before starting the server.', 'yellow');
+  process.exit(1);
+}
+
+// ──────────────────────────────────────────
+// Server File Location Detection
+// ──────────────────────────────────────────
+log('🔍 Locating Server Entry Point:', 'blue');
+
+const possibleServerPaths = [
+  'dist/server/index.js',
+  './dist/server/index.js',
+  'dist/index.js',
+  './dist/index.js',
+  path.join(__dirname, 'dist/server/index.js'),
+  path.join(__dirname, 'dist/index.js'),
+  path.join(process.cwd(), 'dist/server/index.js'),
+  path.join(process.cwd(), 'dist/index.js')
+];
+
+log('   Checking possible locations:');
+let serverPath = null;
+
+for (const checkPath of possibleServerPaths) {
+  const absolutePath = path.resolve(checkPath);
+  const exists = fs.existsSync(absolutePath);
+
+  if (exists) {
+    log(`   ✅ ${checkPath} → FOUND`, 'green');
+    if (!serverPath) serverPath = absolutePath;
+  } else {
+    log(`   ❌ ${checkPath} → not found`);
+  }
+}
+
+log('');
+
+if (!serverPath) {
+  log('💥 FATAL ERROR: No server file found!', 'red');
+  log('');
+  log('📁 Checked locations:', 'yellow');
+  possibleServerPaths.forEach(p => log(`   • ${p}`));
+  log('');
+  log('💡 Troubleshooting:', 'blue');
+  log('   1. Ensure build completed: npm run build:render');
+  log('   2. Check that dist/server/index.js exists');
+  log('   3. Verify build output directory structure');
+
+  // Show current directory structure
+  try {
+    if (fs.existsSync('dist')) {
+      log('');
+      log('📂 Current dist/ structure:', 'cyan');
+      showDirectoryTree('dist', '   ');
+    }
+  } catch (err) {
+    // Ignore errors in showing directory structure
+  }
+
+  process.exit(1);
+}
+
+log(`✅ Server file located: ${serverPath}`, 'green');
+log('');
+
+// ──────────────────────────────────────────
+// Verify Server File is Valid JavaScript
+// ──────────────────────────────────────────
+log('🔬 Verifying Server File:', 'blue');
+
+try {
+  const stats = fs.statSync(serverPath);
+  log(`   • File size: ${(stats.size / 1024).toFixed(2)} KB`);
+  log(`   • Last modified: ${stats.mtime.toISOString()}`);
+
+  // Check if file is readable
+  fs.accessSync(serverPath, fs.constants.R_OK);
+  log('   ✅ File is readable', 'green');
+} catch (err) {
+  log(`   ❌ File verification failed: ${err.message}`, 'red');
+  process.exit(1);
+}
+
+log('');
+
+// ──────────────────────────────────────────
+// Start Server
+// ──────────────────────────────────────────
+log('🚀 Starting Server...', 'bright');
+log('');
+
+// Set production environment if not set
+if (!process.env.NODE_ENV) {
+  process.env.NODE_ENV = 'production';
+  log('   • Set NODE_ENV=production', 'yellow');
+}
+
+// Set default port if not set
+if (!process.env.PORT) {
+  process.env.PORT = '5000';
+  log('   • Set PORT=5000 (default)', 'yellow');
+}
+
+// Handle graceful shutdown
+process.on('SIGTERM', () => {
+  log('');
+  log('📡 Received SIGTERM signal', 'yellow');
+  log('🛑 Shutting down gracefully...', 'yellow');
+  process.exit(0);
+});
+
+process.on('SIGINT', () => {
+  log('');
+  log('📡 Received SIGINT signal (Ctrl+C)', 'yellow');
+  log('🛑 Shutting down gracefully...', 'yellow');
+  process.exit(0);
+});
+
+// Handle uncaught errors
+process.on('uncaughtException', (err) => {
+  log('');
+  log('💥 UNCAUGHT EXCEPTION:', 'red');
+  log(`   ${err.message}`, 'red');
+  log('');
+  log('Stack trace:', 'yellow');
+  console.error(err.stack);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  log('');
+  log('💥 UNHANDLED PROMISE REJECTION:', 'red');
+  log(`   ${reason}`, 'red');
+  console.error('Promise:', promise);
+  process.exit(1);
+});
+
+// Import and start the server
 async function startServer() {
-    let serverStarted = false;
+  try {
+    log('📦 Importing server module...', 'cyan');
 
-    for (const serverPath of possiblePaths) {
-        if (fs.existsSync(serverPath)) {
-            console.log(`✅ Found server at: ${serverPath}`);
-            console.log('🔄 Starting server...');
+    const startTime = Date.now();
+    await import(serverPath);
+    const duration = Date.now() - startTime;
 
-            try {
-                // Set production environment
-                process.env.NODE_ENV = 'production';
+    log('');
+    log('==========================================', 'green');
+    log(`✅ Server started successfully in ${duration}ms!`, 'green');
+    log('==========================================', 'green');
+    log('');
+    log(`🌐 Server is running on port ${process.env.PORT}`, 'bright');
+    log(`🔗 Health check: http://localhost:${process.env.PORT}/api/health`, 'cyan');
+    log('');
 
-                // Import and start the server
-                await import(path.resolve(serverPath));
-                serverStarted = true;
-                console.log('✅ Server started successfully!');
-                break;
-            } catch (err) {
-                console.error(`❌ Failed to start server with ${serverPath}:`, err.message);
-                console.error('Stack trace:', err.stack);
-            }
+  } catch (err) {
+    log('');
+    log('💥 FATAL: Failed to start server', 'red');
+    log('==========================================', 'red');
+    log('');
+    log(`Error: ${err.message}`, 'red');
+    log('');
+
+    if (err.stack) {
+      log('Stack Trace:', 'yellow');
+      console.error(err.stack);
+    }
+
+    log('');
+    log('💡 Troubleshooting:', 'blue');
+    log('   1. Check database connection (DATABASE_URL)');
+    log('   2. Verify all required environment variables are set');
+    log('   3. Check server logs for specific error details');
+    log('   4. Ensure PostgreSQL database is accessible');
+    log('');
+
+    process.exit(1);
+  }
+}
+
+// Helper function to show directory tree
+function showDirectoryTree(dir, indent = '') {
+  try {
+    const items = fs.readdirSync(dir, { withFileTypes: true });
+    items.forEach(item => {
+      const icon = item.isDirectory() ? '📁' : '📄';
+      log(`${indent}${icon} ${item.name}`);
+
+      if (item.isDirectory() && item.name !== 'node_modules') {
+        try {
+          showDirectoryTree(path.join(dir, item.name), indent + '   ');
+        } catch (err) {
+          // Skip directories we can't read
         }
-    }
-
-    if (!serverStarted) {
-        console.error('💥 Could not start server - no valid server file found');
-        console.error('📋 Available paths checked:', possiblePaths);
-        process.exit(1);
-    }
+      }
+    });
+  } catch (err) {
+    log(`${indent}❌ Error reading directory: ${err.message}`, 'red');
+  }
 }
 
 // Start the server
-startServer().catch(err => {
-    console.error('💥 Fatal error starting server:', err);
-    console.error('Full error:', err);
-    process.exit(1);
-});
+startServer();

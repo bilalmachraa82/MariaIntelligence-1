@@ -1,42 +1,90 @@
+# ==========================================
+# MariaIntelligence Production Dockerfile
+# ==========================================
+# Multi-stage build for optimized production image
+# Frontend: React + Vite → dist/client
+# Backend: Express + TypeScript (ES Modules) → dist/server/index.js
+
+# ──────────────────────────────────────────
+# Stage 1: Dependencies
+# ──────────────────────────────────────────
+FROM node:20-alpine AS dependencies
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies (including devDependencies for build)
+RUN npm ci --include=dev
+
+# ──────────────────────────────────────────
+# Stage 2: Builder
+# ──────────────────────────────────────────
 FROM node:20-alpine AS builder
 
-# Definir diretório de trabalho
 WORKDIR /app
 
-# Copiar arquivos de dependências
-COPY package.json package-lock.json ./
+# Copy dependencies from previous stage
+COPY --from=dependencies /app/node_modules ./node_modules
 
-# Instalar dependências
-RUN npm ci
-
-# Copiar código fonte
+# Copy all source code
 COPY . .
 
-# Construir a aplicação
-RUN npm run build
+# Build frontend (Vite) → dist/client
+# Build backend (esbuild) → dist/server/index.js
+RUN npm run build:render
 
-# Imagem de produção
+# Verify build outputs
+RUN ls -la dist/ && \
+    ls -la dist/client/ && \
+    ls -la dist/server/ && \
+    test -f dist/server/index.js || (echo "❌ Server build failed!" && exit 1)
+
+# ──────────────────────────────────────────
+# Stage 3: Production Runtime
+# ──────────────────────────────────────────
 FROM node:20-alpine AS production
 
-# Definir variáveis de ambiente
-ENV NODE_ENV=production
-ENV PORT=5100
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init
 
-# Definir diretório de trabalho
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
 WORKDIR /app
 
-# Copiar arquivos de dependências
-COPY package.json package-lock.json ./
+# Copy package files
+COPY package*.json ./
 
-# Instalar apenas dependências de produção
-RUN npm ci --only=production
+# Install only production dependencies
+RUN npm ci --only=production && \
+    npm cache clean --force
 
-# Copiar arquivos de build da etapa anterior
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/public ./public
+# Copy built artifacts from builder
+COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
 
-# Expor porta
-EXPOSE 5100
+# Copy production startup script
+COPY --chown=nodejs:nodejs start-server.js ./
 
-# Iniciar aplicação
-CMD ["node", "dist/server/index.js"]
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=5000
+ENV HOST=0.0.0.0
+
+# Switch to non-root user
+USER nodejs
+
+# Expose port
+EXPOSE 5000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:5000/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }).on('error', () => process.exit(1));"
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start server using production script
+CMD ["node", "start-server.js"]

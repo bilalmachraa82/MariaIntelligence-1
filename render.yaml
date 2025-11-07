@@ -1,0 +1,57 @@
+# ==========================================
+# MariaIntelligence Render Deployment Config
+# ==========================================
+# Infrastructure as Code for Render.com
+# Deploy with: render.yaml or Render Dashboard
+
+services:
+  # ──────────────────────────────────────────
+  # Web Service (Full-stack application)
+  # ──────────────────────────────────────────
+  - type: web
+    name: maria-intelligence
+    env: node
+    region: oregon # Change to your preferred region
+    plan: starter # Free tier; upgrade to 'standard' or 'pro' for production
+    buildCommand: npm run build:render
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: HOST
+        value: 0.0.0.0
+      - key: DATABASE_URL
+        sync: false # Set in Render Dashboard (secret)
+      - key: GOOGLE_GEMINI_API_KEY
+        sync: false # Set in Render Dashboard (secret)
+      - key: SESSION_SECRET
+        generateValue: true # Auto-generate secure random value
+      - key: EMAIL_HOST
+        value: smtp.gmail.com
+      - key: EMAIL_PORT
+        value: 587
+      - key: EMAIL_USER
+        sync: false # Set in Render Dashboard (optional)
+      - key: EMAIL_PASS
+        sync: false # Set in Render Dashboard (optional)
+
+    # Auto-deploy from Git
+    autoDeploy: true
+
+    # Health check settings
+    healthCheck:
+      path: /api/health
+      initialDelaySeconds: 30
+
+    # Scaling (for paid plans)
+    # numInstances: 2
+    # maxMemoryPercent: 80
+
+    # Disk storage for uploads (optional)
+    disk:
+      name: uploads
+      mountPath: /app/uploads
+      sizeGB: 1
