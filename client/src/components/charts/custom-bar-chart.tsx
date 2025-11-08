@@ -1,4 +1,4 @@
-import React from "react";
+import { memo } from "react";
 import {
   BarChart as RechartsBarChart,
   Bar,
@@ -27,7 +27,7 @@ interface CustomBarChartProps {
   className?: string;
 }
 
-export const CustomBarChart: React.FC<CustomBarChartProps> = ({
+export const CustomBarChart = memo<CustomBarChartProps>(({
   data,
   index,
   categories,
@@ -74,6 +74,19 @@ export const CustomBarChart: React.FC<CustomBarChartProps> = ({
       </ResponsiveContainer>
     </div>
   );
-};
+}, (prevProps, nextProps) => {
+  // Custom comparison - only re-render if data, categories, or colors change
+  return (
+    prevProps.data === nextProps.data &&
+    prevProps.categories === nextProps.categories &&
+    prevProps.colors === nextProps.colors &&
+    prevProps.index === nextProps.index &&
+    prevProps.showLegend === nextProps.showLegend &&
+    prevProps.showGridLines === nextProps.showGridLines &&
+    prevProps.showAnimation === nextProps.showAnimation
+  );
+});
+
+CustomBarChart.displayName = 'CustomBarChart';
 
 export default CustomBarChart;

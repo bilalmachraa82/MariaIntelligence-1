@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, memo, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "wouter";
 import { MoreVertical, Edit, Trash2, Eye, Plus, FileText, Receipt, CheckCircle, Clock, AlertCircle } from "lucide-react";
@@ -49,21 +49,33 @@ interface FinancialDocumentsTableProps {
   onDelete?: (id: number) => void;
 }
 
-export function FinancialDocumentsTable({ documents = [], isLoading, onDelete }: FinancialDocumentsTableProps) {
+export const FinancialDocumentsTable = memo<FinancialDocumentsTableProps>(({ documents = [], isLoading, onDelete }) => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<'all' | 'incoming' | 'outgoing'>('all');
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'invoiced' | 'paid' | 'cancelled'>('all');
 
-  // Filtrar documentos baseado nos filtros selecionados
-  const filteredDocuments = documents.filter(doc => {
-    if (filter !== 'all' && doc.type !== filter) {
-      return false;
-    }
-    if (statusFilter !== 'all' && doc.status !== statusFilter) {
-      return false;
-    }
-    return true;
-  });
+  // Memoize filtered documents to avoid recalculation on every render
+  const filteredDocuments = useMemo(() =>
+    documents.filter(doc => {
+      if (filter !== 'all' && doc.type !== filter) {
+        return false;
+      }
+      if (statusFilter !== 'all' && doc.status !== statusFilter) {
+        return false;
+      }
+      return true;
+    }),
+    [documents, filter, statusFilter]
+  );
+
+  // Memoize filter handlers
+  const handleFilterChange = useCallback((newFilter: 'all' | 'incoming' | 'outgoing') => {
+    setFilter(newFilter);
+  }, []);
+
+  const handleStatusFilterChange = useCallback((newStatusFilter: 'all' | 'pending' | 'invoiced' | 'paid' | 'cancelled') => {
+    setStatusFilter(newStatusFilter);
+  }, []);
 
   // Definir cores dos status
   const statusColors = {
@@ -114,21 +126,21 @@ export function FinancialDocumentsTable({ documents = [], isLoading, onDelete }:
           <Button
             variant={filter === 'all' ? "default" : "outline"}
             size="sm"
-            onClick={() => setFilter('all')}
+            onClick={() => handleFilterChange('all')}
           >
             {t('Todos')}
           </Button>
           <Button
             variant={filter === 'incoming' ? "default" : "outline"}
             size="sm"
-            onClick={() => setFilter('incoming')}
+            onClick={() => handleFilterChange('incoming')}
           >
             {t('A Receber')}
           </Button>
           <Button
             variant={filter === 'outgoing' ? "default" : "outline"}
             size="sm"
-            onClick={() => setFilter('outgoing')}
+            onClick={() => handleFilterChange('outgoing')}
           >
             {t('A Pagar')}
           </Button>
@@ -138,28 +150,28 @@ export function FinancialDocumentsTable({ documents = [], isLoading, onDelete }:
           <Button
             variant={statusFilter === 'all' ? "default" : "outline"}
             size="sm"
-            onClick={() => setStatusFilter('all')}
+            onClick={() => handleStatusFilterChange('all')}
           >
             {t('Todos Status')}
           </Button>
           <Button
             variant={statusFilter === 'pending' ? "default" : "outline"}
             size="sm"
-            onClick={() => setStatusFilter('pending')}
+            onClick={() => handleStatusFilterChange('pending')}
           >
             {t('A Cobrar')}
           </Button>
           <Button
             variant={statusFilter === 'invoiced' ? "default" : "outline"}
             size="sm"
-            onClick={() => setStatusFilter('invoiced')}
+            onClick={() => handleStatusFilterChange('invoiced')}
           >
             {t('Faturado')}
           </Button>
           <Button
             variant={statusFilter === 'paid' ? "default" : "outline"}
             size="sm"
-            onClick={() => setStatusFilter('paid')}
+            onClick={() => handleStatusFilterChange('paid')}
           >
             {t('Pago')}
           </Button>
@@ -287,4 +299,6 @@ export function FinancialDocumentsTable({ documents = [], isLoading, onDelete }:
       </div>
     </div>
   );
-}
+});
+
+FinancialDocumentsTable.displayName = 'FinancialDocumentsTable';

@@ -2,31 +2,19 @@ import { useState } from "react";
 import { useProperties, useDeleteProperty } from "@/hooks/use-properties";
 import { useOwners } from "@/hooks/use-owners";
 import { useLocation, Link } from "wouter";
-import { PlusCircle, MoreHorizontal, Edit, Trash2 } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import { InspirationQuote } from "@/components/ui/inspiration-quote";
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  CardTitle 
+import { ErrorBoundary, FeatureErrorFallback } from "@/shared/components/ErrorBoundary";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from "@/components/ui/table";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from "@/components/ui/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,13 +25,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { formatCurrency } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { PropertiesVirtualTable } from "@/features/properties/components/PropertiesVirtualTable";
 
-export default function PropertiesPage() {
+function PropertiesPageContent() {
   const [searchTerm, setSearchTerm] = useState("");
   const [propertyToDelete, setPropertyToDelete] = useState<number | null>(null);
-  
+
   const { data: properties, isLoading: isLoadingProperties } = useProperties();
   const { data: owners } = useOwners();
   const deleteProperty = useDeleteProperty();
@@ -122,89 +110,19 @@ export default function PropertiesPage() {
               <Skeleton className="h-10 w-full" />
               <Skeleton className="h-10 w-full" />
             </div>
+          ) : filteredProperties && filteredProperties.length > 0 ? (
+            <PropertiesVirtualTable
+              properties={filteredProperties}
+              getOwnerName={getOwnerName}
+              onPropertyClick={(id) => setLocation(`/properties/${id}`)}
+              onPropertyEdit={(id) => setLocation(`/properties/edit/${id}`)}
+              onPropertyDelete={(id) => setPropertyToDelete(id)}
+            />
           ) : (
-            <div className="rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Nome</TableHead>
-                    <TableHead>Proprietário</TableHead>
-                    <TableHead>Custo Limpeza</TableHead>
-                    <TableHead>Taxa Check-in</TableHead>
-                    <TableHead>Comissão</TableHead>
-                    <TableHead>Equipe Limpeza</TableHead>
-                    <TableHead className="text-right">Ações</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredProperties && filteredProperties.length > 0 ? (
-                    filteredProperties.map((property) => (
-                      <TableRow key={property.id}>
-                        <TableCell className="font-medium">
-                          <div onClick={() => setLocation(`/properties/${property.id}`)}>
-                            <span className="text-primary-600 hover:underline cursor-pointer">
-                              {property.name}
-                            </span>
-                          </div>
-                        </TableCell>
-                        <TableCell>{getOwnerName(property.ownerId)}</TableCell>
-                        <TableCell>{formatCurrency(Number(property.cleaningCost))}</TableCell>
-                        <TableCell>{formatCurrency(Number(property.checkInFee))}</TableCell>
-                        <TableCell>{Number(property.commission)}%</TableCell>
-                        <TableCell>{property.cleaningTeam}</TableCell>
-                        <TableCell className="text-right">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm">
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Abrir menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem asChild>
-                                <div 
-                                  className="cursor-pointer flex items-center px-2 py-1.5 text-sm"
-                                  onClick={() => setLocation(`/properties/${property.id}`)}
-                                >
-                                  <span className="flex items-center w-full">
-                                    Ver detalhes
-                                  </span>
-                                </div>
-                              </DropdownMenuItem>
-                              <DropdownMenuItem asChild>
-                                <div 
-                                  className="cursor-pointer flex items-center px-2 py-1.5 text-sm"
-                                  onClick={() => setLocation(`/properties/edit/${property.id}`)}
-                                >
-                                  <span className="flex items-center w-full">
-                                    <Edit className="mr-2 h-4 w-4" />
-                                    Editar
-                                  </span>
-                                </div>
-                              </DropdownMenuItem>
-                              <DropdownMenuItem asChild>
-                                <div 
-                                  className="cursor-pointer flex items-center px-2 py-1.5 text-sm text-red-600"
-                                  onClick={() => setPropertyToDelete(property.id)}
-                                >
-                                  <Trash2 className="mr-2 h-4 w-4" />
-                                  Excluir
-                                </div>
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={7} className="text-center h-24">
-                        {searchTerm ? "Nenhuma propriedade encontrada." : "Nenhuma propriedade cadastrada."}
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
+            <div className="text-center py-12 border rounded-md">
+              <p className="text-muted-foreground">
+                {searchTerm ? "Nenhuma propriedade encontrada." : "Nenhuma propriedade cadastrada."}
+              </p>
             </div>
           )}
         </CardContent>
@@ -228,5 +146,27 @@ export default function PropertiesPage() {
         </AlertDialogContent>
       </AlertDialog>
     </div>
+  );
+}
+
+// Wrap the page with error boundary for better error handling
+export default function PropertiesPage() {
+  const queryClient = useQueryClient();
+
+  return (
+    <ErrorBoundary
+      fallback={
+        <FeatureErrorFallback
+          feature="Propriedades"
+          onReset={() => {
+            queryClient.invalidateQueries({ queryKey: ['properties'] });
+            queryClient.invalidateQueries({ queryKey: ['owners'] });
+            window.location.reload();
+          }}
+        />
+      }
+    >
+      <PropertiesPageContent />
+    </ErrorBoundary>
   );
 }

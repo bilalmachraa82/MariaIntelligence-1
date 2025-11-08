@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, memo, useMemo, useCallback } from "react";
 import {
   PieChart as RechartsPieChart,
   Pie,
@@ -44,7 +44,7 @@ const renderActiveShape = (props: any) => {
   );
 };
 
-export const CustomPieChart: React.FC<CustomPieChartProps> = ({
+export const CustomPieChart = memo<CustomPieChartProps>(({
   data,
   category,
   index,
@@ -56,26 +56,30 @@ export const CustomPieChart: React.FC<CustomPieChartProps> = ({
 }) => {
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
 
-  const processedData = data.map((dataPoint) => {
-    // Garantir que o objeto tem as propriedades necessárias
-    if (!dataPoint || typeof dataPoint !== 'object') {
-      return { name: 'Desconhecido', value: 0 };
-    }
-    
-    return {
-      name: dataPoint[index] || 'Desconhecido',
-      value: typeof dataPoint[category] === 'number' ? dataPoint[category] : 0
-    };
-  });
+  // Memoize processed data to avoid recalculation on every render
+  const processedData = useMemo(() =>
+    data.map((dataPoint) => {
+      // Garantir que o objeto tem as propriedades necessárias
+      if (!dataPoint || typeof dataPoint !== 'object') {
+        return { name: 'Desconhecido', value: 0 };
+      }
 
-  // Gerenciar o estado ativo quando o mouse passa por cima de uma fatia
-  const onPieEnter = (_: any, index: number) => {
+      return {
+        name: dataPoint[index] || 'Desconhecido',
+        value: typeof dataPoint[category] === 'number' ? dataPoint[category] : 0
+      };
+    }),
+    [data, index, category]
+  );
+
+  // Stable callback references to prevent unnecessary re-renders
+  const onPieEnter = useCallback((_: any, index: number) => {
     setActiveIndex(index);
-  };
+  }, []);
 
-  const onPieLeave = () => {
+  const onPieLeave = useCallback(() => {
     setActiveIndex(undefined);
-  };
+  }, []);
 
   return (
     <div className={`w-full h-full ${className}`}>
@@ -97,10 +101,10 @@ export const CustomPieChart: React.FC<CustomPieChartProps> = ({
             onMouseEnter={onPieEnter}
             onMouseLeave={onPieLeave}
           >
-            {processedData.map((entry, index) => (
-              <Cell 
-                key={`cell-${index}`} 
-                fill={colors[index % colors.length]} 
+            {processedData.map((_, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={colors[index % colors.length]}
               />
             ))}
           </Pie>
@@ -113,6 +117,18 @@ export const CustomPieChart: React.FC<CustomPieChartProps> = ({
       </ResponsiveContainer>
     </div>
   );
-};
+}, (prevProps, nextProps) => {
+  // Custom comparison - only re-render if data or configuration changes
+  return (
+    prevProps.data === nextProps.data &&
+    prevProps.category === nextProps.category &&
+    prevProps.index === nextProps.index &&
+    prevProps.colors === nextProps.colors &&
+    prevProps.showAnimation === nextProps.showAnimation &&
+    prevProps.donut === nextProps.donut
+  );
+});
+
+CustomPieChart.displayName = 'CustomPieChart';
 
 export default CustomPieChart;

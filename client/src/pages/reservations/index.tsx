@@ -3,40 +3,24 @@ import type { Reservation, ReservationStatus } from "../../lib/types";
 import { useReservations, useDeleteReservation, useReservationEnums } from "@/hooks/use-reservations";
 import { useProperties } from "@/hooks/use-properties";
 import { Link, useLocation } from "wouter";
-import { PlusCircle, MoreHorizontal, Edit, Trash2, FileUp, Calendar, AlertCircle } from "lucide-react";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { PlusCircle, FileUp, Calendar } from "lucide-react";
 import { InspirationQuote } from "@/components/ui/inspiration-quote";
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  CardTitle 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from "@/components/ui/table";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from "@/components/ui/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -47,10 +31,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { formatCurrency, formatDate, reservationStatusColors, platformColors } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { ErrorBoundary, FeatureErrorFallback } from "@/shared/components/ErrorBoundary";
+import { useQueryClient } from "@tanstack/react-query";
+import { ReservationsVirtualTable } from "@/components/reservations/ReservationsVirtualTable";
 
-export default function ReservationsPage() {
+function ReservationsPageContent() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [propertyFilter, setPropertyFilter] = useState("all");
@@ -190,112 +176,22 @@ export default function ReservationsPage() {
               <Skeleton className="h-10 w-full" />
               <Skeleton className="h-10 w-full" />
             </div>
+          ) : filteredReservations && filteredReservations.length > 0 ? (
+            <ReservationsVirtualTable
+              reservations={filteredReservations}
+              getPropertyName={getPropertyName}
+              onReservationClick={(id) => setLocation(`/reservations/${id}`)}
+              onReservationEdit={(id) => setLocation(`/reservations/edit/${id}`)}
+              onReservationDelete={(id) => setReservationToDelete(id)}
+              onPropertyClick={(id) => setLocation(`/properties/${id}`)}
+            />
           ) : (
-            <div className="rounded-md border overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Hóspede</TableHead>
-                    <TableHead>Propriedade</TableHead>
-                    <TableHead>Check-in</TableHead>
-                    <TableHead>Check-out</TableHead>
-                    <TableHead>Valor Total</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Plataforma</TableHead>
-                    <TableHead className="text-right">Ações</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredReservations && filteredReservations.length > 0 ? (
-                    filteredReservations.map((reservation) => (
-                      <TableRow key={reservation.id}>
-                        <TableCell className="font-medium">
-                          <div 
-                            className="text-primary-600 hover:underline cursor-pointer"
-                            onClick={() => setLocation(`/reservations/${reservation.id}`)}
-                          >
-                            {reservation.guestName}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div 
-                            className="text-primary-600 hover:underline cursor-pointer"
-                            onClick={() => setLocation(`/properties/${reservation.propertyId}`)}
-                          >
-                            {getPropertyName(reservation.propertyId)}
-                          </div>
-                        </TableCell>
-                        <TableCell>{formatDate(reservation.checkInDate)}</TableCell>
-                        <TableCell>{formatDate(reservation.checkOutDate)}</TableCell>
-                        <TableCell>{formatCurrency(Number(reservation.totalAmount))}</TableCell>
-                        <TableCell>
-                          <Badge className={reservationStatusColors[reservation.status] || ""}>
-                            {reservation.status === "pending" && "Pendente"}
-                            {reservation.status === "confirmed" && "Confirmada"}
-                            {reservation.status === "cancelled" && "Cancelada"}
-                            {reservation.status === "completed" && "Completada"}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className={platformColors[reservation.platform] || ""}>
-                            {reservation.platform === "airbnb" && "Airbnb"}
-                            {reservation.platform === "booking" && "Booking"}
-                            {reservation.platform === "expedia" && "Expedia"}
-                            {reservation.platform === "direct" && "Direto"}
-                            {reservation.platform === "other" && "Outro"}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm">
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Abrir menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem asChild>
-                                <div 
-                                  className="cursor-pointer flex items-center px-2 py-1.5 text-sm"
-                                  onClick={() => setLocation(`/reservations/${reservation.id}`)}
-                                >
-                                  Ver detalhes
-                                </div>
-                              </DropdownMenuItem>
-                              <DropdownMenuItem asChild>
-                                <div 
-                                  className="cursor-pointer flex items-center px-2 py-1.5 text-sm"
-                                  onClick={() => setLocation(`/reservations/edit/${reservation.id}`)}
-                                >
-                                  <Edit className="mr-2 h-4 w-4" />
-                                  Editar
-                                </div>
-                              </DropdownMenuItem>
-                              <DropdownMenuItem asChild>
-                                <div 
-                                  className="cursor-pointer flex items-center px-2 py-1.5 text-sm text-red-600"
-                                  onClick={() => setReservationToDelete(reservation.id)}
-                                >
-                                  <Trash2 className="mr-2 h-4 w-4" />
-                                  Excluir
-                                </div>
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={8} className="text-center h-24">
-                        {searchTerm || statusFilter !== "all" || propertyFilter !== "all" 
-                          ? "Nenhuma reserva corresponde aos filtros aplicados." 
-                          : "Nenhuma reserva cadastrada."}
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
+            <div className="text-center py-12 border rounded-md">
+              <p className="text-muted-foreground">
+                {searchTerm || statusFilter !== "all" || propertyFilter !== "all"
+                  ? "Nenhuma reserva corresponde aos filtros aplicados."
+                  : "Nenhuma reserva cadastrada."}
+              </p>
             </div>
           )}
         </CardContent>
@@ -319,5 +215,27 @@ export default function ReservationsPage() {
         </AlertDialogContent>
       </AlertDialog>
     </div>
+  );
+}
+
+// Wrap the page with error boundary for better error handling
+export default function ReservationsPage() {
+  const queryClient = useQueryClient();
+
+  return (
+    <ErrorBoundary
+      fallback={
+        <FeatureErrorFallback
+          feature="Reservas"
+          onReset={() => {
+            queryClient.invalidateQueries({ queryKey: ['reservations'] });
+            queryClient.invalidateQueries({ queryKey: ['properties'] });
+            window.location.reload();
+          }}
+        />
+      }
+    >
+      <ReservationsPageContent />
+    </ErrorBoundary>
   );
 }

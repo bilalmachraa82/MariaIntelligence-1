@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import NewModernDashboard from "@/components/dashboard/new-modern-dashboard";
@@ -12,6 +12,19 @@ import { InspirationQuote } from "@/components/ui/inspiration-quote";
 export default function DashboardPage() {
   const { t } = useTranslation();
   const [location, setLocation] = useLocation();
+
+  // Memoize navigation handlers to prevent unnecessary re-renders of child components
+  const handleNavigateToReservations = useCallback(() => {
+    setLocation("/reservations");
+  }, [setLocation]);
+
+  const handleNavigateToCleaningTeams = useCallback(() => {
+    setLocation("/cleaning-teams");
+  }, [setLocation]);
+
+  const handleNavigateToDashboardFull = useCallback(() => {
+    setLocation("/dashboard-full");
+  }, [setLocation]);
   
   // Definindo cards animados para entrada
   const containerVariants = {
@@ -70,37 +83,37 @@ export default function DashboardPage() {
               <CardTitle className="text-lg">{t("dashboard.quickActions", "Ações Rápidas")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 pt-0">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="w-full justify-start text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                onClick={() => setLocation("/reservations")}
+                onClick={handleNavigateToReservations}
               >
                 <Check className="h-4 w-4 mr-2" />
                 {t("dashboard.checkinsToday", "Check-ins de Hoje")}
               </Button>
-              
-              <Button 
-                variant="outline" 
+
+              <Button
+                variant="outline"
                 className="w-full justify-start text-rose-700 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20"
-                onClick={() => setLocation("/reservations")}
+                onClick={handleNavigateToReservations}
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 {t("dashboard.checkoutsToday", "Check-outs de Hoje")}
               </Button>
-              
-              <Button 
-                variant="outline" 
+
+              <Button
+                variant="outline"
                 className="w-full justify-start text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
-                onClick={() => setLocation("/cleaning-teams")}
+                onClick={handleNavigateToCleaningTeams}
               >
                 <Sparkles className="h-4 w-4 mr-2" />
                 {t("dashboard.scheduledCleanings", "Limpezas Agendadas")}
               </Button>
-              
-              <Button 
-                variant="outline" 
+
+              <Button
+                variant="outline"
                 className="w-full justify-start text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20"
-                onClick={() => setLocation("/dashboard-full")}
+                onClick={handleNavigateToDashboardFull}
               >
                 <Activity className="h-4 w-4 mr-2" />
                 {t("dashboard.financialDashboard", "Dashboard Financeiro")}
@@ -132,10 +145,10 @@ export default function DashboardPage() {
             <CardHeader className="pb-2">
               <div className="flex justify-between items-center">
                 <CardTitle className="text-lg">{t("dashboard.financialSummary", "Resumo Financeiro")}</CardTitle>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={() => setLocation("/dashboard-full")}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleNavigateToDashboardFull}
                   className="text-muted-foreground hover:text-primary"
                 >
                   {t("dashboard.viewDetails", "Ver Detalhes")}

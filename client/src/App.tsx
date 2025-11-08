@@ -5,6 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "@/components/ui/toaster";
 import { LazyWrapper } from "@/shared/components/LazyWrapper";
+import { ErrorBoundary } from "@/shared/components/ErrorBoundary";
 import { Layout } from "@/components/layout/layout";
 import { useEffect } from 'react';
 import { enforceCleanMode } from "./enforce-clean-mode";
@@ -201,13 +202,21 @@ function App() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Layout>
-        <Router />
-      </Layout>
-      <Toaster />
-      <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
-    </QueryClientProvider>
+    <ErrorBoundary
+      onError={(error, errorInfo) => {
+        // Log critical app-level errors
+        console.error('App-level error:', error, errorInfo);
+        // TODO: Send to error tracking service (Sentry, etc.)
+      }}
+    >
+      <QueryClientProvider client={queryClient}>
+        <Layout>
+          <Router />
+        </Layout>
+        <Toaster />
+        <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 
