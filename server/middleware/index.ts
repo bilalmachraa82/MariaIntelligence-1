@@ -13,6 +13,7 @@ import { rateLimitMiddleware } from './rateLimit.middleware.js';
 import { loggingMiddleware } from './logging.middleware.js';
 import { securityMiddleware } from './security.middleware.js';
 import { performanceMiddleware } from './performance.middleware.js';
+import { cacheMiddleware, cacheInvalidation } from './cache.middleware.js';
 
 /**
  * Setup all application middleware in the correct order
@@ -60,3 +61,6 @@ export async function setupMiddleware(app: Express): Promise<void> {
 
   console.log('✅ Middleware stack configured successfully');
 }
+
+// Export individual middleware for use in specific routes
+export { cacheMiddleware, cacheInvalidation };

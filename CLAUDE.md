@@ -267,6 +267,85 @@ const response = await gemini.chat(userMessage, conversationHistory);
 - **CORS** - Configured for frontend domain
 - **Input Validation** - Zod schemas on all endpoints
 
+### API Response Caching with Redis
+
+**Redis Caching Middleware** (`server/middleware/cache.middleware.ts`):
+
+The application uses Redis for intelligent API response caching to reduce database load and improve response times.
+
+**Cache Configuration by Feature**:
+- **Properties**: 5 minutes (rarely change)
+- **Financial Reports**: 10 minutes (computed data)
+- **Dashboard Stats**: 2 minutes (semi-real-time)
+- **Owners**: 5 minutes (rarely change)
+- **Reservations**: 3 minutes (moderate frequency)
+
+**Usage Example**:
+```typescript
+import { cacheMiddleware, cacheInvalidation } from './middleware/cache.middleware.js';
+
+// Apply caching to GET routes
+app.get('/api/v1/properties', cacheMiddleware(300), propertiesHandler);
+
+// Invalidate cache on mutations
+app.post('/api/v1/properties', async (req, res) => {
+  // ... create property
+  await cacheInvalidation.invalidateRoute('/api/v1/properties');
+  res.json(result);
+});
+
+// Invalidate related caches
+app.put('/api/v1/properties/:id', async (req, res) => {
+  // ... update property
+  await cacheInvalidation.invalidateRoute('/api/v1/properties');
+  await cacheInvalidation.invalidateRoute('/api/v1/dashboard'); // Affects stats
+  res.json(result);
+});
+```
+
+**Cache Response Headers**:
+- `X-Cache: HIT` - Response served from cache
+- `X-Cache: MISS` - Response from database (will be cached)
+- `X-Cache-Key` - The Redis key used for caching
+
+**Cache Statistics**:
+```typescript
+import { cacheInvalidation } from './middleware/cache.middleware.js';
+
+// Get cache stats
+const stats = await cacheInvalidation.getStats();
+console.log(`Cached keys: ${stats.keys}, Memory: ${stats.memory}`);
+
+// Invalidate specific route pattern
+await cacheInvalidation.invalidateRoute('/api/v1/properties');
+
+// Clear all cache
+await cacheInvalidation.invalidateAll();
+```
+
+**Environment Variables**:
+```bash
+# Option 1: Full Redis URL (recommended for cloud services)
+REDIS_URL=redis://localhost:6379
+
+# Option 2: Separate host/port (local development)
+REDIS_HOST=localhost
+REDIS_PORT=6379
+```
+
+**Graceful Degradation**:
+- If Redis is unavailable, caching is automatically disabled
+- Application continues to work normally without cache
+- Connection retries up to 3 times before disabling
+- No impact on API functionality
+
+**Best Practices**:
+1. **Cache only GET requests** - Middleware automatically skips other methods
+2. **Invalidate on mutations** - Always clear related caches after POST/PUT/DELETE
+3. **Use appropriate TTLs** - Balance freshness vs. performance
+4. **Monitor cache stats** - Track hit rates and memory usage
+5. **Consider cache warming** - Pre-populate cache for critical routes on startup
+
 ### State Management (Frontend)
 
 **TanStack Query** for server state:
