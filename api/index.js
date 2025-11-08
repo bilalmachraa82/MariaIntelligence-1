@@ -14834,6 +14834,17 @@ Valor total: 450,00 \u20AC`;
 // server/index.ts
 init_vite();
 init_security();
+
+// server/middleware/request-id.ts
+import { randomUUID } from "crypto";
+function requestIdMiddleware(req, res, next) {
+  const requestId = randomUUID();
+  req.id = requestId;
+  res.setHeader("X-Request-ID", requestId);
+  next();
+}
+
+// server/index.ts
 console.log("Inicializando aplica\xE7\xE3o com seguran\xE7a aprimorada\u2026");
 var app = express2();
 app.use(compression({
@@ -14846,6 +14857,7 @@ app.use(compression({
     return compression.filter(req, res);
   }
 }));
+app.use(requestIdMiddleware);
 app.use(securityMiddlewareStack);
 app.use("/api/", apiRateLimiter);
 app.use("/api/upload", pdfImportRateLimiter);
@@ -14918,7 +14930,7 @@ app.use((req, res, next) => {
   res.on("finish", () => {
     if (path8.startsWith("/api")) {
       const dur = Date.now() - start;
-      let line = `${req.method} ${path8} ${res.statusCode} in ${dur}ms`;
+      let line = `[${req.id || "no-id"}] ${req.method} ${path8} ${res.statusCode} in ${dur}ms`;
       if (captured) line += ` :: ${JSON.stringify(captured)}`;
       if (line.length > 120) line = line.slice(0, 119) + "\u2026";
       log(line);

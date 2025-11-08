@@ -47,11 +47,17 @@ npm start  # or npm run start:robust
 # Push schema changes to database
 npm run db:push
 
-# Run migrations
+# Run base migration (audit + core indexes)
 npm run db:migrate
 
-# Force migration (skip validation)
+# Run performance indexes migration
+npm run db:migrate:performance
+
+# Force base migration (skip validation)
 npm run db:migrate:force
+
+# Force performance migration
+npm run db:migrate:performance:force
 
 # Seed database with demo data
 npm run db:seed

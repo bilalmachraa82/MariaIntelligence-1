@@ -5,7 +5,9 @@ This directory contains comprehensive database migrations for the Maria Faz prop
 ## 📋 Migration Overview
 
 ### `add_indexes_and_audit.sql`
-Comprehensive migration that adds:
+**Version:** 1.0.0 | **Date:** 2025-08-01
+
+Comprehensive base migration that adds:
 
 #### 🔍 **Indexing Strategy**
 - **Foreign Key Indexes**: All foreign key relationships optimized
@@ -26,19 +28,51 @@ Comprehensive migration that adds:
 - **Database Maintenance**: Automated VACUUM and ANALYZE
 - **Query Optimization**: Statistical analysis and recommendations
 
+### `add-performance-indexes.sql`
+**Version:** 2.0.0 | **Date:** 2025-11-08
+
+Supplementary performance migration that adds targeted indexes for:
+
+#### 📊 **Enhanced Indexing**
+- **Financial Documents**: Date-based queries (issue_date, due_date), document number lookups, entity-related queries
+- **Reservations**: Source platform analytics, guest phone lookups, availability composite indexes
+- **Payment Records**: Payment method analytics, date range queries, reference lookups, document tracking
+- **Quotations**: Expiration tracking, client email/name searches, property type analytics
+- **Maintenance Tasks**: Due date scheduling, assigned team workloads, priority-based queries
+- **Activities**: Entity history tracking, type-based activity reports
+- **AI/RAG Features**: Knowledge embeddings content type, query caching, conversation history
+- **Properties**: GIN index for aliases array search, cleaning team lookups
+- **Financial Document Items**: Line item description searches
+
+#### 🎯 **Query Optimization Focus**
+- **Date Range Queries**: Optimized financial reporting and scheduling
+- **Text Searches**: Case-insensitive client and document lookups
+- **Analytics Queries**: Platform comparison, payment method analysis, property type stats
+- **AI Operations**: Efficient RAG queries, conversation context retrieval
+- **Array Operations**: Fast property alias matching using GIN indexes
+
 ## 🛠️ Usage
 
 ### Running Migrations
 
 ```bash
-# Run the migration
+# Run base migration (audit + core indexes)
 npm run db:migrate
 
-# Force re-run migration
+# Run performance indexes migration
+npm run db:migrate:performance
+
+# Force re-run base migration
 npm run db:migrate:force
+
+# Force re-run performance migration
+npm run db:migrate:performance:force
 
 # Analyze database only (without migration)
 npm run db:analyze
+
+# Run all migrations in sequence
+npm run db:migrate && npm run db:migrate:performance
 ```
 
 ### Direct TypeScript Usage

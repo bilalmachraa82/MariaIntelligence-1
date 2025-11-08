@@ -18,6 +18,9 @@ import {
   securityLogger
 } from './middleware/security';
 
+/* ─── Import Request ID Middleware ─────────────────── */
+import { requestIdMiddleware } from './middleware/request-id.js';
+
 /* ─── Inicialização da app ─────────────────────────── */
 console.log('Inicializando aplicação com segurança aprimorada…');
 const app = express();
@@ -34,6 +37,9 @@ app.use(compression({
     return compression.filter(req, res);
   }
 }));
+
+/* ─── Request ID Middleware (for traceability) ───────────────────── */
+app.use(requestIdMiddleware);
 
 /* ─── Configuração de segurança aprimorada ───────────────────── */
 // Aplicar stack completo de middleware de segurança
@@ -126,7 +132,7 @@ app.use((req, res, next) => {
   res.on('finish', () => {
     if (path.startsWith('/api')) {
       const dur = Date.now() - start;
-      let line = `${req.method} ${path} ${res.statusCode} in ${dur}ms`;
+      let line = `[${req.id || 'no-id'}] ${req.method} ${path} ${res.statusCode} in ${dur}ms`;
       if (captured) line += ` :: ${JSON.stringify(captured)}`;
       if (line.length > 120) line = line.slice(0, 119) + '…';
       log(line);
