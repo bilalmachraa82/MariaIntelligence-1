@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path, { resolve } from 'path';
 import { fileURLToPath, URL } from 'node:url';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -15,8 +16,15 @@ export default defineConfig({
           ['babel-plugin-transform-remove-console', { exclude: ['error', 'warn'] }]
         ]
       }
+    }),
+    // Bundle analyzer (only in analyze mode)
+    process.env.ANALYZE && visualizer({
+      open: true,
+      gzipSize: true,
+      brotliSize: true,
+      filename: 'dist/stats.html'
     })
-  ],
+  ].filter(Boolean),
   resolve: {
     alias: {
       '@': resolve(__dirname, './client/src'),
@@ -28,28 +36,62 @@ export default defineConfig({
     emptyOutDir: true,
     target: 'esnext',
     minify: 'esbuild',
-    cssMinify: true,
+    cssMinify: true, // Default CSS minifier
     sourcemap: false,
+    reportCompressedSize: false, // Speeds up build
+    chunkSizeWarningLimit: 600, // Lower from 1000
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, "client/index.html"),
       },
       output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom'],
-          'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select'],
-          'query-vendor': ['@tanstack/react-query'],
-          'form-vendor': ['react-hook-form', '@hookform/resolvers'],
-          'chart-vendor': ['recharts'],
-          'utils': ['clsx', 'class-variance-authority', 'tailwind-merge']
+        // More aggressive code splitting
+        experimentalMinChunkSize: 20000, // 20KB minimum
+        manualChunks: (id) => {
+          // Automatic vendor splitting
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'react-vendor';
+            }
+            if (id.includes('@radix-ui')) {
+              return 'ui-vendor';
+            }
+            if (id.includes('@tanstack/react-query')) {
+              return 'query-vendor';
+            }
+            if (id.includes('react-hook-form') || id.includes('@hookform')) {
+              return 'form-vendor';
+            }
+            if (id.includes('recharts')) {
+              return 'chart-vendor';
+            }
+            if (id.includes('lucide-react')) {
+              return 'icons-vendor';
+            }
+            if (id.includes('date-fns')) {
+              return 'date-vendor';
+            }
+            // Split other large vendors
+            return 'vendor';
+          }
+
+          // Route-based splitting (after lazy loading)
+          if (id.includes('/pages/')) {
+            const page = id.split('/pages/')[1].split('/')[0];
+            return `page-${page}`;
+          }
         },
         chunkFileNames: 'assets/js/[name]-[hash].js',
         entryFileNames: 'assets/js/[name]-[hash].js',
         assetFileNames: 'assets/[ext]/[name]-[hash].[ext]'
+      },
+      // Tree shaking optimization
+      treeshake: {
+        moduleSideEffects: false,
+        propertyReadSideEffects: false,
+        tryCatchDeoptimization: false
       }
-    },
-    chunkSizeWarningLimit: 1000,
-    reportCompressedSize: true
+    }
   },
   server: {
     hmr: {
@@ -68,10 +110,15 @@ export default defineConfig({
       'react',
       'react-dom',
       '@tanstack/react-query',
-      'recharts',
-      'lucide-react'
+      'wouter' // Add router
     ],
-    exclude: ['@vite/client', '@vite/env']
+    exclude: [
+      '@vite/client',
+      '@vite/env',
+      'recharts', // Lazy load charts
+      'pdf-lib', // Lazy load PDF tools
+      'jspdf'
+    ]
   },
   css: {
     devSourcemap: false

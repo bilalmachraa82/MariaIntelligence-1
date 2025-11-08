@@ -7724,6 +7724,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path2, { resolve } from "path";
 import { fileURLToPath, URL } from "node:url";
+import { visualizer } from "rollup-plugin-visualizer";
 var __dirname, vite_config_default;
 var init_vite_config = __esm({
   "vite.config.ts"() {
@@ -7738,8 +7739,15 @@ var init_vite_config = __esm({
               ["babel-plugin-transform-remove-console", { exclude: ["error", "warn"] }]
             ]
           }
+        }),
+        // Bundle analyzer (only in analyze mode)
+        process.env.ANALYZE && visualizer({
+          open: true,
+          gzipSize: true,
+          brotliSize: true,
+          filename: "dist/stats.html"
         })
-      ],
+      ].filter(Boolean),
       resolve: {
         alias: {
           "@": resolve(__dirname, "./client/src"),
@@ -7752,27 +7760,61 @@ var init_vite_config = __esm({
         target: "esnext",
         minify: "esbuild",
         cssMinify: true,
+        // Default CSS minifier
         sourcemap: false,
+        reportCompressedSize: false,
+        // Speeds up build
+        chunkSizeWarningLimit: 600,
+        // Lower from 1000
         rollupOptions: {
           input: {
             main: path2.resolve(__dirname, "client/index.html")
           },
           output: {
-            manualChunks: {
-              "react-vendor": ["react", "react-dom"],
-              "ui-vendor": ["@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-select"],
-              "query-vendor": ["@tanstack/react-query"],
-              "form-vendor": ["react-hook-form", "@hookform/resolvers"],
-              "chart-vendor": ["recharts"],
-              "utils": ["clsx", "class-variance-authority", "tailwind-merge"]
+            // More aggressive code splitting
+            experimentalMinChunkSize: 2e4,
+            // 20KB minimum
+            manualChunks: (id) => {
+              if (id.includes("node_modules")) {
+                if (id.includes("react") || id.includes("react-dom")) {
+                  return "react-vendor";
+                }
+                if (id.includes("@radix-ui")) {
+                  return "ui-vendor";
+                }
+                if (id.includes("@tanstack/react-query")) {
+                  return "query-vendor";
+                }
+                if (id.includes("react-hook-form") || id.includes("@hookform")) {
+                  return "form-vendor";
+                }
+                if (id.includes("recharts")) {
+                  return "chart-vendor";
+                }
+                if (id.includes("lucide-react")) {
+                  return "icons-vendor";
+                }
+                if (id.includes("date-fns")) {
+                  return "date-vendor";
+                }
+                return "vendor";
+              }
+              if (id.includes("/pages/")) {
+                const page = id.split("/pages/")[1].split("/")[0];
+                return `page-${page}`;
+              }
             },
             chunkFileNames: "assets/js/[name]-[hash].js",
             entryFileNames: "assets/js/[name]-[hash].js",
             assetFileNames: "assets/[ext]/[name]-[hash].[ext]"
+          },
+          // Tree shaking optimization
+          treeshake: {
+            moduleSideEffects: false,
+            propertyReadSideEffects: false,
+            tryCatchDeoptimization: false
           }
-        },
-        chunkSizeWarningLimit: 1e3,
-        reportCompressedSize: true
+        }
       },
       server: {
         hmr: {
@@ -7791,10 +7833,18 @@ var init_vite_config = __esm({
           "react",
           "react-dom",
           "@tanstack/react-query",
-          "recharts",
-          "lucide-react"
+          "wouter"
+          // Add router
         ],
-        exclude: ["@vite/client", "@vite/env"]
+        exclude: [
+          "@vite/client",
+          "@vite/env",
+          "recharts",
+          // Lazy load charts
+          "pdf-lib",
+          // Lazy load PDF tools
+          "jspdf"
+        ]
       },
       css: {
         devSourcemap: false
