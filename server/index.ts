@@ -3,6 +3,7 @@ import 'dotenv/config';
 
 /* ─── Imports do servidor ────────────────────────────── */
 import express, { Request, Response, NextFunction } from 'express';
+import compression from 'compression';
 import pino from 'pino';
 import pinoHttp from 'pino-http';
 import { registerRoutes } from './routes';
@@ -21,6 +22,18 @@ import {
 console.log('Inicializando aplicação com segurança aprimorada…');
 const app = express();
 export { app };
+
+/* ─── Compression Middleware (FIRST for performance) ───────────────────── */
+app.use(compression({
+  level: 6, // Balance between speed and compression ratio
+  threshold: 1024, // Only compress responses > 1KB
+  filter: (req, res) => {
+    // Don't compress if explicitly disabled
+    if (req.headers['x-no-compression']) return false;
+    // Use compression default filter
+    return compression.filter(req, res);
+  }
+}));
 
 /* ─── Configuração de segurança aprimorada ───────────────────── */
 // Aplicar stack completo de middleware de segurança
@@ -67,9 +80,35 @@ app.use(pinoHttp({
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-/* End‑point de saúde */
-app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', time: new Date().toISOString() });
+/* End‑point de saúde com database check */
+app.get('/api/health', async (_req, res) => {
+  try {
+    // Test database connection
+    const { db } = await import('./db/index.js');
+    const { sql } = await import('drizzle-orm');
+
+    await db.execute(sql`SELECT 1`);
+
+    res.json({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      database: 'connected',
+      memory: {
+        used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+        total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024),
+        unit: 'MB'
+      }
+    });
+  } catch (error) {
+    console.error('Health check failed:', error);
+    res.status(503).json({
+      status: 'error',
+      timestamp: new Date().toISOString(),
+      database: 'disconnected',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
 });
 
 /* Logger simples p/ rotas /api */

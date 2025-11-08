@@ -9723,6 +9723,13 @@ var init_propertyMatchCache = __esm({
 });
 
 // server/db/index.ts
+var db_exports = {};
+__export(db_exports, {
+  db: () => db2,
+  getDrizzle: () => getDrizzle,
+  runMigrations: () => runMigrations,
+  testConnection: () => testConnection
+});
 import { drizzle as drizzle2 } from "drizzle-orm/neon-serverless";
 import { neon } from "@neondatabase/serverless";
 import { migrate } from "drizzle-orm/neon-serverless/migrator";
@@ -9768,6 +9775,27 @@ function getDrizzle() {
     drizzleInstance = createDrizzleClient();
   }
   return drizzleInstance;
+}
+async function runMigrations() {
+  const db3 = getDrizzle();
+  try {
+    console.log("Running migrations...");
+    await migrate(db3, { migrationsFolder: "./migrations" });
+    console.log("Migrations completed successfully");
+  } catch (error) {
+    console.error("Migration failed:", error);
+    throw error;
+  }
+}
+async function testConnection() {
+  try {
+    const db3 = getDrizzle();
+    await db3.select().from(properties).limit(1);
+    return true;
+  } catch (error) {
+    console.error("Database connection failed:", error);
+    return false;
+  }
 }
 var drizzleInstance, connectionPool, db2;
 var init_db2 = __esm({
@@ -12430,6 +12458,7 @@ var init_security_monitoring = __esm({
 // server/index.ts
 import "dotenv/config";
 import express2 from "express";
+import compression from "compression";
 import pino3 from "pino";
 import pinoHttp from "pino-http";
 
@@ -14757,6 +14786,16 @@ init_vite();
 init_security();
 console.log("Inicializando aplica\xE7\xE3o com seguran\xE7a aprimorada\u2026");
 var app = express2();
+app.use(compression({
+  level: 6,
+  // Balance between speed and compression ratio
+  threshold: 1024,
+  // Only compress responses > 1KB
+  filter: (req, res) => {
+    if (req.headers["x-no-compression"]) return false;
+    return compression.filter(req, res);
+  }
+}));
 app.use(securityMiddlewareStack);
 app.use("/api/", apiRateLimiter);
 app.use("/api/upload", pdfImportRateLimiter);
@@ -14791,8 +14830,31 @@ app.use(pinoHttp({
 }));
 app.use(express2.json());
 app.use(express2.urlencoded({ extended: false }));
-app.get("/api/health", (_req, res) => {
-  res.json({ status: "ok", time: (/* @__PURE__ */ new Date()).toISOString() });
+app.get("/api/health", async (_req, res) => {
+  try {
+    const { db: db3 } = await Promise.resolve().then(() => (init_db2(), db_exports));
+    const { sql: sql4 } = await import("drizzle-orm");
+    await db3.execute(sql4`SELECT 1`);
+    res.json({
+      status: "ok",
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      uptime: process.uptime(),
+      database: "connected",
+      memory: {
+        used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+        total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024),
+        unit: "MB"
+      }
+    });
+  } catch (error) {
+    console.error("Health check failed:", error);
+    res.status(503).json({
+      status: "error",
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      database: "disconnected",
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
 });
 app.use((req, res, next) => {
   const start = Date.now();

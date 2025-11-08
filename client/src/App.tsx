@@ -1,173 +1,204 @@
+import { lazy } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
-import NotFound from "@/pages/not-found";
-// Importar configuração i18n
-import "./i18n/config";
-import DashboardFull from "@/pages/dashboard-full";
-import { enforceCleanMode } from "./enforce-clean-mode";
-import PropertiesPage from "@/pages/properties";
-import PropertyDetailPage from "@/pages/properties/[id]";
-import PropertyEditPage from "@/pages/properties/edit";
-import OwnersPage from "@/pages/owners";
-import OwnerDetailPage from "@/pages/owners/[id]";
-import OwnerEditPage from "@/pages/owners/edit";
-import ReservationsPage from "@/pages/reservations";
-import ReservationDetailPage from "@/pages/reservations/[id]";
-import ReservationNewPage from "@/pages/reservations/new";
-import ReportsPage from "@/pages/reports";
-import SettingsPage from "@/pages/settings";
-import DocumentScanPage from "@/pages/pdf-upload";
-import AssistantPage from "@/pages/assistant";
-import ReservationAssistantPage from "@/pages/reservation-assistant";
-import DemoDataPage from "@/pages/demo-data";
-import ForceResetDemoData from "@/pages/demo-data/force-reset";
+import { LazyWrapper } from "@/shared/components/LazyWrapper";
 import { Layout } from "@/components/layout/layout";
 import { useEffect } from 'react';
+import { enforceCleanMode } from "./enforce-clean-mode";
 
-// Imports das páginas de equipes de limpeza
-import CleaningTeamsPage from "@/pages/cleaning-teams";
-import CleaningSchedulesPage from "@/pages/cleaning-teams/schedules";
-import CleaningReportsPage from "@/pages/cleaning-reports";
-import OwnerReportPage from "@/pages/reports/owner-report";
-import TrendsReportPage from "@/pages/reports/trends";
-import MonthlyInvoicePage from "@/pages/reports/monthly-invoice";
-import BudgetCalculatorPage from "@/pages/budget-calculator";
+// Import i18n configuration
+import "./i18n/config";
 
-// Imports das novas páginas de manutenção e pagamentos
-import MaintenancePending from "@/pages/maintenance/pending";
-import MaintenanceRequest from "@/pages/maintenance/request";
-import MaintenanceNewTask from "@/pages/maintenance/new";
-import PaymentsOutgoing from "@/pages/payments/outgoing";
-import PaymentsIncoming from "@/pages/payments/incoming";
-import PaymentNewPage from "@/pages/payments/new";
-import ReservationApprovalPage from "@/pages/reservations/approval";
+// ========================================
+// SYNCHRONOUS IMPORTS (Critical pages only)
+// ========================================
+import NotFound from "@/pages/not-found";
+import DashboardFull from "@/pages/dashboard-full";
 
-// Imports das páginas financeiras
-import FinancialDocumentsPage from "@/pages/financial/documents";
-import DocumentDetailPage from "@/pages/financial/documents/[id]";
-import NewDocumentPage from "@/pages/financial/documents/new";
-import EditDocumentPage from "@/pages/financial/documents/edit/[id]";
-import NewDocumentItemPage from "@/pages/financial/documents/items/new";
-import EditDocumentItemPage from "@/pages/financial/documents/items/edit/[id]";
-import NewPaymentPage from "@/pages/financial/documents/payments/new";
-import EditPaymentPage from "@/pages/financial/documents/payments/edit/[id]";
+// ========================================
+// LAZY LOADED PAGES (Everything else)
+// ========================================
+// Properties
+const PropertiesPage = lazy(() => import("@/pages/properties"));
+const PropertyDetailPage = lazy(() => import("@/pages/properties/[id]"));
+const PropertyEditPage = lazy(() => import("@/pages/properties/edit"));
+const PropertyStatisticsPage = lazy(() => import("@/pages/properties/estatisticas"));
 
-// Import da página de estatísticas de propriedades
-import PropertyStatisticsPage from "@/pages/properties/estatisticas";
+// Owners
+const OwnersPage = lazy(() => import("@/pages/owners"));
+const OwnerDetailPage = lazy(() => import("@/pages/owners/[id]"));
+const OwnerEditPage = lazy(() => import("@/pages/owners/edit"));
 
-// Imports das páginas de orçamentos
-import QuotationsPage from "@/pages/quotations";
-import QuotationNewPage from "@/pages/quotations/new";
-import QuotationDetailPage from "@/pages/quotations/[id]";
-import QuotationEditPage from "@/pages/quotations/[id]/edit";
+// Reservations
+const ReservationsPage = lazy(() => import("@/pages/reservations"));
+const ReservationDetailPage = lazy(() => import("@/pages/reservations/[id]"));
+const ReservationNewPage = lazy(() => import("@/pages/reservations/new"));
+const ReservationApprovalPage = lazy(() => import("@/pages/reservations/approval"));
 
-// Garantir que a aplicação sempre use light mode
+// Reports
+const ReportsPage = lazy(() => import("@/pages/reports"));
+const OwnerReportPage = lazy(() => import("@/pages/reports/owner-report"));
+const TrendsReportPage = lazy(() => import("@/pages/reports/trends"));
+const MonthlyInvoicePage = lazy(() => import("@/pages/reports/monthly-invoice"));
+
+// Settings & Tools
+const SettingsPage = lazy(() => import("@/pages/settings"));
+const DocumentScanPage = lazy(() => import("@/pages/pdf-upload"));
+const BudgetCalculatorPage = lazy(() => import("@/pages/budget-calculator"));
+
+// Assistants
+const AssistantPage = lazy(() => import("@/pages/assistant"));
+const ReservationAssistantPage = lazy(() => import("@/pages/reservation-assistant"));
+
+// Demo Data
+const DemoDataPage = lazy(() => import("@/pages/demo-data"));
+const ForceResetDemoData = lazy(() => import("@/pages/demo-data/force-reset"));
+
+// Cleaning Teams
+const CleaningTeamsPage = lazy(() => import("@/pages/cleaning-teams"));
+const CleaningSchedulesPage = lazy(() => import("@/pages/cleaning-teams/schedules"));
+const CleaningReportsPage = lazy(() => import("@/pages/cleaning-reports"));
+
+// Maintenance
+const MaintenancePending = lazy(() => import("@/pages/maintenance/pending"));
+const MaintenanceRequest = lazy(() => import("@/pages/maintenance/request"));
+const MaintenanceNewTask = lazy(() => import("@/pages/maintenance/new"));
+
+// Payments
+const PaymentsOutgoing = lazy(() => import("@/pages/payments/outgoing"));
+const PaymentsIncoming = lazy(() => import("@/pages/payments/incoming"));
+const PaymentNewPage = lazy(() => import("@/pages/payments/new"));
+
+// Financial Documents
+const FinancialDocumentsPage = lazy(() => import("@/pages/financial/documents"));
+const DocumentDetailPage = lazy(() => import("@/pages/financial/documents/[id]"));
+const NewDocumentPage = lazy(() => import("@/pages/financial/documents/new"));
+const EditDocumentPage = lazy(() => import("@/pages/financial/documents/edit/[id]"));
+const NewDocumentItemPage = lazy(() => import("@/pages/financial/documents/items/new"));
+const EditDocumentItemPage = lazy(() => import("@/pages/financial/documents/items/edit/[id]"));
+const NewPaymentPage = lazy(() => import("@/pages/financial/documents/payments/new"));
+const EditPaymentPage = lazy(() => import("@/pages/financial/documents/payments/edit/[id]"));
+
+// Quotations
+const QuotationsPage = lazy(() => import("@/pages/quotations"));
+const QuotationNewPage = lazy(() => import("@/pages/quotations/new"));
+const QuotationDetailPage = lazy(() => import("@/pages/quotations/[id]"));
+const QuotationEditPage = lazy(() => import("@/pages/quotations/[id]/edit"));
+
+// Guarantee light mode
 document.documentElement.classList.remove("dark");
 localStorage.removeItem("darkMode");
 localStorage.removeItem("theme");
 
+// ========================================
+// LAZY ROUTE COMPONENT WRAPPER
+// ========================================
+const LazyRoute = ({ component: Component }: { component: React.ComponentType<any> }) => (
+  <LazyWrapper>
+    <Component />
+  </LazyWrapper>
+);
+
 function Router() {
   return (
     <Switch>
-      {/* Rotas principais */}
+      {/* Main Routes (Critical - loaded immediately) */}
       <Route path="/" component={DashboardFull} />
       <Route path="/painel" component={DashboardFull} />
       <Route path="/painel-completo" component={DashboardFull} />
-      
-      {/* Propriedades */}
-      <Route path="/propriedades" component={PropertiesPage} />
-      <Route path="/propriedades/editar/:id?" component={PropertyEditPage} />
-      <Route path="/propriedades/estatisticas" component={PropertyStatisticsPage} />
-      <Route path="/propriedades/:id" component={PropertyDetailPage} />
-      
-      {/* Proprietários */}
-      <Route path="/proprietarios" component={OwnersPage} />
-      <Route path="/proprietarios/editar/:id?" component={OwnerEditPage} />
-      <Route path="/proprietarios/:id" component={OwnerDetailPage} />
-      
-      {/* Reservas */}
-      <Route path="/reservas" component={ReservationsPage} />
-      <Route path="/reservas/nova" component={ReservationNewPage} />
-      <Route path="/reservas/:id" component={ReservationDetailPage} />
-      <Route path="/reservas/aprovacao" component={ReservationApprovalPage} />
-      
-      {/* Calculadora de orçamento */}
-      <Route path="/calculadora-orcamento" component={BudgetCalculatorPage} />
-      
-      {/* Upload de documentos */}
-      <Route path="/upload-pdf" component={DocumentScanPage} />
-      <Route path="/enviar-pdf" component={DocumentScanPage} />
-      <Route path="/digitalizar" component={DocumentScanPage} />
-      
-      {/* Equipas de limpeza */}
-      <Route path="/equipas-limpeza" component={CleaningTeamsPage} />
+
+      {/* Properties (Lazy loaded) */}
+      <Route path="/propriedades" component={() => <LazyRoute component={PropertiesPage} />} />
+      <Route path="/propriedades/editar/:id?" component={() => <LazyRoute component={PropertyEditPage} />} />
+      <Route path="/propriedades/estatisticas" component={() => <LazyRoute component={PropertyStatisticsPage} />} />
+      <Route path="/propriedades/:id" component={() => <LazyRoute component={PropertyDetailPage} />} />
+
+      {/* Owners (Lazy loaded) */}
+      <Route path="/proprietarios" component={() => <LazyRoute component={OwnersPage} />} />
+      <Route path="/proprietarios/editar/:id?" component={() => <LazyRoute component={OwnerEditPage} />} />
+      <Route path="/proprietarios/:id" component={() => <LazyRoute component={OwnerDetailPage} />} />
+
+      {/* Reservations (Lazy loaded) */}
+      <Route path="/reservas" component={() => <LazyRoute component={ReservationsPage} />} />
+      <Route path="/reservas/nova" component={() => <LazyRoute component={ReservationNewPage} />} />
+      <Route path="/reservas/:id" component={() => <LazyRoute component={ReservationDetailPage} />} />
+      <Route path="/reservas/aprovacao" component={() => <LazyRoute component={ReservationApprovalPage} />} />
+
+      {/* Budget Calculator (Lazy loaded) */}
+      <Route path="/calculadora-orcamento" component={() => <LazyRoute component={BudgetCalculatorPage} />} />
+
+      {/* Document Upload (Lazy loaded) */}
+      <Route path="/upload-pdf" component={() => <LazyRoute component={DocumentScanPage} />} />
+      <Route path="/enviar-pdf" component={() => <LazyRoute component={DocumentScanPage} />} />
+      <Route path="/digitalizar" component={() => <LazyRoute component={DocumentScanPage} />} />
+
+      {/* Cleaning Teams (Lazy loaded) */}
+      <Route path="/equipas-limpeza" component={() => <LazyRoute component={CleaningTeamsPage} />} />
       <Route path="/equipas-limpeza/nova" component={() => <div>Nova Equipa de Limpeza (Em breve)</div>} />
-      <Route path="/equipas-limpeza/agendamentos" component={CleaningSchedulesPage} />
+      <Route path="/equipas-limpeza/agendamentos" component={() => <LazyRoute component={CleaningSchedulesPage} />} />
       <Route path="/equipas-limpeza/:id" component={() => <div>Detalhes da Equipa de Limpeza (Em breve)</div>} />
-      <Route path="/relatorios-limpeza" component={CleaningReportsPage} />
-      
-      {/* Relatórios */}
-      <Route path="/relatorios" component={ReportsPage} />
-      <Route path="/relatorios/proprietario" component={OwnerReportPage} />
-      <Route path="/relatorios/faturacao-mensal" component={MonthlyInvoicePage} />
-      <Route path="/relatorios/tendencias" component={TrendsReportPage} />
-      
-      {/* Configurações */}
-      <Route path="/configuracoes" component={SettingsPage} />
-      
-      {/* Assistente */}
-      <Route path="/assistente" component={AssistantPage} />
-      <Route path="/assistente-reservas" component={ReservationAssistantPage} />
-      
-      {/* Dados demo */}
-      <Route path="/dados-demo" component={DemoDataPage} />
-      <Route path="/dados-demo/remocao-forcada" component={ForceResetDemoData} />
-      
-      {/* Manutenção */}
-      <Route path="/manutencao/pendentes" component={MaintenancePending} />
-      <Route path="/manutencao/solicitacao" component={MaintenanceRequest} />
-      <Route path="/manutencao/nova" component={MaintenanceNewTask} />
-      
-      {/* Pagamentos */}
-      <Route path="/pagamentos" component={PaymentsIncoming} />
-      <Route path="/pagamentos/saida" component={PaymentsOutgoing} />
-      <Route path="/pagamentos/entrada" component={PaymentsIncoming} />
-      <Route path="/pagamentos/novo" component={PaymentNewPage} />
-      
-      {/* Documentos financeiros */}
-      <Route path="/financeiro/documentos" component={FinancialDocumentsPage} />
-      <Route path="/financeiro/documentos/novo" component={NewDocumentPage} />
-      <Route path="/financeiro/documentos/editar/:id" component={EditDocumentPage} />
-      <Route path="/financeiro/documentos/itens/novo" component={NewDocumentItemPage} />
-      <Route path="/financeiro/documentos/itens/editar/:id" component={EditDocumentItemPage} />
-      <Route path="/financeiro/documentos/pagamentos/novo" component={NewPaymentPage} />
-      <Route path="/financeiro/documentos/pagamentos/editar/:id" component={EditPaymentPage} />
-      <Route path="/financeiro/documentos/:id" component={DocumentDetailPage} />
-      <Route path="/documentos" component={FinancialDocumentsPage} />
-      
-      {/* Orçamentos */}
-      <Route path="/orcamentos" component={QuotationsPage} />
-      <Route path="/orcamentos/novo" component={QuotationNewPage} />
-      <Route path="/orcamentos/:id/editar" component={QuotationEditPage} />
-      <Route path="/orcamentos/:id" component={QuotationDetailPage} />
-      
-      {/* Página não encontrada */}
+      <Route path="/relatorios-limpeza" component={() => <LazyRoute component={CleaningReportsPage} />} />
+
+      {/* Reports (Lazy loaded) */}
+      <Route path="/relatorios" component={() => <LazyRoute component={ReportsPage} />} />
+      <Route path="/relatorios/proprietario" component={() => <LazyRoute component={OwnerReportPage} />} />
+      <Route path="/relatorios/faturacao-mensal" component={() => <LazyRoute component={MonthlyInvoicePage} />} />
+      <Route path="/relatorios/tendencias" component={() => <LazyRoute component={TrendsReportPage} />} />
+
+      {/* Settings (Lazy loaded) */}
+      <Route path="/configuracoes" component={() => <LazyRoute component={SettingsPage} />} />
+
+      {/* Assistant (Lazy loaded) */}
+      <Route path="/assistente" component={() => <LazyRoute component={AssistantPage} />} />
+      <Route path="/assistente-reservas" component={() => <LazyRoute component={ReservationAssistantPage} />} />
+
+      {/* Demo Data (Lazy loaded) */}
+      <Route path="/dados-demo" component={() => <LazyRoute component={DemoDataPage} />} />
+      <Route path="/dados-demo/remocao-forcada" component={() => <LazyRoute component={ForceResetDemoData} />} />
+
+      {/* Maintenance (Lazy loaded) */}
+      <Route path="/manutencao/pendentes" component={() => <LazyRoute component={MaintenancePending} />} />
+      <Route path="/manutencao/solicitacao" component={() => <LazyRoute component={MaintenanceRequest} />} />
+      <Route path="/manutencao/nova" component={() => <LazyRoute component={MaintenanceNewTask} />} />
+
+      {/* Payments (Lazy loaded) */}
+      <Route path="/pagamentos" component={() => <LazyRoute component={PaymentsIncoming} />} />
+      <Route path="/pagamentos/saida" component={() => <LazyRoute component={PaymentsOutgoing} />} />
+      <Route path="/pagamentos/entrada" component={() => <LazyRoute component={PaymentsIncoming} />} />
+      <Route path="/pagamentos/novo" component={() => <LazyRoute component={PaymentNewPage} />} />
+
+      {/* Financial Documents (Lazy loaded) */}
+      <Route path="/financeiro/documentos" component={() => <LazyRoute component={FinancialDocumentsPage} />} />
+      <Route path="/financeiro/documentos/novo" component={() => <LazyRoute component={NewDocumentPage} />} />
+      <Route path="/financeiro/documentos/editar/:id" component={() => <LazyRoute component={EditDocumentPage} />} />
+      <Route path="/financeiro/documentos/itens/novo" component={() => <LazyRoute component={NewDocumentItemPage} />} />
+      <Route path="/financeiro/documentos/itens/editar/:id" component={() => <LazyRoute component={EditDocumentItemPage} />} />
+      <Route path="/financeiro/documentos/pagamentos/novo" component={() => <LazyRoute component={NewPaymentPage} />} />
+      <Route path="/financeiro/documentos/pagamentos/editar/:id" component={() => <LazyRoute component={EditPaymentPage} />} />
+      <Route path="/financeiro/documentos/:id" component={() => <LazyRoute component={DocumentDetailPage} />} />
+      <Route path="/documentos" component={() => <LazyRoute component={FinancialDocumentsPage} />} />
+
+      {/* Quotations (Lazy loaded) */}
+      <Route path="/orcamentos" component={() => <LazyRoute component={QuotationsPage} />} />
+      <Route path="/orcamentos/novo" component={() => <LazyRoute component={QuotationNewPage} />} />
+      <Route path="/orcamentos/:id/editar" component={() => <LazyRoute component={QuotationEditPage} />} />
+      <Route path="/orcamentos/:id" component={() => <LazyRoute component={QuotationDetailPage} />} />
+
+      {/* 404 - Not Found */}
       <Route component={NotFound} />
     </Switch>
   );
 }
 
 function App() {
-  // Forçar limpeza de dados demo na inicialização
-  // Este código é executado sempre que o aplicativo é iniciado/recarregado
+  // Force clean mode on initialization
   useEffect(() => {
-    // Forçar o modo limpo (sem dados demo) uma única vez na inicialização
     enforceCleanMode();
     console.log('Modo limpo aplicado: todos os dados demo estão permanentemente bloqueados');
   }, []);
-  
+
   return (
     <QueryClientProvider client={queryClient}>
       <Layout>
