@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { formatCurrency, formatDate, reservationStatusColors } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarIcon } from "lucide-react";
@@ -11,7 +12,7 @@ interface RecentReservationsProps {
   isLoading: boolean;
 }
 
-export function RecentReservations({ reservations, isLoading }: RecentReservationsProps) {
+export const RecentReservations = memo<RecentReservationsProps>(({ reservations, isLoading }) => {
   return (
     <div className="rounded-lg overflow-hidden h-full">
       <div className="bg-gradient-to-r from-maria-primary to-maria-primary-light p-0.5 h-full">
@@ -108,7 +109,9 @@ export function RecentReservations({ reservations, isLoading }: RecentReservatio
       </div>
     </div>
   );
-}
+});
+
+RecentReservations.displayName = 'RecentReservations';
 
 function ReservationsSkeleton() {
   return (

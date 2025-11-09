@@ -139,9 +139,9 @@ export default function PropertiesDashboard() {
 
   if (loading) {
     return (
-      <div className=\"flex items-center justify-center h-64\">
-        <div className=\"text-center\">
-          <Clock className=\"h-8 w-8 animate-spin mx-auto mb-2\" />
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <Clock className="h-8 w-8 animate-spin mx-auto mb-2" />
           <p>Carregando propriedades...</p>
         </div>
       </div>
@@ -149,34 +149,34 @@ export default function PropertiesDashboard() {
   }
 
   return (
-    <div className=\"container mx-auto p-6 space-y-6\">
+    <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
-      <div className=\"flex items-center justify-between\">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className=\"text-3xl font-bold\">Dashboard de Propriedades</h1>
-          <p className=\"text-muted-foreground\">
+          <h1 className="text-3xl font-bold">Dashboard de Propriedades</h1>
+          <p className="text-muted-foreground">
             Gestão completa das suas {properties.length} propriedades
           </p>
         </div>
         <Button>
-          <Building2 className=\"h-4 w-4 mr-2\" />
+          <Building2 className="h-4 w-4 mr-2" />
           Nova Propriedade
         </Button>
       </div>
 
       {/* Resumo Financeiro */}
-      <div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4\">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
-          <CardContent className=\"p-6\">
-            <div className=\"flex items-center justify-between\">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
               <div>
-                <p className=\"text-sm font-medium text-muted-foreground\">Total de Propriedades</p>
-                <p className=\"text-2xl font-bold\">{financialSummary.totalProperties}</p>
+                <p className="text-sm font-medium text-muted-foreground">Total de Propriedades</p>
+                <p className="text-2xl font-bold">{financialSummary.totalProperties}</p>
               </div>
-              <Building2 className=\"h-8 w-8 text-blue-600\" />
+              <Building2 className="h-8 w-8 text-blue-600" />
             </div>
-            <div className=\"mt-2\">
-              <Badge variant={financialSummary.activeProperties === financialSummary.totalProperties ? \"default\" : \"secondary\"}>
+            <div className="mt-2">
+              <Badge variant={financialSummary.activeProperties === financialSummary.totalProperties ? "default" : "secondary"}>
                 {financialSummary.activeProperties} ativas
               </Badge>
             </div>
@@ -184,77 +184,77 @@ export default function PropertiesDashboard() {
         </Card>
 
         <Card>
-          <CardContent className=\"p-6\">
-            <div className=\"flex items-center justify-between\">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
               <div>
-                <p className=\"text-sm font-medium text-muted-foreground\">Custo Total Limpeza</p>
-                <p className=\"text-2xl font-bold\">€{financialSummary.totalCleaningCost.toFixed(0)}</p>
+                <p className="text-sm font-medium text-muted-foreground">Custo Total Limpeza</p>
+                <p className="text-2xl font-bold">€{financialSummary.totalCleaningCost.toFixed(0)}</p>
               </div>
-              <Euro className=\"h-8 w-8 text-green-600\" />
+              <Euro className="h-8 w-8 text-green-600" />
             </div>
-            <p className=\"text-xs text-muted-foreground mt-2\">
+            <p className="text-xs text-muted-foreground mt-2">
               Média: €{(financialSummary.totalCleaningCost / financialSummary.activeProperties).toFixed(0)} por propriedade
             </p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className=\"p-6\">
-            <div className=\"flex items-center justify-between\">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
               <div>
-                <p className=\"text-sm font-medium text-muted-foreground\">Propriedades c/ Comissão</p>
-                <p className=\"text-2xl font-bold\">{financialSummary.propertiesWithCommission}</p>
+                <p className="text-sm font-medium text-muted-foreground">Propriedades c/ Comissão</p>
+                <p className="text-2xl font-bold">{financialSummary.propertiesWithCommission}</p>
               </div>
-              <TrendingUp className=\"h-8 w-8 text-orange-600\" />
+              <TrendingUp className="h-8 w-8 text-orange-600" />
             </div>
             <Progress
               value={(financialSummary.propertiesWithCommission / financialSummary.activeProperties) * 100}
-              className=\"mt-2\"
+              className="mt-2"
             />
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className=\"p-6\">
-            <div className=\"flex items-center justify-between\">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
               <div>
-                <p className=\"text-sm font-medium text-muted-foreground\">Total Pagamentos Equipa</p>
-                <p className=\"text-2xl font-bold\">€{financialSummary.totalTeamPayments.toFixed(0)}</p>
+                <p className="text-sm font-medium text-muted-foreground">Total Pagamentos Equipa</p>
+                <p className="text-2xl font-bold">€{financialSummary.totalTeamPayments.toFixed(0)}</p>
               </div>
-              <Users className=\"h-8 w-8 text-purple-600\" />
+              <Users className="h-8 w-8 text-purple-600" />
             </div>
-            <p className=\"text-xs text-muted-foreground mt-2\">
+            <p className="text-xs text-muted-foreground mt-2">
               {properties.filter(p => parseFloat(p.teamPayment || '0') > 0).length} propriedades com pagamentos
             </p>
           </CardContent>
         </Card>
       </div>
 
-      <div className=\"grid grid-cols-1 lg:grid-cols-3 gap-6\">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Lista de Propriedades */}
-        <Card className=\"lg:col-span-2\">
+        <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle>Todas as Propriedades</CardTitle>
-            <div className=\"flex gap-2\">
+            <div className="flex gap-2">
               <Input
-                placeholder=\"Procurar propriedades...\"
+                placeholder="Procurar propriedades..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className=\"max-w-sm\"
+                className="max-w-sm"
               />
               <select
                 value={filterActive}
                 onChange={(e) => setFilterActive(e.target.value as any)}
-                className=\"px-3 py-2 border rounded-md\"
+                className="px-3 py-2 border rounded-md"
               >
-                <option value=\"all\">Todas</option>
-                <option value=\"active\">Ativas</option>
-                <option value=\"inactive\">Inativas</option>
+                <option value="all">Todas</option>
+                <option value="active">Ativas</option>
+                <option value="inactive">Inativas</option>
               </select>
             </div>
           </CardHeader>
           <CardContent>
-            <div className=\"space-y-3 max-h-96 overflow-y-auto\">
+            <div className="space-y-3 max-h-96 overflow-y-auto">
               {filteredProperties.map((property) => (
                 <div
                   key={property.id}
@@ -265,33 +265,33 @@ export default function PropertiesDashboard() {
                   }`}
                   onClick={() => handlePropertySelect(property)}
                 >
-                  <div className=\"flex items-center justify-between\">
-                    <div className=\"flex items-center gap-3\">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
                       <div className={`w-3 h-3 rounded-full ${property.active ? 'bg-green-500' : 'bg-gray-400'}`} />
                       <div>
-                        <h3 className=\"font-semibold\">{property.name}</h3>
-                        <p className=\"text-sm text-muted-foreground\">{property.ownerName}</p>
+                        <h3 className="font-semibold">{property.name}</h3>
+                        <p className="text-sm text-muted-foreground">{property.ownerName}</p>
                       </div>
                     </div>
-                    <div className=\"text-right\">
-                      <p className=\"text-sm font-medium\">€{property.cleaningCost}</p>
-                      <p className=\"text-xs text-muted-foreground\">limpeza</p>
+                    <div className="text-right">
+                      <p className="text-sm font-medium">€{property.cleaningCost}</p>
+                      <p className="text-xs text-muted-foreground">limpeza</p>
                     </div>
                   </div>
 
-                  <div className=\"mt-2 flex gap-2\">
+                  <div className="mt-2 flex gap-2">
                     {parseFloat(property.checkInFee || '0') > 0 && (
-                      <Badge variant=\"outline\" className=\"text-xs\">
+                      <Badge variant="outline" className="text-xs">
                         Check-in: €{property.checkInFee}
                       </Badge>
                     )}
                     {parseFloat(property.commission || '0') > 0 && (
-                      <Badge variant=\"outline\" className=\"text-xs\">
+                      <Badge variant="outline" className="text-xs">
                         Comissão: {property.commission}%
                       </Badge>
                     )}
                     {parseFloat(property.teamPayment || '0') > 0 && (
-                      <Badge variant=\"outline\" className=\"text-xs\">
+                      <Badge variant="outline" className="text-xs">
                         Equipa: €{property.teamPayment}
                       </Badge>
                     )}
@@ -311,49 +311,49 @@ export default function PropertiesDashboard() {
           </CardHeader>
           <CardContent>
             {selectedProperty ? (
-              <Tabs defaultValue=\"details\">
-                <TabsList className=\"grid w-full grid-cols-2\">
-                  <TabsTrigger value=\"details\">Detalhes</TabsTrigger>
-                  <TabsTrigger value=\"cleaning\">Limpezas</TabsTrigger>
+              <Tabs defaultValue="details">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="details">Detalhes</TabsTrigger>
+                  <TabsTrigger value="cleaning">Limpezas</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value=\"details\" className=\"space-y-4\">
-                  <div className=\"space-y-3\">
-                    <div className=\"flex items-center gap-2\">
-                      <MapPin className=\"h-4 w-4 text-muted-foreground\" />
-                      <span className=\"text-sm\">{selectedProperty.ownerName}</span>
+                <TabsContent value="details" className="space-y-4">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">{selectedProperty.ownerName}</span>
                     </div>
 
-                    <div className=\"grid grid-cols-2 gap-4 text-sm\">
+                    <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <p className=\"text-muted-foreground\">Limpeza</p>
-                        <p className=\"font-semibold\">€{selectedProperty.cleaningCost}</p>
+                        <p className="text-muted-foreground">Limpeza</p>
+                        <p className="font-semibold">€{selectedProperty.cleaningCost}</p>
                       </div>
                       <div>
-                        <p className=\"text-muted-foreground\">Check-in</p>
-                        <p className=\"font-semibold\">€{selectedProperty.checkInFee}</p>
+                        <p className="text-muted-foreground">Check-in</p>
+                        <p className="font-semibold">€{selectedProperty.checkInFee}</p>
                       </div>
                       <div>
-                        <p className=\"text-muted-foreground\">Comissão</p>
-                        <p className=\"font-semibold\">{selectedProperty.commission}%</p>
+                        <p className="text-muted-foreground">Comissão</p>
+                        <p className="font-semibold">{selectedProperty.commission}%</p>
                       </div>
                       <div>
-                        <p className=\"text-muted-foreground\">Equipa</p>
-                        <p className=\"font-semibold\">€{selectedProperty.teamPayment}</p>
+                        <p className="text-muted-foreground">Equipa</p>
+                        <p className="font-semibold">€{selectedProperty.teamPayment}</p>
                       </div>
                     </div>
 
                     {propertyStats && (
-                      <div className=\"pt-4 border-t\">
-                        <h4 className=\"font-semibold mb-2\">Estatísticas</h4>
-                        <div className=\"space-y-2 text-sm\">
-                          <div className=\"flex justify-between\">
+                      <div className="pt-4 border-t">
+                        <h4 className="font-semibold mb-2">Estatísticas</h4>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex justify-between">
                             <span>Total de reservas:</span>
-                            <span className=\"font-semibold\">{propertyStats.totalReservations}</span>
+                            <span className="font-semibold">{propertyStats.totalReservations}</span>
                           </div>
-                          <div className=\"flex justify-between\">
+                          <div className="flex justify-between">
                             <span>Este ano:</span>
-                            <span className=\"font-semibold\">{propertyStats.yearReservations}</span>
+                            <span className="font-semibold">{propertyStats.yearReservations}</span>
                           </div>
                         </div>
                       </div>
@@ -361,11 +361,11 @@ export default function PropertiesDashboard() {
                   </div>
                 </TabsContent>
 
-                <TabsContent value=\"cleaning\" className=\"space-y-4\">
+                <TabsContent value="cleaning" className="space-y-4">
                   {cleaningSchedule && (
                     <div>
-                      <div className=\"flex items-center justify-between mb-3\">
-                        <h4 className=\"font-semibold\">
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="font-semibold">
                           {new Date(2024, cleaningSchedule.month - 1).toLocaleDateString('pt-PT', { month: 'long' })} {cleaningSchedule.year}
                         </h4>
                         <Badge>
@@ -373,18 +373,18 @@ export default function PropertiesDashboard() {
                         </Badge>
                       </div>
 
-                      <div className=\"text-sm mb-3\">
-                        <p className=\"text-muted-foreground\">Custo total do mês:</p>
-                        <p className=\"text-lg font-bold text-green-600\">€{cleaningSchedule.totalCost}</p>
+                      <div className="text-sm mb-3">
+                        <p className="text-muted-foreground">Custo total do mês:</p>
+                        <p className="text-lg font-bold text-green-600">€{cleaningSchedule.totalCost}</p>
                       </div>
 
-                      <div className=\"space-y-2 max-h-40 overflow-y-auto\">
+                      <div className="space-y-2 max-h-40 overflow-y-auto">
                         {cleaningSchedule.cleanings.map((cleaning, index) => (
-                          <div key={index} className=\"p-3 border rounded-lg\">
-                            <div className=\"flex items-center justify-between\">
+                          <div key={index} className="p-3 border rounded-lg">
+                            <div className="flex items-center justify-between">
                               <div>
-                                <p className=\"font-medium text-sm\">{cleaning.guestName}</p>
-                                <p className=\"text-xs text-muted-foreground\">{cleaning.date}</p>
+                                <p className="font-medium text-sm">{cleaning.guestName}</p>
+                                <p className="text-xs text-muted-foreground">{cleaning.date}</p>
                               </div>
                               <Badge variant={cleaning.status === 'scheduled' ? 'default' : 'secondary'}>
                                 €{cleaning.cleaningCost}
@@ -398,8 +398,8 @@ export default function PropertiesDashboard() {
                 </TabsContent>
               </Tabs>
             ) : (
-              <div className=\"text-center text-muted-foreground py-8\">
-                <Building2 className=\"h-12 w-12 mx-auto mb-2 opacity-50\" />
+              <div className="text-center text-muted-foreground py-8">
+                <Building2 className="h-12 w-12 mx-auto mb-2 opacity-50" />
                 <p>Clique numa propriedade para ver os detalhes</p>
               </div>
             )}

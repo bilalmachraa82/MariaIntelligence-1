@@ -3540,6 +3540,7 @@ __export(gemini_service_exports, {
   GeminiModel: () => GeminiModel,
   GeminiService: () => GeminiService
 });
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import crypto2 from "crypto";
 var GeminiModel, GeminiService;
 var init_gemini_service = __esm({
@@ -3547,23 +3548,21 @@ var init_gemini_service = __esm({
     "use strict";
     init_rate_limiter_service();
     GeminiModel = /* @__PURE__ */ ((GeminiModel2) => {
-      GeminiModel2["TEXT"] = "gemini-1.5-pro";
-      GeminiModel2["VISION"] = "gemini-1.5-pro-vision";
-      GeminiModel2["FLASH"] = "gemini-1.5-flash";
-      GeminiModel2["AUDIO"] = "gemini-2.5-pro-exp-03-25";
+      GeminiModel2["TEXT"] = "gemini-2.0-flash-exp";
+      GeminiModel2["VISION"] = "gemini-2.0-flash-exp";
+      GeminiModel2["FLASH"] = "gemini-2.0-flash-exp";
+      GeminiModel2["PRO"] = "gemini-1.5-pro";
+      GeminiModel2["LEGACY_PRO"] = "gemini-1.5-pro";
+      GeminiModel2["AUDIO"] = "gemini-2.0-flash-exp";
       return GeminiModel2;
     })(GeminiModel || {});
     GeminiService = class {
-      genAI;
-      // GoogleGenerativeAI quando o pacote estiver disponível
-      defaultModel;
-      // GenerativeModel
-      visionModel;
-      // GenerativeModel
-      flashModel;
-      // GenerativeModel
-      audioModel;
-      // GenerativeModel para processamento de áudio
+      genAI = null;
+      defaultModel = null;
+      visionModel = null;
+      flashModel = null;
+      proModel = null;
+      audioModel = null;
       isInitialized = false;
       apiKey = "";
       isApiConnected = false;
@@ -3696,54 +3695,50 @@ var init_gemini_service = __esm({
         console.log("Gemini Service: Inicializando com chave API fornecida, valida\xE7\xE3o em andamento...");
       }
       /**
-       * Inicializa os modelos com a API key
+       * Inicializa os modelos com a API key usando @google/genai SDK oficial
        * @param apiKey Chave API do Google
        */
       initialize(apiKey) {
         try {
           this.apiKey = apiKey;
+          this.genAI = new GoogleGenerativeAI(apiKey);
+          console.log("\u2705 Google Generative AI SDK inicializado");
+          console.log("\u{1F680} Usando @google/genai v1.x com Gemini 2.0 Flash");
+          this.defaultModel = this.genAI.getGenerativeModel({
+            model: "gemini-2.0-flash-exp" /* TEXT */,
+            generationConfig: {
+              temperature: 0.2,
+              topP: 0.95,
+              topK: 40,
+              maxOutputTokens: 8192
+            }
+          });
+          this.flashModel = this.genAI.getGenerativeModel({
+            model: "gemini-2.0-flash-exp" /* FLASH */,
+            generationConfig: {
+              temperature: 0.1,
+              topP: 0.95,
+              topK: 40,
+              maxOutputTokens: 8192
+            }
+          });
+          this.proModel = this.genAI.getGenerativeModel({
+            model: "gemini-1.5-pro" /* PRO */,
+            generationConfig: {
+              temperature: 0.2,
+              topP: 0.95,
+              topK: 40,
+              maxOutputTokens: 8192
+            }
+          });
+          this.visionModel = this.defaultModel;
+          this.audioModel = this.defaultModel;
           this.validateApiKey(apiKey).then((isValid) => {
             this.isApiConnected = isValid;
             this.isInitialized = isValid;
             if (isValid) {
-              console.log("\u2705 API Gemini conectada com sucesso");
-              console.log("\u{1F680} Usando implementa\xE7\xE3o direta da API Gemini via fetch");
-              this.genAI = {
-                getGenerativeModel: (params) => {
-                  return {
-                    generateContent: async (requestParams) => {
-                      const apiUrl = "https://generativelanguage.googleapis.com/v1/models/" + (params.model || "gemini-1.5-pro") + ":generateContent?key=" + this.apiKey;
-                      const response = await fetch(apiUrl, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(requestParams)
-                      });
-                      if (!response.ok) {
-                        const errorText = await response.text();
-                        throw new Error(`API Gemini erro ${response.status}: ${errorText}`);
-                      }
-                      const result = await response.json();
-                      return {
-                        response: {
-                          text: () => {
-                            const candidates = result.candidates || [];
-                            if (candidates.length === 0) {
-                              throw new Error("Sem resposta da API Gemini");
-                            }
-                            const content = candidates[0].content || {};
-                            const parts = content.parts || [];
-                            return parts.map((part) => part.text || "").join("");
-                          }
-                        }
-                      };
-                    }
-                  };
-                }
-              };
-              this.defaultModel = this.genAI.getGenerativeModel({ model: "gemini-1.5-pro" /* TEXT */ });
-              this.visionModel = this.genAI.getGenerativeModel({ model: "gemini-1.5-pro-vision" /* VISION */ });
-              this.flashModel = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" /* FLASH */ });
-              this.audioModel = this.genAI.getGenerativeModel({ model: "gemini-2.5-pro-exp-03-25" /* AUDIO */ });
+              console.log("\u2705 Gemini 2.0 Flash API conectada e validada com sucesso");
+              console.log("\u{1F4B0} Economia de ~20% vs Gemini 1.5 Pro");
             } else {
               console.error("\u274C Chave API do Gemini inv\xE1lida ou API indispon\xEDvel");
               this.mockInitialization();
@@ -3753,9 +3748,9 @@ var init_gemini_service = __esm({
             console.log("\u26A0\uFE0F Usando modo de simula\xE7\xE3o (mock) como fallback");
             this.mockInitialization();
           });
-          console.log("\u2705 Gemini API configurada corretamente");
+          console.log("\u2705 Gemini 2.0 Flash SDK configurado corretamente");
         } catch (error) {
-          console.error("Erro ao inicializar Gemini:", error);
+          console.error("Erro ao inicializar Gemini 2.0 Flash:", error);
           this.mockInitialization();
         }
       }
@@ -4556,13 +4551,13 @@ var init_gemini_service = __esm({
         this.checkInitialization();
         let systemPrompt;
         let userPrompt;
-        let modelType = "gemini-1.5-pro" /* TEXT */;
+        let modelType = "gemini-2.0-flash-exp" /* TEXT */;
         let tempValue = temperature;
         let maxOutputTokens = maxTokens || 1024;
         if (typeof prompt === "object") {
           systemPrompt = prompt.systemPrompt;
           userPrompt = prompt.userPrompt;
-          modelType = prompt.model || "gemini-1.5-pro" /* TEXT */;
+          modelType = prompt.model || "gemini-2.0-flash-exp" /* TEXT */;
           tempValue = prompt.temperature || temperature;
           maxOutputTokens = prompt.maxOutputTokens || maxTokens || 1024;
         } else {
@@ -4634,7 +4629,7 @@ var init_gemini_service = __esm({
           textPrompt,
           imageBase64,
           mimeType,
-          model = "gemini-1.5-pro-vision" /* VISION */,
+          model = "gemini-2.0-flash-exp" /* VISION */,
           temperature = 0.2,
           maxOutputTokens = 1024,
           responseFormat = "text"
@@ -4647,7 +4642,7 @@ var init_gemini_service = __esm({
               maxOutputTokens: maxOutputTokens || 1024,
               ...responseFormat === "json" ? { responseFormat: { type: "json_object" } } : {}
             };
-            const targetModel = model === "gemini-1.5-pro-vision" /* VISION */ ? this.visionModel : this.defaultModel;
+            const targetModel = model === "gemini-2.0-flash-exp" /* VISION */ ? this.visionModel : this.defaultModel;
             const result = await this.withRetry(async () => {
               return await targetModel.generateContent({
                 contents: [
@@ -4704,7 +4699,7 @@ var init_gemini_service = __esm({
         const {
           systemPrompt,
           userPrompt,
-          model = "gemini-1.5-flash" /* FLASH */,
+          model = "gemini-2.0-flash-exp" /* FLASH */,
           temperature = 0.1,
           maxOutputTokens = 1024,
           functionDefinitions = [],
@@ -4723,7 +4718,7 @@ var init_gemini_service = __esm({
               role: "user",
               parts: [{ text: userPrompt }]
             });
-            const targetModel = model === "gemini-1.5-pro-vision" /* VISION */ ? this.visionModel : model === "gemini-1.5-flash" /* FLASH */ ? this.flashModel : this.defaultModel;
+            const targetModel = model === "gemini-2.0-flash-exp" /* VISION */ ? this.visionModel : model === "gemini-2.0-flash-exp" /* FLASH */ ? this.flashModel : this.defaultModel;
             const requestConfig = {
               contents,
               generationConfig: {
@@ -7727,8 +7722,9 @@ var init_demo_data = __esm({
 // vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { resolve } from "path";
+import path2, { resolve } from "path";
 import { fileURLToPath, URL } from "node:url";
+import { visualizer } from "rollup-plugin-visualizer";
 var __dirname, vite_config_default;
 var init_vite_config = __esm({
   "vite.config.ts"() {
@@ -7738,15 +7734,20 @@ var init_vite_config = __esm({
       root: "./client",
       plugins: [
         react({
-          // Enable React optimization features
           babel: {
             plugins: [
-              // Remove development only code in production
               ["babel-plugin-transform-remove-console", { exclude: ["error", "warn"] }]
             ]
           }
+        }),
+        // Bundle analyzer (only in analyze mode)
+        process.env.ANALYZE && visualizer({
+          open: true,
+          gzipSize: true,
+          brotliSize: true,
+          filename: "dist/stats.html"
         })
-      ],
+      ].filter(Boolean),
       resolve: {
         alias: {
           "@": resolve(__dirname, "./client/src"),
@@ -7754,62 +7755,97 @@ var init_vite_config = __esm({
         }
       },
       build: {
-        outDir: "../dist/public",
+        outDir: "../dist/client",
         emptyOutDir: true,
-        // Performance optimizations
         target: "esnext",
         minify: "esbuild",
         cssMinify: true,
+        // Default CSS minifier
         sourcemap: false,
-        // Disable sourcemaps in production for smaller bundles
+        reportCompressedSize: false,
+        // Speeds up build
+        chunkSizeWarningLimit: 600,
+        // Lower from 1000
         rollupOptions: {
+          input: {
+            main: path2.resolve(__dirname, "client/index.html")
+          },
           output: {
-            manualChunks: {
-              // Split vendor libraries for better caching
-              "react-vendor": ["react", "react-dom"],
-              "ui-vendor": ["@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-select"],
-              "query-vendor": ["@tanstack/react-query"],
-              "form-vendor": ["react-hook-form", "@hookform/resolvers"],
-              "chart-vendor": ["recharts"],
-              "utils": ["clsx", "class-variance-authority", "tailwind-merge"]
+            // More aggressive code splitting
+            experimentalMinChunkSize: 2e4,
+            // 20KB minimum
+            manualChunks: (id) => {
+              if (id.includes("node_modules")) {
+                if (id.includes("react") || id.includes("react-dom")) {
+                  return "react-vendor";
+                }
+                if (id.includes("@radix-ui")) {
+                  return "ui-vendor";
+                }
+                if (id.includes("@tanstack/react-query")) {
+                  return "query-vendor";
+                }
+                if (id.includes("react-hook-form") || id.includes("@hookform")) {
+                  return "form-vendor";
+                }
+                if (id.includes("recharts")) {
+                  return "chart-vendor";
+                }
+                if (id.includes("lucide-react")) {
+                  return "icons-vendor";
+                }
+                if (id.includes("date-fns")) {
+                  return "date-vendor";
+                }
+                return "vendor";
+              }
+              if (id.includes("/pages/")) {
+                const page = id.split("/pages/")[1].split("/")[0];
+                return `page-${page}`;
+              }
             },
-            // Optimize chunk file names
             chunkFileNames: "assets/js/[name]-[hash].js",
             entryFileNames: "assets/js/[name]-[hash].js",
             assetFileNames: "assets/[ext]/[name]-[hash].[ext]"
+          },
+          // Tree shaking optimization
+          treeshake: {
+            moduleSideEffects: false,
+            propertyReadSideEffects: false,
+            tryCatchDeoptimization: false
           }
-        },
-        // Reduce bundle size
-        chunkSizeWarningLimit: 1e3,
-        // Enable compression
-        reportCompressedSize: true
+        }
       },
-      // Development optimizations
       server: {
         hmr: {
           overlay: false
-          // Disable error overlay for better performance
         },
         proxy: {
           "/api": {
-            target: "http://localhost:5100",
+            target: "http://localhost:5001",
             changeOrigin: true,
             secure: false
           }
         }
       },
-      // Optimization settings
       optimizeDeps: {
         include: [
           "react",
           "react-dom",
           "@tanstack/react-query",
-          "recharts",
-          "lucide-react"
+          "wouter"
+          // Add router
         ],
-        exclude: ["@vite/client", "@vite/env"]
+        exclude: [
+          "@vite/client",
+          "@vite/env",
+          "recharts",
+          // Lazy load charts
+          "pdf-lib",
+          // Lazy load PDF tools
+          "jspdf"
+        ]
       },
-      // CSS optimizations
       css: {
         devSourcemap: false
       }
@@ -7820,7 +7856,7 @@ var init_vite_config = __esm({
 // server/vite.ts
 import express from "express";
 import fs3 from "fs";
-import path2, { dirname } from "path";
+import path3, { dirname } from "path";
 import { fileURLToPath as fileURLToPath2 } from "url";
 import { createServer as createViteServer, createLogger } from "vite";
 import { nanoid } from "nanoid";
@@ -7856,7 +7892,7 @@ async function setupVite(app2, server) {
   app2.use("*", async (req, res, next) => {
     const url = req.originalUrl;
     try {
-      const clientTemplate = path2.resolve(
+      const clientTemplate = path3.resolve(
         __dirname2,
         "..",
         "client",
@@ -7876,15 +7912,30 @@ async function setupVite(app2, server) {
   });
 }
 function serveStatic(app2) {
-  const distPath = path2.resolve(__dirname2, "public");
+  const distPath = path3.resolve(__dirname2, "..", "client");
+  console.log(`[PROD_STATIC] Serving from calculated path: ${distPath}`);
   if (!fs3.existsSync(distPath)) {
-    throw new Error(
-      `Could not find the build directory: ${distPath}, make sure to build the client first`
-    );
+    const errorMsg = `[PROD_STATIC_ERROR] Build directory NOT FOUND at ${distPath}`;
+    console.error(errorMsg);
+    throw new Error(errorMsg);
   }
+  console.log(`[PROD_STATIC] Build directory FOUND at ${distPath}`);
+  const indexPath = path3.resolve(distPath, "index.html");
+  if (!fs3.existsSync(indexPath)) {
+    const errorMsg = `[PROD_STATIC_ERROR] index.html NOT FOUND at ${indexPath}`;
+    console.error(errorMsg);
+    try {
+      const files = fs3.readdirSync(distPath);
+      console.log(`[PROD_STATIC_DEBUG] Contents of ${distPath}: ${files.join(", ")}`);
+    } catch (e) {
+      console.error(`[PROD_STATIC_DEBUG] Could not read directory ${distPath}: ${e.message}`);
+    }
+    throw new Error(errorMsg);
+  }
+  console.log(`[PROD_STATIC] index.html FOUND at ${indexPath}`);
   app2.use(express.static(distPath));
-  app2.use("*", (_req, res) => {
-    res.sendFile(path2.resolve(distPath, "index.html"));
+  app2.get("*", (_req, res) => {
+    res.sendFile(indexPath);
   });
 }
 var __filename, __dirname2, viteLogger;
@@ -7900,7 +7951,7 @@ var init_vite = __esm({
 
 // server/services/pdf-extract.ts
 import fs4 from "fs";
-import path3 from "path";
+import path4 from "path";
 import os from "os";
 import crypto3 from "crypto";
 import pdfParse2 from "pdf-parse";
@@ -7930,7 +7981,7 @@ async function parseReservationFromText(text2, apiKey, timeout = 25e3, options =
   const useCache = false;
   if (useCache) {
     const cacheKey = createCacheKey(text2);
-    const cachePath = path3.join(os.tmpdir(), `pdf-extract-${cacheKey}.json`);
+    const cachePath = path4.join(os.tmpdir(), `pdf-extract-${cacheKey}.json`);
     if (fs4.existsSync(cachePath)) {
       try {
         log(`Cache encontrado para este PDF, usando dados em cache`, "pdf-extract");
@@ -7962,7 +8013,7 @@ async function parseReservationFromText(text2, apiKey, timeout = 25e3, options =
         if (useCache) {
           try {
             const cacheKey = createCacheKey(text2);
-            const cachePath = path3.join(os.tmpdir(), `pdf-extract-${cacheKey}.json`);
+            const cachePath = path4.join(os.tmpdir(), `pdf-extract-${cacheKey}.json`);
             fs4.writeFileSync(cachePath, JSON.stringify(extractedData));
             log(`Dados salvos em cache: ${cachePath}`, "pdf-extract");
           } catch (cacheError) {
@@ -8132,13 +8183,13 @@ __export(pdf_pair_processor_exports, {
   processPdfPair: () => processPdfPair
 });
 import fs5 from "fs";
-import path4 from "path";
+import path5 from "path";
 async function identifyDocumentType(filePath) {
   const result = {
     path: filePath,
     type: "unknown" /* UNKNOWN */,
     text: "",
-    filename: path4.basename(filePath)
+    filename: path5.basename(filePath)
   };
   try {
     if (!fs5.existsSync(filePath)) {
@@ -8552,7 +8603,7 @@ async function mariaAssistant(req, res) {
       content: msg.content
     })).slice(-5) : [];
     const isSimpleQuery = message.length < 50 && !message.includes("?") && formattedHistory.length < 3;
-    const modelToUse = isSimpleQuery ? "gemini-1.5-flash" /* FLASH */ : "gemini-1.5-pro" /* TEXT */;
+    const modelToUse = isSimpleQuery ? "gemini-2.0-flash-exp" /* FLASH */ : "gemini-2.0-flash-exp" /* TEXT */;
     console.log(`Utilizando modelo Gemini: ${modelToUse} para resposta ao usu\xE1rio`);
     let contextHints = "";
     const lowerMessage = message.toLowerCase();
@@ -9722,6 +9773,13 @@ var init_propertyMatchCache = __esm({
 });
 
 // server/db/index.ts
+var db_exports = {};
+__export(db_exports, {
+  db: () => db2,
+  getDrizzle: () => getDrizzle,
+  runMigrations: () => runMigrations,
+  testConnection: () => testConnection
+});
 import { drizzle as drizzle2 } from "drizzle-orm/neon-serverless";
 import { neon } from "@neondatabase/serverless";
 import { migrate } from "drizzle-orm/neon-serverless/migrator";
@@ -9767,6 +9825,27 @@ function getDrizzle() {
     drizzleInstance = createDrizzleClient();
   }
   return drizzleInstance;
+}
+async function runMigrations() {
+  const db3 = getDrizzle();
+  try {
+    console.log("Running migrations...");
+    await migrate(db3, { migrationsFolder: "./migrations" });
+    console.log("Migrations completed successfully");
+  } catch (error) {
+    console.error("Migration failed:", error);
+    throw error;
+  }
+}
+async function testConnection() {
+  try {
+    const db3 = getDrizzle();
+    await db3.select().from(properties).limit(1);
+    return true;
+  } catch (error) {
+    console.error("Database connection failed:", error);
+    return false;
+  }
 }
 var drizzleInstance, connectionPool, db2;
 var init_db2 = __esm({
@@ -11046,7 +11125,7 @@ __export(security_audit_service_exports, {
 import pino from "pino";
 import { createHash } from "crypto";
 import fs6 from "fs/promises";
-import path5 from "path";
+import path6 from "path";
 var auditLogger, SecurityAuditService, securityAuditService;
 var init_security_audit_service = __esm({
   "server/services/security-audit.service.ts"() {
@@ -11072,7 +11151,7 @@ var init_security_audit_service = __esm({
       alertThresholds = {};
       auditLogDir;
       constructor() {
-        this.auditLogDir = path5.join(process.cwd(), "logs", "security");
+        this.auditLogDir = path6.join(process.cwd(), "logs", "security");
         this.initializeMetrics();
         this.initializeThreatPatterns();
         this.initializeAlertThresholds();
@@ -11345,7 +11424,7 @@ var init_security_audit_service = __esm({
       async writeToAuditLog(event) {
         try {
           const date2 = (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
-          const logFile = path5.join(this.auditLogDir, `security-audit-${date2}.json`);
+          const logFile = path6.join(this.auditLogDir, `security-audit-${date2}.json`);
           const logEntry = {
             ...event,
             timestamp: event.timestamp.toISOString()
@@ -12429,6 +12508,7 @@ var init_security_monitoring = __esm({
 // server/index.ts
 import "dotenv/config";
 import express2 from "express";
+import compression from "compression";
 import pino3 from "pino";
 import pinoHttp from "pino-http";
 
@@ -13432,12 +13512,12 @@ async function estimate(req, res) {
 init_schema();
 init_db();
 import fs7 from "fs";
-import path6 from "path";
+import path7 from "path";
 import { sql as sql3 } from "drizzle-orm";
 var pdfUpload = multer2({
   storage: multer2.diskStorage({
     destination: function(req, file, cb) {
-      const uploadDir = path6.join(process.cwd(), "uploads");
+      const uploadDir = path7.join(process.cwd(), "uploads");
       if (!fs7.existsSync(uploadDir)) {
         fs7.mkdirSync(uploadDir, { recursive: true });
       }
@@ -13463,7 +13543,7 @@ var pdfUpload = multer2({
 var imageUpload = multer2({
   storage: multer2.diskStorage({
     destination: function(req, file, cb) {
-      const uploadDir = path6.join(process.cwd(), "uploads", "images");
+      const uploadDir = path7.join(process.cwd(), "uploads", "images");
       if (!fs7.existsSync(uploadDir)) {
         fs7.mkdirSync(uploadDir, { recursive: true });
       }
@@ -13491,11 +13571,11 @@ var anyFileUpload = multer2({
     destination: function(req, file, cb) {
       let uploadDir;
       if (file.mimetype === "application/pdf") {
-        uploadDir = path6.join(process.cwd(), "uploads");
+        uploadDir = path7.join(process.cwd(), "uploads");
       } else if (file.mimetype.startsWith("image/")) {
-        uploadDir = path6.join(process.cwd(), "uploads", "images");
+        uploadDir = path7.join(process.cwd(), "uploads", "images");
       } else {
-        uploadDir = path6.join(process.cwd(), "uploads", "other");
+        uploadDir = path7.join(process.cwd(), "uploads", "other");
       }
       if (!fs7.existsSync(uploadDir)) {
         fs7.mkdirSync(uploadDir, { recursive: true });
@@ -14754,8 +14834,30 @@ Valor total: 450,00 \u20AC`;
 // server/index.ts
 init_vite();
 init_security();
+
+// server/middleware/request-id.ts
+import { randomUUID } from "crypto";
+function requestIdMiddleware(req, res, next) {
+  const requestId = randomUUID();
+  req.id = requestId;
+  res.setHeader("X-Request-ID", requestId);
+  next();
+}
+
+// server/index.ts
 console.log("Inicializando aplica\xE7\xE3o com seguran\xE7a aprimorada\u2026");
 var app = express2();
+app.use(compression({
+  level: 6,
+  // Balance between speed and compression ratio
+  threshold: 1024,
+  // Only compress responses > 1KB
+  filter: (req, res) => {
+    if (req.headers["x-no-compression"]) return false;
+    return compression.filter(req, res);
+  }
+}));
+app.use(requestIdMiddleware);
 app.use(securityMiddlewareStack);
 app.use("/api/", apiRateLimiter);
 app.use("/api/upload", pdfImportRateLimiter);
@@ -14790,12 +14892,35 @@ app.use(pinoHttp({
 }));
 app.use(express2.json());
 app.use(express2.urlencoded({ extended: false }));
-app.get("/api/health", (_req, res) => {
-  res.json({ status: "ok", time: (/* @__PURE__ */ new Date()).toISOString() });
+app.get("/api/health", async (_req, res) => {
+  try {
+    const { db: db3 } = await Promise.resolve().then(() => (init_db2(), db_exports));
+    const { sql: sql4 } = await import("drizzle-orm");
+    await db3.execute(sql4`SELECT 1`);
+    res.json({
+      status: "ok",
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      uptime: process.uptime(),
+      database: "connected",
+      memory: {
+        used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+        total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024),
+        unit: "MB"
+      }
+    });
+  } catch (error) {
+    console.error("Health check failed:", error);
+    res.status(503).json({
+      status: "error",
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      database: "disconnected",
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
 });
 app.use((req, res, next) => {
   const start = Date.now();
-  const path7 = req.path;
+  const path8 = req.path;
   let captured;
   const originalJson = res.json;
   res.json = function(body) {
@@ -14803,9 +14928,9 @@ app.use((req, res, next) => {
     return originalJson.call(this, body);
   };
   res.on("finish", () => {
-    if (path7.startsWith("/api")) {
+    if (path8.startsWith("/api")) {
       const dur = Date.now() - start;
-      let line = `${req.method} ${path7} ${res.statusCode} in ${dur}ms`;
+      let line = `[${req.id || "no-id"}] ${req.method} ${path8} ${res.statusCode} in ${dur}ms`;
       if (captured) line += ` :: ${JSON.stringify(captured)}`;
       if (line.length > 120) line = line.slice(0, 119) + "\u2026";
       log(line);
@@ -14814,7 +14939,7 @@ app.use((req, res, next) => {
   next();
 });
 (async () => {
-  const server = await registerRoutes(app);
+  await registerRoutes(app);
   app.use(
     (err, _req, res, _next) => {
       const status = err.status || err.statusCode || 500;
@@ -14822,6 +14947,8 @@ app.use((req, res, next) => {
       console.error(err);
     }
   );
+  const http = await import("http");
+  const server = http.createServer(app);
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {

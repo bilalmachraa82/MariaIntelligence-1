@@ -3,6 +3,7 @@ import 'dotenv/config';
 
 /* ─── Imports do servidor ────────────────────────────── */
 import express, { Request, Response, NextFunction } from 'express';
+import compression from 'compression';
 import pino from 'pino';
 import pinoHttp from 'pino-http';
 import { registerRoutes } from './routes';
@@ -17,10 +18,28 @@ import {
   securityLogger
 } from './middleware/security';
 
+/* ─── Import Request ID Middleware ─────────────────── */
+import { requestIdMiddleware } from './middleware/request-id.js';
+
 /* ─── Inicialização da app ─────────────────────────── */
 console.log('Inicializando aplicação com segurança aprimorada…');
 const app = express();
 export { app };
+
+/* ─── Compression Middleware (FIRST for performance) ───────────────────── */
+app.use(compression({
+  level: 6, // Balance between speed and compression ratio
+  threshold: 1024, // Only compress responses > 1KB
+  filter: (req, res) => {
+    // Don't compress if explicitly disabled
+    if (req.headers['x-no-compression']) return false;
+    // Use compression default filter
+    return compression.filter(req, res);
+  }
+}));
+
+/* ─── Request ID Middleware (for traceability) ───────────────────── */
+app.use(requestIdMiddleware);
 
 /* ─── Configuração de segurança aprimorada ───────────────────── */
 // Aplicar stack completo de middleware de segurança
@@ -67,9 +86,35 @@ app.use(pinoHttp({
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-/* End‑point de saúde */
-app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', time: new Date().toISOString() });
+/* End‑point de saúde com database check */
+app.get('/api/health', async (_req, res) => {
+  try {
+    // Test database connection
+    const { db } = await import('./db/index.js');
+    const { sql } = await import('drizzle-orm');
+
+    await db.execute(sql`SELECT 1`);
+
+    res.json({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      database: 'connected',
+      memory: {
+        used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+        total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024),
+        unit: 'MB'
+      }
+    });
+  } catch (error) {
+    console.error('Health check failed:', error);
+    res.status(503).json({
+      status: 'error',
+      timestamp: new Date().toISOString(),
+      database: 'disconnected',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
 });
 
 /* Logger simples p/ rotas /api */
@@ -87,7 +132,7 @@ app.use((req, res, next) => {
   res.on('finish', () => {
     if (path.startsWith('/api')) {
       const dur = Date.now() - start;
-      let line = `${req.method} ${path} ${res.statusCode} in ${dur}ms`;
+      let line = `[${req.id || 'no-id'}] ${req.method} ${path} ${res.statusCode} in ${dur}ms`;
       if (captured) line += ` :: ${JSON.stringify(captured)}`;
       if (line.length > 120) line = line.slice(0, 119) + '…';
       log(line);
@@ -99,7 +144,8 @@ app.use((req, res, next) => {
 
 /* ─── Bootstrap async ────────────────────────────────── */
 (async () => {
-  const server = await registerRoutes(app);
+  // Register routes first
+  await registerRoutes(app);
 
   /* Error‑handler */
   app.use(
@@ -109,6 +155,10 @@ app.use((req, res, next) => {
       console.error(err);
     },
   );
+
+  // Create HTTP server from Express app
+  const http = await import('http');
+  const server = http.createServer(app);
 
   /* Vite em dev, static em prod */
   if (app.get('env') === 'development') {

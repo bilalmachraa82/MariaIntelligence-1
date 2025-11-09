@@ -1,14 +1,15 @@
+import { memo, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
   Legend
 } from "recharts";
@@ -26,14 +27,17 @@ interface PropertyInsightsProps {
   isLoading: boolean;
 }
 
-export function PropertyInsights({ topProperties, isLoading }: PropertyInsightsProps) {
-  // Data for the chart - in a real app, this would be from a more detailed API call
-  const chartData = topProperties?.map(property => ({
-    name: property.name,
-    occupancy: property.occupancyRate,
-    revenue: property.revenue / 100, // Scale down for better visualization
-    profit: property.profit / 100, // Scale down for better visualization
-  })) || [];
+export const PropertyInsights = memo<PropertyInsightsProps>(({ topProperties, isLoading }) => {
+  // Memoize chart data to avoid recalculation on every render
+  const chartData = useMemo(() =>
+    topProperties?.map(property => ({
+      name: property.name,
+      occupancy: property.occupancyRate,
+      revenue: property.revenue / 100, // Scale down for better visualization
+      profit: property.profit / 100, // Scale down for better visualization
+    })) || [],
+    [topProperties]
+  );
 
   return (
     <div className="rounded-lg overflow-hidden h-full">
@@ -166,4 +170,6 @@ export function PropertyInsights({ topProperties, isLoading }: PropertyInsightsP
       </div>
     </div>
   );
-}
+});
+
+PropertyInsights.displayName = 'PropertyInsights';

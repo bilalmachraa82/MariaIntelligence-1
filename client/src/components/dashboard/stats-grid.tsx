@@ -1,8 +1,9 @@
-import { 
-  BanknoteIcon, 
-  HomeIcon, 
-  CalendarIcon, 
-  CheckCircleIcon 
+import { memo } from "react";
+import {
+  BanknoteIcon,
+  HomeIcon,
+  CalendarIcon,
+  CheckCircleIcon
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
@@ -24,7 +25,7 @@ interface StatsGridProps {
   isLoading: boolean;
 }
 
-export function StatsGrid({ data, isLoading }: StatsGridProps) {
+export const StatsGrid = memo<StatsGridProps>(({ data, isLoading }) => {
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
       {/* Revenue Card */}
@@ -180,4 +181,6 @@ export function StatsGrid({ data, isLoading }: StatsGridProps) {
       </div>
     </div>
   );
-}
+});
+
+StatsGrid.displayName = 'StatsGrid';

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { storage } from '../storage';
+import { storage } from '../storage.js';
 import { ragService } from '../services/rag-enhanced.service';
 import { insertReservationSchema } from '../../shared/schema';
 import { format } from 'date-fns';

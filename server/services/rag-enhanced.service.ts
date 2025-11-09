@@ -25,7 +25,7 @@ import type {
   InsertConversationHistory,
   InsertQueryEmbedding
 } from '../../shared/schema';
-import { storage } from '../storage';
+import { storage } from '../storage.js';
 import {
   knowledgeEmbeddings,
   conversationHistory,

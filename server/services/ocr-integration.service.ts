@@ -6,7 +6,7 @@
 import { ocrMultiProviderService, OCRResult } from './ocr-multi-provider.service';
 import { OCRValidationUtils } from '../utils/ocr-validation.utils';
 import { aiService } from './ai-adapter.service';
-import { storage } from '../storage';
+import { storage } from '../storage.js';
 import { matchPropertyByAlias } from '../utils/matchPropertyByAlias';
 
 export interface ProcessedOCRResult {

@@ -15,12 +15,34 @@ const defaultQueryFn = async ({ queryKey }: { queryKey: any }): Promise<any> => 
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
+      staleTime: 1 * 60 * 1000,      // 1 minute
+      cacheTime: 5 * 60 * 1000,      // 5 minutes
       retry: 1,
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      refetchOnWindowFocus: false,
       queryFn: defaultQueryFn,
     },
   },
 });
+
+// Feature-specific cache times
+export const CACHE_TIMES = {
+  properties: {
+    staleTime: 5 * 60 * 1000,   // 5 minutes (rarely change)
+    cacheTime: 10 * 60 * 1000,  // 10 minutes
+  },
+  reservations: {
+    staleTime: 30 * 1000,       // 30 seconds (frequently change)
+    cacheTime: 2 * 60 * 1000,   // 2 minutes
+  },
+  dashboard: {
+    staleTime: 10 * 1000,       // 10 seconds (real-time stats)
+    cacheTime: 1 * 60 * 1000,   // 1 minute
+  },
+  owners: {
+    staleTime: 5 * 60 * 1000,   // 5 minutes
+    cacheTime: 10 * 60 * 1000,  // 10 minutes
+  },
+};
 
 interface FetchOptions {
   method?: string;

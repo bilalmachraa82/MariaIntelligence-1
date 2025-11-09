@@ -186,7 +186,7 @@ export class StreamProcessor {
     const writeStream = createWriteStream(outputPath);
 
     const transformStream = new Transform({
-      async transform(chunk: Buffer, _encoding, callback) {
+      transform: async function(chunk: Buffer, _encoding, callback) {
         try {
           const startTime = Date.now();
 

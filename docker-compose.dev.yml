@@ -1,0 +1,113 @@
+# ==========================================
+# MariaIntelligence Development Docker Compose
+# ==========================================
+# For local development with hot-reload
+# Use: docker-compose -f docker-compose.dev.yml up
+
+version: '3.8'
+
+services:
+  # ──────────────────────────────────────────
+  # Development Server (Hot Reload)
+  # ──────────────────────────────────────────
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dependencies
+    container_name: maria-dev
+    restart: unless-stopped
+    ports:
+      - "5000:5000"    # Backend API
+      - "5173:5173"    # Vite dev server
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - HOST=0.0.0.0
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/maria_intelligence?sslmode=disable}
+      - GOOGLE_GEMINI_API_KEY=${GOOGLE_GEMINI_API_KEY}
+      - SESSION_SECRET=${SESSION_SECRET:-dev_secret_change_in_production}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASS=${EMAIL_PASS}
+    command: npm run dev
+    volumes:
+      # Mount source code for hot reload
+      - ./client:/app/client
+      - ./server:/app/server
+      - ./shared:/app/shared
+      - ./package.json:/app/package.json
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./vite.config.ts:/app/vite.config.ts
+      # Prevent node_modules from being overwritten
+      - /app/node_modules
+      # Persist uploads
+      - uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - maria-network
+
+  # ──────────────────────────────────────────
+  # PostgreSQL Database
+  # ──────────────────────────────────────────
+  postgres:
+    image: postgres:15-alpine
+    container_name: maria-postgres-dev
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=maria_intelligence
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres-dev-data:/var/lib/postgresql/data
+    networks:
+      - maria-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ──────────────────────────────────────────
+  # pgAdmin (Database Management UI)
+  # ──────────────────────────────────────────
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: maria-pgadmin
+    restart: unless-stopped
+    ports:
+      - "5050:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@maria.local
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - maria-network
+    depends_on:
+      - postgres
+
+# ──────────────────────────────────────────
+# Networks
+# ──────────────────────────────────────────
+networks:
+  maria-network:
+    driver: bridge
+    name: maria-dev-network
+
+# ──────────────────────────────────────────
+# Volumes
+# ──────────────────────────────────────────
+volumes:
+  postgres-dev-data:
+    driver: local
+  pgadmin-data:
+    driver: local
+  uploads:
+    driver: local

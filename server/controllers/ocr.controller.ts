@@ -9,7 +9,7 @@ import path from 'path';
 import { AIAdapter, AIServiceType } from '../services/ai-adapter.service';
 import { HandwritingDetector } from '../services/handwriting-detector';
 import { parseReservationData } from '../parsers/parseReservations';
-import { storage } from '../storage';
+import { storage } from '../storage.js';
 import { matchPropertyByAlias } from '../utils/matchPropertyByAlias';
 
 // Serviços necessários

@@ -5,7 +5,7 @@
 
 import fs from 'fs';
 import pdf from 'pdf-parse';
-import { storage } from '../storage';
+import { storage } from '../storage.js';
 import { InsertReservation } from '../../shared/schema';
 import { AIAdapter } from './ai-adapter.service';
 import { ragService } from './rag-enhanced.service';

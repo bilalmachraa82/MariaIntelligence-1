@@ -3,7 +3,7 @@
  * Integra o processamento de PDFs e OCR com a criação de reservas no sistema
  */
 
-import { storage } from '../storage';
+import { storage } from '../storage.js';
 import { InsertReservation } from '@shared/schema';
 import { 
   ExtractedReservationData, 
