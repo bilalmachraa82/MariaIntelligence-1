@@ -18,7 +18,7 @@ import ocrRoutes from '../ocr-processing.route.js';
 import validationRoutes from '../validation.route.js';
 import knowledgeRoutes from '../knowledge.route.js';
 import predictionsRoutes from '../predictions.route.js';
-import databaseRoutes from '../database.js';
+// import databaseRoutes from '../database.js'; // Commented out for Vercel build compatibility
 
 /**
  * Setup all v1 API routes
@@ -60,7 +60,7 @@ export async function setupV1Routes(app: Express): Promise<void> {
   v1Router.use('/knowledge', knowledgeRoutes);
 
   // Database utilities
-  v1Router.use('/database', databaseRoutes);
+  // v1Router.use('/database', databaseRoutes); // Commented out for Vercel build compatibility
 
   // Mount v1 router
   app.use(API_CONFIG.prefix, v1Router);
@@ -74,5 +74,5 @@ export async function setupV1Routes(app: Express): Promise<void> {
   console.log(`   - ${API_CONFIG.prefix}/validation`);
   console.log(`   - ${API_CONFIG.prefix}/predictions`);
   console.log(`   - ${API_CONFIG.prefix}/knowledge`);
-  console.log(`   - ${API_CONFIG.prefix}/database`);
+  // console.log(`   - ${API_CONFIG.prefix}/database`); // Commented for Vercel compatibility
 }

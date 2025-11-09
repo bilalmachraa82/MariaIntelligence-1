@@ -10,7 +10,7 @@ import { ocrMultiProviderService, OCRResult } from '../services/ocr-multi-provid
 import { storage } from '../storage.js';
 import { matchPropertyByAlias } from '../utils/matchPropertyByAlias';
 import { rateLimiter } from '../services/rate-limiter.service';
-const { getAvailableProviders, getOptimalProvider, validateConfiguration } = require('../config/ocr-providers.config');
+const { getAvailableProviders, getOptimalProvider, validateConfiguration } = require('../config/ocr-providers.config.cjs');
 
 const router = express.Router();
 
