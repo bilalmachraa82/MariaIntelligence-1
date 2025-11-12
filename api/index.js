@@ -16200,23 +16200,20 @@ app.use((req, res, next) => {
   });
   next();
 });
-var clientPath = path3.join(__dirname, "..", "dist", "client");
-app.use(express4.static(clientPath));
 var initialized = false;
 async function initializeApp() {
-  if (initialized) return app;
+  if (initialized) return;
   try {
     await registerRoutes(app);
     app.use((err, _req, res, _next) => {
       const status = err.status || err.statusCode || 500;
+      const message = err.message || "Internal Error";
+      console.error("Error handler:", err);
       res.status(status).json({
-        message: err.message || "Internal Error",
+        success: false,
+        message,
         error: process.env.NODE_ENV === "development" ? err.stack : void 0
       });
-      console.error(err);
-    });
-    app.get("*", (_req, res) => {
-      res.sendFile(path3.join(clientPath, "index.html"));
     });
     initialized = true;
     console.log("\u2705 App initialized successfully for Vercel");
@@ -16224,13 +16221,20 @@ async function initializeApp() {
     console.error("\u274C Failed to initialize app:", error);
     throw error;
   }
-  return app;
 }
 async function handler(req, res) {
-  const app2 = await initializeApp();
-  return app2(req, res);
+  try {
+    await initializeApp();
+    return app(req, res);
+  } catch (error) {
+    console.error("Handler error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
 }
 export {
-  app,
   handler as default
 };

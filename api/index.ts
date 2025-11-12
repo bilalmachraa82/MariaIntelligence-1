@@ -129,15 +129,11 @@ app.use((req, res, next) => {
   next();
 });
 
-/* ─── Serve Static Files (Frontend) ────────────────────── */
-const clientPath = path.join(__dirname, '..', 'dist', 'client');
-app.use(express.static(clientPath));
-
-/* ─── Bootstrap ──────────────────────────────────────────── */
+/* ─── Bootstrap & Initialize ────────────────────────────── */
 let initialized = false;
 
 async function initializeApp() {
-  if (initialized) return app;
+  if (initialized) return;
 
   try {
     // Register API routes
@@ -146,16 +142,15 @@ async function initializeApp() {
     // Error handler
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       const status = err.status || err.statusCode || 500;
+      const message = err.message || 'Internal Error';
+
+      console.error('Error handler:', err);
+
       res.status(status).json({
-        message: err.message || 'Internal Error',
+        success: false,
+        message,
         error: process.env.NODE_ENV === 'development' ? err.stack : undefined
       });
-      console.error(err);
-    });
-
-    // SPA fallback - serve index.html for all non-API routes
-    app.get('*', (_req, res) => {
-      res.sendFile(path.join(clientPath, 'index.html'));
     });
 
     initialized = true;
@@ -164,20 +159,23 @@ async function initializeApp() {
     console.error('❌ Failed to initialize app:', error);
     throw error;
   }
-
-  return app;
 }
 
 /* ─── Export for Vercel Serverless ──────────────────────── */
-// Vercel expects a default export that is either:
-// 1. The Express app directly, or
-// 2. A function that returns the app
-
-// Initialize on first request (lazy initialization)
+// Vercel expects a default export handler function
 export default async function handler(req: any, res: any) {
-  const app = await initializeApp();
-  return app(req, res);
-}
+  try {
+    // Initialize on first request
+    await initializeApp();
 
-// Also export the app for compatibility
-export { app };
+    // Handle the request with Express
+    return app(req, res);
+  } catch (error) {
+    console.error('Handler error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+}
